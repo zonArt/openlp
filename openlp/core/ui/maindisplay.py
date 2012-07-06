@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,8 +37,9 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager, expand_tags
+    translate, PluginManager, expand_tags, ImageSource
 from openlp.core.lib.theme import BackgroundType
+from openlp.core.lib.settings import Settings
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
@@ -100,9 +102,8 @@ class Display(QtGui.QGraphicsView):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
 
-    def resizeEvent(self, ev):
-        self.webView.setGeometry(0, 0,
-            self.width(), self.height())
+    def resizeEvent(self, event):
+        self.webView.setGeometry(0, 0, self.width(), self.height())
 
     def isWebLoaded(self):
         """
@@ -119,8 +120,7 @@ class MainDisplay(Display):
     def __init__(self, parent, imageManager, live, controller):
         Display.__init__(self, parent, live, controller)
         self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
-        self.plugins = PluginManager.get_instance().plugins
+        self.screens = ScreenList()
         self.rebuildCSS = False
         self.hideMode = None
         self.override = {}
@@ -131,10 +131,11 @@ class MainDisplay(Display):
         else:
             self.audioPlayer = None
         self.firstTime = True
+        self.webLoaded = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
-                QtCore.Qt.WindowStaysOnTopHint
-        if QtCore.QSettings().value(u'advanced/x11 bypass wm',
+            QtCore.Qt.WindowStaysOnTopHint
+        if Settings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
@@ -195,15 +196,15 @@ class MainDisplay(Display):
         Display.setup(self)
         if self.isLive:
             # Build the initial frame.
-            image_file = QtCore.QSettings().value(u'advanced/default image',
-                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
-                .toString()
             background_color = QtGui.QColor()
-            background_color.setNamedColor(QtCore.QSettings().value(
+            background_color.setNamedColor(Settings().value(
                 u'advanced/default color',
                 QtCore.QVariant(u'#ffffff')).toString())
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
+            image_file = Settings().value(u'advanced/default image',
+                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
+                .toString()
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
                 self.screen[u'size'].width(),
@@ -273,31 +274,33 @@ class MainDisplay(Display):
                 self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
-    def directImage(self, name, path, background):
+    def directImage(self, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.imageManager.add_image(name, path, u'image', background)
-        if hasattr(self, u'serviceItem'):
-            self.override[u'image'] = name
-            self.override[u'theme'] = self.serviceItem.themedata.theme_name
-            self.image(name)
-            # Update the preview frame.
-            if self.isLive:
-                self.parent().updatePreview()
-            return True
-        return False
+        self.imageManager.addImage(path, ImageSource.ImagePlugin, background)
+        if not hasattr(self, u'serviceItem'):
+            return False
+        self.override[u'image'] = path
+        self.override[u'theme'] = self.serviceItem.themedata.background_filename
+        self.image(path)
+        # Update the preview frame.
+        if self.isLive:
+            self.parent().updatePreview()
+        return True
 
-    def image(self, name):
+    def image(self, path):
         """
-        Add an image as the background. The image has already been added
-        to the cache.
+        Add an image as the background. The image has already been added to the
+        cache.
 
-        ``Image``
-            The name of the image to be displayed.
+        ``path``
+            The path to the image to be displayed. **Note**, the path is only
+            passed to identify the image. If the image has changed it has to be
+            re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.imageManager.get_image_bytes(name)
+        image = self.imageManager.getImageBytes(path, ImageSource.ImagePlugin)
         self.controller.mediaController.video_reset(self.controller)
         self.displayImage(image)
 
@@ -352,14 +355,14 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if QtCore.QSettings().value(u'general/display on monitor',
+                    if Settings().value(u'general/display on monitor',
                         QtCore.QVariant(True)).toBool():
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
         return QtGui.QPixmap.grabWidget(self)
 
-    def buildHtml(self, serviceItem, image=None):
+    def buildHtml(self, serviceItem, image_path=u''):
         """
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
@@ -376,20 +379,23 @@ class MainDisplay(Display):
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override[u'theme'] != serviceItem.themedata.theme_name:
+            elif self.override[u'theme'] != \
+                serviceItem.themedata.background_filename:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
-                background = self.imageManager. \
-                    get_image_bytes(self.override[u'image'])
+                background = self.imageManager.getImageBytes(
+                    self.override[u'image'], ImageSource.ImagePlugin)
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.imageManager. \
-                get_image_bytes(self.serviceItem.themedata.theme_name)
-        if image:
-            image_bytes = self.imageManager.get_image_bytes(image)
+            self.serviceItem.bg_image_bytes = self.imageManager.getImageBytes(
+                self.serviceItem.themedata.background_filename,
+                ImageSource.Theme)
+        if image_path:
+            image_bytes = self.imageManager.getImageBytes(
+                image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive,
@@ -401,7 +407,7 @@ class MainDisplay(Display):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
-            if QtCore.QSettings().value(u'general/auto unblank',
+            if Settings().value(u'general/auto unblank',
                 QtCore.QVariant(False)).toBool():
                 Receiver.send_message(u'slidecontroller_live_unblank')
             else:
@@ -425,7 +431,7 @@ class MainDisplay(Display):
         log.debug(u'hideDisplay mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not QtCore.QSettings().value(u'general/display on monitor',
+            if not Settings().value(u'general/display on monitor',
                 QtCore.QVariant(True)).toBool():
                 return
         if mode == HideMode.Screen:
@@ -450,7 +456,7 @@ class MainDisplay(Display):
         log.debug(u'showDisplay')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not QtCore.QSettings().value(u'general/display on monitor',
+            if not Settings().value(u'general/display on monitor',
                 QtCore.QVariant(True)).toBool():
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
@@ -465,7 +471,7 @@ class MainDisplay(Display):
         """
         Hide mouse cursor when moved over display.
         """
-        if QtCore.QSettings().value(u'advanced/hide mouse',
+        if Settings().value(u'advanced/hide mouse',
             QtCore.QVariant(False)).toBool():
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')

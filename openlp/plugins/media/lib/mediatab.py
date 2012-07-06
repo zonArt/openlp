@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.lib.ui import UiStrings, create_button
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.media import get_media_players, set_media_players
 class MediaQCheckBox(QtGui.QCheckBox):
     """
@@ -186,7 +188,7 @@ class MediaTab(SettingsTab):
             else:
                 checkbox.setChecked(False)
         self.updatePlayerList()
-        self.overridePlayerCheckBox.setChecked(QtCore.QSettings().value(
+        self.overridePlayerCheckBox.setChecked(Settings().value(
             self.settingsSection + u'/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
@@ -200,9 +202,9 @@ class MediaTab(SettingsTab):
             player_string_changed = True
             override_changed = True
         setting_key = self.settingsSection + u'/override player'
-        if QtCore.QSettings().value(setting_key).toInt()[0] != \
+        if Settings().value(setting_key).toInt()[0] != \
             self.overridePlayerCheckBox.checkState():
-            QtCore.QSettings().setValue(setting_key,
+            Settings().setValue(setting_key,
                 QtCore.QVariant(self.overridePlayerCheckBox.checkState()))
             override_changed = True
         if override_changed:

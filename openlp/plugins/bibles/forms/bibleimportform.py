@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,6 +37,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.manager import BibleFormat
@@ -590,7 +592,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Set default values for the wizard pages.
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.plugin.settingsSection)
         self.restart()
         self.finishButton.setVisible(False)

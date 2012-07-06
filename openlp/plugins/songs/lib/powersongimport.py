@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +30,8 @@ The :mod:`powersongimport` module provides the functionality for importing
 PowerSong songs into the OpenLP database.
 """
 import logging
+import fnmatch
+import os
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
@@ -68,14 +71,39 @@ class PowerSongImport(SongImport):
 
         * .song
     """
+    @staticmethod
+    def isValidSource(import_source):
+        """
+        Checks if source is a PowerSong 1.0 folder:
+            * is a directory
+            * contains at least one *.song file
+        """
+        if os.path.isdir(import_source):
+            for file in os.listdir(import_source):
+                if fnmatch.fnmatch(file, u'*.song'):
+                    return True
+        return False
 
     def doImport(self):
         """
-        Receive a list of files to import.
+        Receive either a list of files or a folder (unicode) to import.
         """
-        if not isinstance(self.importSource, list):
+        from importer import SongFormat
+        PS_string = SongFormat.get(SongFormat.PowerSong, u'name')
+        if isinstance(self.importSource, unicode):
+            if os.path.isdir(self.importSource):
+                dir = self.importSource
+                self.importSource = []
+                for file in os.listdir(dir):
+                    if fnmatch.fnmatch(file, u'*.song'):
+                        self.importSource.append(os.path.join(dir, file))
+            else:
+                self.importSource = u''
+        if not self.importSource or not isinstance(self.importSource, list):
             self.logError(unicode(translate('SongsPlugin.PowerSongImport',
-                'No files to import.')))
+                'No songs to import.')),
+                unicode(translate('SongsPlugin.PowerSongImport',
+                'No %s files found.' % PS_string)))
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
@@ -92,9 +120,10 @@ class PowerSongImport(SongImport):
                         field = self._readString(song_data)
                     except ValueError:
                         parse_error = True
-                        self.logError(file, unicode(
+                        self.logError(os.path.basename(file), unicode(
                             translate('SongsPlugin.PowerSongImport',
-                            'Invalid PowerSong file. Unexpected byte value.')))
+                            'Invalid %s file. Unexpected byte value.'
+                            % PS_string)))
                         break
                     else:
                         if label == u'TITLE':
@@ -110,26 +139,25 @@ class PowerSongImport(SongImport):
                 continue
             # Check that file had TITLE field
             if not self.title:
-                self.logError(file, unicode(
+                self.logError(os.path.basename(file), unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    'Invalid PowerSong file. Missing "TITLE" header.')))
+                    'Invalid %s file. Missing "TITLE" header.' % PS_string)))
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
-                self.logError(file, unicode(
+                self.logError(self.title, unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    '"%s" Invalid PowerSong file. Missing "COPYRIGHTLINE" '
-                    'header.' % self.title)))
+                    'Invalid %s file. Missing "COPYRIGHTLINE" '
+                    'header.' % PS_string)))
                 continue
             # Check that file had at least one verse
             if not self.verses:
-                self.logError(file, unicode(
+                self.logError(self.title, unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    '"%s" Verses not found. Missing "PART" header.'
-                    % self.title)))
+                    'Verses not found. Missing "PART" header.')))
                 continue
             if not self.finish():
-                self.logError(file)
+                self.logError(self.title)
 
     def _readString(self, file_object):
         """

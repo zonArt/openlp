@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,8 +34,9 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, build_html, PluginManager, ServiceItem
+    translate, build_icon, build_html, PluginManager, ServiceItem, ImageSource
 from openlp.core.lib.ui import UiStrings, create_action
+from openlp.core.lib.settings import Settings
 from openlp.core.lib import SlideLimits, ServiceItemAction
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -73,6 +75,7 @@ class Controller(QtGui.QWidget):
         controller = self
         Receiver.send_message('%s' % sender, [controller, args])
 
+
 class SlideController(Controller):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -83,7 +86,7 @@ class SlideController(Controller):
         Set up the Slide Controller.
         """
         Controller.__init__(self, parent, isLive)
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
                 float(self.screens.current[u'size'].height())
@@ -236,7 +239,7 @@ class SlideController(Controller):
                 text=UiStrings().PlaySlidesToEnd,
                 icon=u':/media/media_time.png', checked=False, shortcuts=[],
                 category=self.category, triggers=self.onPlaySlidesOnce)
-            if QtCore.QSettings().value(self.parent().generalSettingsSection +
+            if Settings().value(self.parent().generalSettingsSection +
                 u'/enable slide loop', QtCore.QVariant(True)).toBool():
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
             else:
@@ -577,8 +580,7 @@ class SlideController(Controller):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self.imageManager, self.isLive,
-            self)
+        self.display = MainDisplay(self, self.imageManager, self.isLive, self)
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
@@ -662,7 +664,7 @@ class SlideController(Controller):
         """
         Updates the Slide Limits variable from the settings.
         """
-        self.slide_limits = QtCore.QSettings().value(
+        self.slide_limits = Settings().value(
             self.parent().advancedSettingsSection + u'/slide limits',
             QtCore.QVariant(SlideLimits.End)).toInt()[0]
 
@@ -692,7 +694,7 @@ class SlideController(Controller):
         self.playSlidesLoop.setChecked(False)
         self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
-            if QtCore.QSettings().value(
+            if Settings().value(
                 self.parent().songsSettingsSection + u'/display songbar',
                 QtCore.QVariant(True)).toBool() and self.slideList:
                 self.songMenu.show()
@@ -813,11 +815,11 @@ class SlideController(Controller):
                     QtCore.QObject.connect(action,
                         QtCore.SIGNAL(u'triggered(bool)'),
                         self.onTrackTriggered)
-                self.display.audioPlayer.repeat = QtCore.QSettings().value(
+                self.display.audioPlayer.repeat = Settings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio repeat list',
                     QtCore.QVariant(False)).toBool()
-                if QtCore.QSettings().value(
+                if Settings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio start paused',
                     QtCore.QVariant(True)).toBool():
@@ -859,11 +861,13 @@ class SlideController(Controller):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.imageManager.get_image_bytes(frame[u'title'])
-                    image = self.imageManager.get_image(frame[u'title'])
+                            self.imageManager.getImageBytes(frame[u'path'],
+                            ImageSource.ImagePlugin)
+                    image = self.imageManager.getImage(frame[u'path'],
+                        ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent().renderer.screen_ratio
+                slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
             text.append(unicode(row))
@@ -930,7 +934,7 @@ class SlideController(Controller):
         Allow the main display to blank the main display at startup time
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
-        display_type = QtCore.QSettings().value(
+        display_type = Settings().value(
             self.parent().generalSettingsSection + u'/screen blank',
             QtCore.QVariant(u'')).toString()
         if self.screens.which_screen(self.window()) != \
@@ -971,11 +975,11 @@ class SlideController(Controller):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(False)
         if checked:
-            QtCore.QSettings().setValue(
+            Settings().setValue(
                 self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'blanked'))
         else:
-            QtCore.QSettings().remove(
+            Settings().remove(
                 self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
@@ -992,11 +996,11 @@ class SlideController(Controller):
         self.themeScreen.setChecked(checked)
         self.desktopScreen.setChecked(False)
         if checked:
-            QtCore.QSettings().setValue(
+            Settings().setValue(
                 self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'themed'))
         else:
-            QtCore.QSettings().remove(
+            Settings().remove(
                 self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
@@ -1013,11 +1017,11 @@ class SlideController(Controller):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(checked)
         if checked:
-            QtCore.QSettings().setValue(
+            Settings().setValue(
                 self.parent().generalSettingsSection + u'/screen blank',
                 QtCore.QVariant(u'hidden'))
         else:
-            QtCore.QSettings().remove(
+            Settings().remove(
                 self.parent().generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
@@ -1090,14 +1094,14 @@ class SlideController(Controller):
                         u'%s_slide' % self.serviceItem.name.lower(),
                         [self.serviceItem, self.isLive, row])
             else:
-                toDisplay = self.serviceItem.get_rendered_frame(row)
+                to_display = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
-                    self.display.text(toDisplay)
+                    self.display.text(to_display)
                 else:
                     if start:
-                        self.display.buildHtml(self.serviceItem, toDisplay)
+                        self.display.buildHtml(self.serviceItem, to_display)
                     else:
-                        self.display.image(toDisplay)
+                        self.display.image(to_display)
                     # reset the store used to display first image
                     self.serviceItem.bg_image_bytes = None
             self.updatePreview()
@@ -1311,7 +1315,7 @@ class SlideController(Controller):
         """
         triggered by clicking the Preview slide items
         """
-        if QtCore.QSettings().value(u'advanced/double click live',
+        if Settings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
             # Live and Preview have issues if we have video or presentations
             # playing in both at the same time.

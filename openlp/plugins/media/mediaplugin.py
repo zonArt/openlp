@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,6 +31,7 @@ import logging
 from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.settings import Settings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -126,7 +128,7 @@ class MediaPlugin(Plugin):
         we want to check if we have the old "Use Phonon" setting, and convert
         it to "enable Phonon" and "make it the first one in the list".
         """
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):
             log.info(u'Found old Phonon setting')

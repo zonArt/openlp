@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,6 +38,7 @@ from sqlalchemy.sql import or_
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list
 from openlp.core.lib.ui import UiStrings, create_widget_action
+from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
@@ -131,13 +133,13 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def configUpdated(self):
-        self.searchAsYouType = QtCore.QSettings().value(
+        self.searchAsYouType = Settings().value(
             self.settingsSection + u'/search as type',
             QtCore.QVariant(u'False')).toBool()
-        self.updateServiceOnEdit = QtCore.QSettings().value(
+        self.updateServiceOnEdit = Settings().value(
             self.settingsSection + u'/update service on edit',
             QtCore.QVariant(u'False')).toBool()
-        self.addSongFromService = QtCore.QSettings().value(
+        self.addSongFromService = Settings().value(
             self.settingsSection + u'/add song from service',
             QtCore.QVariant(u'True')).toBool()
 
@@ -168,14 +170,14 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.setCurrentSearchType(QtCore.QSettings().value(
+        self.searchTextEdit.setCurrentSearchType(Settings().value(
             u'%s/last search type' % self.settingsSection,
             QtCore.QVariant(SongSearch.Entire)).toInt()[0])
         self.configUpdated()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        QtCore.QSettings().setValue(u'%s/last search type' %
+        Settings().setValue(u'%s/last search type' %
             self.settingsSection,
             QtCore.QVariant(self.searchTextEdit.currentSearchType()))
         # Reload the list considering the new search type.
@@ -336,8 +338,9 @@ class SongMediaItem(MediaManagerItem):
     def onImportClick(self):
         if not hasattr(self, u'importWizard'):
             self.importWizard = SongImportForm(self, self.plugin)
-        if self.importWizard.exec_() == QtGui.QDialog.Accepted:
-            Receiver.send_message(u'songs_load_list')
+        self.importWizard.exec_()
+        # Run song load as list may have been cancelled but some songs loaded
+        Receiver.send_message(u'songs_load_list')
 
     def onExportClick(self):
         if not hasattr(self, u'exportWizard'):
@@ -464,14 +467,14 @@ class SongMediaItem(MediaManagerItem):
         service_item.theme = song.theme_name
         service_item.edit_id = item_id
         if song.lyrics.startswith(u'<?xml version='):
-            verseList = SongXML().get_verses(song.lyrics)
+            verse_list = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             verse_tags_translated = False
             if VerseType.from_translated_string(unicode(
-                verseList[0][0][u'type'])) is not None:
+                verse_list[0][0][u'type'])) is not None:
                 verse_tags_translated = True
             if not song.verse_order.strip():
-                for verse in verseList:
+                for verse in verse_list:
                     # We cannot use from_loose_input() here, because database
                     # is supposed to contain English lowercase singlechar tags.
                     verse_tag = verse[0][u'type']
@@ -485,14 +488,13 @@ class SongMediaItem(MediaManagerItem):
                         verse_index = VerseType.from_tag(verse_tag)
                     verse_tag = VerseType.TranslatedTags[verse_index].upper()
                     verse_def = u'%s%s' % (verse_tag, verse[0][u'label'])
-                    service_item.add_from_text(
-                        verse[1][:30], unicode(verse[1]), verse_def)
+                    service_item.add_from_text(unicode(verse[1]), verse_def)
             else:
                 # Loop through the verse list and expand the song accordingly.
                 for order in song.verse_order.lower().split():
                     if not order:
                         break
-                    for verse in verseList:
+                    for verse in verse_list:
                         if verse[0][u'type'][0].lower() == order[0] and \
                             (verse[0][u'label'].lower() == order[1:] or \
                             not order[1:]):
@@ -505,22 +507,21 @@ class SongMediaItem(MediaManagerItem):
                             verse_tag = VerseType.TranslatedTags[verse_index]
                             verse_def = u'%s%s' % (verse_tag,
                                 verse[0][u'label'])
-                            service_item.add_from_text(
-                                verse[1][:30], verse[1], verse_def)
+                            service_item.add_from_text(verse[1], verse_def)
         else:
             verses = song.lyrics.split(u'\n\n')
             for slide in verses:
-                service_item.add_from_text(slide[:30], unicode(slide))
+                service_item.add_from_text(unicode(slide))
         service_item.title = song.title
         author_list = [unicode(author.display_name) for author in song.authors]
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if QtCore.QSettings().value(u'general/ccli number',
+        if Settings().value(u'general/ccli number',
             QtCore.QVariant(u'')).toString():
             service_item.raw_footer.append(unicode(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                QtCore.QSettings().value(u'general/ccli number',
+                Settings().value(u'general/ccli number',
                 QtCore.QVariant(u'')).toString()))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)

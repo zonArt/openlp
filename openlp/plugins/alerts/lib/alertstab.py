@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.ui import AlertLocation
 from openlp.core.lib.ui import UiStrings, create_valign_selection_widgets
+from openlp.core.lib.settings import Settings
 
 class AlertsTab(SettingsTab):
     """
@@ -152,7 +154,7 @@ class AlertsTab(SettingsTab):
         self.updateDisplay()
 
     def load(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.timeout = settings.value(u'timeout', QtCore.QVariant(5)).toInt()[0]
         self.font_color = unicode(settings.value(
@@ -180,7 +182,7 @@ class AlertsTab(SettingsTab):
         self.changed = False
 
     def save(self):
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         # Check value has changed as no event handles this field
         if settings.value(u'location', QtCore.QVariant(1)).toInt()[0] != \

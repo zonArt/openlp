@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +36,7 @@ import re
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
-from openlp.plugins.songs.lib import retrieve_windows_encoding
+from openlp.plugins.songs.lib import retrieve_windows_encoding, strip_rtf
 from songimport import SongImport
 
 RTF_STRIPPING_REGEX = re.compile(r'\{\\tx[^}]*\}')
@@ -44,101 +45,6 @@ SLIDE_BREAK_REGEX = re.compile(r'\n *?\n[\n ]*')
 NUMBER_REGEX = re.compile(r'[0-9]+')
 NOTE_REGEX = re.compile(r'\(.*?\)')
 
-def strip_rtf(blob, encoding):
-    depth = 0
-    control = False
-    clear_text = []
-    control_word = []
-
-    # workaround for \tx bug: remove one pair of curly braces
-    # if \tx is encountered
-    match = RTF_STRIPPING_REGEX.search(blob)
-    if match:
-        # start and end indices of match are curly braces - filter them out
-        blob = ''.join([blob[i] for i in xrange(len(blob))
-            if i != match.start() and i !=match.end()])
-
-    for c in blob:
-        if control:
-            # for delimiters, set control to False
-            if c == '{':
-                if control_word:
-                    depth += 1
-                control = False
-            elif c == '}':
-                if control_word:
-                    depth -= 1
-                control = False
-            elif c == '\\':
-                new_control = bool(control_word)
-                control = False
-            elif c.isspace():
-                control = False
-            else:
-                control_word.append(c)
-                if len(control_word) == 3 and control_word[0] == '\'':
-                    control = False
-            if not control:
-                if not control_word:
-                    if c == '{' or c == '}' or c == '\\':
-                        clear_text.append(c)
-                else:
-                    control_str = ''.join(control_word)
-                    if control_str == 'par' or control_str == 'line':
-                        clear_text.append(u'\n')
-                    elif control_str == 'tab':
-                        clear_text.append(u'\t')
-                    # Prefer the encoding specified by the RTF data to that
-                    # specified by the Paradox table header
-                    # West European encoding
-                    elif control_str == 'fcharset0':
-                        encoding = u'cp1252'
-                    # Greek encoding
-                    elif control_str == 'fcharset161':
-                        encoding = u'cp1253'
-                    # Turkish encoding
-                    elif control_str == 'fcharset162':
-                        encoding = u'cp1254'
-                    # Vietnamese encoding
-                    elif control_str == 'fcharset163':
-                        encoding = u'cp1258'
-                    # Hebrew encoding
-                    elif control_str == 'fcharset177':
-                        encoding = u'cp1255'
-                    # Arabic encoding
-                    elif control_str == 'fcharset178':
-                        encoding = u'cp1256'
-                    # Baltic encoding
-                    elif control_str == 'fcharset186':
-                        encoding = u'cp1257'
-                    # Cyrillic encoding
-                    elif control_str == 'fcharset204':
-                        encoding = u'cp1251'
-                    # Thai encoding
-                    elif control_str == 'fcharset222':
-                        encoding = u'cp874'
-                    # Central+East European encoding
-                    elif control_str == 'fcharset238':
-                        encoding = u'cp1250'
-                    elif control_str[0] == '\'':
-                        s = chr(int(control_str[1:3], 16))
-                        clear_text.append(s.decode(encoding))
-                    del control_word[:]
-            if c == '\\' and new_control:
-                control = True
-        elif c == '{':
-            depth += 1
-        elif c == '}':
-            depth -= 1
-        elif depth > 2:
-            continue
-        elif c == '\n' or c == '\r':
-            continue
-        elif c == '\\':
-            control = True
-        else:
-            clear_text.append(c)
-    return u''.join(clear_text)
 
 class FieldDescEntry:
     def __init__(self, name, type, size):
@@ -273,7 +179,7 @@ class EasyWorshipSongImport(SongImport):
                         self.addAuthor(author_name.strip())
                 if words:
                     # Format the lyrics
-                    words = strip_rtf(words, self.encoding)
+                    words, self.encoding = strip_rtf(words, self.encoding)
                     verse_type = VerseType.Tags[VerseType.Verse]
                     for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()

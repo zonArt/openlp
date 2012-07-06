@@ -5,10 +5,12 @@
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Jonathan Corwin, Michael      #
-# Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin Köhler,        #
+# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,8 +38,9 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, SettingsManager, translate, \
     check_directory_exists
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.settings import Settings
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation, delete_file
+from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, \
     BiblesResourcesDB
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
@@ -70,7 +73,8 @@ class BibleUpgradeForm(OpenLPWizard):
         self.suffix = u'.sqlite'
         self.settingsSection = u'bibles'
         self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.temp_dir = os.path.join(gettempdir(), u'openlp')
+        self.temp_dir = os.path.join(
+            unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.newbibles = {}
@@ -341,7 +345,7 @@ class BibleUpgradeForm(OpenLPWizard):
         Set default values for the wizard pages.
         """
         log.debug(u'BibleUpgrade setDefaults')
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.plugin.settingsSection)
         self.stop_import_flag = False
         self.success.clear()

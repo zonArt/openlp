@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,6 +36,7 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, create_action
+from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
     SongsTab
@@ -194,7 +196,8 @@ class SongsPlugin(Plugin):
             self.manager.save_object(song)
 
     def importSongs(self, format, **kwargs):
-        class_ = SongFormat.get_class(format)
+        class_ = SongFormat.get(format, u'class')
+        kwargs[u'plugin'] = self
         importer = class_(self.manager, **kwargs)
         importer.register(self.mediaItem.importWizard)
         return importer
@@ -232,7 +235,8 @@ class SongsPlugin(Plugin):
         new songs into the database.
         """
         self.onToolsReindexItemTriggered()
-        db_dir = unicode(os.path.join(gettempdir(), u'openlp'))
+        db_dir = unicode(os.path.join(
+            unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         if not os.path.exists(db_dir):
             return
         song_dbs = []

@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +33,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.theme import VerticalType
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
@@ -160,7 +162,7 @@ class AlertsPlugin(Plugin):
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive
-        QtCore.QSettings().setValue(self.settingsSection + u'/active',
+        Settings().setValue(self.settingsSection + u'/active',
             QtCore.QVariant(self.alertsActive))
 
     def onAlertsTrigger(self):

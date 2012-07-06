@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,6 +33,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, SettingsManager, translate
 from openlp.core.utils import AppLocation, delete_file
+from openlp.core.lib.settings import Settings
 from openlp.plugins.bibles.lib import parse_reference, \
     get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -126,7 +128,7 @@ class BibleManager(object):
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.proxy_name = unicode(
-            QtCore.QSettings().value(self.settingsSection + u'/proxy name',
+            Settings().value(self.settingsSection + u'/proxy name',
             QtCore.QVariant(u'')).toString())
         self.suffix = u'.sqlite'
         self.import_wizard = None
@@ -330,13 +332,7 @@ class BibleManager(object):
                     'Import Wizard to install one or more Bibles.')
                     })
             return None
-        language_selection = self.get_meta_data(bible, u'book_name_language')
-        if language_selection:
-            language_selection = int(language_selection.value)
-        if language_selection is None or language_selection == -1:
-            language_selection = QtCore.QSettings().value(
-                self.settingsSection + u'/bookname language',
-                QtCore.QVariant(0)).toInt()[0]
+        language_selection = self.get_language_selection(bible)
         reflist = parse_reference(versetext, self.db_cache[bible],
             language_selection, book_ref_id)
         if reflist:
@@ -378,12 +374,16 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_language_selection("%s")', bible)
         language_selection = self.get_meta_data(bible, u'book_name_language')
-        if language_selection and language_selection.value != u'None':
-            return int(language_selection.value)
-        if language_selection is None or  language_selection.value == u'None':
-            return QtCore.QSettings().value(
+        if language_selection:
+            try:
+                language_selection = int(language_selection.value)
+            except (ValueError, TypeError):
+                language_selection = LanguageSelection.Application
+        if language_selection is None or language_selection == -1:
+            language_selection = Settings().value(
                 self.settingsSection + u'/bookname language',
                 QtCore.QVariant(0)).toInt()[0]
+        return language_selection
 
     def verse_search(self, bible, second_bible, text):
         """

@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,7 +31,8 @@ from PyQt4 import QtCore, QtGui
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    Receiver
+    Receiver, ImageSource
+from openlp.core.lib.settings import Settings
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -94,6 +96,7 @@ class ImagePlugin(Plugin):
         image manager to require updates.  Actual update is triggered by the
         last part of saving the config.
         """
-        background = QtGui.QColor(QtCore.QSettings().value(self.settingsSection
+        background = QtGui.QColor(Settings().value(self.settingsSection
             + u'/background color', QtCore.QVariant(u'#000000')))
-        self.liveController.imageManager.update_images(u'image', background)
+        self.liveController.imageManager.updateImagesBorder(
+            ImageSource.ImagePlugin, background)

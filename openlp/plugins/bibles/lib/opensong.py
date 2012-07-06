@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,6 +46,22 @@ class OpenSongBible(BibleDB):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
+
+    def get_text(self, element):
+        """
+        Recursively get all text in an objectify element and its child elements.
+
+        ``element``
+            An objectify element to get the text from
+        """
+        verse_text = u''
+        if element.text:
+            verse_text = element.text
+        for sub_element in element.iterchildren():
+            verse_text += self.get_text(sub_element)
+        if element.tail:
+            verse_text += element.tail
+        return verse_text   
 
     def do_import(self, bible_name=None):
         """
@@ -89,7 +106,7 @@ class OpenSongBible(BibleDB):
                             db_book.id,
                             int(chapter.attrib[u'n'].split()[-1]),
                             int(verse.attrib[u'n']),
-                            unicode(verse.text))
+                            unicode(self.get_text(verse)))
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) %

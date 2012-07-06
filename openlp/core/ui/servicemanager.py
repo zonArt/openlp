@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -40,6 +41,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, \
     ItemCapabilities, SettingsManager, translate, str_to_bool
 from openlp.core.lib.theme import ThemeLevel
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
@@ -63,6 +65,9 @@ class ServiceManagerList(QtGui.QTreeWidget):
                 event.accept()
             elif event.key() == QtCore.Qt.Key_Down:
                 self.serviceManager.onMoveSelectionDown()
+                event.accept()
+            elif event.key() == QtCore.Qt.Key_Delete:
+                self.serviceManager.onDeleteFromService()
                 event.accept()
             event.ignore()
         else:
@@ -218,6 +223,7 @@ class ServiceManager(QtGui.QWidget):
             icon=u':/general/general_delete.png',
             tooltip=translate('OpenLP.ServiceManager',
             'Delete the selected item from the service.'),
+            shortcuts=[QtCore.Qt.Key_Delete],
             triggers=self.onDeleteFromService)
         self.orderToolbar.addSeparator()
         self.serviceManagerList.expand = self.orderToolbar.addToolbarAction(
@@ -270,7 +276,7 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
-        self.service_theme = unicode(QtCore.QSettings().value(
+        self.service_theme = unicode(Settings().value(
             self.mainwindow.serviceManagerSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
@@ -298,17 +304,14 @@ class ServiceManager(QtGui.QWidget):
         self.timeAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
-        self.deleteAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', '&Delete From Service'),
-            icon=u':/general/general_delete.png',
-            triggers=self.onDeleteFromService)
+        # Add already existing delete action to the menu.
+        self.menu.addAction(self.serviceManagerList.delete)
         self.menu.addSeparator()
         self.previewAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', 'Show &Preview'),
             icon=u':/general/general_preview.png', triggers=self.makePreview)
-        self.liveAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ServiceManager', 'Show &Live'),
-            icon=u':/general/general_live.png', triggers=self.makeLive)
+        # Add already existing make live action to the menu.
+        self.menu.addAction(self.serviceManagerList.makeLive)
         self.menu.addSeparator()
         self.themeMenu = QtGui.QMenu(
             translate('OpenLP.ServiceManager', '&Change Item Theme'))
@@ -351,7 +354,7 @@ class ServiceManager(QtGui.QWidget):
         self._fileName = unicode(fileName)
         self.mainwindow.setServiceModified(self.isModified(),
             self.shortFileName())
-        QtCore.QSettings(). \
+        Settings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(fileName))
 
     def fileName(self):
@@ -370,7 +373,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
-        self.expandTabs = QtCore.QSettings().value(
+        self.expandTabs = Settings().value(
             u'advanced/expand service item',
             QtCore.QVariant(u'False')).toBool()
 
@@ -443,7 +446,7 @@ class ServiceManager(QtGui.QWidget):
         self.setFileName(u'')
         self.serviceId += 1
         self.setModified(False)
-        QtCore.QSettings(). \
+        Settings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(u''))
         Receiver.send_message(u'servicemanager_new_service')
 
@@ -560,14 +563,12 @@ class ServiceManager(QtGui.QWidget):
                 zip.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            # Add this line in after the release to notify the user that saving
-            # their file failed. Commented out due to string freeze.
-            #Receiver.send_message(u'openlp_error_message', {
-            #    u'title': translate(u'OpenLP.ServiceManager',
-            #        u'Error Saving File'),
-            #    u'message': translate(u'OpenLP.ServiceManager',
-            #        u'There was an error saving your file.')
-            #})
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate(u'OpenLP.ServiceManager',
+                u'Error Saving File'),
+                u'message': translate(u'OpenLP.ServiceManager',
+                u'There was an error saving your file.')
+            })
             success = False
         finally:
             if zip:
@@ -581,10 +582,7 @@ class ServiceManager(QtGui.QWidget):
                 return self.saveFileAs()
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
-        try:
-            delete_file(temp_file_name)
-        except:
-            pass
+        delete_file(temp_file_name)
         return success
 
     def saveFileAs(self):
@@ -592,17 +590,17 @@ class ServiceManager(QtGui.QWidget):
         Get a file name and then call :func:`ServiceManager.saveFile` to
         save the file.
         """
-        default_service_enabled = QtCore.QSettings().value(
+        default_service_enabled = Settings().value(
             u'advanced/default service enabled', QtCore.QVariant(True)).toBool()
         if default_service_enabled:
-            service_day = QtCore.QSettings().value(
+            service_day = Settings().value(
                 u'advanced/default service day', 7).toInt()[0]
             if service_day == 7:
                 time = datetime.now()
             else:
-                service_hour = QtCore.QSettings().value(
+                service_hour = Settings().value(
                     u'advanced/default service hour', 11).toInt()[0]
-                service_minute = QtCore.QSettings().value(
+                service_minute = Settings().value(
                     u'advanced/default service minute', 0).toInt()[0]
                 now = datetime.now()
                 day_delta = service_day - now.weekday()
@@ -610,7 +608,7 @@ class ServiceManager(QtGui.QWidget):
                     day_delta += 7
                 time = now + timedelta(days=day_delta)
                 time = time.replace(hour=service_hour, minute=service_minute)
-            default_pattern = unicode(QtCore.QSettings().value(
+            default_pattern = unicode(Settings().value(
                 u'advanced/default service name',
                 translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
                     'This may not contain any of the following characters: '
@@ -691,7 +689,7 @@ class ServiceManager(QtGui.QWidget):
                 self.setFileName(fileName)
                 self.mainwindow.addRecentFile(fileName)
                 self.setModified(False)
-                QtCore.QSettings().setValue(
+                Settings().setValue(
                     'servicemanager/last file', QtCore.QVariant(fileName))
             else:
                 critical_error_message_box(
@@ -733,7 +731,7 @@ class ServiceManager(QtGui.QWidget):
         service was last closed. Can be blank if there was no service
         present.
         """
-        fileName = QtCore.QSettings(). \
+        fileName = Settings(). \
             value(u'servicemanager/last file',QtCore.QVariant(u'')).toString()
         if fileName:
             self.loadFile(fileName)
@@ -1105,7 +1103,7 @@ class ServiceManager(QtGui.QWidget):
         log.debug(u'onThemeComboBoxSelected')
         self.service_theme = unicode(self.themeComboBox.currentText())
         self.mainwindow.renderer.set_service_theme(self.service_theme)
-        QtCore.QSettings().setValue(
+        Settings().setValue(
             self.mainwindow.serviceManagerSettingsSection +
                 u'/service theme',
             QtCore.QVariant(self.service_theme))
@@ -1286,7 +1284,7 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
-            if QtCore.QSettings().value(
+            if Settings().value(
                 self.mainwindow.generalSettingsSection + u'/auto preview',
                 QtCore.QVariant(False)).toBool():
                 item += 1
@@ -1317,15 +1315,15 @@ class ServiceManager(QtGui.QWidget):
 
     def findServiceItem(self):
         """
-        Finds the selected ServiceItem in the list and returns the position of
-        the serviceitem and its selected child item. For example, if the third
-        child item (in the Slidecontroller known as slide) in the second service
-        item is selected this will return::
+        Finds the first selected ServiceItem in the list and returns the
+        position of the serviceitem and its selected child item. For example,
+        if the third child item (in the Slidecontroller known as slide) in the
+        second service item is selected this will return::
 
             (1, 2)
         """
         items = self.serviceManagerList.selectedItems()
-        serviceItem = 0
+        serviceItem = -1
         serviceItemChild = -1
         for item in items:
             parentitem = item.parent()
@@ -1334,8 +1332,10 @@ class ServiceManager(QtGui.QWidget):
             else:
                 serviceItem = parentitem.data(0, QtCore.Qt.UserRole).toInt()[0]
                 serviceItemChild = item.data(0, QtCore.Qt.UserRole).toInt()[0]
-        # Adjust for zero based arrays.
-        serviceItem -= 1
+            # Adjust for zero based arrays.
+            serviceItem -= 1
+            # Only process the first item on the list for this method.
+            break
         return serviceItem, serviceItemChild
 
     def dragEnterEvent(self, event):

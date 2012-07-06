@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,6 +39,7 @@ from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, create_widget_action, \
     critical_error_message_box
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -348,25 +350,25 @@ class MediaManagerItem(QtGui.QWidget):
         can run it.
 
         ``files``
-        The list of files to be loaded
+            The list of files to be loaded
         """
-        newFiles = []
-        errorShown = False
+        new_files = []
+        error_shown = False
         for file in files:
             type = file.split(u'.')[-1]
             if type.lower() not in self.onNewFileMasks:
-                if not errorShown:
+                if not error_shown:
                     critical_error_message_box(
                         translate('OpenLP.MediaManagerItem',
                         'Invalid File Type'),
                         unicode(translate('OpenLP.MediaManagerItem',
                         'Invalid File %s.\nSuffix not supported'))
                         % file)
-                    errorShown = True
+                    error_shown = True
             else:
-                newFiles.append(file)
-        if file:
-            self.validateAndLoad(newFiles)
+                new_files.append(file)
+        if new_files:
+            self.validateAndLoad(new_files)
 
     def validateAndLoad(self, files):
         """
@@ -377,28 +379,28 @@ class MediaManagerItem(QtGui.QWidget):
             The files to be loaded.
         """
         names = []
-        fullList = []
+        full_list = []
         for count in range(self.listView.count()):
             names.append(unicode(self.listView.item(count).text()))
-            fullList.append(unicode(self.listView.item(count).
+            full_list.append(unicode(self.listView.item(count).
                 data(QtCore.Qt.UserRole).toString()))
-        duplicatesFound = False
-        filesAdded = False
+        duplicates_found = False
+        files_added = False
         for file in files:
             filename = os.path.split(unicode(file))[1]
             if filename in names:
-                duplicatesFound = True
+                duplicates_found = True
             else:
-                filesAdded = True
-                fullList.append(file)
-        if fullList and filesAdded:
+                files_added = True
+                full_list.append(file)
+        if full_list and files_added:
             self.listView.clear()
-            self.loadList(fullList)
-            lastDir = os.path.split(unicode(files[0]))[0]
-            SettingsManager.set_last_dir(self.settingsSection, lastDir)
+            self.loadList(full_list)
+            last_dir = os.path.split(unicode(files[0]))[0]
+            SettingsManager.set_last_dir(self.settingsSection, last_dir)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
-        if duplicatesFound:
+        if duplicates_found:
             critical_error_message_box(
                 UiStrings().Duplicate,
                 unicode(translate('OpenLP.MediaManagerItem',
@@ -418,13 +420,13 @@ class MediaManagerItem(QtGui.QWidget):
         Return the current list of files
         """
         count = 0
-        filelist = []
+        file_list = []
         while count < self.listView.count():
             bitem = self.listView.item(count)
             filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
-            filelist.append(filename)
+            file_list.append(filename)
             count += 1
-        return filelist
+        return file_list
 
     def loadList(self, list):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be '
@@ -462,7 +464,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the list click action to be determined dynamically
         """
-        if QtCore.QSettings().value(u'advanced/double click live',
+        if Settings().value(u'advanced/double click live',
             QtCore.QVariant(False)).toBool():
             self.onLiveClick()
         else:
@@ -472,10 +474,9 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the change of current item in the list to be actioned
         """
-        if QtCore.QSettings().value(u'advanced/single click preview',
-            QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed \
-            and self.listView.selectedIndexes() \
-            and self.autoSelectId == -1:
+        if Settings().value(u'advanced/single click preview',
+            QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed and \
+            self.listView.selectedIndexes() and self.autoSelectId == -1:
             self.onPreviewClick(True)
 
     def onPreviewClick(self, keepFocus=False):

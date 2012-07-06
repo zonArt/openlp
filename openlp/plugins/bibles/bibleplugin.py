@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.ui import create_action, UiStrings
+from openlp.core.lib.settings import Settings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.forms import BibleUpgradeForm
@@ -62,8 +64,7 @@ class BiblePlugin(Plugin):
         #    unicode(UiStrings().Export))
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
-        if self.manager.old_bible_databases:
-            self.toolsUpgradeItem.setVisible(True)
+        self.toolsUpgradeItem.setVisible(bool(self.manager.old_bible_databases))
 
     def finalise(self):
         """
@@ -91,7 +92,7 @@ class BiblePlugin(Plugin):
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()
-        settings = QtCore.QSettings()
+        settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'bookname language'):
             settings.setValue(u'book name language', settings.value(
