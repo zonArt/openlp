@@ -226,7 +226,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
 
     def onCurrentIdChanged(self, pageId):
         """
-        Detects Page changes and updates as approprate.
+        Detects Page changes and updates as appropriate.
         """
         if self.page(pageId) == self.areaPositionPage:
             self.setOption(QtGui.QWizard.HaveCustomButton1, True)
