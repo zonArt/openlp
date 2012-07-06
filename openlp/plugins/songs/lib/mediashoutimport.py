@@ -59,7 +59,8 @@ class MediaShoutImport(SongImport):
         try:
            conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};'
             u'DBQ=%s;PWD=6NOZ4eHK7k' % self.importSource)
-        except: # Unfortunately no specific exception type
+        except:
+            # Unfortunately no specific exception type
             self.logError(self.importSource,
                 translate('SongsPlugin.MediaShoutImport',
                     'Unable to open the MediaShout database.'))
