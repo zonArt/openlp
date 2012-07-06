@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+2 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -199,7 +199,11 @@ def download_translations():
     request = urllib2.Request(url + '?details')
     request.add_header('Authorization', auth_header)
     print_verbose(u'Downloading list of languages from: %s' % url)
-    json_response = urllib2.urlopen(request)
+    try:
+        json_response = urllib2.urlopen(request)
+    except urllib2.HTTPError:
+        print_quiet(u'Username or password incorrect.')
+        return False
     json_dict = json.loads(json_response.read())
     languages = [lang[u'code'] for lang in json_dict[u'available_languages']]
     for language in languages:
@@ -214,6 +218,7 @@ def download_translations():
         fd.write(response.read())
         fd.close()
     print_quiet(u'   Done.')
+    return True
 
 def prepare_project():
     """
@@ -310,7 +315,8 @@ def process_stack(command_stack):
         for command in command_stack:
             print_quiet(u'%d.' % (command_stack.current_index), False)
             if command == Command.Download:
-                download_translations()
+                if not download_translations():
+                    return
             elif command == Command.Prepare:
                 prepare_project()
             elif command == Command.Update:
