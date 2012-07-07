@@ -31,13 +31,10 @@ songs into the OpenLP database.
 """
 import re
 import os
-import logging
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
-
-log = logging.getLogger(__name__)
 
 class SongProImport(SongImport):
     """
@@ -106,8 +103,8 @@ class SongProImport(SongImport):
             self.setDefaults()
             if text:
                 self.title = text
-            self.importWizard.incrementProgressBar(u'Processing song ' + text,
-                0)
+            #self.importWizard.incrementProgressBar(u'Processing song ' + text,
+            #    0)
             return
         elif tag == u'E':
             self.finish()

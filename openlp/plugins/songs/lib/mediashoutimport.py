@@ -31,13 +31,10 @@ a MediaShout database into the OpenLP database.
 """
 import re
 import os
-import logging
 import pyodbc
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
-
-log = logging.getLogger(__name__)
 
 VERSE_TAGS = [u'V', u'C', u'B', u'O', u'P', u'I', u'E']
 
