@@ -103,8 +103,6 @@ class SongProImport(SongImport):
             self.setDefaults()
             if text:
                 self.title = text
-            #self.importWizard.incrementProgressBar(u'Processing song ' + text,
-            #    0)
             return
         elif tag == u'E':
             self.finish()
