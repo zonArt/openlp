@@ -286,7 +286,6 @@ def main(args=None):
         portable_settings.sync()
     else:
         app.setApplicationName(u'OpenLP')
-        # Set up logging
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
