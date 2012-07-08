@@ -36,6 +36,104 @@ from ui import SongStrings
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile(u'[\'`’ʻ′]', re.UNICODE)
+PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'"
+    r"([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
+# RTF control words which specify a "destination" to be ignored.
+DESTINATIONS = frozenset((
+    u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor', 
+    u'atndate', u'atnicn', u'atnid', u'atnparent', u'atnref', u'atntime',
+    u'atrfend', u'atrfstart', u'author', u'background', u'bkmkend',
+    u'bkmkstart', u'blipuid', u'buptim', u'category',
+    u'colorschememapping', u'colortbl', u'comment', u'company', u'creatim',
+    u'datafield', u'datastore', u'defchp', u'defpap', u'do', u'doccomm',
+    u'docvar', u'dptxbxtext', u'ebcend', u'ebcstart', u'factoidname',
+    u'falt', u'fchars', u'ffdeftext', u'ffentrymcr', u'ffexitmcr',
+    u'ffformat', u'ffhelptext', u'ffl', u'ffname', u'ffstattext', u'field',
+    u'file', u'filetbl', u'fldinst', u'fldrslt', u'fldtype', u'fname',
+    u'fontemb', u'fontfile', u'footer', u'footerf', u'footerl', u'footerr',
+    u'footnote', u'formfield', u'ftncn', u'ftnsep', u'ftnsepc', u'g',
+    u'generator', u'gridtbl', u'header', u'headerf', u'headerl',
+    u'headerr', u'hl', u'hlfr', u'hlinkbase', u'hlloc', u'hlsrc', u'hsv',
+    u'htmltag', u'info', u'keycode', u'keywords', u'latentstyles',
+    u'lchars', u'levelnumbers', u'leveltext', u'lfolevel', u'linkval',
+    u'list', u'listlevel', u'listname', u'listoverride',
+    u'listoverridetable', u'listpicture', u'liststylename', u'listtable',
+    u'listtext', u'lsdlockedexcept', u'macc', u'maccPr', u'mailmerge',
+    u'maln', u'malnScr', u'manager', u'margPr', u'mbar', u'mbarPr',
+    u'mbaseJc', u'mbegChr', u'mborderBox', u'mborderBoxPr', u'mbox',
+    u'mboxPr', u'mchr', u'mcount', u'mctrlPr', u'md', u'mdeg', u'mdegHide',
+    u'mden', u'mdiff', u'mdPr', u'me', u'mendChr', u'meqArr', u'meqArrPr',
+    u'mf', u'mfName', u'mfPr', u'mfunc', u'mfuncPr', u'mgroupChr',
+    u'mgroupChrPr', u'mgrow', u'mhideBot', u'mhideLeft', u'mhideRight',
+    u'mhideTop', u'mhtmltag', u'mlim', u'mlimloc', u'mlimlow',
+    u'mlimlowPr', u'mlimupp', u'mlimuppPr', u'mm', u'mmaddfieldname',
+    u'mmath', u'mmathPict', u'mmathPr', u'mmaxdist', u'mmc', u'mmcJc',
+    u'mmconnectstr', u'mmconnectstrdata', u'mmcPr', u'mmcs',
+    u'mmdatasource', u'mmheadersource', u'mmmailsubject', u'mmodso',
+    u'mmodsofilter', u'mmodsofldmpdata', u'mmodsomappedname',
+    u'mmodsoname', u'mmodsorecipdata', u'mmodsosort', u'mmodsosrc',
+    u'mmodsotable', u'mmodsoudl', u'mmodsoudldata', u'mmodsouniquetag',
+    u'mmPr', u'mmquery', u'mmr', u'mnary', u'mnaryPr', u'mnoBreak',
+    u'mnum', u'mobjDist', u'moMath', u'moMathPara', u'moMathParaPr',
+    u'mopEmu', u'mphant', u'mphantPr', u'mplcHide', u'mpos', u'mr',
+    u'mrad', u'mradPr', u'mrPr', u'msepChr', u'mshow', u'mshp', u'msPre',
+    u'msPrePr', u'msSub', u'msSubPr', u'msSubSup', u'msSubSupPr', u'msSup',
+    u'msSupPr', u'mstrikeBLTR', u'mstrikeH', u'mstrikeTLBR', u'mstrikeV',
+    u'msub', u'msubHide', u'msup', u'msupHide', u'mtransp', u'mtype',
+    u'mvertJc', u'mvfmf', u'mvfml', u'mvtof', u'mvtol', u'mzeroAsc',
+    u'mzeroDesc', u'mzeroWid', u'nesttableprops', u'nextfile',
+    u'nonesttables', u'objalias', u'objclass', u'objdata', u'object',
+    u'objname', u'objsect', u'objtime', u'oldcprops', u'oldpprops',
+    u'oldsprops', u'oldtprops', u'oleclsid', u'operator', u'panose',
+    u'password', u'passwordhash', u'pgp', u'pgptbl', u'picprop', u'pict',
+    u'pn', u'pnseclvl', u'pntext', u'pntxta', u'pntxtb', u'printim',
+    u'private', u'propname', u'protend', u'protstart', u'protusertbl',
+    u'pxe', u'result', u'revtbl', u'revtim', u'rsidtbl', u'rxe', u'shp',
+    u'shpgrp', u'shpinst', u'shppict', u'shprslt', u'shptxt', u'sn', u'sp',
+    u'staticval', u'stylesheet', u'subject', u'sv', u'svb', u'tc',
+    u'template', u'themedata', u'title', u'txe', u'ud', u'upr',
+    u'userprops', u'wgrffmtfilter', u'windowcaption', u'writereservation',
+    u'writereservhash', u'xe', u'xform', u'xmlattrname', u'xmlattrvalue',
+    u'xmlclose', u'xmlname', u'xmlnstbl', u'xmlopen'))
+# Translation of some special characters.
+SPECIAL_CHARS = {
+    u'par': u'\n',
+    u'sect': u'\n\n',
+    # Required page and column break.
+    # Would be good if we could split verse into subverses here.
+    u'page': u'\n\n',
+    u'column': u'\n\n',
+    # Soft breaks.
+    u'softpage': u'[---]',
+    u'softcol': u'[---]',
+    u'line': u'\n',
+    u'tab': u'\t',
+    u'emdash': u'\u2014',
+    u'endash': u'\u2013',
+    u'emspace': u'\u2003',
+    u'enspace': u'\u2002',
+    u'qmspace': u'\u2005',
+    u'bullet': u'\u2022',
+    u'lquote': u'\u2018',
+    u'rquote': u'\u2019',
+    u'ldblquote': u'\u201C',
+    u'rdblquote': u'\u201D',
+    u'ltrmark': u'\u200E',
+    u'rtlmark': u'\u200F',
+    u'zwj': u'\u200D',
+    u'zwnj': u'\u200C'}
+CHARSET_MAPPING = {
+    u'fcharset0': u'cp1252',
+    u'fcharset161': u'cp1253',
+    u'fcharset162': u'cp1254',
+    u'fcharset163': u'cp1258',
+    u'fcharset177': u'cp1255',
+    u'fcharset178': u'cp1256',
+    u'fcharset186': u'cp1257',
+    u'fcharset204': u'cp1251',
+    u'fcharset222': u'cp874',
+    u'fcharset238': u'cp1250'}
+
 
 class VerseType(object):
     """
@@ -365,6 +463,136 @@ def clean_song(manager, song):
         song.authors.append(author)
     if song.copyright:
         song.copyright = CONTROL_CHARS.sub(u'', song.copyright).strip()
+
+
+def get_encoding(font, font_table, default_encoding, failed=False):
+    """
+    Finds an encoding to use. Asks user, if necessary.
+
+    ``font``
+    The number of currently active font.
+
+    ``font_table``
+    Dictionary of fonts and respective encodings.
+
+    ``default_encoding``
+    The defaul encoding to use when font_table is empty or no font is used.
+
+    ``failed``
+    A boolean indicating whether the previous encoding didn't work.
+    """
+    encoding = None
+    if font in font_table:
+        encoding = font_table[font]
+    if not encoding and default_encoding:
+        encoding = default_encoding
+    if not encoding or failed:
+        encoding = retrieve_windows_encoding()
+        default_encoding = encoding
+    font_table[font] = encoding
+    return encoding, default_encoding
+
+
+def strip_rtf(text, default_encoding=None):
+    """
+    This function strips RTF control structures and returns an unicode string.
+
+    Thanks to Markus Jarderot (MizardX) for this code, used by permission.
+    http://stackoverflow.com/questions/188545
+
+    ``text``
+    RTF-encoded text, a string.
+
+    ``default_encoding``
+    Default encoding to use when no encoding is specified.
+    """
+    # Current font is the font tag we last met.
+    font = u''
+    # Character encoding is defined inside fonttable.
+    # font_table could contain eg u'0': u'cp1252'
+    font_table = {u'': u''}
+    # Stack of things to keep track of when entering/leaving groups.
+    stack = []
+    # Whether this group (and all inside it) are "ignorable".
+    ignorable = False
+    # Number of ASCII characters to skip after an unicode character.
+    ucskip = 1
+    # Number of ASCII characters left to skip.
+    curskip = 0
+    # Output buffer.
+    out = []
+    for match in PATTERN.finditer(text):
+        word, arg, hex, char, brace, tchar = match.groups()
+        if brace:
+            curskip = 0
+            if brace == u'{':
+                # Push state
+                stack.append((ucskip, ignorable, font))
+            elif brace == u'}':
+                # Pop state
+                ucskip, ignorable, font = stack.pop()
+        # \x (not a letter)
+        elif char:
+            curskip = 0
+            if char == u'~' and not ignorable:
+                out.append(u'\xA0')
+            elif char in u'{}\\' and not ignorable:
+                out.append(char)
+            elif char == u'-' and not ignorable:
+                out.append(u'\u00AD')
+            elif char == u'_' and not ignorable:
+                out.append(u'\u2011')
+            elif char == u'*':
+                ignorable = True
+        # \command
+        elif word:
+            curskip = 0
+            if word in DESTINATIONS:
+                ignorable = True
+            elif word in SPECIAL_CHARS:
+                out.append(SPECIAL_CHARS[word])
+            elif word == u'uc':
+                ucskip = int(arg)
+            elif word == u' ':
+                c = int(arg)
+                if c < 0:
+                    c += 0x10000
+                out.append(unichr(c))
+                curskip = ucskip
+            elif word == u'fonttbl':
+                ignorable = True
+            elif word == u'f':
+                font = arg
+            elif word == u'ansicpg':
+                font_table[font] = 'cp' + arg
+            elif word == u'fcharset' and font not in font_table and \
+                word + arg in CHARSET_MAPPING:
+                # \ansicpg overrides \fcharset, if present.
+                font_table[font] = CHARSET_MAPPING[word + arg]
+        # \'xx
+        elif hex:
+            if curskip > 0:
+                curskip -= 1
+            elif not ignorable:
+                charcode = int(hex, 16)
+                failed = False
+                while True:
+                    try:
+                        encoding, default_encoding = get_encoding(font, 
+                            font_table, default_encoding, failed=failed)
+                        out.append(chr(charcode).decode(encoding))
+                    except UnicodeDecodeError:
+                        failed = True
+                    else:
+                        break
+        elif tchar:
+            if curskip > 0:
+                curskip -= 1
+            elif not ignorable:
+                out.append(tchar)
+    text = u''.join(out)
+    return text, default_encoding
+
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab
