@@ -207,7 +207,7 @@ class OpenLP(QtGui.QApplication):
         else:
             return QtGui.QApplication.event(self, event)
 
-def setupLogging(log_path):
+def set_up_logging(log_path):
     """
     Setup our logging using log_path
     """
@@ -267,7 +267,7 @@ def main(args=None):
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
         app_path = AppLocation.get_directory(AppLocation.AppDir)
-        setupLogging(os.path.abspath(os.path.join(app_path, u'..',
+        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
             u'..', u'Other')))
         log.info(u'Running portable')
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
@@ -287,7 +287,7 @@ def main(args=None):
     else:
         app.setApplicationName(u'OpenLP')
         # Set up logging
-        setupLogging(AppLocation.get_directory(AppLocation.CacheDir))
+        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:
