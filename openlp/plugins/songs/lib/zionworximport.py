@@ -37,6 +37,9 @@ from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
 
+# Used to strip control chars (except 10=LF, 13=CR)
+CONTROL_CHARS_MAP = dict.fromkeys(range(10) + [11, 12] + range(14,32) + [127])
+
 class ZionWorxImport(SongImport):
     """
     The :class:`ZionWorxImport` class provides the ability to import songs
@@ -78,13 +81,10 @@ class ZionWorxImport(SongImport):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """
-        # Used to strip control chars (10=LF, 13=CR, 127=DEL)
-        self.control_chars_map = dict.fromkeys(
-            range(10) + [11, 12] + range(14,32) + [127])
         with open(self.importSource, 'rb') as songs_file:
-            fieldnames = [u'SongNum', u'Title1', u'Title2', u'Lyrics',
+            field_names = [u'SongNum', u'Title1', u'Title2', u'Lyrics',
                 u'Writer', u'Copyright', u'Keywords', u'DefaultStyle']
-            songs_reader = csv.DictReader(songs_file, fieldnames)
+            songs_reader = csv.DictReader(songs_file, field_names)
             try:
                 records = list(songs_reader)
             except csv.Error, e:
@@ -140,4 +140,4 @@ class ZionWorxImport(SongImport):
         """
         # This encoding choice seems OK. ZionWorx has no option for setting the
         # encoding for its songs, so we assume encoding is always the same.
-        return unicode(str, u'cp1252').translate(self.control_chars_map)
+        return unicode(str, u'cp1252').translate(CONTROL_CHARS_MAP)

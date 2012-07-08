@@ -109,6 +109,7 @@ class SongFormat(object):
 
     ``u'canDisable'``
         Whether song format importer is disablable.
+        If ``True``, then ``u'disabledLabelText'`` must also be defined.
 
     ``u'availability'``
         Whether song format importer is available.
