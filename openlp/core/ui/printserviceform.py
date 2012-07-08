@@ -330,7 +330,24 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         Copies the display text to the clipboard as plain text
         """
         self.update_song_usage()
-        self.mainWindow.clipboard.setText(self.document.toPlainText())
+        cursor = QtGui.QTextCursor(self.document)
+        cursor.select(QtGui.QTextCursor.Document)
+        clipboard_text = cursor.selectedText()
+        # We now have the unprocessed unicode service text in the cursor
+        # So we replace u2028 with \n and u2029 with \n\n and a few others
+        clipboard_text = clipboard_text.replace(u'\u2028', u'\n')
+        clipboard_text = clipboard_text.replace(u'\u2029', u'\n\n')
+        clipboard_text = clipboard_text.replace(u'\u2018', u'\'')
+        clipboard_text = clipboard_text.replace(u'\u2019', u'\'')
+        clipboard_text = clipboard_text.replace(u'\u201c', u'"')
+        clipboard_text = clipboard_text.replace(u'\u201d', u'"')
+        clipboard_text = clipboard_text.replace(u'\u2026', u'...')
+        clipboard_text = clipboard_text.replace(u'\u2013', u'-')
+        clipboard_text = clipboard_text.replace(u'\u2014', u'-')
+        # remove the icon from the text
+        clipboard_text = clipboard_text.replace(u'\ufffc\xa0', u'')
+        # and put it all on the clipboard
+        self.mainWindow.clipboard.setText(clipboard_text)
 
     def copyHtmlText(self):
         """

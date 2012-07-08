@@ -36,6 +36,7 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
     Receiver
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, create_action
+from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
     SongsTab
@@ -234,7 +235,8 @@ class SongsPlugin(Plugin):
         new songs into the database.
         """
         self.onToolsReindexItemTriggered()
-        db_dir = unicode(os.path.join(gettempdir(), u'openlp'))
+        db_dir = unicode(os.path.join(
+            unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         if not os.path.exists(db_dir):
             return
         song_dbs = []

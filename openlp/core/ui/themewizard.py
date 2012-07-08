@@ -552,11 +552,9 @@ class Ui_ThemeWizard(object):
         themeWizard.setButtonText(QtGui.QWizard.CustomButton1,
             translate('OpenLP.ThemeWizard', 'Layout Preview'))
         self.previewPage.setTitle(
-            translate('OpenLP.ThemeWizard', 'Save and Preview'))
+            translate('OpenLP.ThemeWizard', 'Preview and Save'))
         self.previewPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'View the theme and save it '
-                'replacing the current one or change the name to create a '
-                'new theme'))
+            translate('OpenLP.ThemeWizard', 'Preview the theme and save it.'))
         self.themeNameLabel.setText(
             translate('OpenLP.ThemeWizard', 'Theme name:'))
         # Align all QFormLayouts towards each other.

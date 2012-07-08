@@ -27,6 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import sys
 from openlp.core import main
 
 
@@ -34,4 +35,10 @@ if __name__ == u'__main__':
     """
     Instantiate and run the application.
     """
+    # Mac OS X passes arguments like '-psn_XXXX' to gui application.
+    # This argument is process serial number. However, this causes
+    # conflict with other OpenLP arguments. Since we do not use this
+    # argument we can delete it to avoid any potential conflicts.
+    if sys.platform.startswith('darwin'):
+        sys.argv = filter(lambda x: not x.startswith('-psn'), sys.argv)
     main()
