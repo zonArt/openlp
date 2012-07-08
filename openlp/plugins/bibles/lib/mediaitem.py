@@ -569,7 +569,7 @@ class BibleMediaItem(MediaManagerItem):
         if bible:
             if QtGui.QMessageBox.question(self, UiStrings().ConfirmDelete,
                 unicode(translate('BiblesPlugin.MediaItem',
-                'Are you sure you want to delete "%s"?')) % bible,
+                'Are you sure you want to delete "%s" from OpenLP?')) % bible,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
