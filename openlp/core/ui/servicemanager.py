@@ -39,7 +39,8 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, \
-    ItemCapabilities, SettingsManager, translate, str_to_bool
+    ItemCapabilities, SettingsManager, translate, str_to_bool, \
+    check_directory_exists
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
@@ -556,8 +557,7 @@ class ServiceManager(QtGui.QWidget):
                     audio_from = os.path.join(self.servicePath, audio_from)
                 save_file = os.path.join(self.servicePath, audio_to)
                 save_path = os.path.split(save_file)[0]
-                if not os.path.exists(save_path):
-                    os.makedirs(save_path)
+                check_directory_exists(save_path)
                 if not os.path.exists(save_file):
                     shutil.copy(audio_from, save_file)
                 zip.write(audio_from, audio_to.encode(u'utf-8'))

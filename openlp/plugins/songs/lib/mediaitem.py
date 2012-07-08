@@ -36,7 +36,8 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus, create_separated_list
+    translate, check_item_selected, PluginStatus, create_separated_list, \
+    check_directory_exists
 from openlp.core.lib.ui import UiStrings, create_widget_action
 from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation
@@ -89,8 +90,7 @@ class SongMediaItem(MediaManagerItem):
             dest_file = os.path.join(
                 AppLocation.get_section_data_path(self.plugin.name),
                 u'audio', str(song.id), os.path.split(bga)[1])
-            if not os.path.exists(os.path.split(dest_file)[0]):
-                os.makedirs(os.path.split(dest_file)[0])
+            check_directory_exists(os.path.split(dest_file)[0])
             shutil.copyfile(os.path.join(
                 AppLocation.get_section_data_path(
                     u'servicemanager'), bga),
