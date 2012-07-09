@@ -31,50 +31,53 @@ from setuptools import setup, find_packages
 import re
 
 VERSION_FILE = 'openlp/.version'
+SPLIT_ALPHA_DIGITS = re.compile(r'(\d+|\D+)')
+
+def try_int(s):
+    """
+    Convert string s to an integer if possible. Fail silently and return
+    the string as-is if it isn't an integer.
+
+    ``s``
+    The string to try to convert.
+    """
+    try:
+        return int(s)
+    except Exception:
+        return s
+
+def natural_sort_key(s):
+    """
+    Return a tuple by which s is sorted.
+
+    ``s``
+        A string value from the list we want to sort.
+    """
+    return map(try_int, SPLIT_ALPHA_DIGITS.findall(s))
+
+def natural_compare(a, b):
+    """
+    Compare two strings naturally and return the result.
+
+    ``a``
+        A string to compare.
+
+    ``b``
+        A string to compare.
+    """
+    return cmp(natural_sort_key(a), natural_sort_key(b))
+
+def natural_sort(seq, compare=natural_compare):
+    """
+    Returns a copy of seq, sorted by natural string sort.
+    """
+    import copy
+    temp = copy.copy(seq)
+    temp.sort(compare)
+    return temp
 
 try:
-    def natural_sort_key(s):
-        """
-        Return a tuple by which s is sorted.
-
-        ``s``
-            A string value from the list we want to sort.
-        """
-        def try_int(s):
-            """
-            Convert string s to an integer if possible. Fail silently and return
-            the string as-is if it isn't an integer.
-
-            ``s``
-            The string to try to convert.
-            """
-            try:
-                return int(s)
-            except:
-                return s
-        return map(try_int, re.findall(r'(\d+|\D+)', s))
-
-    def natural_compare(a, b):
-        """
-        Compare two strings naturally and return the result.
-
-        ``a``
-            A string to compare.
-
-        ``b``
-            A string to compare.
-        """
-        return cmp(natural_sort_key(a), natural_sort_key(b))
-
-    def natural_sort(seq, compare=natural_compare):
-        """
-        Returns a copy of seq, sorted by natural string sort.
-        """
-        import copy
-        temp = copy.copy(seq)
-        temp.sort(compare)
-        return temp
-
+    # Try to import Bazaar
     from bzrlib.branch import Branch
     b = Branch.open_containing('.')[0]
     b.lock_read()
