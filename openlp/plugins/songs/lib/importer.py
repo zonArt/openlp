@@ -260,9 +260,10 @@ class SongFormat(object):
             u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
                 'MediaShout Database'),
             u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
-                'The MediaShout importer has been disabled because the pyodbc '
-                'module is not available. This importer is only available on '
-                'Windows.')	
+                'The MediaShout importer is only supported on Windows. It has '
+                'been disabled due to a missing Python module. If you want to '
+                'use this importer, you will need to install the "pyodbc" '
+                'module.')
         },
         OpenSong: {
             u'class': OpenSongImport,
