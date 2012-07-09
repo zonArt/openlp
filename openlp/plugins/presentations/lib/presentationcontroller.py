@@ -47,7 +47,7 @@ class PresentationDocument(object):
 
     **Hook Functions**
 
-    ``load_presentation(presentation)``
+    ``load_presentation()``
         Load a presentation file
 
     ``close_presentation()``
@@ -104,11 +104,8 @@ class PresentationDocument(object):
 
     def load_presentation(self):
         """
-        Called when a presentation is added to the SlideController.
-        Loads the presentation and starts it
-
-        ``presentation``
-            The file name of the presentations to the run.
+        Called when a presentation is added to the SlideController. Loads the
+        presentation and starts it.
 
         Returns False if the file could not be opened
         """

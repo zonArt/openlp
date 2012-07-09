@@ -119,10 +119,7 @@ class PowerpointDocument(PresentationDocument):
     def load_presentation(self):
         """
         Called when a presentation is added to the SlideController.
-        Opens the PowerPoint file using the process created earlier
-
-        ``presentation``
-            The file name of the presentations to run.
+        Opens the PowerPoint file using the process created earlier.
         """
         log.debug(u'load_presentation')
         if not self.controller.process or not self.controller.process.Visible:

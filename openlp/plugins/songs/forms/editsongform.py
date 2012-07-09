@@ -34,7 +34,7 @@ import shutil
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, \
-    create_separated_list
+    create_separated_list, check_directory_exists
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, \
     critical_error_message_box, find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -880,8 +880,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         save_path = os.path.join(
             AppLocation.get_section_data_path(self.mediaitem.plugin.name),
             'audio', str(self.song.id))
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
+        check_directory_exists(save_path)
         self.song.media_files = []
         files = []
         for row in xrange(self.audioListWidget.count()):

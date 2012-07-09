@@ -33,7 +33,7 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, check_directory_exists
 from openlp.core.ui.wizard import WizardStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib import clean_song, VerseType
@@ -388,8 +388,7 @@ class SongImport(QtCore.QObject):
                 AppLocation.get_section_data_path(
                     self.importWizard.plugin.name),
                 'audio', str(song_id))
-        if not os.path.exists(self.save_path):
-            os.makedirs(self.save_path)
+        check_directory_exists(self.save_path)
         if not filename.startswith(self.save_path):
             oldfile, filename = filename, os.path.join(self.save_path,
                 os.path.split(filename)[1])

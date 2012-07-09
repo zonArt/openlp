@@ -476,7 +476,7 @@ def get_encoding(font, font_table, default_encoding, failed=False):
     Dictionary of fonts and respective encodings.
 
     ``default_encoding``
-    The defaul encoding to use when font_table is empty or no font is used.
+    The default encoding to use when font_table is empty or no font is used.
 
     ``failed``
     A boolean indicating whether the previous encoding didn't work.
