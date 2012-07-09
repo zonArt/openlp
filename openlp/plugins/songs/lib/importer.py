@@ -169,7 +169,8 @@ class SongFormat(object):
         u'selectMode': SongFormatSelect.MultipleFiles,
         u'filter': u'',
         u'comboBoxText': None,
-        u'disabledLabelText': u'',
+        u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+            'This importer has been disabled.'),
         u'getFilesTitle': None,
         u'invalidSourceMsg': None,
         u'descriptionText': None
@@ -257,7 +258,12 @@ class SongFormat(object):
             u'canDisable': True,
             u'selectMode': SongFormatSelect.SingleFile,
             u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
-                'MediaShout Database')
+                'MediaShout Database'),
+            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+                'The MediaShout importer is only supported on Windows. It has '
+                'been disabled due to a missing Python module. If you want to '
+                'use this importer, you will need to install the "pyodbc" '
+                'module.')
         },
         OpenSong: {
             u'class': OpenSongImport,
