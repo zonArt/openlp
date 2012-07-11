@@ -186,10 +186,23 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         return text
 
     def accept(self):
-        if self.hasSingleVerse:
-            if not self.getVerse()[0]:
+        value = unicode(self.getVerse()[0])
+        if not self.hasSingleVerse:
+            value = value.split(u'\n')
+            if len(value) <= 1:
                 critical_error_message_box(
                     message=translate('SongsPlugin.EditSongForm',
-                    'You need to type some text in to the verse.'))
+                    'Invalid entry, you need a verse splitter and some text.'))
                 return False
+            if not value:
+                lines = unicode(self.getVerse()[0]).split(u'\n')
+                index = 2
+                while index < len(lines) and not value:
+                    value = lines[index]
+                    index += 1
+        if not value:
+            critical_error_message_box(
+                message=translate('SongsPlugin.EditSongForm',
+                'You need to type some text in to the verse.'))
+            return False
         QtGui.QDialog.accept(self)
