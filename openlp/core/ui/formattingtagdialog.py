@@ -130,15 +130,15 @@ class Ui_FormattingTagDialog(object):
             translate('OpenLP.FormattingTagDialog', 'Description'))
         self.tagLabel.setText(translate('OpenLP.FormattingTagDialog', 'Tag'))
         self.startTagLabel.setText(
-            translate('OpenLP.FormattingTagDialog', 'Start tag'))
+            translate('OpenLP.FormattingTagDialog', 'Start HTML'))
         self.endTagLabel.setText(
-            translate('OpenLP.FormattingTagDialog', 'End tag'))
+            translate('OpenLP.FormattingTagDialog', 'End HTML'))
         self.deletePushButton.setText(UiStrings().Delete)
         self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.FormattingTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.FormattingTagDialog', 'Tag Id'))
+            translate('OpenLP.FormattingTagDialog', 'Tag'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
             translate('OpenLP.FormattingTagDialog', 'Start HTML'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(
