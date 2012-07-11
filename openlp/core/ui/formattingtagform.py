@@ -145,6 +145,9 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         if self.selected != -1:
             FormattingTags.remove_html_tag(self.selected)
+            # As the first items are protected we should not have to take care
+            # of negative indexes causing tracebacks.
+            self.tagTableWidget.selectRow(self.selected - 1)
             self.selected = -1
             FormattingTags.save_html_tags()
             self._reloadTable()
