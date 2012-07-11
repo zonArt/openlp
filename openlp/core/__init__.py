@@ -207,6 +207,7 @@ class OpenLP(QtGui.QApplication):
         else:
             return QtGui.QApplication.event(self, event)
 
+
 def set_up_logging(log_path):
     """
     Setup our logging using log_path
@@ -217,6 +218,9 @@ def set_up_logging(log_path):
     logfile.setFormatter(logging.Formatter(
         u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
+    if log.isEnabledFor(logging.DEBUG):
+        print 'Logging to:', filename
+
 
 def main(args=None):
     """
@@ -247,7 +251,6 @@ def main(args=None):
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
-        print 'Logging to:', filename
     elif options.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:
