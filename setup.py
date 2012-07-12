@@ -28,10 +28,56 @@
 ###############################################################################
 
 from setuptools import setup, find_packages
+import re
 
 VERSION_FILE = 'openlp/.version'
+SPLIT_ALPHA_DIGITS = re.compile(r'(\d+|\D+)')
+
+def try_int(s):
+    """
+    Convert string s to an integer if possible. Fail silently and return
+    the string as-is if it isn't an integer.
+
+    ``s``
+    The string to try to convert.
+    """
+    try:
+        return int(s)
+    except Exception:
+        return s
+
+def natural_sort_key(s):
+    """
+    Return a tuple by which s is sorted.
+
+    ``s``
+        A string value from the list we want to sort.
+    """
+    return map(try_int, SPLIT_ALPHA_DIGITS.findall(s))
+
+def natural_compare(a, b):
+    """
+    Compare two strings naturally and return the result.
+
+    ``a``
+        A string to compare.
+
+    ``b``
+        A string to compare.
+    """
+    return cmp(natural_sort_key(a), natural_sort_key(b))
+
+def natural_sort(seq, compare=natural_compare):
+    """
+    Returns a copy of seq, sorted by natural string sort.
+    """
+    import copy
+    temp = copy.copy(seq)
+    temp.sort(compare)
+    return temp
 
 try:
+    # Try to import Bazaar
     from bzrlib.branch import Branch
     b = Branch.open_containing('.')[0]
     b.lock_read()
@@ -46,7 +92,8 @@ try:
         if revision_id in tags:
             version = u'%s' % tags[revision_id][0]
         else:
-            version = '%s-bzr%s' % (sorted(b.tags.get_tag_dict().keys())[-1], revno)
+            version = '%s-bzr%s' % \
+                (natural_sort(b.tags.get_tag_dict().keys())[-1], revno)
         ver_file = open(VERSION_FILE, u'w')
         ver_file.write(version)
         ver_file.close()

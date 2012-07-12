@@ -28,6 +28,7 @@
 """
 The :mod:`importer` modules provides the general song import functionality.
 """
+import os
 import logging
 
 from openlp.core.lib import translate
@@ -44,6 +45,7 @@ from powersongimport import PowerSongImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
+from songproimport import SongProImport
 from sundayplusimport import SundayPlusImport
 from foilpresenterimport import FoilPresenterImport
 from zionworximport import ZionWorxImport
@@ -67,6 +69,13 @@ try:
 except ImportError:
     log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
+HAS_MEDIASHOUT = False
+if os.name == u'nt':
+    try:
+        from mediashoutimport import MediaShoutImport
+        HAS_MEDIASHOUT = True
+    except ImportError:
+        log.exception('Error importing %s', 'MediaShoutImport')
 
 
 class SongFormatSelect(object):
@@ -100,6 +109,7 @@ class SongFormat(object):
 
     ``u'canDisable'``
         Whether song format importer is disablable.
+        If ``True``, then ``u'disabledLabelText'`` must also be defined.
 
     ``u'availability'``
         Whether song format importer is available.
@@ -141,15 +151,16 @@ class SongFormat(object):
     EasySlides = 6
     EasyWorship = 7
     FoilPresenter = 8
-    OpenSong = 9
-    PowerSong = 10
-    SongBeamer = 11
-    SongShowPlus = 12
-    SongsOfFellowship = 13
-    SundayPlus = 14
-    WordsOfWorship = 15
-    ZionWorx = 16
-    #CSV = 17
+    MediaShout = 9
+    OpenSong = 10
+    PowerSong = 11
+    SongBeamer = 12
+    SongPro = 13
+    SongShowPlus = 14
+    SongsOfFellowship = 15
+    SundayPlus = 16
+    WordsOfWorship = 17
+    ZionWorx = 18
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -158,7 +169,8 @@ class SongFormat(object):
         u'selectMode': SongFormatSelect.MultipleFiles,
         u'filter': u'',
         u'comboBoxText': None,
-        u'disabledLabelText': u'',
+        u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+            'This importer has been disabled.'),
         u'getFilesTitle': None,
         u'invalidSourceMsg': None,
         u'descriptionText': None
@@ -240,6 +252,19 @@ class SongFormat(object):
             u'filter': u'%s (*.foil)' % translate(
                 'SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
+        MediaShout: {
+            u'name': u'MediaShout',
+            u'prefix': u'mediaShout',
+            u'canDisable': True,
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
+                'MediaShout Database'),
+            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+                'The MediaShout importer is only supported on Windows. It has '
+                'been disabled due to a missing Python module. If you want to '
+                'use this importer, you will need to install the "pyodbc" '
+                'module.')
+        },
         OpenSong: {
             u'class': OpenSongImport,
             u'name': WizardStrings.OS,
@@ -259,6 +284,18 @@ class SongFormat(object):
             u'prefix': u'songBeamer',
             u'filter': u'%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
                 'SongBeamer Files')
+        },
+        SongPro: {
+            u'class': SongProImport,
+            u'name': u'SongPro',
+            u'prefix': u'songPro',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.txt)' % translate('SongsPlugin.ImportWizardForm',
+                'SongPro Text Files'),
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
+                'SongPro (Export File)'),
+            u'descriptionText': translate('SongsPlugin.ImportWizardForm',
+                'In SongPro, export your songs using the File -> Export menu')
         },
         SongShowPlus: {
             u'class': SongShowPlusImport,
@@ -302,12 +339,6 @@ class SongFormat(object):
                 'First convert your ZionWorx database to a CSV text file, as '
                 'explained in the <a href="http://manual.openlp.org/songs.html'
                 '#importing-from-zionworx">User Manual</a>.')
-#        },
-#        CSV: {
-#            u'class': CSVImport,
-#            u'name': WizardStrings.CSV,
-#            u'prefix': u'csv',
-#            u'selectMode': SongFormatSelect.SingleFile
         }
     }
 
@@ -326,9 +357,11 @@ class SongFormat(object):
             SongFormat.EasySlides,
             SongFormat.EasyWorship,
             SongFormat.FoilPresenter,
+            SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerSong,
             SongFormat.SongBeamer,
+            SongFormat.SongPro,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
             SongFormat.SundayPlus,
@@ -383,5 +416,8 @@ if HAS_SOF:
 SongFormat.set(SongFormat.Generic, u'availability', HAS_OOO)
 if HAS_OOO:
     SongFormat.set(SongFormat.Generic, u'class', OooImport)
+SongFormat.set(SongFormat.MediaShout, u'availability', HAS_MEDIASHOUT)
+if HAS_MEDIASHOUT:
+    SongFormat.set(SongFormat.MediaShout, u'class', MediaShoutImport)
 
 __all__ = [u'SongFormat', u'SongFormatSelect']
