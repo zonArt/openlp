@@ -457,7 +457,7 @@ class ThemeManager(QtGui.QWidget):
         # Sort the themes by its name considering language specific characters.
         # lower() is needed for windows!
         files.sort(key=lambda file_name: unicode(file_name).lower(),
-           cmp=locale.strcoll)
+            cmp=locale.strcoll)
         # now process the file list of png files
         for name in files:
             # check to see file is in theme root directory

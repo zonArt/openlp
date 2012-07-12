@@ -464,9 +464,8 @@ def create_valign_selection_widgets(parent):
     label = QtGui.QLabel(parent)
     label.setText(translate('OpenLP.Ui', '&Vertical Align:'))
     combo_box = QtGui.QComboBox(parent)
-    combo_box.addItem(UiStrings().Top)
-    combo_box.addItem(UiStrings().Middle)
-    combo_box.addItem(UiStrings().Bottom)
+    combo_box.addItems(
+        [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom])
     label.setBuddy(combo_box)
     return label, combo_box
 
@@ -481,8 +480,7 @@ def find_and_set_in_combo_box(combo_box, value_to_find):
     ``value_to_find``
         The value to find
     """
-    index = combo_box.findText(value_to_find,
-        QtCore.Qt.MatchExactly)
+    index = combo_box.findText(value_to_find, QtCore.Qt.MatchExactly)
     if index == -1:
         # Not Found.
         index = 0
