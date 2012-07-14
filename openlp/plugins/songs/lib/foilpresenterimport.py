@@ -483,8 +483,9 @@ class FoilPresenter(object):
         # Process verse order
         verse_order = []
         verse_strophenr = []
-        for strophennummer in foilpresenterfolie.reihenfolge.strophennummer:
-            verse_strophenr.append(strophennummer)
+        if hasattr(foilpresenterfolie, u'reihenfolge.strophennummer'):
+            for strophennummer in foilpresenterfolie.reihenfolge.strophennummer:
+                verse_strophenr.append(strophennummer)
         # Currently we do not support different "parts"!
         if u'0' in temp_verse_order:
             for vers in temp_verse_order_backup:
@@ -538,12 +539,13 @@ class FoilPresenter(object):
         ``song``
             The song object.
         """
-        for title_string in foilpresenterfolie.titel.titelstring:
-            if not song.title:
-                song.title = self._child(title_string)
-                song.alternate_title = u''
-            else:
-                song.alternate_title = self._child(title_string)
+        if hasattr(foilpresenterfolie, u'titel.titelstring'):
+            for title_string in foilpresenterfolie.titel.titelstring:
+                if not song.title:
+                    song.title = self._child(title_string)
+                    song.alternate_title = u''
+                else:
+                    song.alternate_title = self._child(title_string)
 
     def _process_topics(self, foilpresenterfolie, song):
         """
