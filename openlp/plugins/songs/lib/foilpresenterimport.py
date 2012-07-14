@@ -546,6 +546,11 @@ class FoilPresenter(object):
                     song.alternate_title = u''
                 else:
                     song.alternate_title = self._child(title_string)
+        else:
+            # Use first line of first verse
+            #if hasattr(foilpresenterfolie, u'strophen.strophe'):
+            first_line = self._child(foilpresenterfolie.strophen.strophe.text_)
+            song.title = first_line.split('\n')[0]
 
     def _process_topics(self, foilpresenterfolie, song):
         """
