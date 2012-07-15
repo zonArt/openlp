@@ -483,9 +483,11 @@ class FoilPresenter(object):
         # Process verse order
         verse_order = []
         verse_strophenr = []
-        if hasattr(foilpresenterfolie, u'reihenfolge.strophennummer'):
+        try:
             for strophennummer in foilpresenterfolie.reihenfolge.strophennummer:
                 verse_strophenr.append(strophennummer)
+        except AttributeError:
+            pass
         # Currently we do not support different "parts"!
         if u'0' in temp_verse_order:
             for vers in temp_verse_order_backup:
@@ -539,16 +541,15 @@ class FoilPresenter(object):
         ``song``
             The song object.
         """
-        if hasattr(foilpresenterfolie, u'titel.titelstring'):
+        try:
             for title_string in foilpresenterfolie.titel.titelstring:
                 if not song.title:
                     song.title = self._child(title_string)
                     song.alternate_title = u''
                 else:
                     song.alternate_title = self._child(title_string)
-        else:
+        except AttributeError:
             # Use first line of first verse
-            #if hasattr(foilpresenterfolie, u'strophen.strophe'):
             first_line = self._child(foilpresenterfolie.strophen.strophe.text_)
             song.title = first_line.split('\n')[0]
 
