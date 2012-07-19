@@ -248,6 +248,13 @@ def main(args=None):
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
+    if options.portable:
+        app_path = AppLocation.get_directory(AppLocation.AppDir)
+        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
+            u'..', u'Other')))
+        log.info(u'Running portable')
+    else:
+        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
@@ -269,10 +276,6 @@ def main(args=None):
         app.setApplicationName(u'OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
-        app_path = AppLocation.get_directory(AppLocation.AppDir)
-        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
-            u'..', u'Other')))
-        log.info(u'Running portable')
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
             u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file
@@ -289,7 +292,6 @@ def main(args=None):
         portable_settings.sync()
     else:
         app.setApplicationName(u'OpenLP')
-        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:
