@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +34,7 @@ import shutil
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, \
-    create_separated_list
+    create_separated_list, check_directory_exists
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, \
     critical_error_message_box, find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -879,8 +880,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         save_path = os.path.join(
             AppLocation.get_section_data_path(self.mediaitem.plugin.name),
             'audio', str(self.song.id))
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
+        check_directory_exists(save_path)
         self.song.media_files = []
         files = []
         for row in xrange(self.audioListWidget.count()):

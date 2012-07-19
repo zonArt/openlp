@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -207,6 +208,20 @@ class OpenLP(QtGui.QApplication):
             return QtGui.QApplication.event(self, event)
 
 
+def set_up_logging(log_path):
+    """
+    Setup our logging using log_path
+    """
+    check_directory_exists(log_path)
+    filename = os.path.join(log_path, u'openlp.log')
+    logfile = logging.FileHandler(filename, u'w')
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+    log.addHandler(logfile)
+    if log.isEnabledFor(logging.DEBUG):
+        print 'Logging to:', filename
+
+
 def main(args=None):
     """
     The main function which parses command line options and then runs
@@ -230,21 +245,12 @@ def main(args=None):
         help='Set the Qt4 style (passed directly to Qt4).')
     parser.add_option('--testing', dest='testing',
         action='store_true', help='Run by testing framework')
-    # Set up logging
-    log_path = AppLocation.get_directory(AppLocation.CacheDir)
-    check_directory_exists(log_path)
-    filename = os.path.join(log_path, u'openlp.log')
-    logfile = logging.FileHandler(filename, u'w')
-    logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
-    log.addHandler(logfile)
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
-        print 'Logging to:', filename
     elif options.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:
@@ -260,11 +266,13 @@ def main(args=None):
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
     if options.portable:
-        log.info(u'Running portable')
         app.setApplicationName(u'OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
         app_path = AppLocation.get_directory(AppLocation.AppDir)
+        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
+            u'..', u'Other')))
+        log.info(u'Running portable')
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
             u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file
@@ -281,6 +289,7 @@ def main(args=None):
         portable_settings.sync()
     else:
         app.setApplicationName(u'OpenLP')
+        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:

@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +34,7 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, build_html, PluginManager, ServiceItem
+    translate, build_icon, build_html, PluginManager, ServiceItem, ImageSource
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.lib.settings import Settings
 from openlp.core.lib import SlideLimits, ServiceItemAction
@@ -860,8 +861,10 @@ class SlideController(Controller):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.imageManager.getImageBytes(frame[u'title'])
-                    image = self.imageManager.getImage(frame[u'title'])
+                            self.imageManager.getImageBytes(frame[u'path'],
+                            ImageSource.ImagePlugin)
+                    image = self.imageManager.getImage(frame[u'path'],
+                        ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * (1 / self.ratio)
@@ -1091,14 +1094,14 @@ class SlideController(Controller):
                         u'%s_slide' % self.serviceItem.name.lower(),
                         [self.serviceItem, self.isLive, row])
             else:
-                toDisplay = self.serviceItem.get_rendered_frame(row)
+                to_display = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
-                    self.display.text(toDisplay)
+                    self.display.text(to_display)
                 else:
                     if start:
-                        self.display.buildHtml(self.serviceItem, toDisplay)
+                        self.display.buildHtml(self.serviceItem, to_display)
                     else:
-                        self.display.image(toDisplay)
+                        self.display.image(to_display)
                     # reset the store used to display first image
                     self.serviceItem.bg_image_bytes = None
             self.updatePreview()

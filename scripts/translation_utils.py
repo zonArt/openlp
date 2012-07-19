@@ -7,10 +7,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -198,7 +199,11 @@ def download_translations():
     request = urllib2.Request(url + '?details')
     request.add_header('Authorization', auth_header)
     print_verbose(u'Downloading list of languages from: %s' % url)
-    json_response = urllib2.urlopen(request)
+    try:
+        json_response = urllib2.urlopen(request)
+    except urllib2.HTTPError:
+        print_quiet(u'Username or password incorrect.')
+        return False
     json_dict = json.loads(json_response.read())
     languages = [lang[u'code'] for lang in json_dict[u'available_languages']]
     for language in languages:
@@ -213,6 +218,7 @@ def download_translations():
         fd.write(response.read())
         fd.close()
     print_quiet(u'   Done.')
+    return True
 
 def prepare_project():
     """
@@ -309,7 +315,8 @@ def process_stack(command_stack):
         for command in command_stack:
             print_quiet(u'%d.' % (command_stack.current_index), False)
             if command == Command.Download:
-                download_translations()
+                if not download_translations():
+                    return
             elif command == Command.Prepare:
                 prepare_project()
             elif command == Command.Update:

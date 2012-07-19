@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -540,12 +541,13 @@ class SongImportSourcePage(QtGui.QWizardPage):
                 if wizard.formatWidgets[format][u'fileListWidget'].count() > 0:
                     return True
             else:
-                filepath = wizard.formatWidgets[format][u'filepathEdit'].text()
-                if not filepath.isEmpty():
-                    if select_mode == SongFormatSelect.SingleFile \
-                        and os.path.isfile(filepath):
+                filepath = unicode(
+                    wizard.formatWidgets[format][u'filepathEdit'].text())
+                if filepath:
+                    if select_mode == SongFormatSelect.SingleFile and \
+                        os.path.isfile(filepath):
                         return True
-                    elif select_mode == SongFormatSelect.SingleFolder \
-                        and os.path.isdir(filepath):
+                    elif select_mode == SongFormatSelect.SingleFolder and \
+                        os.path.isdir(filepath):
                         return True
         return False

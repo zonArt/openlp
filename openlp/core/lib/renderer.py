@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,7 +32,7 @@ from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags
+    ItemCapabilities, FormattingTags, ImageSource
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -81,6 +82,9 @@ class Renderer(object):
         self._calculate_default()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
+        self.web = QtWebKit.QWebView()
+        self.web.setVisible(False)
+        self.web_frame = self.web.page().mainFrame()
 
     def update_display(self):
         """
@@ -136,8 +140,8 @@ class Renderer(object):
                 self._theme_dimensions[theme_name]
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.theme_name,
-                theme_data.background_filename, u'theme',
+            self.image_manager.addImage(theme_data.background_filename,
+                ImageSource.Theme,
                 QtGui.QColor(theme_data.background_border_color))
 
     def pre_render(self, override_theme_data=None):
@@ -236,14 +240,13 @@ class Renderer(object):
             # make big page for theme edit dialog to get line count
             serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
-            self.image_manager.deleteImage(theme_data.theme_name)
             serviceItem.add_from_text(VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.theme_name,
-                theme_data.background_filename, u'theme',
+            self.image_manager.addImage(theme_data.background_filename,
+                ImageSource.Theme,
                 QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
         serviceItem.themedata = theme_data
@@ -403,10 +406,7 @@ class Renderer(object):
         if theme_data.font_main_shadow:
             self.page_width -= int(theme_data.font_main_shadow_size)
             self.page_height -= int(theme_data.font_main_shadow_size)
-        self.web = QtWebKit.QWebView()
-        self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
-        self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
         html = u"""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {

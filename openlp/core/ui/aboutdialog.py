@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -105,13 +106,14 @@ class Ui_AboutDialog(object):
             u'Andreas "googol" Preikschat', u'Raoul "superfly" Snyman',
             u'Martin "mijiti" Thompson', u'Jon "Meths" Tibble']
         contributors = [u'Gerald "jerryb" Britton',
-            u'Scott "sguerrieri" Guerrieri',
+            u'Samuel "MrGamgee" Findlay', u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
-            u'Armin "orangeshirt" K\xf6hler', u'Joshua "milleja46" Miller',
-            u'Stevan "ElderP" Pettit', u'Mattias "mahfiaz" P\xf5ldaru',
-            u'Christian "crichter" Richter', u'Philip "Phill" Ridout',
-            u'Simon "samscudder" Scudder', u'Jeffrey "whydoubt" Smith',
-            u'Maikel Stuivenberg', u'Frode "frodus" Woldsund']
+            u'Armin "orangeshirt" K\xf6hler', u'Edwin "edwinlunando" Lunando',
+            u'Joshua "milleja46" Miller', u'Stevan "ElderP" Pettit',
+            u'Mattias "mahfiaz" P\xf5ldaru', u'Christian "crichter" Richter',
+            u'Philip "Phill" Ridout', u'Simon "samscudder" Scudder',
+            u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
+            u'Dave "Dave42W" Warnock', u'Frode "frodus" Woldsund']
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
@@ -221,12 +223,12 @@ class Ui_AboutDialog(object):
         copyright = unicode(translate('OpenLP.AboutForm',
             'Copyright \xa9 2004-2012 %s\n'
             'Portions copyright \xa9 2004-2012 %s')) % (u'Raoul Snyman',
-            u'Tim Bentley, Jonathan Corwin, Michael Gorven, Gerald Britton, '
-            u'Scott Guerrieri, Matthias Hub, Meinert Jordan, Armin K\xf6hler, '
-            u'Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias '
-            u'P\xf5ldaru, Christian Richter, Philip Ridout, Simon Scudder, '
-            u'Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon Tibble, '
-            u'Frode Woldsund')
+            u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
+            u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
+            u'Armin K\xf6hler, Edwin Lunando, Joshua Miller, Stevan Pettit, '
+            u'Andreas Preikschat, Mattias P\xf5ldaru, Christian Richter, '
+            u'Philip Ridout, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
+            u'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '
