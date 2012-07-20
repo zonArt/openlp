@@ -545,6 +545,10 @@ class AdvancedTab(SettingsTab):
             self.currentDataPath))
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
+        # Don't allow data directory move if running portable.
+        if Settings().value(u'advanced/is portable',
+            QtCore.QVariant(False)).toBool():
+            self.dataDirectoryGroupBox.hide()
 
     def save(self):
         """
