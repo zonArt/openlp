@@ -227,9 +227,6 @@ class ImpressDocument(PresentationDocument):
         OpenOffice task started earlier. If OpenOffice is not present is is
         started. Once the environment is available the presentation is loaded
         and started.
-
-        ``presentation``
-        The file name of the presentatios to the run.
         """
         log.debug(u'Load Presentation OpenOffice')
         if os.name == u'nt':

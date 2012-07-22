@@ -49,7 +49,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         QtCore.QObject.connect(self.tagTableWidget,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onRowSelected)
+            QtCore.SIGNAL(u'itemSelectionChanged()'),self.onRowSelected)
         QtCore.QObject.connect(self.newPushButton,
             QtCore.SIGNAL(u'clicked()'), self.onNewClicked)
         QtCore.QObject.connect(self.savePushButton,
@@ -145,6 +145,9 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         if self.selected != -1:
             FormattingTags.remove_html_tag(self.selected)
+            # As the first items are protected we should not have to take care
+            # of negative indexes causing tracebacks.
+            self.tagTableWidget.selectRow(self.selected - 1)
             self.selected = -1
             FormattingTags.save_html_tags()
             self._reloadTable()

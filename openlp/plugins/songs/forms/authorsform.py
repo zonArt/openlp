@@ -61,14 +61,14 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     def onFirstNameEditTextEdited(self, display_name):
         if not self._autoDisplayName:
             return
-        if not self.lastNameEdit.text():
+        if self.lastNameEdit.text():
             display_name = display_name + u' ' + self.lastNameEdit.text()
         self.displayEdit.setText(display_name)
 
     def onLastNameEditTextEdited(self, display_name):
         if not self._autoDisplayName:
             return
-        if not self.firstNameEdit.text():
+        if self.firstNameEdit.text():
             display_name = self.firstNameEdit.text() + u' ' + display_name
         self.displayEdit.setText(display_name)
 
