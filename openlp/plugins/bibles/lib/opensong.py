@@ -27,9 +27,10 @@
 ###############################################################################
 
 import logging
-from lxml import objectify
+from lxml import etree, objectify
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -113,8 +114,15 @@ class OpenSongBible(BibleDB):
                         (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
                 self.session.commit()
             Receiver.send_message(u'openlp_process_events')
+        except etree.XMLSyntaxError as inst:
+            critical_error_message_box(
+                message=translate('BiblesPlugin.OpenSongImport',
+                'Incorrect Bible file type supplied. OpenSong Bibles may be '
+                'compressed. You must decompress them before import.'))
+            log.exception(inst)
+            success = False
         except (IOError, AttributeError):
-            log.exception(u'Loading bible from OpenSong file failed')
+            log.exception(u'Loading Bible from OpenSong file failed')
             success = False
         finally:
             if file:
