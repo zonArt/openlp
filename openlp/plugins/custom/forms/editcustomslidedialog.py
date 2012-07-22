@@ -49,6 +49,8 @@ class Ui_CustomSlideEditDialog(object):
         self.retranslateUi(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):
+        customSlideEditDialog.setWindowTitle(
+            translate('CustomPlugin.EditVerseForm', 'Edit Slide'))
         self.splitButton.setText(UiStrings().Split)
         self.splitButton.setToolTip(UiStrings().SplitToolTip)
         self.insertButton.setText(
