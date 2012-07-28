@@ -1367,7 +1367,9 @@ demand and thus an internet connection is required.</source>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jste si jisti, že chcete úplně vymazat Bibli &quot;%s&quot; z OpenLP?
+
+Pro použití bude potřeba naimportovat Bibli znovu.</translation>
     </message>
 </context>
 <context>
@@ -1375,7 +1377,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="118"/>
         <source>Incorrect Bible file type supplied. OpenSong Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadán nesprávný typ souboru s Biblí. OpenSong Bible mohou být komprimovány. Před importem je třeba je rozbalit.</translation>
     </message>
 </context>
 <context>
@@ -1697,7 +1699,7 @@ Upozornění: Verše z www Bible budou stáhnuty na vyžádání a proto je vyž
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="52"/>
         <source>Edit Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit snímek</translation>
     </message>
 </context>
 <context>
@@ -5041,12 +5043,12 @@ Obsah souboru není v kódování UTF-8.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="554"/>
         <source>Preview and Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhled a uložit</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="556"/>
         <source>Preview the theme and save it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhled motivu a motiv uložit. </translation>
     </message>
 </context>
 <context>
@@ -6899,37 +6901,37 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="321"/>
         <source>SundayPlus Song Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory s písněmi SundayPlus</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="172"/>
         <source>This importer has been disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tento importér byl zakázán.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="260"/>
         <source>MediaShout Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Databáze MediaShout</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="262"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"></translation>
+        <translation>MediaShout importér je podporován jen ve Windows. Byl zakázán kvůli chybějícímu Python modulu. Pokud si přejete používat tento importér, bude potřeba nainstalovat modul &quot;pyodbc&quot;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
         <source>SongPro Text Files</source>
-        <translation type="unfinished"></translation>
+        <translation>Textové soubory SongPro</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="295"/>
         <source>SongPro (Export File)</source>
-        <translation type="unfinished"></translation>
+        <translation>SongPro (exportovaný soubor)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="297"/>
         <source>In SongPro, export your songs using the File -&gt; Export menu</source>
-        <translation type="unfinished"></translation>
+        <translation>V aplikaci SongPro se písně exportují přes menu File -&gt; Export</translation>
     </message>
 </context>
 <context>
@@ -7018,7 +7020,7 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/mediashoutimport.py" line="61"/>
         <source>Unable to open the MediaShout database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Není možno otevřít databázi MediaShout.</translation>
     </message>
 </context>
 <context>

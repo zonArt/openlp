@@ -1368,7 +1368,9 @@ sea necesario, por lo que debe contar con una conexión a internet.</translation
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Desea eliminar completamente la Biblia &quot;%s&quot; de OpenLP?
+
+Deberá reimportar esta Biblia para utilizarla de nuevo.</translation>
     </message>
 </context>
 <context>
@@ -1699,7 +1701,7 @@ Note que los versículos se descargarán según sea necesario, por lo que debe c
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="52"/>
         <source>Edit Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar Diapositiva</translation>
     </message>
 </context>
 <context>
@@ -6910,7 +6912,7 @@ La codificación se encarga de la correcta representación de caracteres.</trans
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="172"/>
         <source>This importer has been disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este importador se ha deshabilitado.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="260"/>

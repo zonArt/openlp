@@ -1368,7 +1368,9 @@ vid behov, och därför behövs en Internetanslutning.</translation>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Är du säker på att du vill ta bort bibeln &quot;%s&quot; helt från OpenLP?
+
+För att bibeln ska gå att använda igen måste den importeras på nytt.</translation>
     </message>
 </context>
 <context>
@@ -1376,7 +1378,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="118"/>
         <source>Incorrect Bible file type supplied. OpenSong Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltig filtyp på den valda bibeln. OpenSong-biblar kan vara komprimerade. Du måste packa upp dem före import.</translation>
     </message>
 </context>
 <context>
@@ -1699,7 +1701,7 @@ Observera att verser från webb-biblar kommer att laddas ner vid behov, och där
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="52"/>
         <source>Edit Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigera bild</translation>
     </message>
 </context>
 <context>
@@ -6909,32 +6911,32 @@ Teckenkodningen ansvarar för rätt teckenrepresentation.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="172"/>
         <source>This importer has been disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Den här importfunktionen har inaktiverats.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="260"/>
         <source>MediaShout Database</source>
-        <translation type="unfinished"></translation>
+        <translation>MediaShout-databas</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="262"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importfunktionen för MediaShout stöds bara på Windows. Den har inaktiverats på grund av en saknad Python-modul. Om du vill använda den här importfunktionen måste du installera modulen &quot;pyodbc&quot;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
         <source>SongPro Text Files</source>
-        <translation type="unfinished"></translation>
+        <translation>SongPro-textfiler</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="295"/>
         <source>SongPro (Export File)</source>
-        <translation type="unfinished"></translation>
+        <translation>SongPro (exporterad fil)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="297"/>
         <source>In SongPro, export your songs using the File -&gt; Export menu</source>
-        <translation type="unfinished"></translation>
+        <translation>I SongPro exporterar du sånger via menyn Arkiv -&gt; Exportera</translation>
     </message>
 </context>
 <context>
@@ -7022,7 +7024,7 @@ Teckenkodningen ansvarar för rätt teckenrepresentation.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/mediashoutimport.py" line="61"/>
         <source>Unable to open the MediaShout database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte öppna MediaShout-databasen.</translation>
     </message>
 </context>
 <context>

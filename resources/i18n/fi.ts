@@ -61,49 +61,51 @@
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="98"/>
         <source>Displ&amp;ay</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Näytä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="100"/>
         <source>Display &amp;&amp; Cl&amp;ose</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä &amp;&amp; &amp;Sulje</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="106"/>
         <source>New Alert</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi hälytys</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="106"/>
         <source>You haven&apos;t specified any text for your alert. Please type in some text before clicking New.</source>
-        <translation type="unfinished"></translation>
+        <translation>Et ole määritellyt viestitekstiä hälytykselle. Ole hyvä ja anna jokin teksti ennen kuin painat Uusi.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertdialog.py" line="92"/>
         <source>&amp;Parameter:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Parametri:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="179"/>
         <source>No Parameter Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametritekstiä ei ole.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="179"/>
         <source>You have not entered a parameter to be replaced.
 Do you want to continue anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Et ole antanut lainkaan tekstiin sijoitettavaa parametriä.
+Tahdotko jatkaa siitä huolimatta?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
         <source>No Placeholder Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei korvattavaa parametria tekstissä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
         <source>The alert text does not contain &apos;&lt;&gt;&apos;.
 Do you want to continue anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hälytystekstissä ei ole lainkaan &apos;&lt;&gt;&apos; parametria.
+Tahdotko jatkaa siitä huolimatta?</translation>
     </message>
 </context>
 <context>
@@ -111,7 +113,7 @@ Do you want to continue anyway?</source>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertsmanager.py" line="73"/>
         <source>Alert message created and displayed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hälytysviesti on luota ja näytetty.</translation>
     </message>
 </context>
 <context>
@@ -119,32 +121,32 @@ Do you want to continue anyway?</source>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="110"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjasin</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="112"/>
         <source>Font name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjasimen nimi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="114"/>
         <source>Font color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjasimen väri:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="116"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taustaväri:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="118"/>
         <source>Font size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjasimen koko:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/lib/alertstab.py" line="121"/>
         <source>Alert timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hälytyksen kesto:</translation>
     </message>
 </context>
 <context>
@@ -152,85 +154,85 @@ Do you want to continue anyway?</source>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="110"/>
         <source>&amp;Bible</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Raamattu</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="182"/>
         <source>Bible</source>
         <comment>name singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Raamattu</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="183"/>
         <source>Bibles</source>
         <comment>name plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Raamatut</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="187"/>
         <source>Bibles</source>
         <comment>container title</comment>
-        <translation type="unfinished"></translation>
+        <translation>Raamatut</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="543"/>
         <source>No Book Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjaa ei löydy</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="543"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Annettua kirjaa ei ole tässä Raamatussa. Ole hyvä ja tarkista kirjan nimen oikeinkirjoitus.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="192"/>
         <source>Import a Bible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuo Raamattu.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="193"/>
         <source>Add a new Bible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää uusi Raamattu.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="194"/>
         <source>Edit the selected Bible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa valittua Raamattua.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="195"/>
         <source>Delete the selected Bible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista valittu Raamattu.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="196"/>
         <source>Preview the selected Bible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esikatsele valittua Raamatun tekstiä.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="198"/>
         <source>Send the selected Bible live.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lähetä valittu Raamatun teksti esitykseen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="199"/>
         <source>Add the selected Bible to the service.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää valittu Raamatun teksti tilaisuuden ajolistalle.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="148"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Raamattu-liitännäinen&lt;/strong&gt;&lt;br /&gt;Raamattu-liitännäisellä voi näyttää Raamatun jakeita suoraan Raamatusta tilaisuuden aikana.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="125"/>
         <source>&amp;Upgrade older Bibles</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Päivitä vanhempia Raamattuja</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="125"/>
         <source>Upgrade the Bible databases to the latest format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Päivitä Raamattutietokannat uusimpaan tiedostomuotoon.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="92"/>
@@ -664,22 +666,22 @@ Do you want to continue anyway?</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="156"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Anna nimi käännökselle, joka tuodaan ohjelmaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="162"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sinun pitää määritellä tekijäinoikeusteksti Raamatulle. Myös Public Domain -lisenssi pitää mainita.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="171"/>
         <source>Bible Exists</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Raamattu on jo olemassa</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="171"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tämä Raamattu on jo olemassa. Ole hyvä ja tuo eri käännös tai poista ensin nykyinen samalla nimellä oleva.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="186"/>
@@ -709,33 +711,34 @@ be followed by one or more non-numeric characters.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="429"/>
         <source>Scripture Reference Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe jaeviitteessä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="419"/>
         <source>Web Bible cannot be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Nettiraamattua ei voi käyttää</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="419"/>
         <source>Text Search is not available with Web Bibles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekstihaku ei ole käytettävissä nettiraamatuista.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="429"/>
         <source>You did not enter a search keyword.
 You can separate different keywords by a space to search for all of your keywords and you can separate them by a comma to search for one of them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Et antanut lainkaan hakusanaa.
+Voit antaa useita eri hakusanoja välilyönnillä erotettuna, jos etsit niitä yhdessä. Jos sanat erotetaan pilkulla, etsitään mitä tahansa niistä.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="403"/>
         <source>There are no Bibles currently installed. Please use the Import Wizard to install one or more Bibles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattuja ei ole asennettuna. Ole hyvä ja asenna tai tuo ohjelmaan yksi tai useampia Raamattuja.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="403"/>
         <source>No Bibles Available</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattuja ei ole saatavilla</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/manager.py" line="346"/>
@@ -756,48 +759,49 @@ Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="224"/>
         <source>Verse Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Jakeiden näyttäminen</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="226"/>
         <source>Only show new chapter numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Älä toista lukunumeroita</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="231"/>
         <source>Bible theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamatun teema</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="239"/>
         <source>No Brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei sulkuja</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="241"/>
         <source>( And )</source>
-        <translation type="unfinished"></translation>
+        <translation>( ja )</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="243"/>
         <source>{ And }</source>
-        <translation type="unfinished"></translation>
+        <translation>{ ja }</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="245"/>
         <source>[ And ]</source>
-        <translation type="unfinished"></translation>
+        <translation>[ ja ]</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="247"/>
         <source>Note:
 Changes do not affect verses already in the service.</source>
-        <translation type="unfinished"></translation>
+        <translation>Huomio:
+Muutokset eivät vaikuta jakeisiin, jotka on jo ajolistalla.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="249"/>
         <source>Display second Bible verses</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä vaihtoehtoinen Raamattu</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/biblestab.py" line="251"/>
@@ -884,37 +888,37 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="91"/>
         <source>Select Book Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse kirjan nimi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="96"/>
         <source>Current name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nykyinen nimi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="98"/>
         <source>Corresponding name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastaava nimi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="100"/>
         <source>Show Books From</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä kirjalyhenteet</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="102"/>
         <source>Old Testament</source>
-        <translation type="unfinished"></translation>
+        <translation>Vanha testamentti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="104"/>
         <source>New Testament</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi testamentti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="106"/>
         <source>Apocrypha</source>
-        <translation type="unfinished"></translation>
+        <translation>Deuterokanoniset kirjat</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknamedialog.py" line="93"/>
@@ -927,7 +931,7 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/booknameform.py" line="124"/>
         <source>You need to select a book.</source>
-        <translation type="unfinished"></translation>
+        <translation>SInun pitää valita kirja.</translation>
     </message>
 </context>
 <context>
@@ -935,18 +939,18 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/csvbible.py" line="111"/>
         <source>Importing books... %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuodaan kirjoja... %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/csvbible.py" line="155"/>
         <source>Importing verses from %s...</source>
         <comment>Importing verses from &lt;book name&gt;...</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tuodaan jakeita %s:sta...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/csvbible.py" line="164"/>
         <source>Importing verses... done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuodaan jakeita... valmis.</translation>
     </message>
 </context>
 <context>
@@ -959,22 +963,22 @@ search results and on display:</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="152"/>
         <source>License Details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Käyttöoikeus</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="154"/>
         <source>Version name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Käännöksen nimi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="156"/>
         <source>Copyright:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tekijäinoikeus:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="158"/>
         <source>Permissions:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oikeudet:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/editbibledialog.py" line="160"/>
@@ -1023,38 +1027,38 @@ It is not possible to customize the Book Names.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="457"/>
         <source>Registering Bible and loading books...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rekisteröidään Raamattu ja ladataan kirjoja...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="482"/>
         <source>Registering Language...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rekisteröidään kieli...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="498"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tuodaan %s...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="665"/>
         <source>Download Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe tiedoston lataamisessa</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="665"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohjelma havaitsi ongelmia valittujen jakeiden lataamisessa. Ole hyvä ja tarkasta internet-yhteyden toimivuus. Jos ongelma ei poistu, harkitse raportointia virheestä kehittäjille.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="672"/>
         <source>Parse Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Jäsennysvirhe</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/http.py" line="672"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohjelma havaitsi ongelmia valittujen jakeiden purkamisessa. Jos ongelma ei poistu, harkitse raportointia virheestä kehittäjille.</translation>
     </message>
 </context>
 <context>
@@ -1062,168 +1066,169 @@ It is not possible to customize the Book Names.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="351"/>
         <source>Bible Import Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamatun ohjattu tuonti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="355"/>
         <source>This wizard will help you to import Bibles from a variety of formats. Click the next button below to start the process by selecting a format to import from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä työkalu helpottaa Raamattujen tuomista ohjelmaan eri formaateissa. Paina &apos;Seuraava&apos; - painiketta aloittaaksesi tuonnin valitsemalla formaatin, josta teksti tuodaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="366"/>
         <source>Web Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Lataaminen netistä</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="379"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sijainti:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="381"/>
         <source>Crosswalk</source>
-        <translation type="unfinished"></translation>
+        <translation>Crosswalk</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="383"/>
         <source>BibleGateway</source>
-        <translation type="unfinished"></translation>
+        <translation>BibleGateway</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="387"/>
         <source>Bible:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattu:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="389"/>
         <source>Download Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Laamisen asetukset</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="392"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Palvelin:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="394"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyttäjätunnus:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="396"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Salasana:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="398"/>
         <source>Proxy Server (Optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Välityspalvelin (valinnainen)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="402"/>
         <source>License Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Käyttöoikeus</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="404"/>
         <source>Set up the Bible&apos;s license details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aseta Raamatun tekstin käyttöoikeuden tiedot.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="407"/>
         <source>Version name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Käännöksen nimi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="409"/>
         <source>Copyright:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekijäinoikeus:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="414"/>
         <source>Please wait while your Bible is imported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ole hyvä ja odota kunnes Raamattu on tuotu järjestelmään.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="445"/>
         <source>You need to specify a file with books of the Bible to use in the import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse tiedosto tuotavaksi, jossa on Raamatun tekstissä käytetyt kirjojen nimet. </translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="452"/>
         <source>You need to specify a file of Bible verses to import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse tiedosto tuotavaksi, jossa on Raamatun teksti jakeittain.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="483"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anna nimi käännökselle, joka tuodaan ohjelmaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="489"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinun pitää määritellä tekijäinoikeusteksti Raamatulle. Myös Public Domain -lisenssi pitää mainita.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="505"/>
         <source>Bible Exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattu on jo olemassa</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="505"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä Raamattu on jo olemassa. Ole hyvä ja tuo eri käännös tai poista ensin nykyinen samalla nimellä oleva.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="726"/>
         <source>Your Bible import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamatun tuonti epäonnistui.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="548"/>
         <source>CSV File</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-tiedosto</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="385"/>
         <source>Bibleserver</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattupalvelin</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="411"/>
         <source>Permissions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Oikeudet:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="377"/>
         <source>Bible file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattutiedosto:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="373"/>
         <source>Books file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirjatiedosto:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="375"/>
         <source>Verses file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaetiedosto:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="563"/>
         <source>openlp.org 1.x Bible Files</source>
-        <translation type="unfinished"></translation>
+        <translation>openlp.org 1.x Raamattu tiedostot</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="657"/>
         <source>Registering Bible...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rekisteröidään Raamattua...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="719"/>
         <source>Registered Bible. Please note, that verses will be downloaded on
 demand and thus an internet connection is required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattu rekisteröity. Huomaathan, että jakeet ladataan palvelimelta
+tarpeen mukaan, joten internet yhteys tämän raamatun käytössä vaaditaan.</translation>
     </message>
 </context>
 <context>
@@ -1231,17 +1236,17 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="73"/>
         <source>Select Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse kieli</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="76"/>
         <source>OpenLP is unable to determine the language of this translation of the Bible. Please select the language from the list below.</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenLP ei pysty määrittelemään tässä Raamatun käännöksessä käytettyä kieltä. Ole hyvä ja valitse kieli alla olevasta luettelosta.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="79"/>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kieli:</translation>
     </message>
 </context>
 <context>
@@ -1249,7 +1254,7 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/languageform.py" line="67"/>
         <source>You need to choose a language.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinun tulee valita kieli.</translation>
     </message>
 </context>
 <context>
@@ -1257,77 +1262,77 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="210"/>
         <source>Quick</source>
-        <translation type="unfinished"></translation>
+        <translation>Nopea</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="315"/>
         <source>Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etsi:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="330"/>
         <source>Book:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirja:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="332"/>
         <source>Chapter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Luku:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="334"/>
         <source>Verse:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jae:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="336"/>
         <source>From:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alkaen:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="338"/>
         <source>To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Asti:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="358"/>
         <source>Text Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekstihaku</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="341"/>
         <source>Second:</source>
-        <translation type="unfinished"></translation>
+        <translation>Toinen:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="358"/>
         <source>Scripture Reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaeviite</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="350"/>
         <source>Toggle to keep or clear the previous results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vaihda valinta pitääksesi tai pyyhkiäksesi edelliset tulokset.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="93"/>
         <source>You cannot combine single and dual Bible verse search results. Do you want to delete your search results and start a new search?</source>
-        <translation type="unfinished"></translation>
+        <translation>Et voi yhdistää yhden ja kahden käännöksen jaehakujen tuloksia. Haluatko poistaa hakutulokset ja aloittaa uuden haun?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="484"/>
         <source>Bible not fully loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamattu ei latautunut kokonaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="792"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiedot</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="792"/>
         <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Toissijainen Raamattu ei sisällä kaikki ensisijaisen käännöksen jakeita. Vain ne jakeet, jotka ovat kummassakin käännöksessä, voidaan näyttää. %d jaetta jätettiin pois hakutuloksista.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="358"/>
@@ -1361,7 +1366,7 @@ You will need to re-import this Bible to use it again.</source>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="111"/>
         <source>Importing %s %s...</source>
         <comment>Importing &lt;book name&gt; &lt;chapter&gt;...</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tuodaan %s %s...</translation>
     </message>
 </context>
 <context>
@@ -1369,13 +1374,13 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="88"/>
         <source>Detecting encoding (this may take a few minutes)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Selvitetään merkistöä (tämä voi kestää muutamia minuutteja)...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="161"/>
         <source>Importing %s %s...</source>
         <comment>Importing &lt;book name&gt; &lt;chapter&gt;...</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tuodaan %s %s...</translation>
     </message>
 </context>
 <context>
@@ -1383,112 +1388,117 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="123"/>
         <source>Select a Backup Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse hakemisto varmuuskopiolle</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="260"/>
         <source>Bible Upgrade Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohjattu Raamatun päivitys</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="264"/>
         <source>This wizard will help you to upgrade your existing Bibles from a prior version of OpenLP 2. Click the next button below to start the upgrade process.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tämä päivitystyökalu auttaa päivittämään nykyiset Raamatut edellisestä versiosta OpenLP 2:een. Paina &apos;seuraava&apos; jatkaaksesi päivitystä.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="269"/>
         <source>Select Backup Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse hakemisto varmuuskopiolle</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="272"/>
         <source>Please select a backup directory for your Bibles</source>
-        <translation type="unfinished"></translation>
+        <translation>Ole hyvä ja valitse hakemisto, jonne Raamatut varmuuskopiodaan</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="275"/>
         <source>Previous releases of OpenLP 2.0 are unable to use upgraded Bibles. This will create a backup of your current Bibles so that you can simply copy the files back to your OpenLP data directory if you need to revert to a previous release of OpenLP. Instructions on how to restore the files can be found in our &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vanhemmat versiot OpenLP 2.0 eivät voi käyttää päivitettyjä Raamatun käännöksiä. Tämä tekee varmuuskopion nykyisistä Raamatuista, jotta voit kopioida ne takaisin OpenLP:n hakemistoon, jos sinun tarvitsee jostain syystä palata käyttämään ohjelman vanhempaa versiota. Ohjeet Raamattujen palauttamiseen on nettisivullamme kohdassa &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="282"/>
         <source>Please select a backup location for your Bibles.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ole hyvä ja valitse sijainti varmuuskopioille.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="284"/>
         <source>Backup Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Varmuuskopioihakemisto:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="286"/>
         <source>There is no need to backup my Bibles</source>
-        <translation type="unfinished"></translation>
+        <translation>Raamatunkäännöksiä ei tarvitse varmuuskopioida</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="289"/>
         <source>Select Bibles</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitse Raamatut</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="292"/>
         <source>Please select the Bibles to upgrade</source>
-        <translation type="unfinished"></translation>
+        <translation>Ole hyvä ja valitse Raamatut päivitettäväksi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="295"/>
         <source>Upgrading</source>
-        <translation type="unfinished"></translation>
+        <translation>Päivitetään</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="297"/>
         <source>Please wait while your Bibles are upgraded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ole hyvä ja odota, kunnes Raamatut on päivitetty.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="321"/>
         <source>The backup was not successful.
 To backup your Bibles you need permission to write to the given directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varmuuskopiointi epäonnistui.
+Varmuuskopiointia varten tarvitaan kirjoitusoikeudet annettuun hakemistoon.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="579"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Päivitetään Raamattua %s/%s: &quot;%s&quot;
+Epäonnistui</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="408"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Upgrading ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Päivitetään Raamattua %s/%s: &quot;%s&quot;
+Päivitetään ...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="449"/>
         <source>Download Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Virhe latauksessa</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="449"/>
         <source>To upgrade your Web Bibles an Internet connection is required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nettiraamattujen päivittämiseksi tarvitaan internet-yhteys.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="545"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Upgrading %s ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Päivitetään Raamattua %s/%s: &quot;%s&quot;
+Päivitetään %s ...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="587"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Päivitetään Raamattua %s/%s: &quot;%s&quot;
+Valmis</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="614"/>
         <source>, %s failed</source>
-        <translation type="unfinished"></translation>
+        <translation>, %s epäonnistui</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="621"/>
@@ -1611,57 +1621,57 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="109"/>
         <source>&amp;Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Otsikko</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="112"/>
         <source>Add a new slide at bottom.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää uusi dia loppuun.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="116"/>
         <source>Edit the selected slide.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa valittua diaa.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="121"/>
         <source>Edit all the slides at once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muokkaa kaikki dioja kerralla.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="58"/>
         <source>Split a slide into two by inserting a slide splitter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaa dia kahteen osaan lisäämällä splitterin.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="124"/>
         <source>The&amp;me:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tee&amp;ma:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="126"/>
         <source>&amp;Credits:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lopputekstit:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="260"/>
         <source>You need to type in a title.</source>
-        <translation type="unfinished"></translation>
+        <translation>Muista antaa myös otsikko.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="266"/>
         <source>You need to add at least one slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinun pitää lisätä ainakin yksi dia.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="119"/>
         <source>Ed&amp;it All</source>
-        <translation type="unfinished"></translation>
+        <translation>Mu&amp;okkaa kaikkia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="56"/>
         <source>Insert Slide</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää dia</translation>
     </message>
 </context>
 <context>
@@ -1966,7 +1976,7 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="88"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tiedot</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="88"/>
@@ -2141,7 +2151,7 @@ Portions copyright &#xa9; 2004-2012 %s</source>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="399"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Taustaväri:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="403"/>
@@ -2524,7 +2534,7 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="214"/>
         <source>Bible</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Raamattu</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
@@ -4335,7 +4345,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/lib/spelltextedit.py" line="91"/>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kieli:</translation>
     </message>
 </context>
 <context>
@@ -4878,7 +4888,7 @@ The content encoding is not UTF-8.</source>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="464"/>
         <source>Background color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Taustaväri:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="511"/>
@@ -6305,7 +6315,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="296"/>
         <source>&amp;Title:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Otsikko</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="298"/>
@@ -6325,7 +6335,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="306"/>
         <source>Ed&amp;it All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mu&amp;okkaa kaikkia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="309"/>
@@ -6360,7 +6370,7 @@ The encoding is responsible for the correct character representation.</source>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="325"/>
         <source>Book:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kirja:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="327"/>
