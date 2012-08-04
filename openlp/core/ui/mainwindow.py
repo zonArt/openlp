@@ -211,7 +211,7 @@ class Ui_MainWindow(object):
             shortcuts=[QtGui.QKeySequence(u'Alt+F4')],
             category=UiStrings().File, triggers=mainWindow.close)
         # Give QT Extra Hint that this is the Exit Menu Item
-        self.fileExitItem.setMenuRole( QtGui.QAction.QuitRole )
+        self.fileExitItem.setMenuRole(QtGui.QAction.QuitRole)
         action_list.add_category(unicode(UiStrings().Import),
             CategoryOrder.standardMenu)
         self.importThemeItem = create_action(mainWindow,
@@ -307,7 +307,7 @@ class Ui_MainWindow(object):
             u'settingsConfigureItem', icon=u':/system/system_settings.png',
             category=UiStrings().Settings)
         # Give QT Extra Hint that this is the Preferences Menu Item
-        self.settingsConfigureItem.setMenuRole( QtGui.QAction.PreferencesRole )
+        self.settingsConfigureItem.setMenuRole(QtGui.QAction.PreferencesRole)
         self.settingsImportItem = create_action(mainWindow,
            u'settingsImportItem', category=UiStrings().Settings)
         self.settingsExportItem = create_action(mainWindow,
@@ -319,7 +319,7 @@ class Ui_MainWindow(object):
             shortcuts=[QtGui.QKeySequence(u'Ctrl+F1')],
             category=UiStrings().Help, triggers=self.onAboutItemClicked)
         # Give QT Extra Hint that this is an About Menu Item
-        self.aboutItem.setMenuRole( QtGui.QAction.AboutRole )
+        self.aboutItem.setMenuRole(QtGui.QAction.AboutRole)
         if os.name == u'nt':
             self.localHelpFile = os.path.join(
                 AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
