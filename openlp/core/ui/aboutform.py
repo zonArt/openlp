@@ -54,10 +54,10 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
         self.aboutTextEdit.setPlainText(about_text)
-        QtCore.QObject.connect(self.contributeButton,
-            QtCore.SIGNAL(u'clicked()'), self.onContributeButtonClicked)
+        QtCore.QObject.connect(self.volunteerButton,
+            QtCore.SIGNAL(u'clicked()'), self.onVolunteerButtonClicked)
 
-    def onContributeButtonClicked(self):
+    def onVolunteerButtonClicked(self):
         """
         Launch a web browser and go to the contribute page on the site.
         """
