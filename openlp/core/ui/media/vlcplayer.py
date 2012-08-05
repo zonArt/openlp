@@ -66,6 +66,7 @@ if VLC_AVAILABLE:
 AUDIO_EXT = [
     u'*.mp3'
     , u'*.wav'
+    , u'*.wma'
     , u'*.ogg'
     ]
 
