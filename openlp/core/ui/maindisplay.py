@@ -580,7 +580,7 @@ class AudioPlayer(QtCore.QObject):
         self.playlist.extend(map(Phonon.MediaSource, filenames))
 
     def next(self):
-        if not self.repeat and self.currentIndex + 1 == len(self.playlist):
+        if not self.repeat and self.currentIndex + 1 >= len(self.playlist):
             return
         isPlaying = self.mediaObject.state() == Phonon.PlayingState
         self.currentIndex += 1
