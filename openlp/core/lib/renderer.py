@@ -450,8 +450,7 @@ class Renderer(object):
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
             previous_raw = separator.join(lines)
-        if previous_raw is not None:
-            formatted.append(previous_raw)
+        formatted.append(previous_raw)
         log.debug(u'_paginate_slide - End')
         return formatted
 
