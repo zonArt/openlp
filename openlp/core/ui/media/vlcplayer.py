@@ -136,7 +136,9 @@ class VlcPlayer(MediaPlayer):
         if sys.platform == "win32":
             display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
         elif sys.platform == "darwin":
-            display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
+            # We have to use 'set_nsobject' since Qt4 on OSX uses Cocoa
+            # framework and not the old Carbon.
+            display.vlcMediaPlayer.set_nsobject(int(display.vlcWidget.winId()))
         else:
             # for Linux using the X Server
             display.vlcMediaPlayer.set_xwindow(int(display.vlcWidget.winId()))
@@ -215,9 +217,11 @@ class VlcPlayer(MediaPlayer):
             display.vlcMediaPlayer.set_time(seekVal)
 
     def reset(self, display):
-        display.vlcMediaPlayer.stop()
-        display.vlcWidget.setVisible(False)
-        self.state = MediaState.Off
+        # FIXME Reset causes that OpenLP stops responding on OS X.
+        #display.vlcMediaPlayer.stop()
+        #display.vlcWidget.setVisible(False)
+        #self.state = MediaState.Off
+        pass
 
     def set_visible(self, display, status):
         if self.hasOwnWidget:
