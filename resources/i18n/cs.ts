@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="cs" sourcelanguage="">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="cs" sourcelanguage="" version="2.0">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -102,7 +101,7 @@ Chcete přesto pokračovat?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
-        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
+        <source>The alert text does not contain '&lt;&gt;'.
 Do you want to continue anyway?</source>
         <translation>Text upozornění neobsahuje &apos;&lt;&gt;&apos;.
 Chcete přesto pokračovat?</translation>
@@ -1707,11 +1706,7 @@ Upozornění: Verše z www Bible budou stáhnuty na vyžádání a proto je vyž
     <message numerus="yes">
         <location filename="openlp/plugins/custom/lib/mediaitem.py" line="179"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
-        <translation>
-            <numerusform>Jste si jisti, že chcete smazat %n vybraný uživatelský snímek?</numerusform>
-            <numerusform>Jste si jisti, že chcete smazat %n vybrané uživatelské snímky?</numerusform>
-            <numerusform>Jste si jisti, že chcete smazat %n vybraných uživatelských snímků?</numerusform>
-        </translation>
+        <translation><numerusform>Jste si jisti, že chcete smazat %n vybraný uživatelský snímek?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybrané uživatelské snímky?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybraných uživatelských snímků?</numerusform></translation>
     </message>
 </context>
 <context>
@@ -2076,7 +2071,7 @@ Translators
         %s
     Japanese (ja)
         %s
-    Norwegian Bokm&#xe5;l (nb)
+    Norwegian Bokmål (nb)
         %s
     Dutch (nl)
         %s
@@ -2186,8 +2181,8 @@ OpenLP vytváří a udržují dobrovolníci. Pokud má existovat více volně do
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="223"/>
-        <source>Copyright &#xa9; 2004-2012 %s
-Portions copyright &#xa9; 2004-2012 %s</source>
+        <source>Copyright © 2004-2012 %s
+Portions copyright © 2004-2012 %s</source>
         <translation>Autorská práva © 2004-2012 %s
 Částečná autorská práva © 2004-2012 %s</translation>
     </message>
@@ -5444,7 +5439,7 @@ Obsah souboru není v kódování UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="42"/>
-        <source>&#xa9;</source>
+        <source>©</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -6972,11 +6967,7 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
     <message numerus="yes">
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="404"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
-        <translation>
-            <numerusform>Jste si jisti, že chcete smazat %n vybranou píseň?</numerusform>
-            <numerusform>Jste si jisti, že chcete smazat %n vybrané písně?</numerusform>
-            <numerusform>Jste si jisti, že chcete smazat %n vybraných písní?</numerusform>
-        </translation>
+        <translation><numerusform>Jste si jisti, že chcete smazat %n vybranou píseň?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybrané písně?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybraných písní?</numerusform></translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="150"/>
