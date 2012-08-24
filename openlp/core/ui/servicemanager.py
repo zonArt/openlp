@@ -379,6 +379,12 @@ class ServiceManager(QtGui.QWidget):
             QtCore.QVariant(u'False')).toBool()
 
     def supportedSuffixes(self, suffix):
+        """
+        Adds Suffixes supported to the master list.  Called from Plugins.
+
+        ``suffix``
+            New Suffix to be supported
+        """
         self.suffixes.append(suffix)
 
     def onNewServiceClicked(self):
@@ -795,6 +801,10 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(item, -1)
 
     def onServiceItemEditForm(self):
+        """
+        Opens a dialog to edit the service item and update the service
+        display if changes are saved.
+        """
         item = self.findServiceItem()[0]
         self.serviceItemEditForm.setServiceItem(
             self.serviceItems[item][u'service_item'])
@@ -805,7 +815,7 @@ class ServiceManager(QtGui.QWidget):
     def previewLive(self, message):
         """
         Called by the SlideController to request a preview item be made live
-        and allows the next preview to be updated if relevent.
+        and allows the next preview to be updated if relevant.
         """
         uuid, row = message.split(u':')
         for sitem in self.serviceItems:
@@ -1082,12 +1092,12 @@ class ServiceManager(QtGui.QWidget):
         """
         if serviceItem.is_command():
             type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
-            if type not in self.suffixes:
+            if type.lower() not in self.suffixes:
                 serviceItem.is_valid = False
 
     def cleanUp(self):
         """
-        Empties the servicePath of temporary files.
+        Empties the servicePath of temporary files on system exit.
         """
         log.debug(u'Cleaning up servicePath')
         for file in os.listdir(self.servicePath):
