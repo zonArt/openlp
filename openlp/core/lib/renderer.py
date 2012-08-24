@@ -27,6 +27,7 @@
 ###############################################################################
 
 import logging
+import gc
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
@@ -411,6 +412,7 @@ class Renderer(object):
         # QWebView in order for the display to work properly, but we do. See
         # bug #1041366 for an example of what happens if we take this out.
         self.web = None
+        gc.collect()
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
