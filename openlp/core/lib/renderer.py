@@ -96,6 +96,7 @@ class Renderer(object):
             self.display.close()
         self.display = MainDisplay(None, self.image_manager, False, self)
         self.display.setup()
+        #self.web_frame = self.web.page().mainFrame()
         self._theme_dimensions = {}
 
     def update_theme(self, theme_name, old_theme_name=None, only_delete=False):
@@ -406,7 +407,14 @@ class Renderer(object):
         if theme_data.font_main_shadow:
             self.page_width -= int(theme_data.font_main_shadow_size)
             self.page_height -= int(theme_data.font_main_shadow_size)
+        # For the life of my I don't know why we have to completely kill the
+        # QWebView in order for the display to work properly, but we do. See
+        # bug #1041366 for an example of what happens if we take this out.
+        self.web = None
+        self.web = QtWebKit.QWebView()
+        self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
+        self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
         html = u"""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
