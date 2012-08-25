@@ -262,6 +262,11 @@ class Renderer(object):
             if same_thread:
                 self.display.text(raw_html)
             else:
+                # This exists for https://bugs.launchpad.net/openlp/+bug/1016843
+                # For unknown reasons if evaluateJavaScript is called
+                # from the themewizard, then it causes a crash on
+                # Windows if there are many items in the service to re-render.
+                # Calling it via a signal seems to workaround the problem.
                 Receiver.send_message(u'renderer_display_text', raw_html)
             preview = self.display.preview()
             return preview
