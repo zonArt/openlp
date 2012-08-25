@@ -79,8 +79,6 @@ class Renderer(object):
         self.force_page = False
         self.display = MainDisplay(None, self.image_manager, False, self)
         self.display.setup()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'renderer_update_text'), self.update_text)
         self._theme_dimensions = {}
         self._calculate_default()
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -262,16 +260,13 @@ class Renderer(object):
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
             if same_thread:
-                Receiver.send_message(u'renderer_update_text', raw_html)
+                self.display.text(raw_html)
             else:
-                self.update_text(raw_html)
+                Receiver.send_message(u'renderer_display_text', raw_html)
             preview = self.display.preview()
             return preview
         self.force_page = False
 
-    def update_text(self, text):
-        self.display.text(text)
-com
     def format_slide(self, text, item):
         """
         Calculate how much text can fit on a slide.

@@ -155,6 +155,9 @@ class MainDisplay(Display):
                 QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
+        else:
+            QtCore.QObject.connect(Receiver.get_receiver(),
+                QtCore.SIGNAL(u'renderer_display_text'), self.text)
 
     def setTransparency(self, enabled):
         if enabled:
