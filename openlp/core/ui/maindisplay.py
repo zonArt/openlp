@@ -155,7 +155,7 @@ class MainDisplay(Display):
                 QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
-        else:
+        if parent is None and not self.isLive:
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'renderer_display_text'), self.text)
 
