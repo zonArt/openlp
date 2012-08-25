@@ -67,7 +67,7 @@ class Ui_EditVerseDialog(object):
         self.verseTypeLayout.addStretch()
         self.dialogLayout.addLayout(self.verseTypeLayout)
         self.buttonBox = create_button_box(editVerseDialog, u'buttonBox',
-            [u'cancel', u'save'])
+            [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editVerseDialog)
 
