@@ -155,9 +155,6 @@ class MainDisplay(Display):
                 QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'config_updated'), self.configChanged)
-        if parent is None and not self.isLive:
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'renderer_display_text'), self.text)
 
     def setTransparency(self, enabled):
         if enabled:
@@ -235,7 +232,7 @@ class MainDisplay(Display):
             The slide text to be displayed
 
         ``animate``
-            Ensures any transitions are performed when setting the text
+            Perform transitions if applicable when setting the text
         """
         log.debug(u'text to display')
         # Wait for the webview to update before displaying text.

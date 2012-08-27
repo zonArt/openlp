@@ -27,7 +27,6 @@
 ###############################################################################
 
 import logging
-import gc
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
