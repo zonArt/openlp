@@ -247,7 +247,7 @@ class MainDisplay(Display):
             # For unknown reasons if evaluateJavaScript is called
             # from the themewizard, then it causes a crash on
             # Windows if there are many items in the service to re-render.
-            # Calling it via a signal seems to workaround the problem.
+            # Setting the div elements direct seems to solve the issue
             self.frame.findFirstElement("#lyricsmain").setInnerXml(slide)
             self.frame.findFirstElement("#lyricsoutline").setInnerXml(slide)
             self.frame.findFirstElement("#lyricsshadow").setInnerXml(slide)
