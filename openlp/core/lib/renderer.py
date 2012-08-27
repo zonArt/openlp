@@ -97,7 +97,6 @@ class Renderer(object):
             self.display.close()
         self.display = MainDisplay(None, self.image_manager, False, self)
         self.display.setup()
-        #self.web_frame = self.web.page().mainFrame()
         self._theme_dimensions = {}
 
     def update_theme(self, theme_name, old_theme_name=None, only_delete=False):
@@ -223,8 +222,7 @@ class Renderer(object):
         self._set_theme(item_theme_name)
         self.item_theme_name = item_theme_name
 
-    def generate_preview(self, theme_data, force_page=False,
-        same_thread=True):
+    def generate_preview(self, theme_data, force_page=False):
         """
         Generate a preview of a theme.
 
@@ -259,15 +257,7 @@ class Renderer(object):
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
-            if same_thread:
-                self.display.text(raw_html)
-            else:
-                # This exists for https://bugs.launchpad.net/openlp/+bug/1016843
-                # For unknown reasons if evaluateJavaScript is called
-                # from the themewizard, then it causes a crash on
-                # Windows if there are many items in the service to re-render.
-                # Calling it via a signal seems to workaround the problem.
-                Receiver.send_message(u'renderer_display_text', raw_html)
+            self.display.text(raw_html, False)
             preview = self.display.preview()
             return preview
         self.force_page = False
@@ -421,7 +411,6 @@ class Renderer(object):
         # QWebView in order for the display to work properly, but we do. See
         # bug #1041366 for an example of what happens if we take this out.
         self.web = None
-        gc.collect()
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)

@@ -741,7 +741,7 @@ class ThemeManager(QtGui.QWidget):
         """
         log.debug(u'generateImage \n%s ', theme_data)
         return self.mainwindow.renderer.generate_preview(
-            theme_data, forcePage, False)
+            theme_data, forcePage)
 
     def getPreviewImage(self, theme):
         """

@@ -227,20 +227,33 @@ class MainDisplay(Display):
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
 
-    def text(self, slide):
+    def text(self, slide, animate=True):
         """
         Add the slide text from slideController
 
         ``slide``
             The slide text to be displayed
+
+        ``animate``
+            Ensures any transitions are performed when setting the text
         """
         log.debug(u'text to display')
         # Wait for the webview to update before displaying text.
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         self.setGeometry(self.screen[u'size'])
-        self.frame.evaluateJavaScript(u'show_text("%s")' %
-            slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        if animate:
+            self.frame.evaluateJavaScript(u'show_text("%s")' %
+                slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        else:
+            # This exists for https://bugs.launchpad.net/openlp/+bug/1016843
+            # For unknown reasons if evaluateJavaScript is called
+            # from the themewizard, then it causes a crash on
+            # Windows if there are many items in the service to re-render.
+            # Calling it via a signal seems to workaround the problem.
+            self.frame.findFirstElement("#lyricsmain").setInnerXml(slide)
+            self.frame.findFirstElement("#lyricsoutline").setInnerXml(slide)
+            self.frame.findFirstElement("#lyricsshadow").setInnerXml(slide)
 
     def alert(self, text, location):
         """
