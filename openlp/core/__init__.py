@@ -35,6 +35,7 @@ logging and a plugin framework are contained within the openlp.core module.
 
 import os
 import sys
+import platform
 import logging
 from optparse import OptionParser
 from traceback import format_exception
@@ -266,6 +267,9 @@ def main(args=None):
         qt_args.extend(['-style', options.style])
     # Throw the rest of the arguments at Qt, just in case.
     qt_args.extend(args)
+    # Bug #1018855: Set the WM_CLASS property in X11
+    if platform.system() not in ['Windows', 'Darwin']:
+        qt_Args.append('OpenLP')
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
