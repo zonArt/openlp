@@ -269,7 +269,7 @@ def main(args=None):
     qt_args.extend(args)
     # Bug #1018855: Set the WM_CLASS property in X11
     if platform.system() not in ['Windows', 'Darwin']:
-        qt_Args.append('OpenLP')
+        qt_args.append('OpenLP')
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
