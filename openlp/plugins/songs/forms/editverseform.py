@@ -185,22 +185,3 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             text = u'---[%s:1]---\n%s' % \
                 (VerseType.TranslatedNames[VerseType.Verse], text)
         return text
-
-    def accept(self):
-        if self.hasSingleVerse:
-            value = unicode(self.getVerse()[0])
-        else:
-            log.debug(unicode(self.getVerse()[0]).split(u'\n'))
-            value = unicode(self.getVerse()[0]).split(u'\n')[1]
-            if not value:
-                lines = unicode(self.getVerse()[0]).split(u'\n')
-                index = 2
-                while index < len(lines) and not value:
-                    value = lines[index]
-                    index += 1
-        if not value:
-            critical_error_message_box(
-                message=translate('SongsPlugin.EditSongForm',
-                'You need to type some text in to the verse.'))
-            return False
-        QtGui.QDialog.accept(self)

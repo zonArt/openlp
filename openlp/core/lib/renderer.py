@@ -256,7 +256,7 @@ class Renderer(object):
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
-            self.display.text(raw_html)
+            self.display.text(raw_html, False)
             preview = self.display.preview()
             return preview
         self.force_page = False
@@ -406,7 +406,14 @@ class Renderer(object):
         if theme_data.font_main_shadow:
             self.page_width -= int(theme_data.font_main_shadow_size)
             self.page_height -= int(theme_data.font_main_shadow_size)
+        # For the life of my I don't know why we have to completely kill the
+        # QWebView in order for the display to work properly, but we do. See
+        # bug #1041366 for an example of what happens if we take this out.
+        self.web = None
+        self.web = QtWebKit.QWebView()
+        self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
+        self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
         html = u"""<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
@@ -450,8 +457,7 @@ class Renderer(object):
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
             previous_raw = separator.join(lines)
-        if previous_raw:
-            formatted.append(previous_raw)
+        formatted.append(previous_raw)
         log.debug(u'_paginate_slide - End')
         return formatted
 
