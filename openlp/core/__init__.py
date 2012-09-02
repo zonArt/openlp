@@ -104,7 +104,7 @@ class OpenLP(QtGui.QApplication):
         """
         self.eventLoopIsActive = False
         # On Windows, the args passed into the constructor are ignored. Not
-        # very handy, so set the ones we want to use. On Linix and FreeBSD, in
+        # very handy, so set the ones we want to use. On Linux and FreeBSD, in
         # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
         # command line argument. This interferes with files being passed in as
         # command line arguments, so we remove it from the list.
