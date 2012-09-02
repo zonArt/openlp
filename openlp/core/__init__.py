@@ -103,8 +103,13 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         self.eventLoopIsActive = False
-        # On Windows, the args passed into the constructor are
-        # ignored. Not very handy, so set the ones we want to use.
+        # On Windows, the args passed into the constructor are ignored. Not
+        # very handy, so set the ones we want to use. On Linix and FreeBSD, in
+        # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
+        # command line argument. This interferes with files being passed in as
+        # command line arguments, so we remove it from the list.
+        if 'OpenLP' in args:
+            args.remove('OpenLP')
         self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
