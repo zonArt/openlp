@@ -889,6 +889,8 @@ class SlideController(Controller):
             self.display.buildHtml(self.serviceItem)
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
+            if self.isLive:
+                Receiver.send_message('playbackPlay', [self, u'(False,)'])
         self.slideSelected(True)
         self.previewListWidget.setFocus()
         if old_item:
