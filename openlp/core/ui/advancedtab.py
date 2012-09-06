@@ -686,7 +686,7 @@ class AdvancedTab(SettingsTab):
                 'Are you sure you want to change the location of the OpenLP '
                 'data directory to:\n\n%s\n\n'
                 'The data directory will be changed when OpenLP is closed.'
-                % new_data_path),
+                ).replace('%s', new_data_path),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
