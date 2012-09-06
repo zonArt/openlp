@@ -998,7 +998,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     'settings file.\n\n'
                     'Section [%s] is not valid \n\n'
                     'Processing has terminated and no changed have been made.'
-                    % section),
+                    ).replace('%s', section),
                     QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok))
                 return

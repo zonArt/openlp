@@ -519,7 +519,7 @@ class ServiceManager(QtGui.QWidget):
                             'Service File Missing'))
                         message = unicode(translate('OpenLP.ServiceManager',
                             'File missing from service\n\n %s \n\n'
-                            'Continue saving?' % path_from ))
+                            'Continue saving?')) % path_from
                         answer = QtGui.QMessageBox.critical(self, title,
                             message,
                             QtGui.QMessageBox.StandardButtons(

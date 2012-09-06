@@ -527,7 +527,7 @@ class AdvancedTab(SettingsTab):
                 'Click "No" to stop loading OpenLP. allowing you to fix '
                 'the the problem.\n\n'
                 'Click "Yes" to reset the data directory to the default '
-                'location.' % self.currentDataPath),
+                'location.').replace('%s', self.currentDataPath),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -750,7 +750,7 @@ class AdvancedTab(SettingsTab):
                 'The location you have selected \n\n%s\n\n'
                 'appears to contain OpenLP data files.  Do you wish to replace '
                 'these files with the current data files?'
-                % os.path.abspath(data_path,)),
+                ).replace('%s', os.path.abspath(data_path,)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
