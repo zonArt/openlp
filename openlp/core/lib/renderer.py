@@ -365,7 +365,7 @@ class Renderer(object):
             The theme information
         """
         if not theme_data.font_main_override:
-            return QtCore.QRect(10, 0, self.width, self.footer_start)
+            return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
             return QtCore.QRect(theme_data.font_main_x, theme_data.font_main_y,
                 theme_data.font_main_width - 1, theme_data.font_main_height - 1)
