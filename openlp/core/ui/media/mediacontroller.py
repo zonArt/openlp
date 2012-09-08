@@ -287,7 +287,7 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, controller, file, muted, isBackground):
+    def video(self, controller, file, muted, isBackground, hidden=False):
         """
         Loads and starts a video to run with the option of sound
         """
@@ -333,11 +333,19 @@ class MediaController(object):
         if controller.isLive and not controller.media_info.is_background:
             display.frame.evaluateJavaScript(u'show_video( \
             "setBackBoard", null, null, null,"visible");')
-        # now start playing
-        if controller.isLive and \
-            (Settings().value(u'general/auto unblank',
-            QtCore.QVariant(False)).toBool() or \
-            controller.media_info.is_background) or not controller.isLive:
+        # now start playing - Preview is autoplay!
+        autoplay = False
+        # Preview requested
+        if not controller.isLive:
+            autoplay = True
+        # Visible or background requested
+        elif not hidden or controller.media_info.is_background:
+            autoplay = True
+        # Unblank on load set
+        elif Settings().value(u'general/auto unblank',
+            QtCore.QVariant(False)).toBool():
+            autoplay = True
+        if autoplay:
             if not self.video_play([controller]):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
