@@ -350,7 +350,7 @@ class MediaController(object):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
                     unicode(translate('MediaPlugin.MediaItem',
-                        'Unsupported File')))
+                    'Unsupported File')))
                 return False
         self.set_controls_visible(controller, True)
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
