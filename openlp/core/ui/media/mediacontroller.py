@@ -347,12 +347,11 @@ class MediaController(object):
             autoplay = True
         if autoplay:
             if not self.video_play([controller]):
-                if not self.video_play([controller]):
-                    critical_error_message_box(
-                        translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                        unicode(translate('MediaPlugin.MediaItem',
-                            'Unsupported File')))
-                    return False
+                critical_error_message_box(
+                    translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                    unicode(translate('MediaPlugin.MediaItem',
+                        'Unsupported File')))
+                return False
         self.set_controls_visible(controller, True)
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
