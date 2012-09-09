@@ -62,7 +62,7 @@ class MediaPlugin(Plugin):
         """
         visible_name = self.getString(StringContent.VisibleName)
         self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'],
-            self.mediaController.mediaPlayers, self.iconPath)
+            self.iconPath)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'

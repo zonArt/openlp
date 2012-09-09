@@ -575,6 +575,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.headerSection = u'SettingsImport'
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
+        self.mediaController = MediaController(self)
         self.settingsForm = SettingsForm(self, self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
@@ -584,7 +585,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager = PluginManager(plugin_path)
         self.pluginHelpers = {}
         self.imageManager = ImageManager()
-        self.mediaController = MediaController(self)
         # Set up the interface
         self.setupUi(self)
         # Load settings after setupUi so default UI sizes are overwritten

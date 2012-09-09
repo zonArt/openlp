@@ -305,6 +305,9 @@ class ServiceManager(QtGui.QWidget):
         self.timeAction = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
+        self.autoStartAction = create_widget_action(self.menu,
+            text=u'',
+            icon=u':/media/media_time.png', triggers=self.onAutoStart)
         # Add already existing delete action to the menu.
         self.menu.addAction(self.serviceManagerList.delete)
         self.menu.addSeparator()
@@ -755,6 +758,7 @@ class ServiceManager(QtGui.QWidget):
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
         self.timeAction.setVisible(False)
+        self.autoStartAction.setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanEdit)\
             and serviceItem[u'service_item'].edit_id:
             self.editAction.setVisible(True)
@@ -766,6 +770,14 @@ class ServiceManager(QtGui.QWidget):
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.HasVariableStartTime):
             self.timeAction.setVisible(True)
+        if serviceItem[u'service_item']\
+            .is_capable(ItemCapabilities.CanAutoStartForLive):
+            self.autoStartAction.setVisible(True)
+            self.autoStartAction.setText(translate('OpenLP.ServiceManager',
+                '&Auto Start - Disabled'))
+            if serviceItem[u'service_item'].will_auto_start:
+                self.autoStartAction.setText(translate('OpenLP.ServiceManager',
+                    '&Auto Start - Enabled'))
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.
         if serviceItem[u'service_item'].is_text() and \
@@ -799,6 +811,15 @@ class ServiceManager(QtGui.QWidget):
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
             self.repaintServiceList(item, -1)
+
+    def onAutoStart(self):
+        """
+        Toggles to Auto Start Setting.
+        """
+        item = self.findServiceItem()[0]
+        self.serviceItems[item][u'service_item'].will_auto_start = \
+            not self.serviceItems[item][u'service_item'].will_auto_start
+
 
     def onServiceItemEditForm(self):
         """

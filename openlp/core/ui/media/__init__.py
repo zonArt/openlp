@@ -117,3 +117,4 @@ def set_media_players(players_list, overridden_player=u'auto'):
     Settings().setValue(u'media/players', QtCore.QVariant(players))
 
 from mediacontroller import MediaController
+from playertab import PlayerTab

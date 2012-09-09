@@ -34,6 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
+from openlp.core.ui.media import PlayerTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -54,6 +55,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.themesTab = ThemesTab(self, mainWindow)
         # Advanced tab
         self.advancedTab = AdvancedTab(self)
+        # Advanced tab
+        self.playerTab = PlayerTab(self, mainWindow.mediaController
+            .mediaPlayers)
 
     def exec_(self):
         # load all the settings
@@ -64,7 +68,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.insertTab(self.generalTab, 0, PluginStatus.Active)
         self.insertTab(self.themesTab, 1, PluginStatus.Active)
         self.insertTab(self.advancedTab, 2, PluginStatus.Active)
-        count = 3
+        self.insertTab(self.playerTab, 3, PluginStatus.Active)
+        count = 4
         for plugin in self.plugins:
             if plugin.settingsTab:
                 self.insertTab(plugin.settingsTab, count, plugin.status)

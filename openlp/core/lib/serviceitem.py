@@ -69,6 +69,7 @@ class ItemCapabilities(object):
     CanSoftBreak = 13
     CanWordSplit = 14
     HasBackgroundAudio = 15
+    CanAutoStartForLive = 16
 
 
 class ServiceItem(object):
@@ -122,6 +123,7 @@ class ServiceItem(object):
         self.background_audio = []
         self.theme_overwritten = False
         self.temporary_edit = False
+        self.will_auto_start = False
         self._new_item()
 
     def _new_item(self):
@@ -279,7 +281,8 @@ class ServiceItem(object):
             u'end_time': self.end_time,
             u'media_length': self.media_length,
             u'background_audio': self.background_audio,
-            u'theme_overwritten': self.theme_overwritten
+            u'theme_overwritten': self.theme_overwritten,
+            u'will_auto_start': self.will_auto_start
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -323,6 +326,7 @@ class ServiceItem(object):
         self.start_time = header.get(u'start_time', 0)
         self.end_time = header.get(u'end_time', 0)
         self.media_length = header.get(u'media_length', 0)
+        self.will_auto_start = header.get(u'will_auto_start', False)
         if u'background_audio' in header:
             self.background_audio = []
             for filename in header[u'background_audio']:
@@ -422,6 +426,24 @@ class ServiceItem(object):
         """
         return self.service_item_type == ServiceItemType.Text
 
+    def set_media_length(self, length):
+        """
+        Stores the media length of the item
+
+        ``length``
+            The length of the media item
+        """
+        self.media_length = length
+        if length > 0:
+            self.add_capability(ItemCapabilities.HasVariableStartTime)
+
+    def get_filename(self):
+        """
+        Returns the full filename
+        """
+        return os.path.join(self.get_frame_path(), self.get_frame_title())
+
+
     def get_frames(self):
         """
         Returns the frames for the ServiceItem
@@ -434,6 +456,9 @@ class ServiceItem(object):
     def get_rendered_frame(self, row):
         """
         Returns the correct frame for a given list and renders it if required.
+
+        ``row``
+            The service item slide to be returned
         """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames[row][u'html'].split(u'\n')[0]
