@@ -356,6 +356,37 @@ class MediaController(object):
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
+    def media_length(self, controller, service_item):
+        """
+        Loads and starts a video to run with the option of sound
+        """
+        print controller
+        log.debug(u'media_length')
+        # stop running videos
+        self.video_reset(controller)
+        controller.media_info = MediaInfo()
+        controller.media_info.volume = controller.volumeSlider.value()
+        controller.media_info.file_info = QtCore.QFileInfo(service_item
+        .get_filename())
+        display = controller.previewDisplay
+        if not self.check_file_type(controller, display):
+            # Media could not be loaded correctly
+            critical_error_message_box(
+                translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                unicode(translate('MediaPlugin.MediaItem',
+                    'Unsupported File')))
+            return False
+            # set a black background by default no theme is needed.
+        if not self.video_play([controller]):
+            critical_error_message_box(
+                translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                unicode(translate('MediaPlugin.MediaItem',
+                    'Unsupported File')))
+            return False
+        self.video_stop([controller])
+        log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
+        return True
+
     def check_file_type(self, controller, display):
         """
         Select the correct media Player type from the prioritized Player list

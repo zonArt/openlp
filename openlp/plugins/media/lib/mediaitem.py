@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver, MediaType, \
     ServiceItem, build_html
+from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.core.ui import Controller, Display
@@ -63,11 +64,11 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject = None
         self.mediaController = Controller(parent)
         self.mediaController.controllerLayout = QtGui.QVBoxLayout()
-        self.plugin.mediaController.add_controller_items(self.mediaController, \
+        self.plugin.mediaController.add_controller_items(self.mediaController,
             self.mediaController.controllerLayout)
-        self.plugin.mediaController.set_controls_visible(self.mediaController, \
+        self.plugin.mediaController.set_controls_visible(self.mediaController,
             False)
-        self.mediaController.previewDisplay = Display(self.mediaController, \
+        self.mediaController.previewDisplay = Display(self.mediaController,
             False, self.mediaController)
         self.mediaController.previewDisplay.setGeometry(
             QtCore.QRect(0, 0, 300, 300))
@@ -75,11 +76,11 @@ class MediaMediaItem(MediaManagerItem):
             {u'size':self.mediaController.previewDisplay.geometry()}
         self.mediaController.previewDisplay.setup()
         serviceItem = ServiceItem()
-        self.mediaController.previewDisplay.webView.setHtml(build_html( \
-            serviceItem, self.mediaController.previewDisplay.screen, None, \
+        self.mediaController.previewDisplay.webView.setHtml(build_html(
+            serviceItem, self.mediaController.previewDisplay.screen, None,
             False, None))
         self.mediaController.previewDisplay.setup()
-        self.plugin.mediaController.setup_display( \
+        self.plugin.mediaController.setup_display(
             self.mediaController.previewDisplay)
         self.mediaController.previewDisplay.hide()
 
@@ -154,7 +155,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the media selected,
         """
-        self.plugin.liveController.mediaController.video_reset( \
+        self.plugin.liveController.mediaController.video_reset(
             self.plugin.liveController)
         self.resetAction.setVisible(False)
 
@@ -174,7 +175,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
-                if self.plugin.liveController.mediaController.video( \
+                if self.plugin.liveController.mediaController.video(
                     self.plugin.liveController, filename, True, True):
                     self.resetAction.setVisible(True)
                 else:
@@ -188,7 +189,7 @@ class MediaMediaItem(MediaManagerItem):
                     'the media file "%s" no longer exists.')) % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+                          remote=False):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
@@ -199,28 +200,28 @@ class MediaMediaItem(MediaManagerItem):
                 # File is no longer present
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                        unicode(translate('MediaPlugin.MediaItem',
-                            'The file %s no longer exists.')) % filename)
+                    unicode(translate('MediaPlugin.MediaItem',
+                        'The file %s no longer exists.')) % filename)
             return False
         self.mediaLength = 0
-        if self.plugin.mediaController.video( \
-                    self.mediaController, filename, False, False):
-            self.mediaLength = self.mediaController.media_info.length
-            service_item.media_length = self.mediaLength
-            self.plugin.mediaController.video_reset(self.mediaController)
-            if self.mediaLength > 0:
-                service_item.add_capability(
-                    ItemCapabilities.HasVariableStartTime)
-        else:
-            return False
-        service_item.media_length = self.mediaLength
-        service_item.title = unicode(self.plugin.nameStrings[u'singular'])
-        service_item.add_capability(ItemCapabilities.RequiresMedia)
-        # force a non-existent theme
-        service_item.theme = -1
-        frame = u':/media/image_clapperboard.png'
+        service_item.title = unicode(self.displayTypeComboBox.currentText())
+        service_item.shortname = service_item.title
         (path, name) = os.path.split(filename)
-        service_item.add_from_command(path, name, frame)
+        service_item.add_from_command(path, name,
+            u':/media/image_clapperboard.png')
+        # Start media and obtain the length
+        if not self.plugin.mediaController.media_length(
+            self.mediaController, service_item):
+            return False
+        service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
+        service_item.add_capability(ItemCapabilities.RequiresMedia)
+
+        if Settings().value(self.settingsSection + u'/media auto start',
+            QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0]\
+           == QtCore.Qt.Checked:
+            service_item.will_auto_start = True
+            # force a non-existent theme
+        service_item.theme = -1
         return True
 
     def initialise(self):
@@ -241,7 +242,7 @@ class MediaMediaItem(MediaManagerItem):
             u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
 
     def displaySetup(self):
-        self.plugin.mediaController.setup_display( \
+        self.plugin.mediaController.setup_display(
             self.mediaController.previewDisplay)
 
     def populateDisplayTypes(self):
