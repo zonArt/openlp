@@ -1347,7 +1347,7 @@ class SlideController(Controller):
         """
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
-        self.mediaController.video(self, file, False, False)
+        self.mediaController.video(self, file, False, False, self.hideMode())
         if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()
             self.slidePreview.hide()

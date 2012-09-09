@@ -92,6 +92,12 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.verseNumberBox.value())
 
     def onVerseTypeComboBoxChanged(self):
+        self.updateSuggestedVerseNumber()
+
+    def onCursorPositionChanged(self):
+        self.updateSuggestedVerseNumber()
+
+    def updateSuggestedVerseNumber(self):
         """
         Adjusts the verse number SpinBox in regard to the selected verse type
         and the cursor's position.
@@ -115,43 +121,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if match:
             verse_tag = match.group(1)
             try:
-                verse_num = int(match.group(2))
+                verse_num = int(match.group(2)) + 1
             except ValueError:
                 verse_num = 1
-            if VerseType.from_loose_input(verse_tag, False):
-                self.verseNumberBox.setValue(verse_num)
-
-    def onCursorPositionChanged(self):
-        """
-        Determines the previous verse type and number in regard to the cursor's
-        position and adjusts the ComboBox and SpinBox to these values.
-        """
-        position = self.verseTextEdit.textCursor().position()
-        text = unicode(self.verseTextEdit.toPlainText())
-        if not text:
-            return
-        if text.rfind(u'[', 0, position) > text.rfind(u']', 0, position) and \
-            text.find(u']', position) < text.find(u'[', position):
-            return
-        position = text.rfind(u'---[', 0, position)
-        if position == -1:
-            return
-        text = text[position:]
-        position = text.find(u']---')
-        if position == -1:
-            return
-        text = text[:position + 4]
-        match = VERSE_REGEX.match(text)
-        if match:
-            verse_type = match.group(1)
-            verse_type_index = VerseType.from_loose_input(verse_type, None)
-            try:
-                verse_number = int(match.group(2))
-            except ValueError:
-                verse_number = 1
-            if verse_type_index is not None:
-                self.verseTypeComboBox.setCurrentIndex(verse_type_index)
-                self.verseNumberBox.setValue(verse_number)
+            self.verseNumberBox.setValue(verse_num)
 
     def setVerse(self, text, single=False,
         tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
