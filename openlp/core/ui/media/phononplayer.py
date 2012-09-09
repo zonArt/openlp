@@ -33,8 +33,8 @@ from datetime import datetime
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
-from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
 

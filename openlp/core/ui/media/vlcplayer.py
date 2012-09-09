@@ -36,14 +36,14 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 from openlp.core.lib.settings import Settings
-from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
 
 VLC_AVAILABLE = False
 try:
-    import vlc
+    from openlp.core.ui.media.vendor import vlc
     VLC_AVAILABLE = bool(vlc.get_default_instance())
 except (ImportError, NameError, NotImplementedError):
     pass

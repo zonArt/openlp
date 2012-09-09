@@ -46,7 +46,7 @@ class MediaState(object):
 
 class MediaType(object):
     """
-    An enumeration of possibible Media Types
+    An enumeration of possible Media Types
     """
     Unused = 0
     Audio = 1
@@ -58,7 +58,7 @@ class MediaType(object):
 
 class MediaInfo(object):
     """
-    This class hold the media related infos
+    This class hold the media related info
     """
     file_info = None
     volume = 100
