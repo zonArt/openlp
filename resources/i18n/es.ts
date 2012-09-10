@@ -1377,7 +1377,7 @@ Deberá reimportar esta Biblia para utilizarla de nuevo.</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="118"/>
         <source>Incorrect Bible file type supplied. OpenSong Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"/>
+        <translation>Tipo de archivo incorrecto. Las Biblias OpenSong pueden estar comprimidas y es necesario extraerlas antes de la importación.</translation>
     </message>
 </context>
 <context>
@@ -6913,27 +6913,27 @@ La codificación se encarga de la correcta representación de caracteres.</trans
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="260"/>
         <source>MediaShout Database</source>
-        <translation type="unfinished"/>
+        <translation>Base de datos MediaShout</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="262"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"/>
+        <translation>El importador MediaShout se puede usar en windows únicamente. Se ha deshabilitado porque falta un módulo Python. Debe instalar el módulo &quot;pyodbc&quot; para usar este importador.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
         <source>SongPro Text Files</source>
-        <translation type="unfinished"/>
+        <translation>Archivos de texto SongPro</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="295"/>
         <source>SongPro (Export File)</source>
-        <translation type="unfinished"/>
+        <translation>SongPro (Archivo Exportado)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="297"/>
         <source>In SongPro, export your songs using the File -&gt; Export menu</source>
-        <translation type="unfinished"/>
+        <translation>En SongPro, puede exportar canciones en el menú Archivo -&gt; Exportar</translation>
     </message>
 </context>
 <context>
@@ -7018,7 +7018,7 @@ La codificación se encarga de la correcta representación de caracteres.</trans
     <message>
         <location filename="openlp/plugins/songs/lib/mediashoutimport.py" line="61"/>
         <source>Unable to open the MediaShout database.</source>
-        <translation type="unfinished"/>
+        <translation>No se logró abrir la base de datos MediaShout</translation>
     </message>
 </context>
 <context>
