@@ -1368,7 +1368,9 @@ vraag afgelaai word en dus is &apos;n internet konneksie nodig.</translation>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
-        <translation type="unfinished"/>
+        <translation>Wis Bybel &quot;%s&quot; geheel en al vanaf OpenLP?
+
+Hierdie Bybel sal weer ingevoer moet word voordat dit gebruik geneem kan word.</translation>
     </message>
 </context>
 <context>
@@ -1700,7 +1702,7 @@ word en dus is &apos;n Internet verbinding nodig.</translation>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="52"/>
         <source>Edit Slide</source>
-        <translation type="unfinished"/>
+        <translation>Redigeer Skyfie</translation>
     </message>
 </context>
 <context>
@@ -5042,12 +5044,12 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="554"/>
         <source>Preview and Save</source>
-        <translation type="unfinished"/>
+        <translation>Skou en Stoor</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="556"/>
         <source>Preview the theme and save it.</source>
-        <translation type="unfinished"/>
+        <translation>Skou die tema en stoor dit.</translation>
     </message>
 </context>
 <context>
@@ -6901,17 +6903,17 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="321"/>
         <source>SundayPlus Song Files</source>
-        <translation type="unfinished"/>
+        <translation>SundayPlus Lied Leêrs</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="172"/>
         <source>This importer has been disabled.</source>
-        <translation type="unfinished"/>
+        <translation>Hierdie invoerder is onaktief gestel.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="260"/>
         <source>MediaShout Database</source>
-        <translation type="unfinished"/>
+        <translation>MediaShout Databasis</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="262"/>
@@ -6921,17 +6923,17 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
         <source>SongPro Text Files</source>
-        <translation type="unfinished"/>
+        <translation>SongPro Teks Leêrs</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="295"/>
         <source>SongPro (Export File)</source>
-        <translation type="unfinished"/>
+        <translation>SongPro (Voer Leêr uit)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="297"/>
         <source>In SongPro, export your songs using the File -&gt; Export menu</source>
-        <translation type="unfinished"/>
+        <translation>In SongPro, voer liedere uit deur middel van die Leêr -&gt; Uitvoer spyskaart</translation>
     </message>
 </context>
 <context>
@@ -7016,7 +7018,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
     <message>
         <location filename="openlp/plugins/songs/lib/mediashoutimport.py" line="61"/>
         <source>Unable to open the MediaShout database.</source>
-        <translation type="unfinished"/>
+        <translation>Die MediaShout databasis kan nie oopgemaak word nie.</translation>
     </message>
 </context>
 <context>

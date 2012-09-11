@@ -6953,7 +6953,7 @@ Teckenkodningen ansvarar för rätt teckenrepresentation.</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
         <source>Titles</source>
-        <translation>Titlel</translation>
+        <translation>Titel</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
