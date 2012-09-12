@@ -138,11 +138,16 @@ class MainDisplay(Display):
         if Settings().value(u'advanced/x11 bypass wm',
             QtCore.QVariant(True)).toBool():
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
-        # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
-        # stay always on top on Mac OS X. For details see bug 906926.
-        # It needs more investigation to fix it properly.
+        # TODO: The following combination of windowFlags works correctly
+        # on Mac OS X. For next OpenLP version we should test it on other
+        # platforms. For OpenLP 2.0 keep it only for OS X to not cause any
+        # regressions on other platforms.
         if sys.platform == 'darwin':
-            windowFlags |= QtCore.Qt.SplashScreen
+            windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
+            # For primary screen ensure it stays above the OS X dock
+            # and menu bar
+            if self.screens.current[u'primary']:
+                windowFlags |= QtCore.Qt.WindowStaysOnTopHint
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(False)
