@@ -1370,7 +1370,8 @@ werden. Daher ist eine Internetverbindung erforderlich.</translation>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
-        <translation type="unfinished"/>
+        <translation>Sind Sie sicher, das Sie die &quot;%s&quot; Bibel komplett löschen wollen?
+Um sie wieder zu benutzen, muss sie erneut importier werden.</translation>
     </message>
 </context>
 <context>
@@ -1378,7 +1379,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="118"/>
         <source>Incorrect Bible file type supplied. OpenSong Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"/>
+        <translation>Falscher Dateityp. OpenSong Bibeln sind möglicherweise komprimiert und müssen entpackt werden, bevor sie importiert werden.</translation>
     </message>
 </context>
 <context>
@@ -1701,7 +1702,7 @@ Bitte beachten Sie, dass Bibeltexte von Onlinebibeln bei Bedarf heruntergeladen 
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="52"/>
         <source>Edit Slide</source>
-        <translation type="unfinished"/>
+        <translation>Folie bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -5050,12 +5051,12 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="554"/>
         <source>Preview and Save</source>
-        <translation type="unfinished"/>
+        <translation>Vorschau und Speichern</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themewizard.py" line="556"/>
         <source>Preview the theme and save it.</source>
-        <translation type="unfinished"/>
+        <translation>Vorschau des Designs zeigen und speichern.</translation>
     </message>
 </context>
 <context>
@@ -6909,37 +6910,37 @@ Easy Worship]</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="321"/>
         <source>SundayPlus Song Files</source>
-        <translation type="unfinished"/>
+        <translation>SundayPlus Lied Dateien</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="172"/>
         <source>This importer has been disabled.</source>
-        <translation type="unfinished"/>
+        <translation>Dieser Import Typ wurde deaktiviert.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="260"/>
         <source>MediaShout Database</source>
-        <translation type="unfinished"/>
+        <translation>Media Shout Datenbestand</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="262"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"/>
+        <translation>Der Import von MediaShout Datensätzen wird nur unter Windows unterstützt. Er wurde aufgrund fehlender Python Module deaktiviert. Wenn Sie diese Dateien importieren wollen, müssen sie das &quot;pyodbc&quot; Modul installieren.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
         <source>SongPro Text Files</source>
-        <translation type="unfinished"/>
+        <translation>SongPro Text Dateien</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="295"/>
         <source>SongPro (Export File)</source>
-        <translation type="unfinished"/>
+        <translation>SongPro (Export Datei)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="297"/>
         <source>In SongPro, export your songs using the File -&gt; Export menu</source>
-        <translation type="unfinished"/>
+        <translation>Um in SongPro Dateien zu exportieren, nutzen Sie dort das Menü &quot;Datei -&gt; Export&quot;</translation>
     </message>
 </context>
 <context>
@@ -7024,7 +7025,7 @@ Easy Worship]</translation>
     <message>
         <location filename="openlp/plugins/songs/lib/mediashoutimport.py" line="61"/>
         <source>Unable to open the MediaShout database.</source>
-        <translation type="unfinished"/>
+        <translation>Der MediaShout Datensatz kann nicht geöffnet werden.</translation>
     </message>
 </context>
 <context>
