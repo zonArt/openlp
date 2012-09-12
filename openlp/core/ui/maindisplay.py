@@ -147,7 +147,7 @@ class MainDisplay(Display):
             # For primary screen ensure it stays above the OS X dock
             # and menu bar
             if self.screens.current[u'primary']:
-                windowFlags |= QtCore.Qt.WindowStaysOnTopHint
+                self.setWindowState(QtCore.Qt.WindowFullScreen)
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(False)
