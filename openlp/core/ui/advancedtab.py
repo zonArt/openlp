@@ -38,7 +38,7 @@ import sys
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
-from openlp.core.utils import get_images_filter, AppLocation
+from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
 log = logging.getLogger(__name__)
@@ -622,7 +622,7 @@ class AdvancedTab(SettingsTab):
             time = time.replace(hour = self.serviceNameTime.time().hour(),
                 minute = self.serviceNameTime.time().minute())
         try:
-            service_name_example = time.strftime(unicode(
+            service_name_example = format_time(unicode(
                 self.serviceNameEdit.text()))
         except ValueError:
             preset_is_valid = False
