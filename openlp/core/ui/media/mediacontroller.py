@@ -47,6 +47,8 @@ class MediaController(object):
     """
 
     def __init__(self, parent):
+        print "Media Controller "
+        print parent
         self.parent = parent
         self.mediaPlayers = {}
         self.controller = []
@@ -106,7 +108,7 @@ class MediaController(object):
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
             if filename.endswith(u'player.py') and not \
-                filename == 'media_player.py':
+                filename == 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \
@@ -287,11 +289,13 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, controller, file, muted, isBackground, hidden=False):
+    def video(self, controller, serviceItem, muted, isBackground,
+               hidden=False):
         """
         Loads and starts a video to run with the option of sound
         """
         log.debug(u'video')
+        print "hallo mum"
         isValid = False
         # stop running videos
         self.video_reset(controller)
@@ -300,7 +304,7 @@ class MediaController(object):
             controller.media_info.volume = 0
         else:
             controller.media_info.volume = controller.volumeSlider.value()
-        controller.media_info.file_info = QtCore.QFileInfo(file)
+        controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_filename())
         controller.media_info.is_background = isBackground
         display = None
         if controller.isLive:
@@ -318,7 +322,7 @@ class MediaController(object):
             else:
                 controller.media_info.start_time = \
                     display.serviceItem.start_time
-                controller.media_info.end_time = display.serviceItem.end_time
+                controller.media_info.end_time = serviceItem.end_time
         elif controller.previewDisplay:
             display = controller.previewDisplay
             isValid = self.check_file_type(controller, display)
@@ -338,8 +342,9 @@ class MediaController(object):
         # Preview requested
         if not controller.isLive:
             autoplay = True
-        # Visible or background requested
-        elif not hidden or controller.media_info.is_background:
+        # Visible or background requested or Service Item wants autostart
+        elif not hidden or controller.media_info.is_background or \
+             serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
         elif Settings().value(u'general/auto unblank',
@@ -356,9 +361,15 @@ class MediaController(object):
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
-    def media_length(self, controller, service_item):
+    def media_length(self, controller, serviceItem):
         """
-        Loads and starts a video to run with the option of sound
+        Loads and starts a media item to obtain the media length
+
+        ``msg``
+            First element is the controller which should be used
+
+        ``serviceItem``
+            The ServiceItem containing the details to be played.
         """
         print controller
         log.debug(u'media_length')
@@ -366,7 +377,7 @@ class MediaController(object):
         self.video_reset(controller)
         controller.media_info = MediaInfo()
         controller.media_info.volume = controller.volumeSlider.value()
-        controller.media_info.file_info = QtCore.QFileInfo(service_item
+        controller.media_info.file_info = QtCore.QFileInfo(serviceItem
         .get_filename())
         display = controller.previewDisplay
         if not self.check_file_type(controller, display):
@@ -376,13 +387,13 @@ class MediaController(object):
                 unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
             return False
-            # set a black background by default no theme is needed.
         if not self.video_play([controller]):
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
             return False
+        serviceItem.set_media_length(controller.media_info.length)
         self.video_stop([controller])
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True

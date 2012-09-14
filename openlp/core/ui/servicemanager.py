@@ -97,8 +97,8 @@ class ServiceManager(QtGui.QWidget):
     """
     Manages the services. This involves taking text strings from plugins and
     adding them to the service. This service can then be zipped up with all
-    the resources used into one OSZ file for use on any OpenLP v2 installation.
-    Also handles the UI tasks of moving things up and down etc.
+    the resources used into one OSZ or oszl file for use on any OpenLP v2
+    installation. Also handles the UI tasks of moving things up and down etc.
     """
     def __init__(self, mainwindow, parent=None):
         """
@@ -425,7 +425,7 @@ class ServiceManager(QtGui.QWidget):
                 SettingsManager.get_last_dir(
                 self.mainwindow.serviceManagerSettingsSection),
                 translate('OpenLP.ServiceManager',
-                'OpenLP Service Files (*.osz)')))
+                'OpenLP Service Files (*.osz *.ozl)')))
             if not fileName:
                 return False
         else:
@@ -594,6 +594,75 @@ class ServiceManager(QtGui.QWidget):
         delete_file(temp_file_name)
         return success
 
+    def saveLocalFile(self):
+        """
+        Save the current service file.
+
+        A temporary file is created so that we don't overwrite the existing one
+        and leave a mangled service file should there be an error when saving.
+        Audio files are also copied into the service manager directory, and
+        then packaged into the zip file.
+        """
+        if not self.fileName():
+            return self.saveFileAs()
+        temp_file, temp_file_name = mkstemp(u'.oszl', u'openlp_')
+        # We don't need the file handle.
+        os.close(temp_file)
+        log.debug(temp_file_name)
+        path_file_name = unicode(self.fileName())
+        path, file_name = os.path.split(path_file_name)
+        basename = os.path.splitext(file_name)[0]
+        service_file_name = '%s.osd' % basename
+        log.debug(u'ServiceManager.saveFile - %s', path_file_name)
+        SettingsManager.set_last_dir(
+            self.mainwindow.serviceManagerSettingsSection,
+            path)
+        service = []
+        total_size = 0
+        Receiver.send_message(u'cursor_busy')
+        # Number of items + 1 to zip it
+        self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
+        for item in self.serviceItems:
+            self.mainwindow.incrementProgressBar()
+            service_item = item[u'service_item'].get_service_repr()
+            service.append({u'serviceitem': service_item})
+        service_content = cPickle.dumps(service)
+        # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
+        # extracted using unzip in UNIX.
+        allow_zip_64 = (total_size > 2147483648 + len(service_content))
+        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
+        zip = None
+        success = True
+        self.mainwindow.incrementProgressBar()
+        try:
+            zip = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED,
+                allow_zip_64)
+            # First we add service contents.
+            zip.writestr(service_file_name.encode(u'utf-8'), service_content)
+        except IOError:
+            log.exception(u'Failed to save service to disk: %s', temp_file_name)
+            Receiver.send_message(u'openlp_error_message', {
+                u'title': translate(u'OpenLP.ServiceManager',
+                    u'Error Saving File'),
+                u'message': translate(u'OpenLP.ServiceManager',
+                    u'There was an error saving your file.')
+            })
+            success = False
+        finally:
+            if zip:
+                zip.close()
+        self.mainwindow.finishedProgressBar()
+        Receiver.send_message(u'cursor_normal')
+        if success:
+            try:
+                shutil.copy(temp_file_name, path_file_name)
+            except:
+                return self.saveFileAs()
+            self.mainwindow.addRecentFile(path_file_name)
+            self.setModified(False)
+        delete_file(temp_file_name)
+        return success
+
     def saveFileAs(self):
         """
         Get a file name and then call :func:`ServiceManager.saveFile` to
@@ -632,7 +701,9 @@ class ServiceManager(QtGui.QWidget):
         path = os.path.join(directory, default_filename)
         fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
             UiStrings().SaveService, path,
-            translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz)')))
+            translate('OpenLP.ServiceManager',
+                'OpenLP Service Files (*.osz);;'
+                'OpenLP Service Files - light (*.oszl)')))
         if not fileName:
             return False
         if os.path.splitext(fileName)[1] == u'':
@@ -641,7 +712,10 @@ class ServiceManager(QtGui.QWidget):
             ext = os.path.splitext(fileName)[1]
             fileName.replace(ext, u'.osz')
         self.setFileName(fileName)
-        return self.saveFile()
+        if suffix == u'.oszl':
+            return self.saveLocalFile()
+        else:
+            return self.saveFile()
 
     def loadFile(self, fileName):
         if not fileName:
@@ -774,10 +848,10 @@ class ServiceManager(QtGui.QWidget):
             .is_capable(ItemCapabilities.CanAutoStartForLive):
             self.autoStartAction.setVisible(True)
             self.autoStartAction.setText(translate('OpenLP.ServiceManager',
-                '&Auto Start - Disabled'))
+                '&Auto Start - inactive'))
             if serviceItem[u'service_item'].will_auto_start:
                 self.autoStartAction.setText(translate('OpenLP.ServiceManager',
-                    '&Auto Start - Enabled'))
+                    '&Auto Start - active'))
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.
         if serviceItem[u'service_item'].is_text() and \
@@ -819,6 +893,7 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         self.serviceItems[item][u'service_item'].will_auto_start = \
             not self.serviceItems[item][u'service_item'].will_auto_start
+        a=1
 
 
     def onServiceItemEditForm(self):
@@ -1394,6 +1469,9 @@ class ServiceManager(QtGui.QWidget):
             for url in link.urls():
                 filename = unicode(url.toLocalFile())
                 if filename.endswith(u'.osz'):
+                    self.onLoadServiceClicked(filename)
+                elif filename.endswith(u'.oszl'):
+                    # todo correct
                     self.onLoadServiceClicked(filename)
         elif link.hasText():
             plugin = unicode(link.text())

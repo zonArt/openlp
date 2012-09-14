@@ -54,13 +54,15 @@ class SlideList(QtGui.QTableWidget):
 
 class Controller(QtGui.QWidget):
     """
-    Controller is a general controller widget.
+    Controller is a general display controller widget.
     """
     def __init__(self, parent, isLive=False):
         """
         Set up the general Controller.
         """
         QtGui.QWidget.__init__(self, parent)
+        print "Controller"
+        print parent
         self.isLive = isLive
         self.display = None
 
@@ -1346,8 +1348,7 @@ class SlideController(Controller):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
-        file = os.path.join(item.get_frame_path(), item.get_frame_title())
-        self.mediaController.video(self, file, False, False, self.hideMode())
+        self.mediaController.video(self, item, False, False, self.hideMode())
         if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()
             self.slidePreview.hide()

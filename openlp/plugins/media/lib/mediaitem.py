@@ -169,6 +169,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to replace Live background with the media selected.
         """
+        # Todo fix me up
         if check_item_selected(self.listView,
             translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
@@ -203,7 +204,6 @@ class MediaMediaItem(MediaManagerItem):
                     unicode(translate('MediaPlugin.MediaItem',
                         'The file %s no longer exists.')) % filename)
             return False
-        self.mediaLength = 0
         service_item.title = unicode(self.displayTypeComboBox.currentText())
         service_item.shortname = service_item.title
         (path, name) = os.path.split(filename)
@@ -215,10 +215,9 @@ class MediaMediaItem(MediaManagerItem):
             return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
-
         if Settings().value(self.settingsSection + u'/media auto start',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0]\
-           == QtCore.Qt.Checked:
+            == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
