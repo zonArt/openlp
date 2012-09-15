@@ -157,7 +157,14 @@ class BGExtract(object):
                     text = text.replace(old, new)
                 text = u' '.join(text.split())
             if verse and text:
-                verses.append((int(verse.strip()), text))
+                verse = verse.strip()
+                try:
+                    verse = int(verse)
+                except (TypeError, ValueError):
+                    verse_parts = verse.split(u'-')
+                    if len(verse_parts) > 1:
+                        verse = int(verse_parts[0])
+                verses.append((verse, text))
         verse_list = {}
         for verse, text in verses[::-1]:
             verse_list[verse] = text
