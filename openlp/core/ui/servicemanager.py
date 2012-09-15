@@ -425,7 +425,7 @@ class ServiceManager(QtGui.QWidget):
                 SettingsManager.get_last_dir(
                 self.mainwindow.serviceManagerSettingsSection),
                 translate('OpenLP.ServiceManager',
-                'OpenLP Service Files (*.osz *.ozl)')))
+                'OpenLP Service Files (*.osz *.oszl)')))
             if not fileName:
                 return False
         else:
@@ -712,7 +712,7 @@ class ServiceManager(QtGui.QWidget):
             ext = os.path.splitext(fileName)[1]
             fileName.replace(ext, u'.osz')
         self.setFileName(fileName)
-        if suffix == u'.oszl':
+        if fileName.endswith(u'.oszl'):
             return self.saveLocalFile()
         else:
             return self.saveFile()
