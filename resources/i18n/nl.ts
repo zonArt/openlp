@@ -1367,7 +1367,9 @@ indien nodig en een internetverbinding is dus noodzakelijk.</translation>
         <source>Are you sure you want to completely delete &quot;%s&quot; Bible from OpenLP?
 
 You will need to re-import this Bible to use it again.</source>
-        <translation type="unfinished"/>
+        <translation>Weet u zeker dat u de bijbel &quot;%s&quot; uit OpenLP wilt verwijderen?
+
+Opnieuw importeren om alsnog te gebruiken.</translation>
     </message>
 </context>
 <context>
@@ -1375,7 +1377,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="118"/>
         <source>Incorrect Bible file type supplied. OpenSong Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"/>
+        <translation>Incorrect bijbelbestand. OpenSong bijbels mogen gecomprimeerd zijn. Decomprimeren voordat u ze importeert.</translation>
     </message>
 </context>
 <context>
@@ -1698,7 +1700,7 @@ Let op, de bijbelverzen worden gedownload indien nodig en een internetverbinding
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="52"/>
         <source>Edit Slide</source>
-        <translation type="unfinished"/>
+        <translation>Bewerk dia</translation>
     </message>
 </context>
 <context>
@@ -2194,7 +2196,7 @@ Portions copyright © 2004-2012 %s</translation>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="342"/>
         <source>UI Settings</source>
-        <translation>Werkomgeving instellingen</translation>
+        <translation>UI instellingen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="346"/>
@@ -3103,7 +3105,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the Can
     <message>
         <location filename="openlp/core/ui/generaltab.py" line="261"/>
         <source>Start background audio paused</source>
-        <translation>Start achtergrond geluid gepausseerd</translation>
+        <translation>Start achtergrond geluid gepauseerd</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="440"/>
@@ -6908,32 +6910,32 @@ De tekstcodering is verantwoordelijk voor een correcte weergave van lettertekens
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="172"/>
         <source>This importer has been disabled.</source>
-        <translation type="unfinished"/>
+        <translation>importeren is uitgeschakeld</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="260"/>
         <source>MediaShout Database</source>
-        <translation type="unfinished"/>
+        <translation>MediaShout Database</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="262"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"/>
+        <translation>MediaShout importeren wordt alleen ondersteund onder Windows. Het is uitgeschakeld omdat een bepaalde Python module ontbreekt. Om te kunnen importeren, moet u de &quot;pyodbc&quot; module installeren.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
         <source>SongPro Text Files</source>
-        <translation type="unfinished"/>
+        <translation>SongPro Tekst bestanden</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="295"/>
         <source>SongPro (Export File)</source>
-        <translation type="unfinished"/>
+        <translation>SongPro (Exporteer bestand)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="297"/>
         <source>In SongPro, export your songs using the File -&gt; Export menu</source>
-        <translation type="unfinished"/>
+        <translation>Exporteer de liederen in SongPro via het menu File -&gt; Export</translation>
     </message>
 </context>
 <context>
@@ -7018,7 +7020,7 @@ De tekstcodering is verantwoordelijk voor een correcte weergave van lettertekens
     <message>
         <location filename="openlp/plugins/songs/lib/mediashoutimport.py" line="61"/>
         <source>Unable to open the MediaShout database.</source>
-        <translation type="unfinished"/>
+        <translation>Kan de MediaShout database niet openen.</translation>
     </message>
 </context>
 <context>

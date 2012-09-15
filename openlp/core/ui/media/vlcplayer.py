@@ -63,37 +63,32 @@ if VLC_AVAILABLE:
         VLC_AVAILABLE = False
         log.debug(u'VLC could not be loaded: %s' % version)
 
-AUDIO_EXT = [
-    u'*.mp3'
-    , u'*.wav'
-    , u'*.wma'
-    , u'*.ogg'
-    ]
+AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
 
 VIDEO_EXT = [
-    u'*.3gp'
-    , u'*.asf', u'*.wmv'
-    , u'*.au'
-    , u'*.avi'
-    , u'*.flv'
-    , u'*.mov'
-    , u'*.mp4'
-    , u'*.ogm'
-    , u'*.mkv', u'*.mka'
-    , u'*.ts', u'*.mpg'
-    , u'*.mpg', u'*.mp2'
-    , u'*.nsc'
-    , u'*.nsv'
-    , u'*.nut'
-    , u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv'
-    , u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid'
-    , u'*.tta', u'*.tac'
-    , u'*.ty'
-    , u'*.dts'
-    , u'*.xa'
-    , u'*.iso'
-    , u'*.vob'
-    ]
+    u'*.3gp',
+    u'*.asf', u'*.wmv',
+    u'*.au',
+    u'*.avi',
+    u'*.flv',
+    u'*.mov',
+    u'*.mp4',
+    u'*.ogm', u'*.ogv',
+    u'*.mkv', u'*.mka',
+    u'*.ts', u'*.mpg',
+    u'*.mpg', u'*.mp2',
+    u'*.nsc',
+    u'*.nsv',
+    u'*.nut',
+    u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv',
+    u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid',
+    u'*.tta', u'*.tac',
+    u'*.ty',
+    u'*.dts',
+    u'*.xa',
+    u'*.iso',
+    u'*.vob'
+]
 
 
 class VlcPlayer(MediaPlayer):

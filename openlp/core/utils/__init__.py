@@ -35,6 +35,7 @@ import os
 import re
 from subprocess import Popen, PIPE
 import sys
+import time
 import urllib2
 
 from openlp.core.lib.settings import Settings
@@ -469,10 +470,24 @@ def get_uno_instance(resolver):
         return resolver.resolve(u'uno:socket,host=localhost,port=2002;' \
             + u'urp;StarOffice.ComponentContext')
 
+
+def format_time(text):
+    """
+    Workaround for Python built-in time formatting fuction time.strftime().
+
+    time.strftime() accepts only ascii characters. This function accepts
+    unicode string and passes individual % placeholders to time.strftime().
+    This ensures only ascii characters are passed to time.strftime().
+    """
+    def match_formatting(match):
+        return time.strftime(match.group())
+    return re.sub('\%[a-zA-Z]', match_formatting, text)
+
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename']
+    u'delete_file', u'clean_filename', u'format_time']
