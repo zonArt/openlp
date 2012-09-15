@@ -114,7 +114,9 @@ class MediaController(object):
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
-                    except ImportError:
+                    # On some platforms importing vlc.py might cause
+                    # also OSError exception. (e.g. Mac OS X)
+                    except (ImportError, OSError):
                         log.warn(u'Failed to import %s on path %s',
                             modulename, path)
         controller_classes = MediaPlayer.__subclasses__()
