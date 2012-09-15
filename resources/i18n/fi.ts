@@ -32,7 +32,7 @@
     <message>
         <location filename="openlp/plugins/alerts/alertsplugin.py" line="173"/>
         <source>&lt;strong&gt;Alerts Plugin&lt;/strong&gt;&lt;br /&gt;The alert plugin controls the displaying of nursery alerts on the display screen.</source>
-        <translation>&lt;strong&gt;Hälytykset liitännäinen&lt;/strong&gt;&lt;br /&gt;Hälytykset liitännäinen huolehtii lastenhoidon viestien näyttämisestä esityksen aikana.</translation>
+        <translation>&lt;strong&gt;Hälytykset lisäosa&lt;/strong&gt;&lt;br /&gt;Hälytykset lisäosa huolehtii lastenhoidon viestien näyttämisestä esityksen aikana.</translation>
     </message>
 </context>
 <context>
@@ -221,7 +221,7 @@ Tahdotko jatkaa siitä huolimatta?</translation>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="148"/>
         <source>&lt;strong&gt;Bible Plugin&lt;/strong&gt;&lt;br /&gt;The Bible plugin provides the ability to display Bible verses from different sources during the service.</source>
-        <translation>&lt;strong&gt;Raamattu-liitännäinen&lt;/strong&gt;&lt;br /&gt;Raamattu-liitännäisellä voi näyttää Raamatun jakeita suoraan Raamatusta tilaisuuden aikana.</translation>
+        <translation>&lt;strong&gt;Raamattu-lisäosa&lt;/strong&gt;&lt;br /&gt;Raamattu-lisäosalla voi näyttää Raamatun jakeita suoraan Raamatusta tilaisuuden aikana.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="125"/>
@@ -1695,7 +1695,7 @@ Ole hyvä ja huomaa, että jakeet nettiraamatuista ladataan käytettäessä, jot
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="53"/>
         <source>&lt;strong&gt;Image Plugin&lt;/strong&gt;&lt;br /&gt;The image plugin provides displaying of images.&lt;br /&gt;One of the distinguishing features of this plugin is the ability to group a number of images together in the service manager, making the displaying of multiple images easier. This plugin can also make use of OpenLP&apos;s &quot;timed looping&quot; feature to create a slide show that runs automatically. In addition to this, images from the plugin can be used to override the current theme&apos;s background, which renders text-based items like songs with the selected image as a background instead of the background provided by the theme.</source>
-        <translation>&lt;strong&gt;Kuvankatselu laajennos&lt;/strong&gt;&lt;br /&gt;Kuvankatselu toteuttaa helpon kuvien näyttämisen.&lt;br /&gt;Laajennos mahdollistaa kokonaisen kuvajoukon näyttämisen yhdessä ajolistalla, mikä tekee useiden kuvien näyttämisestä hallitumpaa. Kuvia voi myös ajaa slideshowna OpenLP:n ajastusta hyödyntäen. Lisäksi kuvia voi käyttää jumalanpalvelukselle valitun taustakuvan sijaan, mikä mahdollistaa kuvien käyttämisen taustakuvana teksteille teeman sijaan.</translation>
+        <translation>&lt;strong&gt;Kuvankatselu lisäosa&lt;/strong&gt;&lt;br /&gt;Kuvankatselu toteuttaa helpon kuvien näyttämisen.&lt;br /&gt;Lisäosa mahdollistaa kokonaisen kuvajoukon näyttämisen yhdessä ajolistalla, mikä tekee useiden kuvien näyttämisestä hallitumpaa. Kuvia voi myös ajaa slideshowna OpenLP:n ajastusta hyödyntäen. Lisäksi kuvia voi käyttää jumalanpalvelukselle valitun taustakuvan sijaan, mikä mahdollistaa kuvien käyttämisen taustakuvana teksteille teeman sijaan.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="72"/>
@@ -1827,7 +1827,7 @@ Haluatko lisätä toisia kuvia siitä huolimatta?</translation>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="68"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
-        <translation>&lt;strong&gt;Medialaajennos&lt;/strong&gt;&lt;br /&gt; Medialaajennos mahdollistaa audio ja video lähteiden toistamisen.</translation>
+        <translation>&lt;strong&gt;Media-lisäosa&lt;/strong&gt;&lt;br /&gt; Media-lisäosa mahdollistaa audio ja video lähteiden toistamisen.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="78"/>
@@ -2528,12 +2528,12 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="207"/>
         <source>Activate required Plugins</source>
-        <translation>Aktivoi vaaditut laajennokset</translation>
+        <translation>Aktivoi vaaditut lisäosat</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="209"/>
         <source>Select the Plugins you wish to use. </source>
-        <translation>Valitse laajeennokset, joita haluat käyttää.</translation>
+        <translation>Valitse lisäosat, joita haluat käyttää.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="214"/>
@@ -2578,42 +2578,42 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="96"/>
         <source>Downloading %s...</source>
-        <translation type="unfinished"/>
+        <translation>Ladataan %s...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="396"/>
         <source>Download complete. Click the finish button to start OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Lataus valmis. Paina lopetuspainiketta käynnistääksesi OpenLP:n.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="417"/>
         <source>Enabling selected plugins...</source>
-        <translation type="unfinished"/>
+        <translation>Otetaan käyttöön valittuja lisäosia...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="229"/>
         <source>No Internet Connection</source>
-        <translation type="unfinished"/>
+        <translation>Ei internetyhteyttä</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="231"/>
         <source>Unable to detect an Internet connection.</source>
-        <translation type="unfinished"/>
+        <translation>Toimivaa internetyhteyttä ei saatavilla.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
         <source>Sample Songs</source>
-        <translation type="unfinished"/>
+        <translation>Esimerkkejä lauluista</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
         <source>Select and download public domain songs.</source>
-        <translation type="unfinished"/>
+        <translation>Valitse ja lataa tekijäinoikeusvapaita lauluja.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="249"/>
         <source>Sample Bibles</source>
-        <translation type="unfinished"/>
+        <translation>Esimerkkejä Raamatuista</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="251"/>
@@ -3243,12 +3243,12 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the Can
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="492"/>
         <source>&amp;Plugin List</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Luettelo lisäosista</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="494"/>
         <source>List the Plugins</source>
-        <translation type="unfinished"/>
+        <translation>Lisäosien luettelo</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="500"/>
@@ -3635,12 +3635,12 @@ Suffix not supported</source>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="75"/>
         <source>Plugin List</source>
-        <translation type="unfinished"/>
+        <translation>Luettelo lisäosista</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="77"/>
         <source>Plugin Details</source>
-        <translation type="unfinished"/>
+        <translation>Lisäosan tiedot</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/plugindialog.py" line="81"/>

@@ -1378,7 +1378,7 @@ Hierdie Bybel sal weer ingevoer moet word voordat dit gebruik geneem kan word.</
     <message>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="118"/>
         <source>Incorrect Bible file type supplied. OpenSong Bibles may be compressed. You must decompress them before import.</source>
-        <translation type="unfinished"/>
+        <translation>Ongeldige Bybel lêer</translation>
     </message>
 </context>
 <context>
@@ -6918,7 +6918,7 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="262"/>
         <source>The MediaShout importer is only supported on Windows. It has been disabled due to a missing Python module. If you want to use this importer, you will need to install the &quot;pyodbc&quot; module.</source>
-        <translation type="unfinished"/>
+        <translation>Die MediaShout invoerder word slegs ondersteun op Windows. Dit is vanweë  &apos;n vermiste Python module, gedeaktiveer. As jy hierdie invoerder wil gebruik, sal jy die &quot;pyodbc&quot; module moet installeer.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/importer.py" line="293"/>
