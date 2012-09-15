@@ -215,6 +215,7 @@ class MediaMediaItem(MediaManagerItem):
             return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
+        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         if Settings().value(self.settingsSection + u'/media auto start',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0]\
             == QtCore.Qt.Checked:

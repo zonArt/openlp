@@ -600,8 +600,8 @@ class ServiceManager(QtGui.QWidget):
 
         A temporary file is created so that we don't overwrite the existing one
         and leave a mangled service file should there be an error when saving.
-        Audio files are also copied into the service manager directory, and
-        then packaged into the zip file.
+        No files are added to this version of the service as it is deisgned
+        to only work on the machine it was save on if there are files.
         """
         if not self.fileName():
             return self.saveFileAs()
