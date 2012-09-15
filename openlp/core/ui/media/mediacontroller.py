@@ -109,6 +109,7 @@ class MediaController(object):
             # TODO vlc backend is not yet working on Mac OS X.
             # For now just ignore vlc backend on Mac OS X.
             if sys.platform == 'darwin' and filename == 'vlcplayer.py':
+                log.info(u'Disabling vlc media player.')
                 continue
             if filename.endswith(u'player.py') and not \
                 filename == 'media_player.py':  # TODO This file was renamed.
