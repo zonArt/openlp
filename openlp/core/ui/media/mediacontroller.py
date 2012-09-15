@@ -111,8 +111,7 @@ class MediaController(object):
             if sys.platform == 'darwin' and filename == 'vlcplayer.py':
                 log.warn(u'Disabling vlc media player')
                 continue
-            if filename.endswith(u'player.py') and not \
-                filename == 'media_player.py':  # TODO This file was renamed.
+            if filename.endswith(u'player.py'):
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \
