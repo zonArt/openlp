@@ -47,7 +47,8 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
-from openlp.core.utils import AppLocation, delete_file, split_filename
+from openlp.core.utils import AppLocation, delete_file, split_filename, \
+    format_time
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -621,7 +622,7 @@ class ServiceManager(QtGui.QWidget):
                     '/\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
                     'datetime.html#strftime-strptime-behavior for more '
                     'information.')).toString())
-            default_filename = time.strftime(default_pattern)
+            default_filename = format_time(default_pattern)
         else:
             default_filename = u''
         directory = unicode(SettingsManager.get_last_dir(
