@@ -612,18 +612,18 @@ class AdvancedTab(SettingsTab):
     def generateServiceNameExample(self):
         preset_is_valid = True
         if self.serviceNameDay.currentIndex() == 7:
-            time = datetime.now()
+            local_time = datetime.now()
         else:
             now = datetime.now()
             day_delta = self.serviceNameDay.currentIndex() - now.weekday()
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            time = time.replace(hour = self.serviceNameTime.time().hour(),
+            local_time = time.replace(hour = self.serviceNameTime.time().hour(),
                 minute = self.serviceNameTime.time().minute())
         try:
             service_name_example = format_time(unicode(
-                self.serviceNameEdit.text()))
+                self.serviceNameEdit.text()), local_time)
         except ValueError:
             preset_is_valid = False
             service_name_example = translate('OpenLP.AdvancedTab',
