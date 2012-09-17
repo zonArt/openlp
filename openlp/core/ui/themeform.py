@@ -157,7 +157,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             u'outlineColorButton', self.outlineColorButton)
         self.mainAreaPage.registerField(
             u'outlineSizeSpinBox', self.outlineSizeSpinBox)
-        self.mainAreaPage.registerField(u'shadowCheckBox', self.shadowCheckBox)
+        self.mainAreaPage.registerField(
+            u'shadowCheckBox', self.shadowCheckBox)
         self.mainAreaPage.registerField(
             u'mainBoldCheckBox', self.mainBoldCheckBox)
         self.mainAreaPage.registerField(
@@ -168,8 +169,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             u'shadowSizeSpinBox', self.shadowSizeSpinBox)
         self.mainAreaPage.registerField(
             u'footerSizeSpinBox', self.footerSizeSpinBox)
-        self.areaPositionPage.registerField(u'mainPositionX', self.mainXSpinBox)
-        self.areaPositionPage.registerField(u'mainPositionY', self.mainYSpinBox)
+        self.areaPositionPage.registerField(
+            u'mainPositionX', self.mainXSpinBox)
+        self.areaPositionPage.registerField(
+            u'mainPositionY', self.mainYSpinBox)
         self.areaPositionPage.registerField(
             u'mainPositionWidth', self.mainWidthSpinBox)
         self.areaPositionPage.registerField(
@@ -202,7 +205,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Updates the lines on a page on the wizard
         """
-        self.mainLineCountLabel.setText(unicode(translate('OpenLP.ThemeForm',
+        self.mainLineCountLabel.setText(unicode(translate(
+            'OpenLP.ThemeWizard',
             '(approximately %d lines per slide)')) % int(lines))
 
     def resizeEvent(self, event=None):
@@ -223,6 +227,19 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 pixmapWidth = int(pixmapHeight * self.displayAspectRatio + 0.5)
             self.previewBoxLabel.setFixedSize(pixmapWidth + 2 * frameWidth,
                 pixmapHeight + 2 * frameWidth)
+
+    def validateCurrentPage(self):
+        if self.page(self.currentId()) == self.backgroundPage and \
+            self.theme.background_type == \
+                BackgroundType.to_string(BackgroundType.Image) and \
+            unicode(self.imageFileEdit.text()) == u'':
+            QtGui.QMessageBox.critical(self,
+                translate('OpenLP.ThemeWizard', 'Background Image Empty'),
+                translate('OpenLP.ThemeWizard', 'You have not selected a '
+                    'background image. Please select one before continuing.'))
+            return False
+        else:
+            return True
 
     def onCurrentIdChanged(self, pageId):
         """
@@ -521,7 +538,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         images_filter = u'%s;;%s (*.*) (*)' % (
             images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.ThemeForm', 'Select Image'), u'',
+            translate('OpenLP.ThemeWizard', 'Select Image'), u'',
             images_filter)
         if filename:
             self.theme.background_filename = unicode(filename)
@@ -603,14 +620,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.theme_name = unicode(self.field(u'name').toString())
         if not self.theme.theme_name:
             critical_error_message_box(
-                translate('OpenLP.ThemeForm', 'Theme Name Missing'),
-                translate('OpenLP.ThemeForm',
+                translate('OpenLP.ThemeWizard', 'Theme Name Missing'),
+                translate('OpenLP.ThemeWizard',
                 'There is no name for this theme. Please enter one.'))
             return
         if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
             critical_error_message_box(
-                translate('OpenLP.ThemeForm', 'Theme Name Invalid'),
-                translate('OpenLP.ThemeForm',
+                translate('OpenLP.ThemeWizard', 'Theme Name Invalid'),
+                translate('OpenLP.ThemeWizard',
                 'Invalid theme name. Please enter one.'))
             return
         saveFrom = None
