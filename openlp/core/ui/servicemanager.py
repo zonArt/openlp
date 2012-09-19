@@ -47,7 +47,8 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
-from openlp.core.utils import AppLocation, delete_file, split_filename
+from openlp.core.utils import AppLocation, delete_file, split_filename, \
+    format_time
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -519,7 +520,7 @@ class ServiceManager(QtGui.QWidget):
                             'Service File Missing'))
                         message = unicode(translate('OpenLP.ServiceManager',
                             'File missing from service\n\n %s \n\n'
-                            'Continue saving?' % path_from ))
+                            'Continue saving?')) % path_from
                         answer = QtGui.QMessageBox.critical(self, title,
                             message,
                             QtGui.QMessageBox.StandardButtons(
@@ -602,7 +603,7 @@ class ServiceManager(QtGui.QWidget):
             service_day = Settings().value(
                 u'advanced/default service day', 7).toInt()[0]
             if service_day == 7:
-                time = datetime.now()
+                local_time = datetime.now()
             else:
                 service_hour = Settings().value(
                     u'advanced/default service hour', 11).toInt()[0]
@@ -613,7 +614,7 @@ class ServiceManager(QtGui.QWidget):
                 if day_delta < 0:
                     day_delta += 7
                 time = now + timedelta(days=day_delta)
-                time = time.replace(hour=service_hour, minute=service_minute)
+                local_time = time.replace(hour=service_hour, minute=service_minute)
             default_pattern = unicode(Settings().value(
                 u'advanced/default service name',
                 translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
@@ -621,7 +622,7 @@ class ServiceManager(QtGui.QWidget):
                     '/\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
                     'datetime.html#strftime-strptime-behavior for more '
                     'information.')).toString())
-            default_filename = time.strftime(default_pattern)
+            default_filename = format_time(default_pattern, local_time)
         else:
             default_filename = u''
         directory = unicode(SettingsManager.get_last_dir(
