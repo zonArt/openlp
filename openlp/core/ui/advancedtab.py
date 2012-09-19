@@ -674,6 +674,7 @@ class AdvancedTab(SettingsTab):
             options = QtGui.QFileDialog.ShowDirsOnly))
         # Set the new data path.
         if new_data_path:
+            new_data_path = os.path.normpath(new_data_path)
             if self.currentDataPath.lower() == new_data_path.lower():
                 self.onDataDirectoryCancelButtonClicked()
                 return
