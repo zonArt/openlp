@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,15 +48,8 @@ class EasySlidesImport(SongImport):
         Initialise the class.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.commit = True
 
     def doImport(self):
-        """
-        Import either each of the files in self.importSources - each element of
-        which can be either a single opensong file, or a zipfile containing
-        multiple opensong files. If `self.commit` is set False, the
-        import will not be committed to the database (useful for test scripts).
-        """
         log.info(u'Importing EasySlides XML file %s', self.importSource)
         parser = etree.XMLParser(remove_blank_text=True)
         parsed_file = etree.parse(self.importSource, parser)

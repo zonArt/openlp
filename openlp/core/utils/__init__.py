@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -171,6 +172,11 @@ def _get_os_dir_path(dir_type):
             u'Library', u'Application Support', u'openlp')
     else:
         if dir_type == AppLocation.LanguageDir:
+            prefixes = [u'/usr/local', u'/usr']
+            for prefix in prefixes:
+                directory = os.path.join(prefix, u'share', u'openlp')
+                if os.path.exists(directory):
+                    return directory
             return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
@@ -463,10 +469,29 @@ def get_uno_instance(resolver):
         return resolver.resolve(u'uno:socket,host=localhost,port=2002;' \
             + u'urp;StarOffice.ComponentContext')
 
+
+def format_time(text, local_time):
+    """
+    Workaround for Python built-in time formatting fuction time.strftime().
+
+    time.strftime() accepts only ascii characters. This function accepts
+    unicode string and passes individual % placeholders to time.strftime().
+    This ensures only ascii characters are passed to time.strftime().
+
+    ``text``
+        The text to be processed.
+    ``local_time``
+        The time to be used to add to the string.  This is a time object
+    """
+    def match_formatting(match):
+        return local_time.strftime(match.group())
+    return re.sub('\%[a-zA-Z]', match_formatting, text)
+
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename']
+    u'delete_file', u'clean_filename', u'format_time']

@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,7 +48,7 @@ from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
 from openlp.core.utils import AppLocation, add_actions, LanguageManager, \
-    get_application_version
+    get_application_version, get_filesystem_encoding
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui import ScreenList
@@ -209,6 +210,8 @@ class Ui_MainWindow(object):
             icon=u':/system/system_exit.png',
             shortcuts=[QtGui.QKeySequence(u'Alt+F4')],
             category=UiStrings().File, triggers=mainWindow.close)
+        # Give QT Extra Hint that this is the Exit Menu Item
+        self.fileExitItem.setMenuRole(QtGui.QAction.QuitRole)
         action_list.add_category(unicode(UiStrings().Import),
             CategoryOrder.standardMenu)
         self.importThemeItem = create_action(mainWindow,
@@ -303,6 +306,8 @@ class Ui_MainWindow(object):
         self.settingsConfigureItem = create_action(mainWindow,
             u'settingsConfigureItem', icon=u':/system/system_settings.png',
             category=UiStrings().Settings)
+        # Give QT Extra Hint that this is the Preferences Menu Item
+        self.settingsConfigureItem.setMenuRole(QtGui.QAction.PreferencesRole)
         self.settingsImportItem = create_action(mainWindow,
            u'settingsImportItem', category=UiStrings().Settings)
         self.settingsExportItem = create_action(mainWindow,
@@ -313,6 +318,8 @@ class Ui_MainWindow(object):
             icon=u':/system/system_about.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+F1')],
             category=UiStrings().Help, triggers=self.onAboutItemClicked)
+        # Give QT Extra Hint that this is an About Menu Item
+        self.aboutItem.setMenuRole(QtGui.QAction.AboutRole)
         if os.name == u'nt':
             self.localHelpFile = os.path.join(
                 AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
@@ -991,7 +998,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     'settings file.\n\n'
                     'Section [%s] is not valid \n\n'
                     'Processing has terminated and no changed have been made.'
-                    % section),
+                    ).replace('%s', section),
                     QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok))
                 return
@@ -1034,8 +1041,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
             export_file_name = export_file_name + u'.conf'
-        temp_file = os.path.join(unicode(gettempdir()),
-            u'openlp', u'exportConf.tmp')
+        temp_file = os.path.join(unicode(gettempdir(),
+            get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
         self.saveSettings()
         setting_sections = []
         # Add main sections.
@@ -1216,6 +1223,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display:
             self.liveController.display.close()
             self.liveController.display = None
+        # Allow the main process to exit
+        self.application = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
@@ -1508,7 +1517,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                     'Copying OpenLP data to new data directory location - %s '
                     '- Please wait for copy to finish'
-                    % self.newDataPath))
+                    ).replace('%s', self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError),  why:
@@ -1518,7 +1527,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
                     'OpenLP Data directory copy failed\n\n%s'
-                    % unicode(why)),
+                    ).replace('%s', unicode(why)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok))
                 return False

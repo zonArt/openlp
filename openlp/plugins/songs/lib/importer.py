@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,6 +28,7 @@
 """
 The :mod:`importer` modules provides the general song import functionality.
 """
+import os
 import logging
 
 from openlp.core.lib import translate
@@ -43,6 +45,8 @@ from powersongimport import PowerSongImport
 from ewimport import EasyWorshipSongImport
 from songbeamerimport import SongBeamerImport
 from songshowplusimport import SongShowPlusImport
+from songproimport import SongProImport
+from sundayplusimport import SundayPlusImport
 from foilpresenterimport import FoilPresenterImport
 from zionworximport import ZionWorxImport
 # Imports that might fail
@@ -65,6 +69,14 @@ try:
 except ImportError:
     log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
+HAS_MEDIASHOUT = False
+if os.name == u'nt':
+    try:
+        from mediashoutimport import MediaShoutImport
+        HAS_MEDIASHOUT = True
+    except ImportError:
+        log.exception('Error importing %s', 'MediaShoutImport')
+
 
 class SongFormatSelect(object):
     """
@@ -73,6 +85,7 @@ class SongFormatSelect(object):
     SingleFile = 0
     MultipleFiles = 1
     SingleFolder = 2
+
 
 class SongFormat(object):
     """
@@ -84,8 +97,10 @@ class SongFormat(object):
 
     ``u'class'``
         Import class, e.g. ``OpenLyricsImport``
+
     ``u'name'``
         Name of the format, e.g. ``u'OpenLyrics'``
+
     ``u'prefix'``
         Prefix for Qt objects. Use mixedCase, e.g. ``u'openLyrics'``
         See ``SongImportForm.addFileSelectItem()``
@@ -94,11 +109,15 @@ class SongFormat(object):
 
     ``u'canDisable'``
         Whether song format importer is disablable.
+        If ``True``, then ``u'disabledLabelText'`` must also be defined.
+
     ``u'availability'``
         Whether song format importer is available.
+
     ``u'selectMode'``
         Whether format accepts single file, multiple files, or single folder
         (as per ``SongFormatSelect`` options).
+
     ``u'filter'``
         File extension filter for ``QFileDialog``.
 
@@ -106,12 +125,16 @@ class SongFormat(object):
 
     ``u'comboBoxText'``
         Combo box selector (default value is the format's ``u'name'``).
+
     ``u'disabledLabelText'``
         Required for disablable song formats.
+
     ``u'getFilesTitle'``
         Title for ``QFileDialog`` (default includes the format's ``u'name'``).
+
     ``u'invalidSourceMsg'``
         Message displayed if ``isValidSource()`` returns ``False``.
+
     ``u'descriptionText'``
         Short description (1-2 lines) about the song format.
     """
@@ -128,14 +151,16 @@ class SongFormat(object):
     EasySlides = 6
     EasyWorship = 7
     FoilPresenter = 8
-    OpenSong = 9
-    PowerSong = 10
-    SongBeamer = 11
-    SongShowPlus = 12
-    SongsOfFellowship = 13
-    WordsOfWorship = 14
-    ZionWorx = 15
-    #CSV = 16
+    MediaShout = 9
+    OpenSong = 10
+    PowerSong = 11
+    SongBeamer = 12
+    SongPro = 13
+    SongShowPlus = 14
+    SongsOfFellowship = 15
+    SundayPlus = 16
+    WordsOfWorship = 17
+    ZionWorx = 18
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -144,7 +169,8 @@ class SongFormat(object):
         u'selectMode': SongFormatSelect.MultipleFiles,
         u'filter': u'',
         u'comboBoxText': None,
-        u'disabledLabelText': u'',
+        u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+            'This importer has been disabled.'),
         u'getFilesTitle': None,
         u'invalidSourceMsg': None,
         u'descriptionText': None
@@ -226,6 +252,19 @@ class SongFormat(object):
             u'filter': u'%s (*.foil)' % translate(
                 'SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
+        MediaShout: {
+            u'name': u'MediaShout',
+            u'prefix': u'mediaShout',
+            u'canDisable': True,
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
+                'MediaShout Database'),
+            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+                'The MediaShout importer is only supported on Windows. It has '
+                'been disabled due to a missing Python module. If you want to '
+                'use this importer, you will need to install the "pyodbc" '
+                'module.')
+        },
         OpenSong: {
             u'class': OpenSongImport,
             u'name': WizardStrings.OS,
@@ -246,6 +285,18 @@ class SongFormat(object):
             u'filter': u'%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
                 'SongBeamer Files')
         },
+        SongPro: {
+            u'class': SongProImport,
+            u'name': u'SongPro',
+            u'prefix': u'songPro',
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.txt)' % translate('SongsPlugin.ImportWizardForm',
+                'SongPro Text Files'),
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
+                'SongPro (Export File)'),
+            u'descriptionText': translate('SongsPlugin.ImportWizardForm',
+                'In SongPro, export your songs using the File -> Export menu')
+        },
         SongShowPlus: {
             u'class': SongShowPlusImport,
             u'name': u'SongShow Plus',
@@ -262,6 +313,13 @@ class SongFormat(object):
             u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The Songs of Fellowship importer has been disabled because '
                 'OpenLP cannot access OpenOffice or LibreOffice.')
+        },
+        SundayPlus: {
+            u'class': SundayPlusImport,
+            u'name': u'SundayPlus',
+            u'prefix': u'sundayPlus',
+            u'filter': u'%s (*.ptf)' % translate(
+                'SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
         WordsOfWorship: {
             u'class': WowImport,
@@ -281,12 +339,6 @@ class SongFormat(object):
                 'First convert your ZionWorx database to a CSV text file, as '
                 'explained in the <a href="http://manual.openlp.org/songs.html'
                 '#importing-from-zionworx">User Manual</a>.')
-#        },
-#        CSV: {
-#            u'class': CSVImport,
-#            u'name': WizardStrings.CSV,
-#            u'prefix': u'csv',
-#            u'selectMode': SongFormatSelect.SingleFile
         }
     }
 
@@ -305,15 +357,18 @@ class SongFormat(object):
             SongFormat.EasySlides,
             SongFormat.EasyWorship,
             SongFormat.FoilPresenter,
+            SongFormat.MediaShout,
             SongFormat.OpenSong,
             SongFormat.PowerSong,
             SongFormat.SongBeamer,
+            SongFormat.SongPro,
             SongFormat.SongShowPlus,
             SongFormat.SongsOfFellowship,
+            SongFormat.SundayPlus,
             SongFormat.WordsOfWorship,
             SongFormat.ZionWorx
         ]
-    
+
     @staticmethod
     def get(format, *attributes):
         """
@@ -326,6 +381,7 @@ class SongFormat(object):
             Zero or more song format attributes from SongFormat.
 
         Return type depends on number of supplied attributes:
+
         :0: Return dict containing all defined attributes for the format.
         :1: Return the attribute value.
         :>1: Return tuple of requested attribute values.
@@ -360,5 +416,8 @@ if HAS_SOF:
 SongFormat.set(SongFormat.Generic, u'availability', HAS_OOO)
 if HAS_OOO:
     SongFormat.set(SongFormat.Generic, u'class', OooImport)
+SongFormat.set(SongFormat.MediaShout, u'availability', HAS_MEDIASHOUT)
+if HAS_MEDIASHOUT:
+    SongFormat.set(SongFormat.MediaShout, u'class', MediaShoutImport)
 
 __all__ = [u'SongFormat', u'SongFormatSelect']

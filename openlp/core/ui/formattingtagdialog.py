@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -129,15 +130,15 @@ class Ui_FormattingTagDialog(object):
             translate('OpenLP.FormattingTagDialog', 'Description'))
         self.tagLabel.setText(translate('OpenLP.FormattingTagDialog', 'Tag'))
         self.startTagLabel.setText(
-            translate('OpenLP.FormattingTagDialog', 'Start tag'))
+            translate('OpenLP.FormattingTagDialog', 'Start HTML'))
         self.endTagLabel.setText(
-            translate('OpenLP.FormattingTagDialog', 'End tag'))
+            translate('OpenLP.FormattingTagDialog', 'End HTML'))
         self.deletePushButton.setText(UiStrings().Delete)
         self.newPushButton.setText(UiStrings().New)
         self.tagTableWidget.horizontalHeaderItem(0).setText(
             translate('OpenLP.FormattingTagDialog', 'Description'))
         self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.FormattingTagDialog', 'Tag Id'))
+            translate('OpenLP.FormattingTagDialog', 'Tag'))
         self.tagTableWidget.horizontalHeaderItem(2).setText(
             translate('OpenLP.FormattingTagDialog', 'Start HTML'))
         self.tagTableWidget.horizontalHeaderItem(3).setText(

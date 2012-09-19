@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,6 +36,9 @@ from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
+
+# Used to strip control chars (except 10=LF, 13=CR)
+CONTROL_CHARS_MAP = dict.fromkeys(range(10) + [11, 12] + range(14,32) + [127])
 
 class ZionWorxImport(SongImport):
     """
@@ -77,20 +81,17 @@ class ZionWorxImport(SongImport):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """
-        # Used to strip control chars (10=LF, 13=CR, 127=DEL)
-        self.control_chars_map = dict.fromkeys(
-            range(10) + [11, 12] + range(14,32) + [127])
         with open(self.importSource, 'rb') as songs_file:
-            fieldnames = [u'SongNum', u'Title1', u'Title2', u'Lyrics',
+            field_names = [u'SongNum', u'Title1', u'Title2', u'Lyrics',
                 u'Writer', u'Copyright', u'Keywords', u'DefaultStyle']
-            songs_reader = csv.DictReader(songs_file, fieldnames)
+            songs_reader = csv.DictReader(songs_file, field_names)
             try:
                 records = list(songs_reader)
             except csv.Error, e:
                 self.logError(unicode(translate('SongsPlugin.ZionWorxImport',
                     'Error reading CSV file.')),
                     unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Line %d: %s' % (songs_reader.line_num, e))))
+                    'Line %d: %s')) % (songs_reader.line_num, e))
                 return
             num_records = len(records)
             log.info(u'%s records found in CSV file' % num_records)
@@ -110,7 +111,7 @@ class ZionWorxImport(SongImport):
                     self.logError(unicode(translate(
                         'SongsPlugin.ZionWorxImport', 'Record %d' % index)),
                         unicode(translate('SongsPlugin.ZionWorxImport',
-                        'Decoding error: %s' % e)))
+                        'Decoding error: %s')) % e)
                     continue
                 except TypeError, e:
                     self.logError(unicode(translate(
@@ -129,7 +130,7 @@ class ZionWorxImport(SongImport):
                 title = self.title
                 if not self.finish():
                     self.logError(unicode(translate(
-                        'SongsPlugin.ZionWorxImport', 'Record %d' % index))
+                        'SongsPlugin.ZionWorxImport', 'Record %d')) % index
                         + (u': "' + title + u'"' if title else u''))
 
     def _decode(self, str):
@@ -139,4 +140,4 @@ class ZionWorxImport(SongImport):
         """
         # This encoding choice seems OK. ZionWorx has no option for setting the
         # encoding for its songs, so we assume encoding is always the same.
-        return unicode(str, u'cp1252').translate(self.control_chars_map)
+        return unicode(str, u'cp1252').translate(CONTROL_CHARS_MAP)

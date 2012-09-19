@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -123,6 +124,8 @@ class BGExtract(object):
         self._remove_elements(tag, 'div', 'footnotes')
         self._remove_elements(tag, 'div', 'crossrefs')
         self._remove_elements(tag, 'h3')
+        self._remove_elements(tag, 'h4')
+        self._remove_elements(tag, 'h5')
 
     def _extract_verses(self, tags):
         """
@@ -154,10 +157,57 @@ class BGExtract(object):
                     text = text.replace(old, new)
                 text = u' '.join(text.split())
             if verse and text:
-                verses.append((int(verse.strip()), text))
+                verse = verse.strip()
+                try:
+                    verse = int(verse)
+                except (TypeError, ValueError):
+                    verse_parts = verse.split(u'-')
+                    if len(verse_parts) > 1:
+                        verse = int(verse_parts[0])
+                verses.append((verse, text))
         verse_list = {}
         for verse, text in verses[::-1]:
             verse_list[verse] = text
+        return verse_list
+
+    def _extract_verses_old(self, div):
+        """
+        Use the old style of parsing for those Bibles on BG who mysteriously
+        have not been migrated to the new (still broken) HTML.
+
+        ``div``
+            The parent div.
+        """
+        verse_list = {}
+        # Cater for inconsistent mark up in the first verse of a chapter.
+        first_verse = div.find(u'versenum')
+        if first_verse and first_verse.contents:
+            verse_list[1] = unicode(first_verse.contents[0])
+        for verse in div(u'sup', u'versenum'):
+            raw_verse_num = verse.next
+            clean_verse_num = 0
+            # Not all verses exist in all translations and may or may not be
+            # represented by a verse number. If they are not fine, if they are
+            # it will probably be in a format that breaks int(). We will then
+            # have no idea what garbage may be sucked in to the verse text so
+            # if we do not get a clean int() then ignore the verse completely.
+            try:
+                clean_verse_num = int(str(raw_verse_num))
+            except ValueError:
+                log.warn(u'Illegal verse number: %s', unicode(raw_verse_num))
+            if clean_verse_num:
+                verse_text = raw_verse_num.next
+                part = raw_verse_num.next.next
+                while not (isinstance(part, Tag) and
+                           part.get(u'class') == u'versenum'):
+                    # While we are still in the same verse grab all the text.
+                    if isinstance(part, NavigableString):
+                        verse_text += part
+                    if isinstance(part.next, Tag) and part.next.name == u'div':
+                        # Run out of verses so stop.
+                        break
+                    part = part.next
+                verse_list[clean_verse_num] = unicode(verse_text)
         return verse_list
 
     def get_bible_chapter(self, version, book_name, chapter):
@@ -188,7 +238,13 @@ class BGExtract(object):
         Receiver.send_message(u'openlp_process_events')
         div = soup.find('div', 'result-text-style-normal')
         self._clean_soup(div)
-        verse_list = self._extract_verses(div.findAll('span', 'text'))
+        span_list = div.findAll('span', 'text')
+        log.debug('Span list: %s', span_list)
+        if not span_list:
+            # If we don't get any spans then we must have the old HTML format
+            verse_list = self._extract_verses_old(div)
+        else:
+            verse_list = self._extract_verses(span_list)
         if not verse_list:
             log.debug(u'No content found in the BibleGateway response.')
             send_error_message(u'parse')

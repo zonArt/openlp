@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -37,7 +38,7 @@ import sys
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
-from openlp.core.utils import get_images_filter, AppLocation
+from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
 log = logging.getLogger(__name__)
@@ -526,7 +527,7 @@ class AdvancedTab(SettingsTab):
                 'Click "No" to stop loading OpenLP. allowing you to fix '
                 'the the problem.\n\n'
                 'Click "Yes" to reset the data directory to the default '
-                'location.' % self.currentDataPath),
+                'location.').replace('%s', self.currentDataPath),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -544,6 +545,10 @@ class AdvancedTab(SettingsTab):
             self.currentDataPath))
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
+        # Don't allow data directory move if running portable.
+        if Settings().value(u'advanced/is portable',
+            QtCore.QVariant(False)).toBool():
+            self.dataDirectoryGroupBox.hide()
 
     def save(self):
         """
@@ -607,18 +612,18 @@ class AdvancedTab(SettingsTab):
     def generateServiceNameExample(self):
         preset_is_valid = True
         if self.serviceNameDay.currentIndex() == 7:
-            time = datetime.now()
+            local_time = datetime.now()
         else:
             now = datetime.now()
             day_delta = self.serviceNameDay.currentIndex() - now.weekday()
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            time = time.replace(hour = self.serviceNameTime.time().hour(),
+            local_time = time.replace(hour = self.serviceNameTime.time().hour(),
                 minute = self.serviceNameTime.time().minute())
         try:
-            service_name_example = time.strftime(unicode(
-                self.serviceNameEdit.text()))
+            service_name_example = format_time(unicode(
+                self.serviceNameEdit.text()), local_time)
         except ValueError:
             preset_is_valid = False
             service_name_example = translate('OpenLP.AdvancedTab',
@@ -681,7 +686,7 @@ class AdvancedTab(SettingsTab):
                 'Are you sure you want to change the location of the OpenLP '
                 'data directory to:\n\n%s\n\n'
                 'The data directory will be changed when OpenLP is closed.'
-                % new_data_path),
+                ).replace('%s', new_data_path),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
@@ -745,7 +750,7 @@ class AdvancedTab(SettingsTab):
                 'The location you have selected \n\n%s\n\n'
                 'appears to contain OpenLP data files.  Do you wish to replace '
                 'these files with the current data files?'
-                % os.path.abspath(data_path,)),
+                ).replace('%s', os.path.abspath(data_path,)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),

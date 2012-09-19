@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -418,7 +419,7 @@ class BibleMediaItem(MediaManagerItem):
 
         ``bible``
             The bible to initialise (unicode).
-        
+
         ``last_book_id``
             The "book reference id" of the book which is choosen at the moment.
             (int)
@@ -568,7 +569,9 @@ class BibleMediaItem(MediaManagerItem):
         if bible:
             if QtGui.QMessageBox.question(self, UiStrings().ConfirmDelete,
                 unicode(translate('BiblesPlugin.MediaItem',
-                'Are you sure you want to delete "%s"?')) % bible,
+                'Are you sure you want to completely delete "%s" Bible from '
+                'OpenLP?\n\nYou will need to re-import this Bible to use it '
+                'again.'))% bible,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
@@ -976,7 +979,7 @@ class BibleMediaItem(MediaManagerItem):
         else:
             service_item.theme = self.settings.bible_theme
         for slide in raw_slides:
-            service_item.add_from_text(slide[:30], slide)
+            service_item.add_from_text(slide)
         return True
 
     def formatTitle(self, start_bitem, old_bitem):

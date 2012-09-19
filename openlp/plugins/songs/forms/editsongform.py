@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +34,7 @@ import shutil
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, \
-    create_separated_list
+    create_separated_list, check_directory_exists
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, \
     critical_error_message_box, find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -256,8 +257,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         verse_tags_translated = False
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML = SongXML()
-            verseList = songXML.get_verses(self.song.lyrics)
-            for count, verse in enumerate(verseList):
+            verse_list = songXML.get_verses(self.song.lyrics)
+            for count, verse in enumerate(verse_list):
                 self.verseListWidget.setRowCount(
                     self.verseListWidget.rowCount() + 1)
                 # This silently migrates from localized verse type markup.
@@ -479,27 +480,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseEditButtonClicked(self):
         item = self.verseListWidget.currentItem()
         if item:
-            tempText = item.text()
-            verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-            self.verseForm.setVerse(tempText, True, verseId)
+            temp_text = item.text()
+            verse_id = unicode(item.data(QtCore.Qt.UserRole).toString())
+            self.verseForm.setVerse(temp_text, True, verse_id)
             if self.verseForm.exec_():
                 after_text, verse_tag, verse_num = self.verseForm.getVerse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, QtCore.QVariant(verse_def))
                 item.setText(after_text)
                 # number of lines has changed, repaint the list moving the data
-                if len(tempText.split(u'\n')) != len(after_text.split(u'\n')):
-                    tempList = {}
-                    tempId = {}
+                if len(temp_text.split(u'\n')) != len(after_text.split(u'\n')):
+                    temp_list = []
+                    temp_ids = []
                     for row in range(self.verseListWidget.rowCount()):
-                        tempList[row] = self.verseListWidget.item(row, 0)\
-                            .text()
-                        tempId[row] = self.verseListWidget.item(row, 0)\
-                            .data(QtCore.Qt.UserRole)
+                        item = self.verseListWidget.item(row, 0)
+                        temp_list.append(item.text())
+                        temp_ids.append(item.data(QtCore.Qt.UserRole))
                     self.verseListWidget.clear()
-                    for row in range (0, len(tempList)):
-                        item = QtGui.QTableWidgetItem(tempList[row], 0)
-                        item.setData(QtCore.Qt.UserRole, tempId[row])
+                    for row, entry in enumerate(temp_list):
+                        item = QtGui.QTableWidgetItem(entry, 0)
+                        item.setData(QtCore.Qt.UserRole, temp_ids[row])
                         self.verseListWidget.setItem(row, 0, item)
         self.tagRows()
         # Check if all verse tags are used.
@@ -528,9 +528,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for row in self.findVerseSplit.split(verse_list):
             for match in row.split(u'---['):
                 for count, parts in enumerate(match.split(u']---\n')):
-                    if len(parts) <= 1:
-                        continue
                     if count == 0:
+                        if len(parts) == 0:
+                            continue
                         # handling carefully user inputted versetags
                         separator = parts.find(u':')
                         if separator >= 0:
@@ -880,8 +880,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         save_path = os.path.join(
             AppLocation.get_section_data_path(self.mediaitem.plugin.name),
             'audio', str(self.song.id))
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
+        check_directory_exists(save_path)
         self.song.media_files = []
         files = []
         for row in xrange(self.audioListWidget.count()):
@@ -923,9 +922,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             multiple = []
             for i in range(self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(i, 0)
-                verseId = unicode(item.data(QtCore.Qt.UserRole).toString())
-                verse_tag = verseId[0]
-                verse_num = verseId[1:]
+                verse_id = unicode(item.data(QtCore.Qt.UserRole).toString())
+                verse_tag = verse_id[0]
+                verse_num = verse_id[1:]
                 sxml.add_verse_to_lyrics(verse_tag, verse_num,
                     unicode(item.text()))
                 if verse_num > u'1' and verse_tag not in multiple:

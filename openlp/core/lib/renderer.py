@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,7 +32,7 @@ from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags
+    ItemCapabilities, FormattingTags, ImageSource
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -81,6 +82,9 @@ class Renderer(object):
         self._calculate_default()
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
+        self.web = QtWebKit.QWebView()
+        self.web.setVisible(False)
+        self.web_frame = self.web.page().mainFrame()
 
     def update_display(self):
         """
@@ -136,8 +140,8 @@ class Renderer(object):
                 self._theme_dimensions[theme_name]
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.theme_name,
-                theme_data.background_filename, u'theme',
+            self.image_manager.addImage(theme_data.background_filename,
+                ImageSource.Theme,
                 QtGui.QColor(theme_data.background_border_color))
 
     def pre_render(self, override_theme_data=None):
@@ -234,16 +238,15 @@ class Renderer(object):
         serviceItem = ServiceItem()
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(u'', VERSE_FOR_LINE_COUNT)
+            serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
-            self.image_manager.deleteImage(theme_data.theme_name)
-            serviceItem.add_from_text(u'', VERSE)
+            serviceItem.add_from_text(VERSE)
         serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.theme_name,
-                theme_data.background_filename, u'theme',
+            self.image_manager.addImage(theme_data.background_filename,
+                ImageSource.Theme,
                 QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
         serviceItem.themedata = theme_data
@@ -253,7 +256,7 @@ class Renderer(object):
         if not self.force_page:
             self.display.buildHtml(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
-            self.display.text(raw_html)
+            self.display.text(raw_html, False)
             preview = self.display.preview()
             return preview
         self.force_page = False
@@ -362,7 +365,7 @@ class Renderer(object):
             The theme information
         """
         if not theme_data.font_main_override:
-            return QtCore.QRect(10, 0, self.width, self.footer_start)
+            return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
             return QtCore.QRect(theme_data.font_main_x, theme_data.font_main_y,
                 theme_data.font_main_width - 1, theme_data.font_main_height - 1)
@@ -403,6 +406,10 @@ class Renderer(object):
         if theme_data.font_main_shadow:
             self.page_width -= int(theme_data.font_main_shadow_size)
             self.page_height -= int(theme_data.font_main_shadow_size)
+        # For the life of my I don't know why we have to completely kill the
+        # QWebView in order for the display to work properly, but we do. See
+        # bug #1041366 for an example of what happens if we take this out.
+        self.web = None
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web.resize(self.page_width, self.page_height)
@@ -450,8 +457,7 @@ class Renderer(object):
                 previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
             previous_raw = separator.join(lines)
-        if previous_raw:
-            formatted.append(previous_raw)
+        formatted.append(previous_raw)
         log.debug(u'_paginate_slide - End')
         return formatted
 
