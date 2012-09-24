@@ -28,6 +28,7 @@
 
 import logging
 import os
+import sys
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
@@ -43,7 +44,7 @@ log = logging.getLogger(__name__)
 class MediaController(object):
     """
     The implementation of the Media Controller. The Media Controller adds an own
-    class for every Player. Currently these are QtWebkit, Phonon and planed Vlc.
+    class for every Player. Currently these are QtWebkit, Phonon and Vlc.
     """
 
     def __init__(self, parent):
@@ -105,8 +106,12 @@ class MediaController(object):
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
-            if filename.endswith(u'player.py') and not \
-                filename == 'media_player.py':
+            # TODO vlc backend is not yet working on Mac OS X.
+            # For now just ignore vlc backend on Mac OS X.
+            if sys.platform == 'darwin' and filename == 'vlcplayer.py':
+                log.warn(u'Disabling vlc media player')
+                continue
+            if filename.endswith(u'player.py'):
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \
@@ -114,7 +119,9 @@ class MediaController(object):
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
-                    except ImportError:
+                    # On some platforms importing vlc.py might cause
+                    # also OSError exceptions. (e.g. Mac OS X)
+                    except (ImportError, OSError):
                         log.warn(u'Failed to import %s on path %s',
                             modulename, path)
         controller_classes = MediaPlayer.__subclasses__()
@@ -287,7 +294,7 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, controller, file, muted, isBackground):
+    def video(self, controller, file, muted, isBackground, hidden=False):
         """
         Loads and starts a video to run with the option of sound
         """
@@ -333,11 +340,19 @@ class MediaController(object):
         if controller.isLive and not controller.media_info.is_background:
             display.frame.evaluateJavaScript(u'show_video( \
             "setBackBoard", null, null, null,"visible");')
-        # now start playing
-        if controller.isLive and \
-            (Settings().value(u'general/auto unblank',
-            QtCore.QVariant(False)).toBool() or \
-            controller.media_info.is_background) or not controller.isLive:
+        # now start playing - Preview is autoplay!
+        autoplay = False
+        # Preview requested
+        if not controller.isLive:
+            autoplay = True
+        # Visible or background requested
+        elif not hidden or controller.media_info.is_background:
+            autoplay = True
+        # Unblank on load set
+        elif Settings().value(u'general/auto unblank',
+            QtCore.QVariant(False)).toBool():
+            autoplay = True
+        if autoplay:
             if not self.video_play([controller]):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),

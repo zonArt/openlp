@@ -528,9 +528,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for row in self.findVerseSplit.split(verse_list):
             for match in row.split(u'---['):
                 for count, parts in enumerate(match.split(u']---\n')):
-                    if len(parts) <= 1:
-                        continue
                     if count == 0:
+                        if len(parts) == 0:
+                            continue
                         # handling carefully user inputted versetags
                         separator = parts.find(u':')
                         if separator >= 0:

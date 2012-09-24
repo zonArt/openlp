@@ -38,7 +38,7 @@ import sys
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
-from openlp.core.utils import get_images_filter, AppLocation
+from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
 log = logging.getLogger(__name__)
@@ -516,7 +516,7 @@ class AdvancedTab(SettingsTab):
                 'Click "No" to stop loading OpenLP. allowing you to fix '
                 'the the problem.\n\n'
                 'Click "Yes" to reset the data directory to the default '
-                'location.' % self.currentDataPath),
+                'location.').replace('%s', self.currentDataPath),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -533,6 +533,10 @@ class AdvancedTab(SettingsTab):
         self.dataDirectoryLabel.setText(os.path.abspath(self.currentDataPath))
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
+        # Don't allow data directory move if running portable.
+        if Settings().value(u'advanced/is portable',
+            QtCore.QVariant(False)).toBool():
+            self.dataDirectoryGroupBox.hide()
 
     def save(self):
         """
@@ -596,18 +600,18 @@ class AdvancedTab(SettingsTab):
     def generateServiceNameExample(self):
         preset_is_valid = True
         if self.serviceNameDay.currentIndex() == 7:
-            time = datetime.now()
+            local_time = datetime.now()
         else:
             now = datetime.now()
             day_delta = self.serviceNameDay.currentIndex() - now.weekday()
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            time = time.replace(hour = self.serviceNameTime.time().hour(),
+            local_time = time.replace(hour = self.serviceNameTime.time().hour(),
                 minute = self.serviceNameTime.time().minute())
         try:
-            service_name_example = time.strftime(unicode(
-                self.serviceNameEdit.text()))
+            service_name_example = format_time(unicode(
+                self.serviceNameEdit.text()), local_time)
         except ValueError:
             preset_is_valid = False
             service_name_example = translate('OpenLP.AdvancedTab',
@@ -657,6 +661,7 @@ class AdvancedTab(SettingsTab):
             options = QtGui.QFileDialog.ShowDirsOnly))
         # Set the new data path.
         if new_data_path:
+            new_data_path = os.path.normpath(new_data_path)
             if self.currentDataPath.lower() == new_data_path.lower():
                 self.onDataDirectoryCancelButtonClicked()
                 return
@@ -669,7 +674,7 @@ class AdvancedTab(SettingsTab):
                 'Are you sure you want to change the location of the OpenLP '
                 'data directory to:\n\n%s\n\n'
                 'The data directory will be changed when OpenLP is closed.'
-                % new_data_path),
+                ).replace('%s', new_data_path),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
@@ -734,7 +739,7 @@ class AdvancedTab(SettingsTab):
                 'The location you have selected \n\n%s\n\n'
                 'appears to contain OpenLP data files.  Do you wish to replace '
                 'these files with the current data files?'
-                % os.path.abspath(data_path,)),
+                ).replace('%s', os.path.abspath(data_path,)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
