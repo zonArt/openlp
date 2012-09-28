@@ -118,9 +118,6 @@ class PptviewDocument(PresentationDocument):
         Called when a presentation is added to the SlideController.
         It builds the environment, starts communcations with the background
         PptView task started earlier.
-
-        ``presentation``
-        The file name of the presentations to run.
         """
         log.debug(u'LoadPresentation')
         renderer = self.controller.plugin.renderer

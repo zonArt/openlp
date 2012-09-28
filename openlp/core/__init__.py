@@ -35,6 +35,7 @@ logging and a plugin framework are contained within the openlp.core module.
 
 import os
 import sys
+import platform
 import logging
 from optparse import OptionParser
 from traceback import format_exception
@@ -102,8 +103,13 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         self.eventLoopIsActive = False
-        # On Windows, the args passed into the constructor are
-        # ignored. Not very handy, so set the ones we want to use.
+        # On Windows, the args passed into the constructor are ignored. Not
+        # very handy, so set the ones we want to use. On Linux and FreeBSD, in
+        # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
+        # command line argument. This interferes with files being passed in as
+        # command line arguments, so we remove it from the list.
+        if 'OpenLP' in args:
+            args.remove('OpenLP')
         self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -208,6 +214,20 @@ class OpenLP(QtGui.QApplication):
             return QtGui.QApplication.event(self, event)
 
 
+def set_up_logging(log_path):
+    """
+    Setup our logging using log_path
+    """
+    check_directory_exists(log_path)
+    filename = os.path.join(log_path, u'openlp.log')
+    logfile = logging.FileHandler(filename, u'w')
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+    log.addHandler(logfile)
+    if log.isEnabledFor(logging.DEBUG):
+        print 'Logging to:', filename
+
+
 def main(args=None):
     """
     The main function which parses command line options and then runs
@@ -231,21 +251,19 @@ def main(args=None):
         help='Set the Qt4 style (passed directly to Qt4).')
     parser.add_option('--testing', dest='testing',
         action='store_true', help='Run by testing framework')
-    # Set up logging
-    log_path = AppLocation.get_directory(AppLocation.CacheDir)
-    check_directory_exists(log_path)
-    filename = os.path.join(log_path, u'openlp.log')
-    logfile = logging.FileHandler(filename, u'w')
-    logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
-    log.addHandler(logfile)
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
+    if options.portable:
+        app_path = AppLocation.get_directory(AppLocation.AppDir)
+        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
+            u'..', u'Other')))
+        log.info(u'Running portable')
+    else:
+        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
-        print 'Logging to:', filename
     elif options.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:
@@ -254,6 +272,9 @@ def main(args=None):
         qt_args.extend(['-style', options.style])
     # Throw the rest of the arguments at Qt, just in case.
     qt_args.extend(args)
+    # Bug #1018855: Set the WM_CLASS property in X11
+    if platform.system() not in ['Windows', 'Darwin']:
+        qt_args.append('OpenLP')
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
@@ -261,11 +282,9 @@ def main(args=None):
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
     if options.portable:
-        log.info(u'Running portable')
         app.setApplicationName(u'OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
-        app_path = AppLocation.get_directory(AppLocation.AppDir)
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
             u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file

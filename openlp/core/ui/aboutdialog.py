@@ -72,10 +72,10 @@ class Ui_AboutDialog(object):
         self.licenseTabLayout.addWidget(self.licenseTextEdit)
         self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
-        self.contributeButton = create_button(None, u'contributeButton',
-            icon=u':/system/system_contribute.png')
+        self.volunteerButton = create_button(None, u'volunteerButton',
+            icon=u':/system/system_volunteer.png')
         self.buttonBox = create_button_box(aboutDialog, u'buttonBox',
-            [u'close'], [self.contributeButton])
+            [u'close'], [self.volunteerButton])
         self.aboutDialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(aboutDialog)
         self.aboutNotebook.setCurrentIndex(0)
@@ -96,7 +96,7 @@ class Ui_AboutDialog(object):
             '\n'
             'OpenLP is written and maintained by volunteers. If you would '
             'like to see more free Christian software being written, please '
-            'consider contributing by using the button below.'
+            'consider volunteering by using the button below.'
         ))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.aboutTab), UiStrings().About)
@@ -615,5 +615,5 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.licenseTab),
             translate('OpenLP.AboutForm', 'License'))
-        self.contributeButton.setText(translate('OpenLP.AboutForm',
-            'Contribute'))
+        self.volunteerButton.setText(translate('OpenLP.AboutForm',
+            'Volunteer'))

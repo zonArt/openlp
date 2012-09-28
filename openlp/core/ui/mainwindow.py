@@ -210,6 +210,8 @@ class Ui_MainWindow(object):
             icon=u':/system/system_exit.png',
             shortcuts=[QtGui.QKeySequence(u'Alt+F4')],
             category=UiStrings().File, triggers=mainWindow.close)
+        # Give QT Extra Hint that this is the Exit Menu Item
+        self.fileExitItem.setMenuRole(QtGui.QAction.QuitRole)
         action_list.add_category(unicode(UiStrings().Import),
             CategoryOrder.standardMenu)
         self.importThemeItem = create_action(mainWindow,
@@ -304,6 +306,8 @@ class Ui_MainWindow(object):
         self.settingsConfigureItem = create_action(mainWindow,
             u'settingsConfigureItem', icon=u':/system/system_settings.png',
             category=UiStrings().Settings)
+        # Give QT Extra Hint that this is the Preferences Menu Item
+        self.settingsConfigureItem.setMenuRole(QtGui.QAction.PreferencesRole)
         self.settingsImportItem = create_action(mainWindow,
            u'settingsImportItem', category=UiStrings().Settings)
         self.settingsExportItem = create_action(mainWindow,
@@ -314,6 +318,8 @@ class Ui_MainWindow(object):
             icon=u':/system/system_about.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+F1')],
             category=UiStrings().Help, triggers=self.onAboutItemClicked)
+        # Give QT Extra Hint that this is an About Menu Item
+        self.aboutItem.setMenuRole(QtGui.QAction.AboutRole)
         if os.name == u'nt':
             self.localHelpFile = os.path.join(
                 AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
@@ -965,6 +971,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections.extend([self.themesSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         setting_sections.extend([self.headerSection])
+        setting_sections.extend([u'crashreport'])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
             setting_sections.extend([plugin.name])
@@ -992,7 +999,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     'settings file.\n\n'
                     'Section [%s] is not valid \n\n'
                     'Processing has terminated and no changed have been made.'
-                    % section),
+                    ).replace('%s', section),
                     QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok))
                 return
@@ -1511,7 +1518,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                     'Copying OpenLP data to new data directory location - %s '
                     '- Please wait for copy to finish'
-                    % self.newDataPath))
+                    ).replace('%s', self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError),  why:
@@ -1521,7 +1528,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
                     'OpenLP Data directory copy failed\n\n%s'
-                    % unicode(why)),
+                    ).replace('%s', unicode(why)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok))
                 return False

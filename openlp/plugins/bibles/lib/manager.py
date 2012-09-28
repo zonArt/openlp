@@ -208,24 +208,16 @@ class BibleManager(object):
 
     def delete_bible(self, name):
         """
-        Delete a bible completly.
+        Delete a bible completely.
 
         ``name``
             The name of the bible.
         """
         log.debug(u'BibleManager.delete_bible("%s")', name)
-        files = SettingsManager.get_files(self.settingsSection,
-            self.suffix)
-        if u'alternative_book_names.sqlite' in files:
-            files.remove(u'alternative_book_names.sqlite')
-        for filename in files:
-            bible = BibleDB(self.parent, path=self.path, file=filename)
-            # Remove the bible files
-            if name == bible.get_name():
-                bible.session.close()
-                if delete_file(os.path.join(self.path, filename)):
-                    return True
-        return False
+        bible = self.db_cache[name]
+        bible.session.close()
+        bible.session = None
+        return delete_file(os.path.join(bible.path, bible.file))
 
     def get_bibles(self):
         """
