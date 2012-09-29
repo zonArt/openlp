@@ -55,6 +55,28 @@ class PlayerTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
+        self.bgColorGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.bgColorGroupBox.setObjectName(u'FontGroupBox')
+        self.formLayout = QtGui.QFormLayout(self.bgColorGroupBox)
+        self.formLayout.setObjectName(u'FormLayout')
+        self.colorLayout = QtGui.QHBoxLayout()
+        self.backgroundColorLabel = QtGui.QLabel(self.bgColorGroupBox)
+        self.backgroundColorLabel.setObjectName(u'BackgroundColorLabel')
+        self.colorLayout.addWidget(self.backgroundColorLabel)
+        self.backgroundColorButton = QtGui.QPushButton(self.bgColorGroupBox)
+        self.backgroundColorButton.setObjectName(u'BackgroundColorButton')
+        self.colorLayout.addWidget(self.backgroundColorButton)
+        self.formLayout.addRow(self.colorLayout)
+        self.informationLabel = QtGui.QLabel(self.bgColorGroupBox)
+        self.informationLabel.setObjectName(u'InformationLabel')
+        self.informationLabel.setWordWrap(True)
+        self.formLayout.addRow(self.informationLabel)
+        self.leftLayout.addWidget(self.bgColorGroupBox)
+        self.leftLayout.addStretch()
+        self.rightColumn.setSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.rightLayout.addStretch()
+
         self.mediaPlayerGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.mediaPlayerGroupBox.setObjectName(u'mediaPlayerGroupBox')
         self.mediaPlayerLayout = QtGui.QVBoxLayout(self.mediaPlayerGroupBox)
@@ -109,6 +131,9 @@ class PlayerTab(SettingsTab):
             QtCore.QObject.connect(checkbox,
                 QtCore.SIGNAL(u'stateChanged(int)'),
                 self.onPlayerCheckBoxChanged)
+        # Signals and slots
+        QtCore.QObject.connect(self.backgroundColorButton,
+            QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         self.mediaPlayerGroupBox.setTitle(
@@ -125,6 +150,22 @@ class PlayerTab(SettingsTab):
                         '%s (unavailable)')) % player.display_name)
         self.playerOrderGroupBox.setTitle(
             translate('OpenLP.PlayerTab', 'Player Search Order'))
+        self.bgColorGroupBox.setTitle(
+            translate('ImagesPlugin.ImageTab', 'Background Color'))
+        self.backgroundColorLabel.setText(
+            translate('ImagesPlugin.ImageTab', 'Default Color:'))
+        self.informationLabel.setText(
+            translate('ImagesPlugin.ImageTab', 'Visible background for images '
+                                               'with aspect ratio different to screen.'))
+
+
+    def onbackgroundColorButtonClicked(self):
+        new_color = QtGui.QColorDialog.getColor(
+            QtGui.QColor(self.bg_color), self)
+        if new_color.isValid():
+            self.bg_color = new_color.name()
+            self.backgroundColorButton.setStyleSheet(
+                u'background-color: %s' % self.bg_color)
 
     def onPlayerCheckBoxChanged(self, check_state):
         player = self.sender().playerName
@@ -178,10 +219,24 @@ class PlayerTab(SettingsTab):
                 checkbox.setChecked(True)
             else:
                 checkbox.setChecked(False)
+        settings = Settings()
+        settings.beginGroup(self.settingsSection)
         self.updatePlayerList()
+        self.bg_color = unicode(settings.value(
+            u'background color', QtCore.QVariant(u'#000000')).toString())
+        self.initial_color = self.bg_color
+        settings.endGroup()
+        self.backgroundColorButton.setStyleSheet(
+            u'background-color: %s' % self.bg_color)
 
     def save(self):
         player_string_changed = False
+        settings = Settings()
+        settings.beginGroup(self.settingsSection)
+        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.endGroup()
+        if self.initial_color != self.bg_color:
+            Receiver.send_message(u'image_updated')
         old_players, override_player = get_media_players()
         if self.usedPlayers != old_players:
             # clean old Media stuff

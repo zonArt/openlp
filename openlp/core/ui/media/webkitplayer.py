@@ -26,24 +26,27 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui
+
 import logging
 
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
 VIDEO_CSS = u"""
 #videobackboard {
     z-index:3;
-    background-color: black;
+    background-color: %s;
 }
 #video1 {
-    background-color: black;
+    background-color: %s;
     z-index:4;
 }
 #video2 {
-    background-color: black;
+    background-color: %s;
     z-index:4;
 }
 """
@@ -278,7 +281,10 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        return VIDEO_CSS + FLASH_CSS
+        background = unicode(QtGui.QColor(Settings().value(
+            u'players/background color', QtCore.QVariant(u'#000000'))).name())
+        css = VIDEO_CSS % (background,background,background)
+        return css + FLASH_CSS
 
     def get_media_display_javascript(self):
         """

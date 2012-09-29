@@ -295,7 +295,6 @@ class MediaController(object):
         Loads and starts a video to run with the option of sound
         """
         log.debug(u'video')
-        print "hallo mum"
         isValid = False
         # stop running videos
         self.video_reset(controller)
