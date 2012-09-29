@@ -176,8 +176,14 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
+                service_item = ServiceItem()
+                service_item.title = unicode(self.displayTypeComboBox.currentText())
+                service_item.shortname = service_item.title
+                (path, name) = os.path.split(filename)
+                service_item.add_from_command(path, name,
+                    u':/media/image_clapperboard.png')
                 if self.plugin.liveController.mediaController.video(
-                    self.plugin.liveController, filename, True, True):
+                    self.plugin.liveController, service_item, True, True):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

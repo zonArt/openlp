@@ -39,9 +39,11 @@ VIDEO_CSS = u"""
     background-color: black;
 }
 #video1 {
+    background-color: black;
     z-index:4;
 }
 #video2 {
+    background-color: black;
     z-index:4;
 }
 """
