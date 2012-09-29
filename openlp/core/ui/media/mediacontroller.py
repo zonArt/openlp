@@ -56,7 +56,6 @@ class MediaController(object):
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
-        self.withLivePreview = False
         self.check_available_media_players()
         # Signals
         QtCore.QObject.connect(self.timer,
@@ -260,9 +259,6 @@ class MediaController(object):
         # update player status
         self.set_active_players()
         display.hasAudio = True
-        if not self.withLivePreview and \
-            display == self.parent.liveController.previewDisplay:
-            return
         if display == self.parent.previewController.previewDisplay or \
             display == self.parent.liveController.previewDisplay:
             display.hasAudio = False
@@ -307,7 +303,7 @@ class MediaController(object):
         controller.media_info.is_background = isBackground
         display = None
         if controller.isLive:
-            if self.withLivePreview and controller.previewDisplay:
+            if controller.previewDisplay:
                 display = controller.previewDisplay
                 isValid = self.check_file_type(controller, display)
             display = controller.display

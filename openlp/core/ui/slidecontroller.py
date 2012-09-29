@@ -1349,7 +1349,7 @@ class SlideController(Controller):
         """
         log.debug(u'SlideController onMediaStart')
         self.mediaController.video(self, item, False, False, self.hideMode())
-        if not self.isLive or self.mediaController.withLivePreview:
+        if not self.isLive:
             self.previewDisplay.show()
             self.slidePreview.hide()
 
