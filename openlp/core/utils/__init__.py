@@ -136,7 +136,7 @@ class AppLocation(object):
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
-        return path
+        return os.path.normpath(path)
 
     @staticmethod
     def get_section_data_path(section):

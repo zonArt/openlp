@@ -1,4 +1,5 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="cs" sourcelanguage="" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="2.0" language="cs" sourcelanguage="">
 <context>
     <name>AlertsPlugin</name>
     <message>
@@ -101,7 +102,7 @@ Chcete přesto pokračovat?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/alerts/forms/alertform.py" line="190"/>
-        <source>The alert text does not contain '&lt;&gt;'.
+        <source>The alert text does not contain &apos;&lt;&gt;&apos;.
 Do you want to continue anyway?</source>
         <translation>Text upozornění neobsahuje &apos;&lt;&gt;&apos;.
 Chcete přesto pokračovat?</translation>
@@ -174,12 +175,12 @@ Chcete přesto pokračovat?</translation>
         <translation>Bible</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="543"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="598"/>
         <source>No Book Found</source>
         <translation>Kniha nenalezena</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="543"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="598"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>V Bibli nebyla nalezena odpovídající kniha. Prověřte, že název knihy byl zadán správně.</translation>
     </message>
@@ -710,39 +711,39 @@ následovat jeden nebo více nečíslných znaků.</translation>
 <context>
     <name>BiblesPlugin.BibleManager</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="429"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="421"/>
         <source>Scripture Reference Error</source>
         <translation>Chyba v odkazu do Bible</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="419"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="411"/>
         <source>Web Bible cannot be used</source>
         <translation>Bibli z www nelze použít</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="419"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="411"/>
         <source>Text Search is not available with Web Bibles.</source>
         <translation>Hledání textu není dostupné v Bibli z www.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="429"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="421"/>
         <source>You did not enter a search keyword.
 You can separate different keywords by a space to search for all of your keywords and you can separate them by a comma to search for one of them.</source>
         <translation>Nebylo zadáno slovo pro hledání.
 K hledání textu obsahující všechna slova je nutno tato slova oddělit mezerou. Oddělením slov čárkou se bude hledat text obsahující alespoň jedno ze zadaných slov.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="403"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="395"/>
         <source>There are no Bibles currently installed. Please use the Import Wizard to install one or more Bibles.</source>
         <translation>Žádné Bible nejsou nainstalovány. K p?idání jedné nebo více Biblí prosím použijte Pr?vodce importem.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="403"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="395"/>
         <source>No Bibles Available</source>
         <translation>Žádné Bible k dispozici</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/manager.py" line="346"/>
+        <location filename="openlp/plugins/bibles/lib/manager.py" line="338"/>
         <source>Your scripture reference is either not supported by OpenLP or is invalid. Please make sure your reference conforms to one of the following patterns or consult the manual:
 
 Book Chapter
@@ -1043,38 +1044,38 @@ Není možné přizpůsobit si názvy knih.</translation>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="457"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="512"/>
         <source>Registering Bible and loading books...</source>
         <translation>Registruji Bibli a stahuji knihy...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="482"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="537"/>
         <source>Registering Language...</source>
         <translation>Registruji jazyk...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="498"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="553"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>Importuji %s...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="665"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="720"/>
         <source>Download Error</source>
         <translation>Chyba stahování</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="665"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="720"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Při stahování výběru veršů se vyskytl problém. Prosím prověřte své internetové připojení. Pokud se tato chyba stále objevuje, zvašte prosím nahlášení chyby.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="672"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="727"/>
         <source>Parse Error</source>
         <translation>Chyba zpracování</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="672"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="727"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Při rozbalování výběru veršů se vyskytl problém. Pokud se tato chyba stále objevuje, zvašte prosím nahlášení chyby.</translation>
     </message>
@@ -1706,7 +1707,11 @@ Upozornění: Verše z www Bible budou stáhnuty na vyžádání a proto je vyž
     <message numerus="yes">
         <location filename="openlp/plugins/custom/lib/mediaitem.py" line="179"/>
         <source>Are you sure you want to delete the %n selected custom slide(s)?</source>
-        <translation><numerusform>Jste si jisti, že chcete smazat %n vybraný uživatelský snímek?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybrané uživatelské snímky?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybraných uživatelských snímků?</numerusform></translation>
+        <translation>
+            <numerusform>Jste si jisti, že chcete smazat %n vybraný uživatelský snímek?</numerusform>
+            <numerusform>Jste si jisti, že chcete smazat %n vybrané uživatelské snímky?</numerusform>
+            <numerusform>Jste si jisti, že chcete smazat %n vybraných uživatelských snímků?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -1945,7 +1950,7 @@ Chcete přidat ostatní obrázky?</translation>
         <translation>Žádná položka k zobrazení nebyla pozměněna.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/mediacontroller.py" line="342"/>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="357"/>
         <source>Unsupported File</source>
         <translation>Nepodporovaný soubor</translation>
     </message>
@@ -2018,11 +2023,6 @@ Má se aktualizace provét teď?</translation>
         <translation>Licence</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="618"/>
-        <source>Contribute</source>
-        <translation>Přispět</translation>
-    </message>
-    <message>
         <location filename="openlp/core/ui/aboutform.py" line="51"/>
         <source> build %s</source>
         <translation>sestavení %s</translation>
@@ -2071,7 +2071,7 @@ Translators
         %s
     Japanese (ja)
         %s
-    Norwegian Bokmål (nb)
+    Norwegian Bokm&#xe5;l (nb)
         %s
     Dutch (nl)
         %s
@@ -2163,6 +2163,13 @@ Finální zásluhy
     On nás učinil svobodnými.</translation>
     </message>
     <message>
+        <location filename="openlp/core/ui/aboutdialog.py" line="223"/>
+        <source>Copyright &#xa9; 2004-2012 %s
+Portions copyright &#xa9; 2004-2012 %s</source>
+        <translation>Autorská práva © 2004-2012 %s
+Částečná autorská práva © 2004-2012 %s</translation>
+    </message>
+    <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="85"/>
         <source>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source Lyrics Projection
 
@@ -2170,21 +2177,13 @@ OpenLP is free church presentation software, or lyrics projection software, used
 
 Find out more about OpenLP: http://openlp.org/
 
-OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider contributing by using the button below.</source>
-        <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Open Source prezentace textů písní
-
-OpenLP je volně dostupný křesťanský software nebo také software pro prezentaci textů písní. Při křesťanských bohoslužbách slouží k zobrazení písní, veršů z Bible, videí, obrázků a dokonce prezentací (pokud Impress, PowerPoint nebo PowerPoint Viewer je instalován). K používání je nutný počítač a dataprojektor.
-
-Více informací o OpenLP: http://openlp.org/
-
-OpenLP vytváří a udržují dobrovolníci. Pokud má existovat více volně dostupného křesťanského software, zvažte prosím přispění tlačítkem níže.</translation>
+OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider volunteering by using the button below.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/aboutdialog.py" line="223"/>
-        <source>Copyright © 2004-2012 %s
-Portions copyright © 2004-2012 %s</source>
-        <translation>Autorská práva © 2004-2012 %s
-Částečná autorská práva © 2004-2012 %s</translation>
+        <location filename="openlp/core/ui/aboutdialog.py" line="618"/>
+        <source>Volunteer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2275,7 +2274,7 @@ Portions copyright © 2004-2012 %s</source>
         <translation>Vrátit na výchozí OpenLP logo.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="611"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="618"/>
         <source>Service %Y-%m-%d %H-%M</source>
         <comment>This may not contain any of the following characters: /\?*|&lt;&gt;[]&quot;:+
 See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for more information.</comment>
@@ -2437,17 +2436,17 @@ See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for 
         <translation>Vybrat umístění datové složky</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="683"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="684"/>
         <source>Confirm Data Directory Change</source>
         <translation>Potvrdit změnu datové složky</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="710"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="711"/>
         <source>Reset Data Directory</source>
         <translation>Obnovit datovou složku</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="710"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="711"/>
         <source>Are you sure you want to change the location of the OpenLP data directory to the default location?
 
 This location will be used after OpenLP is closed.</source>
@@ -2456,9 +2455,42 @@ This location will be used after OpenLP is closed.</source>
 Toto umístění se použije po zavření aplikace OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/advancedtab.py" line="746"/>
+        <location filename="openlp/core/ui/advancedtab.py" line="747"/>
         <source>Overwrite Existing Data</source>
         <translation>Přepsat existující data</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="519"/>
+        <source>OpenLP data directory was not found
+
+%s
+
+This data directory was previously changed from the OpenLP default location.  If the new location was on removable media, that media needs to be made available.
+
+Click &quot;No&quot; to stop loading OpenLP. allowing you to fix the the problem.
+
+Click &quot;Yes&quot; to reset the data directory to the default location.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="684"/>
+        <source>Are you sure you want to change the location of the OpenLP data directory to:
+
+%s
+
+The data directory will be changed when OpenLP is closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/advancedtab.py" line="747"/>
+        <source>WARNING: 
+
+The location you have selected 
+
+%s
+
+appears to contain OpenLP data files.  Do you wish to replace these files with the current data files?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3150,7 +3182,7 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the Can
 <context>
     <name>OpenLP.MainDisplay</name>
     <message>
-        <location filename="openlp/core/ui/maindisplay.py" line="187"/>
+        <location filename="openlp/core/ui/maindisplay.py" line="192"/>
         <source>OpenLP Display</source>
         <translation>Zobrazení OpenLP</translation>
     </message>
@@ -3158,287 +3190,287 @@ To cancel the First Time Wizard completely (and not start OpenLP), click the Can
 <context>
     <name>OpenLP.MainWindow</name>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="393"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
         <source>&amp;File</source>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="394"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
         <source>&amp;Import</source>
         <translation>&amp;Import</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="395"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
         <source>&amp;Export</source>
         <translation>&amp;Export</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="398"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="404"/>
         <source>&amp;View</source>
         <translation>&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="399"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
         <source>M&amp;ode</source>
         <translation>&amp;Režim</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="400"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="406"/>
         <source>&amp;Tools</source>
         <translation>&amp;Nástroje</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="401"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
         <source>&amp;Settings</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="441"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
         <source>&amp;Language</source>
         <translation>&amp;Jazyk</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="404"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="410"/>
         <source>&amp;Help</source>
         <translation>&amp;Nápověda</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="405"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="411"/>
         <source>Media Manager</source>
         <translation>Správce médií</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="407"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="413"/>
         <source>Service Manager</source>
         <translation>Správce služby</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="409"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="415"/>
         <source>Theme Manager</source>
         <translation>Správce motivů</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="411"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="417"/>
         <source>&amp;New</source>
         <translation>&amp;Nový</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="414"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
         <source>&amp;Open</source>
         <translation>&amp;Otevřít</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="416"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
         <source>Open an existing service.</source>
         <translation>Otevřít existující službu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="418"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
         <source>&amp;Save</source>
         <translation>&amp;Uložit</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="420"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
         <source>Save the current service to disk.</source>
         <translation>Uložit současnou službu na disk.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="422"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="428"/>
         <source>Save &amp;As...</source>
         <translation>Uložit &amp;jako...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="424"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="430"/>
         <source>Save Service As</source>
         <translation>Uložit službu jako</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="426"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="432"/>
         <source>Save the current service under a new name.</source>
         <translation>Uložit současnou službu s novým názvem.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="431"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="437"/>
         <source>E&amp;xit</source>
         <translation>U&amp;končit</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="433"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
         <source>Quit OpenLP</source>
         <translation>Ukončit OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="439"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
         <source>&amp;Theme</source>
         <translation>&amp;Motiv</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="447"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
         <source>&amp;Configure OpenLP...</source>
         <translation>&amp;Nastavit OpenLP...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="458"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="464"/>
         <source>&amp;Media Manager</source>
         <translation>Správce &amp;médií</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="460"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="466"/>
         <source>Toggle Media Manager</source>
         <translation>Přepnout správce médií</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="462"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="468"/>
         <source>Toggle the visibility of the media manager.</source>
         <translation>Přepnout viditelnost správce médií.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="464"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="470"/>
         <source>&amp;Theme Manager</source>
         <translation>Správce &amp;motivů</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="466"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="472"/>
         <source>Toggle Theme Manager</source>
         <translation>Přepnout správce motivů</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="468"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="474"/>
         <source>Toggle the visibility of the theme manager.</source>
         <translation>Přepnout viditelnost správce motivů.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="470"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="476"/>
         <source>&amp;Service Manager</source>
         <translation>Správce &amp;služby</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="472"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
         <source>Toggle Service Manager</source>
         <translation>Přepnout správce služby</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="474"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="480"/>
         <source>Toggle the visibility of the service manager.</source>
         <translation>Přepnout viditelnost správce služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="476"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="482"/>
         <source>&amp;Preview Panel</source>
         <translation>Panel &amp;náhledu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="478"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="484"/>
         <source>Toggle Preview Panel</source>
         <translation>Přepnout panel náhledu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="480"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="486"/>
         <source>Toggle the visibility of the preview panel.</source>
         <translation>Přepnout viditelnost panelu náhled.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="482"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="488"/>
         <source>&amp;Live Panel</source>
         <translation>Panel na&amp;živo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="484"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="490"/>
         <source>Toggle Live Panel</source>
         <translation>Přepnout panel naživo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="490"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="496"/>
         <source>Toggle the visibility of the live panel.</source>
         <translation>Přepnout viditelnost panelu naživo.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="492"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="498"/>
         <source>&amp;Plugin List</source>
         <translation>Seznam &amp;modulů</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="494"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="500"/>
         <source>List the Plugins</source>
         <translation>Vypsat moduly</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="500"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="506"/>
         <source>&amp;User Guide</source>
         <translation>&amp;Uživatelská příručka</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="496"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="502"/>
         <source>&amp;About</source>
         <translation>&amp;O aplikaci</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="497"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="503"/>
         <source>More information about OpenLP</source>
         <translation>Více informací o aplikaci OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="502"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="508"/>
         <source>&amp;Online Help</source>
         <translation>&amp;Online nápověda</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="504"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="510"/>
         <source>&amp;Web Site</source>
         <translation>&amp;Webová stránka</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="512"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="518"/>
         <source>Use the system language, if available.</source>
         <translation>Použít jazyk systému, pokud je dostupný.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="508"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
         <source>Set the interface language to %s</source>
         <translation>Jazyk rozhraní nastaven na %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="514"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="520"/>
         <source>Add &amp;Tool...</source>
         <translation>Přidat &amp;nástroj...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="516"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="522"/>
         <source>Add an application to the list of tools.</source>
         <translation>Přidat aplikaci do seznamu nástrojů.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="532"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="538"/>
         <source>&amp;Default</source>
         <translation>&amp;Výchozí</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="534"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="540"/>
         <source>Set the view mode back to the default.</source>
         <translation>Nastavit režim zobrazení zpět na výchozí.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="536"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="542"/>
         <source>&amp;Setup</source>
         <translation>&amp;Nastavení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="537"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="543"/>
         <source>Set the view mode to Setup.</source>
         <translation>Nastavit režim zobrazení na Nastavení.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="539"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="545"/>
         <source>&amp;Live</source>
         <translation>&amp;Naživo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="540"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="546"/>
         <source>Set the view mode to Live.</source>
         <translation>Nastavit režim zobrazení na Naživo.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="731"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="737"/>
         <source>Version %s of OpenLP is now available for download (you are currently running version %s). 
 
 You can download the latest version from http://openlp.org/.</source>
@@ -3447,22 +3479,22 @@ You can download the latest version from http://openlp.org/.</source>
 Nejnovější verzi lze stáhnout z http://openlp.org/.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="735"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="741"/>
         <source>OpenLP Version Updated</source>
         <translation>Verze OpenLP aktualizována</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="843"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="849"/>
         <source>OpenLP Main Display Blanked</source>
         <translation>Hlavní zobrazení OpenLP je prázdné</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="843"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="849"/>
         <source>The Main Display has been blanked out</source>
         <translation>Hlavní zobrazení nastaveno na prázdný snímek</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1266"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1273"/>
         <source>Default Theme: %s</source>
         <translation>Výchozí motiv: %s</translation>
     </message>
@@ -3473,82 +3505,82 @@ Nejnovější verzi lze stáhnout z http://openlp.org/.</translation>
         <translation>Čeština</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="443"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
         <source>Configure &amp;Shortcuts...</source>
         <translation>Nastavuji &amp;zkratky...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1174"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1181"/>
         <source>Close OpenLP</source>
         <translation>Zavřít OpenLP</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1174"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1181"/>
         <source>Are you sure you want to close OpenLP?</source>
         <translation>Chcete opravdu zavřít aplikaci OpenLP?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="518"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="524"/>
         <source>Open &amp;Data Folder...</source>
         <translation>Otevřít složku s &amp;daty...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="520"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="526"/>
         <source>Open the folder where songs, bibles and other data resides.</source>
         <translation>Otevřít složku, kde se nachází písně, Bible a ostatní data.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="510"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="516"/>
         <source>&amp;Autodetect</source>
         <translation>&amp;Automaticky detekovat</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="527"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="533"/>
         <source>Update Theme Images</source>
         <translation>Aktualizovat obrázky motivu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="529"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="535"/>
         <source>Update the preview images for all themes.</source>
         <translation>Aktualizovat náhledy obrázků všech motivů.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="429"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="435"/>
         <source>Print the current service.</source>
         <translation>Tisk současné služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="396"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="402"/>
         <source>&amp;Recent Files</source>
         <translation>&amp;Nedávné soubory</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="486"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="492"/>
         <source>L&amp;ock Panels</source>
         <translation>&amp;Uzamknout panely </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="488"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="494"/>
         <source>Prevent the panels being moved.</source>
         <translation>Zabrání přesunu panelů.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="522"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="528"/>
         <source>Re-run First Time Wizard</source>
         <translation>Znovu spustit Průvodce prvním spuštění</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="524"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="530"/>
         <source>Re-run the First Time Wizard, importing songs, Bibles and themes.</source>
         <translation>Znovu spustit Průvodce prvním spuštění, importovat písně, Bible a motivy.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="798"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="804"/>
         <source>Re-run First Time Wizard?</source>
         <translation>Znovu spustit Průvodce prvním spuštění?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="798"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="804"/>
         <source>Are you sure you want to re-run the First Time Wizard?
 
 Re-running this wizard may make changes to your current OpenLP configuration and possibly add songs to your existing songs list and change your default theme.</source>
@@ -3557,43 +3589,43 @@ Re-running this wizard may make changes to your current OpenLP configuration and
 Znovu spuštěním tohoto průvodce může dojít ke změně současného nastavení aplikace OpenLP a pravděpodobně budou přidány písně k existujícímu seznamu a změněn výchozí motiv.  </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1434"/>
         <source>Clear List</source>
         <comment>Clear List of recent files</comment>
         <translation>Vyprázdnit seznam</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1427"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1434"/>
         <source>Clear the list of recent files.</source>
         <translation>Vyprázdnit seznam nedávných souborů.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="445"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="451"/>
         <source>Configure &amp;Formatting Tags...</source>
         <translation>Nastavit &amp;formátovací značky...</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="449"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="455"/>
         <source>Export OpenLP settings to a specified *.config file</source>
         <translation>Export nastavení OpenLP do určitého *.config souboru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="456"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="462"/>
         <source>Settings</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="453"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="459"/>
         <source>Import OpenLP settings from a specified *.config file previously exported on this or another machine</source>
         <translation>Import nastavení OpenLP ze určitého *.config souboru dříve exportovaného na tomto nebo jiném stroji</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="937"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="943"/>
         <source>Import settings?</source>
         <translation>Importovat nastavení?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="937"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="943"/>
         <source>Are you sure you want to import settings?
 
 Importing settings will make permanent changes to your current OpenLP configuration.
@@ -3606,39 +3638,60 @@ Importováním nastavení dojde k trvalým změnám současného nastavení apli
 Importování nesprávných nastavení může zapříčinit náladové chování nebo nenormální ukončení aplikace OpenLP.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="951"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="957"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="951"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="957"/>
         <source>OpenLP Export Settings Files (*.conf)</source>
         <translation>Soubory exportovaného nastavení OpenLP (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1014"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1021"/>
         <source>Import settings</source>
         <translation>Import nastavení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1014"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1021"/>
         <source>OpenLP will now close.  Imported settings will be applied the next time you start OpenLP.</source>
         <translation>Aplikace OpenLP se nyní zavře. Importovaná nastavení se použijí při příštim spuštění.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1029"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1036"/>
         <source>Export Settings File</source>
         <translation>Soubor exportovaného nastavení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1029"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1036"/>
         <source>OpenLP Export Settings File (*.conf)</source>
         <translation>Soubor exportovaného nastavení OpenLP (*.conf)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/mainwindow.py" line="1520"/>
+        <location filename="openlp/core/ui/mainwindow.py" line="1527"/>
         <source>New Data Directory Error</source>
         <translation>Chyba nové datové složky</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="995"/>
+        <source>The file you selected does appear to be a valid OpenLP settings file.
+
+Section [%s] is not valid 
+
+Processing has terminated and no changed have been made.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1517"/>
+        <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/mainwindow.py" line="1527"/>
+        <source>OpenLP Data directory copy failed
+
+%s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3926,184 +3979,184 @@ Přípona není podporována</translation>
 <context>
     <name>OpenLP.ServiceManager</name>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="181"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
         <source>Move to &amp;top</source>
         <translation>Přesun &amp;nahoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="181"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="182"/>
         <source>Move item to the top of the service.</source>
         <translation>Přesun položky ve službě úplně nahoru.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="187"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
         <source>Move &amp;up</source>
         <translation>Přesun &amp;výše</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="187"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="188"/>
         <source>Move item up one position in the service.</source>
         <translation>Přesun položky ve službě o jednu pozici výše.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="208"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="209"/>
         <source>Move &amp;down</source>
         <translation>P?esun &amp;níže</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="194"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="195"/>
         <source>Move item down one position in the service.</source>
         <translation>P?esun položky ve služb? o jednu pozici níže.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="201"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="202"/>
         <source>Move to &amp;bottom</source>
         <translation>Přesun &amp;dolu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="201"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="202"/>
         <source>Move item to the end of the service.</source>
         <translation>Přesun položky ve službě úplně dolů.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="221"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="222"/>
         <source>&amp;Delete From Service</source>
         <translation>&amp;Smazat ze služby</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="221"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="222"/>
         <source>Delete the selected item from the service.</source>
         <translation>Smazat vybranou položku ze služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="286"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="287"/>
         <source>&amp;Add New Item</source>
         <translation>&amp;Přidat novou položku</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="289"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="290"/>
         <source>&amp;Add to Selected Item</source>
         <translation>&amp;Přidat k vybrané položce</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="294"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="295"/>
         <source>&amp;Edit Item</source>
         <translation>&amp;Upravit položku</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="297"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="298"/>
         <source>&amp;Reorder Item</source>
         <translation>&amp;Změnit pořadí položky</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="301"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="302"/>
         <source>&amp;Notes</source>
         <translation>&amp;Poznámky</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="317"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="318"/>
         <source>&amp;Change Item Theme</source>
         <translation>&amp;Změnit motiv položky</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="624"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="631"/>
         <source>OpenLP Service Files (*.osz)</source>
         <translation>Soubory služby OpenLP (*.osz)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="653"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="660"/>
         <source>File is not a valid service.
 The content encoding is not UTF-8.</source>
         <translation>Soubor není platná služba.
 Obsah souboru není v kódování UTF-8.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="695"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="702"/>
         <source>File is not a valid service.</source>
         <translation>Soubor není platná služba.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1298"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1309"/>
         <source>Missing Display Handler</source>
         <translation>Chybějící obsluha zobrazení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1246"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1257"/>
         <source>Your item cannot be displayed as there is no handler to display it</source>
         <translation>Položku není možno zobrazit, protože chybí obsluha pro její zobrazení</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1298"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1309"/>
         <source>Your item cannot be displayed as the plugin required to display it is missing or inactive</source>
         <translation>Položku není možno zobrazit, protože modul potřebný pro zobrazení položky chybí nebo je neaktivní</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="230"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="231"/>
         <source>&amp;Expand all</source>
         <translation>&amp;Rozvinou vše</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="230"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="231"/>
         <source>Expand all the service items.</source>
         <translation>Rozvinout všechny položky služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="236"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="237"/>
         <source>&amp;Collapse all</source>
         <translation>&amp;Svinout vše</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="236"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="237"/>
         <source>Collapse all the service items.</source>
         <translation>Svinout všechny položky služby.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="413"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="420"/>
         <source>Open File</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="208"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="209"/>
         <source>Moves the selection down the window.</source>
         <translation>Přesune výběr v rámci okna dolu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="214"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="215"/>
         <source>Move up</source>
         <translation>Přesun nahoru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="214"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="215"/>
         <source>Moves the selection up the window.</source>
         <translation>Přesune výběr v rámci okna nahoru.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="244"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="245"/>
         <source>Go Live</source>
         <translation>Zobrazit naživo</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="244"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="245"/>
         <source>Send the selected item to Live.</source>
         <translation>Zobrazí vybranou položku naživo.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="305"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="306"/>
         <source>&amp;Start Time</source>
         <translation>&amp;Spustit čas</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="311"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="312"/>
         <source>Show &amp;Preview</source>
         <translation>Zobrazit &amp;náhled</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="430"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="437"/>
         <source>Modified Service</source>
         <translation>Změněná služba</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="430"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="437"/>
         <source>The current service has been modified. Would you like to save this service?</source>
         <translation>Současná služba byla změněna. Přejete si službu uložit?</translation>
     </message>
@@ -4123,84 +4176,93 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Čas přehrávání: </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="341"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="342"/>
         <source>Untitled Service</source>
         <translation>Prázdná služba</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="701"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="708"/>
         <source>File could not be opened because it is corrupt.</source>
         <translation>Soubor se nepodařilo otevřít, protože je poškozený.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="707"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="714"/>
         <source>Empty File</source>
         <translation>Prázdný soubor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="707"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="714"/>
         <source>This service file does not contain any data.</source>
         <translation>Tento soubor služby neobsahuje žádná data.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="714"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="721"/>
         <source>Corrupt File</source>
         <translation>Poškozený soubor</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="130"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="131"/>
         <source>Load an existing service.</source>
         <translation>Načíst existující službu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="134"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="135"/>
         <source>Save this service.</source>
         <translation>Uložit tuto službu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="144"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="145"/>
         <source>Select a theme for the service.</source>
         <translation>Vybrat motiv pro službu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="714"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="721"/>
         <source>This file is either corrupt or it is not an OpenLP 2.0 service file.</source>
         <translation>Soubor je buďto poškozen nebo se nejedná o soubor se službou z aplikace OpenLP 2.0.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="512"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="519"/>
         <source>Service File Missing</source>
         <translation>Chybějící soubor se službou</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1051"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1062"/>
         <source>Slide theme</source>
         <translation>Motiv snímku</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1055"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1066"/>
         <source>Notes</source>
         <translation>Poznámky </translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1046"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1057"/>
         <source>Edit</source>
         <translation>Upravit</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="1046"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="1057"/>
         <source>Service copy only</source>
         <translation>Kopírovat jen službu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="566"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="573"/>
         <source>Error Saving File</source>
         <translation>Chyba při ukládání souboru</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/servicemanager.py" line="566"/>
+        <location filename="openlp/core/ui/servicemanager.py" line="573"/>
         <source>There was an error saving your file.</source>
         <translation>Vznikla chyba při ukládání souboru.</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/servicemanager.py" line="521"/>
+        <source>File missing from service
+
+ %s 
+
+Continue saving?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4315,17 +4377,17 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Zobrazit plochu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="507"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="508"/>
         <source>Previous Service</source>
         <translation>Předchozí služba</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="512"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="513"/>
         <source>Next Service</source>
         <translation>Další služba</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="517"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="518"/>
         <source>Escape Item</source>
         <translation>Zrušit položku</translation>
     </message>
@@ -4365,7 +4427,7 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Upravit a znovu načíst náhled písně.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/mediacontroller.py" line="199"/>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="206"/>
         <source>Start playing media.</source>
         <translation>Spustit přehrávání média.</translation>
     </message>
@@ -4375,57 +4437,57 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Pozastavit zvuk.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/mediacontroller.py" line="204"/>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="211"/>
         <source>Pause playing media.</source>
         <translation>Pozastavit přehrávání média.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/mediacontroller.py" line="209"/>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="216"/>
         <source>Stop playing media.</source>
         <translation>Zastavit přehrávání média.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/mediacontroller.py" line="218"/>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="225"/>
         <source>Video position.</source>
         <translation>Umístění videa.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/media/mediacontroller.py" line="230"/>
+        <location filename="openlp/core/ui/media/mediacontroller.py" line="237"/>
         <source>Audio Volume.</source>
         <translation>Hlasitost zvuku.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="365"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="366"/>
         <source>Go to &quot;Verse&quot;</source>
         <translation>Přejít na &quot;Sloka&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="367"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="368"/>
         <source>Go to &quot;Chorus&quot;</source>
         <translation>Přejít na &quot;Refrén&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="369"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="370"/>
         <source>Go to &quot;Bridge&quot;</source>
         <translation>Přejít na &quot;Přechod&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="371"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="372"/>
         <source>Go to &quot;Pre-Chorus&quot;</source>
         <translation>Přejít na &quot;Předrefrén&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="374"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="375"/>
         <source>Go to &quot;Intro&quot;</source>
         <translation>Přejít na &quot;Úvod&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="376"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="377"/>
         <source>Go to &quot;Ending&quot;</source>
         <translation>Přejít na &quot;Zakončení&quot;</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="378"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="379"/>
         <source>Go to &quot;Other&quot;</source>
         <translation>Přejít na &quot;Ostatní&quot;</translation>
     </message>
@@ -4445,17 +4507,17 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Pozastavit zvuk</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="290"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="291"/>
         <source>Background Audio</source>
         <translation>Zvuk na pozadí</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="296"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="297"/>
         <source>Go to next audio track.</source>
         <translation>Přejít na další zvukovou stopu.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/slidecontroller.py" line="303"/>
+        <location filename="openlp/core/ui/slidecontroller.py" line="304"/>
         <source>Tracks</source>
         <translation>Stopy</translation>
     </message>
@@ -4547,39 +4609,6 @@ Obsah souboru není v kódování UTF-8.</translation>
     </message>
 </context>
 <context>
-    <name>OpenLP.ThemeForm</name>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="523"/>
-        <source>Select Image</source>
-        <translation>Vybrat obrázek</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="605"/>
-        <source>Theme Name Missing</source>
-        <translation>Chybí název motivu</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="605"/>
-        <source>There is no name for this theme. Please enter one.</source>
-        <translation>Není vyplněn název motivu. Prosím zadejte ho.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="611"/>
-        <source>Theme Name Invalid</source>
-        <translation>Neplatný název motivu</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="611"/>
-        <source>Invalid theme name. Please enter one.</source>
-        <translation>Neplatný název motivu. Prosím zadejte nový.</translation>
-    </message>
-    <message>
-        <location filename="openlp/core/ui/themeform.py" line="205"/>
-        <source>(approximately %d lines per slide)</source>
-        <translation>(přibližně %d řádek na snímek)</translation>
-    </message>
-</context>
-<context>
     <name>OpenLP.ThemeManager</name>
     <message>
         <location filename="openlp/core/ui/thememanager.py" line="70"/>
@@ -4642,62 +4671,62 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Nastavit jako &amp;Globální výchozí</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="468"/>
+        <location filename="openlp/core/ui/thememanager.py" line="470"/>
         <source>%s (default)</source>
         <translation>%s (výchozí)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="323"/>
+        <location filename="openlp/core/ui/thememanager.py" line="324"/>
         <source>You must select a theme to edit.</source>
         <translation>Pro úpravy je třeba vybrat motiv.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="791"/>
+        <location filename="openlp/core/ui/thememanager.py" line="792"/>
         <source>You are unable to delete the default theme.</source>
         <translation>Není možno smazat výchozí motiv.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="799"/>
+        <location filename="openlp/core/ui/thememanager.py" line="800"/>
         <source>Theme %s is used in the %s plugin.</source>
         <translation>Motiv %s je používán v modulu %s.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="376"/>
+        <location filename="openlp/core/ui/thememanager.py" line="378"/>
         <source>You have not selected a theme.</source>
         <translation>Není vybrán žádný motiv.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="380"/>
+        <location filename="openlp/core/ui/thememanager.py" line="382"/>
         <source>Save Theme - (%s)</source>
         <translation>Uložit motiv - (%s)</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="398"/>
+        <location filename="openlp/core/ui/thememanager.py" line="400"/>
         <source>Theme Exported</source>
         <translation>Motiv exportován</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="398"/>
+        <location filename="openlp/core/ui/thememanager.py" line="400"/>
         <source>Your theme has been successfully exported.</source>
         <translation>Motiv byl úspěšně exportován.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="404"/>
+        <location filename="openlp/core/ui/thememanager.py" line="406"/>
         <source>Theme Export Failed</source>
         <translation>Export motivu selhal</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="404"/>
+        <location filename="openlp/core/ui/thememanager.py" line="406"/>
         <source>Your theme could not be exported due to an error.</source>
         <translation>Kvůli chybě nebylo možno motiv exportovat.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="421"/>
         <source>Select Theme Import File</source>
         <translation>Vybrat soubor k importu motivu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="605"/>
+        <location filename="openlp/core/ui/thememanager.py" line="607"/>
         <source>File is not a valid theme.</source>
         <translation>Soubor není platný motiv.</translation>
     </message>
@@ -4717,47 +4746,47 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>&amp;Export motivu</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="265"/>
+        <location filename="openlp/core/ui/thememanager.py" line="266"/>
         <source>You must select a theme to rename.</source>
         <translation>K přejmenování je třeba vybrat motiv.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="265"/>
+        <location filename="openlp/core/ui/thememanager.py" line="266"/>
         <source>Rename Confirmation</source>
         <translation>Potvrzení přejmenování</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="265"/>
+        <location filename="openlp/core/ui/thememanager.py" line="266"/>
         <source>Rename %s theme?</source>
         <translation>Přejmenovat motiv %s?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="339"/>
+        <location filename="openlp/core/ui/thememanager.py" line="341"/>
         <source>You must select a theme to delete.</source>
         <translation>Pro smazání je třeba vybrat motiv.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="339"/>
+        <location filename="openlp/core/ui/thememanager.py" line="341"/>
         <source>Delete Confirmation</source>
         <translation>Potvrzení smazání</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="339"/>
+        <location filename="openlp/core/ui/thememanager.py" line="341"/>
         <source>Delete %s theme?</source>
         <translation>Smazat motiv %s?</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="799"/>
+        <location filename="openlp/core/ui/thememanager.py" line="800"/>
         <source>Validation Error</source>
         <translation>Chyba ověřování</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="656"/>
+        <location filename="openlp/core/ui/thememanager.py" line="658"/>
         <source>A theme with this name already exists.</source>
         <translation>Motiv s tímto názvem již existuje.</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="419"/>
+        <location filename="openlp/core/ui/thememanager.py" line="421"/>
         <source>OpenLP Themes (*.theme *.otz)</source>
         <translation>OpenLP motivy (*.theme *.otz)</translation>
     </message>
@@ -4768,9 +4797,14 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Kopie %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/thememanager.py" line="515"/>
+        <location filename="openlp/core/ui/thememanager.py" line="517"/>
         <source>Theme Already Exists</source>
         <translation>Motiv již existuje</translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/thememanager.py" line="517"/>
+        <source>Theme %s already exists. Do you want to replace it?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4986,7 +5020,7 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Název motivu:</translation>
     </message>
     <message>
-        <location filename="openlp/core/ui/themeform.py" line="311"/>
+        <location filename="openlp/core/ui/themeform.py" line="328"/>
         <source>Edit Theme - %s</source>
         <translation>Upravit motiv - %s</translation>
     </message>
@@ -5044,6 +5078,46 @@ Obsah souboru není v kódování UTF-8.</translation>
         <location filename="openlp/core/ui/themewizard.py" line="556"/>
         <source>Preview the theme and save it.</source>
         <translation>Náhled motivu a motiv uložit. </translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="208"/>
+        <source>(approximately %d lines per slide)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="236"/>
+        <source>Background Image Empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="236"/>
+        <source>You have not selected a background image. Please select one before continuing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="540"/>
+        <source>Select Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="622"/>
+        <source>Theme Name Missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="622"/>
+        <source>There is no name for this theme. Please enter one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="628"/>
+        <source>Theme Name Invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/core/ui/themeform.py" line="628"/>
+        <source>Invalid theme name. Please enter one.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5400,7 +5474,7 @@ Obsah souboru není v kódování UTF-8.</translation>
         <translation>Připraven.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="250"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="252"/>
         <source>Starting import...</source>
         <translation>Spouštím import...</translation>
     </message>
@@ -5439,7 +5513,7 @@ Obsah souboru není v kódování UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/ui.py" line="42"/>
-        <source>©</source>
+        <source>&#xa9;</source>
         <comment>Copyright symbol.</comment>
         <translation>©</translation>
     </message>
@@ -5685,6 +5759,11 @@ Obsah souboru není v kódování UTF-8.</translation>
         <source>You need to specify one %s folder to import from.</source>
         <comment>A song format e.g. PowerSong</comment>
         <translation>Je potřeba upřesnit jednu %s složku, ze které se bude importovat.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="251"/>
+        <source>Importing Songs</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6009,8 +6088,8 @@ Obsah souboru není v kódování UTF-8.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/remotes/lib/remotetab.py" line="124"/>
-        <source>Scan the QR code or click &lt;a href=&quot;https://market.android.com/details?id=org.openlp.android&quot;&gt;download&lt;/a&gt; to install the Android app from the Market.</source>
-        <translation>Naskenujte QR kód nebo pro instalaci Android aplikace z marketu klepněte na &lt;a href=&quot;https://market.android.com/details?id=org.openlp.android&quot;&gt;stáhnout&lt;/a&gt;.</translation>
+        <source>Scan the QR code or click &lt;a href=&quot;https://play.google.com/store/apps/details?id=org.openlp.android&quot;&gt;download&lt;/a&gt; to install the Android app from Google Play.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6202,7 +6281,7 @@ bylo úspěšně vytvořeno.</translation>
         <translation>Import písní průvodcem importu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="167"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="168"/>
         <source>&lt;strong&gt;Songs Plugin&lt;/strong&gt;&lt;br /&gt;The songs plugin provides the ability to display and manage songs.</source>
         <translation>&lt;strong&gt;Modul písně&lt;/strong&gt;&lt;br /&gt;Modul písně umožňuje zobrazovat a spravovat písně.</translation>
     </message>
@@ -6313,19 +6392,19 @@ The encoding is responsible for the correct character representation.</source>
 Kódování zodpovídá za správnou reprezentaci znaků.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="211"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="212"/>
         <source>Song</source>
         <comment>name singular</comment>
         <translation>Píseň</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="212"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="213"/>
         <source>Songs</source>
         <comment>name plural</comment>
         <translation>Písně</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="216"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="217"/>
         <source>Songs</source>
         <comment>container title</comment>
         <translation>Písně</translation>
@@ -6336,34 +6415,39 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
         <translation>Exportuje písně průvodcem exportu.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="222"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="223"/>
         <source>Add a new song.</source>
         <translation>Přidat novou píseň.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="223"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="224"/>
         <source>Edit the selected song.</source>
         <translation>Upravit vybranou píseň.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="224"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="225"/>
         <source>Delete the selected song.</source>
         <translation>Smazat vybranou píseň.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="225"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="226"/>
         <source>Preview the selected song.</source>
         <translation>Náhled vybrané písně.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="226"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="227"/>
         <source>Send the selected song live.</source>
         <translation>Zobrazit vybranou píseň naživo.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/songsplugin.py" line="227"/>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="228"/>
         <source>Add the selected song to the service.</source>
         <translation>Přidat vybranou píseň ke službě.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/songsplugin.py" line="150"/>
+        <source>Reindexing songs</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6608,11 +6692,6 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
         <location filename="openlp/plugins/songs/forms/editsongform.py" line="669"/>
         <source>You need to have an author for this song.</source>
         <translation>Pro tuto píseň je potřeba zadat autora.</translation>
-    </message>
-    <message>
-        <location filename="openlp/plugins/songs/forms/editverseform.py" line="202"/>
-        <source>You need to type some text in to the verse.</source>
-        <translation>Ke sloce je potřeba zadat nějaký text.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/forms/editsongdialog.py" line="346"/>
@@ -6967,7 +7046,11 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
     <message numerus="yes">
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="404"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
-        <translation><numerusform>Jste si jisti, že chcete smazat %n vybranou píseň?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybrané písně?</numerusform><numerusform>Jste si jisti, že chcete smazat %n vybraných písní?</numerusform></translation>
+        <translation>
+            <numerusform>Jste si jisti, že chcete smazat %n vybranou píseň?</numerusform>
+            <numerusform>Jste si jisti, že chcete smazat %n vybrané písně?</numerusform>
+            <numerusform>Jste si jisti, že chcete smazat %n vybraných písní?</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="openlp/plugins/songs/lib/mediaitem.py" line="150"/>
@@ -7049,6 +7132,26 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
         <location filename="openlp/plugins/songs/lib/powersongimport.py" line="155"/>
         <source>Verses not found. Missing &quot;PART&quot; header.</source>
         <translation>Sloky nenalezeny. Chybějící hlavička &quot;PART&quot;. </translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/powersongimport.py" line="103"/>
+        <source>No %s files found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/powersongimport.py" line="123"/>
+        <source>Invalid %s file. Unexpected byte value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/powersongimport.py" line="142"/>
+        <source>Invalid %s file. Missing &quot;TITLE&quot; header.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/powersongimport.py" line="148"/>
+        <source>Invalid %s file. Missing &quot;COPYRIGHTLINE&quot; header.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7318,6 +7421,21 @@ Kódování zodpovídá za správnou reprezentaci znaků.</translation>
         <location filename="openlp/plugins/songs/lib/zionworximport.py" line="117"/>
         <source>File not valid ZionWorx CSV format.</source>
         <translation>Soubor není platný ZionWorx CSV formát.</translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/zionworximport.py" line="91"/>
+        <source>Line %d: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/zionworximport.py" line="111"/>
+        <source>Decoding error: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="openlp/plugins/songs/lib/zionworximport.py" line="132"/>
+        <source>Record %d</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
