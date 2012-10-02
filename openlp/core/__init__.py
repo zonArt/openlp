@@ -35,6 +35,7 @@ logging and a plugin framework are contained within the openlp.core module.
 
 import os
 import sys
+import platform
 import logging
 from optparse import OptionParser
 from traceback import format_exception
@@ -102,8 +103,13 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         self.eventLoopIsActive = False
-        # On Windows, the args passed into the constructor are
-        # ignored. Not very handy, so set the ones we want to use.
+        # On Windows, the args passed into the constructor are ignored. Not
+        # very handy, so set the ones we want to use. On Linux and FreeBSD, in
+        # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
+        # command line argument. This interferes with files being passed in as
+        # command line arguments, so we remove it from the list.
+        if 'OpenLP' in args:
+            args.remove('OpenLP')
         self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -248,6 +254,13 @@ def main(args=None):
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
+    if options.portable:
+        app_path = AppLocation.get_directory(AppLocation.AppDir)
+        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
+            u'..', u'Other')))
+        log.info(u'Running portable')
+    else:
+        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
@@ -259,6 +272,9 @@ def main(args=None):
         qt_args.extend(['-style', options.style])
     # Throw the rest of the arguments at Qt, just in case.
     qt_args.extend(args)
+    # Bug #1018855: Set the WM_CLASS property in X11
+    if platform.system() not in ['Windows', 'Darwin']:
+        qt_args.append('OpenLP')
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
@@ -269,10 +285,6 @@ def main(args=None):
         app.setApplicationName(u'OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
-        app_path = AppLocation.get_directory(AppLocation.AppDir)
-        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
-            u'..', u'Other')))
-        log.info(u'Running portable')
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
             u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file
@@ -289,7 +301,6 @@ def main(args=None):
         portable_settings.sync()
     else:
         app.setApplicationName(u'OpenLP')
-        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:

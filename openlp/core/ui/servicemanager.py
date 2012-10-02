@@ -47,7 +47,8 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
-from openlp.core.utils import AppLocation, delete_file, split_filename
+from openlp.core.utils import AppLocation, delete_file, split_filename, \
+    format_time
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -379,6 +380,12 @@ class ServiceManager(QtGui.QWidget):
             QtCore.QVariant(u'False')).toBool()
 
     def supportedSuffixes(self, suffix):
+        """
+        Adds Suffixes supported to the master list.  Called from Plugins.
+
+        ``suffix``
+            New Suffix to be supported
+        """
         self.suffixes.append(suffix)
 
     def onNewServiceClicked(self):
@@ -513,7 +520,7 @@ class ServiceManager(QtGui.QWidget):
                             'Service File Missing'))
                         message = unicode(translate('OpenLP.ServiceManager',
                             'File missing from service\n\n %s \n\n'
-                            'Continue saving?' % path_from ))
+                            'Continue saving?')) % path_from
                         answer = QtGui.QMessageBox.critical(self, title,
                             message,
                             QtGui.QMessageBox.StandardButtons(
@@ -596,7 +603,7 @@ class ServiceManager(QtGui.QWidget):
             service_day = Settings().value(
                 u'advanced/default service day', 7).toInt()[0]
             if service_day == 7:
-                time = datetime.now()
+                local_time = datetime.now()
             else:
                 service_hour = Settings().value(
                     u'advanced/default service hour', 11).toInt()[0]
@@ -607,7 +614,7 @@ class ServiceManager(QtGui.QWidget):
                 if day_delta < 0:
                     day_delta += 7
                 time = now + timedelta(days=day_delta)
-                time = time.replace(hour=service_hour, minute=service_minute)
+                local_time = time.replace(hour=service_hour, minute=service_minute)
             default_pattern = unicode(Settings().value(
                 u'advanced/default service name',
                 translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
@@ -615,7 +622,7 @@ class ServiceManager(QtGui.QWidget):
                     '/\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
                     'datetime.html#strftime-strptime-behavior for more '
                     'information.')).toString())
-            default_filename = time.strftime(default_pattern)
+            default_filename = format_time(default_pattern, local_time)
         else:
             default_filename = u''
         directory = unicode(SettingsManager.get_last_dir(
@@ -795,6 +802,10 @@ class ServiceManager(QtGui.QWidget):
             self.repaintServiceList(item, -1)
 
     def onServiceItemEditForm(self):
+        """
+        Opens a dialog to edit the service item and update the service
+        display if changes are saved.
+        """
         item = self.findServiceItem()[0]
         self.serviceItemEditForm.setServiceItem(
             self.serviceItems[item][u'service_item'])
@@ -805,7 +816,7 @@ class ServiceManager(QtGui.QWidget):
     def previewLive(self, message):
         """
         Called by the SlideController to request a preview item be made live
-        and allows the next preview to be updated if relevent.
+        and allows the next preview to be updated if relevant.
         """
         uuid, row = message.split(u':')
         for sitem in self.serviceItems:
@@ -1082,12 +1093,12 @@ class ServiceManager(QtGui.QWidget):
         """
         if serviceItem.is_command():
             type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
-            if type not in self.suffixes:
+            if type.lower() not in self.suffixes:
                 serviceItem.is_valid = False
 
     def cleanUp(self):
         """
-        Empties the servicePath of temporary files.
+        Empties the servicePath of temporary files on system exit.
         """
         log.debug(u'Cleaning up servicePath')
         for file in os.listdir(self.servicePath):

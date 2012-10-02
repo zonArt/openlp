@@ -147,6 +147,7 @@ class SongsPlugin(Plugin):
         progressDialog = QtGui.QProgressDialog(
             translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
             0, maxSongs, self.formParent)
+        progressDialog.setWindowTitle(translate('SongsPlugin', 'Reindexing songs'))
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
         for number, song in enumerate(songs):
@@ -247,6 +248,7 @@ class SongsPlugin(Plugin):
             return
         progress = QtGui.QProgressDialog(self.formParent)
         progress.setWindowModality(QtCore.Qt.WindowModal)
+        progress.setWindowTitle(translate('OpenLP.Ui', 'Importing Songs'))
         progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))
         progress.setCancelButton(None)
         progress.setRange(0, len(song_dbs))

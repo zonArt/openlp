@@ -103,7 +103,7 @@ class PowerSongImport(SongImport):
             self.logError(unicode(translate('SongsPlugin.PowerSongImport',
                 'No songs to import.')),
                 unicode(translate('SongsPlugin.PowerSongImport',
-                'No %s files found.' % PS_string)))
+                'No %s files found.')) % PS_string)
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
@@ -122,8 +122,8 @@ class PowerSongImport(SongImport):
                         parse_error = True
                         self.logError(os.path.basename(file), unicode(
                             translate('SongsPlugin.PowerSongImport',
-                            'Invalid %s file. Unexpected byte value.'
-                            % PS_string)))
+                            'Invalid %s file. Unexpected byte value.'))
+                            % PS_string)
                         break
                     else:
                         if label == u'TITLE':
@@ -141,14 +141,14 @@ class PowerSongImport(SongImport):
             if not self.title:
                 self.logError(os.path.basename(file), unicode(
                     translate('SongsPlugin.PowerSongImport',
-                    'Invalid %s file. Missing "TITLE" header.' % PS_string)))
+                    'Invalid %s file. Missing "TITLE" header.')) % PS_string)
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
                 self.logError(self.title, unicode(
                     translate('SongsPlugin.PowerSongImport',
                     'Invalid %s file. Missing "COPYRIGHTLINE" '
-                    'header.' % PS_string)))
+                    'header.')) % PS_string)
                 continue
             # Check that file had at least one verse
             if not self.verses:

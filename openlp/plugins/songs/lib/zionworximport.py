@@ -91,7 +91,7 @@ class ZionWorxImport(SongImport):
                 self.logError(unicode(translate('SongsPlugin.ZionWorxImport',
                     'Error reading CSV file.')),
                     unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Line %d: %s' % (songs_reader.line_num, e))))
+                    'Line %d: %s')) % (songs_reader.line_num, e))
                 return
             num_records = len(records)
             log.info(u'%s records found in CSV file' % num_records)
@@ -111,7 +111,7 @@ class ZionWorxImport(SongImport):
                     self.logError(unicode(translate(
                         'SongsPlugin.ZionWorxImport', 'Record %d' % index)),
                         unicode(translate('SongsPlugin.ZionWorxImport',
-                        'Decoding error: %s' % e)))
+                        'Decoding error: %s')) % e)
                     continue
                 except TypeError, e:
                     self.logError(unicode(translate(
@@ -130,7 +130,7 @@ class ZionWorxImport(SongImport):
                 title = self.title
                 if not self.finish():
                     self.logError(unicode(translate(
-                        'SongsPlugin.ZionWorxImport', 'Record %d' % index))
+                        'SongsPlugin.ZionWorxImport', 'Record %d')) % index
                         + (u': "' + title + u'"' if title else u''))
 
     def _decode(self, str):
