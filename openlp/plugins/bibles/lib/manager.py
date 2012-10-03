@@ -366,15 +366,20 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_language_selection("%s")', bible)
         language_selection = self.get_meta_data(bible, u'book_name_language')
-        if language_selection:
-            try:
-                language_selection = int(language_selection.value)
-            except (ValueError, TypeError):
-                language_selection = LanguageSelection.Application
-        if language_selection is None or language_selection == -1:
+        if not language_selection or \
+            language_selection.value == "None" or \
+            language_selection.value == "-1":
+            # If None is returned, it's not the singleton object but a
+            # BibleMeta object with the value "None"
             language_selection = Settings().value(
-                self.settingsSection + u'/bookname language',
+                self.settingsSection + u'/book name language',
                 QtCore.QVariant(0)).toInt()[0]
+        else:
+            language_selection = language_selection.value
+        try:
+            language_selection = int(language_selection)
+        except (ValueError, TypeError):
+            language_selection = LanguageSelection.Application
         return language_selection
 
     def verse_search(self, bible, second_bible, text):
