@@ -113,8 +113,7 @@ class VlcPlayer(MediaPlayer):
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
         if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool() and \
-            display.controller.isLive:
+            QtCore.QVariant(True)).toBool() and display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
         display.vlcInstance.set_log_verbosity(2)
