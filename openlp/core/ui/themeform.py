@@ -205,8 +205,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Updates the lines on a page on the wizard
         """
-        #TODO check
-        print type(lines)
         self.mainLineCountLabel.setText(translate('OpenLP.ThemeForm',
             '(approximately %d lines per slide)') % int(lines))
 
@@ -233,7 +231,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         background_image = BackgroundType.to_string(BackgroundType.Image)
         if self.page(self.currentId()) == self.backgroundPage and \
             self.theme.background_type == background_image and \
-            self.imageFileEdit.text().isEmpty():
+            not self.imageFileEdit.text():
             QtGui.QMessageBox.critical(self,
                 translate('OpenLP.ThemeWizard', 'Background Image Empty'),
                 translate('OpenLP.ThemeWizard', 'You have not selected a '

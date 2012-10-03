@@ -332,7 +332,7 @@ class BiblesTab(SettingsTab):
         if self.verseSeparatorLineEdit.isModified():
             text = self.verseSeparatorLineEdit.text()
             if text == get_reference_separator(u'sep_v_default') or \
-                text.remove(u'|').isEmpty():
+                not text.replace(u'|', u''):
                 self.verseSeparatorCheckBox.setChecked(False)
                 self.verseSeparatorLineEdit.setText(
                     get_reference_separator(u'sep_v_default'))
@@ -357,7 +357,7 @@ class BiblesTab(SettingsTab):
         if self.rangeSeparatorLineEdit.isModified():
             text = self.rangeSeparatorLineEdit.text()
             if text == get_reference_separator(u'sep_r_default') or \
-                text.remove(u'|').isEmpty():
+                not text.replace(u'|', u''):
                 self.rangeSeparatorCheckBox.setChecked(False)
                 self.rangeSeparatorLineEdit.setText(
                     get_reference_separator(u'sep_r_default'))
@@ -382,7 +382,7 @@ class BiblesTab(SettingsTab):
         if self.listSeparatorLineEdit.isModified():
             text = self.listSeparatorLineEdit.text()
             if text == get_reference_separator(u'sep_l_default') or \
-                text.remove(u'|').isEmpty():
+                not text.replace(u'|', u''):
                 self.listSeparatorCheckBox.setChecked(False)
                 self.listSeparatorLineEdit.setText(
                     get_reference_separator(u'sep_l_default'))
@@ -407,7 +407,7 @@ class BiblesTab(SettingsTab):
         if self.endSeparatorLineEdit.isModified():
             text = self.endSeparatorLineEdit.text()
             if text == get_reference_separator(u'sep_e_default') or \
-                text.remove(u'|').isEmpty():
+                not text.replace(u'|', u''):
                 self.endSeparatorCheckBox.setChecked(False)
                 self.endSeparatorLineEdit.setText(
                     get_reference_separator(u'sep_e_default'))

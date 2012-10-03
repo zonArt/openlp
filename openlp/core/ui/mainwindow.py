@@ -699,7 +699,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
         if Settings().value(u'advanced/save current plugin', False):
-            # TODO: QtCore.QVariant()).toInt()[0]
             savedPlugin = Settings().value(u'advanced/current media plugin', -1)
             if savedPlugin != -1:
                 self.mediaToolBox.setCurrentIndex(savedPlugin)

@@ -92,8 +92,7 @@ class Settings(QtCore.QSettings):
     then the Settings constructor (without any arguments) will create a Settings
     object for accessing settings stored in that Ini file.
     """
-    # TODO change
-    __filePath = u''
+    __filePath__ = u''
 
     @staticmethod
     def setFilename(iniFile):
@@ -102,12 +101,12 @@ class Settings(QtCore.QSettings):
 
         Does not affect existing Settings objects.
         """
-        Settings.__filePath = iniFile
+        Settings.__filePath__ = iniFile
 
     def __init__(self, *args):
-        if not args and Settings.__filePath and (Settings.defaultFormat() ==
-            Settings.IniFormat):
-            QtCore.QSettings.__init__(self, Settings.__filePath,
+        if not args and Settings.__filePath__ and \
+            Settings.defaultFormat() == Settings.IniFormat:
+            QtCore.QSettings.__init__(self, Settings.__filePath__,
                 Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
@@ -130,7 +129,7 @@ class Settings(QtCore.QSettings):
             extended if a certain type is missing!
         """
         setting =  super(Settings, self).value(key, defaultValue)
-        # An empty list saved to the settings results ins a None type being
+        # An empty list saved to the settings results in a None type being
         # returned.
         if setting is None:
             return []
