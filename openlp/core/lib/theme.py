@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -443,6 +444,20 @@ class ThemeXML(object):
         child.appendChild(self.theme_xml.createTextNode(value))
         element.appendChild(child)
         return child
+
+    def set_default_header_footer(self):
+        """
+        Set the header and footer size into the current primary screen.
+        10 px on each side is removed to allow for a border.
+        """
+        from openlp.core.ui import ScreenList
+        current_screen = ScreenList().current
+        self.font_main_y = 0
+        self.font_main_width = current_screen[u'size'].width() - 20
+        self.font_main_height = current_screen[u'size'].height() * 9 / 10
+        self.font_footer_width = current_screen[u'size'].width() - 20
+        self.font_footer_y = current_screen[u'size'].height() * 9 / 10
+        self.font_footer_height = current_screen[u'size'].height() / 10
 
     def dump_xml(self):
         """

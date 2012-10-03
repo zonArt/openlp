@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +34,7 @@ import shutil
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, \
-    create_separated_list
+    create_separated_list, check_directory_exists
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, \
     critical_error_message_box, find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -97,7 +98,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseOrderTextChanged)
         QtCore.QObject.connect(self.themeAddButton,
             QtCore.SIGNAL(u'clicked()'),
-            self.mediaitem.plugin.renderer.themeManager.onAddTheme)
+            self.mediaitem.plugin.renderer.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton,
             QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.audioAddFromFileButton,
@@ -171,17 +172,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def loadThemes(self, theme_list):
         self.themeComboBox.clear()
         self.themeComboBox.addItem(u'')
-        self.themes = []
-        for theme in theme_list:
-            self.themeComboBox.addItem(theme)
-            self.themes.append(theme)
+        self.themes = theme_list
+        self.themeComboBox.addItems(theme_list)
         set_case_insensitive_completer(self.themes, self.themeComboBox)
 
     def loadMediaFiles(self):
         self.audioAddFromMediaButton.setVisible(False)
         for plugin in self.parent().pluginManager.plugins:
-            if plugin.name == u'media' and \
-                plugin.status == PluginStatus.Active:
+            if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(
                     plugin.mediaItem.getList(MediaType.Audio))
@@ -258,8 +256,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         verse_tags_translated = False
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML = SongXML()
-            verseList = songXML.get_verses(self.song.lyrics)
-            for count, verse in enumerate(verseList):
+            verse_list = songXML.get_verses(self.song.lyrics)
+            for count, verse in enumerate(verse_list):
                 self.verseListWidget.setRowCount(
                     self.verseListWidget.rowCount() + 1)
                 # This silently migrates from localized verse type markup.
@@ -478,27 +476,26 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     def onVerseEditButtonClicked(self):
         item = self.verseListWidget.currentItem()
         if item:
-            tempText = item.text()
-            verseId = item.data(QtCore.Qt.UserRole)
-            self.verseForm.setVerse(tempText, True, verseId)
+            temp_text = item.text()
+            verse_id = item.data(QtCore.Qt.UserRole)
+            self.verseForm.setVerse(temp_text, True, verse_id)
             if self.verseForm.exec_():
                 after_text, verse_tag, verse_num = self.verseForm.getVerse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 item.setText(after_text)
                 # number of lines has changed, repaint the list moving the data
-                if len(tempText.split(u'\n')) != len(after_text.split(u'\n')):
-                    tempList = {}
-                    tempId = {}
+                if len(temp_text.split(u'\n')) != len(after_text.split(u'\n')):
+                    temp_list = []
+                    temp_ids = []
                     for row in range(self.verseListWidget.rowCount()):
-                        tempList[row] = self.verseListWidget.item(row, 0)\
-                            .text()
-                        tempId[row] = self.verseListWidget.item(row, 0)\
-                            .data(QtCore.Qt.UserRole)
+                        item = self.verseListWidget.item(row, 0)
+                        temp_list.append(item.text())
+                        temp_ids.append(item.data(QtCore.Qt.UserRole))
                     self.verseListWidget.clear()
-                    for row in range (0, len(tempList)):
-                        item = QtGui.QTableWidgetItem(tempList[row], 0)
-                        item.setData(QtCore.Qt.UserRole, tempId[row])
+                    for row, entry in enumerate(temp_list):
+                        item = QtGui.QTableWidgetItem(entry, 0)
+                        item.setData(QtCore.Qt.UserRole, temp_ids[row])
                         self.verseListWidget.setItem(row, 0, item)
         self.tagRows()
         # Check if all verse tags are used.
@@ -527,9 +524,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for row in self.findVerseSplit.split(verse_list):
             for match in row.split(u'---['):
                 for count, parts in enumerate(match.split(u']---\n')):
-                    if len(parts) <= 1:
-                        continue
                     if count == 0:
+                        if len(parts) == 0:
+                            continue
                         # handling carefully user inputted versetags
                         separator = parts.find(u':')
                         if separator >= 0:
@@ -702,7 +699,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = self.songBookComboBox.currentText()
         if item == 0 and text:
             temp_song_book = text
-        self.mediaitem.songMaintenanceForm.exec_()
+        self.mediaitem.songMaintenanceForm.exec_(True)
         self.loadAuthors()
         self.loadBooks()
         self.loadTopics()
@@ -859,12 +856,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for row in xrange(self.authorsListView.count()):
             item = self.authorsListView.item(row)
             authorId = (item.data(QtCore.Qt.UserRole))
-            self.song.authors.append(self.manager.get_object(Author, authorId))
+            author = self.manager.get_object(Author, authorId)
+            if author is not None:
+                self.song.authors.append(author)
         self.song.topics = []
         for row in xrange(self.topicsListView.count()):
             item = self.topicsListView.item(row)
             topicId = (item.data(QtCore.Qt.UserRole))
-            self.song.topics.append(self.manager.get_object(Topic, topicId))
+            topic = self.manager.get_object(Topic, topicId)
+            if topic is not None:
+                self.song.topics.append(topic)
         # Save the song here because we need a valid id for the audio files.
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
@@ -873,8 +874,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         save_path = os.path.join(
             AppLocation.get_section_data_path(self.mediaitem.plugin.name),
             'audio', str(self.song.id))
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
+        check_directory_exists(save_path)
         self.song.media_files = []
         files = []
         for row in xrange(self.audioListWidget.count()):
@@ -916,9 +916,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             multiple = []
             for i in range(self.verseListWidget.rowCount()):
                 item = self.verseListWidget.item(i, 0)
-                verseId = item.data(QtCore.Qt.UserRole)
-                verse_tag = verseId[0]
-                verse_num = verseId[1:]
+                verse_id = item.data(QtCore.Qt.UserRole)
+                verse_tag = verse_id[0]
+                verse_num = verse_id[1:]
                 sxml.add_verse_to_lyrics(verse_tag, verse_num, item.text())
                 if verse_num > u'1' and verse_tag not in multiple:
                     multiple.append(verse_tag)

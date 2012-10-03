@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,13 +35,14 @@ logging and a plugin framework are contained within the openlp.core module.
 
 import os
 import sys
+import platform
 import logging
 from optparse import OptionParser
 from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, check_directory_exists, Settings
+from openlp.core.lib import Receiver, Settings, check_directory_exists
 from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -91,6 +93,7 @@ class OpenLP(QtGui.QApplication):
         """
         Override exec method to allow the shared memory to be released on exit
         """
+        self.eventLoopIsActive = True
         QtGui.QApplication.exec_()
         self.sharedMemory.detach()
 
@@ -98,8 +101,14 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-        # On Windows, the args passed into the constructor are
-        # ignored. Not very handy, so set the ones we want to use.
+        self.eventLoopIsActive = False
+        # On Windows, the args passed into the constructor are ignored. Not
+        # very handy, so set the ones we want to use. On Linux and FreeBSD, in
+        # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
+        # command line argument. This interferes with files being passed in as
+        # command line arguments, so we remove it from the list.
+        if 'OpenLP' in args:
+            args.remove('OpenLP')
         self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -109,7 +118,7 @@ class OpenLP(QtGui.QApplication):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         # Decide how many screens we have and their size
-        screens = ScreenList(self.desktop())
+        screens = ScreenList.create(self.desktop())
         # First time checks in settings
         has_run_wizard = Settings().value(u'general/has run wizard', False)
         if not has_run_wizard:
@@ -124,7 +133,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(self.clipboard(), self.args)
+        self.mainWindow = MainWindow(self)
         self.mainWindow.show()
         if show_splash:
             # now kill the splashscreen
@@ -200,6 +209,20 @@ class OpenLP(QtGui.QApplication):
             return QtGui.QApplication.event(self, event)
 
 
+def set_up_logging(log_path):
+    """
+    Setup our logging using log_path
+    """
+    check_directory_exists(log_path)
+    filename = os.path.join(log_path, u'openlp.log')
+    logfile = logging.FileHandler(filename, u'w')
+    logfile.setFormatter(logging.Formatter(
+        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+    log.addHandler(logfile)
+    if log.isEnabledFor(logging.DEBUG):
+        print 'Logging to:', filename
+
+
 def main(args=None):
     """
     The main function which parses command line options and then runs
@@ -223,21 +246,19 @@ def main(args=None):
         help='Set the Qt4 style (passed directly to Qt4).')
     parser.add_option('--testing', dest='testing',
         action='store_true', help='Run by testing framework')
-    # Set up logging
-    log_path = AppLocation.get_directory(AppLocation.CacheDir)
-    check_directory_exists(log_path)
-    filename = os.path.join(log_path, u'openlp.log')
-    logfile = logging.FileHandler(filename, u'w')
-    logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
-    log.addHandler(logfile)
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
+    if options.portable:
+        app_path = AppLocation.get_directory(AppLocation.AppDir)
+        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
+            u'..', u'Other')))
+        log.info(u'Running portable')
+    else:
+        set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
         log.setLevel(logging.DEBUG)
-        print 'Logging to:', filename
     elif options.loglevel.lower() in ['w', 'warning']:
         log.setLevel(logging.WARNING)
     else:
@@ -246,13 +267,35 @@ def main(args=None):
         qt_args.extend(['-style', options.style])
     # Throw the rest of the arguments at Qt, just in case.
     qt_args.extend(args)
+    # Bug #1018855: Set the WM_CLASS property in X11
+    if platform.system() not in ['Windows', 'Darwin']:
+        qt_args.append('OpenLP')
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
     app = OpenLP(qt_args)
     app.setOrganizationName(u'OpenLP')
     app.setOrganizationDomain(u'openlp.org')
-    app.setApplicationName(u'OpenLP')
+    if options.portable:
+        app.setApplicationName(u'OpenLPPortable')
+        Settings.setDefaultFormat(Settings.IniFormat)
+        # Get location OpenLPPortable.ini
+        portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
+            u'..', u'Data', u'OpenLP.ini'))
+        # Make this our settings file
+        log.info(u'INI file: %s', portable_settings_file)
+        Settings.setFilename(portable_settings_file)
+        portable_settings = Settings()
+        # Set our data path
+        data_path = os.path.abspath(os.path.join(app_path,
+            u'..', u'..', u'Data',))
+        log.info(u'Data path: %s', data_path)
+        # Point to our data path
+        portable_settings.setValue(u'advanced/data path', data_path)
+        portable_settings.setValue(u'advanced/is portable', True)
+        portable_settings.sync()
+    else:
+        app.setApplicationName(u'OpenLP')
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:

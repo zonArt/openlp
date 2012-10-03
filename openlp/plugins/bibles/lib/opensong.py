@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,9 +27,10 @@
 ###############################################################################
 
 import logging
-from lxml import objectify
+from lxml import etree, objectify
 
 from openlp.core.lib import Receiver, translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -45,6 +47,22 @@ class OpenSongBible(BibleDB):
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs['filename']
+
+    def get_text(self, element):
+        """
+        Recursively get all text in an objectify element and its child elements.
+
+        ``element``
+            An objectify element to get the text from
+        """
+        verse_text = u''
+        if element.text:
+            verse_text = element.text
+        for sub_element in element.iterchildren():
+            verse_text += self.get_text(sub_element)
+        if element.tail:
+            verse_text += element.tail
+        return verse_text
 
     def do_import(self, bible_name=None):
         """
@@ -85,19 +103,36 @@ class OpenSongBible(BibleDB):
                     for verse in chapter.v:
                         if self.stop_import_flag:
                             break
+                        verse_number = 0
+                        try:
+                            verse_number = int(verse.attrib[u'n'])
+                        except ValueError:
+                            verse_parts = verse.attrib[u'n'].split(u'-')
+                            if len(verse_parts) > 1:
+                                verse_number = int(verse_parts[0])
+                        except TypeError:
+                            log.warn(u'Illegal verse number: %s',
+                                unicode(verse.attrib[u'n']))
                         self.create_verse(
                             db_book.id,
                             int(chapter.attrib[u'n'].split()[-1]),
-                            int(verse.attrib[u'n']),
-                            unicode(verse.text))
+                            verse_number,
+                            self.get_text(verse))
                     self.wizard.incrementProgressBar(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...') %
                         (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
                 self.session.commit()
             Receiver.send_message(u'openlp_process_events')
+        except etree.XMLSyntaxError as inst:
+            critical_error_message_box(
+                message=translate('BiblesPlugin.OpenSongImport',
+                'Incorrect Bible file type supplied. OpenSong Bibles may be '
+                'compressed. You must decompress them before import.'))
+            log.exception(inst)
+            success = False
         except (IOError, AttributeError):
-            log.exception(u'Loading bible from OpenSong file failed')
+            log.exception(u'Loading Bible from OpenSong file failed')
             success = False
         finally:
             if file:

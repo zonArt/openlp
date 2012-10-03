@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,7 +36,8 @@ import logging
 import os
 import uuid
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, \
+    ImageSource
 
 log = logging.getLogger(__name__)
 
@@ -158,21 +160,26 @@ class ServiceItem(object):
         self.icon = icon
         self.iconic_representation = build_icon(icon)
 
-    def render(self, use_override=False):
+    def render(self, provides_own_theme_data=False):
         """
         The render method is what generates the frames for the screen and
         obtains the display information from the renderer. At this point all
         slides are built for the given display size.
+
+        ``provides_own_theme_data``
+            This switch disables the usage of the item's theme. However, this is
+            disabled by default. If this is used, it has to be taken care, that
+            the renderer knows the correct theme data. However, this is needed
+            for the theme manager.
         """
         log.debug(u'Render called')
         self._display_frames = []
         self.bg_image_bytes = None
-        theme = self.theme if self.theme else None
-        self.main, self.footer = \
-            self.renderer.set_override_theme(theme, use_override)
-        self.themedata = self.renderer.theme_data
+        if not provides_own_theme_data:
+            self.renderer.set_item_theme(self.theme)
+            self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
-            log.debug(u'Formatting slides')
+            log.debug(u'Formatting slides: %s' % self.title)
             for slide in self._raw_frames:
                 pages = self.renderer.format_slide(slide[u'raw_slide'], self)
                 for page in pages:
@@ -211,16 +218,13 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.imageManager.add_image(title, path, u'image',
-            self.image_border)
+        self.renderer.image_manager.addImage(
+            path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
-    def add_from_text(self, title, raw_slide, verse_tag=None):
+    def add_from_text(self, raw_slide, verse_tag=None):
         """
         Add a text slide to the service item.
-
-        ``frame_title``
-            The title of the slide in the service item.
 
         ``raw_slide``
             The raw text of the slide.
@@ -228,7 +232,7 @@ class ServiceItem(object):
         if verse_tag:
             verse_tag = verse_tag.upper()
         self.service_item_type = ServiceItemType.Text
-        title = title.split(u'\n')[0]
+        title = raw_slide[:30].split(u'\n')[0]
         self._raw_frames.append(
             {u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
         self._new_item()
@@ -429,13 +433,12 @@ class ServiceItem(object):
 
     def get_rendered_frame(self, row):
         """
-        Returns the correct frame for a given list and
-        renders it if required.
+        Returns the correct frame for a given list and renders it if required.
         """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames[row][u'html'].split(u'\n')[0]
         elif self.service_item_type == ServiceItemType.Image:
-            return self._raw_frames[row][u'title']
+            return self._raw_frames[row][u'path']
         else:
             return self._raw_frames[row][u'image']
 

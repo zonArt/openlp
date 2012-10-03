@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -482,8 +483,11 @@ class FoilPresenter(object):
         # Process verse order
         verse_order = []
         verse_strophenr = []
-        for strophennummer in foilpresenterfolie.reihenfolge.strophennummer:
-            verse_strophenr.append(strophennummer)
+        try:
+            for strophennummer in foilpresenterfolie.reihenfolge.strophennummer:
+                verse_strophenr.append(strophennummer)
+        except AttributeError:
+            pass
         # Currently we do not support different "parts"!
         if u'0' in temp_verse_order:
             for vers in temp_verse_order_backup:
@@ -537,12 +541,17 @@ class FoilPresenter(object):
         ``song``
             The song object.
         """
-        for title_string in foilpresenterfolie.titel.titelstring:
-            if not song.title:
-                song.title = self._child(title_string)
-                song.alternate_title = u''
-            else:
-                song.alternate_title = self._child(title_string)
+        try:
+            for title_string in foilpresenterfolie.titel.titelstring:
+                if not song.title:
+                    song.title = self._child(title_string)
+                    song.alternate_title = u''
+                else:
+                    song.alternate_title = self._child(title_string)
+        except AttributeError:
+            # Use first line of first verse
+            first_line = self._child(foilpresenterfolie.strophen.strophe.text_)
+            song.title = first_line.split('\n')[0]
 
     def _process_topics(self, foilpresenterfolie, song):
         """

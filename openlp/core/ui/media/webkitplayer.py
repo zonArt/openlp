@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -227,33 +228,33 @@ FLASH_HTML = u"""
 """
 
 VIDEO_EXT = [
-             u'*.3gp'
-            , u'*.3gpp'
-            , u'*.3g2'
-            , u'*.3gpp2'
-            , u'*.aac'
-            , u'*.flv'
-            , u'*.f4a'
-            , u'*.f4b'
-            , u'*.f4p'
-            , u'*.f4v'
-            , u'*.mov'
-            , u'*.m4a'
-            , u'*.m4b'
-            , u'*.m4p'
-            , u'*.m4v'
-            , u'*.mkv'
-            , u'*.mp4'
-            , u'*.ogv'
-            , u'*.webm'
-            , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
-            , u'*.swf'
-        ]
+        u'*.3gp'
+        , u'*.3gpp'
+        , u'*.3g2'
+        , u'*.3gpp2'
+        , u'*.aac'
+        , u'*.flv'
+        , u'*.f4a'
+        , u'*.f4b'
+        , u'*.f4p'
+        , u'*.f4v'
+        , u'*.mov'
+        , u'*.m4a'
+        , u'*.m4b'
+        , u'*.m4p'
+        , u'*.m4v'
+        , u'*.mkv'
+        , u'*.mp4'
+        , u'*.ogv'
+        , u'*.webm'
+        , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
+        , u'*.swf'
+    ]
 
 AUDIO_EXT = [
-              u'*.mp3'
-            , u'*.ogg'
-        ]
+        u'*.mp3'
+        , u'*.ogg'
+    ]
 
 
 class WebkitPlayer(MediaPlayer):
@@ -375,11 +376,11 @@ class WebkitPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.is_flash:
             seek = seekVal
-            display.frame.evaluateJavaScript( \
+            display.frame.evaluateJavaScript(
                 u'show_flash("seek", null, null, "%s");' % (seek))
         else:
-            seek = float(seekVal)/1000
-            display.frame.evaluateJavaScript( \
+            seek = float(seekVal) / 1000
+            display.frame.evaluateJavaScript(
                 u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
@@ -413,14 +414,15 @@ class WebkitPlayer(MediaPlayer):
             if display.frame.evaluateJavaScript(
                 u'show_video("isEnded");') == 'true':
                 self.stop(display)
-            currentTime = display.frame.evaluateJavaScript(
+            (currentTime, ok) = display.frame.evaluateJavaScript(
                 u'show_video("currentTime");')
             # check if conversion was ok and value is not 'NaN'
-            if isinstance(currentTime, float) and currentTime != float('inf'):
+            if ok and currentTime != float('inf'):
                 currentTime = int(currentTime * 1000)
-            length = display.frame.evaluateJavaScript( u'show_video("length");')
+            (length, ok) = display.frame.evaluateJavaScript(
+                u'show_video("length");')
             # check if conversion was ok and value is not 'NaN'
-            if isinstance(length, float) and length != float('inf'):
+            if ok and length != float('inf'):
                 length = int(length * 1000)
         if currentTime > 0:
             controller.media_info.length = length

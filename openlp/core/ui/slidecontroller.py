@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,10 +34,10 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, build_html, PluginManager, ServiceItem
-from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.lib import SlideLimits, ServiceItemAction, Settings
+    translate, build_icon, build_html, PluginManager, ServiceItem, \
+    ImageSource, SlideLimits, ServiceItemAction, Settings
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
+from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -73,6 +74,7 @@ class Controller(QtGui.QWidget):
         controller = self
         Receiver.send_message('%s' % sender, [controller, args])
 
+
 class SlideController(Controller):
     """
     SlideController is the slide controller widget. This widget is what the
@@ -83,7 +85,7 @@ class SlideController(Controller):
         Set up the Slide Controller.
         """
         Controller.__init__(self, parent, isLive)
-        self.screens = ScreenList.get_instance()
+        self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
                 float(self.screens.current[u'size'].height())
@@ -283,19 +285,20 @@ class SlideController(Controller):
                 text=translate('OpenLP.SlideController', 'Pause Audio'),
                 tooltip=translate('OpenLP.SlideController', 'Pause audio.'),
                 checked=False, visible=False, category=self.category,
-                triggers=self.onAudioPauseClicked)
+                context=QtCore.Qt.WindowShortcut,
+                shortcuts=[], triggers=self.onAudioPauseClicked)
             self.audioMenu = QtGui.QMenu(
-                translate('OpenLP.SlideController', 'Background Audio'), self)
+                translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)
             self.audioPauseItem.setMenu(self.audioMenu)
-            self.audioPauseItem.setParent(self)
+            self.audioPauseItem.setParent(self.toolbar)
             self.toolbar.widgetForAction(self.audioPauseItem).setPopupMode(
                 QtGui.QToolButton.MenuButtonPopup)
             self.nextTrackItem = create_action(self, u'nextTrackItem',
                 text=UiStrings().NextTrack,
                 icon=u':/slides/media_playback_next.png', tooltip=translate(
                 'OpenLP.SlideController', 'Go to next audio track.'),
-                category=self.category, context=QtCore.Qt.WindowShortcut,
-                triggers=self.onNextTrackClicked)
+                category=self.category,
+                shortcuts=[], triggers=self.onNextTrackClicked)
             self.audioMenu.addAction(self.nextTrackItem)
             self.trackMenu = self.audioMenu.addMenu(
                 translate('OpenLP.SlideController', 'Tracks'))
@@ -577,8 +580,7 @@ class SlideController(Controller):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self.imageManager, self.isLive,
-            self)
+        self.display = MainDisplay(self, self.imageManager, self.isLive, self)
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
@@ -815,8 +817,7 @@ class SlideController(Controller):
                         self.onTrackTriggered)
                 self.display.audioPlayer.repeat = Settings().value(
                     self.parent().generalSettingsSection + \
-                        u'/audio repeat list',
-                    False)
+                    u'/audio repeat list',False)
                 if Settings().value(
                     self.parent().generalSettingsSection + \
                         u'/audio start paused',
@@ -859,11 +860,13 @@ class SlideController(Controller):
                     # If current slide set background to image
                     if framenumber == slideno:
                         self.serviceItem.bg_image_bytes = \
-                            self.imageManager.get_image_bytes(frame[u'title'])
-                    image = self.imageManager.get_image(frame[u'title'])
+                            self.imageManager.getImageBytes(frame[u'path'],
+                            ImageSource.ImagePlugin)
+                    image = self.imageManager.getImage(frame[u'path'],
+                        ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.previewListWidget.setCellWidget(framenumber, 0, label)
-                slideHeight = width * self.parent().renderer.screen_ratio
+                slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
             text.append(unicode(row))
@@ -1089,14 +1092,14 @@ class SlideController(Controller):
                         u'%s_slide' % self.serviceItem.name.lower(),
                         [self.serviceItem, self.isLive, row])
             else:
-                toDisplay = self.serviceItem.get_rendered_frame(row)
+                to_display = self.serviceItem.get_rendered_frame(row)
                 if self.serviceItem.is_text():
-                    self.display.text(toDisplay)
+                    self.display.text(to_display)
                 else:
                     if start:
-                        self.display.buildHtml(self.serviceItem, toDisplay)
+                        self.display.buildHtml(self.serviceItem, to_display)
                     else:
-                        self.display.image(toDisplay)
+                        self.display.image(to_display)
                     # reset the store used to display first image
                     self.serviceItem.bg_image_bytes = None
             self.updatePreview()
@@ -1310,8 +1313,7 @@ class SlideController(Controller):
         """
         triggered by clicking the Preview slide items
         """
-        if Settings().value(u'advanced/double click live',
-            False):
+        if Settings().value(u'advanced/double click live', False):
             # Live and Preview have issues if we have video or presentations
             # playing in both at the same time.
             if self.serviceItem.is_command():
@@ -1341,7 +1343,7 @@ class SlideController(Controller):
         """
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
-        self.mediaController.video(self, file, False, False)
+        self.mediaController.video(self, file, False, False, self.hideMode())
         if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()
             self.slidePreview.hide()

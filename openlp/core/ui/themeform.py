@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -136,16 +137,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         self.backgroundPage.registerField(
             u'background_type', self.backgroundComboBox)
-        self.backgroundPage.registerField(
-            u'color', self.colorButton)
+        self.backgroundPage.registerField(u'color', self.colorButton)
         self.backgroundPage.registerField(
             u'grandient_start', self.gradientStartButton)
         self.backgroundPage.registerField(
             u'grandient_end', self.gradientEndButton)
         self.backgroundPage.registerField(
             u'background_image', self.imageFileEdit)
-        self.backgroundPage.registerField(
-            u'gradient', self.gradientComboBox)
+        self.backgroundPage.registerField(u'gradient', self.gradientComboBox)
         self.mainAreaPage.registerField(
             u'mainColorButton', self.mainColorButton)
         self.mainAreaPage.registerField(
@@ -188,12 +187,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             u'footerPositionHeight', self.footerHeightSpinBox)
         self.backgroundPage.registerField(
             u'horizontal', self.horizontalComboBox)
-        self.backgroundPage.registerField(
-            u'vertical', self.verticalComboBox)
+        self.backgroundPage.registerField(u'vertical', self.verticalComboBox)
         self.backgroundPage.registerField(
             u'slideTransition', self.transitionsCheckBox)
-        self.backgroundPage.registerField(
-            u'name', self.themeNameEdit)
+        self.backgroundPage.registerField(u'name', self.themeNameEdit)
 
     def calculateLines(self):
         """
@@ -208,6 +205,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Updates the lines on a page on the wizard
         """
+        #TODO check
+        print type(lines)
         self.mainLineCountLabel.setText(translate('OpenLP.ThemeForm',
             '(approximately %d lines per slide)') % int(lines))
 
@@ -230,14 +229,25 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.previewBoxLabel.setFixedSize(pixmapWidth + 2 * frameWidth,
                 pixmapHeight + 2 * frameWidth)
 
+    def validateCurrentPage(self):
+        background_image = BackgroundType.to_string(BackgroundType.Image)
+        if self.page(self.currentId()) == self.backgroundPage and \
+            self.theme.background_type == background_image and \
+            self.imageFileEdit.text().isEmpty():
+            QtGui.QMessageBox.critical(self,
+                translate('OpenLP.ThemeWizard', 'Background Image Empty'),
+                translate('OpenLP.ThemeWizard', 'You have not selected a '
+                    'background image. Please select one before continuing.'))
+            return False
+        else:
+            return True
+
     def onCurrentIdChanged(self, pageId):
         """
-        Detects Page changes and updates as approprate.
+        Detects Page changes and updates as appropriate.
         """
-        if self.page(pageId) == self.areaPositionPage:
-            self.setOption(QtGui.QWizard.HaveCustomButton1, True)
-        else:
-            self.setOption(QtGui.QWizard.HaveCustomButton1, False)
+        enabled = self.page(pageId) == self.areaPositionPage
+        self.setOption(QtGui.QWizard.HaveCustomButton1, enabled)
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
             frame = self.thememanager.generateImage(self.theme)
@@ -269,10 +279,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Change state as Outline check box changed
         """
         if self.updateThemeAllowed:
-            if state == QtCore.Qt.Checked:
-                self.theme.font_main_outline = True
-            else:
-                self.theme.font_main_outline = False
+            self.theme.font_main_outline = state == QtCore.Qt.Checked
             self.outlineColorButton.setEnabled(self.theme.font_main_outline)
             self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
             self.calculateLines()
@@ -355,14 +362,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         elif self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Gradient):
             self.gradientStartButton.setStyleSheet(u'background-color: %s' %
-                    self.theme.background_start_color)
+                self.theme.background_start_color)
             self.gradientEndButton.setStyleSheet(u'background-color: %s' %
-                    self.theme.background_end_color)
+                self.theme.background_end_color)
             self.setField(u'background_type', 1)
         elif self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Image):
             self.imageColorButton.setStyleSheet(u'background-color: %s' %
-                    self.theme.background_border_color)
+                self.theme.background_border_color)
             self.imageFileEdit.setText(self.theme.background_filename)
             self.setField(u'background_type', 2)
         elif self.theme.background_type == \
@@ -515,7 +522,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         images_filter = u'%s;;%s (*.*) (*)' % (
             images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.ThemeForm', 'Select Image'), u'',
+            translate('OpenLP.ThemeWizard', 'Select Image'), u'',
             images_filter)
         if filename:
             self.theme.background_filename = unicode(filename)
@@ -555,10 +562,10 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.font_main_line_adjustment = self.field(u'lineSpacingSpinBox')
         self.theme.font_main_outline_size = self.field(u'outlineSizeSpinBox')
         self.theme.font_main_shadow_size = self.field(u'shadowSizeSpinBox')
-        self.theme.font_main_bold = self.field(u'mainBoldCheckBox') 
+        self.theme.font_main_bold = self.field(u'mainBoldCheckBox')
         # FIXME ?
         self.theme.font_main_italics = \
-            self.field(u'mainItalicsCheckBox') 
+            self.field(u'mainItalicsCheckBox')
         # footer page
         self.theme.font_footer_name = \
             self.footerFontComboBox.currentFont().family()
@@ -578,7 +585,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.horizontalComboBox.currentIndex()
         self.theme.display_vertical_align = self.verticalComboBox.currentIndex()
         # TODO Check
-        self.theme.display_slide_transition = self.field(u'slideTransition') 
+        self.theme.display_slide_transition = self.field(u'slideTransition')
 
     def accept(self):
         """
@@ -588,14 +595,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.theme_name = self.field(u'name')
         if not self.theme.theme_name:
             critical_error_message_box(
-                translate('OpenLP.ThemeForm', 'Theme Name Missing'),
-                translate('OpenLP.ThemeForm',
+                translate('OpenLP.ThemeWizard', 'Theme Name Missing'),
+                translate('OpenLP.ThemeWizard',
                 'There is no name for this theme. Please enter one.'))
             return
         if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
             critical_error_message_box(
-                translate('OpenLP.ThemeForm', 'Theme Name Invalid'),
-                translate('OpenLP.ThemeForm',
+                translate('OpenLP.ThemeWizard', 'Theme Name Invalid'),
+                translate('OpenLP.ThemeWizard',
                 'Invalid theme name. Please enter one.'))
             return
         saveFrom = None
@@ -616,8 +623,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Handle Color buttons
         """
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(field), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(field), self)
         if new_color.isValid():
             field = new_color.name()
         return field

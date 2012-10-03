@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2011 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -43,7 +44,7 @@ VLC_AVAILABLE = False
 try:
     import vlc
     VLC_AVAILABLE = bool(vlc.get_default_instance())
-except (ImportError, NameError):
+except (ImportError, NameError, NotImplementedError):
     pass
 except OSError, e:
     if sys.platform.startswith('win'):
@@ -61,36 +62,32 @@ if VLC_AVAILABLE:
         VLC_AVAILABLE = False
         log.debug(u'VLC could not be loaded: %s' % version)
 
-AUDIO_EXT = [
-      u'*.mp3'
-    , u'*.wav'
-    , u'*.ogg'
-    ]
+AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
 
 VIDEO_EXT = [
-    u'*.3gp'
-    , u'*.asf', u'*.wmv'
-    , u'*.au'
-    , u'*.avi'
-    , u'*.flv'
-    , u'*.mov'
-    , u'*.mp4'
-    , u'*.ogm'
-    , u'*.mkv', u'*.mka'
-    , u'*.ts', u'*.mpg'
-    , u'*.mpg', u'*.mp2'
-    , u'*.nsc'
-    , u'*.nsv'
-    , u'*.nut'
-    , u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv'
-    , u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid'
-    , u'*.tta', u'*.tac'
-    , u'*.ty'
-    , u'*.dts'
-    , u'*.xa'
-    , u'*.iso'
-    , u'*.vob'
-    ]
+    u'*.3gp',
+    u'*.asf', u'*.wmv',
+    u'*.au',
+    u'*.avi',
+    u'*.flv',
+    u'*.mov',
+    u'*.mp4',
+    u'*.ogm', u'*.ogv',
+    u'*.mkv', u'*.mka',
+    u'*.ts', u'*.mpg',
+    u'*.mpg', u'*.mp2',
+    u'*.nsc',
+    u'*.nsv',
+    u'*.nut',
+    u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv',
+    u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid',
+    u'*.tta', u'*.tac',
+    u'*.ty',
+    u'*.dts',
+    u'*.xa',
+    u'*.iso',
+    u'*.vob'
+]
 
 
 class VlcPlayer(MediaPlayer):
@@ -129,9 +126,9 @@ class VlcPlayer(MediaPlayer):
         # this is platform specific!
         # you have to give the id of the QFrame (or similar object) to
         # vlc, different platforms have different functions for this
-        if sys.platform == "win32": # for Windows
+        if sys.platform == "win32":
             display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
-        elif sys.platform == "darwin": # for MacOS
+        elif sys.platform == "darwin":
             display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
         else:
             # for Linux using the X Server
@@ -179,17 +176,16 @@ class VlcPlayer(MediaPlayer):
         if controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.vlcMediaPlayer.play()
-        if self.media_state_wait(display, vlc.State.Playing):
-            if start_time > 0:
-                self.seek(display, controller.media_info.start_time * 1000)
-            controller.media_info.length = \
-                int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
-            controller.seekSlider.setMaximum(controller.media_info.length * 1000)
-            self.state = MediaState.Playing
-            display.vlcWidget.raise_()
-            return True
-        else:
+        if not self.media_state_wait(display, vlc.State.Playing):
             return False
+        if start_time > 0:
+            self.seek(display, controller.media_info.start_time * 1000)
+        controller.media_info.length = \
+            int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+        controller.seekSlider.setMaximum(controller.media_info.length * 1000)
+        self.state = MediaState.Playing
+        display.vlcWidget.raise_()
+        return True
 
     def pause(self, display):
         if display.vlcMedia.get_state() != vlc.State.Playing:

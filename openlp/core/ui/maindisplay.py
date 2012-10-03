@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,7 +37,7 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager, expand_tags, Settings
+    translate, PluginManager, expand_tags, Settings, ImageSource
 from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
@@ -100,9 +101,8 @@ class Display(QtGui.QGraphicsView):
         self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
             QtCore.Qt.ScrollBarAlwaysOff)
 
-    def resizeEvent(self, ev):
-        self.webView.setGeometry(0, 0,
-            self.width(), self.height())
+    def resizeEvent(self, event):
+        self.webView.setGeometry(0, 0, self.width(), self.height())
 
     def isWebLoaded(self):
         """
@@ -119,8 +119,7 @@ class MainDisplay(Display):
     def __init__(self, parent, imageManager, live, controller):
         Display.__init__(self, parent, live, controller)
         self.imageManager = imageManager
-        self.screens = ScreenList.get_instance()
-        self.plugins = PluginManager.get_instance().plugins
+        self.screens = ScreenList()
         self.rebuildCSS = False
         self.hideMode = None
         self.override = {}
@@ -131,16 +130,22 @@ class MainDisplay(Display):
         else:
             self.audioPlayer = None
         self.firstTime = True
+        self.webLoaded = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
-                QtCore.Qt.WindowStaysOnTopHint
+            QtCore.Qt.WindowStaysOnTopHint
         if Settings().value(u'advanced/x11 bypass wm', True):
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
-        # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
-        # stay always on top on Mac OS X. For details see bug 906926.
-        # It needs more investigation to fix it properly.
+        # TODO: The following combination of windowFlags works correctly
+        # on Mac OS X. For next OpenLP version we should test it on other
+        # platforms. For OpenLP 2.0 keep it only for OS X to not cause any
+        # regressions on other platforms.
         if sys.platform == 'darwin':
-            windowFlags |= QtCore.Qt.SplashScreen
+            windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
+            # For primary screen ensure it stays above the OS X dock
+            # and menu bar
+            if self.screens.current[u'primary']:
+                self.setWindowState(QtCore.Qt.WindowFullScreen)
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(False)
@@ -194,13 +199,13 @@ class MainDisplay(Display):
         Display.setup(self)
         if self.isLive:
             # Build the initial frame.
-            image_file = Settings().value(u'advanced/default image',
-                u':/graphics/openlp-splash-screen.png')
             background_color = QtGui.QColor()
             background_color.setNamedColor(Settings().value(
                 u'advanced/default color', u'#ffffff'))
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
+            image_file = Settings().value(u'advanced/default image',
+                u':/graphics/openlp-splash-screen.png')
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
                 self.screen[u'size'].width(),
@@ -220,20 +225,33 @@ class MainDisplay(Display):
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
 
-    def text(self, slide):
+    def text(self, slide, animate=True):
         """
         Add the slide text from slideController
 
         ``slide``
             The slide text to be displayed
+
+        ``animate``
+            Perform transitions if applicable when setting the text
         """
         log.debug(u'text to display')
         # Wait for the webview to update before displaying text.
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         self.setGeometry(self.screen[u'size'])
-        self.frame.evaluateJavaScript(u'show_text("%s")' %
-            slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        if animate:
+            self.frame.evaluateJavaScript(u'show_text("%s")' %
+                slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        else:
+            # This exists for https://bugs.launchpad.net/openlp/+bug/1016843
+            # For unknown reasons if evaluateJavaScript is called
+            # from the themewizard, then it causes a crash on
+            # Windows if there are many items in the service to re-render.
+            # Setting the div elements direct seems to solve the issue
+            self.frame.findFirstElement("#lyricsmain").setInnerXml(slide)
+            self.frame.findFirstElement("#lyricsoutline").setInnerXml(slide)
+            self.frame.findFirstElement("#lyricsshadow").setInnerXml(slide)
 
     def alert(self, text, location):
         """
@@ -270,31 +288,33 @@ class MainDisplay(Display):
                 self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
-    def directImage(self, name, path, background):
+    def directImage(self, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.imageManager.add_image(name, path, u'image', background)
-        if hasattr(self, u'serviceItem'):
-            self.override[u'image'] = name
-            self.override[u'theme'] = self.serviceItem.themedata.theme_name
-            self.image(name)
-            # Update the preview frame.
-            if self.isLive:
-                self.parent().updatePreview()
-            return True
-        return False
+        self.imageManager.addImage(path, ImageSource.ImagePlugin, background)
+        if not hasattr(self, u'serviceItem'):
+            return False
+        self.override[u'image'] = path
+        self.override[u'theme'] = self.serviceItem.themedata.background_filename
+        self.image(path)
+        # Update the preview frame.
+        if self.isLive:
+            self.parent().updatePreview()
+        return True
 
-    def image(self, name):
+    def image(self, path):
         """
-        Add an image as the background. The image has already been added
-        to the cache.
+        Add an image as the background. The image has already been added to the
+        cache.
 
-        ``Image``
-            The name of the image to be displayed.
+        ``path``
+            The path to the image to be displayed. **Note**, the path is only
+            passed to identify the image. If the image has changed it has to be
+            re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.imageManager.get_image_bytes(name)
+        image = self.imageManager.getImageBytes(path, ImageSource.ImagePlugin)
         self.controller.mediaController.video_reset(self.controller)
         self.displayImage(image)
 
@@ -355,7 +375,7 @@ class MainDisplay(Display):
                     self.setVisible(True)
         return QtGui.QPixmap.grabWidget(self)
 
-    def buildHtml(self, serviceItem, image=None):
+    def buildHtml(self, serviceItem, image_path=u''):
         """
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
@@ -372,20 +392,23 @@ class MainDisplay(Display):
                 Receiver.send_message(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override[u'theme'] != serviceItem.themedata.theme_name:
+            elif self.override[u'theme'] != \
+                serviceItem.themedata.background_filename:
                 Receiver.send_message(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
-                background = self.imageManager. \
-                    get_image_bytes(self.override[u'image'])
+                background = self.imageManager.getImageBytes(
+                    self.override[u'image'], ImageSource.ImagePlugin)
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.imageManager. \
-                get_image_bytes(self.serviceItem.themedata.theme_name)
-        if image:
-            image_bytes = self.imageManager.get_image_bytes(image)
+            self.serviceItem.bg_image_bytes = self.imageManager.getImageBytes(
+                self.serviceItem.themedata.background_filename,
+                ImageSource.Theme)
+        if image_path:
+            image_bytes = self.imageManager.getImageBytes(
+                image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive,
@@ -566,7 +589,7 @@ class AudioPlayer(QtCore.QObject):
         self.playlist.extend(map(Phonon.MediaSource, filenames))
 
     def next(self):
-        if not self.repeat and self.currentIndex + 1 == len(self.playlist):
+        if not self.repeat and self.currentIndex + 1 >= len(self.playlist):
             return
         isPlaying = self.mediaObject.state() == Phonon.PlayingState
         self.currentIndex += 1

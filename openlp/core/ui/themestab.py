@@ -6,10 +6,11 @@
 # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
-# Corwin, Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan,      #
-# Armin Köhler, Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias     #
-# Põldaru, Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,    #
-# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Frode Woldsund             #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
+# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
+# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
+# Tibble, Dave Warnock, Frode Woldsund                                        #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -150,8 +151,8 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'theme level', self.theme_level)
         settings.setValue(u'global theme', self.global_theme)
         settings.endGroup()
-        self.mainwindow.renderer.set_global_theme(
-            self.global_theme, self.theme_level)
+        self.mainwindow.renderer.set_global_theme(self.global_theme)
+        self.mainwindow.renderer.set_theme_level(self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
@@ -187,9 +188,9 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.mainwindow.renderer.set_global_theme(
-            self.global_theme, self.theme_level)
-        if self.global_theme:
+        self.mainwindow.renderer.set_global_theme(self.global_theme)
+        self.mainwindow.renderer.set_theme_level(self.theme_level)
+        if self.global_theme is not u'':
             self.__previewGlobalTheme()
 
     def __previewGlobalTheme(self):
