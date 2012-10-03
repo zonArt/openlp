@@ -362,7 +362,7 @@ class MediaManagerItem(QtGui.QWidget):
                         'Invalid File Type'),
                         translate('OpenLP.MediaManagerItem',
                         'Invalid File %s.\nSuffix not supported') % file)
-                    errorShown = True
+                    error_shown = True
             else:
                 new_files.append(file)
         if new_files:
