@@ -208,7 +208,7 @@ class Ui_MainWindow(object):
             category=UiStrings().File, triggers=mainWindow.close)
         # Give QT Extra Hint that this is the Exit Menu Item
         self.fileExitItem.setMenuRole(QtGui.QAction.QuitRole)
-        aaction_list.add_category(UiStrings().Import,
+        action_list.add_category(UiStrings().Import,
             CategoryOrder.standardMenu)
         self.importThemeItem = create_action(mainWindow,
             u'importThemeItem', category=UiStrings().Import)

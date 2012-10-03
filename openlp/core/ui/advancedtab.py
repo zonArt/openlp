@@ -457,7 +457,7 @@ class AdvancedTab(SettingsTab):
         # The max recent files value does not have an interface and so never
         # gets actually stored in the settings therefore the default value of
         # 20 will always be used.
-        self.recentSpinBox.setMaximum(Settings().value(u'max recent files', 20))
+        self.recentSpinBox.setMaximum(settings.value(u'max recent files', 20))
         self.recentSpinBox.setValue(settings.value(u'recent file count', 4))
         self.mediaPluginCheckBox.setChecked(
             settings.value(u'save current plugin', False))
@@ -533,8 +533,7 @@ class AdvancedTab(SettingsTab):
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
         # Don't allow data directory move if running portable.
-        if Settings().value(u'advanced/is portable',
-            QtCore.QVariant(False)).toBool():
+        if settings.value(u'advanced/is portable', False):
             self.dataDirectoryGroupBox.hide()
 
     def save(self):
