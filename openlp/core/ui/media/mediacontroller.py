@@ -88,12 +88,15 @@ class MediaController(object):
         for player in self.mediaPlayers.keys():
             self.mediaPlayers[player].isActive = player in savedPlayers
 
-    def register_controllers(self, controller):
+    def register_players(self, player):
         """
         Register each media Player controller (Webkit, Phonon, etc) and store
         for later use
+
+        ``player``
+            Individual player class which has been enabled
         """
-        self.mediaPlayers[controller.name] = controller
+        self.mediaPlayers[player.name] = player
 
     def check_available_media_players(self):
         """
@@ -117,10 +120,10 @@ class MediaController(object):
                     except ImportError:
                         log.warn(u'Failed to import %s on path %s',
                             modulename, path)
-        controller_classes = MediaPlayer.__subclasses__()
-        for controller_class in controller_classes:
-            controller = controller_class(self)
-            self.register_controllers(controller)
+        player_classes = MediaPlayer.__subclasses__()
+        for player_class in player_classes:
+            player = player_class(self)
+            self.register_players(player)
         if not self.mediaPlayers:
             return False
         savedPlayers, overriddenPlayer = get_media_players()
@@ -184,14 +187,28 @@ class MediaController(object):
                 html += player.get_media_display_html()
         return html
 
-    def add_controller_items(self, controller, control_panel):
+    def register_controller(self, controller, control_panel):
+        """
+        Registers media controls where the players will be placed to run.
+
+        ``controller``
+            The controller where a player will be placed
+
+        ``controller_panel``
+            The controllers toolbar where the widgets reside
+        """
         self.controller.append(controller)
         self.setup_generic_controls(controller, control_panel)
-        self.setup_special_controls(controller, control_panel)
 
     def setup_generic_controls(self, controller, control_panel):
         """
-        Add generic media control items (valid for all types of medias)
+        Set up controls on the control_panel for a given controller
+
+        ``controller``
+            First element is the controller which should be used
+
+        ``controller_panel``
+            First element is the controller which should be used
         """
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
@@ -241,12 +258,6 @@ class MediaController(object):
         QtCore.QObject.connect(controller.volumeSlider,
             QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
 
-    def setup_special_controls(self, controller, control_panel):
-        """
-        Special media Toolbars will be created here (e.g. for DVD Playback)
-        """
-        controller.media_info = MediaInfo()
-        # TODO: add Toolbar for DVD, ...
 
     def setup_display(self, display):
         """

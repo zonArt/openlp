@@ -270,7 +270,7 @@ class SlideController(Controller):
                 'Edit and reload song preview.'), triggers=self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
-        self.mediaController.add_controller_items(self, self.controllerLayout)
+        self.mediaController.register_controller(self, self.controllerLayout)
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
