@@ -47,12 +47,11 @@ class MediaController(object):
     """
 
     def __init__(self, parent):
-        print "Media Controller "
-        print parent
-        self.parent = parent
+        self.mainWindow = parent
         self.mediaPlayers = {}
         self.controller = []
         self.curDisplayMediaPlayer = {}
+        self.currentPlayer = None
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
@@ -259,8 +258,8 @@ class MediaController(object):
         # update player status
         self.set_active_players()
         display.hasAudio = True
-        if display == self.parent.previewController.previewDisplay or \
-            display == self.parent.liveController.previewDisplay:
+        if display == self.mainWindow.previewController.previewDisplay or \
+            display == self.mainWindow.liveController.previewDisplay:
             display.hasAudio = False
         for player in self.mediaPlayers.values():
             if player.isActive:
@@ -302,6 +301,7 @@ class MediaController(object):
         controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_filename())
         controller.media_info.is_background = isBackground
         display = None
+        #self.curDisplayMediaPlayer[u'current'] = serviceItem.name
         if controller.isLive:
             if controller.previewDisplay:
                 display = controller.previewDisplay
@@ -366,7 +366,6 @@ class MediaController(object):
         ``serviceItem``
             The ServiceItem containing the details to be played.
         """
-        print controller
         log.debug(u'media_length')
         # stop running videos
         self.video_reset(controller)
@@ -539,7 +538,7 @@ class MediaController(object):
         isLive = msg[1]
         if not isLive:
             return
-        controller = self.parent.liveController
+        controller = self.mainWindow.liveController
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller != controller or \
                 self.curDisplayMediaPlayer[display].state != MediaState.Playing:
@@ -560,7 +559,7 @@ class MediaController(object):
         if not isLive:
             return
         Receiver.send_message(u'live_display_hide', hide_mode)
-        controller = self.parent.liveController
+        controller = self.mainWindow.liveController
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller != controller or \
                 self.curDisplayMediaPlayer[display].state != MediaState.Playing:
@@ -580,7 +579,7 @@ class MediaController(object):
         isLive = msg[1]
         if not isLive:
             return
-        controller = self.parent.liveController
+        controller = self.mainWindow.liveController
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller != controller or \
                 self.curDisplayMediaPlayer[display].state != MediaState.Paused:

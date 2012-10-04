@@ -30,11 +30,15 @@ import logging
 import mimetypes
 from datetime import datetime
 
+from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver
+from openlp.core.lib.settings import Settings
+
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
+
 
 log = logging.getLogger(__name__)
 
@@ -55,6 +59,20 @@ ADDITIONAL_EXT = {
         u'video/mpeg' : [u'.mp4', u'.mts'],
         u'video/x-ms-wmv': [u'.wmv']}
 
+VIDEO_CSS = u"""
+#videobackboard {
+    z-index:3;
+    background-color: %s;
+}
+#video1 {
+    background-color: %s;
+    z-index:4;
+}
+#video2 {
+    background-color: %s;
+    z-index:4;
+}
+"""
 
 class PhononPlayer(MediaPlayer):
     """
@@ -204,3 +222,11 @@ class PhononPlayer(MediaPlayer):
         if not controller.seekSlider.isSliderDown():
             controller.seekSlider.setSliderPosition(
                 display.mediaObject.currentTime())
+
+    def get_media_display_css(self):
+        """
+        Add css style sheets to htmlbuilder
+        """
+        background = unicode(QtGui.QColor(Settings().value(
+            u'players/background color', QtCore.QVariant(u'#000000'))).name())
+        return VIDEO_CSS % (background,background,background)

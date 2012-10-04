@@ -61,8 +61,6 @@ class Controller(QtGui.QWidget):
         Set up the general Controller.
         """
         QtGui.QWidget.__init__(self, parent)
-        print "Controller"
-        print parent
         self.isLive = isLive
         self.display = None
 
