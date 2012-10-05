@@ -236,62 +236,62 @@ Vuoi continuare comunque?</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="92"/>
         <source>Genesis</source>
-        <translation type="unfinished"/>
+        <translation>Genesi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="93"/>
         <source>Exodus</source>
-        <translation type="unfinished"/>
+        <translation>Esodo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="94"/>
         <source>Leviticus</source>
-        <translation type="unfinished"/>
+        <translation>Levitico</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="95"/>
         <source>Numbers</source>
-        <translation type="unfinished"/>
+        <translation>Numeri</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="96"/>
         <source>Deuteronomy</source>
-        <translation type="unfinished"/>
+        <translation>Deuteronomio</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="97"/>
         <source>Joshua</source>
-        <translation type="unfinished"/>
+        <translation>Giosuè</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="98"/>
         <source>Judges</source>
-        <translation type="unfinished"/>
+        <translation>Giudici</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="99"/>
         <source>Ruth</source>
-        <translation type="unfinished"/>
+        <translation>Ruth</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="100"/>
         <source>1 Samuel</source>
-        <translation type="unfinished"/>
+        <translation>1 Samuele</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="101"/>
         <source>2 Samuel</source>
-        <translation type="unfinished"/>
+        <translation>2 Samuele</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="102"/>
         <source>1 Kings</source>
-        <translation type="unfinished"/>
+        <translation>1 Re</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="103"/>
         <source>2 Kings</source>
-        <translation type="unfinished"/>
+        <translation>2 Re</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="104"/>
@@ -356,212 +356,212 @@ Vuoi continuare comunque?</translation>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="116"/>
         <source>Lamentations</source>
-        <translation type="unfinished"/>
+        <translation>Lamentazioni</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="117"/>
         <source>Ezekiel</source>
-        <translation type="unfinished"/>
+        <translation>Ezechiele</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="118"/>
         <source>Daniel</source>
-        <translation type="unfinished"/>
+        <translation>Daniele</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="119"/>
         <source>Hosea</source>
-        <translation type="unfinished"/>
+        <translation>Osea</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="120"/>
         <source>Joel</source>
-        <translation type="unfinished"/>
+        <translation>Gioele</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="121"/>
         <source>Amos</source>
-        <translation type="unfinished"/>
+        <translation>Amos</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="122"/>
         <source>Obadiah</source>
-        <translation type="unfinished"/>
+        <translation>Abdia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="123"/>
         <source>Jonah</source>
-        <translation type="unfinished"/>
+        <translation>Giona</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="124"/>
         <source>Micah</source>
-        <translation type="unfinished"/>
+        <translation>Michea</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="125"/>
         <source>Nahum</source>
-        <translation type="unfinished"/>
+        <translation>Nahum</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="126"/>
         <source>Habakkuk</source>
-        <translation type="unfinished"/>
+        <translation>Habacuc</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="127"/>
         <source>Zephaniah</source>
-        <translation type="unfinished"/>
+        <translation>Sofonia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="128"/>
         <source>Haggai</source>
-        <translation type="unfinished"/>
+        <translation>Aggeo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="129"/>
         <source>Zechariah</source>
-        <translation type="unfinished"/>
+        <translation>Zaccaria</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="130"/>
         <source>Malachi</source>
-        <translation type="unfinished"/>
+        <translation>Malachia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="131"/>
         <source>Matthew</source>
-        <translation type="unfinished"/>
+        <translation>Matteo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="132"/>
         <source>Mark</source>
-        <translation type="unfinished"/>
+        <translation>Marco</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="133"/>
         <source>Luke</source>
-        <translation type="unfinished"/>
+        <translation>Luca</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="134"/>
         <source>John</source>
-        <translation type="unfinished"/>
+        <translation>Giovanni</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="135"/>
         <source>Acts</source>
-        <translation type="unfinished"/>
+        <translation>Atti degli Apostoli</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="136"/>
         <source>Romans</source>
-        <translation type="unfinished"/>
+        <translation>Romani</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="137"/>
         <source>1 Corinthians</source>
-        <translation type="unfinished"/>
+        <translation>1 Corinzi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="138"/>
         <source>2 Corinthians</source>
-        <translation type="unfinished"/>
+        <translation>2 Corinzi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="139"/>
         <source>Galatians</source>
-        <translation type="unfinished"/>
+        <translation>Galati</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="140"/>
         <source>Ephesians</source>
-        <translation type="unfinished"/>
+        <translation>Efesini</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="141"/>
         <source>Philippians</source>
-        <translation type="unfinished"/>
+        <translation>Filippesi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="142"/>
         <source>Colossians</source>
-        <translation type="unfinished"/>
+        <translation>Colossesi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="143"/>
         <source>1 Thessalonians</source>
-        <translation type="unfinished"/>
+        <translation>1 Tessalonicesi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="144"/>
         <source>2 Thessalonians</source>
-        <translation type="unfinished"/>
+        <translation>2 Tessalonicesi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="145"/>
         <source>1 Timothy</source>
-        <translation type="unfinished"/>
+        <translation>1 Timoteo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="146"/>
         <source>2 Timothy</source>
-        <translation type="unfinished"/>
+        <translation>2 Timoteo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="147"/>
         <source>Titus</source>
-        <translation type="unfinished"/>
+        <translation>Tito</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="148"/>
         <source>Philemon</source>
-        <translation type="unfinished"/>
+        <translation>Filemone</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="149"/>
         <source>Hebrews</source>
-        <translation type="unfinished"/>
+        <translation>Ebrei</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="150"/>
         <source>James</source>
-        <translation type="unfinished"/>
+        <translation>Giacomo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="151"/>
         <source>1 Peter</source>
-        <translation type="unfinished"/>
+        <translation>1 Pietro</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="152"/>
         <source>2 Peter</source>
-        <translation type="unfinished"/>
+        <translation>2 Pietro</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="153"/>
         <source>1 John</source>
-        <translation type="unfinished"/>
+        <translation>1 Giovanni</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="154"/>
         <source>2 John</source>
-        <translation type="unfinished"/>
+        <translation>2 Giovanni</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="155"/>
         <source>3 John</source>
-        <translation type="unfinished"/>
+        <translation>3 Giovanni</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="156"/>
         <source>Jude</source>
-        <translation type="unfinished"/>
+        <translation>Giuda</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="157"/>
         <source>Revelation</source>
-        <translation type="unfinished"/>
+        <translation>Apocalisse</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/__init__.py" line="158"/>
@@ -1160,73 +1160,73 @@ It is not possible to customize the Book Names.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="483"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation type="unfinished"/>
+        <translation>Devi inserire un nome per la tua Bibbia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="489"/>
         <source>You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.</source>
-        <translation type="unfinished"/>
+        <translation>Devi inserire un copyright per la tua Bibbia. Bibbie di pubblico dominio devono essere contrassegnate come tali.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="505"/>
         <source>Bible Exists</source>
-        <translation type="unfinished"/>
+        <translation>La Bibbia esiste.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="505"/>
         <source>This Bible already exists. Please import a different Bible or first delete the existing one.</source>
-        <translation type="unfinished"/>
+        <translation>La bibbia esiste già. Importa una Bibbia differente o cancella quella inserita.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="726"/>
         <source>Your Bible import failed.</source>
-        <translation type="unfinished"/>
+        <translation>Importazione della Bibbia fallita</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="548"/>
         <source>CSV File</source>
-        <translation type="unfinished"/>
+        <translation>File CSV</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="385"/>
         <source>Bibleserver</source>
-        <translation type="unfinished"/>
+        <translation>bibleserver</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="411"/>
         <source>Permissions:</source>
-        <translation type="unfinished"/>
+        <translation>Permessi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="377"/>
         <source>Bible file:</source>
-        <translation type="unfinished"/>
+        <translation>File della Bibbia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="373"/>
         <source>Books file:</source>
-        <translation type="unfinished"/>
+        <translation>File dei libri</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="375"/>
         <source>Verses file:</source>
-        <translation type="unfinished"/>
+        <translation>File dei versi</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="563"/>
         <source>openlp.org 1.x Bible Files</source>
-        <translation type="unfinished"/>
+        <translation>file openlp.org 1.x</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="657"/>
         <source>Registering Bible...</source>
-        <translation type="unfinished"/>
+        <translation>Aggigungendo la Bibbia</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="719"/>
         <source>Registered Bible. Please note, that verses will be downloaded on
 demand and thus an internet connection is required.</source>
-        <translation type="unfinished"/>
+        <translation>Bibbia registrata. Attenzione, i versi saranno scaricati on demand è quindi richiesta una connessione internet</translation>
     </message>
 </context>
 <context>
@@ -1234,17 +1234,17 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="73"/>
         <source>Select Language</source>
-        <translation type="unfinished"/>
+        <translation>seleziona una lingua</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="76"/>
         <source>OpenLP is unable to determine the language of this translation of the Bible. Please select the language from the list below.</source>
-        <translation type="unfinished"/>
+        <translation>OpenLP non è riuscito a determinare la lingua della Bibbia. Selezionala dalla lista sotto</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/languagedialog.py" line="79"/>
         <source>Language:</source>
-        <translation type="unfinished"/>
+        <translation>Lingua:</translation>
     </message>
 </context>
 <context>
@@ -1252,7 +1252,7 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/languageform.py" line="67"/>
         <source>You need to choose a language.</source>
-        <translation type="unfinished"/>
+        <translation>Devi scegliere una lingua.</translation>
     </message>
 </context>
 <context>
@@ -1260,52 +1260,52 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="210"/>
         <source>Quick</source>
-        <translation type="unfinished"/>
+        <translation>Veloce</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="315"/>
         <source>Find:</source>
-        <translation type="unfinished"/>
+        <translation>Cerca:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="330"/>
         <source>Book:</source>
-        <translation type="unfinished"/>
+        <translation>Libro:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="332"/>
         <source>Chapter:</source>
-        <translation type="unfinished"/>
+        <translation>Capitolo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="334"/>
         <source>Verse:</source>
-        <translation type="unfinished"/>
+        <translation>Verso</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="336"/>
         <source>From:</source>
-        <translation type="unfinished"/>
+        <translation>Da:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="338"/>
         <source>To:</source>
-        <translation type="unfinished"/>
+        <translation>A:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="358"/>
         <source>Text Search</source>
-        <translation type="unfinished"/>
+        <translation>Ricerca testo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="341"/>
         <source>Second:</source>
-        <translation type="unfinished"/>
+        <translation>Seconda</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="358"/>
         <source>Scripture Reference</source>
-        <translation type="unfinished"/>
+        <translation>Riferimento Biblico</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="350"/>
@@ -1320,17 +1320,17 @@ demand and thus an internet connection is required.</source>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="484"/>
         <source>Bible not fully loaded.</source>
-        <translation type="unfinished"/>
+        <translation>Bibbia caricata parzialmente</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="792"/>
         <source>Information</source>
-        <translation type="unfinished"/>
+        <translation>Informazioni</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="792"/>
         <source>The second Bible does not contain all the verses that are in the main Bible. Only verses found in both Bibles will be shown. %d verses have not been included in the results.</source>
-        <translation type="unfinished"/>
+        <translation>La seconda Bibbia non contiene tutti i versi che sono nella Bibbia principale. Saranno mostrati solo i versi trovati in entrambe le Bibbie. %d versi non sono stati inclusi nei risultati</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/lib/mediaitem.py" line="358"/>
@@ -1364,7 +1364,7 @@ You will need to re-import this Bible to use it again.</source>
         <location filename="openlp/plugins/bibles/lib/opensong.py" line="111"/>
         <source>Importing %s %s...</source>
         <comment>Importing &lt;book name&gt; &lt;chapter&gt;...</comment>
-        <translation type="unfinished"/>
+        <translation>Importando %s %s...</translation>
     </message>
 </context>
 <context>
@@ -1378,7 +1378,7 @@ You will need to re-import this Bible to use it again.</source>
         <location filename="openlp/plugins/bibles/lib/osis.py" line="161"/>
         <source>Importing %s %s...</source>
         <comment>Importing &lt;book name&gt; &lt;chapter&gt;...</comment>
-        <translation type="unfinished"/>
+        <translation>Importando %s %s...</translation>
     </message>
 </context>
 <context>
@@ -1386,7 +1386,7 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="123"/>
         <source>Select a Backup Directory</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona una cartella per il backup</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="260"/>
@@ -1401,17 +1401,17 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="269"/>
         <source>Select Backup Directory</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona la cartella di backup</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="272"/>
         <source>Please select a backup directory for your Bibles</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona la cartella di backup per le tue Bibbie</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="275"/>
         <source>Previous releases of OpenLP 2.0 are unable to use upgraded Bibles. This will create a backup of your current Bibles so that you can simply copy the files back to your OpenLP data directory if you need to revert to a previous release of OpenLP. Instructions on how to restore the files can be found in our &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Le precedenti versioni di OpenLP 2.0 non sono in grado di aggiornare le Bibbie. Verrà creata una copia di backup delle Bibbie attuali in modo che basterà copiare i files di backup nella cartella dei dati di OpenLp se c&apos;è bisogno di ritornare a una vecchia versione di OpenLP. Le istruzioni su come ripristinare i files possono essere trovati nelle nostre &lt;a href=&quot;http://wiki.openlp.org/faq&quot;&gt;Frequently Asked Questions&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="282"/>
@@ -1421,108 +1421,113 @@ You will need to re-import this Bible to use it again.</source>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="284"/>
         <source>Backup Directory:</source>
-        <translation type="unfinished"/>
+        <translation>Cartella di backup:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="286"/>
         <source>There is no need to backup my Bibles</source>
-        <translation type="unfinished"/>
+        <translation>Non eseguire il backup delle Bibbie</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="289"/>
         <source>Select Bibles</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona le Bibbie</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="292"/>
         <source>Please select the Bibles to upgrade</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona le Bibbie da aggiornare</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="295"/>
         <source>Upgrading</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="297"/>
         <source>Please wait while your Bibles are upgraded.</source>
-        <translation type="unfinished"/>
+        <translation>Attendi mentre la Bibbia viene aggiornata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="321"/>
         <source>The backup was not successful.
 To backup your Bibles you need permission to write to the given directory.</source>
-        <translation type="unfinished"/>
+        <translation>Backup non riuscito. Necessari i permessi in scrittura per la cartella data.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="579"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Failed</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento della Bibbia %s di %s: &quot;%s&quot; 
+Fallito</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="408"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Upgrading ...</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento della Bibbia %s di %s: &quot;%s&quot;
+Aggiornamento</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="449"/>
         <source>Download Error</source>
-        <translation type="unfinished"/>
+        <translation>Download Error</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="449"/>
         <source>To upgrade your Web Bibles an Internet connection is required.</source>
-        <translation type="unfinished"/>
+        <translation>Per aggiornare le Bibbie è richiesta una connessione internet</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="545"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Upgrading %s ...</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento della Bibbia %s di %s: &quot;%s&quot; 
+Aggiornamento %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="587"/>
         <source>Upgrading Bible %s of %s: &quot;%s&quot;
 Complete</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento della Bibbia %s di %s: &quot;%s&quot; 
+Completato</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="614"/>
         <source>, %s failed</source>
-        <translation type="unfinished"/>
+        <translation>, %s fallito</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="621"/>
         <source>Upgrading Bible(s): %s successful%s
 Please note that verses from Web Bibles will be downloaded on demand and so an Internet connection is required.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento della\e Bibbia\e: %s riuscito %s
+Attenzione i versi delle Bibbie Online saranno scaricati on demand è quindi richiesta una connessione a internet.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="628"/>
         <source>Upgrading Bible(s): %s successful%s</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento Bibbia\e: %s completato %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="633"/>
         <source>Upgrade failed.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiornamento fallito.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="313"/>
         <source>You need to specify a backup directory for your Bibles.</source>
-        <translation type="unfinished"/>
+        <translation>Devi specificare una cartella per il backup delle Bibbie</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="370"/>
         <source>Starting upgrade...</source>
-        <translation type="unfinished"/>
+        <translation>Avvio aggiornamento...</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleupgradeform.py" line="381"/>
         <source>There are no Bibles that need to be upgraded.</source>
-        <translation type="unfinished"/>
+        <translation>Non ci sono Bibbie che devono essere aggiornate.</translation>
     </message>
 </context>
 <context>
@@ -1536,59 +1541,59 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <location filename="openlp/plugins/custom/customplugin.py" line="99"/>
         <source>Custom Slide</source>
         <comment>name singular</comment>
-        <translation type="unfinished"/>
+        <translation>Presentazione personalizzata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="101"/>
         <source>Custom Slides</source>
         <comment>name plural</comment>
-        <translation type="unfinished"/>
+        <translation>Presentazioni personalizzate</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="106"/>
         <source>Custom Slides</source>
         <comment>container title</comment>
-        <translation type="unfinished"/>
+        <translation>Presentazioni Personalizzate</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="111"/>
         <source>Load a new custom slide.</source>
-        <translation type="unfinished"/>
+        <translation>Carica una nuova presentazione</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="112"/>
         <source>Import a custom slide.</source>
-        <translation type="unfinished"/>
+        <translation>Importa una presentazione</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="113"/>
         <source>Add a new custom slide.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi una nuova presentazione </translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="114"/>
         <source>Edit the selected custom slide.</source>
-        <translation type="unfinished"/>
+        <translation>Modifica la presentazione selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="116"/>
         <source>Delete the selected custom slide.</source>
-        <translation type="unfinished"/>
+        <translation>Cancella la presentazione selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="118"/>
         <source>Preview the selected custom slide.</source>
-        <translation type="unfinished"/>
+        <translation>Anteprima della presentazione selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="120"/>
         <source>Send the selected custom slide live.</source>
-        <translation type="unfinished"/>
+        <translation>Manda live la presentazione selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/customplugin.py" line="122"/>
         <source>Add the selected custom slide to the service.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi la presentazione selezionata al servizio</translation>
     </message>
 </context>
 <context>
@@ -1601,7 +1606,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/custom/lib/customtab.py" line="61"/>
         <source>Display footer</source>
-        <translation type="unfinished"/>
+        <translation>Mostra footer</translation>
     </message>
 </context>
 <context>
@@ -1609,62 +1614,62 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="107"/>
         <source>Edit Custom Slides</source>
-        <translation type="unfinished"/>
+        <translation>Modifica la presentazione</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="109"/>
         <source>&amp;Title:</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Title:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="112"/>
         <source>Add a new slide at bottom.</source>
-        <translation type="unfinished"/>
+        <translation>aggiungi una nuova diapositiva sotto</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="116"/>
         <source>Edit the selected slide.</source>
-        <translation type="unfinished"/>
+        <translation>modifica la diapositiva selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="121"/>
         <source>Edit all the slides at once.</source>
-        <translation type="unfinished"/>
+        <translation>Modifica tutte le diapositive</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="58"/>
         <source>Split a slide into two by inserting a slide splitter.</source>
-        <translation type="unfinished"/>
+        <translation>Dividi la diapositiva in due inserendo un divisore</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="124"/>
         <source>The&amp;me:</source>
-        <translation type="unfinished"/>
+        <translation>The&amp;me:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="126"/>
         <source>&amp;Credits:</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Credits:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="260"/>
         <source>You need to type in a title.</source>
-        <translation type="unfinished"/>
+        <translation>Inserisci il titolo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomform.py" line="266"/>
         <source>You need to add at least one slide</source>
-        <translation type="unfinished"/>
+        <translation>Inserisci almeno una diapositiva</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomdialog.py" line="119"/>
         <source>Ed&amp;it All</source>
-        <translation type="unfinished"/>
+        <translation>Ed&amp;it Tutto</translation>
     </message>
     <message>
         <location filename="openlp/plugins/custom/forms/editcustomslidedialog.py" line="56"/>
         <source>Insert Slide</source>
-        <translation type="unfinished"/>
+        <translation>Inserisci diapositiva</translation>
     </message>
 </context>
 <context>
@@ -1694,54 +1699,54 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
         <location filename="openlp/plugins/images/imageplugin.py" line="72"/>
         <source>Image</source>
         <comment>name singular</comment>
-        <translation type="unfinished"/>
+        <translation>immagine</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="73"/>
         <source>Images</source>
         <comment>name plural</comment>
-        <translation type="unfinished"/>
+        <translation>Immagini</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="77"/>
         <source>Images</source>
         <comment>container title</comment>
-        <translation type="unfinished"/>
+        <translation>Immagini</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="81"/>
         <source>Load a new image.</source>
-        <translation type="unfinished"/>
+        <translation>Carica una nuova immagine</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="83"/>
         <source>Add a new image.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi una nuova immagine</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="84"/>
         <source>Edit the selected image.</source>
-        <translation type="unfinished"/>
+        <translation>Modifica l&apos;immagine selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="85"/>
         <source>Delete the selected image.</source>
-        <translation type="unfinished"/>
+        <translation>Cancella l&apos;immagine selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="86"/>
         <source>Preview the selected image.</source>
-        <translation type="unfinished"/>
+        <translation>Anteprima dell&apos;immagine selezionata</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="87"/>
         <source>Send the selected image live.</source>
-        <translation type="unfinished"/>
+        <translation>Invia l&apos;immagine live</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/imageplugin.py" line="88"/>
         <source>Add the selected image to the service.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi l&apos;immagine selezionata al servizio</translation>
     </message>
 </context>
 <context>
@@ -1749,7 +1754,7 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/core/ui/exceptionform.py" line="217"/>
         <source>Select Attachment</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona allegati</translation>
     </message>
 </context>
 <context>
@@ -1757,43 +1762,44 @@ Please note that verses from Web Bibles will be downloaded on demand and so an I
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="61"/>
         <source>Select Image(s)</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona immagine(i)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="106"/>
         <source>You must select an image to delete.</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona almeno 1 immagine da eliminare</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="222"/>
         <source>You must select an image to replace the background with.</source>
-        <translation type="unfinished"/>
+        <translation>Devi selezionare almeno 1 immagine con cui sostituire lo sfondo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="190"/>
         <source>Missing Image(s)</source>
-        <translation type="unfinished"/>
+        <translation>Immagini mancanti</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="183"/>
         <source>The following image(s) no longer exist: %s</source>
-        <translation type="unfinished"/>
+        <translation>Impossibile trovare le seguenti immagini: %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="190"/>
         <source>The following image(s) no longer exist: %s
 Do you want to add the other images anyway?</source>
-        <translation type="unfinished"/>
+        <translation>Impossibile trovare le seguenti immagini: %s
+Vuoi comunque caricare le altre immagini?</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="240"/>
         <source>There was a problem replacing your background, the image file &quot;%s&quot; no longer exists.</source>
-        <translation type="unfinished"/>
+        <translation>E&apos; stato riscontrato un errore nel sostituire lo sfondo, impossibile trovare il file &quot;%s&quot;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/mediaitem.py" line="236"/>
         <source>There was no display item to amend.</source>
-        <translation type="unfinished"/>
+        <translation>Nessun elemento visualizzato da modificare</translation>
     </message>
 </context>
 <context>
@@ -1801,12 +1807,12 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/images/lib/imagetab.py" line="70"/>
         <source>Background Color</source>
-        <translation type="unfinished"/>
+        <translation>Colore di sfondo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/imagetab.py" line="72"/>
         <source>Default Color:</source>
-        <translation type="unfinished"/>
+        <translation>Colore di default:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/images/lib/imagetab.py" line="74"/>
@@ -1819,60 +1825,60 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="68"/>
         <source>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;The media plugin provides playback of audio and video.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;strong&gt;Media Plugin&lt;/strong&gt;&lt;br /&gt;Il plug in multimediale fornisce supporto per l&apos;audio e il video</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="78"/>
         <source>Media</source>
         <comment>name singular</comment>
-        <translation type="unfinished"/>
+        <translation>Media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="79"/>
         <source>Media</source>
         <comment>name plural</comment>
-        <translation type="unfinished"/>
+        <translation>Media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="83"/>
         <source>Media</source>
         <comment>container title</comment>
-        <translation type="unfinished"/>
+        <translation>Media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="87"/>
         <source>Load new media.</source>
-        <translation type="unfinished"/>
+        <translation>Carica un nuovo media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="89"/>
         <source>Add new media.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi un nuovo media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="90"/>
         <source>Edit the selected media.</source>
-        <translation type="unfinished"/>
+        <translation>modifica il media selezionato</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="91"/>
         <source>Delete the selected media.</source>
-        <translation type="unfinished"/>
+        <translation>cancella il media selezionato</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="92"/>
         <source>Preview the selected media.</source>
-        <translation type="unfinished"/>
+        <translation>Anteprima del media selezionato</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="93"/>
         <source>Send the selected media live.</source>
-        <translation type="unfinished"/>
+        <translation>Manda live il media selezionato</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/mediaplugin.py" line="94"/>
         <source>Add the selected media to the service.</source>
-        <translation type="unfinished"/>
+        <translation>Aggiungi il media selezionato al servizio</translation>
     </message>
 </context>
 <context>
@@ -1880,57 +1886,57 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="97"/>
         <source>Select Media</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona media</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="277"/>
         <source>You must select a media file to delete.</source>
-        <translation type="unfinished"/>
+        <translation>Devi prima selezionare un media da cancellare</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="171"/>
         <source>You must select a media file to replace the background with.</source>
-        <translation type="unfinished"/>
+        <translation>Devi prima selezionare un file multimediale con cui sostituire lo sfondo</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="185"/>
         <source>There was a problem replacing your background, the media file &quot;%s&quot; no longer exists.</source>
-        <translation type="unfinished"/>
+        <translation>E&apos; stato riscontrato un errore nel sostituire lo sfondo, impossibile trovare il file &quot;%s&quot;.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="200"/>
         <source>Missing Media File</source>
-        <translation type="unfinished"/>
+        <translation>impossibile trovare il file multimediale</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="200"/>
         <source>The file %s no longer exists.</source>
-        <translation type="unfinished"/>
+        <translation>Impossibile trovare il file %s</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="238"/>
         <source>Videos (%s);;Audio (%s);;%s (*)</source>
-        <translation type="unfinished"/>
+        <translation>Video (%s);;Audio (%s);;%s (*)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="181"/>
         <source>There was no display item to amend.</source>
-        <translation type="unfinished"/>
+        <translation>Nessun elemento visualizzato da modificare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/media/mediacontroller.py" line="342"/>
         <source>Unsupported File</source>
-        <translation type="unfinished"/>
+        <translation>File non supportato</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="106"/>
         <source>Automatic</source>
-        <translation type="unfinished"/>
+        <translation>Automatico</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediaitem.py" line="108"/>
         <source>Use Player:</source>
-        <translation type="unfinished"/>
+        <translation>Usa player:</translation>
     </message>
 </context>
 <context>
@@ -1938,17 +1944,17 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/plugins/media/lib/mediatab.py" line="119"/>
         <source>Available Media Players</source>
-        <translation type="unfinished"/>
+        <translation>Media player disponibili</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediatab.py" line="128"/>
         <source>%s (unavailable)</source>
-        <translation type="unfinished"/>
+        <translation>%s (non disponibile)</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediatab.py" line="131"/>
         <source>Player Order</source>
-        <translation type="unfinished"/>
+        <translation>Ordine di riproduzione</translation>
     </message>
     <message>
         <location filename="openlp/plugins/media/lib/mediatab.py" line="134"/>
@@ -1961,19 +1967,21 @@ Do you want to add the other images anyway?</source>
     <message>
         <location filename="openlp/core/utils/__init__.py" line="361"/>
         <source>Image Files</source>
-        <translation type="unfinished"/>
+        <translation>File immagine</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="88"/>
         <source>Information</source>
-        <translation type="unfinished"/>
+        <translation>Informazione</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="88"/>
         <source>Bible format has changed.
 You have to upgrade your existing Bibles.
 Should OpenLP upgrade now?</source>
-        <translation type="unfinished"/>
+        <translation>Il formato della Bibbia è stato modificato.
+Aggiorna le Bibbie esistenti.
+OpenLP deve aggiornarle ora?</translation>
     </message>
 </context>
 <context>
@@ -1981,22 +1989,22 @@ Should OpenLP upgrade now?</source>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="220"/>
         <source>Credits</source>
-        <translation type="unfinished"/>
+        <translation>Crediti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="615"/>
         <source>License</source>
-        <translation type="unfinished"/>
+        <translation>Licensa</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="618"/>
         <source>Contribute</source>
-        <translation type="unfinished"/>
+        <translation>Contributi</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutform.py" line="51"/>
         <source> build %s</source>
-        <translation type="unfinished"/>
+        <translation>build %s</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="232"/>
@@ -2071,7 +2079,67 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"/>
+        <translation>Project Lead
+    %s
+
+Developers
+    %s
+
+Contributors
+    %s
+
+Testers
+    %s
+
+Packagers
+    %s
+
+Translators
+    Afrikaans (af)
+        %s
+    German (de)
+        %s
+    English, United Kingdom (en_GB)
+        %s
+    English, South Africa (en_ZA)
+        %s
+    Estonian (et)
+        %s
+    French (fr)
+        %s
+    Hungarian (hu)
+        %s
+    Japanese (ja)
+        %s
+    Norwegian Bokmål (nb)
+        %s
+    Dutch (nl)
+        %s
+    Portuguese, Brazil (pt_BR)
+        %s
+    Russian (ru)
+        %s
+
+Documentation
+    %s
+
+Built With
+    Python: http://www.python.org/
+    Qt4: http://qt.nokia.com/
+    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+    Oxygen Icons: http://oxygen-icons.org/
+
+Final Credit
+    &quot;For God so loved the world that He gave
+    His one and only Son, so that whoever
+    believes in Him will not perish but inherit
+    eternal life.&quot;  -- John 3:16
+
+    And last but not least, final credit goes to
+    God our Father, for sending His Son to die
+    on the cross, setting us free from sin. We
+    bring this software to you for free because
+    He has set us free.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="85"/>
@@ -2101,7 +2169,7 @@ Portions copyright © 2004-2012 %s</source>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="346"/>
         <source>Number of recent files to display:</source>
-        <translation type="unfinished"/>
+        <translation>Numero di files recenti da visualizzare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="349"/>
@@ -2111,72 +2179,72 @@ Portions copyright © 2004-2012 %s</source>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="351"/>
         <source>Double-click to send items straight to live</source>
-        <translation type="unfinished"/>
+        <translation>Doppio click, invia direttamente al live</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="355"/>
         <source>Expand new service items on creation</source>
-        <translation type="unfinished"/>
+        <translation>Espandi i nuovi elementi del servizio alla creazione</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="357"/>
         <source>Enable application exit confirmation</source>
-        <translation type="unfinished"/>
+        <translation>Chiedi prima di uscire</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="393"/>
         <source>Mouse Cursor</source>
-        <translation type="unfinished"/>
+        <translation>Cursore del mouse</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="395"/>
         <source>Hide mouse cursor when over display window</source>
-        <translation type="unfinished"/>
+        <translation>Nascondi il cursore del mouse sopra la finestra di visualizzazione</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="397"/>
         <source>Default Image</source>
-        <translation type="unfinished"/>
+        <translation>Immagine di default</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="399"/>
         <source>Background color:</source>
-        <translation type="unfinished"/>
+        <translation>Colore di sfondo:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="403"/>
         <source>Image file:</source>
-        <translation type="unfinished"/>
+        <translation>File immagine:</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="658"/>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>Apri file</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="71"/>
         <source>Advanced</source>
-        <translation type="unfinished"/>
+        <translation>Avanzate</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="353"/>
         <source>Preview items when clicked in Media Manager</source>
-        <translation type="unfinished"/>
+        <translation>Anteprima degli elementi clikkati in media manager</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="401"/>
         <source>Click to select a color.</source>
-        <translation type="unfinished"/>
+        <translation>Click per scegliere un colore</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="405"/>
         <source>Browse for an image file to display.</source>
-        <translation type="unfinished"/>
+        <translation>Scegli un&apos;immagine da visualizzare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/advancedtab.py" line="407"/>
         <source>Revert to the default OpenLP logo.</source>
-        <translation type="unfinished"/>
+        <translation>Ritorna al logo di openLP di default</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="611"/>
@@ -2368,7 +2436,7 @@ This location will be used after OpenLP is closed.</source>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="86"/>
         <source>Error Occurred</source>
-        <translation type="unfinished"/>
+        <translation>Errore</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="91"/>
@@ -2378,28 +2446,29 @@ This location will be used after OpenLP is closed.</source>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="97"/>
         <source>Send E-Mail</source>
-        <translation type="unfinished"/>
+        <translation>Invia una E-Mail</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="99"/>
         <source>Save to File</source>
-        <translation type="unfinished"/>
+        <translation>Save to File</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="88"/>
         <source>Please enter a description of what you were doing to cause this error 
 (Minimum 20 characters)</source>
-        <translation type="unfinished"/>
+        <translation>Inserisci una descrizione di quello che stavi facendo quando si è verificato l&apos;errore 
+(minimo 20 caratteri)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptiondialog.py" line="101"/>
         <source>Attach File</source>
-        <translation type="unfinished"/>
+        <translation>Allega file</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptionform.py" line="212"/>
         <source>Description characters to enter : %s</source>
-        <translation type="unfinished"/>
+        <translation>Descrizione dei caratteri da inserire: %s</translation>
     </message>
 </context>
 <context>
@@ -2408,17 +2477,18 @@ This location will be used after OpenLP is closed.</source>
         <location filename="openlp/core/ui/exceptionform.py" line="116"/>
         <source>Platform: %s
 </source>
-        <translation type="unfinished"/>
+        <translation>Platform: %s
+</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptionform.py" line="150"/>
         <source>Save Crash Report</source>
-        <translation type="unfinished"/>
+        <translation>Salva il report dei crash</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptionform.py" line="150"/>
         <source>Text files (*.txt *.log *.text)</source>
-        <translation type="unfinished"/>
+        <translation>File di testo (*.txt *.log *.text)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/exceptionform.py" line="143"/>
@@ -2463,17 +2533,17 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/filerenameform.py" line="51"/>
         <source>File Rename</source>
-        <translation type="unfinished"/>
+        <translation>Rinomina file</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/filerenamedialog.py" line="55"/>
         <source>New File Name:</source>
-        <translation type="unfinished"/>
+        <translation>Nuovo nome file</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/filerenameform.py" line="48"/>
         <source>File Copy</source>
-        <translation type="unfinished"/>
+        <translation>copia file</translation>
     </message>
 </context>
 <context>
@@ -2481,17 +2551,17 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimelanguagedialog.py" line="64"/>
         <source>Select Translation</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona Traduzione</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimelanguagedialog.py" line="66"/>
         <source>Choose the translation you&apos;d like to use in OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona la traduzione che vuoi usare in OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimelanguagedialog.py" line="68"/>
         <source>Translation:</source>
-        <translation type="unfinished"/>
+        <translation>Traduzione:</translation>
     </message>
 </context>
 <context>
@@ -2499,7 +2569,7 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="211"/>
         <source>Songs</source>
-        <translation type="unfinished"/>
+        <translation>Canti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="198"/>
@@ -2514,37 +2584,37 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="207"/>
         <source>Activate required Plugins</source>
-        <translation type="unfinished"/>
+        <translation>Attiva i plug in richiesti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="209"/>
         <source>Select the Plugins you wish to use. </source>
-        <translation type="unfinished"/>
+        <translation>Seleziona i plugin che vuoi usare</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="214"/>
         <source>Bible</source>
-        <translation type="unfinished"/>
+        <translation>Bibbia</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="215"/>
         <source>Images</source>
-        <translation type="unfinished"/>
+        <translation>Immagini</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="217"/>
         <source>Presentations</source>
-        <translation type="unfinished"/>
+        <translation>Presentazioni</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="221"/>
         <source>Media (Audio and Video)</source>
-        <translation type="unfinished"/>
+        <translation>Media (audio e video)</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="223"/>
         <source>Allow remote access</source>
-        <translation type="unfinished"/>
+        <translation>Permetti accesso remoto</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="225"/>
@@ -2554,82 +2624,82 @@ Version: %s
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="227"/>
         <source>Allow Alerts</source>
-        <translation type="unfinished"/>
+        <translation>Permetti avvertimenti</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="257"/>
         <source>Default Settings</source>
-        <translation type="unfinished"/>
+        <translation>Impostazioni di default</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="96"/>
         <source>Downloading %s...</source>
-        <translation type="unfinished"/>
+        <translation>Downloading %s...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="396"/>
         <source>Download complete. Click the finish button to start OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Download completato. Click il pulsante fine per avviare OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimeform.py" line="417"/>
         <source>Enabling selected plugins...</source>
-        <translation type="unfinished"/>
+        <translation>Abilito i plugin selezionati...</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="229"/>
         <source>No Internet Connection</source>
-        <translation type="unfinished"/>
+        <translation>Nessuna connessione a internet</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="231"/>
         <source>Unable to detect an Internet connection.</source>
-        <translation type="unfinished"/>
+        <translation>Impossibile rilevare una connessione internet</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="245"/>
         <source>Sample Songs</source>
-        <translation type="unfinished"/>
+        <translation>Canti di esempio</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="247"/>
         <source>Select and download public domain songs.</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona e scarica canti di pubblico dominio</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="249"/>
         <source>Sample Bibles</source>
-        <translation type="unfinished"/>
+        <translation>Bibbie campione</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="251"/>
         <source>Select and download free Bibles.</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona e scarica Bibbie free</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="253"/>
         <source>Sample Themes</source>
-        <translation type="unfinished"/>
+        <translation>Themi campione</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="255"/>
         <source>Select and download sample themes.</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona e scarica i temi campione</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="259"/>
         <source>Set up default settings to be used by OpenLP.</source>
-        <translation type="unfinished"/>
+        <translation>Impostazioni di default per OpenLP</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="261"/>
         <source>Default output display:</source>
-        <translation type="unfinished"/>
+        <translation>Schermo di output predefinito</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="263"/>
         <source>Select default theme:</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona il tema di default</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/firsttimewizard.py" line="265"/>

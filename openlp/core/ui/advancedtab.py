@@ -38,7 +38,7 @@ import sys
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
-from openlp.core.utils import get_images_filter, AppLocation
+from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
 log = logging.getLogger(__name__)
@@ -612,18 +612,18 @@ class AdvancedTab(SettingsTab):
     def generateServiceNameExample(self):
         preset_is_valid = True
         if self.serviceNameDay.currentIndex() == 7:
-            time = datetime.now()
+            local_time = datetime.now()
         else:
             now = datetime.now()
             day_delta = self.serviceNameDay.currentIndex() - now.weekday()
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            time = time.replace(hour = self.serviceNameTime.time().hour(),
+            local_time = time.replace(hour = self.serviceNameTime.time().hour(),
                 minute = self.serviceNameTime.time().minute())
         try:
-            service_name_example = time.strftime(unicode(
-                self.serviceNameEdit.text()))
+            service_name_example = format_time(unicode(
+                self.serviceNameEdit.text()), local_time)
         except ValueError:
             preset_is_valid = False
             service_name_example = translate('OpenLP.AdvancedTab',
@@ -674,6 +674,7 @@ class AdvancedTab(SettingsTab):
             options = QtGui.QFileDialog.ShowDirsOnly))
         # Set the new data path.
         if new_data_path:
+            new_data_path = os.path.normpath(new_data_path)
             if self.currentDataPath.lower() == new_data_path.lower():
                 self.onDataDirectoryCancelButtonClicked()
                 return
