@@ -38,7 +38,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
-from openlp.core.ui import Controller, Display
+from openlp.core.ui import DisplayController, Display
 from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
@@ -62,7 +62,7 @@ class MediaMediaItem(MediaManagerItem):
         self.singleServiceItem = False
         self.hasSearch = True
         self.mediaObject = None
-        self.mediaController = Controller(parent)
+        self.mediaController = DisplayController(parent)
         self.mediaController.controllerLayout = QtGui.QVBoxLayout()
         self.plugin.mediaController.register_controller(self
             .mediaController, self.mediaController.controllerLayout)

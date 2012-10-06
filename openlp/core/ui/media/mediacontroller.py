@@ -51,7 +51,6 @@ class MediaController(object):
         self.mediaPlayers = {}
         self.controller = []
         self.curDisplayMediaPlayer = {}
-        self.currentPlayer = None
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
@@ -284,9 +283,6 @@ class MediaController(object):
                 if self.curDisplayMediaPlayer[controller.display] != \
                     self.mediaPlayers[u'webkit']:
                     controller.display.setTransparency(False)
-        # Special controls: Here media type specific Controls will be enabled
-        # (e.g. for DVD control, ...)
-        # TODO
 
     def resize(self, controller, display, player):
         """
@@ -316,9 +312,9 @@ class MediaController(object):
         if controller.isLive:
             if controller.previewDisplay:
                 display = controller.previewDisplay
-                isValid = self.check_file_type(controller, display)
+                isValid = self._check_file_type(controller, display)
             display = controller.display
-            isValid = self.check_file_type(controller, display)
+            isValid = self._check_file_type(controller, display)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
             if controller.media_info.is_background:
@@ -331,7 +327,7 @@ class MediaController(object):
                 controller.media_info.end_time = serviceItem.end_time
         elif controller.previewDisplay:
             display = controller.previewDisplay
-            isValid = self.check_file_type(controller, display)
+            isValid = self._check_file_type(controller, display)
         if not isValid:
             # Media could not be loaded correctly
             critical_error_message_box(
@@ -371,7 +367,7 @@ class MediaController(object):
         """
         Loads and starts a media item to obtain the media length
 
-        ``msg``
+        ``controller``
             First element is the controller which should be used
 
         ``serviceItem``
@@ -385,7 +381,7 @@ class MediaController(object):
         controller.media_info.file_info = QtCore.QFileInfo(serviceItem
         .get_filename())
         display = controller.previewDisplay
-        if not self.check_file_type(controller, display):
+        if not self._check_file_type(controller, display):
             # Media could not be loaded correctly
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
@@ -403,9 +399,15 @@ class MediaController(object):
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
-    def check_file_type(self, controller, display):
+    def _check_file_type(self, controller, display):
         """
         Select the correct media Player type from the prioritized Player list
+
+        ``controller``
+            First element is the controller which should be used
+
+        ``serviceItem``
+            The ServiceItem containing the details to be played.
         """
         usedPlayers, overriddenPlayer = get_media_players()
         if overriddenPlayer and overriddenPlayer != u'auto':

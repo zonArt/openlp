@@ -81,7 +81,7 @@ from screen import ScreenList
 from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
-from slidecontroller import SlideController, Controller
+from slidecontroller import SlideController, DisplayController
 from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab

@@ -52,7 +52,7 @@ class SlideList(QtGui.QTableWidget):
         QtGui.QTableWidget.__init__(self, parent.controller)
 
 
-class Controller(QtGui.QWidget):
+class DisplayController(QtGui.QWidget):
     """
     Controller is a general display controller widget.
     """
@@ -76,7 +76,7 @@ class Controller(QtGui.QWidget):
         Receiver.send_message('%s' % sender, [controller, args])
 
 
-class SlideController(Controller):
+class SlideController(DisplayController):
     """
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
@@ -85,7 +85,7 @@ class SlideController(Controller):
         """
         Set up the Slide Controller.
         """
-        Controller.__init__(self, parent, isLive)
+        DisplayController.__init__(self, parent, isLive)
         self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
