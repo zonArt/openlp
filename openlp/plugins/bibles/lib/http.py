@@ -160,10 +160,12 @@ class BGExtract(object):
                 verse = verse.strip()
                 try:
                     verse = int(verse)
-                except (TypeError, ValueError):
+                except ValueError:
                     verse_parts = verse.split(u'-')
                     if len(verse_parts) > 1:
                         verse = int(verse_parts[0])
+                except TypeError:
+                    log.warn(u'Illegal verse number: %s', unicode(raw_verse_num))
                 verses.append((verse, text))
         verse_list = {}
         for verse, text in verses[::-1]:
@@ -194,6 +196,10 @@ class BGExtract(object):
             try:
                 clean_verse_num = int(str(raw_verse_num))
             except ValueError:
+                verse_parts = str(raw_verse_num).split(u'-')
+                if len(verse_parts) > 1:
+                    clean_verse_num = int(verse_parts[0])
+            except TypeError:
                 log.warn(u'Illegal verse number: %s', unicode(raw_verse_num))
             if clean_verse_num:
                 verse_text = raw_verse_num.next
