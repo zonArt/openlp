@@ -43,8 +43,9 @@ from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
-DVD_ICON = QtGui.QImage(u':/media/media_video.png')
+CLAPPERICON = build_icon(QtGui.QImage(u':/media/image_clapperboard.png'))
+AUDIOICON = build_icon(QtGui.QImage(u':/songs/song_search_all.png'))
+DVDICON = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -55,7 +56,6 @@ class MediaMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.iconPath = u'images/image'
         self.background = False
-        self.previewFunction = CLAPPERBOARD
         self.automatic = u''
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.singleServiceItem = False
@@ -231,7 +231,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.listView.clear()
-        self.listView.setIconSize(QtCore.QSize(88, 50))
+        self.listView.setIconSize(QtCore.QSize(44, 25))
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
         self.populateDisplayTypes()
 
@@ -296,16 +296,19 @@ class MediaMediaItem(MediaManagerItem):
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for track in media:
             track_info = QtCore.QFileInfo(track)
-            if not track_info.isFile():
+            if track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                item_name.setIcon(build_icon(CLAPPERBOARD))
+                if u'*.%s' % (filename.split(u'.')[-1].lower()) in \
+                    self.plugin.audio_extensions_list:
+                    item_name.setIcon(AUDIOICON)
+                else:
+                    item_name.setIcon(CLAPPERICON)
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             else:
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                #TODO: add the appropriate Icon
-                #item_name.setIcon(build_icon(DVD_ICON))
+                item_name.setIcon(build_icon(DVDICON))
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
