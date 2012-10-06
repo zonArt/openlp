@@ -42,7 +42,7 @@ from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
+CLAPPERBOARD = QtGui.QImage(u':/media/image_clapperboard.png')
 #TODO: Add an appropriate Icon for DVDs, CDs, ...
 DVD_ICON = QtGui.QImage(u':/media/media_video.png')
 
@@ -225,7 +225,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def initialise(self):
         self.listView.clear()
-        self.listView.setIconSize(QtCore.QSize(88, 50))
+        self.listView.setIconSize(QtCore.QSize(44, 25))
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
         self.populateDisplayTypes()
 
@@ -290,7 +290,7 @@ class MediaMediaItem(MediaManagerItem):
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for track in media:
             track_info = QtCore.QFileInfo(track)
-            if not track_info.isFile():
+            if track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(CLAPPERBOARD))
