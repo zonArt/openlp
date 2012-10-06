@@ -35,7 +35,6 @@ import os
 import re
 from subprocess import Popen, PIPE
 import sys
-import time
 import urllib2
 
 from openlp.core.lib.settings import Settings
@@ -137,7 +136,7 @@ class AppLocation(object):
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
-        return path
+        return os.path.normpath(path)
 
     @staticmethod
     def get_section_data_path(section):
@@ -471,16 +470,21 @@ def get_uno_instance(resolver):
             + u'urp;StarOffice.ComponentContext')
 
 
-def format_time(text):
+def format_time(text, local_time):
     """
     Workaround for Python built-in time formatting fuction time.strftime().
 
     time.strftime() accepts only ascii characters. This function accepts
     unicode string and passes individual % placeholders to time.strftime().
     This ensures only ascii characters are passed to time.strftime().
+
+    ``text``
+        The text to be processed.
+    ``local_time``
+        The time to be used to add to the string.  This is a time object
     """
     def match_formatting(match):
-        return time.strftime(match.group())
+        return local_time.strftime(match.group())
     return re.sub('\%[a-zA-Z]', match_formatting, text)
 
 

@@ -28,6 +28,7 @@
 
 import logging
 import os
+import sys
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
@@ -107,8 +108,13 @@ class MediaController(object):
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
-            if filename.endswith(u'player.py') and not \
-                filename == 'mediaplayer.py':
+            # TODO vlc backend is not yet working on Mac OS X.
+            # For now just ignore vlc backend on Mac OS X.
+            if sys.platform == 'darwin' and filename == 'vlcplayer.py':
+                log.warn(u'Disabling vlc media player')
+                continue
+            if filename.endswith(u'player.py')and not\
+            filename == 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \
@@ -116,7 +122,9 @@ class MediaController(object):
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
-                    except ImportError:
+                    # On some platforms importing vlc.py might cause
+                    # also OSError exceptions. (e.g. Mac OS X)
+                    except (ImportError, OSError):
                         log.warn(u'Failed to import %s on path %s',
                             modulename, path)
         player_classes = MediaPlayer.__subclasses__()
