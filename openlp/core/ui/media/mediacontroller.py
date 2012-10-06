@@ -54,7 +54,7 @@ class MediaController(object):
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
-        self.check_available_media_players()
+        self._check_available_media_players()
         # Signals
         QtCore.QObject.connect(self.timer,
             QtCore.SIGNAL("timeout()"), self.video_state)
@@ -80,9 +80,9 @@ class MediaController(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'songs_unblank'), self.video_unblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.set_active_players)
+            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self._set_active_players)
 
-    def set_active_players(self):
+    def _set_active_players(self):
         savedPlayers = get_media_players()[0]
         for player in self.mediaPlayers.keys():
             self.mediaPlayers[player].isActive = player in savedPlayers
@@ -97,12 +97,12 @@ class MediaController(object):
         """
         self.mediaPlayers[player.name] = player
 
-    def check_available_media_players(self):
+    def _check_available_media_players(self):
         """
         Check to see if we have any media Player's available. If Not do not
         install the plugin.
         """
-        log.debug(u'check_available_media_players')
+        log.debug(u'_check_available_media_players')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
@@ -133,7 +133,7 @@ class MediaController(object):
             for invalidPlayer in invalidMediaPlayers:
                 savedPlayers.remove(invalidPlayer)
             set_media_players(savedPlayers, overriddenPlayer)
-        self.set_active_players()
+        self._set_active_players()
         return True
 
     def video_state(self):
@@ -266,7 +266,7 @@ class MediaController(object):
         # clean up possible running old media files
         self.finalise()
         # update player status
-        self.set_active_players()
+        self._set_active_players()
         display.hasAudio = True
         if display == self.mainWindow.previewController.previewDisplay or \
             display == self.mainWindow.liveController.previewDisplay:

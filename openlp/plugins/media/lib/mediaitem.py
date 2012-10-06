@@ -44,7 +44,6 @@ from openlp.core.ui.media import get_media_players, set_media_players
 log = logging.getLogger(__name__)
 
 CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
-#TODO: Add an appropriate Icon for DVDs, CDs, ...
 DVD_ICON = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
