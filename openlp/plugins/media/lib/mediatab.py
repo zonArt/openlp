@@ -96,4 +96,6 @@ class MediaTab(SettingsTab):
             Settings().setValue(setting_key,
                 QtCore.QVariant(self.autoStartCheckBox.checkState()))
         if override_changed:
+            self.settingsForm.resetSupportedSuffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
+            Receiver.send_message(u'mediaitem_suffexes')

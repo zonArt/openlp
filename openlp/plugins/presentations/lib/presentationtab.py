@@ -40,6 +40,7 @@ class PresentationTab(SettingsTab):
         """
         Constructor
         """
+        self.settingsForm = parent
         self.controllers = controllers
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
         self.activated = False
@@ -141,7 +142,9 @@ class PresentationTab(SettingsTab):
                 QtCore.QVariant(self.OverrideAppCheckBox.checkState()))
             changed = True
         if changed:
+            self.settingsForm.resetSupportedSuffixes()
             Receiver.send_message(u'mediaitem_presentation_rebuild')
+            Receiver.send_message(u'mediaitem_suffexes')
 
     def tabVisible(self):
         """

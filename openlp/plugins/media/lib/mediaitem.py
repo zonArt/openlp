@@ -87,7 +87,7 @@ class MediaMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild)
+            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
         # Allow DnD from the desktop
@@ -95,10 +95,11 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;%s (*)')) % (
-            u' '.join(self.plugin.video_extensions_list),
-            u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
+        #self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
+        #    'Videos (%s);;Audio (%s);;%s (*)')) % (
+        #    u' '.join(self.plugin.video_extensions_list),
+        #    u' '.join(self.plugin.audio_extensions_list),
+        # UiStrings().AllFiles)
         self.replaceAction.setText(UiStrings().ReplaceBG)
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
@@ -235,7 +236,7 @@ class MediaMediaItem(MediaManagerItem):
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
         self.populateDisplayTypes()
 
-    def rebuild(self):
+    def rebuild_players(self):
         """
         Rebuild the tab in the media manager when changes are made in
         the settings
@@ -300,7 +301,7 @@ class MediaMediaItem(MediaManagerItem):
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 if u'*.%s' % (filename.split(u'.')[-1].lower()) in \
-                    self.plugin.audio_extensions_list:
+                    self.plugin.mediaController.audio_extensions_list:
                     item_name.setIcon(AUDIOICON)
                 else:
                     item_name.setIcon(CLAPPERICON)

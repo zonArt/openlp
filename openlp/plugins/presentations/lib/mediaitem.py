@@ -61,7 +61,10 @@ class PresentationMediaItem(MediaManagerItem):
         self.hasSearch = True
         self.singleServiceItem = False
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
+            self.populateDisplayTypes)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_suffexes'), self.buildFileMaskString)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -129,14 +132,6 @@ class PresentationMediaItem(MediaManagerItem):
             self.settingsSection, u'presentations')
         self.loadList(files, True)
         self.populateDisplayTypes()
-
-    def rebuild(self):
-        """
-        Rebuild the tab in the media manager when changes are made in
-        the settings
-        """
-        self.populateDisplayTypes()
-        self.buildFileMaskString()
 
     def populateDisplayTypes(self):
         """

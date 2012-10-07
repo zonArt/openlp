@@ -55,7 +55,6 @@ class MediaController(object):
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
-        self._check_available_media_players()
         # Signals
         QtCore.QObject.connect(self.timer,
             QtCore.SIGNAL("timeout()"), self.video_state)
@@ -82,11 +81,25 @@ class MediaController(object):
             QtCore.SIGNAL(u'songs_unblank'), self.video_unblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_media_rebuild'), self._set_active_players)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_suffexes'),
+            self._generate_extensions_lists)
 
     def _set_active_players(self):
+        """
+        Set the active players and available media files
+        """
         savedPlayers = get_media_players()[0]
         for player in self.mediaPlayers.keys():
             self.mediaPlayers[player].isActive = player in savedPlayers
+
+    def _generate_extensions_lists(self):
+        self.audio_extensions_list = self.get_audio_extensions_list()
+        for ext in self.audio_extensions_list:
+            self.mainWindow.serviceManagerContents.supportedSuffixes(ext[2:])
+        self.video_extensions_list = self.get_video_extensions_list()
+        for ext in self.video_extensions_list:
+            self.mainWindow.serviceManagerContents.supportedSuffixes(ext[2:])
 
     def register_players(self, player):
         """
@@ -98,7 +111,7 @@ class MediaController(object):
         """
         self.mediaPlayers[player.name] = player
 
-    def _check_available_media_players(self):
+    def check_available_media_players(self):
         """
         Check to see if we have any media Player's available. If Not do not
         install the plugin.
@@ -142,6 +155,7 @@ class MediaController(object):
                 savedPlayers.remove(invalidPlayer)
             set_media_players(savedPlayers, overriddenPlayer)
         self._set_active_players()
+        self._generate_extensions_lists()
         return True
 
     def video_state(self):

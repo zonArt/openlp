@@ -44,13 +44,14 @@ class PlayerTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, parent, mediaPlayers):
-        self.mediaPlayers = mediaPlayers
+    def __init__(self, parent, mainWindow):
+        self.settingsForm = parent
+        self.mainWindow = mainWindow
+        self.mediaPlayers = mainWindow.mediaController.mediaPlayers
         self.savedUsedPlayers = None
         self.iconPath = u':/system/system_settings.png'
         player_translated = translate('OpenLP.PlayerTab', 'Players')
         SettingsTab.__init__(self, parent, u'Players', player_translated)
-
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
@@ -243,6 +244,7 @@ class PlayerTab(SettingsTab):
             set_media_players(self.usedPlayers, override_player)
             player_string_changed = True
         if player_string_changed:
+            self.settingsForm.resetSupportedSuffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')
 

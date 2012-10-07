@@ -382,6 +382,13 @@ class ServiceManager(QtGui.QWidget):
             u'advanced/expand service item',
             QtCore.QVariant(u'False')).toBool()
 
+    def resetSupportedSuffixes(self):
+        """
+        Resets the Suffexes list.
+
+        """
+        self.suffixes = []
+
     def supportedSuffixes(self, suffix):
         """
         Adds Suffixes supported to the master list.  Called from Plugins.
@@ -389,7 +396,8 @@ class ServiceManager(QtGui.QWidget):
         ``suffix``
             New Suffix to be supported
         """
-        self.suffixes.append(suffix)
+        if not suffix in self.suffixes:
+            self.suffixes.append(suffix)
 
     def onNewServiceClicked(self):
         """

@@ -47,6 +47,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Initialise the settings form
         """
+        self.mainWindow = mainWindow
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
@@ -56,8 +57,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # Advanced tab
         self.advancedTab = AdvancedTab(self)
         # Advanced tab
-        self.playerTab = PlayerTab(self, mainWindow.mediaController
-            .mediaPlayers)
+        self.playerTab = PlayerTab(self, mainWindow)
 
     def exec_(self):
         # load all the settings
@@ -98,6 +98,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
+        self.resetSuffexes = True
         for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
@@ -129,3 +130,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         self.stackedLayout.setCurrentIndex(tabIndex)
         self.stackedLayout.currentWidget().tabVisible()
+
+    def resetSupportedSuffixes(self):
+        """
+        Control the resetting of the serviceManager suffex list as can be
+        called by a number of settings tab and only needs to be called once
+        per save.
+        """
+        if self.resetSuffexes:
+            self.mainWindow.serviceManagerContents.resetSupportedSuffixes()
+            self.resetSuffexes = False

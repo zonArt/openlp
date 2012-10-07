@@ -47,14 +47,6 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.iconPath)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.audio_extensions_list = \
-            self.mediaController.get_audio_extensions_list()
-        for ext in self.audio_extensions_list:
-            self.serviceManager.supportedSuffixes(ext[2:])
-        self.video_extensions_list = \
-            self.mediaController.get_video_extensions_list()
-        for ext in self.video_extensions_list:
-            self.serviceManager.supportedSuffixes(ext[2:])
 
     def createSettingsTab(self, parent):
         """

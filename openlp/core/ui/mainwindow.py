@@ -587,6 +587,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
+        # Register the active media players and suffixes
+        self.mediaController.check_available_media_players()
         # Load settings after setupUi so default UI sizes are overwritten
         self.loadSettings()
         # Once settings are loaded update the menu with the recent files.
