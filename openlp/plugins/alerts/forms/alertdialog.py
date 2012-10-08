@@ -35,7 +35,7 @@ class Ui_AlertDialog(object):
     def setupUi(self, alertDialog):
         alertDialog.setObjectName(u'alertDialog')
         alertDialog.resize(400, 300)
-        alertDialog.setWindowIcon(build_icon(u':/icon/openlp.org-icon-32.bmp'))
+        alertDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         self.alertDialogLayout = QtGui.QGridLayout(alertDialog)
         self.alertDialogLayout.setObjectName(u'alertDialogLayout')
         self.alertTextLayout = QtGui.QFormLayout()
