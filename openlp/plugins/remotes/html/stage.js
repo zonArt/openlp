@@ -139,8 +139,10 @@ window.OpenLP = {
       "/api/poll",
       function (data, status) {
         OpenLP.updateClock(data);
-        if (OpenLP.currentItem != data.results.item) {
+        if (OpenLP.currentItem != data.results.item ||
+            OpenLP.currentService != data.results.service) {
           OpenLP.currentItem = data.results.item;
+          OpenLP.currentService = data.results.service;
           OpenLP.loadSlides();
         }
         else if (OpenLP.currentSlide != data.results.slide) {
