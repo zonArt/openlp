@@ -103,10 +103,20 @@ class OpenSongBible(BibleDB):
                     for verse in chapter.v:
                         if self.stop_import_flag:
                             break
+                        verse_number = 0
+                        try:
+                            verse_number = int(verse.attrib[u'n'])
+                        except ValueError:
+                            verse_parts = verse.attrib[u'n'].split(u'-')
+                            if len(verse_parts) > 1:
+                                verse_number = int(verse_parts[0])
+                        except TypeError:
+                            log.warn(u'Illegal verse number: %s',
+                                unicode(verse.attrib[u'n']))
                         self.create_verse(
                             db_book.id,
                             int(chapter.attrib[u'n'].split()[-1]),
-                            int(verse.attrib[u'n']),
+                            verse_number,
                             unicode(self.get_text(verse)))
                     self.wizard.incrementProgressBar(unicode(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
