@@ -278,8 +278,7 @@ class BibleManager(object):
         log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
         language_selection = self.get_language_selection(bible)
-        book_ref_id = self.db_cache[bible]. \
-            get_book_ref_id_by_localised_name(
+        book_ref_id = self.db_cache[bible].get_book_ref_id_by_localised_name(
             book, language_selection)
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
