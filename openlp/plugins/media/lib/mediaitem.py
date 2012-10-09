@@ -42,8 +42,9 @@ from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QImage(u':/media/image_clapperboard.png')
-#TODO: Add an appropriate Icon for DVDs, CDs, ...
+CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
+VIDEO = QtGui.QImage(u':/media/media_video.png')
+AUDIO = QtGui.QImage(u':/media/media_audio.png')
 DVD_ICON = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
@@ -218,14 +219,14 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme
         service_item.theme = -1
-        frame = u':/media/image_clapperboard.png'
+        frame = CLAPPERBOARD
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, frame)
         return True
 
     def initialise(self):
         self.listView.clear()
-        self.listView.setIconSize(QtCore.QSize(44, 25))
+        self.listView.setIconSize(QtCore.QSize(88, 50))
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
         self.populateDisplayTypes()
 
@@ -293,7 +294,7 @@ class MediaMediaItem(MediaManagerItem):
             if track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                item_name.setIcon(build_icon(CLAPPERBOARD))
+                item_name.setIcon(build_icon(VIDEO))
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             else:
                 filename = os.path.split(unicode(track))[1]
