@@ -55,7 +55,9 @@ window.OpenLP = {
     );
   },
   loadService: function (event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     $.getJSON(
       "/api/service/list",
       function (data, status) {
@@ -150,6 +152,10 @@ window.OpenLP = {
         OpenLP.currentSlide = data.results.slide;
         OpenLP.currentItem = data.results.item;
         if ($("#service-manager").is(":visible")) {
+          if (OpenLP.currentService != data.results.service) {
+            OpenLP.currentService = data.results.service;
+            OpenLP.loadService();
+          }
           $("#service-manager div[data-role=content] ul[data-role=listview] li").attr("data-theme", "c").removeClass("ui-btn-up-e").addClass("ui-btn-up-c");
           $("#service-manager div[data-role=content] ul[data-role=listview] li a").each(function () {
             var item = $(this);
@@ -307,7 +313,7 @@ window.OpenLP = {
       }
     );
   },
-  escapeString: function (string) { 
+  escapeString: function (string) {
     return string.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")
   }
 }
