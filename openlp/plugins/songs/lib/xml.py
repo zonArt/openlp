@@ -260,7 +260,7 @@ class OpenLyrics(object):
     IMPLEMENTED_VERSION = u'0.8'
     START_TAGS_REGEX = re.compile(r'\{(\w+)\}')
     END_TAGS_REGEX = re.compile(r'\{\/(\w+)\}')
-    VERSE_NUMBER_REGEX = re.compile(u'[a-zA-Z]*')
+    VERSE_TAG_SPLITTER = re.compile(u'([a-zA-Z]+)([0-9]*)([a-zA-Z]?)')
 
     def __init__(self, manager):
         self.manager = manager
@@ -325,10 +325,22 @@ class OpenLyrics(object):
         # Process the song's lyrics.
         lyrics = etree.SubElement(song_xml, u'lyrics')
         verse_list = sxml.get_verses(song.lyrics)
+        # Add a suffix letter to each verse
+        verse_tags = []
         for verse in verse_list:
             verse_tag = verse[0][u'type'][0].lower()
             verse_number = verse[0][u'label']
             verse_def = verse_tag + verse_number
+            verse_tags.append(verse_def)
+            # Create the letter from the number of duplicates
+            verse[0][u'suffix'] = chr(96 + verse_tags.count(verse_def))
+        # If the verse tag is a duplicate use the suffix letter
+        for verse in verse_list:
+            verse_tag = verse[0][u'type'][0].lower()
+            verse_number = verse[0][u'label']
+            verse_def = verse_tag + verse_number
+            if verse_tags.count(verse_def) > 1:
+                verse_def += verse[0][u'suffix']
             verse_element = \
                 self._add_text_to_element(u'verse', lyrics, None, verse_def)
             if u'lang' in verse[0]:
@@ -742,11 +754,10 @@ class OpenLyrics(object):
                 if lines.get(u'break') is not None:
                     text += u'\n[---]'
             verse_def = verse.get(u'name', u' ').lower()
-            if verse_def[0] in VerseType.Tags:
-                verse_tag = verse_def[0]
-            else:
+            verse_tag, verse_number, verse_part = \
+                OpenLyrics.VERSE_TAG_SPLITTER.search(verse_def).groups()
+            if verse_tag not in VerseType.Tags:
                 verse_tag = VerseType.Tags[VerseType.Other]
-            verse_number = OpenLyrics.VERSE_NUMBER_REGEX.sub(u'', verse_def)
             # OpenLyrics allows e. g. "c", but we need "c1". However, this does
             # not correct the verse order.
             if not verse_number:
@@ -757,13 +768,13 @@ class OpenLyrics(object):
             if song_xml.get(u'modifiedIn') in (u'1.9.6', u'OpenLP 1.9.6') and \
                 song_xml.get(u'version') == u'0.7' and \
                 (verse_tag, verse_number, lang) in verses:
-                verses[(verse_tag, verse_number, lang)] += u'\n[---]\n' + text
+                verses[(verse_tag, verse_number, lang, None)] += u'\n[---]\n' + text
             # Merge v1a, v1b, .... to v1.
-            elif (verse_tag, verse_number, lang) in verses:
+            elif (verse_tag, verse_number, lang, verse_part) in verses:
                 verses[(verse_tag, verse_number, lang)] += u'\n' + text
             else:
-                verses[(verse_tag, verse_number, lang)] = text
-                verse_def_list.append((verse_tag, verse_number, lang))
+                verses[(verse_tag, verse_number, lang, verse_part)] = text
+                verse_def_list.append((verse_tag, verse_number, lang, verse_part))
         # We have to use a list to keep the order, as dicts are not sorted.
         for verse in verse_def_list:
             sxml.add_verse_to_lyrics(
