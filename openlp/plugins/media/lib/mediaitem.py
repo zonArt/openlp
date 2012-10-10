@@ -43,9 +43,11 @@ from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
 
-CLAPPERICON = build_icon(QtGui.QImage(u':/media/image_clapperboard.png'))
-AUDIOICON = build_icon(QtGui.QImage(u':/songs/song_search_all.png'))
+CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
+VIDEO = QtGui.QImage(u':/media/media_video.png')
+AUDIO = QtGui.QImage(u':/media/media_audio.png')
 DVDICON = QtGui.QImage(u':/media/media_video.png')
+
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -177,11 +179,11 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 service_item = ServiceItem()
-                service_item.title = unicode(self.displayTypeComboBox.currentText())
+                service_item.title = \
+                    unicode(self.displayTypeComboBox.currentText())
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
-                service_item.add_from_command(path, name,
-                    u':/media/image_clapperboard.png')
+                service_item.add_from_command(path, name,CLAPPERBOARD)
                 if self.plugin.liveController.mediaController.video(
                     self.plugin.liveController, service_item, True, True):
                     self.resetAction.setVisible(True)
@@ -228,6 +230,9 @@ class MediaMediaItem(MediaManagerItem):
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
+        frame = CLAPPERBOARD
+        (path, name) = os.path.split(filename)
+        service_item.add_from_command(path, name, frame)
         return True
 
     def initialise(self):
@@ -302,9 +307,9 @@ class MediaMediaItem(MediaManagerItem):
                 item_name = QtGui.QListWidgetItem(filename)
                 if u'*.%s' % (filename.split(u'.')[-1].lower()) in \
                     self.plugin.mediaController.audio_extensions_list:
-                    item_name.setIcon(AUDIOICON)
+                    item_name.setIcon(AUDIO)
                 else:
-                    item_name.setIcon(CLAPPERICON)
+                    item_name.setIcon(VIDEO)
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             else:
                 filename = os.path.split(unicode(track))[1]
