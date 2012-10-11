@@ -90,7 +90,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if key == QtCore.Qt.Key_Shift or key == QtCore.Qt.Key_Control or \
             key == QtCore.Qt.Key_Meta or key == QtCore.Qt.Key_Alt:
             return
-        key_string = QtGui.QKeySequence(key)
+        key_string = QtGui.QKeySequence(key).toString()
         if event.modifiers() & QtCore.Qt.ControlModifier == \
             QtCore.Qt.ControlModifier:
             key_string = u'Ctrl+' + key_string
@@ -106,10 +106,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if self._validiate_shortcut(self._currentItemAction(), key_sequence):
             if self.primaryPushButton.isChecked():
                 self._adjustButton(self.primaryPushButton,
-                    False, text=key_sequence)
+                    False, text=key_sequence.toString())
             elif self.alternatePushButton.isChecked():
                 self._adjustButton(self.alternatePushButton,
-                    False, text=key_sequence)
+                    False, text=key_sequence.toString())
 
     def exec_(self):
         self.changedActions = {}
@@ -155,11 +155,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 item.setText(1, u'')
                 item.setText(2, u'')
             elif len(shortcuts) == 1:
-                item.setText(1, shortcuts[0])
+                item.setText(1, shortcuts[0].toString())
                 item.setText(2, u'')
             else:
-                item.setText(1, shortcuts[0])
-                item.setText(2, shortcuts[1])
+                item.setText(1, shortcuts[0].toString())
+                item.setText(2, shortcuts[1].toString())
         self.onCurrentItemChanged()
 
     def onPrimaryPushButtonClicked(self, toggled):
@@ -242,9 +242,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.alternatePushButton.setChecked(False)
         else:
             if action.defaultShortcuts:
-                primary_label_text = action.defaultShortcuts[0]
+                primary_label_text = action.defaultShortcuts[0].toString()
                 if len(action.defaultShortcuts) == 2:
-                    alternate_label_text = action.defaultShortcuts[1]
+                    alternate_label_text = action.defaultShortcuts[1].toString()
             shortcuts = self._actionShortcuts(action)
             # We do not want to loose pending changes, that is why we have to
             # keep the text when, this function has not been triggered by a
@@ -253,10 +253,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 primary_text = self.primaryPushButton.text()
                 alternate_text = self.alternatePushButton.text()
             elif len(shortcuts) == 1:
-                primary_text = shortcuts[0]
+                primary_text = shortcuts[0].toString()
             elif len(shortcuts) == 2:
-                primary_text = shortcuts[0]
-                alternate_text = shortcuts[1]
+                primary_text = shortcuts[0].toString()
+                alternate_text = shortcuts[1].toString()
         # When we are capturing a new shortcut, we do not want, the buttons to
         # display the current shortcut.
         if self.primaryPushButton.isChecked():
@@ -314,9 +314,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         primary_button_text = u''
         alternate_button_text = u''
         if temp_shortcuts:
-            primary_button_text = temp_shortcuts[0]
+            primary_button_text = temp_shortcuts[0].toString()
         if len(temp_shortcuts) == 2:
-            alternate_button_text = temp_shortcuts[1]
+            alternate_button_text = temp_shortcuts[1].toString()
         self.primaryPushButton.setText(primary_button_text)
         self.alternatePushButton.setText(alternate_button_text)
 
@@ -444,7 +444,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 'Duplicate Shortcut'),
                 u'message': translate('OpenLP.ShortcutListDialog',
                 'The shortcut "%s" is already assigned to another action, '
-                'please use a different shortcut.') % key_sequence
+                'please use a different shortcut.') % key_sequence.toString()
             })
         return is_valid
 
