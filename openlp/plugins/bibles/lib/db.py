@@ -45,6 +45,8 @@ import upgrade
 
 log = logging.getLogger(__name__)
 
+RESERVED_CHARACTERS = u'\\.^$*+?{}[]()'
+
 class BibleMeta(BaseModel):
     """
     Bible Meta Data
@@ -372,7 +374,7 @@ class BibleDB(QtCore.QObject, Manager):
         book_names = BibleStrings().BookNames
         # escape reserved characters
         book_escaped = book
-        for character in u'\\.^$*+?{}[]()':
+        for character in RESERVED_CHARACTERS:
             book_escaped = book_escaped.replace(
                 character, u'\\' + character)
         regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
