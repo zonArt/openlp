@@ -290,7 +290,7 @@ class GeneralTab(SettingsTab):
             False))
         self.timeoutSpinBox.setValue(settings.value(u'loop delay', 5))
         self.monitorRadioButton.setChecked(
-            settings.value(u'override position', False))
+            not settings.value(u'override position', False))
         self.overrideRadioButton.setChecked(settings.value(u'override position',
             False))
         self.customXValueEdit.setValue(settings.value(u'x position',
