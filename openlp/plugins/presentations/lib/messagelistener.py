@@ -88,29 +88,40 @@ class Controller(object):
         Use the last slide number.
         """
         log.debug(u'Live = %s, activate' % self.is_live)
+        if not self.doc:
+            return False
         if self.doc.is_active():
-            return
+            return True
         if not self.doc.is_loaded():
             if not self.doc.load_presentation():
-                return
+                log.warn(u'Failed to activate %s' % self.doc.filepath)
+                return False
         if self.is_live:
             self.doc.start_presentation()
             if self.doc.slidenumber > 1:
                 if self.doc.slidenumber > self.doc.get_slide_count():
                     self.doc.slidenumber = self.doc.get_slide_count()
                 self.doc.goto_slide(self.doc.slidenumber)
+        if self.doc.is_active():
+            return True
+        else:
+            log.warn(u'Failed to activate %s' % self.doc.filepath)
+            return False
 
     def slide(self, slide):
         """
         Go to a specific slide
         """
         log.debug(u'Live = %s, slide' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
         if self.doc.is_blank():
             self.doc.slidenumber = int(slide) + 1
             return
-        self.activate()
+        if not self.activate():
+            return
         self.doc.goto_slide(int(slide) + 1)
         self.doc.poll_slidenumber(self.is_live)
 
@@ -119,12 +130,15 @@ class Controller(object):
         Based on the handler passed at startup triggers the first slide
         """
         log.debug(u'Live = %s, first' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
         if self.doc.is_blank():
             self.doc.slidenumber = 1
             return
-        self.activate()
+        if not self.activate():
+            return
         self.doc.start_presentation()
         self.doc.poll_slidenumber(self.is_live)
 
@@ -133,12 +147,15 @@ class Controller(object):
         Based on the handler passed at startup triggers the last slide
         """
         log.debug(u'Live = %s, last' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
         if self.doc.is_blank():
             self.doc.slidenumber = self.doc.get_slide_count()
             return
-        self.activate()
+        if not self.activate():
+            return
         self.doc.goto_slide(self.doc.get_slide_count())
         self.doc.poll_slidenumber(self.is_live)
 
@@ -147,6 +164,8 @@ class Controller(object):
         Based on the handler passed at startup triggers the next slide event
         """
         log.debug(u'Live = %s, next' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
         if self.doc.is_blank():
@@ -158,7 +177,8 @@ class Controller(object):
         # contain animations that need to be stepped through.
         if self.doc.slidenumber > self.doc.get_slide_count():
             return
-        self.activate()
+        if not self.activate():
+            return
         self.doc.next_step()
         self.doc.poll_slidenumber(self.is_live)
 
@@ -167,13 +187,16 @@ class Controller(object):
         Based on the handler passed at startup triggers the previous slide event
         """
         log.debug(u'Live = %s, previous' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
         if self.doc.is_blank():
             if self.doc.slidenumber > 1:
                 self.doc.slidenumber = self.doc.slidenumber - 1
             return
-        self.activate()
+        if not self.activate():
+            return
         self.doc.previous_step()
         self.doc.poll_slidenumber(self.is_live)
 
@@ -182,6 +205,8 @@ class Controller(object):
         Based on the handler passed at startup triggers slide show to shut down
         """
         log.debug(u'Live = %s, shutdown' % self.is_live)
+        if not self.doc:
+            return
         self.doc.close_presentation()
         self.doc = None
 
@@ -190,6 +215,8 @@ class Controller(object):
         Instruct the controller to blank the presentation
         """
         log.debug(u'Live = %s, blank' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
         if not self.doc.is_loaded():
@@ -205,6 +232,8 @@ class Controller(object):
         Instruct the controller to stop and hide the presentation
         """
         log.debug(u'Live = %s, stop' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
         if not self.doc.is_loaded():
@@ -218,9 +247,12 @@ class Controller(object):
         Instruct the controller to unblank the presentation
         """
         log.debug(u'Live = %s, unblank' % self.is_live)
+        if not self.doc:
+            return
         if not self.is_live:
             return
-        self.activate()
+        if not self.activate():
+            return
         if self.doc.slidenumber and \
             self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
@@ -228,6 +260,8 @@ class Controller(object):
         Receiver.send_message(u'live_display_hide', HideMode.Screen)
 
     def poll(self):
+        if not self.doc:
+            return
         self.doc.poll_slidenumber(self.is_live)
 
 

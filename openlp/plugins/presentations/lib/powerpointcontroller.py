@@ -94,9 +94,9 @@ class PowerpointController(PresentationController):
                 self.docs[0].close_presentation()
             if self.process is None:
                 return
-            if self.process.Presentations.Count > 0:
-                return
             try:
+                if self.process.Presentations.Count > 0:
+                    return
                 self.process.Quit()
             except pywintypes.com_error:
                 pass
@@ -253,6 +253,8 @@ class PowerpointDocument(PresentationDocument):
             renderer = self.controller.plugin.renderer
             rect = renderer.screens.current[u'size']
             ppt_window = self.presentation.SlideShowSettings.Run()
+            if not ppt_window:
+                return
             ppt_window.Top = rect.y() * 72 / dpi
             ppt_window.Height = rect.height() * 72 / dpi
             ppt_window.Left = rect.x() * 72 / dpi

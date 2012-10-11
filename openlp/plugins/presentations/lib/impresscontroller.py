@@ -155,6 +155,8 @@ class ImpressController(PresentationController):
             desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
         except AttributeError:
             log.warn(u'Failure to find desktop - Impress may have closed')
+        except pywintypes.com_error:
+            log.warn(u'Failure to find desktop - Impress may have closed')
         return desktop if desktop else None
 
     def get_com_servicemanager(self):
@@ -284,6 +286,8 @@ class ImpressDocument(PresentationDocument):
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
+        if not pages:
+            return
         if not os.path.isdir(self.get_temp_folder()):
             os.makedirs(self.get_temp_folder())
         for idx in range(pages.getCount()):
