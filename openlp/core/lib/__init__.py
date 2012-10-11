@@ -135,6 +135,9 @@ class Settings(QtCore.QSettings):
             return []
         # Convert the setting to the correct type.
         if isinstance(defaultValue, bool):
+            if isinstance(setting, bool):
+                return setting
+            # Sometimes setting is string instead of a boolean.
             return setting == u'true'
         if isinstance(defaultValue, int):
             return int(setting)

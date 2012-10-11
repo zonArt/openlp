@@ -31,6 +31,7 @@ and play multimedia within OpenLP.
 """
 import cgi
 import logging
+import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
@@ -134,7 +135,13 @@ class MainDisplay(Display):
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
             QtCore.Qt.WindowStaysOnTopHint
-        if Settings().value(u'advanced/x11 bypass wm', True):
+        # Fix for bug #1014422.
+        x11_bypass_default = True
+        if sys.platform.startswith(u'linux'):
+            # Default to False on Gnome.
+            x11_bypass_default = bool(not
+                os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+        if Settings().value(u'advanced/x11 bypass wm', x11_bypass_default):
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # TODO: The following combination of windowFlags works correctly
         # on Mac OS X. For next OpenLP version we should test it on other

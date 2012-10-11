@@ -42,8 +42,9 @@ from openlp.core.ui.media import get_media_players, set_media_players
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
-#TODO: Add an appropriate Icon for DVDs, CDs, ...
+CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
+VIDEO = QtGui.QImage(u':/media/media_video.png')
+AUDIO = QtGui.QImage(u':/media/media_audio.png')
 DVD_ICON = QtGui.QImage(u':/media/media_video.png')
 
 class MediaMediaItem(MediaManagerItem):
@@ -217,7 +218,7 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme
         service_item.theme = -1
-        frame = u':/media/image_clapperboard.png'
+        frame = CLAPPERBOARD
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, frame)
         return True
@@ -289,10 +290,10 @@ class MediaMediaItem(MediaManagerItem):
             key=lambda filename: os.path.split(unicode(filename))[1].lower())
         for track in media:
             track_info = QtCore.QFileInfo(track)
-            if not track_info.isFile():
+            if track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                item_name.setIcon(build_icon(CLAPPERBOARD))
+                item_name.setIcon(build_icon(VIDEO))
                 item_name.setData(QtCore.Qt.UserRole, track)
             else:
                 filename = os.path.split(unicode(track))[1]
