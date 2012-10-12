@@ -49,6 +49,7 @@ class Controller(object):
         """
         self.is_live = live
         self.doc = None
+        self.hide_mode = None
         log.info(u'%s controller loaded' % live)
 
     def add_handler(self, controller, file, hide_mode, slide_no):
@@ -67,6 +68,7 @@ class Controller(object):
             # Inform slidecontroller that the action failed?
             return
         self.doc.slidenumber = slide_no
+        self.hide_mode = hide_mode
         if self.is_live:
             if hide_mode == HideMode.Screen:
                 Receiver.send_message(u'live_display_hide', HideMode.Screen)
@@ -117,7 +119,7 @@ class Controller(object):
             return
         if not self.is_live:
             return
-        if self.doc.is_blank():
+        if self.hide_mode:
             self.doc.slidenumber = int(slide) + 1
             return
         if not self.activate():
@@ -134,7 +136,7 @@ class Controller(object):
             return
         if not self.is_live:
             return
-        if self.doc.is_blank():
+        if self.hide_mode:
             self.doc.slidenumber = 1
             return
         if not self.activate():
@@ -151,7 +153,7 @@ class Controller(object):
             return
         if not self.is_live:
             return
-        if self.doc.is_blank():
+        if self.hide_mode:
             self.doc.slidenumber = self.doc.get_slide_count()
             return
         if not self.activate():
@@ -168,7 +170,7 @@ class Controller(object):
             return
         if not self.is_live:
             return
-        if self.doc.is_blank():
+        if self.hide_mode:
             if self.doc.slidenumber < self.doc.get_slide_count():
                 self.doc.slidenumber = self.doc.slidenumber + 1
             return
@@ -191,7 +193,7 @@ class Controller(object):
             return
         if not self.is_live:
             return
-        if self.doc.is_blank():
+        if self.hide_mode:
             if self.doc.slidenumber > 1:
                 self.doc.slidenumber = self.doc.slidenumber - 1
             return
@@ -215,23 +217,28 @@ class Controller(object):
         Instruct the controller to blank the presentation
         """
         log.debug(u'Live = %s, blank' % self.is_live)
+        self.hide_mode = hide_mode
         if not self.doc:
             return
         if not self.is_live:
             return
-        if not self.doc.is_loaded():
-            return
-        if not self.doc.is_active():
-            return
         if hide_mode == HideMode.Theme:
+            if not self.doc.is_loaded():
+                return
+            if not self.doc.is_active():
+                return
             Receiver.send_message(u'live_display_hide', HideMode.Theme)
-        self.doc.blank_screen()
+        elif hide_mode == HideMode.Blank:
+            if not self.activate():
+                return
+            self.doc.blank_screen()
 
     def stop(self):
         """
         Instruct the controller to stop and hide the presentation
         """
         log.debug(u'Live = %s, stop' % self.is_live)
+        self.hide_mode = HideMode.Screen
         if not self.doc:
             return
         if not self.is_live:
@@ -247,6 +254,7 @@ class Controller(object):
         Instruct the controller to unblank the presentation
         """
         log.debug(u'Live = %s, unblank' % self.is_live)
+        self.hide_mode = None
         if not self.doc:
             return
         if not self.is_live:
