@@ -490,11 +490,11 @@ def format_time(text, local_time):
 
 def locale_compare(string1, string2):
     """
-    Compares two strings according to the current QLocale settings.
+    Compares two strings according to the current locale settings.
 
     As any other compare function, returns a negative, or a positive value,
     or 0, depending on whether string1 collates before or after string2 or
-    is equal to it.
+    is equal to it. Comparison is case insensitive.
     """
     # Function locale.strcol() from standard Python library does not work
     # properly on Windows and probably somewhere else.

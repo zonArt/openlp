@@ -39,7 +39,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     check_directory_exists
 from openlp.core.lib.ui import UiStrings, create_widget_action
 from openlp.core.lib.settings import Settings
-from openlp.core.utils import AppLocation, locale_compare
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
@@ -259,10 +259,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.saveAutoSelectId()
         self.listView.clear()
-        # Sort the songs by its title considering language specific characters.
-        # lower() is needed for windows!
-        searchresults.sort(
-            cmp=locale_compare, key=lambda song: song.title)
+        searchresults.sort()
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary:

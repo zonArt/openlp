@@ -35,6 +35,7 @@ from sqlalchemy.orm import mapper, relation
 from sqlalchemy.sql.expression import func
 
 from openlp.core.lib.db import BaseModel, init_db
+from openlp.core.utils import locale_compare
 
 class Author(BaseModel):
     """
@@ -63,7 +64,14 @@ class Song(BaseModel):
     """
     Song model
     """
-    pass
+    # By default sort the songs by its title considering language specific
+    # characters.
+    def __lt__(self, other):
+        r = locale_compare(self.title, other.title)
+        return True if r < 0 else False
+                    
+    def __eq__(self, other):
+        return 0 == locale_compare(self.title, other.title)
 
 
 class Topic(BaseModel):
