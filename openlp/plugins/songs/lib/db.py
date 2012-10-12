@@ -69,7 +69,7 @@ class Song(BaseModel):
     def __lt__(self, other):
         r = locale_compare(self.title, other.title)
         return True if r < 0 else False
-                    
+
     def __eq__(self, other):
         return 0 == locale_compare(self.title, other.title)
 
