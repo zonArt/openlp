@@ -210,6 +210,13 @@ class PowerpointDocument(PresentationDocument):
         self.presentation.SlideShowSettings.Run()
         self.presentation.SlideShowWindow.View.State = 1
         self.presentation.SlideShowWindow.Activate()
+        if self.presentation.Application.Version == u'14.0':
+            # Unblanking is broken in PowerPoint 2010, need to redisplay
+            slide = self.presentation.SlideShowWindow.View.CurrentShowPosition
+            click = self.presentation.SlideShowWindow.View.GetClickIndex()
+            self.presentation.SlideShowWindow.View.GotoSlide(slide)
+            if click:
+                self.presentation.SlideShowWindow.View.GotoClick(click)
 
     def blank_screen(self):
         """
