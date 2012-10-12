@@ -295,6 +295,8 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug(u'next_step')
         self.presentation.SlideShowWindow.View.Next()
+        if self.get_slide_number() > self.get_slide_count():
+            self.previous_step()
 
     def previous_step(self):
         """

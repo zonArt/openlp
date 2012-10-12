@@ -363,7 +363,9 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'is active OpenOffice')
         if not self.is_loaded():
             return False
-        return self.control is not None
+        if not self.control:
+            return False
+        return self.control.isRunning()
 
     def unblank_screen(self):
         """
@@ -384,7 +386,7 @@ class ImpressDocument(PresentationDocument):
         Returns true if screen is blank
         """
         log.debug(u'is blank OpenOffice')
-        if self.control:
+        if self.control and self.control.isRunning():
             return self.control.isPaused()
         else:
             return False
@@ -440,7 +442,11 @@ class ImpressDocument(PresentationDocument):
         """
         Triggers the next effect of slide on the running presentation
         """
+        is_paused = self.control.isPaused()
         self.control.gotoNextEffect()
+        time.sleep(0.1)
+        if not is_paused and self.control.isPaused():
+            self.control.gotoPreviousEffect()
 
     def previous_step(self):
         """
