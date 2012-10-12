@@ -177,8 +177,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
             Receiver.send_message(u'cursor_busy')
+            Receiver.send_message(u'openlp_process_events')
             while not self.themeScreenshotThread.isFinished():
                 time.sleep(0.1)
+                Receiver.send_message(u'openlp_process_events')
             # Build the screenshot icons, as this can not be done in the thread.
             self._buildThemeScreenshots()
             Receiver.send_message(u'cursor_normal')
@@ -188,10 +190,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def onCurrentIdChanged(self, pageId):
         """
-        Detects Page changes and updates as approprate.
+        Detects Page changes and updates as appropriate.
         """
         # Keep track of the page we are at.  Triggering "Cancel" causes pageId
         # to be a -1.
+        Receiver.send_message(u'openlp_process_events')
         if pageId != -1:
             self.lastId = pageId
         if pageId == FirstTimePage.Plugins:
@@ -227,6 +230,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 self.cancelButton.setVisible(False)
         elif pageId == FirstTimePage.Progress:
             Receiver.send_message(u'cursor_busy')
+            self.update()
+            Receiver.send_message(u'openlp_process_events')
+            time.sleep(0.5)
+            Receiver.send_message(u'openlp_process_events')
             self._preWizard()
             Receiver.send_message(u'openlp_process_events')
             self._performWizard()
@@ -342,8 +349,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.max_progress = 0
         self.finishButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
+        time.sleep(0.1)
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
+            Receiver.send_message(u'openlp_process_events')
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
@@ -352,6 +361,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while iterator.value():
+            Receiver.send_message(u'openlp_process_events')
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 filename = item.data(0, QtCore.Qt.UserRole).toString()
@@ -360,6 +370,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             iterator += 1
         # Loop through the themes list and increase for each selected item
         for i in xrange(self.themesListWidget.count()):
+            Receiver.send_message(u'openlp_process_events')
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
@@ -381,6 +392,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
                 'Setting Up'))
             self.progressPage.setSubTitle(u'Setup complete.')
+        Receiver.send_message(u'openlp_process_events')
 
     def _postWizard(self):
         """
