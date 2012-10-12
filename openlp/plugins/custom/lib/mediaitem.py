@@ -35,7 +35,6 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     check_item_selected, translate
 from openlp.core.lib.ui import UiStrings
 from openlp.core.lib.settings import Settings
-from openlp.core.utils import locale_compare
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -109,10 +108,7 @@ class CustomMediaItem(MediaManagerItem):
         # Sort out what custom we want to select after loading the list.
         self.saveAutoSelectId()
         self.listView.clear()
-        # Sort the customs by its title considering language specific
-        # characters.
-        custom_slides.sort(
-            cmp=locale_compare, key=lambda custom: custom.title)
+        custom_slides.sort()
         for custom_slide in custom_slides:
             custom_name = QtGui.QListWidgetItem(custom_slide.title)
             custom_name.setData(
