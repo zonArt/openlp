@@ -284,6 +284,9 @@ class MediaController(object):
         """
         After a new display is configured, all media related widget will be
         created too
+
+        ``display``
+            Display on which the output is to be played
         """
         # clean up possible running old media files
         self.finalise()
@@ -298,6 +301,16 @@ class MediaController(object):
                 player.setup(display)
 
     def set_controls_visible(self, controller, value):
+        """
+        After a new display is configured, all media related widget will be
+        created too
+
+        ``controller``
+            The controller on which controls act.
+
+        ``value``
+            control name to be changed.
+        """
         # Generic controls
         controller.mediabar.setVisible(value)
         if controller.isLive and controller.display:
@@ -310,6 +323,12 @@ class MediaController(object):
         """
         After Mainwindow changes or Splitter moved all related media widgets
         have to be resized
+
+        ``display``
+            The display on which output is playing.
+
+        ``player``
+            The player which is doing the playing.
         """
         player.resize(display)
 
@@ -317,6 +336,18 @@ class MediaController(object):
                hidden=False):
         """
         Loads and starts a video to run with the option of sound
+
+        ``serviceItem``
+            The player which is doing the playing
+
+        ``muted``
+            The player which is doing the playing
+
+        ``isBackground``
+            The player which is doing the playing
+
+        ``hidden``
+            The player which is doing the playing
         """
         log.debug(u'video')
         isValid = False
@@ -327,7 +358,8 @@ class MediaController(object):
             controller.media_info.volume = 0
         else:
             controller.media_info.volume = controller.volumeSlider.value()
-        controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_filename())
+        controller.media_info.file_info = \
+            QtCore.QFileInfo(serviceItem.get_filename())
         controller.media_info.is_background = isBackground
         display = None
         #self.curDisplayMediaPlayer[u'current'] = serviceItem.name

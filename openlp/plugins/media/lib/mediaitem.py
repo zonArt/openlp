@@ -44,9 +44,9 @@ from openlp.core.ui.media import get_media_players, set_media_players
 log = logging.getLogger(__name__)
 
 CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
-VIDEO = QtGui.QImage(u':/media/media_video.png')
-AUDIO = QtGui.QImage(u':/media/media_audio.png')
-DVDICON = QtGui.QImage(u':/media/media_video.png')
+VIDEO = build_icon(QtGui.QImage(u':/media/media_video.png'))
+AUDIO = build_icon(QtGui.QImage(u':/media/media_audio.png'))
+DVDICON = build_icon(QtGui.QImage(u':/media/media_video.png'))
 
 
 class MediaMediaItem(MediaManagerItem):
@@ -215,8 +215,7 @@ class MediaMediaItem(MediaManagerItem):
         service_item.title = unicode(self.displayTypeComboBox.currentText())
         service_item.shortname = service_item.title
         (path, name) = os.path.split(filename)
-        service_item.add_from_command(path, name,
-            u':/media/image_clapperboard.png')
+        service_item.add_from_command(path, name, CLAPPERBOARD)
         # Start media and obtain the length
         if not self.plugin.mediaController.media_length(
             self.mediaController, service_item):
@@ -230,9 +229,6 @@ class MediaMediaItem(MediaManagerItem):
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
-        frame = CLAPPERBOARD
-        (path, name) = os.path.split(filename)
-        service_item.add_from_command(path, name, frame)
         return True
 
     def initialise(self):
