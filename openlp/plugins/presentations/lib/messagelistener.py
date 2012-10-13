@@ -80,7 +80,7 @@ class Controller(object):
             else:
                 self.doc.start_presentation()
                 Receiver.send_message(u'live_display_hide', HideMode.Screen)
-                self.doc.slidenumber = 0
+                self.doc.slidenumber = 1
                 if slide_no > 1:
                     self.slide(slide_no)
 
@@ -121,11 +121,12 @@ class Controller(object):
             return
         if self.hide_mode:
             self.doc.slidenumber = int(slide) + 1
+            self.poll()
             return
         if not self.activate():
             return
         self.doc.goto_slide(int(slide) + 1)
-        self.doc.poll_slidenumber(self.is_live)
+        self.poll()
 
     def first(self):
         """
@@ -138,11 +139,12 @@ class Controller(object):
             return
         if self.hide_mode:
             self.doc.slidenumber = 1
+            self.poll()
             return
         if not self.activate():
             return
         self.doc.start_presentation()
-        self.doc.poll_slidenumber(self.is_live)
+        self.poll()
 
     def last(self):
         """
@@ -155,11 +157,12 @@ class Controller(object):
             return
         if self.hide_mode:
             self.doc.slidenumber = self.doc.get_slide_count()
+            self.poll()
             return
         if not self.activate():
             return
         self.doc.goto_slide(self.doc.get_slide_count())
-        self.doc.poll_slidenumber(self.is_live)
+        self.poll()
 
     def next(self):
         """
@@ -175,6 +178,7 @@ class Controller(object):
                 return
             if self.doc.slidenumber < self.doc.get_slide_count():
                 self.doc.slidenumber = self.doc.slidenumber + 1
+                self.poll()
             return
         if not self.activate():
             return
@@ -184,7 +188,7 @@ class Controller(object):
         if self.doc.slidenumber > self.doc.get_slide_count():
             return
         self.doc.next_step()
-        self.doc.poll_slidenumber(self.is_live)
+        self.poll()
 
     def previous(self):
         """
@@ -200,11 +204,12 @@ class Controller(object):
                 return
             if self.doc.slidenumber > 1:
                 self.doc.slidenumber = self.doc.slidenumber - 1
+                self.poll()
             return
         if not self.activate():
             return
         self.doc.previous_step()
-        self.doc.poll_slidenumber(self.is_live)
+        self.poll()
 
     def shutdown(self):
         """
@@ -274,7 +279,7 @@ class Controller(object):
     def poll(self):
         if not self.doc:
             return
-        self.doc.poll_slidenumber(self.is_live)
+        self.doc.poll_slidenumber(self.is_live, self.hide_mode)
 
 
 class MessageListener(object):
