@@ -230,14 +230,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 self.cancelButton.setVisible(False)
         elif pageId == FirstTimePage.Progress:
             Receiver.send_message(u'cursor_busy')
-            self.update()
+            self.repaint()
             Receiver.send_message(u'openlp_process_events')
-            time.sleep(0.5)
-            Receiver.send_message(u'openlp_process_events')
+            # Try to give the wizard a chance to redraw itself
+            time.sleep(0.2)
             self._preWizard()
-            Receiver.send_message(u'openlp_process_events')
             self._performWizard()
-            Receiver.send_message(u'openlp_process_events')
             self._postWizard()
             Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
@@ -270,8 +268,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Receiver.send_message(u'cursor_busy')
         self._performWizard()
-        Receiver.send_message(u'openlp_process_events')
         Receiver.send_message(u'cursor_normal')
+        Receiver.send_message(u'openlp_process_events')
         Settings().setValue(u'general/has run wizard',
             QtCore.QVariant(True))
         self.close()
@@ -349,7 +347,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.max_progress = 0
         self.finishButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
-        time.sleep(0.1)
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
             Receiver.send_message(u'openlp_process_events')
@@ -392,7 +389,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
                 'Setting Up'))
             self.progressPage.setSubTitle(u'Setup complete.')
+        self.repaint()
         Receiver.send_message(u'openlp_process_events')
+        # Try to give the wizard a chance to repaint itself
+        time.sleep(0.1)
 
     def _postWizard(self):
         """
