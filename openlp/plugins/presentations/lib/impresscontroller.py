@@ -153,9 +153,7 @@ class ImpressController(PresentationController):
         desktop = None
         try:
             desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-        except AttributeError:
-            log.warn(u'Failure to find desktop - Impress may have closed')
-        except pywintypes.com_error:
+        except (AttributeError, pywintypes.com_error):
             log.warn(u'Failure to find desktop - Impress may have closed')
         return desktop if desktop else None
 
@@ -363,9 +361,7 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'is active OpenOffice')
         if not self.is_loaded():
             return False
-        if not self.control:
-            return False
-        return self.control.isRunning()
+        return self.control.isRunning() if self.control else False
 
     def unblank_screen(self):
         """
