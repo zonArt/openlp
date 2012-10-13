@@ -171,15 +171,17 @@ class Controller(object):
         if not self.is_live:
             return
         if self.hide_mode:
+            if not self.doc.is_active():
+                return
             if self.doc.slidenumber < self.doc.get_slide_count():
                 self.doc.slidenumber = self.doc.slidenumber + 1
+            return
+        if not self.activate():
             return
         # The "End of slideshow" screen is after the last slide
         # Note, we can't just stop on the last slide, since it may
         # contain animations that need to be stepped through.
         if self.doc.slidenumber > self.doc.get_slide_count():
-            return
-        if not self.activate():
             return
         self.doc.next_step()
         self.doc.poll_slidenumber(self.is_live)
@@ -194,6 +196,8 @@ class Controller(object):
         if not self.is_live:
             return
         if self.hide_mode:
+            if not self.doc.is_active():
+                return
             if self.doc.slidenumber > 1:
                 self.doc.slidenumber = self.doc.slidenumber - 1
             return
