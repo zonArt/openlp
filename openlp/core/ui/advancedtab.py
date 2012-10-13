@@ -29,12 +29,12 @@
 The :mod:`advancedtab` provides an advanced settings facility.
 """
 from datetime import datetime, timedelta
-
-from PyQt4 import QtCore, QtGui
-
 import logging
 import os
 import sys
+
+from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
@@ -432,8 +432,7 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab',
             '<strong>WARNING:</strong> New data directory location contains '
             'OpenLP data files.  These files WILL be replaced during a copy.'))
-        self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab',
-            'X11'))
+        self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab', 'X11'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Bypass X11 Window Manager'))
         # Slide Limits
@@ -493,8 +492,14 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool()
         self.serviceNameCheckBox.setChecked(default_service_enabled)
         self.serviceNameCheckBoxToggled(default_service_enabled)
-        self.x11BypassCheckBox.setChecked(
-            settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
+        # Fix for bug #1014422.
+        x11_bypass_default = True
+        if sys.platform.startswith(u'linux'):
+            # Default to False on Gnome.
+            x11_bypass_default = bool(not
+                os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+        self.x11BypassCheckBox.setChecked(settings.value(
+            u'x11 bypass wm', QtCore.QVariant(x11_bypass_default)).toBool())
         self.defaultColor = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
@@ -766,7 +771,7 @@ class AdvancedTab(SettingsTab):
             self.dataExists = False
             self.dataDirectoryCopyCheckBox.setChecked(True)
             self.newDataDirectoryHasFilesLabel.hide()
-        
+
     def onDataDirectoryCancelButtonClicked(self):
         """
         Cancel the data directory location change

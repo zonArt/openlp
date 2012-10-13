@@ -28,7 +28,6 @@
 
 import logging
 import os
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -38,6 +37,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.core.lib.settings import Settings
+from openlp.core.utils import locale_compare
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
@@ -164,10 +164,10 @@ class PresentationMediaItem(MediaManagerItem):
         if not initialLoad:
             Receiver.send_message(u'cursor_busy')
             self.plugin.formParent.displayProgressBar(len(files))
-        # Sort the themes by its filename considering language specific
-        # characters. lower() is needed for windows!
-        files.sort(cmp=locale.strcoll,
-            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        # Sort the presentations by its filename considering language specific
+        # characters.
+        files.sort(cmp=locale_compare,
+            key=lambda filename: os.path.split(unicode(filename))[1])
         for file in files:
             if not initialLoad:
                 self.plugin.formParent.incrementProgressBar()

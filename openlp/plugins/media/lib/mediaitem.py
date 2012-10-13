@@ -28,7 +28,6 @@
 
 import logging
 import os
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -40,6 +39,7 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display
 from openlp.core.ui.media import get_media_players, set_media_players
+from openlp.core.utils import locale_compare
 
 log = logging.getLogger(__name__)
 
@@ -292,10 +292,10 @@ class MediaMediaItem(MediaManagerItem):
                 u'media', self.getFileList())
 
     def loadList(self, media):
-        # Sort the themes by its filename considering language specific
-        # characters. lower() is needed for windows!
-        media.sort(cmp=locale.strcoll,
-            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        # Sort the media by its filename considering language specific
+        # characters.
+        media.sort(cmp=locale_compare,
+            key=lambda filename: os.path.split(unicode(filename))[1])
         for track in media:
             track_info = QtCore.QFileInfo(track)
             if track_info.isFile():
@@ -317,8 +317,8 @@ class MediaMediaItem(MediaManagerItem):
 
     def getList(self, type=MediaType.Audio):
         media = SettingsManager.load_list(self.settingsSection, u'media')
-        media.sort(cmp=locale.strcoll,
-            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        media.sort(cmp=locale_compare,
+            key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
             ext = self.plugin.audio_extensions_list
