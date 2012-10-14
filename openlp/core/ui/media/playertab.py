@@ -83,13 +83,6 @@ class PlayerTab(SettingsTab):
         self.mediaPlayerLayout = QtGui.QVBoxLayout(self.mediaPlayerGroupBox)
         self.mediaPlayerLayout.setObjectName(u'mediaPlayerLayout')
         self.playerCheckBoxes = {}
-        for key, player in self.mediaPlayers.iteritems():
-            player = self.mediaPlayers[key]
-            checkbox = MediaQCheckBox(self.mediaPlayerGroupBox)
-            checkbox.setEnabled(player.available)
-            checkbox.setObjectName(player.name + u'CheckBox')
-            self.playerCheckBoxes[player.name] = checkbox
-            self.mediaPlayerLayout.addWidget(checkbox)
         self.leftLayout.addWidget(self.mediaPlayerGroupBox)
         self.playerOrderGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
@@ -126,12 +119,6 @@ class PlayerTab(SettingsTab):
         self.leftLayout.addWidget(self.playerOrderGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
-        for key in self.mediaPlayers:
-            player = self.mediaPlayers[key]
-            checkbox = self.playerCheckBoxes[player.name]
-            QtCore.QObject.connect(checkbox,
-                QtCore.SIGNAL(u'stateChanged(int)'),
-                self.onPlayerCheckBoxChanged)
         # Signals and slots
         QtCore.QObject.connect(self.backgroundColorButton,
             QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
@@ -139,16 +126,6 @@ class PlayerTab(SettingsTab):
     def retranslateUi(self):
         self.mediaPlayerGroupBox.setTitle(
             translate('OpenLP.PlayerTab', 'Available Media Players'))
-        for key in self.mediaPlayers:
-            player = self.mediaPlayers[key]
-            checkbox = self.playerCheckBoxes[player.name]
-            checkbox.setPlayerName(player.name)
-            if player.available:
-                checkbox.setText(player.display_name)
-            else:
-                checkbox.setText(
-                    unicode(translate('OpenLP.PlayerTab',
-                        '%s (unavailable)')) % player.display_name)
         self.playerOrderGroupBox.setTitle(
             translate('OpenLP.PlayerTab', 'Player Search Order'))
         self.bgColorGroupBox.setTitle(
@@ -157,8 +134,8 @@ class PlayerTab(SettingsTab):
             translate('ImagesPlugin.ImageTab', 'Default Color:'))
         self.informationLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Visible background for images '
-                                               'with aspect ratio different to screen.'))
-
+            'with aspect ratio different to screen.'))
+        self.retranslatePlayers()
 
     def onbackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(
@@ -213,13 +190,7 @@ class PlayerTab(SettingsTab):
             self.usedPlayers = self.savedUsedPlayers
         self.usedPlayers = get_media_players()[0]
         self.savedUsedPlayers = self.usedPlayers
-        for key in self.mediaPlayers:
-            player = self.mediaPlayers[key]
-            checkbox = self.playerCheckBoxes[player.name]
-            if player.available and player.name in self.usedPlayers:
-                checkbox.setChecked(True)
-            else:
-                checkbox.setChecked(False)
+
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.updatePlayerList()
@@ -248,3 +219,37 @@ class PlayerTab(SettingsTab):
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')
 
+    def postSetUp(self, postUpdate=False):
+        """
+        Late stup for players as the MediaController has to be initialised
+        firest.
+        """
+        for key, player in self.mediaPlayers.iteritems():
+            player = self.mediaPlayers[key]
+            checkbox = MediaQCheckBox(self.mediaPlayerGroupBox)
+            checkbox.setEnabled(player.available)
+            checkbox.setObjectName(player.name + u'CheckBox')
+            self.playerCheckBoxes[player.name] = checkbox
+            QtCore.QObject.connect(checkbox,QtCore.SIGNAL(u'stateChanged(int)'),
+                self.onPlayerCheckBoxChanged)
+            self.mediaPlayerLayout.addWidget(checkbox)
+            if player.available and player.name in self.usedPlayers:
+                checkbox.setChecked(True)
+            else:
+                checkbox.setChecked(False)
+        self.retranslatePlayers()
+
+    def retranslatePlayers(self):
+        """
+        Translations for players is dependent on  their setup as well
+         """
+        for key in self.mediaPlayers:
+            player = self.mediaPlayers[key]
+            checkbox = self.playerCheckBoxes[player.name]
+            checkbox.setPlayerName(player.name)
+            if player.available:
+                checkbox.setText(player.display_name)
+            else:
+                checkbox.setText(
+                    unicode(translate('OpenLP.PlayerTab',
+                        '%s (unavailable)')) % player.display_name)

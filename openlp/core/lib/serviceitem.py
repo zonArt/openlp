@@ -292,7 +292,8 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
                 service_data.append(
-                    {u'title': slide[u'title'], u'image': slide[u'image']})
+                    {u'title': slide[u'title'], u'image': slide[u'image'],
+                     u'path': slide[u'path']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -342,9 +343,14 @@ class ServiceItem(object):
                 self.add_from_image(filename, text_image)
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
-                filename = os.path.join(path, text_image[u'title'])
-                self.add_from_command(
-                    path, text_image[u'title'], text_image[u'image'])
+                if path:
+                    self.add_from_command(
+                        path, text_image[u'title'], text_image[u'image'])
+                else:
+                    self.add_from_command(
+                        text_image[u'path'], text_image[u'title'],
+                        text_image[u'image'])
+
         self._new_item()
 
     def get_display_title(self):

@@ -94,12 +94,25 @@ class MediaController(object):
             self.mediaPlayers[player].isActive = player in savedPlayers
 
     def _generate_extensions_lists(self):
-        self.audio_extensions_list = self.get_audio_extensions_list()
-        for ext in self.audio_extensions_list:
-            self.mainWindow.serviceManagerContents.supportedSuffixes(ext[2:])
-        self.video_extensions_list = self.get_video_extensions_list()
-        for ext in self.video_extensions_list:
-            self.mainWindow.serviceManagerContents.supportedSuffixes(ext[2:])
+        """
+        Set the active players and available media files
+        """
+        self.audio_extensions_list = []
+        for player in self.mediaPlayers.values():
+            if player.isActive:
+                for item in player.audio_extensions_list:
+                    if not item in self.audio_extensions_list:
+                        self.audio_extensions_list.append(item)
+                        self.mainWindow.serviceManagerContents. \
+                            supportedSuffixes(item[2:])
+        self.video_extensions_list = []
+        for player in self.mediaPlayers.values():
+            if player.isActive:
+                for item in player.video_extensions_list:
+                    if item not in self.video_extensions_list:
+                        self.video_extensions_list.extend(item)
+                        self.mainWindow.serviceManagerContents. \
+                            supportedSuffixes(item[2:])
 
     def register_players(self, player):
         """
@@ -656,23 +669,6 @@ class MediaController(object):
                 # Start Timer for ui updates
                 if not self.timer.isActive():
                     self.timer.start()
-
-    def get_audio_extensions_list(self):
-        audio_list = []
-        for player in self.mediaPlayers.values():
-            if player.isActive:
-                for item in player.audio_extensions_list:
-                    if not item in audio_list:
-                        audio_list.append(item)
-        return audio_list
-
-    def get_video_extensions_list(self):
-        video_list = []
-        for player in self.mediaPlayers.values():
-            if player.isActive:
-                video_list.extend([item for item in player.video_extensions_list
-                    if item not in video_list])
-        return video_list
 
     def finalise(self):
         self.timer.stop()

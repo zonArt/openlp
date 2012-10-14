@@ -120,6 +120,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.generalTab.postSetUp()
         self.themesTab.postSetUp()
         self.advancedTab.postSetUp()
+        self.playerTab.postSetUp()
         for plugin in self.plugins:
             if plugin.settingsTab:
                 plugin.settingsTab.postSetUp()

@@ -135,7 +135,7 @@ class ServiceManager(QtGui.QWidget):
         self.toolbar.addToolbarAction(u'saveService',
             text=UiStrings().SaveService, icon=u':/general/general_save.png',
             tooltip=translate('OpenLP.ServiceManager', 'Save this service.'),
-            triggers=self.saveFile)
+            triggers=self.decideSaveMethod)
         self.toolbar.addSeparator()
         self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
         self.themeLabel.setMargin(3)
@@ -361,6 +361,7 @@ class ServiceManager(QtGui.QWidget):
             self.shortFileName())
         Settings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(fileName))
+        self._saveLight = True if self._fileName.endswith(u'.oszl') else False
 
     def fileName(self):
         """
@@ -408,7 +409,7 @@ class ServiceManager(QtGui.QWidget):
             if result == QtGui.QMessageBox.Cancel:
                 return False
             elif result == QtGui.QMessageBox.Save:
-                if not self.saveFile():
+                if not self.decideSaveMethod():
                     return False
         self.newFile()
 
@@ -426,7 +427,7 @@ class ServiceManager(QtGui.QWidget):
             if result == QtGui.QMessageBox.Cancel:
                 return False
             elif result == QtGui.QMessageBox.Save:
-                self.saveFile()
+                self.decideSaveMethod()
         if not loadFile:
             fileName = unicode(QtGui.QFileDialog.getOpenFileName(
                 self.mainwindow,
@@ -721,12 +722,24 @@ class ServiceManager(QtGui.QWidget):
             ext = os.path.splitext(fileName)[1]
             fileName.replace(ext, u'.osz')
         self.setFileName(fileName)
-        if fileName.endswith(u'.oszl'):
+        self.decideSaveMethod()
+
+    def decideSaveMethod(self):
+        """
+        Determine which type of save method to use.
+        """
+        if not self.fileName():
+            return self.saveFileAs()
+        print "decideSaveMethod",self._saveLight
+        if self._saveLight:
             return self.saveLocalFile()
         else:
             return self.saveFile()
 
     def loadFile(self, fileName):
+        """
+        Load an existing service file
+        """
         if not fileName:
             return False
         fileName = unicode(fileName)
@@ -766,7 +779,11 @@ class ServiceManager(QtGui.QWidget):
                     self.mainwindow.incrementProgressBar()
                     serviceItem = ServiceItem()
                     serviceItem.renderer = self.mainwindow.renderer
-                    serviceItem.set_from_service(item, self.servicePath)
+                    print self._saveLight
+                    if self._saveLight:
+                        serviceItem.set_from_service(item)
+                    else:
+                        serviceItem.set_from_service(item, self.servicePath)
                     self.validateItem(serviceItem)
                     self.load_item_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):

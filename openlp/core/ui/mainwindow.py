@@ -1167,7 +1167,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.serviceManagerContents.isModified():
             ret = self.serviceManagerContents.saveModifiedService()
             if ret == QtGui.QMessageBox.Save:
-                if self.serviceManagerContents.saveFile():
+                if self.serviceManagerContents.decideSaveMethod():
                     self.cleanUp()
                     event.accept()
                 else:
