@@ -361,7 +361,7 @@ class ServiceManager(QtGui.QWidget):
             self.shortFileName())
         Settings(). \
             setValue(u'servicemanager/last file',QtCore.QVariant(fileName))
-        self._saveLight = True if self._fileName.endswith(u'.oszl') else False
+        self._saveLite = True if self._fileName.endswith(u'.oszl') else False
 
     def fileName(self):
         """
@@ -730,8 +730,8 @@ class ServiceManager(QtGui.QWidget):
         """
         if not self.fileName():
             return self.saveFileAs()
-        print "decideSaveMethod",self._saveLight
-        if self._saveLight:
+        print "decideSaveMethod",self._saveLite
+        if self._saveLite:
             return self.saveLocalFile()
         else:
             return self.saveFile()
@@ -774,13 +774,13 @@ class ServiceManager(QtGui.QWidget):
                 items = cPickle.load(fileTo)
                 fileTo.close()
                 self.newFile()
+                self.setFileName(fileName)
                 self.mainwindow.displayProgressBar(len(items))
                 for item in items:
                     self.mainwindow.incrementProgressBar()
                     serviceItem = ServiceItem()
                     serviceItem.renderer = self.mainwindow.renderer
-                    print self._saveLight
-                    if self._saveLight:
+                    if self._saveLite:
                         serviceItem.set_from_service(item)
                     else:
                         serviceItem.set_from_service(item, self.servicePath)
@@ -795,7 +795,6 @@ class ServiceManager(QtGui.QWidget):
                         serviceItem.temporary_edit = self.load_item_temporary
                     self.addServiceItem(serviceItem, repaint=False)
                 delete_file(p_file)
-                self.setFileName(fileName)
                 self.mainwindow.addRecentFile(fileName)
                 self.setModified(False)
                 Settings().setValue(
