@@ -30,7 +30,6 @@ import os
 import zipfile
 import shutil
 import logging
-import locale
 import re
 
 from xml.etree.ElementTree import ElementTree, XML
@@ -46,7 +45,8 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
+from openlp.core.utils import AppLocation, delete_file, locale_compare, \
+    get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -257,6 +257,7 @@ class ThemeManager(QtGui.QWidget):
         theme.set_default_header_footer()
         self.themeForm.theme = theme
         self.themeForm.exec_()
+        self.loadThemes()
 
     def onRenameTheme(self):
         """
@@ -281,7 +282,6 @@ class ThemeManager(QtGui.QWidget):
                     for plugin in self.mainwindow.pluginManager.plugins:
                         if plugin.usesTheme(old_theme_name):
                             plugin.renameTheme(old_theme_name, new_theme_name)
-                    self.loadThemes()
                     self.mainwindow.renderer.update_theme(
                         new_theme_name, old_theme_name)
 
@@ -314,6 +314,7 @@ class ThemeManager(QtGui.QWidget):
         theme_data.theme_name = new_theme_name
         theme_data.extend_image_filename(self.path)
         self.saveTheme(theme_data, save_from, save_to)
+        self.loadThemes()
 
     def onEditTheme(self):
         """
@@ -331,6 +332,7 @@ class ThemeManager(QtGui.QWidget):
             self.themeForm.exec_(True)
             self.oldBackgroundImage = None
             self.mainwindow.renderer.update_theme(theme.theme_name)
+            self.loadThemes()
 
     def onDeleteTheme(self):
         """
@@ -345,10 +347,10 @@ class ThemeManager(QtGui.QWidget):
             row = self.themeListWidget.row(item)
             self.themeListWidget.takeItem(row)
             self.deleteTheme(theme)
+            self.mainwindow.renderer.update_theme(theme, only_delete=True)
             # As we do not reload the themes, push out the change. Reload the
             # list as the internal lists and events need to be triggered.
             self._pushThemes()
-            self.mainwindow.renderer.update_theme(theme, only_delete=True)
 
     def deleteTheme(self, theme):
         """
@@ -455,9 +457,8 @@ class ThemeManager(QtGui.QWidget):
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
         # Sort the themes by its name considering language specific characters.
-        # lower() is needed for windows!
-        files.sort(key=lambda file_name: unicode(file_name).lower(),
-           cmp=locale.strcoll)
+        files.sort(key=lambda file_name: unicode(file_name),
+           cmp=locale_compare)
         # now process the file list of png files
         for name in files:
             # check to see file is in theme root directory
@@ -516,7 +517,7 @@ class ThemeManager(QtGui.QWidget):
             translate('OpenLP.ThemeManager', 'Theme Already Exists'),
             translate('OpenLP.ThemeManager',
                 'Theme %s already exists. Do you want to replace it?'
-                % theme_name),
+                ).replace('%s', theme_name),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
             QtGui.QMessageBox.No)
@@ -672,7 +673,6 @@ class ThemeManager(QtGui.QWidget):
                 theme.background_filename,
                 ImageSource.Theme, QtGui.QColor(theme.background_border_color))
             self.mainwindow.imageManager.processUpdates()
-        self.loadThemes()
 
     def _writeTheme(self, theme, image_from, image_to):
         """

@@ -31,6 +31,7 @@ and play multimedia within OpenLP.
 """
 import cgi
 import logging
+import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
@@ -135,14 +136,25 @@ class MainDisplay(Display):
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
         windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
             QtCore.Qt.WindowStaysOnTopHint
+        # Fix for bug #1014422.
+        x11_bypass_default = True
+        if sys.platform.startswith(u'linux'):
+            # Default to False on Gnome.
+            x11_bypass_default = bool(not
+                os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
         if Settings().value(u'advanced/x11 bypass wm',
-            QtCore.QVariant(True)).toBool():
+            QtCore.QVariant(x11_bypass_default)).toBool():
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
-        # FIXME: QtCore.Qt.SplashScreen is workaround to make display screen
-        # stay always on top on Mac OS X. For details see bug 906926.
-        # It needs more investigation to fix it properly.
+        # TODO: The following combination of windowFlags works correctly
+        # on Mac OS X. For next OpenLP version we should test it on other
+        # platforms. For OpenLP 2.0 keep it only for OS X to not cause any
+        # regressions on other platforms.
         if sys.platform == 'darwin':
-            windowFlags |= QtCore.Qt.SplashScreen
+            windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
+            # For primary screen ensure it stays above the OS X dock
+            # and menu bar
+            if self.screens.current[u'primary']:
+                self.setWindowState(QtCore.Qt.WindowFullScreen)
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(False)
@@ -224,20 +236,33 @@ class MainDisplay(Display):
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
 
-    def text(self, slide):
+    def text(self, slide, animate=True):
         """
         Add the slide text from slideController
 
         ``slide``
             The slide text to be displayed
+
+        ``animate``
+            Perform transitions if applicable when setting the text
         """
         log.debug(u'text to display')
         # Wait for the webview to update before displaying text.
         while not self.webLoaded:
             Receiver.send_message(u'openlp_process_events')
         self.setGeometry(self.screen[u'size'])
-        self.frame.evaluateJavaScript(u'show_text("%s")' %
-            slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        if animate:
+            self.frame.evaluateJavaScript(u'show_text("%s")' %
+                slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        else:
+            # This exists for https://bugs.launchpad.net/openlp/+bug/1016843
+            # For unknown reasons if evaluateJavaScript is called
+            # from the themewizard, then it causes a crash on
+            # Windows if there are many items in the service to re-render.
+            # Setting the div elements direct seems to solve the issue
+            self.frame.findFirstElement("#lyricsmain").setInnerXml(slide)
+            self.frame.findFirstElement("#lyricsoutline").setInnerXml(slide)
+            self.frame.findFirstElement("#lyricsshadow").setInnerXml(slide)
 
     def alert(self, text, location):
         """

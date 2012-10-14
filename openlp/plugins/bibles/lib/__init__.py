@@ -355,37 +355,8 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
         if not book_ref_id:
-            book_names = BibleStrings().BookNames
-            # escape reserved characters
-            book_escaped = book
-            for character in u'\\.^$*+?{}[]()':
-                book_escaped = book_escaped.replace(
-                    character, u'\\' + character)
-            regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
-                book_escaped.split()), re.UNICODE | re.IGNORECASE)
-            if language_selection == LanguageSelection.Bible:
-                db_book = bible.get_book(book)
-                if db_book:
-                    book_ref_id = db_book.book_reference_id
-            elif language_selection == LanguageSelection.Application:
-                books = filter(lambda key:
-                    regex_book.match(unicode(book_names[key])), book_names.keys())
-                books = filter(None, map(BiblesResourcesDB.get_book, books))
-                for value in books:
-                    if bible.get_book_by_book_ref_id(value[u'id']):
-                        book_ref_id = value[u'id']
-                        break
-            elif language_selection == LanguageSelection.English:
-                books = BiblesResourcesDB.get_books_like(book)
-                if books:
-                    book_list = filter(
-                        lambda value: regex_book.match(value[u'name']), books)
-                    if not book_list:
-                        book_list = books
-                    for value in book_list:
-                        if bible.get_book_by_book_ref_id(value[u'id']):
-                            book_ref_id = value[u'id']
-                            break
+            book_ref_id = bible.get_book_ref_id_by_localised_name(
+                book, language_selection)
         elif not bible.get_book_by_book_ref_id(book_ref_id):
             book_ref_id = False
         ranges = match.group(u'ranges')

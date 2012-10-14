@@ -971,6 +971,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections.extend([self.themesSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         setting_sections.extend([self.headerSection])
+        setting_sections.extend([u'crashreport'])
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
             setting_sections.extend([plugin.name])
@@ -998,7 +999,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     'settings file.\n\n'
                     'Section [%s] is not valid \n\n'
                     'Processing has terminated and no changed have been made.'
-                    % section),
+                    ).replace('%s', section),
                     QtGui.QMessageBox.StandardButtons(
                     QtGui.QMessageBox.Ok))
                 return
@@ -1517,7 +1518,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow',
                     'Copying OpenLP data to new data directory location - %s '
                     '- Please wait for copy to finish'
-                    % self.newDataPath))
+                    ).replace('%s', self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError),  why:
@@ -1527,7 +1528,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
                     'OpenLP Data directory copy failed\n\n%s'
-                    % unicode(why)),
+                    ).replace('%s', unicode(why)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Ok))
                 return False

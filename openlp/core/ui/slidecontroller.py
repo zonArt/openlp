@@ -286,19 +286,20 @@ class SlideController(Controller):
                 text=translate('OpenLP.SlideController', 'Pause Audio'),
                 tooltip=translate('OpenLP.SlideController', 'Pause audio.'),
                 checked=False, visible=False, category=self.category,
-                triggers=self.onAudioPauseClicked)
+                context=QtCore.Qt.WindowShortcut, 
+                shortcuts=[], triggers=self.onAudioPauseClicked)
             self.audioMenu = QtGui.QMenu(
-                translate('OpenLP.SlideController', 'Background Audio'), self)
+                translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)
             self.audioPauseItem.setMenu(self.audioMenu)
-            self.audioPauseItem.setParent(self)
+            self.audioPauseItem.setParent(self.toolbar)
             self.toolbar.widgetForAction(self.audioPauseItem).setPopupMode(
                 QtGui.QToolButton.MenuButtonPopup)
             self.nextTrackItem = create_action(self, u'nextTrackItem',
                 text=UiStrings().NextTrack,
                 icon=u':/slides/media_playback_next.png', tooltip=translate(
                 'OpenLP.SlideController', 'Go to next audio track.'),
-                category=self.category, context=QtCore.Qt.WindowShortcut,
-                triggers=self.onNextTrackClicked)
+                category=self.category,
+                shortcuts=[], triggers=self.onNextTrackClicked)
             self.audioMenu.addAction(self.nextTrackItem)
             self.trackMenu = self.audioMenu.addMenu(
                 translate('OpenLP.SlideController', 'Tracks'))
@@ -854,7 +855,11 @@ class SlideController(Controller):
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
-                label.setScaledContents(True)
+                if serviceItem.is_media():
+                    label.setAlignment(QtCore.Qt.AlignHCenter |
+                        QtCore.Qt.AlignVCenter)
+                else:
+                    label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     label.setPixmap(QtGui.QPixmap(frame[u'image']))
                 else:
@@ -1346,7 +1351,7 @@ class SlideController(Controller):
         """
         log.debug(u'SlideController onMediaStart')
         file = os.path.join(item.get_frame_path(), item.get_frame_title())
-        self.mediaController.video(self, file, False, False)
+        self.mediaController.video(self, file, False, False, self.hideMode())
         if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()
             self.slidePreview.hide()

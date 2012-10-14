@@ -29,16 +29,16 @@
 The :mod:`advancedtab` provides an advanced settings facility.
 """
 from datetime import datetime, timedelta
-
-from PyQt4 import QtCore, QtGui
-
 import logging
 import os
 import sys
+
+from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
-from openlp.core.utils import get_images_filter, AppLocation
+from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
 log = logging.getLogger(__name__)
@@ -432,8 +432,7 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab',
             '<strong>WARNING:</strong> New data directory location contains '
             'OpenLP data files.  These files WILL be replaced during a copy.'))
-        self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab',
-            'X11'))
+        self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab', 'X11'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Bypass X11 Window Manager'))
         # Slide Limits
@@ -493,8 +492,14 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool()
         self.serviceNameCheckBox.setChecked(default_service_enabled)
         self.serviceNameCheckBoxToggled(default_service_enabled)
-        self.x11BypassCheckBox.setChecked(
-            settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
+        # Fix for bug #1014422.
+        x11_bypass_default = True
+        if sys.platform.startswith(u'linux'):
+            # Default to False on Gnome.
+            x11_bypass_default = bool(not
+                os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+        self.x11BypassCheckBox.setChecked(settings.value(
+            u'x11 bypass wm', QtCore.QVariant(x11_bypass_default)).toBool())
         self.defaultColor = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
@@ -527,7 +532,7 @@ class AdvancedTab(SettingsTab):
                 'Click "No" to stop loading OpenLP. allowing you to fix '
                 'the the problem.\n\n'
                 'Click "Yes" to reset the data directory to the default '
-                'location.' % self.currentDataPath),
+                'location.').replace('%s', self.currentDataPath),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -612,18 +617,18 @@ class AdvancedTab(SettingsTab):
     def generateServiceNameExample(self):
         preset_is_valid = True
         if self.serviceNameDay.currentIndex() == 7:
-            time = datetime.now()
+            local_time = datetime.now()
         else:
             now = datetime.now()
             day_delta = self.serviceNameDay.currentIndex() - now.weekday()
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            time = time.replace(hour = self.serviceNameTime.time().hour(),
+            local_time = time.replace(hour = self.serviceNameTime.time().hour(),
                 minute = self.serviceNameTime.time().minute())
         try:
-            service_name_example = time.strftime(unicode(
-                self.serviceNameEdit.text()))
+            service_name_example = format_time(unicode(
+                self.serviceNameEdit.text()), local_time)
         except ValueError:
             preset_is_valid = False
             service_name_example = translate('OpenLP.AdvancedTab',
@@ -674,6 +679,7 @@ class AdvancedTab(SettingsTab):
             options = QtGui.QFileDialog.ShowDirsOnly))
         # Set the new data path.
         if new_data_path:
+            new_data_path = os.path.normpath(new_data_path)
             if self.currentDataPath.lower() == new_data_path.lower():
                 self.onDataDirectoryCancelButtonClicked()
                 return
@@ -686,7 +692,7 @@ class AdvancedTab(SettingsTab):
                 'Are you sure you want to change the location of the OpenLP '
                 'data directory to:\n\n%s\n\n'
                 'The data directory will be changed when OpenLP is closed.'
-                % new_data_path),
+                ).replace('%s', new_data_path),
             QtGui.QMessageBox.StandardButtons(
             QtGui.QMessageBox.Yes |
             QtGui.QMessageBox.No),
@@ -750,7 +756,7 @@ class AdvancedTab(SettingsTab):
                 'The location you have selected \n\n%s\n\n'
                 'appears to contain OpenLP data files.  Do you wish to replace '
                 'these files with the current data files?'
-                % os.path.abspath(data_path,)),
+                ).replace('%s', os.path.abspath(data_path,)),
                 QtGui.QMessageBox.StandardButtons(
                 QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No),
@@ -765,7 +771,7 @@ class AdvancedTab(SettingsTab):
             self.dataExists = False
             self.dataDirectoryCopyCheckBox.setChecked(True)
             self.newDataDirectoryHasFilesLabel.hide()
-        
+
     def onDataDirectoryCancelButtonClicked(self):
         """
         Cancel the data directory location change

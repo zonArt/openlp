@@ -177,8 +177,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
             Receiver.send_message(u'cursor_busy')
+            Receiver.send_message(u'openlp_process_events')
             while not self.themeScreenshotThread.isFinished():
                 time.sleep(0.1)
+                Receiver.send_message(u'openlp_process_events')
             # Build the screenshot icons, as this can not be done in the thread.
             self._buildThemeScreenshots()
             Receiver.send_message(u'cursor_normal')
@@ -188,10 +190,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
 
     def onCurrentIdChanged(self, pageId):
         """
-        Detects Page changes and updates as approprate.
+        Detects Page changes and updates as appropriate.
         """
         # Keep track of the page we are at.  Triggering "Cancel" causes pageId
         # to be a -1.
+        Receiver.send_message(u'openlp_process_events')
         if pageId != -1:
             self.lastId = pageId
         if pageId == FirstTimePage.Plugins:
@@ -227,10 +230,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 self.cancelButton.setVisible(False)
         elif pageId == FirstTimePage.Progress:
             Receiver.send_message(u'cursor_busy')
+            self.repaint()
+            Receiver.send_message(u'openlp_process_events')
+            # Try to give the wizard a chance to redraw itself
+            time.sleep(0.2)
             self._preWizard()
-            Receiver.send_message(u'openlp_process_events')
             self._performWizard()
-            Receiver.send_message(u'openlp_process_events')
             self._postWizard()
             Receiver.send_message(u'cursor_normal')
             Receiver.send_message(u'openlp_process_events')
@@ -263,8 +268,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Receiver.send_message(u'cursor_busy')
         self._performWizard()
-        Receiver.send_message(u'openlp_process_events')
         Receiver.send_message(u'cursor_normal')
+        Receiver.send_message(u'openlp_process_events')
         Settings().setValue(u'general/has run wizard',
             QtCore.QVariant(True))
         self.close()
@@ -344,6 +349,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Receiver.send_message(u'openlp_process_events')
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
+            Receiver.send_message(u'openlp_process_events')
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
@@ -352,6 +358,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while iterator.value():
+            Receiver.send_message(u'openlp_process_events')
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 filename = item.data(0, QtCore.Qt.UserRole).toString()
@@ -360,6 +367,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             iterator += 1
         # Loop through the themes list and increase for each selected item
         for i in xrange(self.themesListWidget.count()):
+            Receiver.send_message(u'openlp_process_events')
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole).toString()
@@ -381,6 +389,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
                 'Setting Up'))
             self.progressPage.setSubTitle(u'Setup complete.')
+        self.repaint()
+        Receiver.send_message(u'openlp_process_events')
+        # Try to give the wizard a chance to repaint itself
+        time.sleep(0.1)
 
     def _postWizard(self):
         """

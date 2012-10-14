@@ -136,7 +136,7 @@ class AppLocation(object):
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
-        return path
+        return os.path.normpath(path)
 
     @staticmethod
     def get_section_data_path(section):
@@ -469,10 +469,43 @@ def get_uno_instance(resolver):
         return resolver.resolve(u'uno:socket,host=localhost,port=2002;' \
             + u'urp;StarOffice.ComponentContext')
 
+
+def format_time(text, local_time):
+    """
+    Workaround for Python built-in time formatting fuction time.strftime().
+
+    time.strftime() accepts only ascii characters. This function accepts
+    unicode string and passes individual % placeholders to time.strftime().
+    This ensures only ascii characters are passed to time.strftime().
+
+    ``text``
+        The text to be processed.
+    ``local_time``
+        The time to be used to add to the string.  This is a time object
+    """
+    def match_formatting(match):
+        return local_time.strftime(match.group())
+    return re.sub('\%[a-zA-Z]', match_formatting, text)
+
+
+def locale_compare(string1, string2):
+    """
+    Compares two strings according to the current locale settings.
+
+    As any other compare function, returns a negative, or a positive value,
+    or 0, depending on whether string1 collates before or after string2 or
+    is equal to it. Comparison is case insensitive.
+    """
+    # Function locale.strcol() from standard Python library does not work
+    # properly on Windows and probably somewhere else.
+    return int(QtCore.QString.localeAwareCompare(
+        QtCore.QString(string1).toLower(), QtCore.QString(string2).toLower()))
+
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename']
+    u'delete_file', u'clean_filename', u'format_time', u'locale_compare']
