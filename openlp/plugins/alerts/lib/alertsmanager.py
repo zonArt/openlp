@@ -57,8 +57,6 @@ class AlertsManager(QtCore.QObject):
         """
         if message:
             self.displayAlert(message[0])
-        else:
-            self.displayAlert(u'')
 
     def displayAlert(self, text=u''):
         """
@@ -68,14 +66,15 @@ class AlertsManager(QtCore.QObject):
             display text
         """
         log.debug(u'display alert called %s' % text)
-        self.alertList.append(text)
-        if self.timer_id != 0:
-            Receiver.send_message(u'mainwindow_status_text',
-                translate('AlertsPlugin.AlertsManager',
-                'Alert message created and displayed.'))
-            return
-        Receiver.send_message(u'mainwindow_status_text', u'')
-        self.generateAlert()
+        if text:
+            self.alertList.append(text)
+            if self.timer_id != 0:
+                Receiver.send_message(u'mainwindow_status_text',
+                    translate('AlertsPlugin.AlertsManager',
+                    'Alert message created and displayed.'))
+                return
+            Receiver.send_message(u'mainwindow_status_text', u'')
+            self.generateAlert()
 
     def generateAlert(self):
         """

@@ -130,7 +130,9 @@
   <qresource prefix="media">
     <file>media_time.png</file>
     <file>media_stop.png</file>
-    <file>image_clapperboard.png</file>
+    <file>media_audio.png</file>
+    <file>media_video.png</file>
+    <file>slidecontroller_multimedia.png</file>
   </qresource>
   <qresource prefix="messagebox">
     <file>messagebox_critical.png</file>

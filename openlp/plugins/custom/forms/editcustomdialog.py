@@ -36,7 +36,7 @@ class Ui_CustomEditDialog(object):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(450, 350)
         customEditDialog.setWindowIcon(
-            build_icon(u':/icon/openlp.org-icon-32.bmp'))
+            build_icon(u':/icon/openlp-logo-16x16.png'))
         self.dialogLayout = QtGui.QVBoxLayout(customEditDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.titleLayout = QtGui.QHBoxLayout()

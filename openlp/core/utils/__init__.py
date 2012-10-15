@@ -488,10 +488,30 @@ def format_time(text, local_time):
     return re.sub('\%[a-zA-Z]', match_formatting, text)
 
 
+def locale_compare(string1, string2):
+    """
+    Compares two strings according to the current locale settings.
+
+    As any other compare function, returns a negative, or a positive value,
+    or 0, depending on whether string1 collates before or after string2 or
+    is equal to it. Comparison is case insensitive.
+    """
+    # Function locale.strcol() from standard Python library does not work
+    # properly on Windows and probably somewhere else.
+    return QtCore.QString.localeAwareCompare(string1.lower(), string2.lower())
+
+
+# For performance reasons provide direct reference to compare function
+# without wrapping it in another function making te string lowercase.
+# This is needed for sorting songs.
+locale_direct_compare = QtCore.QString.localeAwareCompare
+
+
 from languagemanager import LanguageManager
 from actions import ActionList
 
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename', u'format_time']
+    u'delete_file', u'clean_filename', u'format_time', u'locale_compare',
+    u'locale_direct_compare']
