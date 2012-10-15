@@ -31,11 +31,11 @@ the Songs plugin
 """
 
 from sqlalchemy import Column, ForeignKey, Table, types
-from sqlalchemy.orm import mapper, relation
+from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func
+from PyQt4 import QtCore
 
 from openlp.core.lib.db import BaseModel, init_db
-from openlp.core.utils import locale_compare
 
 class Author(BaseModel):
     """
@@ -64,14 +64,22 @@ class Song(BaseModel):
     """
     Song model
     """
-    # By default sort the songs by its title considering language specific
-    # characters.
-    def __lt__(self, other):
-        r = locale_compare(self.title, other.title)
-        return True if r < 0 else False
+    def __init__(self):
+        self.sort_string = ''
 
-    def __eq__(self, other):
-        return 0 == locale_compare(self.title, other.title)
+    # This decorator tells sqlalchemy to call this method everytime
+    # any data on this object are updated.
+    @reconstructor
+    def init_on_load(self):
+        """
+        Precompute string to be used for sorting.
+
+        Song sorting is performance sensitive operation.
+        To get maximum speed lets precompute the string
+        used for comparison.
+        """
+        # Avoid the overhead of converting string to lowercase and to QString
+        self.sort_string = QtCore.QString(self.title.lower())
 
 
 class Topic(BaseModel):
