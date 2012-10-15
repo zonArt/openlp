@@ -153,7 +153,7 @@ class ImpressController(PresentationController):
         desktop = None
         try:
             desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-        except AttributeError:
+        except (AttributeError, pywintypes.com_error):
             log.warn(u'Failure to find desktop - Impress may have closed')
         return desktop if desktop else None
 
@@ -284,6 +284,8 @@ class ImpressDocument(PresentationDocument):
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
+        if not pages:
+            return
         if not os.path.isdir(self.get_temp_folder()):
             os.makedirs(self.get_temp_folder())
         for idx in range(pages.getCount()):
@@ -359,7 +361,7 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'is active OpenOffice')
         if not self.is_loaded():
             return False
-        return self.control is not None
+        return self.control.isRunning() if self.control else False
 
     def unblank_screen(self):
         """
@@ -380,7 +382,7 @@ class ImpressDocument(PresentationDocument):
         Returns true if screen is blank
         """
         log.debug(u'is blank OpenOffice')
-        if self.control:
+        if self.control and self.control.isRunning():
             return self.control.isPaused()
         else:
             return False
@@ -436,7 +438,11 @@ class ImpressDocument(PresentationDocument):
         """
         Triggers the next effect of slide on the running presentation
         """
+        is_paused = self.control.isPaused()
         self.control.gotoNextEffect()
+        time.sleep(0.1)
+        if not is_paused and self.control.isPaused():
+            self.control.gotoPreviousEffect()
 
     def previous_step(self):
         """
