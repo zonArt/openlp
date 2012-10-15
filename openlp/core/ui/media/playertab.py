@@ -32,6 +32,7 @@ from openlp.core.lib import SettingsTab, translate, Receiver
 from openlp.core.lib.ui import UiStrings, create_button
 from openlp.core.lib.settings import Settings
 from openlp.core.ui.media import get_media_players, set_media_players
+
 class MediaQCheckBox(QtGui.QCheckBox):
     """
     MediaQCheckBox adds an extra property, playerName to the QCheckBox class.
@@ -229,6 +230,7 @@ class PlayerTab(SettingsTab):
             checkbox = MediaQCheckBox(self.mediaPlayerGroupBox)
             checkbox.setEnabled(player.available)
             checkbox.setObjectName(player.name + u'CheckBox')
+            checkbox.setToolTip(player.get_info())
             self.playerCheckBoxes[player.name] = checkbox
             QtCore.QObject.connect(checkbox,QtCore.SIGNAL(u'stateChanged(int)'),
                 self.onPlayerCheckBoxChanged)

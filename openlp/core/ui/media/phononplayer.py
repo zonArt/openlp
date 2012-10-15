@@ -33,7 +33,7 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.settings import Settings
 
 from openlp.core.ui.media import MediaState
@@ -230,3 +230,12 @@ class PhononPlayer(MediaPlayer):
         background = unicode(QtGui.QColor(Settings().value(
             u'players/background color', QtCore.QVariant(u'#000000'))).name())
         return VIDEO_CSS % (background,background,background)
+
+    def get_info(self):
+        return(translate('Media.player', 'Phonon is a media player which '
+            'interacts with the operating system to provide media capabilities'
+            '.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(self.audio_extensions_list) +
+            u'<br/><strong>' + translate('Media.player', 'Video') +
+            u'</strong><br/>' + unicode(self.video_extensions_list) + u'<br/>')

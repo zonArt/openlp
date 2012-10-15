@@ -30,6 +30,7 @@ from PyQt4 import QtCore, QtGui
 
 import logging
 
+from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.lib.settings import Settings
@@ -438,3 +439,12 @@ class WebkitPlayer(MediaPlayer):
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
                 controller.seekSlider.setSliderPosition(currentTime)
+
+    def get_info(self):
+        return(translate('Media.player', 'Webkit is a media player which runs '
+            'inside a web browser. This player allows text over video to be '
+            'rendered.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
+            translate('Media.player', 'Video') + u'</strong><br/>' +
+            unicode(VIDEO_EXT) + u'<br/>')

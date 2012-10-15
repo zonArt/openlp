@@ -34,7 +34,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.settings import Settings
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -231,3 +231,10 @@ class VlcPlayer(MediaPlayer):
             controller.seekSlider.setSliderPosition( \
                 display.vlcMediaPlayer.get_time())
 
+    def get_info(self):
+        return(translate('Media.player', 'VLC is an external player which '
+            'supports a number of different formats.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
+            translate('Media.player', 'Video') + u'</strong><br/>' +
+            unicode(VIDEO_EXT) + u'<br/>')
