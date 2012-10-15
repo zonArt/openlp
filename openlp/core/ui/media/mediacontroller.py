@@ -57,28 +57,28 @@ class MediaController(object):
         self.timer.setInterval(200)
         # Signals
         QtCore.QObject.connect(self.timer,
-            QtCore.SIGNAL("timeout()"), self.video_state)
+            QtCore.SIGNAL("timeout()"), self.media_state)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackPlay'), self.video_play)
+            QtCore.SIGNAL(u'playbackPlay'), self.media_play)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackPause'), self.video_pause)
+            QtCore.SIGNAL(u'playbackPause'), self.media_pause)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackStop'), self.video_stop)
+            QtCore.SIGNAL(u'playbackStop'), self.media_stop)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'seekSlider'), self.video_seek)
+            QtCore.SIGNAL(u'seekSlider'), self.media_seek)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'volumeSlider'), self.video_volume)
+            QtCore.SIGNAL(u'volumeSlider'), self.media_volume)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_hide'), self.video_hide)
+            QtCore.SIGNAL(u'media_hide'), self.media_hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_blank'), self.video_blank)
+            QtCore.SIGNAL(u'media_blank'), self.media_blank)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_unblank'), self.video_unblank)
+            QtCore.SIGNAL(u'media_unblank'), self.media_unblank)
         # Signals for background video
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_hide'), self.video_hide)
+            QtCore.SIGNAL(u'songs_hide'), self.media_hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_unblank'), self.video_unblank)
+            QtCore.SIGNAL(u'songs_unblank'), self.media_unblank)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_media_rebuild'), self._set_active_players)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -171,7 +171,7 @@ class MediaController(object):
         self._generate_extensions_lists()
         return True
 
-    def video_state(self):
+    def media_state(self):
         """
         Check if there is a running media Player and do updating stuff (e.g.
         update the UI)
@@ -365,7 +365,7 @@ class MediaController(object):
         log.debug(u'video')
         isValid = False
         # stop running videos
-        self.video_reset(controller)
+        self.media_reset(controller)
         controller.media_info = MediaInfo()
         if muted:
             controller.media_info.volume = 0
@@ -420,7 +420,7 @@ class MediaController(object):
             QtCore.QVariant(False)).toBool():
             autoplay = True
         if autoplay:
-            if not self.video_play([controller]):
+            if not self.media_play([controller]):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
                     unicode(translate('MediaPlugin.MediaItem',
@@ -442,7 +442,7 @@ class MediaController(object):
         """
         log.debug(u'media_length')
         # stop running videos
-        self.video_reset(controller)
+        self.media_reset(controller)
         controller.media_info = MediaInfo()
         controller.media_info.volume = controller.volumeSlider.value()
         controller.media_info.file_info = QtCore.QFileInfo(serviceItem
@@ -455,14 +455,14 @@ class MediaController(object):
                 unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
             return False
-        if not self.video_play([controller]):
+        if not self.media_play([controller]):
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
             return False
         serviceItem.set_media_length(controller.media_info.length)
-        self.video_stop([controller])
+        self.media_stop([controller])
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
@@ -510,14 +510,14 @@ class MediaController(object):
         # no valid player found
         return False
 
-    def video_play(self, msg, status=True):
+    def media_play(self, msg, status=True):
         """
         Responds to the request to play a loaded video
 
         ``msg``
             First element is the controller which should be used
         """
-        log.debug(u'video_play')
+        log.debug(u'media_play')
         controller = msg[0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
@@ -535,27 +535,27 @@ class MediaController(object):
             self.timer.start()
         return True
 
-    def video_pause(self, msg):
+    def media_pause(self, msg):
         """
         Responds to the request to pause a loaded video
 
         ``msg``
             First element is the controller which should be used
         """
-        log.debug(u'video_pause')
+        log.debug(u'media_pause')
         controller = msg[0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 self.curDisplayMediaPlayer[display].pause(display)
 
-    def video_stop(self, msg):
+    def media_stop(self, msg):
         """
         Responds to the request to stop a loaded video
 
         ``msg``
             First element is the controller which should be used
         """
-        log.debug(u'video_stop')
+        log.debug(u'media_stop')
         controller = msg[0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
@@ -564,7 +564,7 @@ class MediaController(object):
                 self.curDisplayMediaPlayer[display].set_visible(display, False)
                 controller.seekSlider.setSliderPosition(0)
 
-    def video_volume(self, msg):
+    def media_volume(self, msg):
         """
         Changes the volume of a running video
 
@@ -573,12 +573,12 @@ class MediaController(object):
         """
         controller = msg[0]
         vol = msg[1][0]
-        log.debug(u'video_volume %d' % vol)
+        log.debug(u'media_volume %d' % vol)
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 self.curDisplayMediaPlayer[display].volume(display, vol)
 
-    def video_seek(self, msg):
+    def media_seek(self, msg):
         """
         Responds to the request to change the seek Slider of a loaded video
 
@@ -586,18 +586,18 @@ class MediaController(object):
             First element is the controller which should be used
             Second element is a list with the seek Value as first element
         """
-        log.debug(u'video_seek')
+        log.debug(u'media_seek')
         controller = msg[0]
         seekVal = msg[1][0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 self.curDisplayMediaPlayer[display].seek(display, seekVal)
 
-    def video_reset(self, controller):
+    def media_reset(self, controller):
         """
         Responds to the request to reset a loaded video
         """
-        log.debug(u'video_reset')
+        log.debug(u'media_reset')
         self.set_controls_visible(controller, False)
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
@@ -608,7 +608,7 @@ class MediaController(object):
                 "setBackBoard", null, null, null,"hidden");')
                 del self.curDisplayMediaPlayer[display]
 
-    def video_hide(self, msg):
+    def media_hide(self, msg):
         """
         Hide the related video Widget
 
@@ -626,7 +626,7 @@ class MediaController(object):
             self.curDisplayMediaPlayer[display].pause(display)
             self.curDisplayMediaPlayer[display].set_visible(display, False)
 
-    def video_blank(self, msg):
+    def media_blank(self, msg):
         """
         Blank the related video Widget
 
@@ -647,7 +647,7 @@ class MediaController(object):
             self.curDisplayMediaPlayer[display].pause(display)
             self.curDisplayMediaPlayer[display].set_visible(display, False)
 
-    def video_unblank(self, msg):
+    def media_unblank(self, msg):
         """
         Unblank the related video Widget
 
@@ -673,4 +673,4 @@ class MediaController(object):
     def finalise(self):
         self.timer.stop()
         for controller in self.controller:
-            self.video_reset(controller)
+            self.media_reset(controller)

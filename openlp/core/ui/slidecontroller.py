@@ -523,7 +523,7 @@ class SlideController(DisplayController):
 
     def liveEscape(self):
         self.display.setVisible(False)
-        self.mediaController.video_stop([self])
+        self.mediaController.media_stop([self])
 
     def toggleDisplay(self, action):
         """
@@ -1360,7 +1360,7 @@ class SlideController(DisplayController):
         Respond to a request to close the Video
         """
         log.debug(u'SlideController onMediaClose')
-        self.mediaController.video_reset(self)
+        self.mediaController.media_reset(self)
         self.previewDisplay.hide()
         self.slidePreview.show()
 

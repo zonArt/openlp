@@ -157,7 +157,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the media selected,
         """
-        self.plugin.liveController.mediaController.video_reset(
+        self.plugin.liveController.mediaController.media_reset(
             self.plugin.liveController)
         self.resetAction.setVisible(False)
 
