@@ -219,7 +219,6 @@ class Ui_FirstTimeWizard(object):
         if sys.platform != 'darwin':
             self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard',
                 'Presentations'))
-            self.presentationCheckBox.setEnabled(False)
         self.mediaCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Media (Audio and Video)'))
         self.remoteCheckBox.setText(translate('OpenLP.FirstTimeWizard',
