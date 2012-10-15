@@ -502,7 +502,8 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
         for item in self.serviceItems:
             self.mainwindow.incrementProgressBar()
-            service_item = item[u'service_item'].get_service_repr()
+            service_item = item[u'service_item']. \
+                get_service_repr(self._saveLite)
             # Get all the audio files, and ready them for embedding in the
             # service file.
             if service_item[u'header'][u'background_audio']:
@@ -634,7 +635,8 @@ class ServiceManager(QtGui.QWidget):
         self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
         for item in self.serviceItems:
             self.mainwindow.incrementProgressBar()
-            service_item = item[u'service_item'].get_service_repr()
+            service_item = item[u'service_item']. \
+                get_service_repr(self._saveLite)
             service.append({u'serviceitem': service_item})
         service_content = cPickle.dumps(service)
         # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
@@ -713,7 +715,7 @@ class ServiceManager(QtGui.QWidget):
             UiStrings().SaveService, path,
             translate('OpenLP.ServiceManager',
                 'OpenLP Service Files (*.osz);;'
-                'OpenLP Service Files - light (*.oszl)')))
+                'OpenLP Service Files - lite (*.oszl)')))
         if not fileName:
             return False
         if os.path.splitext(fileName)[1] == u'':

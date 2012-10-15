@@ -257,7 +257,7 @@ class ServiceItem(object):
             {u'title': file_name, u'image': image, u'path': path})
         self._new_item()
 
-    def get_service_repr(self):
+    def get_service_repr(self, lite_save):
         """
         This method returns some text which can be saved into the service
         file to represent this item.
@@ -288,7 +288,12 @@ class ServiceItem(object):
         if self.service_item_type == ServiceItemType.Text:
             service_data = [slide for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Image:
-            service_data = [slide[u'title'] for slide in self._raw_frames]
+            if lite_save:
+                for slide in self._raw_frames:
+                    service_data.append(
+                        {u'title': slide[u'title'], u'path': slide[u'path']})
+            else:
+                service_data = [slide[u'title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
                 service_data.append(
@@ -338,9 +343,14 @@ class ServiceItem(object):
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            for text_image in serviceitem[u'serviceitem'][u'data']:
-                filename = os.path.join(path, text_image)
-                self.add_from_image(filename, text_image)
+            if path:
+                for text_image in serviceitem[u'serviceitem'][u'data']:
+                    filename = os.path.join(path, text_image)
+                    self.add_from_image(filename, text_image)
+            else:
+                for text_image in serviceitem[u'serviceitem'][u'data']:
+                    self.add_from_image(text_image[u'path'],
+                        text_image[u'title'])
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 if path:
