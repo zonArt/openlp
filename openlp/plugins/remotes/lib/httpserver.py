@@ -308,7 +308,9 @@ class HttpConnection(object):
             'add_and_go_to_service': translate('RemotePlugin.Mobile',
                 'Add &amp; Go to Service'),
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
-            'options': translate('RemotePlugin.Mobile', 'Options')
+            'options': translate('RemotePlugin.Mobile', 'Options'),
+            'service': translate('RemotePlugin.Mobile', 'Service'),
+            'slides': translate('RemotePlugin.Mobile', 'Slides')
         }
 
     def ready_read(self):
