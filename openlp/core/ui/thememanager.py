@@ -30,7 +30,6 @@ import os
 import zipfile
 import shutil
 import logging
-import locale
 import re
 
 from xml.etree.ElementTree import ElementTree, XML
@@ -46,7 +45,8 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
+from openlp.core.utils import AppLocation, delete_file, locale_compare, \
+    get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -284,6 +284,7 @@ class ThemeManager(QtGui.QWidget):
                             plugin.renameTheme(old_theme_name, new_theme_name)
                     self.mainwindow.renderer.update_theme(
                         new_theme_name, old_theme_name)
+                    self.loadThemes()
 
     def onCopyTheme(self):
         """
@@ -457,9 +458,8 @@ class ThemeManager(QtGui.QWidget):
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
         # Sort the themes by its name considering language specific characters.
-        # lower() is needed for windows!
-        files.sort(key=lambda file_name: unicode(file_name).lower(),
-           cmp=locale.strcoll)
+        files.sort(key=lambda file_name: unicode(file_name),
+           cmp=locale_compare)
         # now process the file list of png files
         for name in files:
             # check to see file is in theme root directory

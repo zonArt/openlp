@@ -30,7 +30,6 @@ The bible import functions for OpenLP
 """
 import logging
 import os
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -39,7 +38,7 @@ from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.lib.settings import Settings
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, locale_compare
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename
 
@@ -523,7 +522,7 @@ class BibleImportForm(OpenLPWizard):
         """
         self.webTranslationComboBox.clear()
         bibles = self.web_bible_list[index].keys()
-        bibles.sort(cmp=locale.strcoll)
+        bibles.sort(cmp=locale_compare)
         self.webTranslationComboBox.addItems(bibles)
 
     def onOsisBrowseButtonClicked(self):

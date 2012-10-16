@@ -27,7 +27,6 @@
 ###############################################################################
 
 import logging
-import locale
 
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
@@ -109,10 +108,7 @@ class CustomMediaItem(MediaManagerItem):
         # Sort out what custom we want to select after loading the list.
         self.saveAutoSelectId()
         self.listView.clear()
-        # Sort the customs by its title considering language specific
-        # characters. lower() is needed for windows!
-        custom_slides.sort(
-            cmp=locale.strcoll, key=lambda custom: custom.title.lower())
+        custom_slides.sort()
         for custom_slide in custom_slides:
             custom_name = QtGui.QListWidgetItem(custom_slide.title)
             custom_name.setData(
