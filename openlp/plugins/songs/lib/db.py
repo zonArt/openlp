@@ -30,6 +30,8 @@ The :mod:`db` module provides the database and schema that is the backend for
 the Songs plugin
 """
 
+import re
+
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func
@@ -64,8 +66,10 @@ class Song(BaseModel):
     """
     Song model
     """
+    _DIGITS = 6  # Do not expect a number greater than 999999.
+    _RE = re.compile(r'(\d+)')  # Match any number at start of string.
     def __init__(self):
-        self.sort_string = ''
+        self.sort_string = u''
 
     # This decorator tells sqlalchemy to call this method everytime
     # any data on this object are updated.
@@ -78,8 +82,27 @@ class Song(BaseModel):
         To get maximum speed lets precompute the string
         used for comparison.
         """
+        title = self.title
+        # Ensure titles starting with numbers are sorted properly.
+        # By default titles like '2 bla' and '10 foo' are sorted like
+        #     10 foo
+        #     2 bla
+        # This is not the desired behaviour. They order should be
+        #     2 foo
+        #     10 bla
+        # 
+        # Usually the workaround done by the user would be to add leading zeros
+        #     002 foo
+        #     010 bla
+        # This this trick is implemented for sort_string where leading zeros are
+        # added if the title starts with a number.
+        match = Song._RE.match(title)
+        if match:
+            match_len = len(match.group())
+            title = title.zfill(len(title) + (Song._DIGITS - match_len))
         # Avoid the overhead of converting string to lowercase and to QString
-        self.sort_string = QtCore.QString(self.title.lower())
+        # with every call to sort().
+        self.sort_string = QtCore.QString(title.lower())
 
 
 class Topic(BaseModel):
