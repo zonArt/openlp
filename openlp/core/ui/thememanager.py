@@ -284,6 +284,7 @@ class ThemeManager(QtGui.QWidget):
                             plugin.renameTheme(old_theme_name, new_theme_name)
                     self.mainwindow.renderer.update_theme(
                         new_theme_name, old_theme_name)
+                    self.loadThemes()
 
     def onCopyTheme(self):
         """
