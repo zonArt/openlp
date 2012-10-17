@@ -430,8 +430,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             'Enabling selected plugins...'))
         self._setPluginStatus(self.songsCheckBox, u'songs/status')
         self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
-        self._setPluginStatus(self.presentationCheckBox,
-            u'presentations/status')
+        # TODO Presentation plugin is not yet working on Mac OS X.
+        # For now just ignore it.
+        if sys.platform != 'darwin':
+            self._setPluginStatus(self.presentationCheckBox,
+                u'presentations/status')
         self._setPluginStatus(self.imageCheckBox, u'images/status')
         self._setPluginStatus(self.mediaCheckBox, u'media/status')
         self._setPluginStatus(self.remoteCheckBox, u'remotes/status')
