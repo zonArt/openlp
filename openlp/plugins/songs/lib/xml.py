@@ -768,8 +768,8 @@ class OpenLyrics(object):
             # breaks. In OpenLyrics 0.7 an attribute has been added.
             if song_xml.get(u'modifiedIn') in (u'1.9.6', u'OpenLP 1.9.6') and \
                 song_xml.get(u'version') == u'0.7' and \
-                (verse_tag, verse_number, translit, lang) in verses:
-                verses[(verse_tag, verse_number, lang, None)] += u'\n[---]\n' + text
+                (verse_tag, verse_number, lang, translit) in verses:
+                verses[(verse_tag, verse_number, lang, translit, None)] += u'\n[---]\n' + text
             # Merge v1a, v1b, .... to v1.
             elif (verse_tag, verse_number, lang, translit, verse_part) in verses:
                 verses[(verse_tag, verse_number, lang, translit, verse_part)] += u'\n' + text
