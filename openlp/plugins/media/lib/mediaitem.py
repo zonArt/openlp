@@ -245,8 +245,9 @@ class MediaMediaItem(MediaManagerItem):
         self.populateDisplayTypes()
         self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
             'Videos (%s);;Audio (%s);;%s (*)')) % (
-            u' '.join(self.plugin.video_extensions_list),
-            u' '.join(self.plugin.audio_extensions_list), UiStrings().AllFiles)
+            u' '.join(self.plugin.mediaController.video_extensions_list),
+            u' '.join(self.plugin.mediaController.audio_extensions_list),
+            UiStrings().AllFiles)
 
     def displaySetup(self):
         self.plugin.mediaController.setup_display(

@@ -216,7 +216,7 @@ class PlayerTab(SettingsTab):
             set_media_players(self.usedPlayers, override_player)
             player_string_changed = True
         if player_string_changed:
-            self.settingsForm.resetSupportedSuffixes()
+            self.parent.resetSupportedSuffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')
 

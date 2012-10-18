@@ -46,6 +46,7 @@ class MediaTab(SettingsTab):
     MediaTab is the Media settings tab in the settings dialog.
     """
     def __init__(self, parent, title, visible_title, icon_path):
+        self.parent = parent
         SettingsTab.__init__(self, parent, title, visible_title, icon_path)
 
     def setupUi(self):
@@ -96,6 +97,6 @@ class MediaTab(SettingsTab):
             Settings().setValue(setting_key,
                 QtCore.QVariant(self.autoStartCheckBox.checkState()))
         if override_changed:
-            self.settingsForm.resetSupportedSuffixes()
+            self.parent.resetSupportedSuffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'mediaitem_suffexes')

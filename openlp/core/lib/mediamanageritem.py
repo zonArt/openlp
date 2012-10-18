@@ -519,6 +519,8 @@ class MediaManagerItem(QtGui.QWidget):
         if serviceItem:
             if not item_id:
                 serviceItem.from_plugin = True
+            if remote:
+                serviceItem.will_auto_start = True
             self.plugin.liveController.addServiceItem(serviceItem)
 
     def createItemFromId(self, item_id):
