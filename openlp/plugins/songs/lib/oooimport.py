@@ -27,6 +27,7 @@
 ###############################################################################
 import logging
 import os
+import time
 
 from PyQt4 import QtCore
 
@@ -123,6 +124,7 @@ class OooImport(SongImport):
                 try:
                     uno_instance = get_uno_instance(resolver)
                 except NoConnectException:
+                    time.sleep(0.1)
                     log.exception("Failed to resolve uno connection")
                     self.startOooProcess()
                     loop += 1

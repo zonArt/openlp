@@ -27,7 +27,6 @@
 ###############################################################################
 
 import logging
-import locale
 import re
 import os
 import shutil
@@ -39,7 +38,7 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list, \
     check_directory_exists, Settings
 from openlp.core.lib.ui import UiStrings, create_widget_action
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, locale_direct_compare
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
@@ -254,10 +253,8 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.saveAutoSelectId()
         self.listView.clear()
-        # Sort the songs by its title considering language specific characters.
-        # lower() is needed for windows!
         searchresults.sort(
-            cmp=locale.strcoll, key=lambda song: song.title.lower())
+            cmp=locale_direct_compare, key=lambda song: song.sort_string)
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary:

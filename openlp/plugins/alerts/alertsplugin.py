@@ -105,6 +105,7 @@ CSS = """
         font-size: %spt;
         color: %s;
         background-color: %s;
+        word-wrap: break-word;
     }
 """
 

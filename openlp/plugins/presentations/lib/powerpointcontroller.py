@@ -94,9 +94,9 @@ class PowerpointController(PresentationController):
                 self.docs[0].close_presentation()
             if self.process is None:
                 return
-            if self.process.Presentations.Count > 0:
-                return
             try:
+                if self.process.Presentations.Count > 0:
+                    return
                 self.process.Quit()
             except pywintypes.com_error:
                 pass
@@ -210,6 +210,13 @@ class PowerpointDocument(PresentationDocument):
         self.presentation.SlideShowSettings.Run()
         self.presentation.SlideShowWindow.View.State = 1
         self.presentation.SlideShowWindow.Activate()
+        if self.presentation.Application.Version == u'14.0':
+            # Unblanking is broken in PowerPoint 2010, need to redisplay
+            slide = self.presentation.SlideShowWindow.View.CurrentShowPosition
+            click = self.presentation.SlideShowWindow.View.GetClickIndex()
+            self.presentation.SlideShowWindow.View.GotoSlide(slide)
+            if click:
+                self.presentation.SlideShowWindow.View.GotoClick(click)
 
     def blank_screen(self):
         """
@@ -253,6 +260,8 @@ class PowerpointDocument(PresentationDocument):
             renderer = self.controller.plugin.renderer
             rect = renderer.screens.current[u'size']
             ppt_window = self.presentation.SlideShowSettings.Run()
+            if not ppt_window:
+                return
             ppt_window.Top = rect.y() * 72 / dpi
             ppt_window.Height = rect.height() * 72 / dpi
             ppt_window.Left = rect.x() * 72 / dpi
@@ -286,6 +295,8 @@ class PowerpointDocument(PresentationDocument):
         """
         log.debug(u'next_step')
         self.presentation.SlideShowWindow.View.Next()
+        if self.get_slide_number() > self.get_slide_count():
+            self.previous_step()
 
     def previous_step(self):
         """

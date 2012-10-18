@@ -80,6 +80,10 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             item_name = QtGui.QListWidgetItem(alert.text)
             item_name.setData(QtCore.Qt.UserRole, alert.id)
             self.alertListWidget.addItem(item_name)
+            if alert.text == unicode(self.alertTextEdit.text()):
+                self.item_id = alert.id
+                self.alertListWidget.setCurrentRow(
+                    self.alertListWidget.row(item_name))
 
     def onDisplayClicked(self):
         self.triggerAlert(self.alertTextEdit.text())
@@ -112,7 +116,6 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             alert = AlertItem()
             alert.text = self.alertTextEdit.text()
             self.manager.save_object(alert)
-        self.alertTextEdit.setText(u'')
         self.loadList()
 
     def onSaveClick(self):
@@ -125,6 +128,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.manager.save_object(alert)
             self.item_id = None
             self.loadList()
+        self.saveButton.setEnabled(False)
 
     def onTextChanged(self):
         """

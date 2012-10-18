@@ -82,13 +82,13 @@ class Ui_FirstTimeWizard(object):
         self.imageCheckBox.setChecked(True)
         self.imageCheckBox.setObjectName(u'imageCheckBox')
         self.pluginLayout.addWidget(self.imageCheckBox)
-        self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
-        if sys.platform == "darwin":
-            self.presentationCheckBox.setChecked(False)
-        else:
+        # TODO Presentation plugin is not yet working on Mac OS X.
+        # For now just ignore it.
+        if sys.platform != 'darwin':
+            self.presentationCheckBox = QtGui.QCheckBox(self.pluginPage)
             self.presentationCheckBox.setChecked(True)
-        self.presentationCheckBox.setObjectName(u'presentationCheckBox')
-        self.pluginLayout.addWidget(self.presentationCheckBox)
+            self.presentationCheckBox.setObjectName(u'presentationCheckBox')
+            self.pluginLayout.addWidget(self.presentationCheckBox)
         self.mediaCheckBox = QtGui.QCheckBox(self.pluginPage)
         self.mediaCheckBox.setChecked(True)
         self.mediaCheckBox.setObjectName(u'mediaCheckBox')
@@ -214,10 +214,11 @@ class Ui_FirstTimeWizard(object):
         self.bibleCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
         self.imageCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Images'))
-        self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Presentations'))
-        if sys.platform == "darwin":
-            self.presentationCheckBox.setEnabled(False)
+        # TODO Presentation plugin is not yet working on Mac OS X.
+        # For now just ignore it.
+        if sys.platform != 'darwin':
+            self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard',
+                'Presentations'))
         self.mediaCheckBox.setText(translate('OpenLP.FirstTimeWizard',
             'Media (Audio and Video)'))
         self.remoteCheckBox.setText(translate('OpenLP.FirstTimeWizard',

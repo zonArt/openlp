@@ -259,16 +259,17 @@ class PresentationDocument(object):
         else:
             return None
 
-    def poll_slidenumber(self, is_live):
+    def poll_slidenumber(self, is_live, hide_mode):
         """
         Check the current slide number
         """
         if not self.is_active():
             return
-        current = self.get_slide_number()
-        if current == self.slidenumber:
-            return
-        self.slidenumber = current
+        if not hide_mode:
+            current = self.get_slide_number()
+            if current == self.slidenumber:
+                return
+            self.slidenumber = current
         if is_live:
             prefix = u'live'
         else:

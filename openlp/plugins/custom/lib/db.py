@@ -34,12 +34,21 @@ from sqlalchemy import Column, Table, types
 from sqlalchemy.orm import mapper
 
 from openlp.core.lib.db import BaseModel, init_db
+from openlp.core.utils import locale_compare
 
 class CustomSlide(BaseModel):
     """
     CustomSlide model
     """
-    pass
+    # By default sort the customs by its title considering language specific
+    # characters.
+    def __lt__(self, other):
+        r = locale_compare(self.title, other.title)
+        return True if r < 0 else False
+
+    def __eq__(self, other):
+        return 0 == locale_compare(self.title, other.title)
+
 
 def init_schema(url):
     """
