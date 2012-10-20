@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, Receiver, MediaType, \
-    ServiceItem, build_html
+    ServiceItem, build_html, ServiceItemContext
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
@@ -198,7 +198,7 @@ class MediaMediaItem(MediaManagerItem):
                     'the media file "%s" no longer exists.')) % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-                          remote=False):
+        remote=False, context=ServiceItemContext.Live):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
@@ -216,10 +216,12 @@ class MediaMediaItem(MediaManagerItem):
         service_item.shortname = service_item.title
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, CLAPPERBOARD)
-        # Start media and obtain the length
-        if not self.plugin.mediaController.media_length(
-            self.mediaController, service_item):
-            return False
+        # Only get start and end times if going to a service
+        if context == ServiceItemContext.Service:
+            # Start media and obtain the length
+            if not self.plugin.mediaController.media_length(
+                self.mediaController, service_item):
+                return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
