@@ -37,7 +37,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
-from openlp.core.ui import DisplayController, Display
+from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
 from openlp.core.utils import locale_compare
 
@@ -65,8 +65,9 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject = None
         self.mediaController = DisplayController(parent)
         self.mediaController.controllerLayout = QtGui.QVBoxLayout()
-        self.plugin.mediaController.register_controller(self
-            .mediaController, self.mediaController.controllerLayout)
+        self.plugin.mediaController.register_controller(self.mediaController,
+            DisplayControllerType.Plugin,
+            self.mediaController.controllerLayout)
         self.plugin.mediaController.set_controls_visible(self.mediaController,
             False)
         self.mediaController.previewDisplay = Display(self.mediaController,
@@ -76,15 +77,8 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaController.previewDisplay.screen = \
             {u'size':self.mediaController.previewDisplay.geometry()}
         self.mediaController.previewDisplay.setup()
-        serviceItem = ServiceItem()
-        self.mediaController.previewDisplay.webView.setHtml(build_html(
-            serviceItem, self.mediaController.previewDisplay.screen, None,
-            False, None))
-        self.mediaController.previewDisplay.setup()
         self.plugin.mediaController.setup_display(
-            self.mediaController.previewDisplay)
-        self.mediaController.previewDisplay.hide()
-
+            self.mediaController.previewDisplay, False)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
@@ -97,11 +91,6 @@ class MediaMediaItem(MediaManagerItem):
 
     def retranslateUi(self):
         self.onNewPrompt = translate('MediaPlugin.MediaItem', 'Select Media')
-        #self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-        #    'Videos (%s);;Audio (%s);;%s (*)')) % (
-        #    u' '.join(self.plugin.video_extensions_list),
-        #    u' '.join(self.plugin.audio_extensions_list),
-        # UiStrings().AllFiles)
         self.replaceAction.setText(UiStrings().ReplaceBG)
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
@@ -253,7 +242,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def displaySetup(self):
         self.plugin.mediaController.setup_display(
-            self.mediaController.previewDisplay)
+            self.mediaController.previewDisplay, False)
 
     def populateDisplayTypes(self):
         """

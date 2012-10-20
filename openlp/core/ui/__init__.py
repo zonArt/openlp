@@ -71,6 +71,25 @@ class AlertLocation(object):
     Middle = 1
     Bottom = 2
 
+class DisplayControllerType(object):
+    """
+    This is an enumeration class which controls where Alerts are placed on the
+    screen.
+
+    ``Top``
+        Place the text at the top of the screen.
+
+    ``Middle``
+        Place the text in the middle of the screen.
+
+    ``Bottom``
+        Place the text at the bottom of the screen.
+    """
+    Live = 0
+    Preview = 1
+    Plugin = 2
+
+
 from firsttimeform import FirstTimeForm
 from firsttimelanguageform import FirstTimeLanguageForm
 from themelayoutform import ThemeLayoutForm

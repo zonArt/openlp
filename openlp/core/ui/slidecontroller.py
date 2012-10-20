@@ -38,7 +38,8 @@ from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.lib.settings import Settings
 from openlp.core.lib import SlideLimits, ServiceItemAction
-from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
+from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList, \
+    DisplayControllerType
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -192,7 +193,9 @@ class SlideController(DisplayController):
             category=self.category, triggers=self.onSlideSelectedNextAction)
         self.toolbar.addAction(self.nextItem)
         self.toolbar.addSeparator()
+        self.controllerType = DisplayControllerType.Preview
         if self.isLive:
+            self.controllerType = DisplayControllerType.Live
             # Hide Menu
             self.hideMenu = QtGui.QToolButton(self.toolbar)
             self.hideMenu.setObjectName(u'hideMenu')
@@ -270,7 +273,8 @@ class SlideController(DisplayController):
                 'Edit and reload song preview.'), triggers=self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
-        self.mediaController.register_controller(self, self.controllerLayout)
+        self.mediaController.register_controller(self,
+                self.controllerType, self.controllerLayout)
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
@@ -593,14 +597,14 @@ class SlideController(DisplayController):
                 float(self.screens.current[u'size'].height())
         except ZeroDivisionError:
             self.ratio = 1
-        self.mediaController.setup_display(self.display)
+        self.mediaController.setup_display(self.display, False)
         self.previewSizeChanged()
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
         self.previewDisplay.webView.setHtml(build_html(serviceItem,
             self.previewDisplay.screen, None, self.isLive,
             plugins=PluginManager.get_instance().plugins))
-        self.mediaController.setup_display(self.previewDisplay)
+        self.mediaController.setup_display(self.previewDisplay,True)
         if self.serviceItem:
             self.refreshServiceItem()
 

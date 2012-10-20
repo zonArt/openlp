@@ -44,7 +44,6 @@ from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
-
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.

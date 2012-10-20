@@ -46,7 +46,7 @@ class PlayerTab(SettingsTab):
     MediaTab is the Media settings tab in the settings dialog.
     """
     def __init__(self, parent, mainWindow):
-        self.settingsForm = parent
+        self.parent = parent
         self.mainWindow = mainWindow
         self.mediaPlayers = mainWindow.mediaController.mediaPlayers
         self.savedUsedPlayers = None
@@ -222,8 +222,8 @@ class PlayerTab(SettingsTab):
 
     def postSetUp(self, postUpdate=False):
         """
-        Late stup for players as the MediaController has to be initialised
-        firest.
+        Late setup for players as the MediaController has to be initialised
+        first.
         """
         for key, player in self.mediaPlayers.iteritems():
             player = self.mediaPlayers[key]
@@ -231,6 +231,7 @@ class PlayerTab(SettingsTab):
             checkbox.setEnabled(player.available)
             checkbox.setObjectName(player.name + u'CheckBox')
             checkbox.setToolTip(player.get_info())
+            checkbox.setPlayerName(player.name)
             self.playerCheckBoxes[player.name] = checkbox
             QtCore.QObject.connect(checkbox,QtCore.SIGNAL(u'stateChanged(int)'),
                 self.onPlayerCheckBoxChanged)
@@ -239,6 +240,7 @@ class PlayerTab(SettingsTab):
                 checkbox.setChecked(True)
             else:
                 checkbox.setChecked(False)
+        self.updatePlayerList()
         self.retranslatePlayers()
 
     def retranslatePlayers(self):

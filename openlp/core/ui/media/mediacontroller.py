@@ -38,6 +38,7 @@ from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
     get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.utils import AppLocation
+from openlp.core.ui import DisplayControllerType
 
 log = logging.getLogger(__name__)
 
@@ -51,6 +52,7 @@ class MediaController(object):
         self.mainWindow = parent
         self.mediaPlayers = {}
         self.controller = []
+        self.displayControllers = {}
         self.curDisplayMediaPlayer = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
@@ -116,7 +118,7 @@ class MediaController(object):
 
     def register_players(self, player):
         """
-        Register each media Player controller (Webkit, Phonon, etc) and store
+        Register each media Player (Webkit, Phonon, etc) and store
         for later use
 
         ``player``
@@ -126,8 +128,7 @@ class MediaController(object):
 
     def check_available_media_players(self):
         """
-        Check to see if we have any media Player's available. If Not do not
-        install the plugin.
+        Check to see if we have any media Player's available.
         """
         log.debug(u'_check_available_media_players')
         controller_dir = os.path.join(
@@ -221,7 +222,7 @@ class MediaController(object):
                 html += player.get_media_display_html()
         return html
 
-    def register_controller(self, controller, control_panel):
+    def register_controller(self, controller ,source, control_panel):
         """
         Registers media controls where the players will be placed to run.
 
@@ -231,6 +232,7 @@ class MediaController(object):
         ``controller_panel``
             The controllers toolbar where the widgets reside
         """
+        #self.displayControllers[source] = controller
         self.controller.append(controller)
         self.setup_generic_controls(controller, control_panel)
 
@@ -293,21 +295,23 @@ class MediaController(object):
             QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
 
 
-    def setup_display(self, display):
+    def setup_display(self, display, preview):
         """
         After a new display is configured, all media related widget will be
         created too
 
         ``display``
             Display on which the output is to be played
+
+        ``preview``
+            Whether the display is a main or preview display
         """
         # clean up possible running old media files
         self.finalise()
         # update player status
         self._set_active_players()
         display.hasAudio = True
-        if display == self.mainWindow.previewController.previewDisplay or \
-            display == self.mainWindow.liveController.previewDisplay:
+        if preview:
             display.hasAudio = False
         for player in self.mediaPlayers.values():
             if player.isActive:

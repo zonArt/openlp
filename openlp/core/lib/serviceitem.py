@@ -52,7 +52,7 @@ class ServiceItemType(object):
 
 class ItemCapabilities(object):
     """
-    Provides an enumeration of a serviceitem's capabilities
+    Provides an enumeration of a service item's capabilities
     """
     CanPreview = 1
     CanEdit = 2
@@ -310,7 +310,9 @@ class ServiceItem(object):
             The item to extract data from.
 
         ``path``
-            Defaults to *None*. Any path data, usually for images.
+            Defaults to *None*. This is the service manager path for things
+            which have their files saved with them or None when the saved
+            service is lite and the original file paths need to be preserved..
         """
         log.debug(u'set_from_service called with path %s' % path)
         header = serviceitem[u'serviceitem'][u'header']
