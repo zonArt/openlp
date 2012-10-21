@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Erode Woldsund                                                              #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -108,7 +109,8 @@ class Ui_AboutDialog(object):
         contributors = [u'Gerald "jerryb" Britton',
             u'Samuel "MrGamgee" Findlay', u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
-            u'Armin "orangeshirt" K\xf6hler', u'Edwin "edwinlunando" Lunando',
+            u'Armin "orangeshirt" K\xf6hler', u'Eric "luen" Ludin',
+            u'Edwin "edwinlunando" Lunando', u'Brian "brianmeyer" Meyer',
             u'Joshua "milleja46" Miller', u'Stevan "ElderP" Pettit',
             u'Mattias "mahfiaz" P\xf5ldaru', u'Christian "crichter" Richter',
             u'Philip "Phill" Ridout', u'Simon "samscudder" Scudder',

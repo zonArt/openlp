@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Erode Woldsund                                                              #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -763,18 +764,19 @@ class OpenLyrics(object):
             if not verse_number:
                 verse_number = u'1'
             lang = verse.get(u'lang')
+            translit = verse.get(u'translit')
             # In OpenLP 1.9.6 we used v1a, v1b ... to represent visual slide
             # breaks. In OpenLyrics 0.7 an attribute has been added.
             if song_xml.get(u'modifiedIn') in (u'1.9.6', u'OpenLP 1.9.6') and \
                 song_xml.get(u'version') == u'0.7' and \
-                (verse_tag, verse_number, lang) in verses:
-                verses[(verse_tag, verse_number, lang, None)] += u'\n[---]\n' + text
+                (verse_tag, verse_number, lang, translit) in verses:
+                verses[(verse_tag, verse_number, lang, translit, None)] += u'\n[---]\n' + text
             # Merge v1a, v1b, .... to v1.
-            elif (verse_tag, verse_number, lang, verse_part) in verses:
-                verses[(verse_tag, verse_number, lang)] += u'\n' + text
+            elif (verse_tag, verse_number, lang, translit, verse_part) in verses:
+                verses[(verse_tag, verse_number, lang, translit, verse_part)] += u'\n' + text
             else:
-                verses[(verse_tag, verse_number, lang, verse_part)] = text
-                verse_def_list.append((verse_tag, verse_number, lang, verse_part))
+                verses[(verse_tag, verse_number, lang, translit, verse_part)] = text
+                verse_def_list.append((verse_tag, verse_number, lang, translit, verse_part))
         # We have to use a list to keep the order, as dicts are not sorted.
         for verse in verse_def_list:
             sxml.add_verse_to_lyrics(
