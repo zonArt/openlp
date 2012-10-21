@@ -63,5 +63,5 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         Launch a web browser and go to the contribute page on the site.
         """
         import webbrowser
-        url = u'http://openlp.org/en/documentation/introduction/contributing'
+        url = u'http://openlp.org/development/contribute'
         webbrowser.open_new(url)

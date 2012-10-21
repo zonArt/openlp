@@ -135,16 +135,20 @@ class Ui_AboutDialog(object):
             u'en_GB': [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin'],
             u'en_ZA': [u'Raoul "superfly" Snyman',
                        u'Johan "nuvolari" Mynhardt'],
-            u'es': [u'Josue Zuniga',u'Christian Gonzalez'],
+            u'el': [u'Alexander Siozos'],
+            u'es': [u'Josu\xe9 Z\xfa\xf1iga',u'Christian Gonzalez'],
             u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
-            u'fr': [u'Stephan\xe9 "stbrunner" Brunner'],
+            u'fr': [u'Stephan\xe9 "stbrunner" Brunner', u'Jeremie'],
             u'hu': [u'Gyuris Gell\xe9rt'],
             u'ja': [u'Kunio "Kunio" Nakamaru', u'Chris Haris'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
-            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim',
-                u'Simon "samscudder" Scudder'],
-            u'ru': [u'Sergey "ratz" Ratz']
+            u'pt_BR': [u'David Mederiros',u'Rafael "rafaellerm" Lerm',
+                       u'Eduardo Levi Chaves',
+                       u'Gustavo Bim', u'Rog\xeanio Bel\xe9m', u'Samuel'
+                u'Simon "samscudder" Scudder', u'Van Der Fran'],
+            u'ru': [u'Sergey "ratz" Ratz'],
+            u'sv': [u'Eric "luen" Ludin']
         }
         documentors = [u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
@@ -173,6 +177,8 @@ class Ui_AboutDialog(object):
             '        %s\n'
             '    German (de)\n'
             '        %s\n'
+            '    Greek (el)\n'
+            '        %s\n'
             '    English, United Kingdom (en_GB)\n'
             '        %s\n'
             '    English, South Africa (en_ZA)\n'
@@ -194,6 +200,8 @@ class Ui_AboutDialog(object):
             '    Portuguese, Brazil (pt_BR)\n'
             '        %s\n'
             '    Russian (ru)\n'
+            '        %s\n'
+            '    Swedish (sv)\n'
             '        %s\n'
             '\n'
             'Documentation\n'
@@ -221,6 +229,7 @@ class Ui_AboutDialog(object):
             u'\n        '.join(translators[u'cs']),
             u'\n        '.join(translators[u'da']),
             u'\n        '.join(translators[u'de']),
+            u'\n        '.join(translators[u'el']),
             u'\n        '.join(translators[u'en_GB']),
             u'\n        '.join(translators[u'en_ZA']),
             u'\n        '.join(translators[u'es']),
@@ -232,6 +241,7 @@ class Ui_AboutDialog(object):
             u'\n        '.join(translators[u'nl']),
             u'\n        '.join(translators[u'pt_BR']),
             u'\n        '.join(translators[u'ru']),
+            u'\n        '.join(translators[u'sv']),
             u'\n    '.join(documentors)))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
