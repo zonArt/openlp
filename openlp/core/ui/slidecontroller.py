@@ -855,7 +855,11 @@ class SlideController(Controller):
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
-                label.setScaledContents(True)
+                if serviceItem.is_media():
+                    label.setAlignment(QtCore.Qt.AlignHCenter |
+                        QtCore.Qt.AlignVCenter)
+                else:
+                    label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     label.setPixmap(QtGui.QPixmap(frame[u'image']))
                 else:
