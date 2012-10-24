@@ -122,7 +122,7 @@ class Ui_AboutDialog(object):
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
             u'Tim "TRB143" Bentley (Fedora and Android)',
             u'Matthias "matthub" Hub (Mac OS X)',
-            u'Joseph Mulloy (openSUSE)',
+            u'Joseph "jdmulloy" Mulloy (openSUSE)',
             u'Stevan "ElderP" Pettit (Windows)',
             u'Raoul "superfly" Snyman (Debian, Ubuntu)',
             u'Garrett "floft" Wilson (Arch Linux)']
