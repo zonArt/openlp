@@ -350,18 +350,14 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, source, serviceItem, muted, isBackground,
-               hidden=False):
+    def video(self, source, serviceItem, hidden=False):
         """
         Loads and starts a video to run with the option of sound
 
+        ``source``
+            Where the call originated form
+
         ``serviceItem``
-            The player which is doing the playing
-
-        ``muted``
-            The player which is doing the playing
-
-        ``isBackground``
             The player which is doing the playing
 
         ``hidden``
@@ -373,13 +369,14 @@ class MediaController(object):
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
-        if muted:
+        if source == DisplayControllerType.Plugin:
             controller.media_info.volume = 0
+            controller.media_info.is_background = False
         else:
             controller.media_info.volume = controller.volumeSlider.value()
+            controller.media_info.is_background = True
         controller.media_info.file_info = \
             QtCore.QFileInfo(serviceItem.get_filename())
-        controller.media_info.is_background = isBackground
         display = None
         #self.curDisplayMediaPlayer[u'current'] = serviceItem.name
         if controller.isLive:

@@ -161,7 +161,6 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to replace Live background with the media selected.
         """
-        # Todo fix me up
         if check_item_selected(self.listView,
             translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
@@ -175,7 +174,7 @@ class MediaMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
                 if self.plugin.liveController.mediaController.video(
-                    DisplayControllerType.Live, service_item, True, True):
+                    DisplayControllerType.Live, service_item):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

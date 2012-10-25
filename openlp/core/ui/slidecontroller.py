@@ -1355,8 +1355,7 @@ class SlideController(DisplayController):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
-        self.mediaController.video(self.controllerType, item, False, False, \
-            self.hideMode())
+        self.mediaController.video(self.controllerType, item, self.hideMode())
         if not self.isLive:
             self.previewDisplay.show()
             self.slidePreview.hide()
