@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Erode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -85,6 +86,14 @@ class PluginManager(object):
         log.debug(u'finding plugins in %s at depth %d',
             unicode(plugin_dir), startdepth)
         for root, dirs, files in os.walk(plugin_dir):
+            # TODO Presentation plugin is not yet working on Mac OS X.
+            # For now just ignore it. The following code will hide it
+            # in settings dialog.
+            if sys.platform == 'darwin':
+                present_plugin_dir = os.path.join(plugin_dir, 'presentations')
+                # Ignore files from the presentation plugin directory.
+                if root.startswith(present_plugin_dir):
+                    continue
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))

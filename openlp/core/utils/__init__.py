@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Erode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -498,8 +499,13 @@ def locale_compare(string1, string2):
     """
     # Function locale.strcol() from standard Python library does not work
     # properly on Windows and probably somewhere else.
-    return int(QtCore.QString.localeAwareCompare(
-        QtCore.QString(string1).toLower(), QtCore.QString(string2).toLower()))
+    return QtCore.QString.localeAwareCompare(string1.lower(), string2.lower())
+
+
+# For performance reasons provide direct reference to compare function
+# without wrapping it in another function making te string lowercase.
+# This is needed for sorting songs.
+locale_direct_compare = QtCore.QString.localeAwareCompare
 
 
 from languagemanager import LanguageManager
@@ -508,4 +514,5 @@ from actions import ActionList
 __all__ = [u'AppLocation', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'LanguageManager',
     u'ActionList', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename', u'format_time', u'locale_compare']
+    u'delete_file', u'clean_filename', u'format_time', u'locale_compare',
+    u'locale_direct_compare']
