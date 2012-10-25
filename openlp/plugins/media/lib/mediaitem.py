@@ -208,8 +208,7 @@ class MediaMediaItem(MediaManagerItem):
         # Only get start and end times if going to a service
         if context == ServiceItemContext.Service:
             # Start media and obtain the length
-            if not self.plugin.mediaController.media_length(
-                self.mediaController, service_item):
+            if not self.plugin.mediaController.media_length(service_item):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)

@@ -232,7 +232,7 @@ class MediaController(object):
         ``controller_panel``
             The controllers toolbar where the widgets reside
         """
-        #self.displayControllers[source] = controller
+        self.displayControllers[source] = controller
         self.controller.append(controller)
         self.setup_generic_controls(controller, control_panel)
 
@@ -383,9 +383,9 @@ class MediaController(object):
         if controller.isLive:
             if controller.previewDisplay:
                 display = controller.previewDisplay
-                isValid = self._check_file_type(controller, display)
+                isValid = self._check_file_type(controller, display, serviceItem)
             display = controller.display
-            isValid = self._check_file_type(controller, display)
+            isValid = self._check_file_type(controller, display, serviceItem)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
             if controller.media_info.is_background:
@@ -398,7 +398,7 @@ class MediaController(object):
                 controller.media_info.end_time = serviceItem.end_time
         elif controller.previewDisplay:
             display = controller.previewDisplay
-            isValid = self._check_file_type(controller, display)
+            isValid = self._check_file_type(controller, display, serviceItem)
         if not isValid:
             # Media could not be loaded correctly
             critical_error_message_box(
@@ -434,16 +434,14 @@ class MediaController(object):
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
-    def media_length(self, controller, serviceItem):
+    def media_length(self, serviceItem):
         """
         Loads and starts a media item to obtain the media length
-
-        ``controller``
-            First element is the controller which should be used
 
         ``serviceItem``
             The ServiceItem containing the details to be played.
         """
+        controller =  self.displayControllers[DisplayControllerType.Plugin]
         log.debug(u'media_length')
         # stop running videos
         self.media_reset(controller)
@@ -452,7 +450,7 @@ class MediaController(object):
         controller.media_info.file_info = QtCore.QFileInfo(serviceItem
         .get_filename())
         display = controller.previewDisplay
-        if not self._check_file_type(controller, display):
+        if not self._check_file_type(controller, display, serviceItem):
             # Media could not be loaded correctly
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
@@ -470,7 +468,7 @@ class MediaController(object):
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
-    def _check_file_type(self, controller, display):
+    def _check_file_type(self, controller, display, serviceItem):
         """
         Select the correct media Player type from the prioritized Player list
 
@@ -480,9 +478,9 @@ class MediaController(object):
         ``serviceItem``
             The ServiceItem containing the details to be played.
         """
-        usedPlayers, overriddenPlayer = get_media_players()
-        if overriddenPlayer and overriddenPlayer != u'auto':
-            usedPlayers = [overriddenPlayer]
+        usedPlayers = get_media_players()[0]
+        if serviceItem.title != u'Automatic':
+            usedPlayers = [serviceItem.title.lower()]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % \
                 controller.media_info.file_info.suffix().toLower()
