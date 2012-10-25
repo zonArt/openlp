@@ -350,7 +350,7 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, controller, serviceItem, muted, isBackground,
+    def video(self, source, serviceItem, muted, isBackground,
                hidden=False):
         """
         Loads and starts a video to run with the option of sound
@@ -369,6 +369,7 @@ class MediaController(object):
         """
         log.debug(u'video')
         isValid = False
+        controller = self.displayControllers[source]
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
