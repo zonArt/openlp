@@ -174,7 +174,8 @@ class MediaMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
                 if self.plugin.liveController.mediaController.video(
-                    DisplayControllerType.Live, service_item):
+                    DisplayControllerType.Live, service_item,
+                        videoBehindText=True):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
