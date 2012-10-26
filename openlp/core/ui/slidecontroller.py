@@ -528,7 +528,7 @@ class SlideController(DisplayController):
 
     def liveEscape(self):
         self.display.setVisible(False)
-        self.mediaController.media_stop([self])
+        self.mediaController.media_stop(self)
 
     def toggleDisplay(self, action):
         """

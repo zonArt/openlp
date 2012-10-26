@@ -62,11 +62,11 @@ class MediaController(object):
         QtCore.QObject.connect(self.timer,
             QtCore.SIGNAL("timeout()"), self.media_state)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackPlay'), self.media_play)
+            QtCore.SIGNAL(u'playbackPlay'), self.media_play_msg)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackPause'), self.media_pause)
+            QtCore.SIGNAL(u'playbackPause'), self.media_pause_msg)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackStop'), self.media_stop)
+            QtCore.SIGNAL(u'playbackStop'), self.media_stop_msg)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'seekSlider'), self.media_seek)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -381,11 +381,11 @@ class MediaController(object):
         controller.media_info.file_info = \
             QtCore.QFileInfo(serviceItem.get_filename())
         display = None
-        #self.curDisplayMediaPlayer[u'current'] = serviceItem.name
         if controller.isLive:
             if controller.previewDisplay:
                 display = controller.previewDisplay
-                isValid = self._check_file_type(controller, display, serviceItem)
+                isValid = self._check_file_type(controller, display,
+                    serviceItem)
             display = controller.display
             isValid = self._check_file_type(controller, display, serviceItem)
             display.override[u'theme'] = u''
@@ -426,7 +426,7 @@ class MediaController(object):
             QtCore.QVariant(False)).toBool():
             autoplay = True
         if autoplay:
-            if not self.media_play([controller]):
+            if not self.media_play(controller):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
                     unicode(translate('MediaPlugin.MediaItem',
@@ -459,14 +459,14 @@ class MediaController(object):
                 unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
             return False
-        if not self.media_play([controller]):
+        if not self.media_play(controller):
             critical_error_message_box(
                 translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
             return False
         serviceItem.set_media_length(controller.media_info.length)
-        self.media_stop([controller])
+        self.media_stop(controller)
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
@@ -514,15 +514,25 @@ class MediaController(object):
         # no valid player found
         return False
 
-    def media_play(self, msg, status=True):
+    def media_play_msg(self, msg, status=True):
         """
         Responds to the request to play a loaded video
 
         ``msg``
             First element is the controller which should be used
         """
+        log.debug(u'media_play_msg')
+        self.media_play(msg[0],status)
+
+
+    def media_play(self, controller, status=True):
+        """
+        Responds to the request to play a loaded video
+
+        ``controller``
+            First element is the controller which should be used
+        """
         log.debug(u'media_play')
-        controller = msg[0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 if not self.curDisplayMediaPlayer[display].play(display):
@@ -539,7 +549,17 @@ class MediaController(object):
             self.timer.start()
         return True
 
-    def media_pause(self, msg):
+    def media_pause_msg(self, msg):
+        """
+        Responds to the request to pause a loaded video
+
+        ``msg``
+            First element is the controller which should be used
+        """
+        log.debug(u'media_pause_msg')
+        self.media_pause( msg[0])
+
+    def media_pause(self, controller):
         """
         Responds to the request to pause a loaded video
 
@@ -547,12 +567,21 @@ class MediaController(object):
             First element is the controller which should be used
         """
         log.debug(u'media_pause')
-        controller = msg[0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 self.curDisplayMediaPlayer[display].pause(display)
 
-    def media_stop(self, msg):
+    def media_stop_msg(self, msg):
+        """
+        Responds to the request to stop a loaded video
+
+        ``msg``
+            First element is the controller which should be used
+        """
+        log.debug(u'media_stop_msg')
+        self.media_stop( msg[0])
+
+    def media_stop(self, controller):
         """
         Responds to the request to stop a loaded video
 
@@ -560,7 +589,6 @@ class MediaController(object):
             First element is the controller which should be used
         """
         log.debug(u'media_stop')
-        controller = msg[0]
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 display.frame.evaluateJavaScript(u'show_blank("black");')
