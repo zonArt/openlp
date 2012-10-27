@@ -110,15 +110,14 @@ class VlcPlayer(MediaPlayer):
         display.vlcWidget = QtGui.QFrame(display)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
-        #if not display.hasAudio:
-            #command_line_options += u' --no-audio --no-video-title-show'
-        #if Settings().value(u'advanced/hide mouse',
-            #QtCore.QVariant(False)).toBool() and \
-            #display.controller.isLive:
-            #command_line_options += u' --mouse-hide-timeout=0'
-        #display.vlcInstance = vlc.Instance(command_line_options)
-        display.vlcInstance = vlc.get_default_instance()
-        #display.vlcInstance.set_log_verbosity(2)
+        if not display.hasAudio:
+            command_line_options += u' --no-audio --no-video-title-show'
+        if Settings().value(u'advanced/hide mouse',
+            QtCore.QVariant(False)).toBool() and \
+            display.controller.isLive:
+            command_line_options += u' --mouse-hide-timeout=0'
+        display.vlcInstance = vlc.Instance(command_line_options)
+        display.vlcInstance.set_log_verbosity(2)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()
         display.vlcWidget.resize(display.size())
