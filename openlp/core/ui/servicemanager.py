@@ -349,6 +349,16 @@ class ServiceManager(QtGui.QWidget):
         """
         return self._modified
 
+    def get_frame_file_path(self, item, frame):
+        """
+        Getter to get service item file path.
+        """
+        if item[u'service_item'].is_image():
+            path_from = frame[u'path']
+        else:
+            path_from = os.path.join(frame[u'path'], frame[u'title'])
+        return path_from
+
     def setFileName(self, fileName):
         """
         Setter for service file.
@@ -483,59 +493,66 @@ class ServiceManager(QtGui.QWidget):
             path)
         service = []
         write_list = []
+        missing_list = []
         audio_files = []
         total_size = 0
         Receiver.send_message(u'cursor_busy')
         # Number of items + 1 to zip it
         self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
+        # Get list of missing files, and list of files to write
         for item in self.serviceItems:
-            self.mainwindow.incrementProgressBar()
-            service_item = item[u'service_item'].get_service_repr()
-            # Get all the audio files, and ready them for embedding in the
-            # service file.
-            if service_item[u'header'][u'background_audio']:
-                for i, filename in \
-                    enumerate(service_item[u'header'][u'background_audio']):
-                    new_file = os.path.join(u'audio',
-                        item[u'service_item']._uuid, filename)
-                    audio_files.append((filename, new_file))
-                    service_item[u'header'][u'background_audio'][i] = new_file
-            # Add the service item to the service.
-            service.append({u'serviceitem': service_item})
             if not item[u'service_item'].uses_file():
                 continue
-            skipMissing = False
             for frame in item[u'service_item'].get_frames():
-                if item[u'service_item'].is_image():
-                    path_from = frame[u'path']
-                else:
-                    path_from = os.path.join(frame[u'path'], frame[u'title'])
-                # Only write a file once
-                if path_from in write_list:
+                path_from = self.get_frame_file_path(item, frame)
+                if path_from in write_list or path_from in missing_list:
                     continue
                 if not os.path.exists(path_from):
-                    if not skipMissing:
-                        Receiver.send_message(u'cursor_normal')
-                        title = unicode(translate('OpenLP.ServiceManager',
-                            'Service File Missing'))
-                        message = unicode(translate('OpenLP.ServiceManager',
-                            'File missing from service\n\n %s \n\n'
-                            'Continue saving?')) % path_from
-                        answer = QtGui.QMessageBox.critical(self, title,
-                            message,
-                            QtGui.QMessageBox.StandardButtons(
-                            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No |
-                            QtGui.QMessageBox.YesToAll))
-                        if answer == QtGui.QMessageBox.No:
-                            self.mainwindow.finishedProgressBar()
-                            return False
-                        if answer == QtGui.QMessageBox.YesToAll:
-                            skipMissing = True
-                        Receiver.send_message(u'cursor_busy')
+                    missing_list.append(path_from)
                 else:
-                    file_size = os.path.getsize(path_from)
                     write_list.append(path_from)
-                    total_size += file_size
+        if missing_list:
+            Receiver.send_message(u'cursor_normal')
+            title = unicode(translate('OpenLP.ServiceManager',
+                'Service File(s) Missing'))
+            message = unicode(translate('OpenLP.ServiceManager',
+                'The following file(s) in the service are missing:\n\t%s\n\n'
+                'These files will be removed if you continue to save.')
+                ) % "\n\t".join(missing_list)
+            answer = QtGui.QMessageBox.critical(self, title,
+                message,
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel))
+            if answer == QtGui.QMessageBox.Cancel:
+                self.mainwindow.finishedProgressBar()
+                return False
+            Receiver.send_message(u'cursor_busy')
+        # Check if item contains a missing file.
+        for item in list(self.serviceItems):
+            self.mainwindow.incrementProgressBar()
+            if item[u'service_item'].uses_file():
+                for frame in item[u'service_item'].get_frames():
+                    path_from = self.get_frame_file_path(item, frame)
+                    if path_from in missing_list:
+                        item[u'service_item']._raw_frames.remove(frame)
+            if not item[u'service_item']._raw_frames:
+                self.serviceItems.remove(item)
+            else:
+                service_item = item[u'service_item'].get_service_repr()
+                if service_item[u'header'][u'background_audio']:
+                    for i, filename in\
+                    enumerate(service_item[u'header'][u'background_audio']):
+                        new_file = os.path.join(u'audio',
+                            item[u'service_item']._uuid, filename)
+                        audio_files.append((filename, new_file))
+                        service_item[u'header'][u'background_audio'][i] = \
+                            new_file
+                # Add the service item to the service.
+                service.append({u'serviceitem': service_item})
+        self.repaintServiceList(-1, -1)
+        for file in write_list:
+            file_size = os.path.getsize(file)
+            total_size += file_size
         log.debug(u'ServiceManager.saveFile - ZIP contents size is %i bytes' %
             total_size)
         service_content = cPickle.dumps(service)
