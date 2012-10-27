@@ -106,11 +106,6 @@ class MediaController(object):
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
-            # TODO vlc backend is not yet working on Mac OS X.
-            # For now just ignore vlc backend on Mac OS X.
-            if sys.platform == 'darwin' and filename == 'vlcplayer.py':
-                log.warn(u'Disabling vlc media player')
-                continue
             if filename.endswith(u'player.py'):
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
@@ -294,7 +289,8 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, controller, file, muted, isBackground, hidden=False):
+    def video(self, controller, file, muted, isBackground, hidden=False,
+            isInfo=False, controllersVisible=True):
         """
         Loads and starts a video to run with the option of sound
         """
@@ -352,14 +348,16 @@ class MediaController(object):
         elif Settings().value(u'general/auto unblank',
             QtCore.QVariant(False)).toBool():
             autoplay = True
-        if autoplay:
+        # Start playback only for visible widgets. If we need just load a video
+        # and get video information, do not start playback.
+        if autoplay and not isInfo:
             if not self.video_play([controller]):
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Unsupported File'),
                     unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
                 return False
-        self.set_controls_visible(controller, True)
+        self.set_controls_visible(controller, controllersVisible)
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
