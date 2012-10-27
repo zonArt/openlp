@@ -205,18 +205,19 @@ class MediaMediaItem(MediaManagerItem):
             return False
         self.mediaLength = 0
         # Get media information and its length.
-        # TODO This code (mediaController.video()) starts playback but we
-        #      need only media information not video to start. Otherwise
-        #      video is played twice. Find another way to get media info
-        #      without loading and starting video playback.
+        #
+        # This code (mediaController.video()) starts playback but we
+        # need only media information not video to start. Otherwise
+        # video is played twice. Find another way to get media info
+        # without loading and starting video playback.
+        #
         # TODO Test getting media length with other media backends
         # Phonon/Webkit.
-        if self.plugin.mediaController.video( \
-                    self.mediaController, filename, muted=True,
-                    isBackground=False, isInfo=True, controllersVisible=False):
+        if self.plugin.mediaController.video(self.mediaController,
+                    filename, muted=False, isBackground=False, isInfo=True,
+                    controllersVisible=False):
             self.mediaLength = self.mediaController.media_info.length
             service_item.media_length = self.mediaLength
-            print '  media length:', self.mediaLength
             if self.mediaLength > 0:
                 service_item.add_capability(
                     ItemCapabilities.HasVariableStartTime)
