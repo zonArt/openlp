@@ -230,6 +230,7 @@ class VlcPlayer(MediaPlayer):
             display.vlcWidget.setVisible(status)
 
     def update_ui(self, display):
+        # Stop video if playback is finished.
         if display.vlcMedia.get_state() == vlc.State.Ended:
             self.stop(display)
         controller = display.controller

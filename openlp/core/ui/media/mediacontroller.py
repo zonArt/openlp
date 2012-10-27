@@ -144,13 +144,18 @@ class MediaController(object):
         if not self.curDisplayMediaPlayer.keys():
             self.timer.stop()
         else:
+            any_active = False
             for display in self.curDisplayMediaPlayer.keys():
                 self.curDisplayMediaPlayer[display].resize(display)
                 self.curDisplayMediaPlayer[display].update_ui(display)
                 if self.curDisplayMediaPlayer[display].state == \
-                    MediaState.Playing:
-                    return
-        # no players are active anymore
+                        MediaState.Playing:
+                    any_active = True
+            # There are still any active players - no need to stop timer.
+            if any_active:
+                return
+
+        # No players are active anymore.
         for display in self.curDisplayMediaPlayer.keys():
             if self.curDisplayMediaPlayer[display].state != MediaState.Paused:
                 display.controller.seekSlider.setSliderPosition(0)
