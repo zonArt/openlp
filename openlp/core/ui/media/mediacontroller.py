@@ -258,7 +258,8 @@ class MediaController(object):
         controller.mediabar.addToolbarAction(u'playbackPause',
             text=u'media_playback_pause',
             icon=u':/slides/media_playback_pause.png',
-            tooltip=translate('OpenLP.SlideController', 'Pause playing media.'),
+            tooltip=translate('OpenLP.SlideController',
+            'Pause playing media.'),
             triggers=controller.sendToPlugins)
         controller.mediabar.addToolbarAction(u'playbackStop',
             text=u'media_playback_stop',
@@ -382,10 +383,10 @@ class MediaController(object):
             QtCore.QFileInfo(serviceItem.get_filename())
         display = None
         if controller.isLive:
-            if controller.previewDisplay:
-                display = controller.previewDisplay
-                isValid = self._check_file_type(controller, display,
-                    serviceItem)
+            ##if controller.previewDisplay:
+             #   display = controller.previewDisplay
+             #   isValid = self._check_file_type(controller, display,
+             #       serviceItem)
             display = controller.display
             isValid = self._check_file_type(controller, display, serviceItem)
             display.override[u'theme'] = u''
@@ -448,9 +449,9 @@ class MediaController(object):
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
-        controller.media_info.volume = controller.volumeSlider.value()
+        controller.media_info.volume = 0
         controller.media_info.file_info = QtCore.QFileInfo(serviceItem
-        .get_filename())
+            .get_filename())
         display = controller.previewDisplay
         if not self._check_file_type(controller, display, serviceItem):
             # Media could not be loaded correctly
@@ -480,6 +481,7 @@ class MediaController(object):
         ``serviceItem``
             The ServiceItem containing the details to be played.
         """
+        print display
         usedPlayers = get_media_players()[0]
         if serviceItem.title != u'Automatic':
             usedPlayers = [serviceItem.title.lower()]
@@ -541,6 +543,12 @@ class MediaController(object):
                     display.frame.evaluateJavaScript(u'show_blank("desktop");')
                     self.curDisplayMediaPlayer[display].set_visible(display,
                         True)
+                    controller.mediabar.actions[u'playbackPlay']\
+                        .setVisible(False)
+                    controller.mediabar.actions[u'playbackStop']\
+                        .setVisible(True)
+                    controller.mediabar.actions[u'playbackPause']\
+                        .setVisible(True)
                     if controller.isLive:
                         if controller.hideMenu.defaultAction().isChecked():
                             controller.hideMenu.defaultAction().trigger()
@@ -570,6 +578,12 @@ class MediaController(object):
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 self.curDisplayMediaPlayer[display].pause(display)
+                controller.mediabar.actions[u'playbackPlay']\
+                    .setVisible(True)
+                controller.mediabar.actions[u'playbackStop']\
+                    .setVisible(True)
+                controller.mediabar.actions[u'playbackPause']\
+                    .setVisible(False)
 
     def media_stop_msg(self, msg):
         """
@@ -579,7 +593,7 @@ class MediaController(object):
             First element is the controller which should be used
         """
         log.debug(u'media_stop_msg')
-        self.media_stop( msg[0])
+        self.media_stop(msg[0])
 
     def media_stop(self, controller):
         """
@@ -595,6 +609,12 @@ class MediaController(object):
                 self.curDisplayMediaPlayer[display].stop(display)
                 self.curDisplayMediaPlayer[display].set_visible(display, False)
                 controller.seekSlider.setSliderPosition(0)
+                controller.mediabar.actions[u'playbackPlay']\
+                    .setVisible(True)
+                controller.mediabar.actions[u'playbackStop']\
+                    .setVisible(False)
+                controller.mediabar.actions[u'playbackPause']\
+                    .setVisible(False)
 
     def media_volume(self, msg):
         """
