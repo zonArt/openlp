@@ -338,7 +338,7 @@ class MediaController(object):
                     self.mediaPlayers[u'webkit']:
                     controller.display.setTransparency(False)
 
-    def resize(self, controller, display, player):
+    def resize(self, display, player):
         """
         After Mainwindow changes or Splitter moved all related media widgets
         have to be resized
@@ -492,7 +492,7 @@ class MediaController(object):
                     if not controller.media_info.is_background or \
                         controller.media_info.is_background and \
                         player.canBackground:
-                        self.resize(controller, display, player)
+                        self.resize(display, player)
                         if player.load(display):
                             self.curDisplayMediaPlayer[display] = player
                             controller.media_info.media_type = MediaType.Video
