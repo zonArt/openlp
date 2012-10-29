@@ -64,22 +64,22 @@ class MediaMediaItem(MediaManagerItem):
         self.singleServiceItem = False
         self.hasSearch = True
         self.mediaObject = None
-        self.mediaController = DisplayController(parent)
-        self.mediaController.controllerLayout = QtGui.QVBoxLayout()
-        self.plugin.mediaController.register_controller(self.mediaController,
+        self.displayController = DisplayController(parent)
+        self.displayController.controllerLayout = QtGui.QVBoxLayout()
+        self.plugin.mediaController.register_controller(self.displayController,
             DisplayControllerType.Plugin,
-            self.mediaController.controllerLayout)
-        self.plugin.mediaController.set_controls_visible(self.mediaController,
+            self.displayController.controllerLayout)
+        self.plugin.mediaController.set_controls_visible(self.displayController,
             False)
-        self.mediaController.previewDisplay = Display(self.mediaController,
-            False, self.mediaController)
-        self.mediaController.previewDisplay.setGeometry(
+        self.displayController.previewDisplay = Display(self.displayController,
+            False, self.displayController)
+        self.displayController.previewDisplay.setGeometry(
             QtCore.QRect(0, 0, 300, 300))
-        self.mediaController.previewDisplay.screen = \
-            {u'size':self.mediaController.previewDisplay.geometry()}
-        self.mediaController.previewDisplay.setup()
+        self.displayController.previewDisplay.screen = \
+            {u'size':self.displayController.previewDisplay.geometry()}
+        self.displayController.previewDisplay.setup()
         self.plugin.mediaController.setup_display(
-            self.mediaController.previewDisplay, False)
+            self.displayController.previewDisplay, False)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
