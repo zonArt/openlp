@@ -179,7 +179,7 @@ class VlcPlayer(MediaPlayer):
         controller = display.controller
         print controller
         start_time = 0
-        if self.state != MediaState.Paused and\
+        if self.state != MediaState.Paused and \
            controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.vlcMediaPlayer.play()

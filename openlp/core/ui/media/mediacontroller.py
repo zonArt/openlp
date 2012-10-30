@@ -52,7 +52,6 @@ class MediaController(object):
     def __init__(self, parent):
         self.mainWindow = parent
         self.mediaPlayers = {}
-        self.controller = []
         self.displayControllers = {}
         self.curDisplayMediaPlayer = {}
         # Timer for video state
@@ -234,7 +233,6 @@ class MediaController(object):
             The controllers toolbar where the widgets reside
         """
         self.displayControllers[source] = controller
-        self.controller.append(controller)
         self.setup_generic_controls(controller, control_panel)
 
     def setup_generic_controls(self, controller, control_panel):
@@ -720,8 +718,8 @@ class MediaController(object):
 
     def finalise(self):
         self.timer.stop()
-        for controller in self.controller:
-            self.media_reset(controller)
+        for controller in self.displayControllers:
+            self.media_reset(self.displayControllers[controller])
 
     def _define_display(self, controller):
         """
