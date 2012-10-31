@@ -656,10 +656,8 @@ class MediaController(object):
         if not isLive:
             return
         controller = self.mainWindow.liveController
-        for display in self.currentMediaPlayer.keys():
-            if display.controller != controller or \
-                self.currentMediaPlayer[display].state != MediaState.Playing:
-                continue
+        display = self._define_display(controller)
+        if self.currentMediaPlayer[display].state == MediaState.Playing:
             self.currentMediaPlayer[display].pause(display)
             self.currentMediaPlayer[display].set_visible(display, False)
 
@@ -677,10 +675,8 @@ class MediaController(object):
             return
         Receiver.send_message(u'live_display_hide', hide_mode)
         controller = self.mainWindow.liveController
-        for display in self.currentMediaPlayer.keys():
-            if display.controller != controller or \
-                self.currentMediaPlayer[display].state != MediaState.Playing:
-                continue
+        display = self._define_display(controller)
+        if self.currentMediaPlayer[display].state == MediaState.Playing:
             self.currentMediaPlayer[display].pause(display)
             self.currentMediaPlayer[display].set_visible(display, False)
 
@@ -697,10 +693,8 @@ class MediaController(object):
         if not isLive:
             return
         controller = self.mainWindow.liveController
-        for display in self.currentMediaPlayer.keys():
-            if display.controller != controller or \
-                self.currentMediaPlayer[display].state != MediaState.Paused:
-                continue
+        display = self._define_display(controller)
+        if self.currentMediaPlayer[display].state != MediaState.Playing:
             if self.currentMediaPlayer[display].play(display):
                 self.currentMediaPlayer[display].set_visible(display, True)
                 # Start Timer for ui updates
@@ -715,6 +709,9 @@ class MediaController(object):
     def _define_display(self, controller):
         """
         Extract the correct display for a given controller
+
+        ``controller``
+            Controller to be used
         """
         if controller.isLive:
             return controller.display
