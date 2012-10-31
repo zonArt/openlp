@@ -53,7 +53,7 @@ class MediaController(object):
         self.mainWindow = parent
         self.mediaPlayers = {}
         self.displayControllers = {}
-        self.curDisplayMediaPlayer = {}
+        self.currentMediaPlayer = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
@@ -177,18 +177,18 @@ class MediaController(object):
         Check if there is a running media Player and do updating stuff (e.g.
         update the UI)
         """
-        if not self.curDisplayMediaPlayer.keys():
+        if not self.currentMediaPlayer.keys():
             self.timer.stop()
         else:
-            for display in self.curDisplayMediaPlayer.keys():
-                self.curDisplayMediaPlayer[display].resize(display)
-                self.curDisplayMediaPlayer[display].update_ui(display)
-                if self.curDisplayMediaPlayer[display].state == \
+            for display in self.currentMediaPlayer.keys():
+                self.currentMediaPlayer[display].resize(display)
+                self.currentMediaPlayer[display].update_ui(display)
+                if self.currentMediaPlayer[display].state == \
                     MediaState.Playing:
                     return
         # no players are active anymore
-        for display in self.curDisplayMediaPlayer.keys():
-            if self.curDisplayMediaPlayer[display].state != MediaState.Paused:
+        for display in self.currentMediaPlayer.keys():
+            if self.currentMediaPlayer[display].state != MediaState.Paused:
                 display.controller.seekSlider.setSliderPosition(0)
         self.timer.stop()
 
@@ -222,27 +222,21 @@ class MediaController(object):
                 html += player.get_media_display_html()
         return html
 
-    def register_controller(self, controller ,source, control_panel):
+    def register_controller(self, controller):
         """
         Registers media controls where the players will be placed to run.
 
         ``controller``
             The controller where a player will be placed
-
-        ``controller_panel``
-            The controllers toolbar where the widgets reside
         """
-        self.displayControllers[source] = controller
-        self.setup_generic_controls(controller, control_panel)
+        self.displayControllers[controller.controllerType] = controller
+        self.setup_generic_controls(controller)
 
-    def setup_generic_controls(self, controller, control_panel):
+    def setup_generic_controls(self, controller):
         """
         Set up controls on the control_panel for a given controller
 
         ``controller``
-            First element is the controller which should be used
-
-        ``controller_panel``
             First element is the controller which should be used
         """
         controller.media_info = MediaInfo()
@@ -286,7 +280,7 @@ class MediaController(object):
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volumeSlider.setObjectName(u'volumeSlider')
         controller.mediabar.addToolbarWidget(controller.volumeSlider)
-        control_panel.addWidget(controller.mediabar)
+        controller.controllerLayout.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
         QtCore.QObject.connect(controller.seekSlider,
@@ -331,8 +325,8 @@ class MediaController(object):
         # Generic controls
         controller.mediabar.setVisible(value)
         if controller.isLive and controller.display:
-            if self.curDisplayMediaPlayer and value:
-                if self.curDisplayMediaPlayer[controller.display] != \
+            if self.currentMediaPlayer and value:
+                if self.currentMediaPlayer[controller.display] != \
                     self.mediaPlayers[u'webkit']:
                     controller.display.setTransparency(False)
 
@@ -368,8 +362,6 @@ class MediaController(object):
         log.debug(u'video')
         isValid = False
         controller = self.displayControllers[source]
-        print "video"
-        print source, controller
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
@@ -430,7 +422,7 @@ class MediaController(object):
                     'Unsupported File')))
                 return False
         self.set_controls_visible(controller, True)
-        log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
+        log.debug(u'use %s controller' % self.currentMediaPlayer[display])
         return True
 
     def media_length(self, serviceItem):
@@ -464,7 +456,7 @@ class MediaController(object):
             return False
         serviceItem.set_media_length(controller.media_info.length)
         self.media_stop(controller)
-        log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
+        log.debug(u'use %s controller' % self.currentMediaPlayer[display])
         return True
 
     def _check_file_type(self, controller, display, serviceItem):
@@ -477,7 +469,6 @@ class MediaController(object):
         ``serviceItem``
             The ServiceItem containing the details to be played.
         """
-        print "_check_file_type", controller,display
         usedPlayers = get_media_players()[0]
         if serviceItem.title != u'Automatic':
             usedPlayers = [serviceItem.title.lower()]
@@ -492,12 +483,12 @@ class MediaController(object):
                         player.canBackground:
                         self.resize(display, player)
                         if player.load(display):
-                            self.curDisplayMediaPlayer[display] = player
+                            self.currentMediaPlayer[display] = player
                             controller.media_info.media_type = MediaType.Video
                             return True
                 if suffix in player.audio_extensions_list:
                     if player.load(display):
-                        self.curDisplayMediaPlayer[display] = player
+                        self.currentMediaPlayer[display] = player
                         controller.media_info.media_type = MediaType.Audio
                         return True
         else:
@@ -506,7 +497,7 @@ class MediaController(object):
                 if player.canFolder:
                     self.resize(controller, display, player)
                     if player.load(display):
-                        self.curDisplayMediaPlayer[display] = player
+                        self.currentMediaPlayer[display] = player
                         controller.media_info.media_type = MediaType.Video
                         return True
         # no valid player found
@@ -533,11 +524,11 @@ class MediaController(object):
         log.debug(u'media_play')
 
         display = self._define_display(controller)
-        if not self.curDisplayMediaPlayer[display].play(display):
+        if not self.currentMediaPlayer[display].play(display):
             return False
         if status:
             display.frame.evaluateJavaScript(u'show_blank("desktop");')
-            self.curDisplayMediaPlayer[display].set_visible(display,
+            self.currentMediaPlayer[display].set_visible(display,
                 True)
             controller.mediabar.actions[u'playbackPlay']\
                 .setVisible(False)
@@ -572,7 +563,7 @@ class MediaController(object):
         """
         log.debug(u'media_pause')
         display = self._define_display(controller)
-        self.curDisplayMediaPlayer[display].pause(display)
+        self.currentMediaPlayer[display].pause(display)
         controller.mediabar.actions[u'playbackPlay']\
             .setVisible(True)
         controller.mediabar.actions[u'playbackStop']\
@@ -599,10 +590,10 @@ class MediaController(object):
         """
         log.debug(u'media_stop')
         display = self._define_display(controller)
-        if display in self.curDisplayMediaPlayer:
+        if display in self.currentMediaPlayer:
             display.frame.evaluateJavaScript(u'show_blank("black");')
-            self.curDisplayMediaPlayer[display].stop(display)
-            self.curDisplayMediaPlayer[display].set_visible(display, False)
+            self.currentMediaPlayer[display].stop(display)
+            self.currentMediaPlayer[display].set_visible(display, False)
             controller.seekSlider.setSliderPosition(0)
             controller.mediabar.actions[u'playbackPlay']\
                 .setVisible(True)
@@ -622,7 +613,7 @@ class MediaController(object):
         vol = msg[1][0]
         log.debug(u'media_volume %d' % vol)
         display = self._define_display(controller)
-        self.curDisplayMediaPlayer[display].volume(display, vol)
+        self.currentMediaPlayer[display].volume(display, vol)
 
     def media_seek(self, msg):
         """
@@ -635,9 +626,9 @@ class MediaController(object):
         log.debug(u'media_seek')
         controller = msg[0]
         seekVal = msg[1][0]
-        for display in self.curDisplayMediaPlayer.keys():
+        for display in self.currentMediaPlayer.keys():
             if display.controller == controller:
-                self.curDisplayMediaPlayer[display].seek(display, seekVal)
+                self.currentMediaPlayer[display].seek(display, seekVal)
 
     def media_reset(self, controller):
         """
@@ -646,13 +637,13 @@ class MediaController(object):
         log.debug(u'media_reset')
         self.set_controls_visible(controller, False)
         display = self._define_display(controller)
-        if display in self.curDisplayMediaPlayer:
+        if display in self.currentMediaPlayer:
             display.override = {}
-            self.curDisplayMediaPlayer[display].reset(display)
-            self.curDisplayMediaPlayer[display].set_visible(display, False)
+            self.currentMediaPlayer[display].reset(display)
+            self.currentMediaPlayer[display].set_visible(display, False)
             display.frame.evaluateJavaScript(u'show_video( \
                 "setBackBoard", null, null, null,"hidden");')
-            del self.curDisplayMediaPlayer[display]
+            del self.currentMediaPlayer[display]
 
     def media_hide(self, msg):
         """
@@ -665,12 +656,12 @@ class MediaController(object):
         if not isLive:
             return
         controller = self.mainWindow.liveController
-        for display in self.curDisplayMediaPlayer.keys():
+        for display in self.currentMediaPlayer.keys():
             if display.controller != controller or \
-                self.curDisplayMediaPlayer[display].state != MediaState.Playing:
+                self.currentMediaPlayer[display].state != MediaState.Playing:
                 continue
-            self.curDisplayMediaPlayer[display].pause(display)
-            self.curDisplayMediaPlayer[display].set_visible(display, False)
+            self.currentMediaPlayer[display].pause(display)
+            self.currentMediaPlayer[display].set_visible(display, False)
 
     def media_blank(self, msg):
         """
@@ -686,12 +677,12 @@ class MediaController(object):
             return
         Receiver.send_message(u'live_display_hide', hide_mode)
         controller = self.mainWindow.liveController
-        for display in self.curDisplayMediaPlayer.keys():
+        for display in self.currentMediaPlayer.keys():
             if display.controller != controller or \
-                self.curDisplayMediaPlayer[display].state != MediaState.Playing:
+                self.currentMediaPlayer[display].state != MediaState.Playing:
                 continue
-            self.curDisplayMediaPlayer[display].pause(display)
-            self.curDisplayMediaPlayer[display].set_visible(display, False)
+            self.currentMediaPlayer[display].pause(display)
+            self.currentMediaPlayer[display].set_visible(display, False)
 
     def media_unblank(self, msg):
         """
@@ -706,12 +697,12 @@ class MediaController(object):
         if not isLive:
             return
         controller = self.mainWindow.liveController
-        for display in self.curDisplayMediaPlayer.keys():
+        for display in self.currentMediaPlayer.keys():
             if display.controller != controller or \
-                self.curDisplayMediaPlayer[display].state != MediaState.Paused:
+                self.currentMediaPlayer[display].state != MediaState.Paused:
                 continue
-            if self.curDisplayMediaPlayer[display].play(display):
-                self.curDisplayMediaPlayer[display].set_visible(display, True)
+            if self.currentMediaPlayer[display].play(display):
+                self.currentMediaPlayer[display].set_visible(display, True)
                 # Start Timer for ui updates
                 if not self.timer.isActive():
                     self.timer.start()

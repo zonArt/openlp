@@ -66,9 +66,7 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject = None
         self.displayController = DisplayController(parent)
         self.displayController.controllerLayout = QtGui.QVBoxLayout()
-        self.plugin.mediaController.register_controller(self.displayController,
-            DisplayControllerType.Plugin,
-            self.displayController.controllerLayout)
+        self.plugin.mediaController.register_controller(self.displayController)
         self.plugin.mediaController.set_controls_visible(self.displayController,
             False)
         self.displayController.previewDisplay = Display(self.displayController,

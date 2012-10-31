@@ -175,9 +175,7 @@ class VlcPlayer(MediaPlayer):
         display.vlcWidget.resize(display.size())
 
     def play(self, display):
-        print "vlc play",display
         controller = display.controller
-        print controller
         start_time = 0
         if self.state != MediaState.Paused and \
            controller.media_info.start_time > 0:

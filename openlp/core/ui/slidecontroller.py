@@ -65,6 +65,7 @@ class DisplayController(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
         self.display = None
+        self.controllerType = DisplayControllerType.Plugin
 
     def sendToPlugins(self, *args):
         """
@@ -274,8 +275,7 @@ class SlideController(DisplayController):
                 'Edit and reload song preview.'), triggers=self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
-        self.mediaController.register_controller(self,
-                self.controllerType, self.controllerLayout)
+        self.mediaController.register_controller(self)
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
