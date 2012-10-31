@@ -329,7 +329,7 @@ class MessageListener(object):
         item = message[0]
         log.debug(u'Startup called with message %s' % message)
         hide_mode = message[2]
-        file = os.path.join(item.get_frame_path(), item.get_frame_title())
+        file = item.get_frame_path()
         self.handler = item.title
         if self.handler == self.mediaitem.Automatic:
             self.handler = self.mediaitem.findControllerByType(file)

@@ -349,16 +349,6 @@ class ServiceManager(QtGui.QWidget):
         """
         return self._modified
 
-    def get_frame_file_path(self, item, frame):
-        """
-        Getter to get service item file path.
-        """
-        if item[u'service_item'].is_image():
-            path_from = frame[u'path']
-        else:
-            path_from = os.path.join(frame[u'path'], frame[u'title'])
-        return path_from
-
     def setFileName(self, fileName):
         """
         Setter for service file.
@@ -504,7 +494,7 @@ class ServiceManager(QtGui.QWidget):
             if not item[u'service_item'].uses_file():
                 continue
             for frame in item[u'service_item'].get_frames():
-                path_from = self.get_frame_file_path(item, frame)
+                path_from = item[u'service_item'].get_frame_path(frame=frame)
                 if path_from in write_list or path_from in missing_list:
                     continue
                 if not os.path.exists(path_from):
@@ -532,10 +522,11 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.incrementProgressBar()
             if item[u'service_item'].uses_file():
                 for frame in item[u'service_item'].get_frames():
-                    path_from = self.get_frame_file_path(item, frame)
+                    path_from = item[u'service_item'].get_frame_path(
+                        frame=frame)
                     if path_from in missing_list:
-                        item[u'service_item']._raw_frames.remove(frame)
-            if not item[u'service_item']._raw_frames:
+                        item[u'service_item'].remove_frame(frame)
+            if not item[u'service_item'].get_frames():
                 self.serviceItems.remove(item)
             else:
                 service_item = item[u'service_item'].get_service_repr()

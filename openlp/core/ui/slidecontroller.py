@@ -1350,7 +1350,7 @@ class SlideController(Controller):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
-        file = os.path.join(item.get_frame_path(), item.get_frame_title())
+        file = item.get_frame_path()
         self.mediaController.video(self, file, False, False, self.hideMode())
         if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()

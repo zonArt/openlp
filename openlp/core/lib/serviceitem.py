@@ -451,14 +451,27 @@ class ServiceItem(object):
         except IndexError:
             return u''
 
-    def get_frame_path(self, row=0):
+    def get_frame_path(self, row=0, frame=None):
         """
         Returns the path of the raw frame
         """
-        try:
-            return self._raw_frames[row][u'path']
-        except IndexError:
-            return u''
+        if not frame:
+            try:
+                frame = self._raw_frames[row]
+            except IndexError:
+                return u''
+        if self.is_image():
+            path_from = frame[u'path']
+        else:
+            path_from = os.path.join(frame[u'path'], frame[u'title'])
+        return path_from
+
+    def remove_frame(self, frame):
+        """
+        Remove the soecified frame from the item
+        """
+        if frame in self._raw_frames:
+            self._raw_frames.remove(frame)
 
     def get_media_time(self):
         """
