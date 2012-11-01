@@ -630,7 +630,6 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.serviceManagerSettingsSection,
             path)
         service = []
-        total_size = 0
         Receiver.send_message(u'cursor_busy')
         # Number of items + 1 to zip it
         self.mainwindow.displayProgressBar(len(self.serviceItems) + 1)
@@ -638,18 +637,16 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.incrementProgressBar()
             service_item = item[u'service_item']. \
                 get_service_repr(self._saveLite)
+            #@todo check for file item on save.
             service.append({u'serviceitem': service_item})
+            self.mainwindow.incrementProgressBar()
         service_content = cPickle.dumps(service)
-        # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
-        # extracted using unzip in UNIX.
-        allow_zip_64 = (total_size > 2147483648 + len(service_content))
-        log.debug(u'ServiceManager.saveFile - allowZip64 is %s' % allow_zip_64)
         zip = None
         success = True
         self.mainwindow.incrementProgressBar()
         try:
             zip = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED,
-                allow_zip_64)
+                True)
             # First we add service contents.
             zip.writestr(service_file_name.encode(u'utf-8'), service_content)
         except IOError:
@@ -712,11 +709,17 @@ class ServiceManager(QtGui.QWidget):
         directory = unicode(SettingsManager.get_last_dir(
             self.mainwindow.serviceManagerSettingsSection))
         path = os.path.join(directory, default_filename)
-        fileName = unicode(QtGui.QFileDialog.getSaveFileName(self.mainwindow,
-            UiStrings().SaveService, path,
-            translate('OpenLP.ServiceManager',
-                'OpenLP Service Files (*.osz);;'
-                'OpenLP Service Files - lite (*.oszl)')))
+        if self._fileName.endswith(u'oszl'):
+            fileName = unicode(QtGui.QFileDialog.getSaveFileName(
+                self.mainwindow, UiStrings().SaveService, path,
+                translate('OpenLP.ServiceManager',
+                    'OpenLP Service Files (*.osz);;'
+                    'OpenLP Service Files - lite (*.oszl)')))
+        else:
+            fileName = unicode(QtGui.QFileDialog.getSaveFileName(
+                self.mainwindow, UiStrings().SaveService, path,
+                translate('OpenLP.ServiceManager',
+                    'OpenLP Service Files (*.osz);;')))
         if not fileName:
             return False
         if os.path.splitext(fileName)[1] == u'':
@@ -733,7 +736,6 @@ class ServiceManager(QtGui.QWidget):
         """
         if not self.fileName():
             return self.saveFileAs()
-        print "decideSaveMethod",self._saveLite
         if self._saveLite:
             return self.saveLocalFile()
         else:
@@ -1214,10 +1216,12 @@ class ServiceManager(QtGui.QWidget):
         Validates the service item and if the suffix matches an accepted
         one it allows the item to be displayed.
         """
+        #@todo check file items exist
         if serviceItem.is_command():
             type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
             if type.lower() not in self.suffixes:
                 serviceItem.is_valid = False
+            #@todo check file items exist
 
     def cleanUp(self):
         """
