@@ -1,6 +1,6 @@
 --- openlp/core/resources.py.old    Mon Jun 21 23:16:19 2010
 +++ openlp/core/resources.py    Mon Jun 21 23:27:48 2010
-@@ -1,10 +1,33 @@
+@@ -1,10 +1,35 @@
  # -*- coding: utf-8 -*-
 +# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
 
@@ -19,7 +19,7 @@
 +# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 +# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 +# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-+# Erode Woldsund                                                              #
++# Frode Woldsund                                                              #
 +# --------------------------------------------------------------------------- #
 +# This program is free software; you can redistribute it and/or modify it     #
 +# under the terms of the GNU General Public License as published by the Free  #
