@@ -50,11 +50,12 @@ class MediaController(object):
 
     displayControllers are an array of controllers keyed on the
     slidecontroller or plugin which built them.  ControllerType is the class
-    containing the keys.
+    containing the key values.
 
-    mediaPlayers are an array of media players keyed on player name
+    mediaPlayers are an array of media players keyed on player name.
 
-    currentMediaPlayer is an array of player instances keyed on fix me.
+    currentMediaPlayer is an array of player instances keyed on @fixme.
+
     """
 
     def __init__(self, parent):
@@ -148,8 +149,8 @@ class MediaController(object):
             if sys.platform == 'darwin' and filename == 'vlcplayer.py':
                 log.warn(u'Disabling vlc media player')
                 continue
-            if filename.endswith(u'player.py')and not\
-            filename == 'mediaplayer.py':
+            if filename.endswith(u'player.py') and \
+                not filename == 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
                     modulename = u'openlp.core.ui.media.' + \
@@ -503,7 +504,7 @@ class MediaController(object):
             for title in usedPlayers:
                 player = self.mediaPlayers[title]
                 if player.canFolder:
-                    self.resize(controller, display, player)
+                    self.resize(display, player)
                     if player.load(display):
                         self.currentMediaPlayer[display] = player
                         controller.media_info.media_type = MediaType.Video
@@ -530,7 +531,6 @@ class MediaController(object):
             The controller to be played
         """
         log.debug(u'media_play')
-
         display = self._define_display(controller)
         if not self.currentMediaPlayer[display].play(display):
             return False
@@ -538,11 +538,11 @@ class MediaController(object):
             display.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.currentMediaPlayer[display].set_visible(display,
                 True)
-            controller.mediabar.actions[u'playbackPlay']\
+            controller.mediabar.actions[u'playbackPlay'] \
                 .setVisible(False)
-            controller.mediabar.actions[u'playbackStop']\
+            controller.mediabar.actions[u'playbackStop'] \
                 .setVisible(True)
-            controller.mediabar.actions[u'playbackPause']\
+            controller.mediabar.actions[u'playbackPause'] \
                 .setVisible(True)
             if controller.isLive:
                 if controller.hideMenu.defaultAction().isChecked():
@@ -572,11 +572,11 @@ class MediaController(object):
         log.debug(u'media_pause')
         display = self._define_display(controller)
         self.currentMediaPlayer[display].pause(display)
-        controller.mediabar.actions[u'playbackPlay']\
+        controller.mediabar.actions[u'playbackPlay'] \
             .setVisible(True)
-        controller.mediabar.actions[u'playbackStop']\
+        controller.mediabar.actions[u'playbackStop'] \
             .setVisible(True)
-        controller.mediabar.actions[u'playbackPause']\
+        controller.mediabar.actions[u'playbackPause'] \
             .setVisible(False)
 
     def media_stop_msg(self, msg):
@@ -603,11 +603,11 @@ class MediaController(object):
             self.currentMediaPlayer[display].stop(display)
             self.currentMediaPlayer[display].set_visible(display, False)
             controller.seekSlider.setSliderPosition(0)
-            controller.mediabar.actions[u'playbackPlay']\
+            controller.mediabar.actions[u'playbackPlay'] \
                 .setVisible(True)
-            controller.mediabar.actions[u'playbackStop']\
+            controller.mediabar.actions[u'playbackStop'] \
                 .setVisible(False)
-            controller.mediabar.actions[u'playbackPause']\
+            controller.mediabar.actions[u'playbackPause'] \
                 .setVisible(False)
 
     def media_volume(self, msg):
@@ -634,9 +634,8 @@ class MediaController(object):
         log.debug(u'media_seek')
         controller = msg[0]
         seekVal = msg[1][0]
-        for display in self.currentMediaPlayer.keys():
-            if display.controller == controller:
-                self.currentMediaPlayer[display].seek(display, seekVal)
+        display = self._define_display(controller)
+        self.currentMediaPlayer[display].seek(display, seekVal)
 
     def media_reset(self, controller):
         """

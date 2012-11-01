@@ -78,7 +78,6 @@ class PlayerTab(SettingsTab):
         self.rightColumn.setSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
-
         self.mediaPlayerGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.mediaPlayerGroupBox.setObjectName(u'mediaPlayerGroupBox')
         self.mediaPlayerLayout = QtGui.QVBoxLayout(self.mediaPlayerGroupBox)
@@ -208,8 +207,6 @@ class PlayerTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
         settings.endGroup()
-        if self.initial_color != self.bg_color:
-            Receiver.send_message(u'image_updated')
         old_players, override_player = get_media_players()
         if self.usedPlayers != old_players:
             # clean old Media stuff
