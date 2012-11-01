@@ -57,7 +57,6 @@ class MediaController(object):
     currentMediaPlayer is an array of player instances keyed on @fixme.
 
     """
-
     def __init__(self, parent):
         self.mainWindow = parent
         self.mediaPlayers = {}

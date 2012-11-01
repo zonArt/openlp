@@ -240,7 +240,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def displaySetup(self):
         self.plugin.mediaController.setup_display(
-            self.mediaController.previewDisplay, False)
+            self.displayController.previewDisplay, False)
 
     def populateDisplayTypes(self):
         """
