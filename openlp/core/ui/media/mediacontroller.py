@@ -47,6 +47,14 @@ class MediaController(object):
     """
     The implementation of the Media Controller. The Media Controller adds an own
     class for every Player. Currently these are QtWebkit, Phonon and Vlc.
+
+    displayControllers are an array of controllers keyed on the
+    slidecontroller or plugin which built them.  ControllerType is the class
+    containing the keys.
+
+    mediaPlayers are an array of media players keyed on player name
+
+    currentMediaPlayer is an array of player instances keyed on fix me.
     """
 
     def __init__(self, parent):

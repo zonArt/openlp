@@ -709,7 +709,9 @@ class ServiceManager(QtGui.QWidget):
         directory = unicode(SettingsManager.get_last_dir(
             self.mainwindow.serviceManagerSettingsSection))
         path = os.path.join(directory, default_filename)
-        if self._fileName.endswith(u'oszl'):
+        # SaveAs from osz to oszl is not valid as the files will be deleted
+        # on exit which is not sensible or usable in the long term.
+        if self._fileName.endswith(u'oszl') or not self._fileName:
             fileName = unicode(QtGui.QFileDialog.getSaveFileName(
                 self.mainwindow, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
