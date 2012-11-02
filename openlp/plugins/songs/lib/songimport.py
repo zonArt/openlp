@@ -274,9 +274,10 @@ class SongImport(QtCore.QObject):
         """
         Repeat the previous verse in the verse order
         """
-        self.verseOrderListGenerated.append(
-            self.verseOrderListGenerated[-1])
-        self.verseOrderListGeneratedUseful = True
+        if self.verseOrderListGenerated:
+            self.verseOrderListGenerated.append(
+                self.verseOrderListGenerated[-1])
+            self.verseOrderListGeneratedUseful = True
 
     def checkComplete(self):
         """
