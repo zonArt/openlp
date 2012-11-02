@@ -508,3 +508,20 @@ class ServiceItem(object):
         self._new_item()
         self.render()
 
+    def remove_invalid_frames(self, invalid_paths=None):
+        """
+        Remove invalid frames, such as ones where the file no longer exists.
+        """
+        if self.uses_file():
+            for frame in self.get_frames():
+                if self.get_frame_path(frame=frame) in invalid_paths:
+                    self.remove_frame(frame)
+
+    def validate(self):
+        """
+        Validates this service item
+        """
+        if not self._raw_frames:
+            self.is_valid = False
+        return self.is_valid
+

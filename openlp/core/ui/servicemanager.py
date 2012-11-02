@@ -520,13 +520,8 @@ class ServiceManager(QtGui.QWidget):
         # Check if item contains a missing file.
         for item in list(self.serviceItems):
             self.mainwindow.incrementProgressBar()
-            if item[u'service_item'].uses_file():
-                for frame in item[u'service_item'].get_frames():
-                    path_from = item[u'service_item'].get_frame_path(
-                        frame=frame)
-                    if path_from in missing_list:
-                        item[u'service_item'].remove_frame(frame)
-            if not item[u'service_item'].get_frames():
+            item[u'service_item'].remove_invalid_frames(missing_list)
+            if not item[u'service_item'].validate():
                 self.serviceItems.remove(item)
             else:
                 service_item = item[u'service_item'].get_service_repr()
