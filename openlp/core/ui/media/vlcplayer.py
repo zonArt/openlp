@@ -88,7 +88,8 @@ VIDEO_EXT = [
     u'*.dts',
     u'*.xa',
     u'*.iso',
-    u'*.vob'
+    u'*.vob',
+    u'*.webm'
 ]
 
 
