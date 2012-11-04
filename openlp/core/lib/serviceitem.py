@@ -462,7 +462,6 @@ class ServiceItem(object):
         """
         return os.path.join(self.get_frame_path(), self.get_frame_title())
 
-
     def get_frames(self):
         """
         Returns the frames for the ServiceItem
@@ -475,7 +474,6 @@ class ServiceItem(object):
     def get_rendered_frame(self, row):
         """
         Returns the correct frame for a given list and renders it if required.
-
         ``row``
             The service item slide to be returned
         """

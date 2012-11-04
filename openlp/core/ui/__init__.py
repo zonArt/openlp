@@ -74,17 +74,8 @@ class AlertLocation(object):
 
 class DisplayControllerType(object):
     """
-    This is an enumeration class which controls where Alerts are placed on the
-    screen.
-
-    ``Top``
-        Place the text at the top of the screen.
-
-    ``Middle``
-        Place the text in the middle of the screen.
-
-    ``Bottom``
-        Place the text at the bottom of the screen.
+    This is an enumeration class which says where a display controller
+    originated from.
     """
     Live = 0
     Preview = 1
@@ -117,4 +108,4 @@ from thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
     'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', u'FirstTimeForm']
+    'ServiceItemEditForm', 'FirstTimeForm']

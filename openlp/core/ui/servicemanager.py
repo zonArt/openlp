@@ -925,8 +925,6 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         self.serviceItems[item][u'service_item'].will_auto_start = \
             not self.serviceItems[item][u'service_item'].will_auto_start
-        a=1
-
 
     def onServiceItemEditForm(self):
         """

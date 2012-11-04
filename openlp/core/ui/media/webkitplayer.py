@@ -333,7 +333,6 @@ class WebkitPlayer(MediaPlayer):
         return True
 
     def resize(self, display):
-        #controller = display.controller
         display.webView.resize(display.size())
 
     def play(self, display):

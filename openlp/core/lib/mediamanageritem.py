@@ -336,7 +336,6 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Add a file to the list widget to make it available for showing
         """
-        print self.onNewFileMasks
         files = QtGui.QFileDialog.getOpenFileNames(
             self, self.onNewPrompt,
             SettingsManager.get_last_dir(self.settingsSection),

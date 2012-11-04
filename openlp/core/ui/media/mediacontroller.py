@@ -383,7 +383,6 @@ class MediaController(object):
             QtCore.QFileInfo(serviceItem.get_filename())
         display = self._define_display(controller)
         if controller.isLive:
-            #display = controller.display
             isValid = self._check_file_type(controller, display, serviceItem)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
@@ -396,7 +395,6 @@ class MediaController(object):
                     display.serviceItem.start_time
                 controller.media_info.end_time = serviceItem.end_time
         elif controller.previewDisplay:
-            #display = controller.previewDisplay
             isValid = self._check_file_type(controller, display, serviceItem)
         if not isValid:
             # Media could not be loaded correctly
@@ -414,7 +412,7 @@ class MediaController(object):
         # Preview requested
         if not controller.isLive:
             autoplay = True
-        # Visible or background requested or Service Item wants autostart
+        # Visible or background requested or Service Item wants to autostart
         elif not hidden or controller.media_info.is_background or \
              serviceItem.will_auto_start:
             autoplay = True

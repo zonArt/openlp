@@ -90,7 +90,7 @@ def get_media_players():
     else:
         overridden_player = u''
     saved_players_list = saved_players.replace(u'[', u'').\
-    replace(u']',u'').split(u',')
+        replace(u']',u'').split(u',')
     return saved_players_list, overridden_player
 
 
