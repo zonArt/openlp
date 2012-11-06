@@ -216,7 +216,7 @@ class MediaMediaItem(MediaManagerItem):
         # Phonon/Webkit.
         if self.plugin.mediaController.video(self.mediaController,
                     filename, muted=False, isBackground=False, isInfo=True,
-                    controllersVisible=False):
+                    controlsVisible=False):
             self.mediaLength = self.mediaController.media_info.length
             service_item.media_length = self.mediaLength
             if self.mediaLength > 0:

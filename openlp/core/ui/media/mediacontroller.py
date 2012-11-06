@@ -296,7 +296,7 @@ class MediaController(object):
         player.resize(display)
 
     def video(self, controller, file, muted, isBackground, hidden=False,
-            isInfo=False, controllersVisible=True):
+            isInfo=False, controlsVisible=True):
         """
         Loads and starts a video to run with the option of sound
         """
@@ -363,7 +363,7 @@ class MediaController(object):
                     unicode(translate('MediaPlugin.MediaItem',
                     'Unsupported File')))
                 return False
-        self.set_controls_visible(controller, controllersVisible)
+        self.set_controls_visible(controller, controlsVisible)
         log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
         return True
 
