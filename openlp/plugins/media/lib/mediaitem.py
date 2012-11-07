@@ -206,11 +206,20 @@ class MediaMediaItem(MediaManagerItem):
                             'The file %s no longer exists.')) % filename)
             return False
         self.mediaLength = 0
-        if self.plugin.mediaController.video( \
-                    self.mediaController, filename, False, False):
+        # Get media information and its length.
+        #
+        # This code (mediaController.video()) starts playback but we
+        # need only media information not video to start. Otherwise
+        # video is played twice. Find another way to get media info
+        # without loading and starting video playback.
+        #
+        # TODO Test getting media length with other media backends
+        # Phonon/Webkit.
+        if self.plugin.mediaController.video(self.mediaController,
+                    filename, muted=False, isBackground=False, isInfo=True,
+                    controlsVisible=False):
             self.mediaLength = self.mediaController.media_info.length
             service_item.media_length = self.mediaLength
-            self.plugin.mediaController.video_reset(self.mediaController)
             if self.mediaLength > 0:
                 service_item.add_capability(
                     ItemCapabilities.HasVariableStartTime)
