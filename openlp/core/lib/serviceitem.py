@@ -521,7 +521,4 @@ class ServiceItem(object):
         """
         Validates this service item
         """
-        if not self._raw_frames:
-            self.is_valid = False
-        return self.is_valid
-
+        return bool(self._raw_frames)
