@@ -819,7 +819,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         Receiver.send_message(u'cursor_busy')
         screens = ScreenList()
-        FirstTimeForm(screens, self).exec_()
+        firstTime = FirstTimeForm(screens, self)
+        firstTime.exec_()
+        if firstTime.downloadCancelled:
+            return
         self.firstTime()
         for plugin in self.pluginManager.plugins:
             self.activePlugin = plugin

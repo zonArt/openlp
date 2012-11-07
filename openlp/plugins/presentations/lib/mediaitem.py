@@ -43,6 +43,8 @@ from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
 
+ERROR = QtGui.QImage(u':/general/general_delete.png')
+
 class PresentationMediaItem(MediaManagerItem):
     """
     This is the Presentation media manager item for Presentation Items.
@@ -175,44 +177,53 @@ class PresentationMediaItem(MediaManagerItem):
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
-            if titles.count(filename) > 0:
-                if not initialLoad:
-                    critical_error_message_box(
-                        translate('PresentationPlugin.MediaItem',
-                        'File Exists'),
-                        translate('PresentationPlugin.MediaItem',
-                        'A presentation with that filename already exists.'))
-                continue
-            controller_name = self.findControllerByType(filename)
-            if controller_name:
-                controller = self.controllers[controller_name]
-                doc = controller.add_document(unicode(file))
-                thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
-                preview = doc.get_thumbnail_path(1, True)
-                if not preview and not initialLoad:
-                    doc.load_presentation()
-                    preview = doc.get_thumbnail_path(1, True)
-                doc.close_presentation()
-                if not (preview and os.path.exists(preview)):
-                    icon = build_icon(u':/general/general_delete.png')
-                else:
-                    if validate_thumb(preview, thumb):
-                        icon = build_icon(thumb)
-                    else:
-                        icon = create_thumb(preview, thumb)
+            if not os.path.exists(file):
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(build_icon(ERROR))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setToolTip(file)
+                self.listView.addItem(item_name)
             else:
-                if initialLoad:
-                    icon = build_icon(u':/general/general_delete.png')
-                else:
-                    critical_error_message_box(UiStrings().UnsupportedFile,
-                        translate('PresentationPlugin.MediaItem',
-                        'This type of presentation is not supported.'))
+                if titles.count(filename) > 0:
+                    if not initialLoad:
+                        critical_error_message_box(
+                            translate('PresentationPlugin.MediaItem',
+                            'File Exists'),
+                            translate('PresentationPlugin.MediaItem',
+                            'A presentation with that filename already exists.')
+                            )
                     continue
-            item_name = QtGui.QListWidgetItem(filename)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
-            item_name.setIcon(icon)
-            item_name.setToolTip(file)
-            self.listView.addItem(item_name)
+                controller_name = self.findControllerByType(filename)
+                if controller_name:
+                    controller = self.controllers[controller_name]
+                    doc = controller.add_document(unicode(file))
+                    thumb = os.path.join(doc.get_thumbnail_folder(),
+                        u'icon.png')
+                    preview = doc.get_thumbnail_path(1, True)
+                    if not preview and not initialLoad:
+                        doc.load_presentation()
+                        preview = doc.get_thumbnail_path(1, True)
+                    doc.close_presentation()
+                    if not (preview and os.path.exists(preview)):
+                        icon = build_icon(u':/general/general_delete.png')
+                    else:
+                        if validate_thumb(preview, thumb):
+                            icon = build_icon(thumb)
+                        else:
+                            icon = create_thumb(preview, thumb)
+                else:
+                    if initialLoad:
+                        icon = build_icon(u':/general/general_delete.png')
+                    else:
+                        critical_error_message_box(UiStrings().UnsupportedFile,
+                            translate('PresentationPlugin.MediaItem',
+                            'This type of presentation is not supported.'))
+                        continue
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setIcon(icon)
+                item_name.setToolTip(file)
+                self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
             self.plugin.formParent.finishedProgressBar()

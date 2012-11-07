@@ -48,7 +48,7 @@ CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
 VIDEO = build_icon(QtGui.QImage(u':/media/media_video.png'))
 AUDIO = build_icon(QtGui.QImage(u':/media/media_audio.png'))
 DVDICON = build_icon(QtGui.QImage(u':/media/media_video.png'))
-
+ERROR = build_icon(QtGui.QImage(u':/general/general_delete.png'))
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -288,7 +288,12 @@ class MediaMediaItem(MediaManagerItem):
             key=lambda filename: os.path.split(unicode(filename))[1])
         for track in media:
             track_info = QtCore.QFileInfo(track)
-            if track_info.isFile():
+            if not os.path.exists(track):
+                filename = os.path.split(unicode(track))[1]
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(ERROR)
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+            elif track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 if u'*.%s' % (filename.split(u'.')[-1].lower()) in \
