@@ -143,11 +143,6 @@ class MediaController(object):
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
-            # TODO vlc backend is not yet working on Mac OS X.
-            # For now just ignore vlc backend on Mac OS X.
-            if sys.platform == 'darwin' and filename == 'vlcplayer.py':
-                log.warn(u'Disabling vlc media player')
-                continue
             if filename.endswith(u'player.py') and \
                 not filename == 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
@@ -188,12 +183,16 @@ class MediaController(object):
         if not self.currentMediaPlayer.keys():
             self.timer.stop()
         else:
+            any_active = False
             for display in self.currentMediaPlayer.keys():
                 self.currentMediaPlayer[display].resize(display)
                 self.currentMediaPlayer[display].update_ui(display)
                 if self.currentMediaPlayer[display].state == \
                     MediaState.Playing:
-                    return
+                    any_active = True
+        # There are still any active players - no need to stop timer.
+            if any_active:
+                return
         # no players are active anymore
         for display in self.currentMediaPlayer.keys():
             if self.currentMediaPlayer[display].state != MediaState.Paused:
