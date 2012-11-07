@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -82,7 +82,7 @@ DESTINATIONS = frozenset((
     u'msSupPr', u'mstrikeBLTR', u'mstrikeH', u'mstrikeTLBR', u'mstrikeV',
     u'msub', u'msubHide', u'msup', u'msupHide', u'mtransp', u'mtype',
     u'mvertJc', u'mvfmf', u'mvfml', u'mvtof', u'mvtol', u'mzeroAsc',
-    u'mzeroDesc', u'mzeroWid', u'nesttableprops', u'nextfile',
+    u'mzFrodesc', u'mzeroWid', u'nesttableprops', u'nextfile',
     u'nonesttables', u'objalias', u'objclass', u'objdata', u'object',
     u'objname', u'objsect', u'objtime', u'oldcprops', u'oldpprops',
     u'oldsprops', u'oldtprops', u'oleclsid', u'operator', u'panose',
