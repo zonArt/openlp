@@ -39,6 +39,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib.db import BaseModel, init_db
 
+
 class Author(BaseModel):
     """
     Author model
@@ -66,43 +67,34 @@ class Song(BaseModel):
     """
     Song model
     """
-    _DIGITS = 6  # Do not expect a number greater than 999999.
-    _RE = re.compile(r'(\d+)')  # Match any number at start of string.
     def __init__(self):
-        self.sort_string = u''
+        self.sort_key = ()
+
+    def _try_int(self, s):
+        "Convert to integer if possible."
+        try:
+            return int(s)
+        except:
+            return QtCore.QString(s.lower())
+
+    def _natsort_key(self, s):
+        "Used internally to get a tuple by which s is sorted."
+        return map(self._try_int, re.findall(r'(\d+|\D+)', s))
 
     # This decorator tells sqlalchemy to call this method everytime
-    # any data on this object are updated.
+    # any data on this object is updated.
     @reconstructor
     def init_on_load(self):
         """
-        Precompute string to be used for sorting.
+        Precompute a tuple to be used for sorting.
 
         Song sorting is performance sensitive operation.
         To get maximum speed lets precompute the string
         used for comparison.
         """
-        title = self.title
-        # Ensure titles starting with numbers are sorted properly.
-        # By default titles like '2 bla' and '10 foo' are sorted like
-        #     10 foo
-        #     2 bla
-        # This is not the desired behaviour. They order should be
-        #     2 foo
-        #     10 bla
-        # 
-        # Usually the workaround done by the user would be to add leading zeros
-        #     002 foo
-        #     010 bla
-        # This this trick is implemented for sort_string where leading zeros are
-        # added if the title starts with a number.
-        match = Song._RE.match(title)
-        if match:
-            match_len = len(match.group())
-            title = title.zfill(len(title) + (Song._DIGITS - match_len))
         # Avoid the overhead of converting string to lowercase and to QString
         # with every call to sort().
-        self.sort_string = QtCore.QString(title.lower())
+        self.sort_key = self._natsort_key(self.title)
 
 
 class Topic(BaseModel):

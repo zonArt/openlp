@@ -49,6 +49,44 @@ from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
 
+
+def natcmp(a, b):
+    """
+    Natural string comparison which mimics the behaviour of Python's internal
+    cmp function.
+    """
+    log.debug('a: %s; b: %s', a, b)
+    if len(a) <= len(b):
+        for i, key in enumerate(a):
+            if isinstance(key, int) and isinstance(b[i], int):
+                result = cmp(key, b[i])
+            elif isinstance(key, int) and not isinstance(b[i], int):
+                result = locale_direct_compare(QtCore.QString(str(key)), b[i])
+            elif not isinstance(key, int) and isinstance(b[i], int):
+                result = locale_direct_compare(key, QtCore.QString(str(b[i])))
+            else:
+                result = locale_direct_compare(key, b[i])
+            if result != 0:
+                return result
+        if len(a) == len(b):
+            return 0
+        else:
+            return -1
+    else:
+        for i, key in enumerate(b):
+            if isinstance(a[i], int) and isinstance(key, int):
+                result = cmp(a[i], key)
+            elif isinstance(a[i], int) and not isinstance(key, int):
+                result = locale_direct_compare(QtCore.QString(str(a[i])), key)
+            elif not isinstance(a[i], int) and isinstance(key, int):
+                result = locale_direct_compare(a[i], QtCore.QString(str(key)))
+            else:
+                result = locale_direct_compare(a[i], key)
+            if result != 0:
+                return result
+        return 1
+
+
 class SongSearch(object):
     """
     An enumeration for song search methods.
@@ -259,8 +297,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.saveAutoSelectId()
         self.listView.clear()
-        searchresults.sort(
-            cmp=locale_direct_compare, key=lambda song: song.sort_string)
+        searchresults.sort(cmp=natcmp, key=lambda song: song.sort_key)
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary:
