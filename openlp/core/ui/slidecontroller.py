@@ -778,6 +778,16 @@ class SlideController(Controller):
             self.slideSelected()
         else:
             self._processItem(item, slidenum)
+            if self.isLive and item.AutoPlaySlidesLoop\
+                and item.TimedSlideInterval > 0:
+                self.playSlidesLoop.setChecked(item.AutoPlaySlidesLoop)
+                self.delaySpinBox.setValue(int(item.TimedSlideInterval))
+                self.onPlaySlidesLoop()
+            elif self.isLive and  item.AutoPlaySlidesOnce\
+                and item.TimedSlideInterval > 0:
+                self.playSlidesOnce.setChecked(item.AutoPlaySlidesOnce)
+                self.delaySpinBox.setValue(int(item.TimedSlideInterval))
+                self.onPlaySlidesOnce()
 
     def _processItem(self, serviceItem, slideno):
         """
@@ -1255,11 +1265,11 @@ class SlideController(Controller):
             self.playSlidesLoop.setText(UiStrings().StopPlaySlidesInLoop)
             self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
             self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
+            self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
+            self.playSlidesOnce.setChecked(False)
         else:
             self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
             self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
-        self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
-        self.playSlidesOnce.setChecked(False)
         self.onToggleLoop()
 
     def onPlaySlidesOnce(self, checked=None):
@@ -1276,11 +1286,11 @@ class SlideController(Controller):
             self.playSlidesOnce.setText(UiStrings().StopPlaySlidesToEnd)
             self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
             self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
+            self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
+            self.playSlidesLoop.setChecked(False)
         else:
             self.playSlidesOnce.setIcon(build_icon(u':/media/media_time'))
             self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
-        self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
-        self.playSlidesLoop.setChecked(False)
         self.onToggleLoop()
 
     def setAudioItemsVisibility(self, visible):

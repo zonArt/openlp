@@ -123,6 +123,10 @@ class ServiceItem(object):
         self.background_audio = []
         self.theme_overwritten = False
         self.temporary_edit = False
+        self.AutoPlaySlidesOnce = False
+        self.AutoPlaySlidesLoop = False
+        self.TimedSlideInterval = 0
+
         self._new_item()
 
     def _new_item(self):
@@ -276,6 +280,9 @@ class ServiceItem(object):
             u'search': self.search_string,
             u'data': self.data_string,
             u'xml_version': self.xml_version,
+            u'AutoPlaySlidesOnce': self.AutoPlaySlidesOnce,
+            u'AutoPlaySlidesLoop': self.AutoPlaySlidesLoop,
+            u'TimedSlideInterval': self.TimedSlideInterval,
             u'start_time': self.start_time,
             u'end_time': self.end_time,
             u'media_length': self.media_length,
@@ -342,6 +349,9 @@ class ServiceItem(object):
                 filename = os.path.join(path, text_image[u'title'])
                 self.add_from_command(
                     path, text_image[u'title'], text_image[u'image'])
+        self.AutoPlaySlidesOnce = header.get(u'AutoPlaySlidesOnce', False)
+        self.AutoPlaySlidesLoop = header.get(u'AutoPlaySlidesLoop', False)
+        self.TimedSlideInterval = header.get(u'TimedSlideInterval', 0)
         self._new_item()
 
     def get_display_title(self):
