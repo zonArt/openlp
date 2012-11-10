@@ -109,7 +109,7 @@ class Ui_AboutDialog(object):
         contributors = [u'Gerald "jerryb" Britton',
             u'Samuel "MrGamgee" Findlay', u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
-            u'Armin "orangeshirt" K\xf6hler', u'Eric "luen" Ludin',
+            u'Armin "orangeshirt" K\xf6hler', u'Erik "luen" Lundin',
             u'Edwin "edwinlunando" Lunando', u'Brian "brianmeyer" Meyer',
             u'Joshua "milleja46" Miller', u'Stevan "ElderP" Pettit',
             u'Mattias "mahfiaz" P\xf5ldaru', u'Christian "crichter" Richter',
@@ -149,7 +149,7 @@ class Ui_AboutDialog(object):
                        u'Gustavo Bim', u'Rog\xeanio Bel\xe9m', u'Samuel'
                 u'Simon "samscudder" Scudder', u'Van Der Fran'],
             u'ru': [u'Sergey "ratz" Ratz'],
-            u'sv': [u'Eric "luen" Ludin']
+            u'sv': [u'Erik "luen" Lundin']
         }
         documentors = [u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
