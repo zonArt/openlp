@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -493,14 +493,27 @@ class ServiceItem(object):
         except IndexError:
             return u''
 
-    def get_frame_path(self, row=0):
+    def get_frame_path(self, row=0, frame=None):
         """
         Returns the path of the raw frame
         """
-        try:
-            return self._raw_frames[row][u'path']
-        except IndexError:
-            return u''
+        if not frame:
+            try:
+                frame = self._raw_frames[row]
+            except IndexError:
+                return u''
+        if self.is_image():
+            path_from = frame[u'path']
+        else:
+            path_from = os.path.join(frame[u'path'], frame[u'title'])
+        return path_from
+
+    def remove_frame(self, frame):
+        """
+        Remove the soecified frame from the item
+        """
+        if frame in self._raw_frames:
+            self._raw_frames.remove(frame)
 
     def get_media_time(self):
         """
@@ -537,3 +550,17 @@ class ServiceItem(object):
         self._new_item()
         self.render()
 
+    def remove_invalid_frames(self, invalid_paths=None):
+        """
+        Remove invalid frames, such as ones where the file no longer exists.
+        """
+        if self.uses_file():
+            for frame in self.get_frames():
+                if self.get_frame_path(frame=frame) in invalid_paths:
+                    self.remove_frame(frame)
+
+    def validate(self):
+        """
+        Validates this service item
+        """
+        return bool(self._raw_frames)
