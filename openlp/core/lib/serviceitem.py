@@ -456,12 +456,6 @@ class ServiceItem(object):
         if length > 0:
             self.add_capability(ItemCapabilities.HasVariableStartTime)
 
-    def get_filename(self):
-        """
-        Returns the full filename
-        """
-        return os.path.join(self.get_frame_path(), self.get_frame_title())
-
     def get_frames(self):
         """
         Returns the frames for the ServiceItem

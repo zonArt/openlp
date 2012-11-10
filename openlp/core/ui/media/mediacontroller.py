@@ -379,7 +379,7 @@ class MediaController(object):
             controller.media_info.volume = controller.volumeSlider.value()
             controller.media_info.is_background = False
         controller.media_info.file_info = \
-            QtCore.QFileInfo(serviceItem.get_filename())
+            QtCore.QFileInfo(serviceItem.get_frame_path())
         display = self._define_display(controller)
         if controller.isLive:
             isValid = self._check_file_type(controller, display, serviceItem)
