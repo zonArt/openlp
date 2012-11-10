@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -1351,7 +1351,7 @@ class SlideController(Controller):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
-        file = os.path.join(item.get_frame_path(), item.get_frame_title())
+        file = item.get_frame_path()
         self.mediaController.video(self, file, False, False, self.hideMode())
         if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()
