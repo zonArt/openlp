@@ -4,7 +4,7 @@
 * Copyright (c) 2008-2012 Raoul Snyman                                        *
 * Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      *
 * Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      *
-* Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    *
+* Meinert Jordan, Armin Köhler, Erik Ludin, Edwin Lunando, Brian T. Meyer,    *
 * Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          *
 * Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             *
 * Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              *
