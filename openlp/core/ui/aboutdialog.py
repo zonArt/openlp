@@ -7,7 +7,7 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
@@ -252,7 +252,7 @@ class Ui_AboutDialog(object):
             'Portions copyright \xa9 2004-2012 %s')) % (u'Raoul Snyman',
             u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
             u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
-            u'Armin K\xf6hler, Eric Ludin, Edwin Lunando, Joshua Miller, '
+            u'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
             u'Brian T. Meyer, Stevan Pettit, Andreas Preikschat, '
             u'Mattias P\xf5ldaru, Christian Richter, '
             u'Philip Ridout, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
