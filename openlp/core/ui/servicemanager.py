@@ -315,11 +315,11 @@ class ServiceManager(QtGui.QWidget):
             translate('OpenLP.ServiceManager', '&Auto play slides'))
         self.menu.addMenu(self.AutoPlaySlidesGroup)
         self.AutoPlaySlidesLoop = create_widget_action(self.AutoPlaySlidesGroup,
-            text=translate('OpenLP.ServiceManager', '&Auto play slides Loop'),
+            text=translate('OpenLP.ServiceManager', 'Auto play slides &Loop'),
             checked=False,
             triggers=self.toggleAutoPlaySlidesLoop)
         self.AutoPlaySlidesOnce = create_widget_action(self.AutoPlaySlidesGroup,
-            text=translate('OpenLP.ServiceManager', '&Auto play slides once'),
+            text=translate('OpenLP.ServiceManager', 'Auto play slides &Once'),
             checked=False,
             triggers=self.toggleAutoPlaySlidesOnce)
         self.AutoPlaySlidesGroup.addSeparator()
@@ -795,12 +795,12 @@ class ServiceManager(QtGui.QWidget):
                 .setChecked(serviceItem[u'service_item'].TimedSlideInterval > 0)
             if serviceItem[u'service_item'].TimedSlideInterval > 0:
                 DelaySuffix = u' '
-                DelaySuffix += str(serviceItem[u'service_item'].TimedSlideInterval)
+                DelaySuffix += unicode(serviceItem[u'service_item'].TimedSlideInterval)
                 DelaySuffix += u' s'
             else:
                 DelaySuffix = u' ...'
             self.TimedSlideInterval.setText(translate('OpenLP.ServiceManager',
-                '&Delay between slides')+DelaySuffix)
+                '&Delay between slides') + DelaySuffix)
             #self.AutoPlaySlidesGroup.setChecked(
             #    serviceItem[u'service_item'].TimedSlideInterval > 0 and
             #    (serviceItem[u'service_item'].AutoPlaySlidesOnce or
@@ -886,9 +886,9 @@ class ServiceManager(QtGui.QWidget):
         else:
             TimedSlideInterval = service_item.TimedSlideInterval
         TimedSlideInterval, ok = QtGui.QInputDialog.getInteger(self,
-            self.tr(translate('OpenLP.ServiceManager', 'Inpunt delay')),
-            self.tr(translate('OpenLP.ServiceManager',
-            'Delay between slides in seconds.')), TimedSlideInterval, 0, 180, 1)
+            translate('OpenLP.ServiceManager', 'Input delay'),
+            translate('OpenLP.ServiceManager',
+            'Delay between slides in seconds.'), TimedSlideInterval, 0, 180, 1)
         if ok:
             service_item.TimedSlideInterval = TimedSlideInterval
         if service_item.TimedSlideInterval <> 0\
@@ -1406,7 +1406,6 @@ class ServiceManager(QtGui.QWidget):
                     NextItem = self.serviceManagerList.topLevelItem(item)
                     self.serviceManagerList.setCurrentItem(NextItem)
                     self.mainwindow.liveController.previewListWidget.setFocus()
-            self.mainwindow.liveController.onToggleLoop()
         else:
             critical_error_message_box(
                 translate('OpenLP.ServiceManager', 'Missing Display Handler'),
