@@ -317,16 +317,16 @@ class ServiceManager(QtGui.QWidget):
         self.AutoPlaySlidesLoop = create_widget_action(self.AutoPlaySlidesGroup,
             text=translate('OpenLP.ServiceManager', 'Auto play slides &Loop'),
             checked=False,
-            triggers=self.toggleAutoPlaySlidesLoop)
+            triggers=self.toggle_auto_play_slides_loop)
         self.AutoPlaySlidesOnce = create_widget_action(self.AutoPlaySlidesGroup,
             text=translate('OpenLP.ServiceManager', 'Auto play slides &Once'),
             checked=False,
-            triggers=self.toggleAutoPlaySlidesOnce)
+            triggers=self.toggle_auto_play_slides_once)
         self.AutoPlaySlidesGroup.addSeparator()
         self.TimedSlideInterval = create_widget_action(self.AutoPlaySlidesGroup,
             text=translate('OpenLP.ServiceManager', '&Delay between slides'),
             checked=False,
-            triggers=self.onTimedSlideInterval)
+            triggers=self.on_timed_slide_interval)
 
         self.menu.addSeparator()
         self.previewAction = create_widget_action(self.menu,
@@ -844,9 +844,10 @@ class ServiceManager(QtGui.QWidget):
         if self.startTimeForm.exec_():
             self.repaintServiceList(item, -1)
 
-    def toggleAutoPlaySlidesOnce(self):
+    def toggle_auto_play_slides_once(self):
         """
         Toggle Auto play slide once.
+        Inverts auto play once option for the item
         """
         item = self.findServiceItem()[0]
         service_item = self.serviceItems[item][u'service_item']
@@ -859,7 +860,7 @@ class ServiceManager(QtGui.QWidget):
                 QtCore.QVariant(5)).toInt()[0]
         self.setModified()
 
-    def toggleAutoPlaySlidesLoop(self):
+    def toggle_auto_play_slides_loop(self):
         """
         Toggle Auto play slide loop.
         """
@@ -874,9 +875,10 @@ class ServiceManager(QtGui.QWidget):
                 QtCore.QVariant(5)).toInt()[0]
         self.setModified()
 
-    def onTimedSlideInterval(self):
+    def on_timed_slide_interval(self):
         """
         on set times slide interval.
+        Shows input dialog for enter interval in seconds for delay 
         """
         item = self.findServiceItem()[0]
         service_item = self.serviceItems[item][u'service_item']
