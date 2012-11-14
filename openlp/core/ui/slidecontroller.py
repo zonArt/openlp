@@ -778,15 +778,15 @@ class SlideController(Controller):
             self.slideSelected()
         else:
             self._processItem(item, slidenum)
-            if self.isLive and item.AutoPlaySlidesLoop\
-                and item.TimedSlideInterval > 0:
-                self.playSlidesLoop.setChecked(item.AutoPlaySlidesLoop)
-                self.delaySpinBox.setValue(int(item.TimedSlideInterval))
+            if self.isLive and item.auto_play_slides_loop\
+                and item.timed_slide_interval > 0:
+                self.playSlidesLoop.setChecked(item.auto_play_slides_loop)
+                self.delaySpinBox.setValue(int(item.timed_slide_interval))
                 self.onPlaySlidesLoop()
-            elif self.isLive and  item.AutoPlaySlidesOnce\
-                and item.TimedSlideInterval > 0:
-                self.playSlidesOnce.setChecked(item.AutoPlaySlidesOnce)
-                self.delaySpinBox.setValue(int(item.TimedSlideInterval))
+            elif self.isLive and  item.auto_play_slides_once\
+                and item.timed_slide_interval > 0:
+                self.playSlidesOnce.setChecked(item.auto_play_slides_once)
+                self.delaySpinBox.setValue(int(item.timed_slide_interval))
                 self.onPlaySlidesOnce()
 
     def _processItem(self, serviceItem, slideno):
