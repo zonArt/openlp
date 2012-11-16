@@ -126,7 +126,9 @@ class Image(object):
         self.priority = Priority.Normal
         self.source = source
         self.background = background
-        self.timestamp = os.stat(path).st_mtime
+        self.timestamp = 0
+        if os.path.exists(path):
+            self.timestamp = os.stat(path).st_mtime
         self.secondary_priority = Image.secondary_priority
         Image.secondary_priority += 1
 
@@ -296,9 +298,11 @@ class ImageManager(QtCore.QObject):
         # Check if the there are any images with the same path and check if the
         # timestamp has changed.
         for image in self._cache.values():
-            if image.path == path and image.timestamp != os.stat(path).st_mtime:
-                image.timestamp = os.stat(path).st_mtime
-                self._resetImage(image)
+            if os.path.exists(path):
+                if image.path == path and \
+                    image.timestamp != os.stat(path).st_mtime:
+                    image.timestamp = os.stat(path).st_mtime
+                    self._resetImage(image)
         # We want only one thread.
         if not self.imageThread.isRunning():
             self.imageThread.start()
