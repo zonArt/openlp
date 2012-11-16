@@ -794,13 +794,13 @@ class ServiceManager(QtGui.QWidget):
             self.timed_slide_interval\
                 .setChecked(serviceItem[u'service_item'].timed_slide_interval > 0)
             if serviceItem[u'service_item'].timed_slide_interval > 0:
-                DelaySuffix = u' '
-                DelaySuffix += unicode(serviceItem[u'service_item'].timed_slide_interval)
-                DelaySuffix += u' s'
+                delay_suffix = u' '
+                delay_suffix += unicode(serviceItem[u'service_item'].timed_slide_interval)
+                delay_suffix += u' s'
             else:
-                DelaySuffix = u' ...'
+                delay_suffix = u' ...'
             self.timed_slide_interval.setText(translate('OpenLP.ServiceManager',
-                '&Delay between slides') + DelaySuffix)
+                '&Delay between slides') + delay_suffix)
             #self.auto_play_slides_group.setChecked(
             #    serviceItem[u'service_item'].timed_slide_interval > 0 and
             #    (serviceItem[u'service_item'].auto_play_slides_once or
