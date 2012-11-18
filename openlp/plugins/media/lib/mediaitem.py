@@ -71,6 +71,7 @@ class MediaMediaItem(MediaManagerItem):
             False)
         self.displayController.previewDisplay = Display(self.displayController,
             False, self.displayController)
+        self.displayController.previewDisplay.hide()
         self.displayController.previewDisplay.setGeometry(
             QtCore.QRect(0, 0, 300, 300))
         self.displayController.previewDisplay.screen = \

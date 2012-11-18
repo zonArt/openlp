@@ -180,7 +180,6 @@ class MediaController(object):
         Check if there is a running media Player and do updating stuff (e.g.
         update the UI)
         """
-        print "state"
         if not self.currentMediaPlayer.keys():
             self.timer.stop()
         else:
@@ -595,7 +594,6 @@ class MediaController(object):
             The controller that needs to be stopped
         """
         log.debug(u'media_stop')
-        print "play"
         display = self._define_display(controller)
         if display in self.currentMediaPlayer:
             display.frame.evaluateJavaScript(u'show_blank("black");')
