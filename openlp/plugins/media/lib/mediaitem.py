@@ -99,6 +99,7 @@ class MediaMediaItem(MediaManagerItem):
             'Automatic')
         self.displayTypeLabel.setText(
             translate('MediaPlugin.MediaItem', 'Use Player:'))
+        self.rebuild_players()
 
     def requiredIcons(self):
         MediaManagerItem.requiredIcons(self)

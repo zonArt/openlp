@@ -134,7 +134,7 @@ class PlayerTab(SettingsTab):
         self.backgroundColorLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Default Color:'))
         self.informationLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Visible background for images '
+            translate('OpenLP.PlayerTab', 'Visible background for videos '
             'with aspect ratio different to screen.'))
         self.retranslatePlayers()
 
