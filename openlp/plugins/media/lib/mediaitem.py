@@ -95,8 +95,7 @@ class MediaMediaItem(MediaManagerItem):
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
-        self.automatic = translate('MediaPlugin.MediaItem',
-            'Automatic')
+        self.automatic = UiStrings().Automatic
         self.displayTypeLabel.setText(
             translate('MediaPlugin.MediaItem', 'Use Player:'))
         self.rebuild_players()

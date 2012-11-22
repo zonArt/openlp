@@ -61,6 +61,7 @@ class UiStrings(object):
         self.Add = translate('OpenLP.Ui', '&Add')
         self.Advanced = translate('OpenLP.Ui', 'Advanced')
         self.AllFiles = translate('OpenLP.Ui', 'All Files')
+        self.Automatic = translate('OpenLP.Ui', 'Automatic')
         self.Bottom = translate('OpenLP.Ui', 'Bottom')
         self.Browse = translate('OpenLP.Ui', 'Browse...')
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
