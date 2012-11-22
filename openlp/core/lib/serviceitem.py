@@ -54,6 +54,62 @@ class ServiceItemType(object):
 class ItemCapabilities(object):
     """
     Provides an enumeration of a service item's capabilities
+
+    ``CanPreview``
+            The capability to allow the ServiceManager to add to the preview
+            tab when making the previous item live.
+
+    ``CanEdit``
+            The capability to allow the ServiceManager to allow the item to be
+             edited
+
+    ``CanMaintain``
+            The capability to allow the ServiceManager to allow the item to be
+             reordered.
+
+    ``RequiresMedia``
+            The capability to
+
+    ``CanLoop``
+            The capability to allow the SlideController to allow the loop
+            processing.
+
+    ``CanAppend``
+            The capability to allow the ServiceManager to add leaves to the
+            item
+
+    ``NoLineBreaks``
+            The capability to remove lines breaks in the renderer
+
+    ``OnLoadUpdate``
+            The capability to
+
+    ``AddIfNewItem``
+            The capability to
+
+    ``ProvidesOwnDisplay``
+            The capability to tell the SlideCotroller the service Item has a
+            different display.
+
+    ``HasDetailedTitleDisplay``
+            The capability to
+
+    ``HasVariableStartTime``
+            The capability to tell the ServiceManager that a change to start
+            time is possible.
+
+    ``CanSoftBreak``
+            The capability to tell the renderer that Soft Break is allowed
+
+    ``CanWordSplit``
+            The capability to
+
+    ``HasBackgroundAudio``
+            The capability to
+
+    ``CanAutoStartForLive``
+            The capability to ignore the do not play if display blank flag.
+
     """
     CanPreview = 1
     CanEdit = 2
