@@ -73,7 +73,7 @@ VIDEO_EXT = [
     u'*.avi',
     u'*.flv',
     u'*.mov',
-    u'*.mp4',
+    u'*.mp4', u'*.m4v',
     u'*.ogm', u'*.ogv',
     u'*.mkv', u'*.mka',
     u'*.ts', u'*.mpg',

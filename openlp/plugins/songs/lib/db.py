@@ -31,12 +31,15 @@ The :mod:`db` module provides the database and schema that is the backend for
 the Songs plugin
 """
 
+import re
+
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func
 from PyQt4 import QtCore
 
 from openlp.core.lib.db import BaseModel, init_db
+
 
 class Author(BaseModel):
     """
@@ -66,21 +69,33 @@ class Song(BaseModel):
     Song model
     """
     def __init__(self):
-        self.sort_string = ''
+        self.sort_key = ()
+
+    def _try_int(self, s):
+        "Convert to integer if possible."
+        try:
+            return int(s)
+        except:
+            return QtCore.QString(s.lower())
+
+    def _natsort_key(self, s):
+        "Used internally to get a tuple by which s is sorted."
+        return map(self._try_int, re.findall(r'(\d+|\D+)', s))
 
     # This decorator tells sqlalchemy to call this method everytime
-    # any data on this object are updated.
+    # any data on this object is updated.
     @reconstructor
     def init_on_load(self):
         """
-        Precompute string to be used for sorting.
+        Precompute a tuple to be used for sorting.
 
         Song sorting is performance sensitive operation.
         To get maximum speed lets precompute the string
         used for comparison.
         """
         # Avoid the overhead of converting string to lowercase and to QString
-        self.sort_string = QtCore.QString(self.title.lower())
+        # with every call to sort().
+        self.sort_key = self._natsort_key(self.title)
 
 
 class Topic(BaseModel):
