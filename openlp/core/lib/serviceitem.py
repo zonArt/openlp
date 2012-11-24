@@ -68,7 +68,7 @@ class ItemCapabilities(object):
              reordered.
 
     ``RequiresMedia``
-            The capability to
+            Determines is the serviceItem needs a Media Player
 
     ``CanLoop``
             The capability to allow the SlideController to allow the loop
@@ -82,17 +82,18 @@ class ItemCapabilities(object):
             The capability to remove lines breaks in the renderer
 
     ``OnLoadUpdate``
-            The capability to
+            The capability to update MediaManager when a service Item is
+            loaded.
 
     ``AddIfNewItem``
-            The capability to
+            Not Used
 
     ``ProvidesOwnDisplay``
-            The capability to tell the SlideCotroller the service Item has a
+            The capability to tell the SlideController the service Item has a
             different display.
 
     ``HasDetailedTitleDisplay``
-            The capability to
+            ServiceItem provides a title
 
     ``HasVariableStartTime``
             The capability to tell the ServiceManager that a change to start
@@ -102,10 +103,11 @@ class ItemCapabilities(object):
             The capability to tell the renderer that Soft Break is allowed
 
     ``CanWordSplit``
-            The capability to
+            The capability to tell the renderer that it can split words is
+            allowed
 
     ``HasBackgroundAudio``
-            The capability to
+            That a audio file is present with the text.
 
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
