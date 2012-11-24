@@ -160,7 +160,7 @@ Möchten Sie dennoch fortfahren?</translation>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="183"/>
         <source>Bible</source>
         <comment>name singular</comment>
-        <translation>Bibeltext</translation>
+        <translation>Bibel</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/bibleplugin.py" line="184"/>
@@ -175,12 +175,12 @@ Möchten Sie dennoch fortfahren?</translation>
         <translation>Bibeln</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="605"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="600"/>
         <source>No Book Found</source>
         <translation>Kein Buch gefunden</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="605"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="600"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>Es konnte kein passendes Buch gefunden werden. Überprüfen Sie bitte die Schreibweise.</translation>
     </message>
@@ -1033,7 +1033,7 @@ Suchergebnis und Projektionsbildschirm:</translation>
         <location filename="openlp/plugins/bibles/forms/editbibleform.py" line="83"/>
         <source>This is a Web Download Bible.
 It is not possible to customize the Book Names.</source>
-        <translation>Dies ist eine Webbibel.
+        <translation>Dies ist eine Internetbibel.
 Es ist nicht möglich die Büchernamen anzupassen.</translation>
     </message>
     <message>
@@ -1045,38 +1045,38 @@ Es ist nicht möglich die Büchernamen anzupassen.</translation>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="519"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="514"/>
         <source>Registering Bible and loading books...</source>
         <translation>Registriere Bibel und lade Bücher...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="544"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="539"/>
         <source>Registering Language...</source>
         <translation>Registriere Sprache...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="560"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="555"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>Importiere »%s«...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="727"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="722"/>
         <source>Download Error</source>
         <translation>Download Fehler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="727"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="722"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Beim Herunterladen des Bibeltextes ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Internetverbindung. Wenden Sie sich bitte an den OpenLP Support, sollte dieser Fehler weiterhin auftreten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="734"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="729"/>
         <source>Parse Error</source>
         <translation>Formatfehler</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="734"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="729"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Beim Auslesen des Bibeltextes ist ein Fehler aufgetreten. Wenden Sie sich bitte an den OpenLP Support, sollte dieser Fehler wiederholt auftritt.</translation>
     </message>
@@ -1116,12 +1116,12 @@ Es ist nicht möglich die Büchernamen anzupassen.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="387"/>
         <source>Bible:</source>
-        <translation>Übersetzung:</translation>
+        <translation>Bibel:</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="389"/>
         <source>Download Options</source>
-        <translation>Download-Optionen</translation>
+        <translation>Download Optionen</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="392"/>
@@ -1181,8 +1181,7 @@ Es ist nicht möglich die Büchernamen anzupassen.</translation>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="483"/>
         <source>You need to specify a version name for your Bible.</source>
-        <translation>Es wurde kein Suchbegriff eingegeben.
-Um nach mehreren Begriffen gleichzeitig zu suchen, müssen die Begriffe durch ein Leerzeichen getrennt sein. Alternative Suchbegriffe müssen per Komma getrennt sein.</translation>
+        <translation>Sie müssen den Name der Bibelversion eingeben.</translation>
     </message>
     <message>
         <location filename="openlp/plugins/bibles/forms/bibleimportform.py" line="489"/>
@@ -2056,12 +2055,18 @@ OpenLP is free church presentation software, or lyrics projection software, used
 Find out more about OpenLP: http://openlp.org/
 
 OpenLP is written and maintained by volunteers. If you would like to see more free Christian software being written, please consider volunteering by using the button below.</source>
-        <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Open Lyrics Projection⏎ ⏎OpenLP ist ein freies Programm für Präsentationen in Kirchen. Es können Liedtexte, Bibelverse, Videos, Bilder und Präsentationen (wenn Impress, PowerPoint oder der PowerPoint Viewer installiert sind) mittels Beamer und Computer angezeigt werden. ⏎ ⏎Weitere Informationen finden Sie unter: http://openlp.org/⏎ ⏎OpenLP wird von Freiwilligen Helfern entwickelt und unterstützt. Wenn Sie sich beteiligen wollen betätigen Sie untenstehende Schaltfläche und in ihrem Browser wird ihnen angezeigt, welche Möglichkeiten es gibt.</translation>
+        <translation>OpenLP &lt;version&gt;&lt;revision&gt; - Open Lyrics Projection
+
+OpenLP ist ein freies Programm für Präsentationen in Kirchen. Es können Liedtexte, Bibelverse, Videos, Bilder und Präsentationen (wenn Impress, PowerPoint oder der PowerPoint Viewer installiert sind) mittels Beamer und Computer angezeigt werden.
+
+Weitere Informationen finden Sie unter: http://openlp.org/
+
+OpenLP wird von Freiwilligen Helfern entwickelt und unterstützt. Wenn Sie sich beteiligen wollen betätigen Sie untenstehende Schaltfläche und in ihrem Browser wird ihnen angezeigt, welche Möglichkeiten es gibt.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="647"/>
         <source>Volunteer</source>
-        <translation>Mitmachen</translation>
+        <translation>Freiwillige</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/aboutdialog.py" line="156"/>
@@ -2136,7 +2141,76 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektleiter
+ %s
+
+Entwickler
+ %s
+
+Mitwirkende
+ %s
+
+Tester
+ %s
+
+Packetierer
+ %s
+
+Übersetzer
+Afrikaans (af)
+ %s
+Tschechisch (cs)
+ %s
+Dänisch (da)
+ %s
+Deutsch (de)
+ %s
+Griechisch  (el)
+ %s
+Englisch, Vereinigtes Königreich (en_GB)
+ %s
+Englisch, Südafrika (en_ZA)
+ %s
+Spanisch (es)
+ %s
+Estnisch (et)
+ %s
+Französisch (fr)
+ %s
+Ungarisch (hu)
+ %s
+Japanisch (ja)
+ %s
+Norwegisch (nb)
+ %s
+Niederländisch (nl)
+ %s
+Portugiesisch, Brasilien (pt_BR)
+ %s
+Russisch (ru)
+ %s
+Schwedisch (sv)
+ %s
+
+Dokumentation
+ %s
+
+Erstellt mit
+ Python: http://www.python.org/
+ Qt4: http://qt.digia.com/
+ PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro
+ Oxygen Icons: http://oxygen-icons.org/
+
+
+ &quot;Denn also hat Gott die Welt geliebt,
+ dass er seinen eingeborenen Sohn gab,
+ damit alle, die an ihn glauben, nicht verloren werden,
+ sondern das ewige Leben haben..&quot; -- Johannes 3, 16
+
+ Und zu Schluss, geht unserer aller Dank,
+ an Gott den Vater dafür , dass er seinen Sohn
+ auf die Erde schickte, damit er für unsere Sünde
+ am Kreuz stirbt und uns so frei macht. Amen.</translation>
     </message>
 </context>
 <context>
@@ -3643,7 +3717,7 @@ Processing has terminated and no changed have been made.</source>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1521"/>
         <source>Copying OpenLP data to new data directory location - %s - Please wait for copy to finish</source>
-        <translation>Kopieren OpenLP Daten in das neue Datenverzeichnis - %s - Bitte warten Sie, bis das Kopieren beendet ist</translation>
+        <translation>Kopiere OpenLP Daten in das neue Datenverzeichnis - %s - Bitte warten Sie, bis der Kopiervorgang beendet wurde.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/mainwindow.py" line="1531"/>
@@ -3658,12 +3732,12 @@ Processing has terminated and no changed have been made.</source>
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="229"/>
+        <location filename="openlp/core/lib/db.py" line="232"/>
         <source>Database Error</source>
         <translation>Datenbankfehler</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="215"/>
+        <location filename="openlp/core/lib/db.py" line="218"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
@@ -3672,7 +3746,7 @@ Database: %s</source>
 Datenbank: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="229"/>
+        <location filename="openlp/core/lib/db.py" line="232"/>
         <source>OpenLP cannot load your database.
 
 Database: %s</source>
@@ -3689,69 +3763,69 @@ Datenbank: %s</translation>
         <translation>Keine Elemente ausgewählt.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="257"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="258"/>
         <source>&amp;Add to selected Service Item</source>
         <translation>Zum &amp;gewählten Ablaufelement hinzufügen</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="489"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="491"/>
         <source>You must select one or more items to preview.</source>
         <translation>Zur Vorschau muss mindestens ein Elemente auswählt sein.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="507"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="509"/>
         <source>You must select one or more items to send live.</source>
         <translation>Zur Live Anzeige muss mindestens ein Element ausgewählt sein.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="560"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="562"/>
         <source>You must select one or more items.</source>
         <translation>Es muss mindestens ein Element ausgewählt sein.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="567"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="569"/>
         <source>You must select an existing service item to add to.</source>
         <translation>Sie müssen ein vorhandenes Ablaufelement auswählen.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="576"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="578"/>
         <source>Invalid Service Item</source>
         <translation>Ungültiges Ablaufelement</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="576"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="578"/>
         <source>You must select a %s service item.</source>
         <translation>Sie müssen ein %s-Element im Ablaufs wählen.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="534"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="536"/>
         <source>You must select one or more items to add.</source>
         <translation>Sie müssen ein oder mehrer Element auswählen.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="608"/>
         <source>No Search Results</source>
         <translation>Kein Suchergebnis</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="362"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="364"/>
         <source>Invalid File Type</source>
         <translation>Ungültige Dateiendung</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="362"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="364"/>
         <source>Invalid File %s.
 Suffix not supported</source>
         <translation>Ungültige Datei %s.
 Dateiendung nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="128"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="166"/>
         <source>&amp;Clone</source>
         <translation>&amp;Klonen</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="405"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="407"/>
         <source>Duplicate files were found on import and were ignored.</source>
         <translation>Duplikate wurden beim Importieren gefunden und wurden ignoriert.</translation>
     </message>
@@ -4214,7 +4288,7 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="507"/>
         <source>Service File(s) Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Ablaufdatei(en) fehlen</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="509"/>
@@ -4222,7 +4296,10 @@ Der Inhalt ist nicht in UTF-8 kodiert.</translation>
 <byte value="x9"/>%s
 
 These files will be removed if you continue to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die folgende(n) Datei(en) fehlen im Ablauf:
+&lt;byte value=&quot;x9&quot;/&gt;%s
+
+Diese Dateien werden entfernt, wenn Sie mit dem Speichern fortfahren mit.</translation>
     </message>
 </context>
 <context>
@@ -5052,7 +5129,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="237"/>
         <source>You have not selected a background image. Please select one before continuing.</source>
-        <translation>Sie müssen ein Hintergrundbild auswählen.</translation>
+        <translation>Sie haben kein Hintergrundbild ausgewählt. Bitte wählen sie eins um fortzufahren.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="541"/>
@@ -5067,7 +5144,7 @@ These files will be removed if you continue to save.</source>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="623"/>
         <source>There is no name for this theme. Please enter one.</source>
-        <translation>Es wurde kein Designname angegeben.</translation>
+        <translation>Es wurde kein Designname angegeben. Bitte geben Sie eine an.</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/themeform.py" line="629"/>
@@ -6995,27 +7072,27 @@ Easy Worship]</translation>
 <context>
     <name>SongsPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Titles</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Lyrics</source>
         <translation>Liedtext</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="520"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="557"/>
         <source>CCLI License: </source>
         <translation>CCLI-Lizenz: </translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Entire Song</source>
         <translation>Ganzes Lied</translation>
     </message>
     <message numerus="yes">
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="402"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="439"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
         <translation>
             <numerusform>Soll das markierte Lied wirklich gelöscht werden?</numerusform>
@@ -7023,38 +7100,38 @@ Easy Worship]</translation>
         </translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="150"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="188"/>
         <source>Maintain the lists of authors, topics and books.</source>
         <translation>Autoren, Themen und Bücher verwalten.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="447"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="484"/>
         <source>copy</source>
         <comment>For song cloning</comment>
         <translation>Kopie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Titles...</source>
         <translation>Suche Titel...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Entire Song...</source>
         <translation>Suche im ganzem Lied...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Lyrics...</source>
         <translation>Suche Liedtext...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Authors...</source>
         <translation>Suche Autoren...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Song Books...</source>
         <translation>Suche Liederbücher...</translation>
     </message>

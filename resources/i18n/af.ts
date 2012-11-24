@@ -175,12 +175,12 @@ Gaan steeds voort?</translation>
         <translation>Bybels</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="605"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="600"/>
         <source>No Book Found</source>
         <translation>Geen Boek Gevind nie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="605"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="600"/>
         <source>No matching book could be found in this Bible. Check that you have spelled the name of the book correctly.</source>
         <translation>Geen passende boek kon in hierdie Bybel gevind word nie. Gaan na dat die naam van die boek korrek gespel is.</translation>
     </message>
@@ -1045,38 +1045,38 @@ Dit is nie moontlik om die Boek Name aan te pas nie.</translation>
 <context>
     <name>BiblesPlugin.HTTPBible</name>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="519"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="514"/>
         <source>Registering Bible and loading books...</source>
         <translation>Registreer Bybel en laai boeke...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="544"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="539"/>
         <source>Registering Language...</source>
         <translation>Taal registrasie...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="560"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="555"/>
         <source>Importing %s...</source>
         <comment>Importing &lt;book name&gt;...</comment>
         <translation>Voer %s in...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="727"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="722"/>
         <source>Download Error</source>
         <translation>Aflaai Fout</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="727"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="722"/>
         <source>There was a problem downloading your verse selection. Please check your Internet connection, and if this error continues to occur please consider reporting a bug.</source>
         <translation>Daar was &apos;n probleem om die vers seleksie af te laai. Gaan die Internet konneksie na en as hierdie probleem voortduur, oorweeg dit asseblief om &apos;n gogga te rapporteer.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="734"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="729"/>
         <source>Parse Error</source>
         <translation>Ontleed Fout</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/bibles/lib/http.py" line="734"/>
+        <location filename="openlp/plugins/bibles/lib/http.py" line="729"/>
         <source>There was a problem extracting your verse selection. If this error continues to occur please consider reporting a bug.</source>
         <translation>Daar was &apos;n probleem om die vers seleksie te onttrek. As hierdie probleem voortduur, oorweeg dit asseblief om &apos;n gogga te rapporteer.</translation>
     </message>
@@ -2140,7 +2140,78 @@ Final Credit
     on the cross, setting us free from sin. We
     bring this software to you for free because
     He has set us free.</source>
-        <translation type="unfinished"></translation>
+        <translation>Projek Leier
+ %s
+ 
+Ontwikkelaars
+ %s 
+
+Bydraers
+ %s 
+
+Toetsers
+ %s 
+
+Verpakkers
+ %s 
+
+Vertalers 
+Afrikaans (af)
+ %s
+Szech (cs)
+ %s
+Deens (da)
+ %s
+Duits (de)
+ %s
+Grieks (el)
+ %s 
+Engels, Verenigde Koningkryk (en_GB)
+ %s 
+Engels, Suid-Afrika (en_ZA)
+ %s
+Spaans (es)
+ %s 
+Estonian (et)
+ %s 
+Frans (fr)
+ %s 
+Hongaars (hu)
+ %s 
+Japanees (ja)
+ %s 
+Noors Bokmål (nb)
+ %s 
+Nederlands (nl)
+ %s 
+Portugees, Brazilië (pt_BR)
+ %s 
+Russies (ru)
+ %s 
+Sweeds (sv)
+ %s
+
+Dokumentasie
+ %s 
+Gebou Met 
+Python: http://www.python.org/ 
+Qt4: http://qt.nokia.com/ 
+PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/intro 
+Oxygen Ikone: http://oxygen-icons.org/ 
+
+Finale Krediet 
+&quot;Want so lief het God die wêreld gehad,
+dat Hy sy eniggebore Seun gegee het, 
+sodat elkeen wat in Hom glo, nie verlore
+mag gaan nie, maar die ewige lewe kan 
+hê.&quot; -- Johannes 3:16 
+
+En laaste maar nie die minste nie. Finale 
+krediet gaan aan God ons Vader, wat Sy 
+Seun vir ons gestuur het om aan die kruis
+te sterf en ons vry te maak van sonde. 
+Ons bring hierdie sagteware gratis voort
+omdat Hy ons vry gemaak het.</translation>
     </message>
 </context>
 <context>
@@ -3680,12 +3751,12 @@ Verwerking is getermineer en verandering was gemaak nie.</translation>
 <context>
     <name>OpenLP.Manager</name>
     <message>
-        <location filename="openlp/core/lib/db.py" line="229"/>
+        <location filename="openlp/core/lib/db.py" line="232"/>
         <source>Database Error</source>
         <translation>Databasis Fout</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="215"/>
+        <location filename="openlp/core/lib/db.py" line="218"/>
         <source>The database being loaded was created in a more recent version of OpenLP. The database is version %d, while OpenLP expects version %d. The database will not be loaded.
 
 Database: %s</source>
@@ -3694,7 +3765,7 @@ Database: %s</source>
 Databasis: %s</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/db.py" line="229"/>
+        <location filename="openlp/core/lib/db.py" line="232"/>
         <source>OpenLP cannot load your database.
 
 Database: %s</source>
@@ -3711,68 +3782,68 @@ Databasis: %s</translation>
         <translation>Geen item geselekteer nie</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="257"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="258"/>
         <source>&amp;Add to selected Service Item</source>
         <translation>&amp;Voeg by die geselekteerde Diens item</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="489"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="491"/>
         <source>You must select one or more items to preview.</source>
         <translation>Kies een of meer items vir die voorskou.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="507"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="509"/>
         <source>You must select one or more items to send live.</source>
         <translation>Kies een of meer items vir regstreekse uitsending.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="560"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="562"/>
         <source>You must select one or more items.</source>
         <translation>Kies een of meer items.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="567"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="569"/>
         <source>You must select an existing service item to add to.</source>
         <translation>&apos;n Bestaande diens item moet geselekteer word om by by te voeg.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="576"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="578"/>
         <source>Invalid Service Item</source>
         <translation>Ongeldige Diens Item</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="576"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="578"/>
         <source>You must select a %s service item.</source>
         <translation>Kies &apos;n %s diens item.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="534"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="536"/>
         <source>You must select one or more items to add.</source>
         <translation>Kies een of meer items om by te voeg.</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="606"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="608"/>
         <source>No Search Results</source>
         <translation>Geen Soek Resultate</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="362"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="364"/>
         <source>Invalid File Type</source>
         <translation>Ongeldige Lêer Tipe</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="362"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="364"/>
         <source>Invalid File %s.
 Suffix not supported</source>
         <translation>Ongeldige Lêer %s. Agtervoegsel nie ondersteun nie</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="128"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="166"/>
         <source>&amp;Clone</source>
         <translation>&amp;Kloon</translation>
     </message>
     <message>
-        <location filename="openlp/core/lib/mediamanageritem.py" line="405"/>
+        <location filename="openlp/core/lib/mediamanageritem.py" line="407"/>
         <source>Duplicate files were found on import and were ignored.</source>
         <translation>Duplikaat lêers gevind tydens invoer en is geïgnoreer.</translation>
     </message>
@@ -4235,7 +4306,7 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="507"/>
         <source>Service File(s) Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Diens Lêer(s) Vermis</translation>
     </message>
     <message>
         <location filename="openlp/core/ui/servicemanager.py" line="509"/>
@@ -4243,7 +4314,10 @@ Die inhoud enkodering is nie UTF-8 nie.</translation>
 <byte value="x9"/>%s
 
 These files will be removed if you continue to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die volgende lêer(s) in die diens is vermis:
+&lt;byte value=&quot;x9&quot;/&gt;%s
+
+Hierdie lêers sal verwyder word as jy voortgaan om te stoor.</translation>
     </message>
 </context>
 <context>
@@ -7016,27 +7090,27 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
 <context>
     <name>SongsPlugin.MediaItem</name>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Titles</source>
         <translation>Titels</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Lyrics</source>
         <translation>Lirieke</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="520"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="557"/>
         <source>CCLI License: </source>
         <translation>CCLI Lisensie:</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Entire Song</source>
         <translation>Volledige Lied</translation>
     </message>
     <message numerus="yes">
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="402"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="439"/>
         <source>Are you sure you want to delete the %n selected song(s)?</source>
         <translation>
             <numerusform>Wis regtig die %n geselekteerde lied uit?</numerusform>
@@ -7044,38 +7118,38 @@ Die enkodering is verantwoordelik vir die korrekte karrakter voorstelling.</tran
         </translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="150"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="188"/>
         <source>Maintain the lists of authors, topics and books.</source>
         <translation>Onderhou die lys van skrywers, onderwerpe en boeke.</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="447"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="484"/>
         <source>copy</source>
         <comment>For song cloning</comment>
         <translation>kopieër</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Titles...</source>
         <translation>Soek Titels...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Entire Song...</source>
         <translation>Soek deur hele Lied...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Lyrics...</source>
         <translation>Soek Lirieke...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Authors...</source>
         <translation>Soek Outeure...</translation>
     </message>
     <message>
-        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="154"/>
+        <location filename="openlp/plugins/songs/lib/mediaitem.py" line="192"/>
         <source>Search Song Books...</source>
         <translation>Soek Lied Boeke...</translation>
     </message>
