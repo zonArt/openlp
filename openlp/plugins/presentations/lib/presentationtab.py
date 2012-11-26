@@ -145,7 +145,7 @@ class PresentationTab(SettingsTab):
         if changed:
             self.parent.resetSupportedSuffixes()
             Receiver.send_message(u'mediaitem_presentation_rebuild')
-            Receiver.send_message(u'mediaitem_suffexes')
+            Receiver.send_message(u'mediaitem_suffixes')
 
     def tabVisible(self):
         """

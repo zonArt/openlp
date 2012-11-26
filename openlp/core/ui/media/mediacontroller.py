@@ -92,7 +92,7 @@ class MediaController(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'mediaitem_media_rebuild'), self._set_active_players)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_suffexes'),
+            QtCore.SIGNAL(u'mediaitem_suffixes'),
             self._generate_extensions_lists)
 
     def _set_active_players(self):

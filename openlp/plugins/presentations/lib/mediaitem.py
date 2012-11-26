@@ -67,7 +67,7 @@ class PresentationMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
             self.populateDisplayTypes)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_suffexes'), self.buildFileMaskString)
+            QtCore.SIGNAL(u'mediaitem_suffixes'), self.buildFileMaskString)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 

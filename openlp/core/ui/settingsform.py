@@ -99,7 +99,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        self.resetSuffexes = True
+        self.resetSuffixes = True
         for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
@@ -135,10 +135,10 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
 
     def resetSupportedSuffixes(self):
         """
-        Control the resetting of the serviceManager suffex list as can be
+        Control the resetting of the serviceManager suffix list as can be
         called by a number of settings tab and only needs to be called once
         per save.
         """
-        if self.resetSuffexes:
+        if self.resetSuffixes:
             self.mainWindow.serviceManagerContents.resetSupportedSuffixes()
-            self.resetSuffexes = False
+            self.resetSuffixes = False

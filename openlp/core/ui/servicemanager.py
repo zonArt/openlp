@@ -386,7 +386,7 @@ class ServiceManager(QtGui.QWidget):
 
     def resetSupportedSuffixes(self):
         """
-        Resets the Suffexes list.
+        Resets the Suffixes list.
 
         """
         self.suffixes = []
