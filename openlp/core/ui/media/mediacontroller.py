@@ -314,6 +314,8 @@ class MediaController(object):
         # update player status
         self._set_active_players()
         display.hasAudio = True
+        if display.isLive and preview:
+            return
         if preview:
             display.hasAudio = False
         for player in self.mediaPlayers.values():
