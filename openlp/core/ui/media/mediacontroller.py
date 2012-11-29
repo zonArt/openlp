@@ -597,7 +597,7 @@ class MediaController(object):
         """
         log.debug(u'media_stop')
         display = self._define_display(controller)
-        if display in self.currentMediaPlayer:
+        if controller.controllerType in self.currentMediaPlayer:
             display.frame.evaluateJavaScript(u'show_blank("black");')
             self.currentMediaPlayer[controller.controllerType].stop(display)
             self.currentMediaPlayer[controller.controllerType] \
