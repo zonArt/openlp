@@ -94,7 +94,8 @@ class BGExtract(object):
         """
         if isinstance(tag, NavigableString):
             return None, unicode(tag)
-        elif tag.get('class') == 'versenum':
+        elif tag.get('class') == 'versenum' or \
+             tag.get('class') == 'versenum mid-line':
             verse = unicode(tag.string)\
                 .replace('[', '').replace(']', '').strip()
             return verse, None
