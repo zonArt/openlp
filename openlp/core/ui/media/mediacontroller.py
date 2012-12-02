@@ -642,7 +642,7 @@ class MediaController(object):
         log.debug(u'media_reset')
         self.set_controls_visible(controller, False)
         display = self._define_display(controller)
-        if display in self.currentMediaPlayer:
+        if controller.controllerType in self.currentMediaPlayer:
             display.override = {}
             self.currentMediaPlayer[controller.controllerType].reset(display)
             self.currentMediaPlayer[controller.controllerType] \
