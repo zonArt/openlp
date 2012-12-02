@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,7 +28,6 @@
 ###############################################################################
 
 import logging
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -38,6 +38,7 @@ from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, \
     create_horizontal_adjusting_combo_box, critical_error_message_box, \
     find_and_set_in_combo_box, build_icon
+from openlp.core.utils import locale_compare
 from openlp.plugins.bibles.forms import BibleImportForm, EditBibleForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, \
     VerseReferenceList, get_reference_separator, LanguageSelection, \
@@ -381,7 +382,7 @@ class BibleMediaItem(MediaManagerItem):
         # Get all bibles and sort the list.
         bibles = self.plugin.manager.get_bibles().keys()
         bibles = filter(None, bibles)
-        bibles.sort(cmp=locale.strcoll)
+        bibles.sort(cmp=locale_compare)
         # Load the bibles into the combo boxes.
         self.quickVersionComboBox.addItems(bibles)
         self.quickSecondComboBox.addItems(bibles)
@@ -538,7 +539,7 @@ class BibleMediaItem(MediaManagerItem):
                         data = BiblesResourcesDB.get_book_by_id(
                         book.book_reference_id)
                         books.append(data[u'name'] + u' ')
-                books.sort(cmp=locale.strcoll)
+                books.sort(cmp=locale_compare)
         set_case_insensitive_completer(books, self.quickSearchEdit)
 
     def onImportClick(self):

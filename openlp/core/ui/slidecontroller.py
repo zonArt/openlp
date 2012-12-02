@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -847,7 +848,11 @@ class SlideController(Controller):
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
-                label.setScaledContents(True)
+                if serviceItem.is_media():
+                    label.setAlignment(QtCore.Qt.AlignHCenter |
+                        QtCore.Qt.AlignVCenter)
+                else:
+                    label.setScaledContents(True)
                 if self.serviceItem.is_command():
                     label.setPixmap(QtGui.QPixmap(frame[u'image']))
                 else:
@@ -1338,7 +1343,7 @@ class SlideController(Controller):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
-        file = os.path.join(item.get_frame_path(), item.get_frame_title())
+        file = item.get_frame_path()
         self.mediaController.video(self, file, False, False, self.hideMode())
         if not self.isLive or self.mediaController.withLivePreview:
             self.previewDisplay.show()

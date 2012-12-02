@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -57,8 +58,6 @@ class AlertsManager(QtCore.QObject):
         """
         if message:
             self.displayAlert(message[0])
-        else:
-            self.displayAlert(u'')
 
     def displayAlert(self, text=u''):
         """
@@ -68,14 +67,15 @@ class AlertsManager(QtCore.QObject):
             display text
         """
         log.debug(u'display alert called %s' % text)
-        self.alertList.append(text)
-        if self.timer_id != 0:
-            Receiver.send_message(u'mainwindow_status_text',
-                translate('AlertsPlugin.AlertsManager',
-                'Alert message created and displayed.'))
-            return
-        Receiver.send_message(u'mainwindow_status_text', u'')
-        self.generateAlert()
+        if text:
+            self.alertList.append(text)
+            if self.timer_id != 0:
+                Receiver.send_message(u'mainwindow_status_text',
+                    translate('AlertsPlugin.AlertsManager',
+                    'Alert message created and displayed.'))
+                return
+            Receiver.send_message(u'mainwindow_status_text', u'')
+            self.generateAlert()
 
     def generateAlert(self):
         """

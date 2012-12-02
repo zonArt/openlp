@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -355,37 +356,8 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
         if not book_ref_id:
-            book_names = BibleStrings().BookNames
-            # escape reserved characters
-            book_escaped = book
-            for character in u'\\.^$*+?{}[]()':
-                book_escaped = book_escaped.replace(
-                    character, u'\\' + character)
-            regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
-                book_escaped.split()), re.UNICODE | re.IGNORECASE)
-            if language_selection == LanguageSelection.Bible:
-                db_book = bible.get_book(book)
-                if db_book:
-                    book_ref_id = db_book.book_reference_id
-            elif language_selection == LanguageSelection.Application:
-                books = filter(lambda key:
-                    regex_book.match(unicode(book_names[key])), book_names.keys())
-                books = filter(None, map(BiblesResourcesDB.get_book, books))
-                for value in books:
-                    if bible.get_book_by_book_ref_id(value[u'id']):
-                        book_ref_id = value[u'id']
-                        break
-            elif language_selection == LanguageSelection.English:
-                books = BiblesResourcesDB.get_books_like(book)
-                if books:
-                    book_list = filter(
-                        lambda value: regex_book.match(value[u'name']), books)
-                    if not book_list:
-                        book_list = books
-                    for value in book_list:
-                        if bible.get_book_by_book_ref_id(value[u'id']):
-                            book_ref_id = value[u'id']
-                            break
+            book_ref_id = bible.get_book_ref_id_by_localised_name(
+                book, language_selection)
         elif not bible.get_book_by_book_ref_id(book_ref_id):
             book_ref_id = False
         ranges = match.group(u'ranges')

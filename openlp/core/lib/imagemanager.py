@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -125,7 +126,9 @@ class Image(object):
         self.priority = Priority.Normal
         self.source = source
         self.background = background
-        self.timestamp = os.stat(path).st_mtime
+        self.timestamp = 0
+        if os.path.exists(path):
+            self.timestamp = os.stat(path).st_mtime
         self.secondary_priority = Image.secondary_priority
         Image.secondary_priority += 1
 
@@ -295,9 +298,11 @@ class ImageManager(QtCore.QObject):
         # Check if the there are any images with the same path and check if the
         # timestamp has changed.
         for image in self._cache.values():
-            if image.path == path and image.timestamp != os.stat(path).st_mtime:
-                image.timestamp = os.stat(path).st_mtime
-                self._resetImage(image)
+            if os.path.exists(path):
+                if image.path == path and \
+                    image.timestamp != os.stat(path).st_mtime:
+                    image.timestamp = os.stat(path).st_mtime
+                    self._resetImage(image)
         # We want only one thread.
         if not self.imageThread.isRunning():
             self.imageThread.start()

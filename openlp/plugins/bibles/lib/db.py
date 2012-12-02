@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +30,7 @@
 import chardet
 import logging
 import os
+import re
 import sqlite3
 
 from PyQt4 import QtCore
@@ -43,6 +45,8 @@ from openlp.core.utils import AppLocation, clean_filename
 import upgrade
 
 log = logging.getLogger(__name__)
+
+RESERVED_CHARACTERS = u'\\.^$*+?{}[]()'
 
 class BibleMeta(BaseModel):
     """
@@ -351,6 +355,53 @@ class BibleDB(QtCore.QObject, Manager):
                 AlternativeBookNamesDB.create_alternative_book_name(
                     book, book_id, language_id)
         return book_id
+
+    def get_book_ref_id_by_localised_name(self, book,
+        language_selection):
+        """
+        Return the id of a named book.
+
+        ``book``
+            The name of the book, according to the selected language.
+        
+        ``language_selection``
+            The language selection the user has chosen in the settings
+            section of the Bible.
+        """
+        log.debug(u'get_book_ref_id_by_localised_name("%s", "%s")',
+            book, language_selection)
+        from openlp.plugins.bibles.lib import LanguageSelection, \
+            BibleStrings
+        book_names = BibleStrings().BookNames
+        # escape reserved characters
+        book_escaped = book
+        for character in RESERVED_CHARACTERS:
+            book_escaped = book_escaped.replace(
+                character, u'\\' + character)
+        regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
+            book_escaped.split()), re.UNICODE | re.IGNORECASE)
+        if language_selection == LanguageSelection.Bible:
+            db_book = self.get_book(book)
+            if db_book:
+                return db_book.book_reference_id
+        elif language_selection == LanguageSelection.Application:
+            books = filter(lambda key:
+                regex_book.match(unicode(book_names[key])), book_names.keys())
+            books = filter(None, map(BiblesResourcesDB.get_book, books))
+            for value in books:
+                if self.get_book_by_book_ref_id(value[u'id']):
+                    return value[u'id']
+        elif language_selection == LanguageSelection.English:
+            books = BiblesResourcesDB.get_books_like(book)
+            if books:
+                book_list = filter(
+                    lambda value: regex_book.match(value[u'name']), books)
+                if not book_list:
+                    book_list = books
+                for value in book_list:
+                    if self.get_book_by_book_ref_id(value[u'id']):
+                        return value[u'id']
+        return False
 
     def get_verses(self, reference_list, show_error=True):
         """

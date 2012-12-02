@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -154,18 +155,20 @@ class SundayPlusImport(SongImport):
                         # If any line inside any verse contains CCLI or
                         # only Public Domain, we treat this as special data:
                         # we remove that line and add data to specific field.
+                        processed_lines = []
                         for i in xrange(len(lines)):
-                            lines[i] = lines[i].strip()
-                            line = lines[i]
-                            if line[:4].lower() == u'ccli':
+                            line = lines[i].strip()
+                            if line[:3].lower() == u'ccl':
                                 m = re.search(r'[0-9]+', line)
                                 if m:
                                     self.ccliNumber = int(m.group(0))
-                                    lines.pop(i)
+                                    continue
                             elif line.lower() == u'public domain':
                                 self.copyright = u'Public Domain'
-                                lines.pop(i)
-                        self.addVerse('\n'.join(lines).strip(), verse_type)
+                                continue
+                            processed_lines.append(line)
+                        self.addVerse('\n'.join(processed_lines).strip(),
+                            verse_type)
                 if end == -1:
                     break
                 i = end + 1

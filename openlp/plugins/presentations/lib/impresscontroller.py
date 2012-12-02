@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -153,7 +154,7 @@ class ImpressController(PresentationController):
         desktop = None
         try:
             desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
-        except AttributeError:
+        except (AttributeError, pywintypes.com_error):
             log.warn(u'Failure to find desktop - Impress may have closed')
         return desktop if desktop else None
 
@@ -284,6 +285,8 @@ class ImpressDocument(PresentationDocument):
         props = tuple(props)
         doc = self.document
         pages = doc.getDrawPages()
+        if not pages:
+            return
         if not os.path.isdir(self.get_temp_folder()):
             os.makedirs(self.get_temp_folder())
         for idx in range(pages.getCount()):
@@ -359,7 +362,7 @@ class ImpressDocument(PresentationDocument):
         log.debug(u'is active OpenOffice')
         if not self.is_loaded():
             return False
-        return self.control is not None
+        return self.control.isRunning() if self.control else False
 
     def unblank_screen(self):
         """
@@ -380,7 +383,7 @@ class ImpressDocument(PresentationDocument):
         Returns true if screen is blank
         """
         log.debug(u'is blank OpenOffice')
-        if self.control:
+        if self.control and self.control.isRunning():
             return self.control.isPaused()
         else:
             return False
@@ -436,7 +439,11 @@ class ImpressDocument(PresentationDocument):
         """
         Triggers the next effect of slide on the running presentation
         """
+        is_paused = self.control.isPaused()
         self.control.gotoNextEffect()
+        time.sleep(0.1)
+        if not is_paused and self.control.isPaused():
+            self.control.gotoPreviousEffect()
 
     def previous_step(self):
         """

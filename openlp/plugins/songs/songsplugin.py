@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,6 +30,7 @@
 import logging
 import os
 from tempfile import gettempdir
+import sqlite3
 
 from PyQt4 import QtCore, QtGui
 
@@ -82,7 +84,7 @@ class SongsPlugin(Plugin):
             unicode(UiStrings().Tools))
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_new_service'),
-        self.clearTemporarySongs)
+            self.clearTemporarySongs)
 
 
     def addImportMenuItem(self, import_menu):
@@ -235,31 +237,37 @@ class SongsPlugin(Plugin):
         If the first time wizard has run, this function is run to import all the
         new songs into the database.
         """
+        Receiver.send_message(u'openlp_process_events')
         self.onToolsReindexItemTriggered()
+        Receiver.send_message(u'openlp_process_events')
         db_dir = unicode(os.path.join(
             unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         if not os.path.exists(db_dir):
             return
         song_dbs = []
+        song_count = 0
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
+                Receiver.send_message(u'openlp_process_events')
                 song_dbs.append(os.path.join(db_dir, sfile))
+                song_count += self._countSongs(os.path.join(db_dir, sfile))
         if not song_dbs:
             return
+        Receiver.send_message(u'openlp_process_events')
         progress = QtGui.QProgressDialog(self.formParent)
         progress.setWindowModality(QtCore.Qt.WindowModal)
         progress.setWindowTitle(translate('OpenLP.Ui', 'Importing Songs'))
         progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))
         progress.setCancelButton(None)
-        progress.setRange(0, len(song_dbs))
+        progress.setRange(0, song_count)
         progress.setMinimumDuration(0)
         progress.forceShow()
-        for idx, db in enumerate(song_dbs):
-            progress.setValue(idx)
-            Receiver.send_message(u'openlp_process_events')
+        Receiver.send_message(u'openlp_process_events')
+        for db in song_dbs:
             importer = OpenLPSongImport(self.manager, filename=db)
-            importer.doImport()
-        progress.setValue(len(song_dbs))
+            importer.doImport(progress)
+            Receiver.send_message(u'openlp_process_events')
+        progress.setValue(song_count)
         self.mediaItem.onSearchTextButtonClicked()
 
     def finalise(self):
@@ -287,3 +295,15 @@ class SongsPlugin(Plugin):
         songs = self.manager.get_all_objects(Song, Song.temporary == True)
         for song in songs:
             self.manager.delete_object(Song, song.id)
+
+    def _countSongs(self, db_file):
+        connection = sqlite3.connect(db_file)
+        cursor = connection.cursor()
+        cursor.execute(u'SELECT COUNT(id) AS song_count FROM songs')
+        song_count = cursor.fetchone()[0]
+        connection.close()
+        try:
+            song_count = int(song_count)
+        except (TypeError, ValueError):
+            song_count = 0
+        return song_count

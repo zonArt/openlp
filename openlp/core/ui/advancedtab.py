@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,12 +30,12 @@
 The :mod:`advancedtab` provides an advanced settings facility.
 """
 from datetime import datetime, timedelta
-
-from PyQt4 import QtCore, QtGui
-
 import logging
 import os
 import sys
+
+from PyQt4 import QtCore, QtGui
+
 from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings
@@ -483,8 +484,14 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(True)).toBool()
         self.serviceNameCheckBox.setChecked(default_service_enabled)
         self.serviceNameCheckBoxToggled(default_service_enabled)
-        self.x11BypassCheckBox.setChecked(
-            settings.value(u'x11 bypass wm', QtCore.QVariant(True)).toBool())
+        # Fix for bug #1014422.
+        x11_bypass_default = True
+        if sys.platform.startswith(u'linux'):
+            # Default to False on Gnome.
+            x11_bypass_default = bool(not
+                os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+        self.x11BypassCheckBox.setChecked(settings.value(
+            u'x11 bypass wm', QtCore.QVariant(x11_bypass_default)).toBool())
         self.defaultColor = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',

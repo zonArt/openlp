@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +29,6 @@
 
 import logging
 import os
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -38,9 +38,12 @@ from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.core.lib.settings import Settings
+from openlp.core.utils import locale_compare
 from openlp.plugins.presentations.lib import MessageListener
 
 log = logging.getLogger(__name__)
+
+ERROR = QtGui.QImage(u':/general/general_delete.png')
 
 class PresentationMediaItem(MediaManagerItem):
     """
@@ -169,54 +172,63 @@ class PresentationMediaItem(MediaManagerItem):
         if not initialLoad:
             Receiver.send_message(u'cursor_busy')
             self.plugin.formParent.displayProgressBar(len(files))
-        # Sort the themes by its filename considering language specific
-        # characters. lower() is needed for windows!
-        files.sort(cmp=locale.strcoll,
-            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        # Sort the presentations by its filename considering language specific
+        # characters.
+        files.sort(cmp=locale_compare,
+            key=lambda filename: os.path.split(unicode(filename))[1])
         for file in files:
             if not initialLoad:
                 self.plugin.formParent.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
-            if titles.count(filename) > 0:
-                if not initialLoad:
-                    critical_error_message_box(
-                        translate('PresentationPlugin.MediaItem',
-                        'File Exists'),
-                        translate('PresentationPlugin.MediaItem',
-                        'A presentation with that filename already exists.'))
-                continue
-            controller_name = self.findControllerByType(filename)
-            if controller_name:
-                controller = self.controllers[controller_name]
-                doc = controller.add_document(unicode(file))
-                thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
-                preview = doc.get_thumbnail_path(1, True)
-                if not preview and not initialLoad:
-                    doc.load_presentation()
-                    preview = doc.get_thumbnail_path(1, True)
-                doc.close_presentation()
-                if not (preview and os.path.exists(preview)):
-                    icon = build_icon(u':/general/general_delete.png')
-                else:
-                    if validate_thumb(preview, thumb):
-                        icon = build_icon(thumb)
-                    else:
-                        icon = create_thumb(preview, thumb)
+            if not os.path.exists(file):
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(build_icon(ERROR))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setToolTip(file)
+                self.listView.addItem(item_name)
             else:
-                if initialLoad:
-                    icon = build_icon(u':/general/general_delete.png')
-                else:
-                    critical_error_message_box(UiStrings().UnsupportedFile,
-                        translate('PresentationPlugin.MediaItem',
-                        'This type of presentation is not supported.'))
+                if titles.count(filename) > 0:
+                    if not initialLoad:
+                        critical_error_message_box(
+                            translate('PresentationPlugin.MediaItem',
+                            'File Exists'),
+                            translate('PresentationPlugin.MediaItem',
+                            'A presentation with that filename already exists.')
+                            )
                     continue
-            item_name = QtGui.QListWidgetItem(filename)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
-            item_name.setIcon(icon)
-            item_name.setToolTip(file)
-            self.listView.addItem(item_name)
+                controller_name = self.findControllerByType(filename)
+                if controller_name:
+                    controller = self.controllers[controller_name]
+                    doc = controller.add_document(unicode(file))
+                    thumb = os.path.join(doc.get_thumbnail_folder(),
+                        u'icon.png')
+                    preview = doc.get_thumbnail_path(1, True)
+                    if not preview and not initialLoad:
+                        doc.load_presentation()
+                        preview = doc.get_thumbnail_path(1, True)
+                    doc.close_presentation()
+                    if not (preview and os.path.exists(preview)):
+                        icon = build_icon(u':/general/general_delete.png')
+                    else:
+                        if validate_thumb(preview, thumb):
+                            icon = build_icon(thumb)
+                        else:
+                            icon = create_thumb(preview, thumb)
+                else:
+                    if initialLoad:
+                        icon = build_icon(u':/general/general_delete.png')
+                    else:
+                        critical_error_message_box(UiStrings().UnsupportedFile,
+                            translate('PresentationPlugin.MediaItem',
+                            'This type of presentation is not supported.'))
+                        continue
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setIcon(icon)
+                item_name.setToolTip(file)
+                self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
             self.plugin.formParent.finishedProgressBar()

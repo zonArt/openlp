@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -93,7 +94,8 @@ class BGExtract(object):
         """
         if isinstance(tag, NavigableString):
             return None, unicode(tag)
-        elif tag.get('class') == 'versenum':
+        elif tag.get('class') == 'versenum' or \
+             tag.get('class') == 'versenum mid-line':
             verse = unicode(tag.string)\
                 .replace('[', '').replace(']', '').strip()
             return verse, None
@@ -160,10 +162,12 @@ class BGExtract(object):
                 verse = verse.strip()
                 try:
                     verse = int(verse)
-                except (TypeError, ValueError):
+                except ValueError:
                     verse_parts = verse.split(u'-')
                     if len(verse_parts) > 1:
                         verse = int(verse_parts[0])
+                except TypeError:
+                    log.warn(u'Illegal verse number: %s', unicode(raw_verse_num))
                 verses.append((verse, text))
         verse_list = {}
         for verse, text in verses[::-1]:
@@ -194,6 +198,10 @@ class BGExtract(object):
             try:
                 clean_verse_num = int(str(raw_verse_num))
             except ValueError:
+                verse_parts = str(raw_verse_num).split(u'-')
+                if len(verse_parts) > 1:
+                    clean_verse_num = int(verse_parts[0])
+            except TypeError:
                 log.warn(u'Illegal verse number: %s', unicode(raw_verse_num))
             if clean_verse_num:
                 verse_text = raw_verse_num.next
@@ -272,14 +280,8 @@ class BGExtract(object):
             page_source = unicode(page_source, u'utf8')
         except UnicodeDecodeError:
             page_source = unicode(page_source, u'cp1251')
-        page_source_temp = re.search(u'<table .*?class="infotable".*?>.*?'\
-            u'</table>', page_source, re.DOTALL)
-        if page_source_temp:
-            soup = page_source_temp.group(0)
-        else:
-            soup = None
         try:
-            soup = BeautifulSoup(soup)
+            soup = BeautifulSoup(page_source)
         except HTMLParseError:
             log.error(u'BeautifulSoup could not parse the Bible page.')
             send_error_message(u'parse')
@@ -288,8 +290,9 @@ class BGExtract(object):
             send_error_message(u'parse')
             return None
         Receiver.send_message(u'openlp_process_events')
-        content = soup.find(u'table', {u'class': u'infotable'})
-        content = content.findAll(u'tr')
+        content = soup.find(u'table', u'infotable')
+        if content:
+            content = content.findAll(u'tr')
         if not content:
             log.error(u'No books found in the Biblegateway response.')
             send_error_message(u'parse')

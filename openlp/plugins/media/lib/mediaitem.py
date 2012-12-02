@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,7 +29,6 @@
 
 import logging
 import os
-import locale
 
 from PyQt4 import QtCore, QtGui
 
@@ -39,12 +39,15 @@ from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.core.ui import Controller, Display
 from openlp.core.ui.media import get_media_players, set_media_players
+from openlp.core.utils import locale_compare
 
 log = logging.getLogger(__name__)
 
-CLAPPERBOARD = QtGui.QImage(u':/media/media_video.png')
-#TODO: Add an appropriate Icon for DVDs, CDs, ...
+CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
+VIDEO = QtGui.QImage(u':/media/media_video.png')
+AUDIO = QtGui.QImage(u':/media/media_audio.png')
 DVD_ICON = QtGui.QImage(u':/media/media_video.png')
+ERROR = QtGui.QImage(u':/general/general_delete.png')
 
 class MediaMediaItem(MediaManagerItem):
     """
@@ -203,11 +206,20 @@ class MediaMediaItem(MediaManagerItem):
                             'The file %s no longer exists.')) % filename)
             return False
         self.mediaLength = 0
-        if self.plugin.mediaController.video( \
-                    self.mediaController, filename, False, False):
+        # Get media information and its length.
+        #
+        # This code (mediaController.video()) starts playback but we
+        # need only media information not video to start. Otherwise
+        # video is played twice. Find another way to get media info
+        # without loading and starting video playback.
+        #
+        # TODO Test getting media length with other media backends
+        # Phonon/Webkit.
+        if self.plugin.mediaController.video(self.mediaController,
+                    filename, muted=False, isBackground=False, isInfo=True,
+                    controlsVisible=False):
             self.mediaLength = self.mediaController.media_info.length
             service_item.media_length = self.mediaLength
-            self.plugin.mediaController.video_reset(self.mediaController)
             if self.mediaLength > 0:
                 service_item.add_capability(
                     ItemCapabilities.HasVariableStartTime)
@@ -218,7 +230,7 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         # force a non-existent theme
         service_item.theme = -1
-        frame = u':/media/image_clapperboard.png'
+        frame = CLAPPERBOARD
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, frame)
         return True
@@ -284,16 +296,21 @@ class MediaMediaItem(MediaManagerItem):
                 u'media', self.getFileList())
 
     def loadList(self, media):
-        # Sort the themes by its filename considering language specific
-        # characters. lower() is needed for windows!
-        media.sort(cmp=locale.strcoll,
-            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        # Sort the media by its filename considering language specific
+        # characters.
+        media.sort(cmp=locale_compare,
+            key=lambda filename: os.path.split(unicode(filename))[1])
         for track in media:
             track_info = QtCore.QFileInfo(track)
-            if not track_info.isFile():
+            if not os.path.exists(track):
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                item_name.setIcon(build_icon(CLAPPERBOARD))
+                item_name.setIcon(build_icon(ERROR))
+                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+            elif track_info.isFile():
+                filename = os.path.split(unicode(track))[1]
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(build_icon(VIDEO))
                 item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
             else:
                 filename = os.path.split(unicode(track))[1]
@@ -306,8 +323,8 @@ class MediaMediaItem(MediaManagerItem):
 
     def getList(self, type=MediaType.Audio):
         media = SettingsManager.load_list(self.settingsSection, u'media')
-        media.sort(cmp=locale.strcoll,
-            key=lambda filename: os.path.split(unicode(filename))[1].lower())
+        media.sort(cmp=locale_compare,
+            key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
             ext = self.plugin.audio_extensions_list

@@ -7,10 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky                                             #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -277,8 +278,9 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
-        db_book = self.db_cache[bible].get_book(book)
-        book_ref_id = db_book.book_reference_id
+        language_selection = self.get_language_selection(bible)
+        book_ref_id = self.db_cache[bible].get_book_ref_id_by_localised_name(
+            book, language_selection)
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
     def get_verse_count_by_book_ref_id(self, bible, book_ref_id, chapter):
@@ -366,15 +368,20 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.get_language_selection("%s")', bible)
         language_selection = self.get_meta_data(bible, u'book_name_language')
-        if language_selection:
-            try:
-                language_selection = int(language_selection.value)
-            except (ValueError, TypeError):
-                language_selection = LanguageSelection.Application
-        if language_selection is None or language_selection == -1:
+        if not language_selection or \
+            language_selection.value == "None" or \
+            language_selection.value == "-1":
+            # If None is returned, it's not the singleton object but a
+            # BibleMeta object with the value "None"
             language_selection = Settings().value(
-                self.settingsSection + u'/bookname language',
+                self.settingsSection + u'/book name language',
                 QtCore.QVariant(0)).toInt()[0]
+        else:
+            language_selection = language_selection.value
+        try:
+            language_selection = int(language_selection)
+        except (ValueError, TypeError):
+            language_selection = LanguageSelection.Application
         return language_selection
 
     def verse_search(self, bible, second_bible, text):
