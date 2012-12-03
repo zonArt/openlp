@@ -543,9 +543,14 @@ class MediaController(object):
             display.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.currentMediaPlayer[controller.controllerType]\
                 .set_visible(display, True)
-            controller.mediabar.actions[u'playbackPlay'].setVisible(False)
+            # Flash needs to be played and will not AutoPlay
+            if controller.media_info.is_flash:
+                controller.mediabar.actions[u'playbackPlay'].setVisible(True)
+                controller.mediabar.actions[u'playbackPause'].setVisible(False)
+            else:
+                controller.mediabar.actions[u'playbackPlay'].setVisible(False)
+                controller.mediabar.actions[u'playbackPause'].setVisible(True)
             controller.mediabar.actions[u'playbackStop'].setVisible(True)
-            controller.mediabar.actions[u'playbackPause'].setVisible(True)
             if controller.isLive:
                 if controller.hideMenu.defaultAction().isChecked():
                     controller.hideMenu.defaultAction().trigger()
