@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -241,8 +241,19 @@ class ServiceItem(object):
             self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides: %s' % self.title)
+            # Save rendered pages to this dict. In the case that a slide is used
+            # twice we can use the pages saved to the dict instead of rendering
+            # them again.
+            previous_pages = {}
             for slide in self._raw_frames:
-                pages = self.renderer.format_slide(slide[u'raw_slide'], self)
+                verse_tag = slide[u'verseTag']
+                if verse_tag in previous_pages and \
+                    previous_pages[verse_tag][0] == slide[u'raw_slide']:
+                    pages = previous_pages[verse_tag][1]
+                else:
+                    pages = \
+                        self.renderer.format_slide(slide[u'raw_slide'], self)
+                    previous_pages[verse_tag] = (slide[u'raw_slide'], pages)
                 for page in pages:
                     page = page.replace(u'<br>', u'{br}')
                     html = expand_tags(cgi.escape(page.rstrip()))
@@ -250,7 +261,7 @@ class ServiceItem(object):
                         u'title': clean_tags(page),
                         u'text': clean_tags(page.rstrip()),
                         u'html': html.replace(u'&amp;nbsp;', u'&nbsp;'),
-                        u'verseTag': slide[u'verseTag']
+                        u'verseTag': verse_tag
                     })
         elif self.service_item_type == ServiceItemType.Image or \
             self.service_item_type == ServiceItemType.Command:
