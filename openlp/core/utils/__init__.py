@@ -32,6 +32,7 @@ The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 from datetime import datetime
 from distutils.version import LooseVersion
 import logging
+import locale
 import os
 import re
 from subprocess import Popen, PIPE
@@ -496,15 +497,17 @@ def locale_compare(string1, string2):
     or 0, depending on whether string1 collates before or after string2 or
     is equal to it. Comparison is case insensitive.
     """
-    # Function locale.strcol() from standard Python library does not work
+    # Function locale.strcoll() from standard Python library does not work
     # properly on Windows and probably somewhere else.
-    return QtCore.QString.localeAwareCompare(string1.lower(), string2.lower())
+    return locale.strcoll(string1.lower(), string2.lower())
+    # TODO: check code
+    #return QtCore.QString.localeAwareCompare(string1.lower(), string2.lower())
 
 
 # For performance reasons provide direct reference to compare function
 # without wrapping it in another function making te string lowercase.
 # This is needed for sorting songs.
-locale_direct_compare = QtCore.QString.localeAwareCompare
+locale_direct_compare = locale.strcoll
 
 
 from languagemanager import LanguageManager
