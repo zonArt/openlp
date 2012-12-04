@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -48,6 +48,44 @@ from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
+
+
+def natcmp(a, b):
+    """
+    Natural string comparison which mimics the behaviour of Python's internal
+    cmp function.
+    """
+    log.debug('a: %s; b: %s', a, b)
+    if len(a) <= len(b):
+        for i, key in enumerate(a):
+            if isinstance(key, int) and isinstance(b[i], int):
+                result = cmp(key, b[i])
+            elif isinstance(key, int) and not isinstance(b[i], int):
+                result = locale_direct_compare(str(key), b[i])
+            elif not isinstance(key, int) and isinstance(b[i], int):
+                result = locale_direct_compare(key, str(b[i]))
+            else:
+                result = locale_direct_compare(key, b[i])
+            if result != 0:
+                return result
+        if len(a) == len(b):
+            return 0
+        else:
+            return -1
+    else:
+        for i, key in enumerate(b):
+            if isinstance(a[i], int) and isinstance(key, int):
+                result = cmp(a[i], key)
+            elif isinstance(a[i], int) and not isinstance(key, int):
+                result = locale_direct_compare(str(a[i]), key)
+            elif not isinstance(a[i], int) and isinstance(key, int):
+                result = locale_direct_compare(a[i], str(key))
+            else:
+                result = locale_direct_compare(a[i], key)
+            if result != 0:
+                return result
+        return 1
+
 
 class SongSearch(object):
     """
@@ -254,8 +292,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.saveAutoSelectId()
         self.listView.clear()
-        searchresults.sort(
-            cmp=locale_direct_compare, key=lambda song: song.sort_string)
+        searchresults.sort(cmp=natcmp, key=lambda song: song.sort_key)
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary:

@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -181,8 +181,19 @@ class ServiceItem(object):
             self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides: %s' % self.title)
+            # Save rendered pages to this dict. In the case that a slide is used
+            # twice we can use the pages saved to the dict instead of rendering
+            # them again.
+            previous_pages = {}
             for slide in self._raw_frames:
-                pages = self.renderer.format_slide(slide[u'raw_slide'], self)
+                verse_tag = slide[u'verseTag']
+                if verse_tag in previous_pages and \
+                    previous_pages[verse_tag][0] == slide[u'raw_slide']:
+                    pages = previous_pages[verse_tag][1]
+                else:
+                    pages = \
+                        self.renderer.format_slide(slide[u'raw_slide'], self)
+                    previous_pages[verse_tag] = (slide[u'raw_slide'], pages)
                 for page in pages:
                     page = page.replace(u'<br>', u'{br}')
                     html = expand_tags(cgi.escape(page.rstrip()))
@@ -190,7 +201,7 @@ class ServiceItem(object):
                         u'title': clean_tags(page),
                         u'text': clean_tags(page.rstrip()),
                         u'html': html.replace(u'&amp;nbsp;', u'&nbsp;'),
-                        u'verseTag': slide[u'verseTag']
+                        u'verseTag': verse_tag
                     })
         elif self.service_item_type == ServiceItemType.Image or \
             self.service_item_type == ServiceItemType.Command:
@@ -452,14 +463,27 @@ class ServiceItem(object):
         except IndexError:
             return u''
 
-    def get_frame_path(self, row=0):
+    def get_frame_path(self, row=0, frame=None):
         """
         Returns the path of the raw frame
         """
-        try:
-            return self._raw_frames[row][u'path']
-        except IndexError:
-            return u''
+        if not frame:
+            try:
+                frame = self._raw_frames[row]
+            except IndexError:
+                return u''
+        if self.is_image():
+            path_from = frame[u'path']
+        else:
+            path_from = os.path.join(frame[u'path'], frame[u'title'])
+        return path_from
+
+    def remove_frame(self, frame):
+        """
+        Remove the soecified frame from the item
+        """
+        if frame in self._raw_frames:
+            self._raw_frames.remove(frame)
 
     def get_media_time(self):
         """
@@ -496,3 +520,17 @@ class ServiceItem(object):
         self._new_item()
         self.render()
 
+    def remove_invalid_frames(self, invalid_paths=None):
+        """
+        Remove invalid frames, such as ones where the file no longer exists.
+        """
+        if self.uses_file():
+            for frame in self.get_frames():
+                if self.get_frame_path(frame=frame) in invalid_paths:
+                    self.remove_frame(frame)
+
+    def validate(self):
+        """
+        Validates this service item
+        """
+        return bool(self._raw_frames)

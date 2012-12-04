@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -808,7 +808,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         Receiver.send_message(u'cursor_busy')
         screens = ScreenList()
-        FirstTimeForm(screens, self).exec_()
+        firstTime = FirstTimeForm(screens, self)
+        firstTime.exec_()
+        if firstTime.downloadCancelled:
+            return
         self.firstTime()
         for plugin in self.pluginManager.plugins:
             self.activePlugin = plugin

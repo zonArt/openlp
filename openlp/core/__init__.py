@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -59,7 +59,7 @@ __all__ = [u'OpenLP', u'main']
 
 
 log = logging.getLogger()
-application_stylesheet = u"""
+nt_repair_stylesheet = u"""
 QMainWindow::separator
 {
   border: none;
@@ -125,7 +125,14 @@ class OpenLP(QtGui.QApplication):
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
                 Settings().setValue(u'general/has run wizard', True)
+        # Correct stylesheet bugs
         if os.name == u'nt':
+            base_color = self.palette().color(QtGui.QPalette.Active,
+                QtGui.QPalette.Base)
+            application_stylesheet = \
+                u'* {alternate-background-color: ' + \
+                base_color.name() + ';}\n'
+            application_stylesheet += nt_repair_stylesheet
             self.setStyleSheet(application_stylesheet)
         show_splash = Settings().value(u'general/show splash', True)
         if show_splash:

@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -72,7 +72,7 @@ VIDEO_EXT = [
     u'*.avi',
     u'*.flv',
     u'*.mov',
-    u'*.mp4',
+    u'*.mp4', u'*.m4v',
     u'*.ogm', u'*.ogv',
     u'*.mkv', u'*.mka',
     u'*.ts', u'*.mpg',
@@ -123,18 +123,21 @@ class VlcPlayer(MediaPlayer):
         display.vlcWidget.resize(display.size())
         display.vlcWidget.raise_()
         display.vlcWidget.hide()
-        # the media player has to be 'connected' to the QFrame
+        # The media player has to be 'connected' to the QFrame.
         # (otherwise a video would be displayed in it's own window)
-        # this is platform specific!
-        # you have to give the id of the QFrame (or similar object) to
-        # vlc, different platforms have different functions for this
+        # This is platform specific!
+        # You have to give the id of the QFrame (or similar object)
+        # to vlc, different platforms have different functions for this.
+        win_id = int(display.vlcWidget.winId())
         if sys.platform == "win32":
-            display.vlcMediaPlayer.set_hwnd(int(display.vlcWidget.winId()))
+            display.vlcMediaPlayer.set_hwnd(win_id)
         elif sys.platform == "darwin":
-            display.vlcMediaPlayer.set_agl(int(display.vlcWidget.winId()))
+            # We have to use 'set_nsobject' since Qt4 on OSX uses Cocoa
+            # framework and not the old Carbon.
+            display.vlcMediaPlayer.set_nsobject(win_id)
         else:
             # for Linux using the X Server
-            display.vlcMediaPlayer.set_xwindow(int(display.vlcWidget.winId()))
+            display.vlcMediaPlayer.set_xwindow(win_id)
         self.hasOwnWidget = True
 
     def check_available(self):
@@ -153,6 +156,13 @@ class VlcPlayer(MediaPlayer):
         # parse the metadata of the file
         display.vlcMedia.parse()
         self.volume(display, volume)
+        # We need to set media_info.length during load because we want
+        # to avoid start and stop the video twice. Once for real playback
+        # and once to just get media length.
+        # 
+        # Media plugin depends on knowing media length before playback.
+        controller.media_info.length = \
+            int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         return True
 
     def media_state_wait(self, display, mediaState):
@@ -218,6 +228,7 @@ class VlcPlayer(MediaPlayer):
             display.vlcWidget.setVisible(status)
 
     def update_ui(self, display):
+        # Stop video if playback is finished.
         if display.vlcMedia.get_state() == vlc.State.Ended:
             self.stop(display)
         controller = display.controller

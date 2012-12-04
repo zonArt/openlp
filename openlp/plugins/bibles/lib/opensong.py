@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Erode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -98,31 +98,42 @@ class OpenSongBible(BibleDB):
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 db_book = self.create_book(unicode(book.attrib[u'n']),
                     book_ref_id, book_details[u'testament_id'])
+                chapter_number = 0
                 for chapter in book.c:
                     if self.stop_import_flag:
                         break
+                    number = chapter.attrib[u'n']
+                    if number:
+                        chapter_number = int(number.split()[-1])
+                    else:
+                        chapter_number += 1
+                    verse_number = 0
                     for verse in chapter.v:
                         if self.stop_import_flag:
                             break
-                        verse_number = 0
-                        try:
-                            verse_number = int(verse.attrib[u'n'])
-                        except ValueError:
-                            verse_parts = verse.attrib[u'n'].split(u'-')
-                            if len(verse_parts) > 1:
-                                verse_number = int(verse_parts[0])
-                        except TypeError:
-                            log.warn(u'Illegal verse number: %s',
-                                unicode(verse.attrib[u'n']))
+                        number = verse.attrib[u'n']
+                        if number:
+                            try:
+                                number = int(number)
+                            except ValueError:
+                                verse_parts = number.split(u'-')
+                                if len(verse_parts) > 1:
+                                    number = int(verse_parts[0])
+                            except TypeError:
+                                log.warn(u'Illegal verse number: %s',
+                                    unicode(verse.attrib[u'n']))
+                            verse_number = number
+                        else:
+                            verse_number += 1
                         self.create_verse(
                             db_book.id,
-                            int(chapter.attrib[u'n'].split()[-1]),
+                            chapter_number,
                             verse_number,
                             self.get_text(verse))
                     self.wizard.incrementProgressBar(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
-                        'Importing <book name> <chapter>...') %
-                        (db_book.name, int(chapter.attrib[u'n'].split()[-1])))
+                        'Importing <book name> <chapter>...')) % \
+                        (db_book.name, chapter_number)
                 self.session.commit()
             Receiver.send_message(u'openlp_process_events')
         except etree.XMLSyntaxError as inst:

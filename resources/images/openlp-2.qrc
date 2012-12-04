@@ -80,8 +80,8 @@
   </qresource>
   <qresource prefix="graphics">
     <file>exception.png</file>
-    <file>openlp-about-logo.png</file>
     <file>openlp-splash-screen.png</file>
+    <file>openlp-about-logo.png</file>
   </qresource>
   <qresource prefix="imports">
     <file>import_selectall.png</file>
