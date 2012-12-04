@@ -894,7 +894,7 @@ class BibleMediaItem(MediaManagerItem):
         return items
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False,context=ServiceItemContext.Service):
+        remote=False, context=ServiceItemContext.Service):
         """
         Generates and formats the slides for the service item as well as the
         service item's title.

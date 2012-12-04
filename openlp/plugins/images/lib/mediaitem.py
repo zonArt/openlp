@@ -153,7 +153,7 @@ class ImageMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_normal')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False,context=ServiceItemContext.Service):
+        remote=False, context=ServiceItemContext.Service):
         background = QtGui.QColor(Settings().value(self.settingsSection
             + u'/background color', QtCore.QVariant(u'#000000')))
         if item:

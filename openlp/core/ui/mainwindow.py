@@ -395,7 +395,7 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        mainWindow.mainTitle = UiStrings().OLPV2
+        mainWindow.mainTitle = UiStrings().OLPV2x
         mainWindow.setWindowTitle(mainWindow.mainTitle)
         self.fileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.fileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
