@@ -203,7 +203,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.authorsListView.clear()
         self.topicsListView.clear()
         self.audioListWidget.clear()
-        self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.titleEdit.setFocus()
         self.songBookNumberEdit.clear()
         self.loadAuthors()
         self.loadTopics()
@@ -326,7 +326,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             media_file.setData(QtCore.Qt.UserRole,
                 QtCore.QVariant(media.file_name))
             self.audioListWidget.addItem(media_file)
-        self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.titleEdit.setFocus()
         # Hide or show the preview button.
         self.previewButton.setVisible(preview)
 
