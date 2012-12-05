@@ -537,7 +537,7 @@ class ServiceManager(QtGui.QWidget):
             if not item[u'service_item'].validate():
                 self.serviceItems.remove(item)
             else:
-                service_item = item[u'service_item'].get_service_repr()
+                service_item = item[u'service_item'].get_service_repr(self._saveLite)
                 if service_item[u'header'][u'background_audio']:
                     for i, filename in enumerate(
                         service_item[u'header'][u'background_audio']):
