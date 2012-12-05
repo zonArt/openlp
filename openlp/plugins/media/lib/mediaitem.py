@@ -305,7 +305,7 @@ class MediaMediaItem(MediaManagerItem):
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(ERROR))
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+                item_name.setData(QtCore.Qt.UserRole, track)
             elif track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)

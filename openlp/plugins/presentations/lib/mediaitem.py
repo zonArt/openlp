@@ -184,7 +184,7 @@ class PresentationMediaItem(MediaManagerItem):
             if not os.path.exists(file):
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(ERROR))
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setData(QtCore.Qt.UserRole, file)
                 item_name.setToolTip(file)
                 self.listView.addItem(item_name)
             else:

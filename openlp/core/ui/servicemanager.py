@@ -480,7 +480,6 @@ class ServiceManager(QtGui.QWidget):
             path)
         service = []
         write_list = []
-        print 1
         missing_list = []
         audio_files = []
         total_size = 0
@@ -501,12 +500,12 @@ class ServiceManager(QtGui.QWidget):
                     write_list.append(path_from)
         if missing_list:
             Receiver.send_message(u'cursor_normal')
-            title = unicode(translate('OpenLP.ServiceManager',
-                'Service File(s) Missing'))
-            message = unicode(translate('OpenLP.ServiceManager',
+            title = translate('OpenLP.ServiceManager',
+                'Service File(s) Missing')
+            message = translate('OpenLP.ServiceManager',
                 'The following file(s) in the service are missing:\n\t%s\n\n'
-                'These files will be removed if you continue to save.')
-                ) % "\n\t".join(missing_list)
+                'These files will be removed if you continue to save.') % \
+                "\n\t".join(missing_list)
             answer = QtGui.QMessageBox.critical(self, title,
                 message,
                 QtGui.QMessageBox.StandardButtons(
@@ -591,7 +590,6 @@ class ServiceManager(QtGui.QWidget):
             self.mainwindow.addRecentFile(path_file_name)
             self.setModified(False)
         delete_file(temp_file_name)
-        print 2
         return success
 
     def saveFileAs(self):
