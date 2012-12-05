@@ -468,7 +468,7 @@ class AdvancedTab(SettingsTab):
             settings.value(u'enable exit confirmation',
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
-            settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
+            settings.value(u'hide mouse', QtCore.QVariant(True)).toBool())
         self.serviceNameDay.setCurrentIndex(
             settings.value(u'default service day',
             QtCore.QVariant(self.defaultServiceDay)).toInt()[0])

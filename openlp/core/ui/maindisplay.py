@@ -498,7 +498,7 @@ class MainDisplay(Display):
         Hide mouse cursor when moved over display.
         """
         if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool():
+            QtCore.QVariant(True)).toBool():
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
         else:
