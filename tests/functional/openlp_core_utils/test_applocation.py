@@ -4,8 +4,7 @@ Functional tests to test the AppLocation class and related methods.
 import sys
 from unittest import TestCase
 
-from mock import patch, MagicMock
-from PyQt4 import QtCore
+from mock import patch
 
 from openlp.core.utils import AppLocation, _get_frozen_path
 
