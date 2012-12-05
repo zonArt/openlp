@@ -43,14 +43,6 @@ from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
-class SlideList(QtGui.QTableWidget):
-    """
-    Customised version of QTableWidget which can respond to keyboard
-    events.
-    """
-    def __init__(self, parent=None):
-        QtGui.QTableWidget.__init__(self, parent.controller)
-
 
 class Controller(QtGui.QWidget):
     """
@@ -149,7 +141,7 @@ class SlideController(Controller):
         self.controllerLayout.setSpacing(0)
         self.controllerLayout.setMargin(0)
         # Controller list view
-        self.previewListWidget = SlideList(self)
+        self.previewListWidget = QtGui.QTableWidget(self.controller)
         self.previewListWidget.setColumnCount(1)
         self.previewListWidget.horizontalHeader().setVisible(False)
         self.previewListWidget.setColumnWidth(0, self.controller.width())

@@ -172,7 +172,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.verseNumberBox.setValue(1)
             self.insertButton.setVisible(True)
         self.verseTextEdit.setPlainText(text)
-        self.verseTextEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.verseTextEdit.setFocus()
         self.verseTextEdit.moveCursor(QtGui.QTextCursor.End)
 
     def getVerse(self):

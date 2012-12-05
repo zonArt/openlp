@@ -104,7 +104,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.updateScreenListCombo)
 
-    def exec_(self, edit=False):
+    def exec_(self):
         """
         Run the wizard.
         """
@@ -276,7 +276,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         block_count = 0
         block_size = 4096
         urlfile = urllib2.urlopen(url)
-        filesize = urlfile.headers["Content-Length"]
         filename = open(fpath, "wb")
         # Download until finished or canceled.
         while not self.downloadCancelled:
@@ -285,7 +284,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 break
             filename.write(data)
             block_count += 1
-            self._downloadProgress(block_count, block_size, filesize)
+            self._downloadProgress(block_count, block_size)
         filename.close()
         # Delete file if cancelled, it may be a partial file.
         if self.downloadCancelled:
@@ -313,7 +312,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         meta = site.info()
         return int(meta.getheaders("Content-Length")[0])
 
-    def _downloadProgress(self, count, block_size, total_size):
+    def _downloadProgress(self, count, block_size):
         increment = (count * block_size) - self.previous_size
         self._incrementProgressBar(None, increment)
         self.previous_size = count * block_size

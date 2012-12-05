@@ -113,7 +113,7 @@ class VlcPlayer(MediaPlayer):
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse', False) and \
+        if Settings().value(u'advanced/hide mouse', True) and \
             display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
@@ -159,7 +159,7 @@ class VlcPlayer(MediaPlayer):
         # We need to set media_info.length during load because we want
         # to avoid start and stop the video twice. Once for real playback
         # and once to just get media length.
-        # 
+        #
         # Media plugin depends on knowing media length before playback.
         controller.media_info.length = \
             int(display.vlcMediaPlayer.get_media().get_duration() / 1000)

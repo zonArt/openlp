@@ -451,7 +451,7 @@ class ThemeManager(QtGui.QWidget):
                     self.settingsSection + u'/global theme', theme.theme_name)
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
-        # Sort the themes by its name considering language specific characters.
+        # Sort the themes by its name considering language specific 
         files.sort(key=lambda file_name: unicode(file_name),
            cmp=locale_compare)
         # now process the file list of png files
