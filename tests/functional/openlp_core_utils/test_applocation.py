@@ -34,7 +34,7 @@ class TestAppLocation(TestCase):
         """
         with patch(u'openlp.core.utils.Settings') as mocked_class, \
              patch(u'openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-             patch(u'openlp.core.utils.check_directory_exists') as mocked_check_directory_exists,\
+             patch(u'openlp.core.utils.check_directory_exists') as mocked_check_directory_exists, \
              patch(u'openlp.core.utils.os') as mocked_os:
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value
@@ -54,11 +54,13 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_data_path() method when a custom location is set in the settings
         """
-        with patch(u'openlp.core.utils.Settings') as mocked_class:
+        with patch(u'openlp.core.utils.Settings') as mocked_class,\
+             patch(u'openlp.core.utils.os') as mocked_os:
             # GIVEN: A mocked out Settings class which returns a custom data location
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = True
             mocked_settings.value.return_value.toString.return_value = u'custom/dir'
+            mocked_os.path.normpath.return_value = u'custom/dir'
             # WHEN: we call AppLocation.get_data_path()
             data_path = AppLocation.get_data_path()
             # THEN: the mocked Settings methods were called and the value returned was our set up value
