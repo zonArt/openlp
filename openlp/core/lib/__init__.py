@@ -430,15 +430,15 @@ def create_separated_list(stringlist):
         return stringlist[0]
     elif len(stringlist) == 2:
         return translate('OpenLP.core.lib', '%1 and %2',
-            'Locale list separator: 2 items').arg(stringlist[0], stringlist[1])
+            'Locale list separator: 2 items') % (stringlist[0], stringlist[1])
     else:
         merged = translate('OpenLP.core.lib', '%1, and %2',
-            u'Locale list separator: end').arg(stringlist[-2], stringlist[-1])
+            u'Locale list separator: end') % (stringlist[-2], stringlist[-1])
         for index in reversed(range(1, len(stringlist) - 2)):
             merged = translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: middle').arg(stringlist[index], merged)
+            u'Locale list separator: middle') % (stringlist[index], merged)
         return translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: start').arg(stringlist[0], merged)
+            u'Locale list separator: start') % (stringlist[0], merged)
 
 
 from eventreceiver import Receiver
