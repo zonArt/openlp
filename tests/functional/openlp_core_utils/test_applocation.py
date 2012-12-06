@@ -101,10 +101,13 @@ class TestAppLocation(TestCase):
         """
         with patch(u'openlp.core.utils._get_frozen_path') as mocked_get_frozen_path, \
              patch(u'openlp.core.utils.os.path.abspath') as mocked_abspath, \
+             patch(u'openlp.core.utils.os.path.split') as mocked_split, \
              patch(u'openlp.core.utils.sys') as mocked_sys:
             mocked_abspath.return_value = u'plugins/dir'
+            mocked_split.return_value = [u'openlp']
             mocked_get_frozen_path.return_value = u'plugins/dir'
             mocked_sys.frozen = 1
+            mocked_sys.argv = ['openlp']
             # WHEN: We call AppLocation.get_directory
             directory = AppLocation.get_directory(AppLocation.PluginsDir)
             # THEN:
