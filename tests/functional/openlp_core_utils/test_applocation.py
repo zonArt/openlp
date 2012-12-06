@@ -1,7 +1,6 @@
 """
 Functional tests to test the AppLocation class and related methods.
 """
-import sys
 from unittest import TestCase
 
 from mock import patch
