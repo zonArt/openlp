@@ -55,7 +55,7 @@ class TestLibModule(TestCase):
 
     def str_to_bool_with_false_values_test(self):
         """
-        Test the str_to_bool function with a set of invalid inputs
+        Test the str_to_bool function with a set of false inputs
         """
         # GIVEN: A string set to "false"
         false_string = u'false'
@@ -77,7 +77,7 @@ class TestLibModule(TestCase):
 
     def str_to_bool_with_true_values_test(self):
         """
-        Test the str_to_bool function with a set of invalid inputs
+        Test the str_to_bool function with a set of true inputs
         """
         # GIVEN: A string set to "True"
         true_string = u'True'
