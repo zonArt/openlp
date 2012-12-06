@@ -58,6 +58,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
+        self.parent = parent
         self.mediaitem = mediaitem
         self.song = None
         # can this be automated?
@@ -179,13 +180,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         set_case_insensitive_completer(self.themes, self.themeComboBox)
 
     def loadMediaFiles(self):
-        self.audioAddFromMediaButton.setVisible(False)
-        for plugin in self.parent().pluginManager.plugins:
-            if plugin.name == u'media' and plugin.status == PluginStatus.Active:
-                self.audioAddFromMediaButton.setVisible(True)
-                self.mediaForm.populateFiles(
-                    plugin.mediaItem.getList(MediaType.Audio))
-                break
+        self.audioAddFromMediaButton.setVisible(True)
+        self.mediaForm.populateFiles(self.parent.mediaController.audio_extensions_list)
 
     def newSong(self):
         log.debug(u'New Song')
