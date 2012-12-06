@@ -30,7 +30,6 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
-import datetime
 import logging
 import os
 
