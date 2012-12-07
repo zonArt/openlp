@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import patch
 
-from openlp.core.utils import AppLocation, _get_frozen_path
+from openlp.core.utils import AppLocation
 
 class TestAppLocation(TestCase):
     """

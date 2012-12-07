@@ -7,7 +7,7 @@ from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists
 
-class TestLibModule(TestCase):
+class TestLib(TestCase):
 
     def str_to_bool_with_bool_test(self):
         """
