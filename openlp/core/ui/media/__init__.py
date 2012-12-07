@@ -47,7 +47,7 @@ class MediaState(object):
 
 class MediaType(object):
     """
-    An enumeration of possibible Media Types
+    An enumeration of possible Media Types
     """
     Unused = 0
     Audio = 1
@@ -59,7 +59,7 @@ class MediaType(object):
 
 class MediaInfo(object):
     """
-    This class hold the media related infos
+    This class hold the media related info
     """
     file_info = None
     volume = 100
@@ -72,30 +72,26 @@ class MediaInfo(object):
 
 def get_media_players():
     """
-    This method extract the configured media players and overridden player from
-    the settings.
-
-    ``players_list``
-       A list with all active media players.
-
-    ``overridden_player``
-        Here an special media player is chosen for all media actions.
+    This method extracts the configured media players and overridden player
+    from the settings.
     """
     log.debug(u'get_media_players')
-    players = unicode(Settings().value(u'media/players').toString())
-    if not players:
-        players = u'webkit'
+    saved_players = unicode(Settings().value(u'media/players').toString())
+    if not saved_players:
+        # we must always have a player and Webkit is the core one.
+        saved_players = u'webkit'
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
     if Settings().value(u'media/override player',
         QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked:
-        if reg_ex.exactMatch(players):
+        if reg_ex.exactMatch(saved_players):
             overridden_player = u'%s' % reg_ex.cap(1)
         else:
             overridden_player = u'auto'
     else:
         overridden_player = u''
-    players_list = players.replace(u'[', u'').replace(u']', u'').split(u',')
-    return players_list, overridden_player
+    saved_players_list = saved_players.replace(u'[', u'').\
+        replace(u']',u'').split(u',')
+    return saved_players_list, overridden_player
 
 
 def set_media_players(players_list, overridden_player=u'auto'):
@@ -118,3 +114,4 @@ def set_media_players(players_list, overridden_player=u'auto'):
     Settings().setValue(u'media/players', QtCore.QVariant(players))
 
 from mediacontroller import MediaController
+from playertab import PlayerTab

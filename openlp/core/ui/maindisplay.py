@@ -53,8 +53,8 @@ log = logging.getLogger(__name__)
 class Display(QtGui.QGraphicsView):
     """
     This is a general display screen class. Here the general display settings
-   will done. It will be used as specialized classes by Main Display and
-   Preview display.
+    will done. It will be used as specialized classes by Main Display and
+    Preview display.
     """
     def __init__(self, parent, live, controller):
         if live:
@@ -327,7 +327,7 @@ class MainDisplay(Display):
         """
         log.debug(u'image to display')
         image = self.imageManager.getImageBytes(path, ImageSource.ImagePlugin)
-        self.controller.mediaController.video_reset(self.controller)
+        self.controller.mediaController.media_reset(self.controller)
         self.displayImage(image)
 
     def displayImage(self, image):

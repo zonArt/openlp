@@ -72,6 +72,16 @@ class AlertLocation(object):
     Middle = 1
     Bottom = 2
 
+class DisplayControllerType(object):
+    """
+    This is an enumeration class which says where a display controller
+    originated from.
+    """
+    Live = 0
+    Preview = 1
+    Plugin = 2
+
+
 from firsttimeform import FirstTimeForm
 from firsttimelanguageform import FirstTimeLanguageForm
 from themelayoutform import ThemeLayoutForm
@@ -82,7 +92,7 @@ from screen import ScreenList
 from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
-from slidecontroller import SlideController, Controller
+from slidecontroller import SlideController, DisplayController
 from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab
@@ -98,4 +108,4 @@ from thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
     'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', u'FirstTimeForm']
+    'ServiceItemEditForm', 'FirstTimeForm']

@@ -53,7 +53,65 @@ class ServiceItemType(object):
 
 class ItemCapabilities(object):
     """
-    Provides an enumeration of a serviceitem's capabilities
+    Provides an enumeration of a service item's capabilities
+
+    ``CanPreview``
+            The capability to allow the ServiceManager to add to the preview
+            tab when making the previous item live.
+
+    ``CanEdit``
+            The capability to allow the ServiceManager to allow the item to be
+             edited
+
+    ``CanMaintain``
+            The capability to allow the ServiceManager to allow the item to be
+             reordered.
+
+    ``RequiresMedia``
+            Determines is the serviceItem needs a Media Player
+
+    ``CanLoop``
+            The capability to allow the SlideController to allow the loop
+            processing.
+
+    ``CanAppend``
+            The capability to allow the ServiceManager to add leaves to the
+            item
+
+    ``NoLineBreaks``
+            The capability to remove lines breaks in the renderer
+
+    ``OnLoadUpdate``
+            The capability to update MediaManager when a service Item is
+            loaded.
+
+    ``AddIfNewItem``
+            Not Used
+
+    ``ProvidesOwnDisplay``
+            The capability to tell the SlideController the service Item has a
+            different display.
+
+    ``HasDetailedTitleDisplay``
+            ServiceItem provides a title
+
+    ``HasVariableStartTime``
+            The capability to tell the ServiceManager that a change to start
+            time is possible.
+
+    ``CanSoftBreak``
+            The capability to tell the renderer that Soft Break is allowed
+
+    ``CanWordSplit``
+            The capability to tell the renderer that it can split words is
+            allowed
+
+    ``HasBackgroundAudio``
+            That a audio file is present with the text.
+
+    ``CanAutoStartForLive``
+            The capability to ignore the do not play if display blank flag.
+
     """
     CanPreview = 1
     CanEdit = 2
@@ -70,6 +128,7 @@ class ItemCapabilities(object):
     CanSoftBreak = 13
     CanWordSplit = 14
     HasBackgroundAudio = 15
+    CanAutoStartForLive = 16
 
 
 class ServiceItem(object):
@@ -123,6 +182,7 @@ class ServiceItem(object):
         self.background_audio = []
         self.theme_overwritten = False
         self.temporary_edit = False
+        self.will_auto_start = False
         self._new_item()
 
     def _new_item(self):
@@ -267,7 +327,7 @@ class ServiceItem(object):
             {u'title': file_name, u'image': image, u'path': path})
         self._new_item()
 
-    def get_service_repr(self):
+    def get_service_repr(self, lite_save):
         """
         This method returns some text which can be saved into the service
         file to represent this item.
@@ -291,17 +351,24 @@ class ServiceItem(object):
             u'end_time': self.end_time,
             u'media_length': self.media_length,
             u'background_audio': self.background_audio,
-            u'theme_overwritten': self.theme_overwritten
+            u'theme_overwritten': self.theme_overwritten,
+            u'will_auto_start': self.will_auto_start
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
             service_data = [slide for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Image:
-            service_data = [slide[u'title'] for slide in self._raw_frames]
+            if lite_save:
+                for slide in self._raw_frames:
+                    service_data.append(
+                        {u'title': slide[u'title'], u'path': slide[u'path']})
+            else:
+                service_data = [slide[u'title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
                 service_data.append(
-                    {u'title': slide[u'title'], u'image': slide[u'image']})
+                    {u'title': slide[u'title'], u'image': slide[u'image'],
+                     u'path': slide[u'path']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -313,7 +380,9 @@ class ServiceItem(object):
             The item to extract data from.
 
         ``path``
-            Defaults to *None*. Any path data, usually for images.
+            Defaults to *None*. This is the service manager path for things
+            which have their files saved with them or None when the saved
+            service is lite and the original file paths need to be preserved..
         """
         log.debug(u'set_from_service called with path %s' % path)
         header = serviceitem[u'serviceitem'][u'header']
@@ -335,6 +404,7 @@ class ServiceItem(object):
         self.start_time = header.get(u'start_time', 0)
         self.end_time = header.get(u'end_time', 0)
         self.media_length = header.get(u'media_length', 0)
+        self.will_auto_start = header.get(u'will_auto_start', False)
         if u'background_audio' in header:
             self.background_audio = []
             for filename in header[u'background_audio']:
@@ -345,14 +415,24 @@ class ServiceItem(object):
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            for text_image in serviceitem[u'serviceitem'][u'data']:
-                filename = os.path.join(path, text_image)
-                self.add_from_image(filename, text_image)
+            if path:
+                for text_image in serviceitem[u'serviceitem'][u'data']:
+                    filename = os.path.join(path, text_image)
+                    self.add_from_image(filename, text_image)
+            else:
+                for text_image in serviceitem[u'serviceitem'][u'data']:
+                    self.add_from_image(text_image[u'path'],
+                        text_image[u'title'])
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
-                filename = os.path.join(path, text_image[u'title'])
-                self.add_from_command(
-                    path, text_image[u'title'], text_image[u'image'])
+                if path:
+                    self.add_from_command(
+                        path, text_image[u'title'], text_image[u'image'])
+                else:
+                    self.add_from_command(
+                        text_image[u'path'], text_image[u'title'],
+                        text_image[u'image'])
+
         self._new_item()
 
     def get_display_title(self):
@@ -434,6 +514,17 @@ class ServiceItem(object):
         """
         return self.service_item_type == ServiceItemType.Text
 
+    def set_media_length(self, length):
+        """
+        Stores the media length of the item
+
+        ``length``
+            The length of the media item
+        """
+        self.media_length = length
+        if length > 0:
+            self.add_capability(ItemCapabilities.HasVariableStartTime)
+
     def get_frames(self):
         """
         Returns the frames for the ServiceItem
@@ -446,6 +537,8 @@ class ServiceItem(object):
     def get_rendered_frame(self, row):
         """
         Returns the correct frame for a given list and renders it if required.
+        ``row``
+            The service item slide to be returned
         """
         if self.service_item_type == ServiceItemType.Text:
             return self._display_frames[row][u'html'].split(u'\n')[0]

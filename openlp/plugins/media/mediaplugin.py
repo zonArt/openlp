@@ -48,14 +48,6 @@ class MediaPlugin(Plugin):
         self.icon = build_icon(self.iconPath)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
-        self.audio_extensions_list = \
-            self.mediaController.get_audio_extensions_list()
-        for ext in self.audio_extensions_list:
-            self.serviceManager.supportedSuffixes(ext[2:])
-        self.video_extensions_list = \
-            self.mediaController.get_video_extensions_list()
-        for ext in self.video_extensions_list:
-            self.serviceManager.supportedSuffixes(ext[2:])
 
     def createSettingsTab(self, parent):
         """
@@ -63,7 +55,7 @@ class MediaPlugin(Plugin):
         """
         visible_name = self.getString(StringContent.VisibleName)
         self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'],
-            self.mediaController.mediaPlayers, self.iconPath)
+            self.iconPath)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
