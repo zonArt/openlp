@@ -45,14 +45,6 @@ from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
-class SlideList(QtGui.QTableWidget):
-    """
-    Customised version of QTableWidget which can respond to keyboard
-    events.
-    """
-    def __init__(self, parent=None):
-        QtGui.QTableWidget.__init__(self, parent.controller)
-
 
 class DisplayController(QtGui.QWidget):
     """
@@ -152,7 +144,7 @@ class SlideController(DisplayController):
         self.controllerLayout.setSpacing(0)
         self.controllerLayout.setMargin(0)
         # Controller list view
-        self.previewListWidget = SlideList(self)
+        self.previewListWidget = QtGui.QTableWidget(self.controller)
         self.previewListWidget.setColumnCount(1)
         self.previewListWidget.horizontalHeader().setVisible(False)
         self.previewListWidget.setColumnWidth(0, self.controller.width())
@@ -291,7 +283,7 @@ class SlideController(DisplayController):
                 text=translate('OpenLP.SlideController', 'Pause Audio'),
                 tooltip=translate('OpenLP.SlideController', 'Pause audio.'),
                 checked=False, visible=False, category=self.category,
-                context=QtCore.Qt.WindowShortcut, 
+                context=QtCore.Qt.WindowShortcut,
                 shortcuts=[], triggers=self.onAudioPauseClicked)
             self.audioMenu = QtGui.QMenu(
                 translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)

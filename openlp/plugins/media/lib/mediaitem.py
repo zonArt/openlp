@@ -316,9 +316,9 @@ class MediaMediaItem(MediaManagerItem):
             key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
-            ext = self.plugin.audio_extensions_list
+            ext = self.plugin.mediaController.audio_extensions_list
         else:
-            ext = self.plugin.video_extensions_list
+            ext = self.plugin.mediaController.video_extensions_list
         ext = map(lambda x: x[1:], ext)
         media = filter(lambda x: os.path.splitext(x)[1] in ext, media)
         return media
