@@ -39,15 +39,16 @@ from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.lib.settings import Settings
 from openlp.core.lib import SlideLimits, ServiceItemAction
-from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
+from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList, \
+    DisplayControllerType
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
 
-class Controller(QtGui.QWidget):
+class DisplayController(QtGui.QWidget):
     """
-    Controller is a general controller widget.
+    Controller is a general display controller widget.
     """
     def __init__(self, parent, isLive=False):
         """
@@ -56,6 +57,7 @@ class Controller(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.isLive = isLive
         self.display = None
+        self.controllerType = DisplayControllerType.Plugin
 
     def sendToPlugins(self, *args):
         """
@@ -69,7 +71,7 @@ class Controller(QtGui.QWidget):
         Receiver.send_message('%s' % sender, [controller, args])
 
 
-class SlideController(Controller):
+class SlideController(DisplayController):
     """
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
@@ -78,7 +80,7 @@ class SlideController(Controller):
         """
         Set up the Slide Controller.
         """
-        Controller.__init__(self, parent, isLive)
+        DisplayController.__init__(self, parent, isLive)
         self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / \
@@ -185,7 +187,9 @@ class SlideController(Controller):
             category=self.category, triggers=self.onSlideSelectedNextAction)
         self.toolbar.addAction(self.nextItem)
         self.toolbar.addSeparator()
+        self.controllerType = DisplayControllerType.Preview
         if self.isLive:
+            self.controllerType = DisplayControllerType.Live
             # Hide Menu
             self.hideMenu = QtGui.QToolButton(self.toolbar)
             self.hideMenu.setObjectName(u'hideMenu')
@@ -263,7 +267,7 @@ class SlideController(Controller):
                 'Edit and reload song preview.'), triggers=self.onEditSong)
         self.controllerLayout.addWidget(self.toolbar)
         # Build the Media Toolbar
-        self.mediaController.add_controller_items(self, self.controllerLayout)
+        self.mediaController.register_controller(self)
         if self.isLive:
             # Build the Song Toolbar
             self.songMenu = QtGui.QToolButton(self.toolbar)
@@ -516,7 +520,7 @@ class SlideController(Controller):
 
     def liveEscape(self):
         self.display.setVisible(False)
-        self.mediaController.video_stop([self])
+        self.mediaController.media_stop(self)
 
     def toggleDisplay(self, action):
         """
@@ -586,14 +590,14 @@ class SlideController(Controller):
                 float(self.screens.current[u'size'].height())
         except ZeroDivisionError:
             self.ratio = 1
-        self.mediaController.setup_display(self.display)
+        self.mediaController.setup_display(self.display, False)
         self.previewSizeChanged()
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
         self.previewDisplay.webView.setHtml(build_html(serviceItem,
             self.previewDisplay.screen, None, self.isLive,
             plugins=PluginManager.get_instance().plugins))
-        self.mediaController.setup_display(self.previewDisplay)
+        self.mediaController.setup_display(self.previewDisplay,True)
         if self.serviceItem:
             self.refreshServiceItem()
 
@@ -1343,9 +1347,8 @@ class SlideController(Controller):
         Respond to the arrival of a media service item
         """
         log.debug(u'SlideController onMediaStart')
-        file = item.get_frame_path()
-        self.mediaController.video(self, file, False, False, self.hideMode())
-        if not self.isLive or self.mediaController.withLivePreview:
+        self.mediaController.video(self.controllerType, item, self.hideMode())
+        if not self.isLive:
             self.previewDisplay.show()
             self.slidePreview.hide()
 
@@ -1354,7 +1357,7 @@ class SlideController(Controller):
         Respond to a request to close the Video
         """
         log.debug(u'SlideController onMediaClose')
-        self.mediaController.video_reset(self)
+        self.mediaController.media_reset(self)
         self.previewDisplay.hide()
         self.slidePreview.show()
 

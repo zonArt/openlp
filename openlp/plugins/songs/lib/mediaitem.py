@@ -37,7 +37,7 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list, \
-    check_directory_exists
+    check_directory_exists, ServiceItemContext
 from openlp.core.lib.ui import UiStrings, create_widget_action
 from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation, locale_direct_compare
@@ -488,7 +488,7 @@ class SongMediaItem(MediaManagerItem):
         self.onSongListLoad()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Service):
         log.debug(u'generateSlideData: %s, %s, %s' %
             (service_item, item, self.remoteSong))
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
