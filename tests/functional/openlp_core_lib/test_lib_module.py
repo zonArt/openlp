@@ -127,7 +127,7 @@ class TestLibModule(TestCase):
             # GIVEN: A directory to check and a mocked out os.makedirs and os.path.exists
             directory_to_check = u'existing/directory'
 
-            # WHEN: os.path.exists returns Truew and we check to see if the directory exists
+            # WHEN: os.path.exists returns True and we check to see if the directory exists
             mocked_exists.return_value = True
             check_directory_exists(directory_to_check)
 
@@ -154,4 +154,5 @@ class TestLibModule(TestCase):
             mocked_exists.side_effect = ValueError()
 
             # THEN: check_directory_exists raises an exception
+            mocked_exists.assert_called_with(directory_to_check)
             self.assertRaises(ValueError, check_directory_exists, directory_to_check)
