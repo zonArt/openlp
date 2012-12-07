@@ -709,11 +709,10 @@ class MediaController(object):
             return
         controller = self.mainWindow.liveController
         display = self._define_display(controller)
-        if self.currentMediaPlayer[controller.controllerType].state \
-            != MediaState.Playing:
+        if controller.controllerType in self.currentMediaPlayer and \
+                self.currentMediaPlayer[controller.controllerType].state != MediaState.Playing:
             if self.currentMediaPlayer[controller.controllerType].play(display):
-                self.currentMediaPlayer[controller.controllerType] \
-                    .set_visible(display, True)
+                self.currentMediaPlayer[controller.controllerType].set_visible(display, True)
                 # Start Timer for ui updates
                 if not self.timer.isActive():
                     self.timer.start()
