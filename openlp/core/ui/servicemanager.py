@@ -107,6 +107,8 @@ class ServiceManager(QtGui.QWidget):
         Sets up the service manager, toolbars, list view, et al.
         """
         QtGui.QWidget.__init__(self, parent)
+        self.active = build_icon(QtGui.QImage(u':/media/auto-start_active.png'))
+        self.inactive = build_icon(QtGui.QImage(u':/media/auto-start_inactive.png'))
         self.mainwindow = mainwindow
         self.serviceItems = []
         self.suffixes = []
@@ -309,7 +311,7 @@ class ServiceManager(QtGui.QWidget):
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
         self.autoStartAction = create_widget_action(self.menu,
             text=u'',
-            icon=u':/media/media_time.png', triggers=self.onAutoStart)
+            icon=u':/media/auto-start_active.png', triggers=self.onAutoStart)
         # Add already existing delete action to the menu.
         self.menu.addAction(self.serviceManagerList.delete)
         self.menu.addSeparator()
@@ -881,11 +883,11 @@ class ServiceManager(QtGui.QWidget):
         if serviceItem[u'service_item']\
             .is_capable(ItemCapabilities.CanAutoStartForLive):
             self.autoStartAction.setVisible(True)
-            self.autoStartAction.setText(translate('OpenLP.ServiceManager',
-                '&Auto Start - inactive'))
+            self.autoStartAction.setIcon(self.inactive)
+            self.autoStartAction.setText(translate('OpenLP.ServiceManager','&Auto Start - inactive'))
             if serviceItem[u'service_item'].will_auto_start:
-                self.autoStartAction.setText(translate('OpenLP.ServiceManager',
-                    '&Auto Start - active'))
+                self.autoStartAction.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
+                self.autoStartAction.setIcon(self.active)
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.
         if serviceItem[u'service_item'].is_text() and \
