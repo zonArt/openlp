@@ -3,7 +3,9 @@ Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
 
-from openlp.core.lib import str_to_bool
+from mock import MagicMock
+
+from openlp.core.lib import str_to_bool, translate
 
 class TestLibModule(TestCase):
 
@@ -96,4 +98,23 @@ class TestLibModule(TestCase):
 
         # THEN: we should get back a true
         assert str_result is True, u'The result should be True'
+
+    def translate_test(self):
+        """
+        Test the translate() function
+        """
+        # GIVEN: A string to translate and a mocked Qt translate function
+        context = u'OpenLP.Tests'
+        text = u'Untranslated string'
+        comment = u'A comment'
+        encoding = 1
+        n = 1
+        mocked_translate = MagicMock(return_value=u'Translated string')
+
+        # WHEN: we call the translate function
+        result = translate(context, text, comment, encoding, n, mocked_translate)
+
+        # THEN: the translated string should be returned, and the mocked function should have been called
+        mocked_translate.assert_called_with(context, text, comment, encoding, n)
+        assert result == u'Translated string', u'The translated string should have been returned'
 
