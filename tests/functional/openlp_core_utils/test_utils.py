@@ -15,8 +15,8 @@ class TestUtils(TestCase):
         """
         Test the get_filesystem_encoding() function
         """
-        with patch(u'sys.getfilesystemencoding') as mocked_getfilesystemencoding, \
-             patch(u'sys.getdefaultencoding') as mocked_getdefaultencoding:
+        with patch(u'openlp.core.utils.sys.getfilesystemencoding') as mocked_getfilesystemencoding, \
+             patch(u'openlp.core.utils.sys.getdefaultencoding') as mocked_getdefaultencoding:
             # GIVEN: sys.getfilesystemencoding returns "cp1252"
             mocked_getfilesystemencoding.return_value = u'cp1252'
 
