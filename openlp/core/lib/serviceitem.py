@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -183,6 +183,7 @@ class ServiceItem(object):
         self.theme_overwritten = False
         self.temporary_edit = False
         self.will_auto_start = False
+        self.has_original_files = False
         self._new_item()
 
     def _new_item(self):
@@ -247,12 +248,10 @@ class ServiceItem(object):
             previous_pages = {}
             for slide in self._raw_frames:
                 verse_tag = slide[u'verseTag']
-                if verse_tag in previous_pages and \
-                    previous_pages[verse_tag][0] == slide[u'raw_slide']:
+                if verse_tag in previous_pages and previous_pages[verse_tag][0] == slide[u'raw_slide']:
                     pages = previous_pages[verse_tag][1]
                 else:
-                    pages = \
-                        self.renderer.format_slide(slide[u'raw_slide'], self)
+                    pages = self.renderer.format_slide(slide[u'raw_slide'], self)
                     previous_pages[verse_tag] = (slide[u'raw_slide'], pages)
                 for page in pages:
                     page = page.replace(u'<br>', u'{br}')
@@ -263,8 +262,7 @@ class ServiceItem(object):
                         u'html': html.replace(u'&amp;nbsp;', u'&nbsp;'),
                         u'verseTag': verse_tag
                     })
-        elif self.service_item_type == ServiceItemType.Image or \
-            self.service_item_type == ServiceItemType.Command:
+        elif self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command:
             pass
         else:
             log.error(u'Invalid value renderer: %s' % self.service_item_type)
@@ -290,8 +288,7 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.addImage(
-            path, ImageSource.ImagePlugin, self.image_border)
+        self.renderer.image_manager.addImage(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
     def add_from_text(self, raw_slide, verse_tag=None):
@@ -305,8 +302,7 @@ class ServiceItem(object):
             verse_tag = verse_tag.upper()
         self.service_item_type = ServiceItemType.Text
         title = raw_slide[:30].split(u'\n')[0]
-        self._raw_frames.append(
-            {u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
+        self._raw_frames.append({u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
         self._new_item()
 
     def add_from_command(self, path, file_name, image):
@@ -405,6 +401,7 @@ class ServiceItem(object):
         self.end_time = header.get(u'end_time', 0)
         self.media_length = header.get(u'media_length', 0)
         self.will_auto_start = header.get(u'will_auto_start', False)
+        self.has_original_files = True
         if u'background_audio' in header:
             self.background_audio = []
             for filename in header[u'background_audio']:
@@ -416,22 +413,20 @@ class ServiceItem(object):
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
             if path:
+                self.has_original_files = False
                 for text_image in serviceitem[u'serviceitem'][u'data']:
                     filename = os.path.join(path, text_image)
                     self.add_from_image(filename, text_image)
             else:
                 for text_image in serviceitem[u'serviceitem'][u'data']:
-                    self.add_from_image(text_image[u'path'],
-                        text_image[u'title'])
+                    self.add_from_image(text_image[u'path'], text_image[u'title'])
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 if path:
-                    self.add_from_command(
-                        path, text_image[u'title'], text_image[u'image'])
+                    self.has_original_files = False
+                    self.add_from_command(path, text_image[u'title'], text_image[u'image'])
                 else:
-                    self.add_from_command(
-                        text_image[u'path'], text_image[u'title'],
-                        text_image[u'image'])
+                    self.add_from_command(text_image[u'path'], text_image[u'title'], text_image[u'image'])
 
         self._new_item()
 
@@ -505,8 +500,7 @@ class ServiceItem(object):
         """
         Confirms if the ServiceItem uses a file
         """
-        return self.service_item_type == ServiceItemType.Image or \
-            self.service_item_type == ServiceItemType.Command
+        return self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command
 
     def is_text(self):
         """
@@ -573,7 +567,7 @@ class ServiceItem(object):
 
     def remove_frame(self, frame):
         """
-        Remove the soecified frame from the item
+        Remove the specified frame from the item
         """
         if frame in self._raw_frames:
             self._raw_frames.remove(frame)
@@ -585,12 +579,10 @@ class ServiceItem(object):
         start = None
         end = None
         if self.start_time != 0:
-            start = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Start</strong>: %s')) % \
+            start = unicode(translate('OpenLP.ServiceItem', '<strong>Start</strong>: %s')) % \
                 unicode(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
-            end = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Length</strong>: %s')) % \
+            end = unicode(translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s')) % \
                 unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return u''
