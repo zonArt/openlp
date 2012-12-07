@@ -3,9 +3,9 @@ Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
 
-from mock import MagicMock
+from mock import MagicMock, patch
 
-from openlp.core.lib import str_to_bool, translate
+from openlp.core.lib import str_to_bool, translate, check_directory_exists
 
 class TestLibModule(TestCase):
 
@@ -117,4 +117,29 @@ class TestLibModule(TestCase):
         # THEN: the translated string should be returned, and the mocked function should have been called
         mocked_translate.assert_called_with(context, text, comment, encoding, n)
         assert result == u'Translated string', u'The translated string should have been returned'
+
+    def check_directory_exists_test(self):
+        """
+        Test the check_directory_exists() function
+        """
+        with patch(u'openlp.core.lib.os.path.exists') as mocked_exists, \
+             patch(u'openlp.core.lib.os.makedirs') as mocked_makedirs:
+            # GIVEN: A directory to check and a mocked out os.makedirs and os.path.exists
+            directory_to_check = u'existing/directory'
+
+            # WHEN: os.path.exists returns Truew and we check to see if the directory exists
+            mocked_exists.return_value = True
+            check_directory_exists(directory_to_check)
+
+            # THEN: Only os.path.exists should have been called
+            mocked_exists.assert_called_with(directory_to_check)
+            assert not mocked_makedirs.called, u'os.makedirs should not have been called'
+
+            # WHEN: os.path.exists returns False and we check the directory exists
+            mocked_exists.return_value = False
+            check_directory_exists(directory_to_check)
+
+            # THEN: Both the mocked functions should have been called
+            mocked_exists.assert_called_with(directory_to_check)
+            mocked_makedirs.assert_called_with(directory_to_check)
 
