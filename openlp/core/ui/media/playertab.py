@@ -51,7 +51,7 @@ class PlayerTab(SettingsTab):
         self.mainWindow = mainWindow
         self.mediaPlayers = mainWindow.mediaController.mediaPlayers
         self.savedUsedPlayers = None
-        self.iconPath = u':/system/system_settings.png'
+        self.iconPath = u':/media/multimedia-player.png'
         player_translated = translate('OpenLP.PlayerTab', 'Players')
         SettingsTab.__init__(self, parent, u'Players', player_translated)
 

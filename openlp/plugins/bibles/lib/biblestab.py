@@ -538,8 +538,7 @@ class BiblesTab(SettingsTab):
         """
         self.bibleThemeComboBox.clear()
         self.bibleThemeComboBox.addItem(u'')
-        for theme in theme_list:
-            self.bibleThemeComboBox.addItem(theme)
+        self.bibleThemeComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.bibleThemeComboBox, self.bible_theme)
 
     def getGreyTextPalette(self, greyed):
