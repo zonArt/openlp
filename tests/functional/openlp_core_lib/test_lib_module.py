@@ -143,3 +143,15 @@ class TestLibModule(TestCase):
             mocked_exists.assert_called_with(directory_to_check)
             mocked_makedirs.assert_called_with(directory_to_check)
 
+            # WHEN: os.path.exists raises an IOError
+            mocked_exists.side_effect = IOError()
+            check_directory_exists(directory_to_check)
+
+            # THEN: We shouldn't get an exception though the mocked exists has been called
+            mocked_exists.assert_called_with(directory_to_check)
+
+            # WHEN: Some other exception is raised
+            mocked_exists.side_effect = ValueError()
+
+            # THEN: check_directory_exists raises an exception
+            self.assertRaises(ValueError, check_directory_exists, directory_to_check)
