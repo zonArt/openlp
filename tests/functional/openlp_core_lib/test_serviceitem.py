@@ -37,16 +37,17 @@ class TestServiceItem(TestCase):
         with patch(u'openlp.core.lib.Plugin') as mocked_plugin:
             #GIVEN: A new service item
             service_item = ServiceItem(mocked_plugin)
-            #true_boolean = True
             # WHEN: adding text to a service item
             service_item.add_from_text(VERSE)
             service_item.raw_footer = FOOTER
             # THEN: We should get back a valid service item
-            #assert isinstance(true_result, bool), u'The result should be a boolean'
             assert service_item.is_valid is True, u'A valid Service Item'
             assert service_item.missing_frames() is True, u'frames loaded '
 
             #GIVEN: A service item with text
+            service_item.renderer = MagicMock().Renderer.format_slide.return_value = VERSE
             #WHEN: Render called
-            service_item.render(TRUE)
+            assert len(service_item._display_frames) is 0, u'A blank Service Item'
+            service_item.render(True)
             #THEN: ?
+            assert len(service_item._display_frames) > 0, u'A valid rendered Service Item has display frames'
