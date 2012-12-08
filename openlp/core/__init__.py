@@ -133,7 +133,8 @@ class OpenLP(QtGui.QApplication):
             base_color = self.palette().color(QtGui.QPalette.Active,
                 QtGui.QPalette.Base)
             application_stylesheet = \
-                u'* {alternate-background-color: ' + \
+                u'QTableWidget, QListWidget, QTreeWidget ' + \
+                u'{alternate-background-color: ' + \
                 base_color.name() + ';}\n'
             application_stylesheet += nt_repair_stylesheet
             self.setStyleSheet(application_stylesheet)
