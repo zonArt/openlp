@@ -192,6 +192,7 @@ class ServiceItem(object):
         service items to see if they are the same.
         """
         self._uuid = unicode(uuid.uuid1())
+        self.validate_item()
 
     def add_capability(self, capability):
         """
@@ -614,8 +615,25 @@ class ServiceItem(object):
                 if self.get_frame_path(frame=frame) in invalid_paths:
                     self.remove_frame(frame)
 
-    def validate(self):
+    def missing_frames(self):
         """
-        Validates this service item
+        Returns if there are any frames in the service item
         """
         return bool(self._raw_frames)
+
+    def validate_item(self, suffix_list=None):
+        """
+        Validates a service item to make sure it is valid
+        """
+        self.is_valid = True
+        for frame in self._raw_frames:
+            if self.is_image() and not os.path.exists((frame[u'path'])):
+                self.is_valid = False
+            elif self.is_command():
+                file = os.path.join(frame[u'path'],frame[u'title'])
+                if not os.path.exists(file):
+                    self.is_valid = False
+                if suffix_list:
+                    type = frame[u'title'].split(u'.')[-1]
+                    if type.lower() not in suffix_list:
+                        self.is_valid = False

@@ -536,7 +536,7 @@ class ServiceManager(QtGui.QWidget):
         for item in list(self.serviceItems):
             self.mainwindow.incrementProgressBar()
             item[u'service_item'].remove_invalid_frames(missing_list)
-            if not item[u'service_item'].validate():
+            if item[u'service_item'].missing_frames():
                 self.serviceItems.remove(item)
             else:
                 service_item = item[u'service_item'].get_service_repr(self._saveLite)
@@ -795,7 +795,7 @@ class ServiceManager(QtGui.QWidget):
                         serviceItem.set_from_service(item)
                     else:
                         serviceItem.set_from_service(item, self.servicePath)
-                    self.validateItem(serviceItem)
+                    serviceItem.validate_item(self.suffixes)
                     self.load_item_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' %
@@ -1214,18 +1214,6 @@ class ServiceManager(QtGui.QWidget):
                     elif serviceItemChild == -1:
                         self.serviceManagerList.setCurrentItem(treewidgetitem)
             treewidgetitem.setExpanded(item[u'expanded'])
-
-    def validateItem(self, serviceItem):
-        """
-        Validates the service item and if the suffix matches an accepted
-        one it allows the item to be displayed.
-        """
-        #@todo check file items exist
-        if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
-            if type.lower() not in self.suffixes:
-                serviceItem.is_valid = False
-            #@todo check file items exist
 
     def cleanUp(self):
         """
