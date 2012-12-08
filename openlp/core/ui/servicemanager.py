@@ -118,6 +118,7 @@ class ServiceManager(QtGui.QWidget):
         # is a new service and has not been saved
         self._modified = False
         self._fileName = u''
+        self.service_has_all_original_files = True
         self.serviceNoteForm = ServiceNoteForm(self.mainwindow)
         self.serviceItemEditForm = ServiceItemEditForm(self.mainwindow)
         self.startTimeForm = StartTimeForm(self.mainwindow)
@@ -715,17 +716,15 @@ class ServiceManager(QtGui.QWidget):
         path = os.path.join(directory, default_filename)
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.
-        if self._fileName.endswith(u'oszl') or not self._fileName:
+        if self._fileName.endswith(u'oszl') or self.service_has_all_original_files:
             fileName = unicode(QtGui.QFileDialog.getSaveFileName(
                 self.mainwindow, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
-                    'OpenLP Service Files (*.osz);;'
-                    'OpenLP Service Files - lite (*.oszl)')))
+                    'OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)')))
         else:
             fileName = unicode(QtGui.QFileDialog.getSaveFileName(
                 self.mainwindow, UiStrings().SaveService, path,
-                translate('OpenLP.ServiceManager',
-                    'OpenLP Service Files (*.osz);;')))
+                translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz);;')))
         if not fileName:
             return False
         if os.path.splitext(fileName)[1] == u'':
@@ -1144,9 +1143,12 @@ class ServiceManager(QtGui.QWidget):
         """
         # Correct order of items in array
         count = 1
+        self.service_has_all_original_files = True
         for item in self.serviceItems:
             item[u'order'] = count
             count += 1
+            if not item[u'service_item'].has_original_files:
+                self.service_has_all_original_files = False
         # Repaint the screen
         self.serviceManagerList.clear()
         for itemcount, item in enumerate(self.serviceItems):
@@ -1257,7 +1259,7 @@ class ServiceManager(QtGui.QWidget):
         Receiver.send_message(u'cursor_busy')
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
-        self.mainwindow.renderer.themedata = None
+        self.service_has_all_original_files = True
         if self.serviceItems:
             for item in self.serviceItems:
                 item[u'selected'] = False

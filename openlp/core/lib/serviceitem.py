@@ -183,7 +183,7 @@ class ServiceItem(object):
         self.theme_overwritten = False
         self.temporary_edit = False
         self.will_auto_start = False
-        self.has_original_files = False
+        self.has_original_files = True
         self._new_item()
 
     def _new_item(self):
@@ -619,7 +619,7 @@ class ServiceItem(object):
         """
         Returns if there are any frames in the service item
         """
-        return bool(self._raw_frames)
+        return not bool(self._raw_frames)
 
     def validate_item(self, suffix_list=None):
         """
