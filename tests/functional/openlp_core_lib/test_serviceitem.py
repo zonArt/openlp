@@ -3,7 +3,7 @@
 """
 from unittest import TestCase
 from mock import MagicMock, patch
-from openlp.core.lib import ServiceItem, Renderer
+from openlp.core.lib import ServiceItem
 
 VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n'\
@@ -20,34 +20,39 @@ class TestServiceItem(TestCase):
         """
         Test the Service Item
         """
-        with patch(u'openlp.core.lib.Plugin') as mocked_plugin:
-            #GIVEN: A new service item
-            service_item = ServiceItem(mocked_plugin)
-            #true_boolean = True
-            # WHEN:
-            # THEN: We should get back a valid service item
-            #assert isinstance(true_result, bool), u'The result should be a boolean'
-            assert service_item.is_valid is True, u'A valid Service Item'
-            assert service_item.missing_frames() is False, u'No frames loaded yet'
+        #GIVEN: A new service item
+
+        # WHEN:A service item is created (without a plugin)
+        service_item = ServiceItem(None)
+
+        # THEN: We should get back a valid service item
+        assert service_item.is_valid is True, u'A valid Service Item'
+        assert service_item.missing_frames() is True, u'No frames loaded yet'
 
     def serviceitem_add_text_test(self):
         """
         Test the Service Item
         """
-        with patch(u'openlp.core.lib.Plugin') as mocked_plugin:
-            #GIVEN: A new service item
-            service_item = ServiceItem(mocked_plugin)
-            # WHEN: adding text to a service item
-            service_item.add_from_text(VERSE)
-            service_item.raw_footer = FOOTER
-            # THEN: We should get back a valid service item
-            assert service_item.is_valid is True, u'A valid Service Item'
-            assert service_item.missing_frames() is True, u'frames loaded '
+        #GIVEN: A new service item
+        service_item = ServiceItem(None)
 
-            #GIVEN: A service item with text
-            service_item.renderer = MagicMock().Renderer.format_slide.return_value = VERSE
-            #WHEN: Render called
-            assert len(service_item._display_frames) is 0, u'A blank Service Item'
-            service_item.render(True)
-            #THEN: ?
-            assert len(service_item._display_frames) > 0, u'A valid rendered Service Item has display frames'
+        # WHEN: adding text to a service item
+        service_item.add_from_text(VERSE)
+        service_item.raw_footer = FOOTER
+
+        # THEN: We should get back a valid service item
+        assert service_item.is_valid is True, u'A valid Service Item'
+        assert service_item.missing_frames() is False, u'frames loaded '
+
+        #GIVEN: A service item with text
+        mocked_renderer =  MagicMock()
+        mocked_renderer.format_slide.return_value = [VERSE]
+        service_item.renderer = mocked_renderer
+
+        #WHEN: Render called
+        assert len(service_item._display_frames) is 0, u'A blank Service Item'
+        service_item.render(True)
+
+        #THEN: We should should have a page of output.
+        assert len(service_item._display_frames) is 1, u'A valid rendered Service Item has display frames'
+        assert service_item.get_rendered_frame(0) == VERSE.split(u'\n')[0], u'A valid render'

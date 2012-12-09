@@ -289,6 +289,9 @@ class MediaController(object):
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volumeSlider.setObjectName(u'volumeSlider')
         controller.mediabar.addToolbarWidget(controller.volumeSlider)
+        controller.volumeButton = QtGui.QToolButton()
+        controller.volumeButton.setAutoRaise(True)
+        controller.mediabar.addToolbarWidget(controller.volumeButton)
         controller.controllerLayout.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
