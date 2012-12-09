@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -32,15 +32,13 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, Receiver, MediaType, \
-    ServiceItem, build_html, ServiceItemContext
+from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
+    check_item_selected, Receiver, MediaType, ServiceItem, ServiceItemContext, check_directory_exists
 from openlp.core.lib.settings import Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    create_horizontal_adjusting_combo_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
-from openlp.core.utils import locale_compare
+from openlp.core.utils import AppLocation, locale_compare
 
 log = logging.getLogger(__name__)
 
@@ -67,23 +65,16 @@ class MediaMediaItem(MediaManagerItem):
         self.displayController = DisplayController(parent)
         self.displayController.controllerLayout = QtGui.QVBoxLayout()
         self.plugin.mediaController.register_controller(self.displayController)
-        self.plugin.mediaController.set_controls_visible(self.displayController,
-            False)
-        self.displayController.previewDisplay = Display(self.displayController,
-            False, self.displayController)
+        self.plugin.mediaController.set_controls_visible(self.displayController, False)
+        self.displayController.previewDisplay = Display(self.displayController, False, self.displayController)
         self.displayController.previewDisplay.hide()
-        self.displayController.previewDisplay.setGeometry(
-            QtCore.QRect(0, 0, 300, 300))
-        self.displayController.previewDisplay.screen = \
-            {u'size':self.displayController.previewDisplay.geometry()}
+        self.displayController.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
+        self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
         self.displayController.previewDisplay.setup()
-        self.plugin.mediaController.setup_display(
-            self.displayController.previewDisplay, False)
+        self.plugin.mediaController.setup_display(self.displayController.previewDisplay, False)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'video_background_replaced'),
-            self.videobackgroundReplaced)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
+            QtCore.SIGNAL(u'video_background_replaced'), self.videobackgroundReplaced)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
         # Allow DnD from the desktop
@@ -115,8 +106,7 @@ class MediaMediaItem(MediaManagerItem):
         self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
             icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
         self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
-            icon=u':/system/system_close.png', visible=False,
-            triggers=self.onResetClick)
+            icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
         self.mediaWidget = QtGui.QWidget(self)
         self.mediaWidget.setObjectName(u'mediaWidget')
         self.displayLayout = QtGui.QFormLayout(self.mediaWidget)
@@ -124,16 +114,13 @@ class MediaMediaItem(MediaManagerItem):
         self.displayLayout.setObjectName(u'displayLayout')
         self.displayTypeLabel = QtGui.QLabel(self.mediaWidget)
         self.displayTypeLabel.setObjectName(u'displayTypeLabel')
-        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(
-            self.mediaWidget, u'displayTypeComboBox')
+        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(self.mediaWidget, u'displayTypeComboBox')
         self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
-        self.displayLayout.addRow(self.displayTypeLabel,
-            self.displayTypeComboBox)
+        self.displayLayout.addRow(self.displayTypeLabel, self.displayTypeComboBox)
         # Add the Media widget to the page layout
         self.pageLayout.addWidget(self.mediaWidget)
         QtCore.QObject.connect(self.displayTypeComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged (int)'),
-            self.overridePlayerChanged)
+            QtCore.SIGNAL(u'currentIndexChanged (int)'), self.overridePlayerChanged)
 
     def overridePlayerChanged(self, index):
         player = get_media_players()[0]
@@ -146,8 +133,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the media selected,
         """
-        self.plugin.liveController.mediaController.media_reset(
-            self.plugin.liveController)
+        self.plugin.liveController.mediaController.media_reset(self.plugin.liveController)
         self.resetAction.setVisible(False)
 
     def videobackgroundReplaced(self):
@@ -161,32 +147,27 @@ class MediaMediaItem(MediaManagerItem):
         Called to replace Live background with the media selected.
         """
         if check_item_selected(self.listView,
-            translate('MediaPlugin.MediaItem',
-            'You must select a media file to replace the background with.')):
+                translate('MediaPlugin.MediaItem', 'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 service_item = ServiceItem()
-                service_item.title = u'webkit'
+                service_item.title = u'Automatic'
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
                 if self.plugin.liveController.mediaController.video(
-                    DisplayControllerType.Live, service_item,
-                        videoBehindText=True):
+                        DisplayControllerType.Live, service_item,videoBehindText=True):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
-                        translate('MediaPlugin.MediaItem',
-                        'There was no display item to amend.'))
+                        translate('MediaPlugin.MediaItem', 'There was no display item to amend.'))
             else:
-                critical_error_message_box(UiStrings().LiveBGError,
-                    unicode(translate('MediaPlugin.MediaItem',
-                    'There was a problem replacing your background, '
-                    'the media file "%s" no longer exists.')) % filename)
+                critical_error_message_box(UiStrings().LiveBGError, unicode(translate('MediaPlugin.MediaItem',
+                    'There was a problem replacing your background, the media file "%s" no longer exists.')) % filename)
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False, context=ServiceItemContext.Live):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False, remote=False,
+            context=ServiceItemContext.Live):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
@@ -195,10 +176,8 @@ class MediaMediaItem(MediaManagerItem):
         if not os.path.exists(filename):
             if not remote:
                 # File is no longer present
-                critical_error_message_box(
-                    translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                    unicode(translate('MediaPlugin.MediaItem',
-                        'The file %s no longer exists.')) % filename)
+                critical_error_message_box(translate('MediaPlugin.MediaItem', 'Missing Media File'),
+                    unicode(translate('MediaPlugin.MediaItem', 'The file %s no longer exists.')) % filename)
             return False
         service_item.title = unicode(self.displayTypeComboBox.currentText())
         service_item.shortname = service_item.title
@@ -213,8 +192,7 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         if Settings().value(self.settingsSection + u'/media auto start',
-            QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0]\
-            == QtCore.Qt.Checked:
+                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
@@ -223,6 +201,10 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
+        self.servicePath = os.path.join(
+            AppLocation.get_section_data_path(self.settingsSection),
+            u'thumbnails')
+        check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
         self.populateDisplayTypes()
 
@@ -232,15 +214,12 @@ class MediaMediaItem(MediaManagerItem):
         the settings
         """
         self.populateDisplayTypes()
-        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem',
-            'Videos (%s);;Audio (%s);;%s (*)')) % (
+        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)')) % (
             u' '.join(self.plugin.mediaController.video_extensions_list),
-            u' '.join(self.plugin.mediaController.audio_extensions_list),
-            UiStrings().AllFiles)
+            u' '.join(self.plugin.mediaController.audio_extensions_list), UiStrings().AllFiles)
 
     def displaySetup(self):
-        self.plugin.mediaController.setup_display(
-            self.displayController.previewDisplay, False)
+        self.plugin.mediaController.setup_display(self.displayController.previewDisplay, False)
 
     def populateDisplayTypes(self):
         """
@@ -273,19 +252,17 @@ class MediaMediaItem(MediaManagerItem):
         Remove a media item from the list.
         """
         if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
-            'You must select a media file to delete.')):
+                'You must select a media file to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
                 self.listView.takeItem(row)
-            SettingsManager.set_list(self.settingsSection,
-                u'media', self.getFileList())
+            SettingsManager.set_list(self.settingsSection, u'media', self.getFileList())
 
     def loadList(self, media):
         # Sort the media by its filename considering language specific
         # characters.
-        media.sort(cmp=locale_compare,
-            key=lambda filename: os.path.split(unicode(filename))[1])
+        media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         for track in media:
             track_info = QtCore.QFileInfo(track)
             if not os.path.exists(track):
@@ -296,8 +273,7 @@ class MediaMediaItem(MediaManagerItem):
             elif track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                if u'*.%s' % (filename.split(u'.')[-1].lower()) in \
-                    self.plugin.mediaController.audio_extensions_list:
+                if u'*.%s' % (filename.split(u'.')[-1].lower()) in self.plugin.mediaController.audio_extensions_list:
                     item_name.setIcon(AUDIO)
                 else:
                     item_name.setIcon(VIDEO)
@@ -312,8 +288,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def getList(self, type=MediaType.Audio):
         media = SettingsManager.load_list(self.settingsSection, u'media')
-        media.sort(cmp=locale_compare,
-            key=lambda filename: os.path.split(unicode(filename))[1])
+        media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
             ext = self.plugin.mediaController.audio_extensions_list
