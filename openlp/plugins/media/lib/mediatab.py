@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -69,34 +69,24 @@ class MediaTab(SettingsTab):
 
     def retranslateUi(self):
         self.advancedGroupBox.setTitle(UiStrings().Advanced)
-        self.overridePlayerCheckBox.setText(
-            translate('MediaPlugin.MediaTab',
-            'Allow media player to be overridden'))
-        self.autoStartCheckBox.setText(
-            translate('MediaPlugin.MediaTab',
-                'Start Live items automatically'))
+        self.overridePlayerCheckBox.setText(translate('MediaPlugin.MediaTab', 'Allow media player to be overridden'))
+        self.autoStartCheckBox.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
 
     def load(self):
-        self.overridePlayerCheckBox.setChecked(Settings().value(
-            self.settingsSection + u'/override player',
+        self.overridePlayerCheckBox.setChecked(Settings().value(self.settingsSection + u'/override player',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
-        self.autoStartCheckBox.setChecked(Settings().value(
-            self.settingsSection + u'/media auto start',
+        self.autoStartCheckBox.setChecked(Settings().value(self.settingsSection + u'/media auto start',
             QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0])
 
     def save(self):
         override_changed = False
         setting_key = self.settingsSection + u'/override player'
-        if Settings().value(setting_key).toInt()[0] != \
-            self.overridePlayerCheckBox.checkState():
-            Settings().setValue(setting_key,
-                QtCore.QVariant(self.overridePlayerCheckBox.checkState()))
+        if Settings().value(setting_key).toInt()[0] != self.overridePlayerCheckBox.checkState():
+            Settings().setValue(setting_key, QtCore.QVariant(self.overridePlayerCheckBox.checkState()))
             override_changed = True
         setting_key = self.settingsSection + u'/media auto start'
-        if Settings().value(setting_key).toInt()[0] !=\
-           self.autoStartCheckBox.checkState():
-            Settings().setValue(setting_key,
-                QtCore.QVariant(self.autoStartCheckBox.checkState()))
+        if Settings().value(setting_key).toInt()[0] != self.autoStartCheckBox.checkState():
+            Settings().setValue(setting_key, QtCore.QVariant(self.autoStartCheckBox.checkState()))
         if override_changed:
             self.parent.resetSupportedSuffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')

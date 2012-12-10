@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -39,17 +39,14 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, \
-    ItemCapabilities, SettingsManager, translate, str_to_bool, \
-    check_directory_exists
+from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, SettingsManager, \
+    translate, str_to_bool, check_directory_exists
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.settings import Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    create_widget_action, find_and_set_in_combo_box
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
-from openlp.core.utils import AppLocation, delete_file, split_filename, \
-    format_time
+from openlp.core.utils import AppLocation, delete_file, split_filename, format_time
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 class ServiceManagerList(QtGui.QTreeWidget):
@@ -127,30 +124,21 @@ class ServiceManager(QtGui.QWidget):
         self.layout.setMargin(0)
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
-        self.toolbar.addToolbarAction(u'newService',
-            text=UiStrings().NewService, icon=u':/general/general_new.png',
-            tooltip=UiStrings().CreateService,
-            triggers=self.onNewServiceClicked)
-        self.toolbar.addToolbarAction(u'openService',
-            text=UiStrings().OpenService, icon=u':/general/general_open.png',
-            tooltip=translate('OpenLP.ServiceManager',
-            'Load an existing service.'), triggers=self.onLoadServiceClicked)
-        self.toolbar.addToolbarAction(u'saveService',
-            text=UiStrings().SaveService, icon=u':/general/general_save.png',
-            tooltip=translate('OpenLP.ServiceManager', 'Save this service.'),
-            triggers=self.decideSaveMethod)
+        self.toolbar.addToolbarAction(u'newService', text=UiStrings().NewService, icon=u':/general/general_new.png',
+            tooltip=UiStrings().CreateService, triggers=self.onNewServiceClicked)
+        self.toolbar.addToolbarAction(u'openService', text=UiStrings().OpenService, icon=u':/general/general_open.png',
+            tooltip=translate('OpenLP.ServiceManager', 'Load an existing service.'), triggers=self.onLoadServiceClicked)
+        self.toolbar.addToolbarAction(u'saveService', text=UiStrings().SaveService, icon=u':/general/general_save.png',
+            tooltip=translate('OpenLP.ServiceManager', 'Save this service.'), triggers=self.decideSaveMethod)
         self.toolbar.addSeparator()
         self.themeLabel = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
         self.themeLabel.setMargin(3)
         self.themeLabel.setObjectName(u'themeLabel')
         self.toolbar.addToolbarWidget(self.themeLabel)
         self.themeComboBox = QtGui.QComboBox(self.toolbar)
-        self.themeComboBox.setToolTip(translate('OpenLP.ServiceManager',
-            'Select a theme for the service.'))
-        self.themeComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToMinimumContentsLength)
-        self.themeComboBox.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        self.themeComboBox.setToolTip(translate('OpenLP.ServiceManager', 'Select a theme for the service.'))
+        self.themeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
+        self.themeComboBox.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.themeComboBox.setObjectName(u'themeComboBox')
         self.toolbar.addToolbarWidget(self.themeComboBox)
         self.toolbar.setObjectName(u'toolbar')
@@ -161,15 +149,12 @@ class ServiceManager(QtGui.QWidget):
             QtGui.QAbstractItemView.CurrentChanged |
             QtGui.QAbstractItemView.DoubleClicked |
             QtGui.QAbstractItemView.EditKeyPressed)
-        self.serviceManagerList.setDragDropMode(
-            QtGui.QAbstractItemView.DragDrop)
+        self.serviceManagerList.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         self.serviceManagerList.setAlternatingRowColors(True)
         self.serviceManagerList.setHeaderHidden(True)
         self.serviceManagerList.setExpandsOnDoubleClick(False)
-        self.serviceManagerList.setContextMenuPolicy(
-            QtCore.Qt.CustomContextMenu)
-        QtCore.QObject.connect(self.serviceManagerList,
-            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+        self.serviceManagerList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        QtCore.QObject.connect(self.serviceManagerList, QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
         self.serviceManagerList.setObjectName(u'serviceManagerList')
         # enable drop
@@ -253,36 +238,24 @@ class ServiceManager(QtGui.QWidget):
             category=UiStrings().Service, triggers=self.makeLive)
         self.layout.addWidget(self.orderToolbar)
         # Connect up our signals and slots
-        QtCore.QObject.connect(self.themeComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
-        QtCore.QObject.connect(self.serviceManagerList,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onMakeLive)
-        QtCore.QObject.connect(self.serviceManagerList,
-           QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'), self.collapsed)
-        QtCore.QObject.connect(self.serviceManagerList,
-           QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_preview_live'), self.previewLive)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_previous_item'), self.previousItem)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_set_item'), self.onSetItem)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.configUpdated)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_screen_changed'),
+        QtCore.QObject.connect(self.themeComboBox, QtCore.SIGNAL(u'activated(int)'), self.onThemeComboBoxSelected)
+        QtCore.QObject.connect(self.serviceManagerList, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onMakeLive)
+        QtCore.QObject.connect(self.serviceManagerList, QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'),
+            self.collapsed)
+        QtCore.QObject.connect(self.serviceManagerList, QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_preview_live'), self.previewLive)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_next_item'), self.nextItem)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_previous_item'),
+            self.previousItem)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_set_item'), self.onSetItem)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
             self.regenerateServiceItems)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
-        self.service_theme = unicode(Settings().value(
-            self.mainwindow.serviceManagerSettingsSection + u'/service theme',
+        self.service_theme = unicode(Settings().value(self.mainwindow.serviceManagerSettingsSection + u'/service theme',
             QtCore.QVariant(u'')).toString())
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         # build the drag and drop context menu
