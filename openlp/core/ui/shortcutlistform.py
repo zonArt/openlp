@@ -223,10 +223,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.alternatePushButton.setChecked(column not in [0, 1])
         if column in [0, 1]:
             self.primaryPushButton.setText(u'')
-            self.primaryPushButton.setFocus(QtCore.Qt.OtherFocusReason)
+            self.primaryPushButton.setFocus()
         else:
             self.alternatePushButton.setText(u'')
-            self.alternatePushButton.setFocus(QtCore.Qt.OtherFocusReason)
+            self.alternatePushButton.setFocus()
 
     def onCurrentItemChanged(self, item=None, previousItem=None):
         """

@@ -35,16 +35,16 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Receiver, translate
 from openlp.core.lib.settings import Settings
-from openlp.core.lib.mediaplayer import MediaPlayer
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
 
 VLC_AVAILABLE = False
 try:
-    import vlc
+    from openlp.core.ui.media.vendor import vlc
     VLC_AVAILABLE = bool(vlc.get_default_instance())
 except (ImportError, NameError, NotImplementedError):
     pass
@@ -115,8 +115,7 @@ class VlcPlayer(MediaPlayer):
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
         if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool() and \
-            display.controller.isLive:
+            QtCore.QVariant(True)).toBool() and display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
         display.vlcInstance.set_log_verbosity(2)
@@ -188,7 +187,8 @@ class VlcPlayer(MediaPlayer):
     def play(self, display):
         controller = display.controller
         start_time = 0
-        if controller.media_info.start_time > 0:
+        if self.state != MediaState.Paused and \
+           controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.vlcMediaPlayer.play()
         if not self.media_state_wait(display, vlc.State.Playing):
@@ -244,3 +244,10 @@ class VlcPlayer(MediaPlayer):
             controller.seekSlider.setSliderPosition( \
                 display.vlcMediaPlayer.get_time())
 
+    def get_info(self):
+        return(translate('Media.player', 'VLC is an external player which '
+            'supports a number of different formats.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
+            translate('Media.player', 'Video') + u'</strong><br/>' +
+            unicode(VIDEO_EXT) + u'<br/>')

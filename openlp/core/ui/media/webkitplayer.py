@@ -27,22 +27,28 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui
+
 import logging
 
-from openlp.core.lib.mediaplayer import MediaPlayer
+from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
 VIDEO_CSS = u"""
 #videobackboard {
     z-index:3;
-    background-color: black;
+    background-color: %s;
 }
 #video1 {
+    background-color: %s;
     z-index:4;
 }
 #video2 {
+    background-color: %s;
     z-index:4;
 }
 """
@@ -277,7 +283,10 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        return VIDEO_CSS + FLASH_CSS
+        background = unicode(QtGui.QColor(Settings().value(
+            u'players/background color', QtCore.QVariant(u'#000000'))).name())
+        css = VIDEO_CSS % (background,background,background)
+        return css + FLASH_CSS
 
     def get_media_display_javascript(self):
         """
@@ -324,7 +333,6 @@ class WebkitPlayer(MediaPlayer):
         return True
 
     def resize(self, display):
-        controller = display.controller
         display.webView.resize(display.size())
 
     def play(self, display):
@@ -431,3 +439,12 @@ class WebkitPlayer(MediaPlayer):
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
                 controller.seekSlider.setSliderPosition(currentTime)
+
+    def get_info(self):
+        return(translate('Media.player', 'Webkit is a media player which runs '
+            'inside a web browser. This player allows text over video to be '
+            'rendered.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
+            translate('Media.player', 'Video') + u'</strong><br/>' +
+            unicode(VIDEO_EXT) + u'<br/>')

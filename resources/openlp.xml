@@ -18,6 +18,11 @@ Notes:
     <comment>OpenLP Service File</comment>
     <glob pattern="*.osz"/>
   </mime-type> 
+    <mime-type type="application/x-openlp-service">
+    <sub-class-of type="application/zip"/>
+    <comment>OpenLP Service File</comment>
+    <glob pattern="*.oszl"/>
+  </mime-type> 
   <mime-type type="application/x-openlp-theme">
     <sub-class-of type="application/zip"/>
     <comment>OpenLP Theme File</comment>
