@@ -3,9 +3,9 @@ Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
 
-from mock import MagicMock, patch
+from mock import MagicMock, patch, call
 
-from openlp.core.lib import str_to_bool, translate, check_directory_exists
+from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string
 
 class TestLib(TestCase):
 
@@ -156,3 +156,57 @@ class TestLib(TestCase):
             # THEN: check_directory_exists raises an exception
             mocked_exists.assert_called_with(directory_to_check)
             self.assertRaises(ValueError, check_directory_exists, directory_to_check)
+
+    def get_text_file_string_no_file_test(self):
+        """
+        Test the get_text_file_string() function when a file does not exist
+        """
+        with patch(u'openlp.core.lib.os.path.isfile') as mocked_isfile:
+            # GIVEN: A mocked out isfile which returns true, and a text file name
+            filename = u'testfile.txt'
+            mocked_isfile.return_value = False
+
+            # WHEN: get_text_file_string is called
+            result = get_text_file_string(filename)
+
+            # THEN: The result should be False
+            mocked_isfile.assert_called_with(filename)
+            assert result is False, u'False should be returned if no file exists'
+
+    def get_text_file_string_read_error_test(self):
+        with patch(u'openlp.core.lib.os.path.isfile') as mocked_isfile, patch(u'__builtin__.open') as mocked_open:
+            # GIVEN: A mocked-out open() which raises an exception and isfile returns True
+            filename = u'testfile.txt'
+            mocked_isfile.return_value = True
+            mocked_open.side_effect = IOError()
+
+            # WHEN: get_text_file_string is called
+            result = get_text_file_string(filename)
+
+            # THEN: None should be returned
+            mocked_isfile.assert_called_with(filename)
+            mocked_open.assert_called_with(filename, u'r')
+            assert result is None, u'None should be returned if the file cannot be opened'
+
+    def get_text_file_string_decode_error_test(self):
+        assert False, u'Fix this test'
+        #with patch(u'openlp.core.lib.os.path.isfile') as mocked_isfile:
+            ## GIVEN: A mocked-out open(), a mocked-out file object and file contents which cannot be decoded
+            #filename = u'testfile.txt'
+            #mocked_isfile.return_value = True
+            #mocked_contents = MagicMock()
+            #mocked_contents.read.return_value = u''
+            #mocked_contents.decode.side_effect = UnicodeError()
+
+            ## WHEN: get_text_file_string is called
+            #with patch(u'openlp.core.lib.get_text_file_string.open') as mocked_open:
+                #mocked_open.return_value = mocked_contents
+                #result = get_text_file_string(filename)
+
+            ## THEN: None should be returned
+            #mocked_isfile.assert_called_with(filename)
+            #mocked_open.assert_called_with(filename, u'r')
+            #mocked_contents.read.assert_called_with(3)
+            #mocked_contents.decode.assert_called_with(u'utf-8')
+            #assert result is None, u'None should be returned if the file cannot be decoded'
+
