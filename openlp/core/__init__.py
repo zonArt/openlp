@@ -124,11 +124,14 @@ class OpenLP(QtGui.QApplication):
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
                 Settings().setValue(u'general/has run wizard', QtCore.QVariant(True))
         # Correct stylesheet bugs
+        application_stylesheet = u''
+        if Settings().value(u'advanced/stylesheet fix', QtCore.QVariant(False)).toBool():
+            alternate_background_repair_stylesheet = \
+            u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
+            application_stylesheet += alternate_background_repair_stylesheet
         if os.name == u'nt':
-            base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
-            application_stylesheet = \
-                u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += nt_repair_stylesheet
+        if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
         # show the splashscreen
         show_splash = Settings().value(u'general/show splash', QtCore.QVariant(True)).toBool()

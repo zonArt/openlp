@@ -276,14 +276,18 @@ class AdvancedTab(SettingsTab):
         self.nextItemRadioButton.setObjectName(u'nextItemRadioButton')
         self.slideLayout.addWidget(self.nextItemRadioButton)
         self.rightLayout.addWidget(self.slideGroupBox)
-        self.x11GroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.x11GroupBox.setObjectName(u'x11GroupBox')
-        self.x11Layout = QtGui.QVBoxLayout(self.x11GroupBox)
-        self.x11Layout.setObjectName(u'x11Layout')
-        self.x11BypassCheckBox = QtGui.QCheckBox(self.x11GroupBox)
+        # Workarounds
+        self.workaroundGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.workaroundGroupBox.setObjectName(u'workaroundGroupBox')
+        self.workaroundLayout = QtGui.QVBoxLayout(self.workaroundGroupBox)
+        self.workaroundLayout.setObjectName(u'workaroundLayout')
+        self.x11BypassCheckBox = QtGui.QCheckBox(self.workaroundGroupBox)
         self.x11BypassCheckBox.setObjectName(u'x11BypassCheckBox')
-        self.x11Layout.addWidget(self.x11BypassCheckBox)
-        self.rightLayout.addWidget(self.x11GroupBox)
+        self.workaroundLayout.addWidget(self.x11BypassCheckBox)
+        self.stylesheetFixCheckBox = QtGui.QCheckBox(self.workaroundGroupBox)
+        self.stylesheetFixCheckBox.setObjectName(u'stylesheetFixCheckBox')
+        self.workaroundLayout.addWidget(self.stylesheetFixCheckBox)
+        self.rightLayout.addWidget(self.workaroundGroupBox)
         self.rightLayout.addStretch()
         self.shouldUpdateServiceNameExample = False
         QtCore.QObject.connect(self.serviceNameCheckBox,
@@ -308,6 +312,8 @@ class AdvancedTab(SettingsTab):
             QtCore.SIGNAL(u'clicked()'), self.onDefaultRevertButtonClicked)
         QtCore.QObject.connect(self.x11BypassCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
+        QtCore.QObject.connect(self.stylesheetFixCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onStylesheetFixCheckBoxToggled)
         QtCore.QObject.connect(self.dataDirectoryBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
             self.onDataDirectoryBrowseButtonClicked)
@@ -424,9 +430,11 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab',
             '<strong>WARNING:</strong> New data directory location contains '
             'OpenLP data files.  These files WILL be replaced during a copy.'))
-        self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab', 'X11'))
+        self.workaroundGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Workarounds'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Bypass X11 Window Manager'))
+        self.stylesheetFixCheckBox.setText(translate('OpenLP.AdvancedTab',
+            'Disable alternating row colors in lists'))
         # Slide Limits
         self.slideGroupBox.setTitle(
             translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
@@ -492,6 +500,17 @@ class AdvancedTab(SettingsTab):
                 os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
         self.x11BypassCheckBox.setChecked(settings.value(
             u'x11 bypass wm', QtCore.QVariant(x11_bypass_default)).toBool())
+        # Fix for bug #936281.
+        if sys.platform.startswith(u'win'):
+            stylesheet_fix_default = True
+        else:
+            stylesheet_fix_default = False
+        # Prevent the dialog displayed by the stylesheetFixCheckBox to display.
+        signalsBlocked = self.stylesheetFixCheckBox.blockSignals(True)
+        self.stylesheetFixCheckBox.setChecked(settings.value(
+            u'stylesheet fix', QtCore.QVariant(
+            stylesheet_fix_default)).toBool())
+        self.stylesheetFixCheckBox.blockSignals(signalsBlocked)
         self.defaultColor = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
@@ -582,6 +601,8 @@ class AdvancedTab(SettingsTab):
             QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
         settings.setValue(u'x11 bypass wm',
             QtCore.QVariant(self.x11BypassCheckBox.isChecked()))
+        settings.setValue(u'stylesheet fix',
+            QtCore.QVariant(self.stylesheetFixCheckBox.isChecked()))
         settings.setValue(u'default color', self.defaultColor)
         settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.setValue(u'slide limits', QtCore.QVariant(self.slide_limits))
@@ -786,6 +807,18 @@ class AdvancedTab(SettingsTab):
             The state of the check box (boolean).
         """
         self.displayChanged = True
+        
+    def onStylesheetFixCheckBoxToggled(self, checked):
+        """
+        Notify user about required restart.
+
+        ``checked``
+        The state of the check box (boolean).
+        """
+        QtGui.QMessageBox.information(self,
+            translate('OpenLP.AdvancedTab', 'Restart Required'),
+            translate('OpenLP.AdvancedTab',
+                'The change will take effect when OpenLP is restarted.'))
 
     def onEndSlideButtonClicked(self):
         self.slide_limits = SlideLimits.End
@@ -795,3 +828,4 @@ class AdvancedTab(SettingsTab):
 
     def onnextItemButtonClicked(self):
         self.slide_limits = SlideLimits.Next
+
