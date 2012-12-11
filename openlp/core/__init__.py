@@ -126,6 +126,7 @@ class OpenLP(QtGui.QApplication):
         # Correct stylesheet bugs
         application_stylesheet = u''
         if Settings().value(u'advanced/stylesheet fix', QtCore.QVariant(False)).toBool():
+            base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
             alternate_background_repair_stylesheet = \
                 u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += alternate_background_repair_stylesheet
