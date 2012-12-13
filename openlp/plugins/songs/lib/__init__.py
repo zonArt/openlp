@@ -28,10 +28,10 @@
 ###############################################################################
 import re
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.lib import translate
-from openlp.core.utils import CONTROL_CHARS
+from openlp.core.utils import CONTROL_CHARS, locale_direct_compare
 from db import Author
 from ui import SongStrings
 
@@ -594,6 +594,40 @@ def strip_rtf(text, default_encoding=None):
     text = u''.join(out)
     return text, default_encoding
 
+def natcmp(a, b):
+    """
+    Natural string comparison which mimics the behaviour of Python's internal
+    cmp function.
+    """
+    if len(a) <= len(b):
+        for i, key in enumerate(a):
+            if isinstance(key, int) and isinstance(b[i], int):
+                result = cmp(key, b[i])
+            elif isinstance(key, int) and not isinstance(b[i], int):
+                result = locale_direct_compare(QtCore.QString(str(key)), b[i])
+            elif not isinstance(key, int) and isinstance(b[i], int):
+                result = locale_direct_compare(key, QtCore.QString(str(b[i])))
+            else:
+                result = locale_direct_compare(key, b[i])
+            if result != 0:
+                return result
+        if len(a) == len(b):
+            return 0
+        else:
+            return -1
+    else:
+        for i, key in enumerate(b):
+            if isinstance(a[i], int) and isinstance(key, int):
+                result = cmp(a[i], key)
+            elif isinstance(a[i], int) and not isinstance(key, int):
+                result = locale_direct_compare(QtCore.QString(str(a[i])), key)
+            elif not isinstance(a[i], int) and isinstance(key, int):
+                result = locale_direct_compare(a[i], QtCore.QString(str(key)))
+            else:
+                result = locale_direct_compare(a[i], key)
+            if result != 0:
+                return result
+        return 1
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab
