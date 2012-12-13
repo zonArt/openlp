@@ -75,8 +75,7 @@ class MediaMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'video_background_replaced'), self.videobackgroundReplaced)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -87,8 +86,7 @@ class MediaMediaItem(MediaManagerItem):
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
         self.automatic = UiStrings().Automatic
-        self.displayTypeLabel.setText(
-            translate('MediaPlugin.MediaItem', 'Use Player:'))
+        self.displayTypeLabel.setText(translate('MediaPlugin.MediaItem', 'Use Player:'))
         self.rebuild_players()
 
     def requiredIcons(self):
@@ -103,10 +101,10 @@ class MediaMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
-        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
-            icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
-        self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
-            icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
+        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction', icon=u':/slides/slide_blank.png',
+            triggers=self.onReplaceClick)
+        self.resetAction = self.toolbar.addToolbarAction(u'resetAction', icon=u':/system/system_close.png',
+            visible=False, triggers=self.onResetClick)
         self.mediaWidget = QtGui.QWidget(self)
         self.mediaWidget.setObjectName(u'mediaWidget')
         self.displayLayout = QtGui.QFormLayout(self.mediaWidget)
@@ -121,7 +119,6 @@ class MediaMediaItem(MediaManagerItem):
         self.pageLayout.addWidget(self.mediaWidget)
         QtCore.QObject.connect(self.displayTypeComboBox,
             QtCore.SIGNAL(u'currentIndexChanged (int)'), self.overridePlayerChanged)
-
     def overridePlayerChanged(self, index):
         player = get_media_players()[0]
         if index == 0:
@@ -156,8 +153,8 @@ class MediaMediaItem(MediaManagerItem):
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
-                if self.plugin.liveController.mediaController.video(
-                        DisplayControllerType.Live, service_item,videoBehindText=True):
+                if self.plugin.liveController.mediaController.video(DisplayControllerType.Live, service_item,
+                        videoBehindText=True):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
@@ -226,7 +223,7 @@ class MediaMediaItem(MediaManagerItem):
         Load the combobox with the enabled media players,
         allowing user to select a specific player if settings allow
         """
-        # block signals to avoid unnecessary overridePlayerChanged Signales
+        # block signals to avoid unnecessary overridePlayerChanged Signals
         # while combo box creation
         self.displayTypeComboBox.blockSignals(True)
         self.displayTypeComboBox.clear()

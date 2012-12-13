@@ -37,8 +37,7 @@ import logging
 import os
 import uuid
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, \
-    ImageSource
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource
 
 log = logging.getLogger(__name__)
 
@@ -320,8 +319,7 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
-        self._raw_frames.append(
-            {u'title': file_name, u'image': image, u'path': path})
+        self._raw_frames.append({u'title': file_name, u'image': image, u'path': path})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -357,15 +355,12 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Image:
             if lite_save:
                 for slide in self._raw_frames:
-                    service_data.append(
-                        {u'title': slide[u'title'], u'path': slide[u'path']})
+                    service_data.append({u'title': slide[u'title'], u'path': slide[u'path']})
             else:
                 service_data = [slide[u'title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                service_data.append(
-                    {u'title': slide[u'title'], u'image': slide[u'image'],
-                     u'path': slide[u'path']})
+                service_data.append({u'title': slide[u'title'], u'image': slide[u'image'], u'path': slide[u'path']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):

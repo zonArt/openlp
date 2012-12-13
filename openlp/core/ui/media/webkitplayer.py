@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -283,8 +283,8 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = unicode(QtGui.QColor(Settings().value(
-            u'players/background color', QtCore.QVariant(u'#000000'))).name())
+        background = unicode(QtGui.QColor(Settings().value(u'players/background color',
+            QtCore.QVariant(u'#000000'))).name())
         css = VIDEO_CSS % (background,background,background)
         return css + FLASH_CSS
 
@@ -324,11 +324,9 @@ class WebkitPlayer(MediaPlayer):
         display.webView.setVisible(True)
         if controller.media_info.file_info.suffix() == u'swf':
             controller.media_info.is_flash = True
-            js = u'show_flash("load","%s");' % \
-                (path.replace(u'\\', u'\\\\'))
+            js = u'show_flash("load","%s");' % (path.replace(u'\\', u'\\\\'))
         else:
-            js = u'show_video("init", "%s", %s, %s);' % \
-                (path.replace(u'\\', u'\\\\'), str(vol), loop)
+            js = u'show_video("init", "%s", %s, %s);' % (path.replace(u'\\', u'\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
 
@@ -340,8 +338,7 @@ class WebkitPlayer(MediaPlayer):
         display.webLoaded = True
         length = 0
         start_time = 0
-        if self.state != MediaState.Paused and \
-            controller.media_info.start_time > 0:
+        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         self.set_visible(display, True)
         if controller.media_info.is_flash:
@@ -407,19 +404,15 @@ class WebkitPlayer(MediaPlayer):
         else:
             is_visible = "hidden"
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash( \
-                "setVisible", null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript(u'show_flash("setVisible", null, null, "%s");' % (is_visible))
         else:
-            display.frame.evaluateJavaScript(u'show_video( \
-                "setVisible", null, null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript(u'show_video("setVisible", null, null, null, "%s");' % (is_visible))
 
     def update_ui(self, display):
         controller = display.controller
         if controller.media_info.is_flash:
-            currentTime = display.frame.evaluateJavaScript(
-                u'show_flash("currentTime");').toInt()[0]
-            length = display.frame.evaluateJavaScript(
-                u'show_flash("length");').toInt()[0]
+            currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");').toInt()[0]
+            length = display.frame.evaluateJavaScript(u'show_flash("length");').toInt()[0]
         else:
             if display.frame.evaluateJavaScript(
                 u'show_video("isEnded");').toString() == 'true':
@@ -429,8 +422,7 @@ class WebkitPlayer(MediaPlayer):
             # check if conversion was ok and value is not 'NaN'
             if ok and currentTime != float('inf'):
                 currentTime = int(currentTime * 1000)
-            (length, ok) = display.frame.evaluateJavaScript(
-                u'show_video("length");').toFloat()
+            (length, ok) = display.frame.evaluateJavaScript(u'show_video("length");').toFloat()
             # check if conversion was ok and value is not 'NaN'
             if ok and length != float('inf'):
                 length = int(length * 1000)
