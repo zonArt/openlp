@@ -193,6 +193,7 @@ class VlcPlayer(MediaPlayer):
         display.vlcMediaPlayer.play()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
+        self.volume(display, controller.media_info.volume)
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         controller.media_info.length = \

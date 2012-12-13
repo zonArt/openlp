@@ -77,7 +77,7 @@ class MediaController(object):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'seekSlider'), self.media_seek)
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'volumeSlider'), self.media_volume)
+            QtCore.SIGNAL(u'volumeSlider'), self.media_volume_msg)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'media_hide'), self.media_hide)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -289,9 +289,6 @@ class MediaController(object):
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volumeSlider.setObjectName(u'volumeSlider')
         controller.mediabar.addToolbarWidget(controller.volumeSlider)
-        controller.volumeButton = QtGui.QToolButton()
-        controller.volumeButton.setAutoRaise(True)
-        controller.mediabar.addToolbarWidget(controller.volumeButton)
         controller.controllerLayout.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
@@ -379,12 +376,8 @@ class MediaController(object):
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
-        if videoBehindText:
-            controller.media_info.volume = 0
-            controller.media_info.is_background = True
-        else:
-            controller.media_info.volume = controller.volumeSlider.value()
-            controller.media_info.is_background = False
+        controller.media_info.volume = controller.volumeSlider.value()
+        controller.media_info.is_background = videoBehindText
         controller.media_info.file_info = \
             QtCore.QFileInfo(serviceItem.get_frame_path())
         display = self._define_display(controller)
@@ -542,6 +535,10 @@ class MediaController(object):
         display = self._define_display(controller)
         if not self.currentMediaPlayer[controller.controllerType].play(display):
             return False
+        if controller.media_info.is_background:
+            self.media_volume(controller, 0)
+        else:
+            self.media_volume(controller, controller.media_info.volume)
         if status:
             display.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.currentMediaPlayer[controller.controllerType]\
@@ -615,7 +612,7 @@ class MediaController(object):
             controller.mediabar.actions[u'playbackStop'].setVisible(False)
             controller.mediabar.actions[u'playbackPause'].setVisible(False)
 
-    def media_volume(self, msg):
+    def media_volume_msg(self, msg):
         """
         Changes the volume of a running video
 
@@ -624,9 +621,20 @@ class MediaController(object):
         """
         controller = msg[0]
         vol = msg[1][0]
-        log.debug(u'media_volume %d' % vol)
+        self.media_volume(controller, vol)
+
+    def media_volume(self, controller, volume):
+        """
+        Changes the volume of a running video
+
+        ``msg``
+            First element is the controller which should be used
+        """
+
+        log.debug(u'media_volume %d' % volume)
         display = self._define_display(controller)
-        self.currentMediaPlayer[controller.controllerType].volume(display, vol)
+        self.currentMediaPlayer[controller.controllerType].volume(display, volume)
+        controller.volumeSlider.setValue(volume)
 
     def media_seek(self, msg):
         """

@@ -152,7 +152,7 @@ class MediaMediaItem(MediaManagerItem):
             filename = unicode(item.data(QtCore.Qt.UserRole).toString())
             if os.path.exists(filename):
                 service_item = ServiceItem()
-                service_item.title = u'Automatic'
+                service_item.title = u'webkit'
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
