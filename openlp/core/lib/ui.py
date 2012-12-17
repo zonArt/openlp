@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -61,6 +61,8 @@ class UiStrings(object):
         self.Add = translate('OpenLP.Ui', '&Add')
         self.Advanced = translate('OpenLP.Ui', 'Advanced')
         self.AllFiles = translate('OpenLP.Ui', 'All Files')
+        self.Automatic = translate('OpenLP.Ui', 'Automatic')
+        self.BackgroundColor = translate('OpenLP.Ui', 'Background Color')
         self.Bottom = translate('OpenLP.Ui', 'Bottom')
         self.Browse = translate('OpenLP.Ui', 'Browse...')
         self.Cancel = translate('OpenLP.Ui', 'Cancel')
@@ -69,6 +71,7 @@ class UiStrings(object):
         self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
         self.Default = unicode(translate('OpenLP.Ui', 'Default'))
+        self.DefaultColor = translate('OpenLP.Ui', 'Default Color:')
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
         self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
@@ -106,7 +109,8 @@ class UiStrings(object):
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
         self.NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
         self.OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
-        self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
+        self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2')
+        self.OLPV2x = translate('OpenLP.Ui', 'OpenLP 2.1')
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
             'Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
@@ -465,9 +469,8 @@ def create_valign_selection_widgets(parent):
     label = QtGui.QLabel(parent)
     label.setText(translate('OpenLP.Ui', '&Vertical Align:'))
     combo_box = QtGui.QComboBox(parent)
-    combo_box.addItem(UiStrings().Top)
-    combo_box.addItem(UiStrings().Middle)
-    combo_box.addItem(UiStrings().Bottom)
+    combo_box.addItems(
+        [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom])
     label.setBuddy(combo_box)
     return label, combo_box
 
@@ -482,8 +485,7 @@ def find_and_set_in_combo_box(combo_box, value_to_find):
     ``value_to_find``
         The value to find
     """
-    index = combo_box.findText(value_to_find,
-        QtCore.Qt.MatchExactly)
+    index = combo_box.findText(value_to_find, QtCore.Qt.MatchExactly)
     if index == -1:
         # Not Found.
         index = 0

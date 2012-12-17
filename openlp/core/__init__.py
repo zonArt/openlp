@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -60,7 +60,7 @@ __all__ = [u'OpenLP', u'main']
 
 
 log = logging.getLogger()
-application_stylesheet = u"""
+nt_repair_stylesheet = u"""
 QMainWindow::separator
 {
   border: none;
@@ -113,25 +113,25 @@ class OpenLP(QtGui.QApplication):
             args.remove('OpenLP')
         self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
-        has_run_wizard = Settings().value(
-            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        has_run_wizard = Settings().value(u'general/has run wizard', QtCore.QVariant(False)).toBool()
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
-                Settings().setValue(u'general/has run wizard',
-                    QtCore.QVariant(True))
+                Settings().setValue(u'general/has run wizard', QtCore.QVariant(True))
+        # Correct stylesheet bugs
         if os.name == u'nt':
+            base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
+            application_stylesheet = \
+                u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
+            application_stylesheet += nt_repair_stylesheet
             self.setStyleSheet(application_stylesheet)
-        show_splash = Settings().value(
-            u'general/show splash', QtCore.QVariant(True)).toBool()
+        # show the splashscreen
+        show_splash = Settings().value(u'general/show splash', QtCore.QVariant(True)).toBool()
         if show_splash:
             self.splash = SplashScreen()
             self.splash.show()
@@ -150,8 +150,7 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         if not has_run_wizard:
             self.mainWindow.firstTime()
-        update_check = Settings().value(
-            u'general/update check', QtCore.QVariant(True)).toBool()
+        update_check = Settings().value(u'general/update check', QtCore.QVariant(True)).toBool()
         if update_check:
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
@@ -167,10 +166,8 @@ class OpenLP(QtGui.QApplication):
         """
         self.sharedMemory = QtCore.QSharedMemory('OpenLP')
         if self.sharedMemory.attach():
-            status = QtGui.QMessageBox.critical(None,
-                UiStrings().Error, UiStrings().OpenLPStart,
-                QtGui.QMessageBox.StandardButtons(
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+            status = QtGui.QMessageBox.critical(None, UiStrings().Error, UiStrings().OpenLPStart,
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
             if status == QtGui.QMessageBox.No:
                 return True
             return False
@@ -184,8 +181,7 @@ class OpenLP(QtGui.QApplication):
             return
         if not hasattr(self, u'exceptionForm'):
             self.exceptionForm = ExceptionForm(self.mainWindow)
-        self.exceptionForm.exceptionTextEdit.setPlainText(
-            ''.join(format_exception(exctype, value, traceback)))
+        self.exceptionForm.exceptionTextEdit.setPlainText(''.join(format_exception(exctype, value, traceback)))
         self.setNormalCursor()
         self.exceptionForm.exec_()
 
@@ -222,8 +218,7 @@ def set_up_logging(log_path):
     check_directory_exists(log_path)
     filename = os.path.join(log_path, u'openlp.log')
     logfile = logging.FileHandler(filename, u'w')
-    logfile.setFormatter(logging.Formatter(
-        u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+    logfile.setFormatter(logging.Formatter(u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
         print 'Logging to:', filename
@@ -237,28 +232,22 @@ def main(args=None):
     # Set up command line options.
     usage = 'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
-    parser.add_option('-e', '--no-error-form', dest='no_error_form',
-        action='store_true', help='Disable the error notification form.')
-    parser.add_option('-l', '--log-level', dest='loglevel',
-        default='warning', metavar='LEVEL', help='Set logging to LEVEL '
-        'level. Valid values are "debug", "info", "warning".')
-    parser.add_option('-p', '--portable', dest='portable',
-        action='store_true', help='Specify if this should be run as a '
-        'portable app, off a USB flash drive (not implemented).')
-    parser.add_option('-d', '--dev-version', dest='dev_version',
-        action='store_true', help='Ignore the version file and pull the '
-        'version directly from Bazaar')
-    parser.add_option('-s', '--style', dest='style',
-        help='Set the Qt4 style (passed directly to Qt4).')
-    parser.add_option('--testing', dest='testing',
-        action='store_true', help='Run by testing framework')
+    parser.add_option('-e', '--no-error-form', dest='no_error_form', action='store_true',
+        help='Disable the error notification form.')
+    parser.add_option('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
+        help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
+    parser.add_option('-p', '--portable', dest='portable', action='store_true',
+        help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).')
+    parser.add_option('-d', '--dev-version', dest='dev_version', action='store_true',
+        help='Ignore the version file and pull the version directly from Bazaar')
+    parser.add_option('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
+    parser.add_option('--testing', dest='testing', action='store_true', help='Run by testing framework')
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
     if options.portable:
         app_path = AppLocation.get_directory(AppLocation.AppDir)
-        set_up_logging(os.path.abspath(os.path.join(app_path, u'..',
-            u'..', u'Other')))
+        set_up_logging(os.path.abspath(os.path.join(app_path, u'..', u'..', u'Other')))
         log.info(u'Running portable')
     else:
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
@@ -286,8 +275,7 @@ def main(args=None):
         app.setApplicationName(u'OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
-        portable_settings_file = os.path.abspath(os.path.join(app_path, u'..',
-            u'..', u'Data', u'OpenLP.ini'))
+        portable_settings_file = os.path.abspath(os.path.join(app_path, u'..', u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file
         log.info(u'INI file: %s', portable_settings_file)
         Settings.setFilename(portable_settings_file)
@@ -316,8 +304,7 @@ def main(args=None):
             sys.exit()
     # i18n Set Language
     language = LanguageManager.get_language()
-    app_translator, default_translator = \
-        LanguageManager.get_translator(language)
+    app_translator, default_translator = LanguageManager.get_translator(language)
     if not app_translator.isEmpty():
         app.installTranslator(app_translator)
     if not default_translator.isEmpty():
@@ -329,7 +316,7 @@ def main(args=None):
     # Do not run method app.exec_() when running gui tests
     if options.testing:
         app.run(qt_args, testing=True)
-        # For gui tests we need access to window intances and their components
+        # For gui tests we need access to window instances and their components
         return app
     else:
         sys.exit(app.run(qt_args))

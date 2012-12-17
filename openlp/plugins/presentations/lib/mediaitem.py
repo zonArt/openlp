@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
-    validate_thumb
+    validate_thumb, ServiceItemContext
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.core.lib.settings import Settings
@@ -64,7 +64,10 @@ class PresentationMediaItem(MediaManagerItem):
         self.hasSearch = True
         self.singleServiceItem = False
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
+            self.populateDisplayTypes)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_suffixes'), self.buildFileMaskString)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -132,14 +135,6 @@ class PresentationMediaItem(MediaManagerItem):
             self.settingsSection, u'presentations')
         self.loadList(files, True)
         self.populateDisplayTypes()
-
-    def rebuild(self):
-        """
-        Rebuild the tab in the media manager when changes are made in
-        the settings
-        """
-        self.populateDisplayTypes()
-        self.buildFileMaskString()
 
     def populateDisplayTypes(self):
         """
@@ -260,7 +255,7 @@ class PresentationMediaItem(MediaManagerItem):
                 u'presentations', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Service):
         """
         Load the relevant information for displaying the presentation
         in the slidecontroller. In the case of powerpoints, an image

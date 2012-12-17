@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,7 +36,8 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
-    StringContent, build_icon, translate, Receiver, ListWidgetWithDnD
+    StringContent, build_icon, translate, Receiver, ListWidgetWithDnD, \
+    ServiceItemContext
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, create_widget_action, \
     critical_error_message_box
@@ -254,9 +255,11 @@ class MediaManagerItem(QtGui.QWidget):
             shortcuts=[QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
             triggers=self.onAddClick)
         if self.addToServiceItem:
+            create_widget_action(self.listView, separator=True)
             create_widget_action(self.listView, text=translate(
                 'OpenLP.MediaManagerItem', '&Add to selected Service Item'),
-                icon=u':/general/general_add.png', triggers=self.onAddEditClick)
+                icon=u':/general/general_add.png',
+                triggers=self.onAddEditClick)
         self.addCustomContextActions()
         # Create the context menu and add all actions from the listView.
         self.menu = QtGui.QMenu()
@@ -457,7 +460,7 @@ class MediaManagerItem(QtGui.QWidget):
         pass
 
     def generateSlideData(self, serviceItem, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Live):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs '
             u'to be defined by the plugin')
 
@@ -519,6 +522,8 @@ class MediaManagerItem(QtGui.QWidget):
         if serviceItem:
             if not item_id:
                 serviceItem.from_plugin = True
+            if remote:
+                serviceItem.will_auto_start = True
             self.plugin.liveController.addServiceItem(serviceItem)
 
     def createItemFromId(self, item_id):
@@ -546,7 +551,8 @@ class MediaManagerItem(QtGui.QWidget):
                     self.addToService(item)
 
     def addToService(self, item=None, replace=None, remote=False):
-        serviceItem = self.buildServiceItem(item, True, remote=remote)
+        serviceItem = self.buildServiceItem(item, True, remote=remote,
+            context=ServiceItemContext.Service)
         if serviceItem:
             serviceItem.from_plugin = False
             self.plugin.serviceManager.addServiceItem(serviceItem,
@@ -579,13 +585,15 @@ class MediaManagerItem(QtGui.QWidget):
                     unicode(translate('OpenLP.MediaManagerItem',
                         'You must select a %s service item.')) % self.title)
 
-    def buildServiceItem(self, item=None, xmlVersion=False, remote=False):
+    def buildServiceItem(self, item=None, xmlVersion=False, remote=False,
+            context=ServiceItemContext.Live):
         """
         Common method for generating a service item
         """
         serviceItem = ServiceItem(self.plugin)
         serviceItem.add_icon(self.plugin.iconPath)
-        if self.generateSlideData(serviceItem, item, xmlVersion, remote):
+        if self.generateSlideData(serviceItem, item, xmlVersion, remote,
+            context):
             return serviceItem
         else:
             return None

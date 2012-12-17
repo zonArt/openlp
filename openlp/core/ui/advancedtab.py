@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -103,28 +103,22 @@ class AdvancedTab(SettingsTab):
             u'expandServiceItemCheckBox')
         self.uiLayout.addRow(self.expandServiceItemCheckBox)
         self.enableAutoCloseCheckBox = QtGui.QCheckBox(self.uiGroupBox)
-        self.enableAutoCloseCheckBox.setObjectName(
-            u'enableAutoCloseCheckBox')
+        self.enableAutoCloseCheckBox.setObjectName(u'enableAutoCloseCheckBox')
         self.uiLayout.addRow(self.enableAutoCloseCheckBox)
         self.leftLayout.addWidget(self.uiGroupBox)
         # Default service name
         self.serviceNameGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.serviceNameGroupBox.setObjectName(u'serviceNameGroupBox')
-        self.serviceNameLayout = QtGui.QFormLayout(
-            self.serviceNameGroupBox)
-        self.serviceNameCheckBox = QtGui.QCheckBox(
-            self.serviceNameGroupBox)
+        self.serviceNameLayout = QtGui.QFormLayout(self.serviceNameGroupBox)
+        self.serviceNameCheckBox = QtGui.QCheckBox(self.serviceNameGroupBox)
         self.serviceNameCheckBox.setObjectName(u'serviceNameCheckBox')
         self.serviceNameLayout.setObjectName(u'serviceNameLayout')
         self.serviceNameLayout.addRow(self.serviceNameCheckBox)
         self.serviceNameTimeLabel = QtGui.QLabel(self.serviceNameGroupBox)
         self.serviceNameTimeLabel.setObjectName(u'serviceNameTimeLabel')
-        self.serviceNameDay = QtGui.QComboBox(
-            self.serviceNameGroupBox)
-        self.serviceNameDay.addItems(
-            [u'', u'', u'', u'', u'', u'', u'', u''])
-        self.serviceNameDay.setObjectName(
-            u'serviceNameDay')
+        self.serviceNameDay = QtGui.QComboBox(self.serviceNameGroupBox)
+        self.serviceNameDay.addItems([u'', u'', u'', u'', u'', u'', u'', u''])
+        self.serviceNameDay.setObjectName(u'serviceNameDay')
         self.serviceNameTime = QtGui.QTimeEdit(self.serviceNameGroupBox)
         self.serviceNameTime.setObjectName(u'serviceNameTime')
         self.serviceNameTimeHBox = QtGui.QHBoxLayout()
@@ -151,8 +145,7 @@ class AdvancedTab(SettingsTab):
         self.serviceNameHBox.addWidget(self.serviceNameRevertButton)
         self.serviceNameLayout.addRow(self.serviceNameLabel,
             self.serviceNameHBox)
-        self.serviceNameExampleLabel = QtGui.QLabel(
-            self.serviceNameGroupBox)
+        self.serviceNameExampleLabel = QtGui.QLabel(self.serviceNameGroupBox)
         self.serviceNameExampleLabel.setObjectName(
             u'serviceNameExampleLabel')
         self.serviceNameExample = QtGui.QLabel(self.serviceNameGroupBox)
@@ -202,8 +195,7 @@ class AdvancedTab(SettingsTab):
         self.newDataDirectoryLabelHBox.setObjectName(
             u'newDataDirectoryLabelHBox')
         self.newDataDirectoryLabelHBox.addWidget(self.newDataDirectoryEdit)
-        self.newDataDirectoryLabelHBox.addWidget(
-            self.dataDirectoryBrowseButton)
+        self.newDataDirectoryLabelHBox.addWidget(self.dataDirectoryBrowseButton)
         self.newDataDirectoryLabelHBox.addWidget(
             self.dataDirectoryDefaultButton)
         self.dataDirectoryCopyCheckHBox = QtGui.QHBoxLayout()
@@ -340,8 +332,7 @@ class AdvancedTab(SettingsTab):
         Setup the interface translation strings.
         """
         self.tabTitleVisible = UiStrings().Advanced
-        self.uiGroupBox.setTitle(
-            translate('OpenLP.AdvancedTab', 'UI Settings'))
+        self.uiGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'UI Settings'))
         self.dataDirectoryGroupBox.setTitle(
             translate('OpenLP.AdvancedTab', 'Data Location'))
         self.recentLabel.setText(
@@ -477,7 +468,7 @@ class AdvancedTab(SettingsTab):
             settings.value(u'enable exit confirmation',
             QtCore.QVariant(True)).toBool())
         self.hideMouseCheckBox.setChecked(
-            settings.value(u'hide mouse', QtCore.QVariant(False)).toBool())
+            settings.value(u'hide mouse', QtCore.QVariant(True)).toBool())
         self.serviceNameDay.setCurrentIndex(
             settings.value(u'default service day',
             QtCore.QVariant(self.defaultServiceDay)).toInt()[0])
@@ -504,8 +495,7 @@ class AdvancedTab(SettingsTab):
         self.defaultColor = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
         self.defaultFileEdit.setText(settings.value(u'default image',
-            QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
-            .toString())
+            QtCore.QVariant(u':/graphics/openlp-splash-screen.png')).toString())
         self.slide_limits = settings.value(
             u'slide limits', QtCore.QVariant(SlideLimits.End)).toInt()[0]
         if self.slide_limits == SlideLimits.End:
@@ -547,8 +537,7 @@ class AdvancedTab(SettingsTab):
             self.currentDataPath = AppLocation.get_data_path()
             log.warning(u'User requested data path set to default %s'
                 % self.currentDataPath)
-        self.dataDirectoryLabel.setText(os.path.abspath(
-            self.currentDataPath))
+        self.dataDirectoryLabel.setText(os.path.abspath(self.currentDataPath))
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
         # Don't allow data directory move if running portable.
@@ -662,8 +651,7 @@ class AdvancedTab(SettingsTab):
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
             UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.AdvancedTab', 'Open File'), '',
-            file_filters)
+            translate('OpenLP.AdvancedTab', 'Open File'), '', file_filters)
         if filename:
             self.defaultFileEdit.setText(filename)
         self.defaultFileEdit.setFocus()
@@ -713,7 +701,8 @@ class AdvancedTab(SettingsTab):
         """
         new_data_path = AppLocation.get_directory(AppLocation.DataDir)
         if self.currentDataPath.lower() != new_data_path.lower():
-            # Make sure they want to change the data location back to the default.
+            # Make sure they want to change the data location back to the
+            # default.
             answer = QtGui.QMessageBox.question(self,
                 translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
                 translate('OpenLP.AdvancedTab',

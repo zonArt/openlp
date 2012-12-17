@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -109,14 +109,14 @@ class Ui_AboutDialog(object):
         contributors = [u'Gerald "jerryb" Britton',
             u'Samuel "MrGamgee" Findlay', u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
-            u'Armin "orangeshirt" K\xf6hler', u'Eric "luen" Ludin',
+            u'Armin "orangeshirt" K\xf6hler', u'Erik "luen" Lundin',
             u'Edwin "edwinlunando" Lunando', u'Brian "brianmeyer" Meyer',
             u'Joshua "milleja46" Miller', u'Stevan "ElderP" Pettit',
             u'Mattias "mahfiaz" P\xf5ldaru', u'Christian "crichter" Richter',
             u'Philip "Phill" Ridout', u'Simon "samscudder" Scudder',
             u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
             u'Dave "Dave42W" Warnock', u'Frode "frodus" Woldsund',
-            u'Martin "matysek" Zibricky']
+            u'Martin "matysek" Zibricky', u'Patrick "mohij" Zimmermann']
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
@@ -139,8 +139,11 @@ class Ui_AboutDialog(object):
             u'el': [u'Alexander Siozos'],
             u'es': [u'Josu\xe9 Z\xfa\xf1iga',u'Christian Gonzalez'],
             u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
-            u'fr': [u'Stephan\xe9 "stbrunner" Brunner', u'Jeremie'],
+            u'fi': [u'Jori "joribu" Brander', u'Tobbe "tobbeb" Bildo'],
+            u'fr': [u'Stephan\xe9 "stbrunner" Brunner', u'Jeremie "jnau05"',
+                    u'Carl "carl.fischer" Fischer'],
             u'hu': [u'Gyuris Gell\xe9rt'],
+            u'id': [u'Mico "bangmico" Siahaan' ,u' ign_christian'],
             u'ja': [u'Kunio "Kunio" Nakamaru', u'Chris Haris'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
@@ -149,7 +152,9 @@ class Ui_AboutDialog(object):
                        u'Gustavo Bim', u'Rog\xeanio Bel\xe9m', u'Samuel'
                 u'Simon "samscudder" Scudder', u'Van Der Fran'],
             u'ru': [u'Sergey "ratz" Ratz'],
-            u'sv': [u'Eric "luen" Ludin']
+            u'sv': [u'Erik "luen" Lundin'],
+            u'ta_LK': [u'"Prasad"'],
+            u'zh_CN': [u' "executor" ']
         }
         documentors = [u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
@@ -172,7 +177,7 @@ class Ui_AboutDialog(object):
             'Translators\n'
             '    Afrikaans (af)\n'
             '        %s\n'
-            '    Czeck (cs)\n'
+            '    Czech (cs)\n'
             '        %s\n'
             '    Danish (da)\n'
             '        %s\n'
@@ -188,9 +193,13 @@ class Ui_AboutDialog(object):
             '        %s\n'
             '    Estonian (et)\n'
             '        %s\n'
+            '    Finnish (fi)\n'
+            '        %s\n'
             '    French (fr)\n'
             '        %s\n'
             '    Hungarian (hu)\n'
+            '        %s\n'
+            '    Indonesian (id)\n'
             '        %s\n'
             '    Japanese (ja)\n'
             '        %s\n'
@@ -203,6 +212,10 @@ class Ui_AboutDialog(object):
             '    Russian (ru)\n'
             '        %s\n'
             '    Swedish (sv)\n'
+            '        %s\n'
+            '    Tamil(Sri-Lanka) (ta_LK)\n'
+            '        %s\n'
+            '    Chinese(China) (zh_CN)\n'
             '        %s\n'
             '\n'
             'Documentation\n'
@@ -235,14 +248,18 @@ class Ui_AboutDialog(object):
             u'\n        '.join(translators[u'en_ZA']),
             u'\n        '.join(translators[u'es']),
             u'\n        '.join(translators[u'et']),
+            u'\n        '.join(translators[u'fi']),
             u'\n        '.join(translators[u'fr']),
             u'\n        '.join(translators[u'hu']),
+            u'\n        '.join(translators[u'id']),
             u'\n        '.join(translators[u'ja']),
             u'\n        '.join(translators[u'nb']),
             u'\n        '.join(translators[u'nl']),
             u'\n        '.join(translators[u'pt_BR']),
             u'\n        '.join(translators[u'ru']),
             u'\n        '.join(translators[u'sv']),
+            u'\n        '.join(translators[u'ta_LK']),
+            u'\n        '.join(translators[u'zh_CN']),
             u'\n    '.join(documentors)))
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
@@ -252,12 +269,12 @@ class Ui_AboutDialog(object):
             'Portions copyright \xa9 2004-2012 %s')) % (u'Raoul Snyman',
             u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
             u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
-            u'Armin K\xf6hler, Eric Ludin, Edwin Lunando, Joshua Miller, '
+            u'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
             u'Brian T. Meyer, Stevan Pettit, Andreas Preikschat, '
             u'Mattias P\xf5ldaru, Christian Richter, '
             u'Philip Ridout, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
             u'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund, '
-            u'Martin Zibricky')
+            u'Martin Zibricky, Patrick Zimmermann')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '

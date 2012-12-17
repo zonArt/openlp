@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -105,7 +105,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'config_screen_changed'), self.updateScreenListCombo)
 
-    def exec_(self, edit=False):
+    def exec_(self):
         """
         Run the wizard.
         """
@@ -271,8 +271,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._performWizard()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
-        Settings().setValue(u'general/has run wizard',
-            QtCore.QVariant(True))
+        Settings().setValue(u'general/has run wizard', QtCore.QVariant(True))
         self.close()
 
     def urlGetFile(self, url, fpath):
@@ -283,7 +282,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         block_count = 0
         block_size = 4096
         urlfile = urllib2.urlopen(url)
-        filesize = urlfile.headers["Content-Length"]
         filename = open(fpath, "wb")
         # Download until finished or canceled.
         while not self.downloadCancelled:
@@ -292,7 +290,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 break
             filename.write(data)
             block_count += 1
-            self._downloadProgress(block_count, block_size, filesize)
+            self._downloadProgress(block_count, block_size)
         filename.close()
         # Delete file if cancelled, it may be a partial file.
         if self.downloadCancelled:
@@ -320,7 +318,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         meta = site.info()
         return int(meta.getheaders("Content-Length")[0])
 
-    def _downloadProgress(self, count, block_size, total_size):
+    def _downloadProgress(self, count, block_size):
         increment = (count * block_size) - self.previous_size
         self._incrementProgressBar(None, increment)
         self.previous_size = count * block_size
@@ -484,7 +482,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             Settings().setValue(u'General/monitor',
                 QtCore.QVariant(self.displayComboBox.currentIndex()))
             self.screens.set_current_display(
-                 self.displayComboBox.currentIndex())
+                self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:
             Settings().setValue(u'themes/global theme',

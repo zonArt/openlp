@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -7,11 +7,11 @@
 # Copyright (c) 2008-2012 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,22 +27,28 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from PyQt4 import QtCore, QtGui
+
 import logging
 
-from openlp.core.lib.mediaplayer import MediaPlayer
+from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
+from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
 VIDEO_CSS = u"""
 #videobackboard {
     z-index:3;
-    background-color: black;
+    background-color: %s;
 }
 #video1 {
+    background-color: %s;
     z-index:4;
 }
 #video2 {
+    background-color: %s;
     z-index:4;
 }
 """
@@ -277,7 +283,10 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        return VIDEO_CSS + FLASH_CSS
+        background = unicode(QtGui.QColor(Settings().value(u'players/background color',
+            QtCore.QVariant(u'#000000'))).name())
+        css = VIDEO_CSS % (background,background,background)
+        return css + FLASH_CSS
 
     def get_media_display_javascript(self):
         """
@@ -315,16 +324,13 @@ class WebkitPlayer(MediaPlayer):
         display.webView.setVisible(True)
         if controller.media_info.file_info.suffix() == u'swf':
             controller.media_info.is_flash = True
-            js = u'show_flash("load","%s");' % \
-                (path.replace(u'\\', u'\\\\'))
+            js = u'show_flash("load","%s");' % (path.replace(u'\\', u'\\\\'))
         else:
-            js = u'show_video("init", "%s", %s, %s);' % \
-                (path.replace(u'\\', u'\\\\'), str(vol), loop)
+            js = u'show_video("init", "%s", %s, %s);' % (path.replace(u'\\', u'\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
 
     def resize(self, display):
-        controller = display.controller
         display.webView.resize(display.size())
 
     def play(self, display):
@@ -332,8 +338,7 @@ class WebkitPlayer(MediaPlayer):
         display.webLoaded = True
         length = 0
         start_time = 0
-        if self.state != MediaState.Paused and \
-            controller.media_info.start_time > 0:
+        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         self.set_visible(display, True)
         if controller.media_info.is_flash:
@@ -399,19 +404,15 @@ class WebkitPlayer(MediaPlayer):
         else:
             is_visible = "hidden"
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash( \
-                "setVisible", null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript(u'show_flash("setVisible", null, null, "%s");' % (is_visible))
         else:
-            display.frame.evaluateJavaScript(u'show_video( \
-                "setVisible", null, null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript(u'show_video("setVisible", null, null, null, "%s");' % (is_visible))
 
     def update_ui(self, display):
         controller = display.controller
         if controller.media_info.is_flash:
-            currentTime = display.frame.evaluateJavaScript(
-                u'show_flash("currentTime");').toInt()[0]
-            length = display.frame.evaluateJavaScript(
-                u'show_flash("length");').toInt()[0]
+            currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");').toInt()[0]
+            length = display.frame.evaluateJavaScript(u'show_flash("length");').toInt()[0]
         else:
             if display.frame.evaluateJavaScript(
                 u'show_video("isEnded");').toString() == 'true':
@@ -421,8 +422,7 @@ class WebkitPlayer(MediaPlayer):
             # check if conversion was ok and value is not 'NaN'
             if ok and currentTime != float('inf'):
                 currentTime = int(currentTime * 1000)
-            (length, ok) = display.frame.evaluateJavaScript(
-                u'show_video("length");').toFloat()
+            (length, ok) = display.frame.evaluateJavaScript(u'show_video("length");').toFloat()
             # check if conversion was ok and value is not 'NaN'
             if ok and length != float('inf'):
                 length = int(length * 1000)
@@ -431,3 +431,12 @@ class WebkitPlayer(MediaPlayer):
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
                 controller.seekSlider.setSliderPosition(currentTime)
+
+    def get_info(self):
+        return(translate('Media.player', 'Webkit is a media player which runs '
+            'inside a web browser. This player allows text over video to be '
+            'rendered.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
+            translate('Media.player', 'Video') + u'</strong><br/>' +
+            unicode(VIDEO_EXT) + u'<br/>')
