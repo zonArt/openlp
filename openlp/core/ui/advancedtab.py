@@ -501,15 +501,11 @@ class AdvancedTab(SettingsTab):
         self.x11BypassCheckBox.setChecked(settings.value(
             u'x11 bypass wm', QtCore.QVariant(x11_bypass_default)).toBool())
         # Fix for bug #936281.
-        if sys.platform.startswith(u'win'):
-            stylesheet_fix_default = True
-        else:
-            stylesheet_fix_default = False
         # Prevent the dialog displayed by the stylesheetFixCheckBox to display.
         signalsBlocked = self.stylesheetFixCheckBox.blockSignals(True)
         self.stylesheetFixCheckBox.setChecked(settings.value(
             u'stylesheet fix', QtCore.QVariant(
-            stylesheet_fix_default)).toBool())
+            sys.platform.startswith(u'win'))).toBool())
         self.stylesheetFixCheckBox.blockSignals(signalsBlocked)
         self.defaultColor = settings.value(u'default color',
             QtCore.QVariant(u'#ffffff')).toString()
@@ -828,4 +824,3 @@ class AdvancedTab(SettingsTab):
 
     def onnextItemButtonClicked(self):
         self.slide_limits = SlideLimits.Next
-
