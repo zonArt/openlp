@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -114,8 +114,7 @@ class VlcPlayer(MediaPlayer):
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(True)).toBool() and display.controller.isLive:
+        if Settings().value(u'advanced/hide mouse', QtCore.QVariant(True)).toBool() and display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
         display.vlcInstance.set_log_verbosity(2)
@@ -148,8 +147,7 @@ class VlcPlayer(MediaPlayer):
         log.debug(u'load vid in Vlc Controller')
         controller = display.controller
         volume = controller.media_info.volume
-        file_path = str(
-            controller.media_info.file_info.absoluteFilePath().toUtf8())
+        file_path = str(controller.media_info.file_info.absoluteFilePath().toUtf8())
         path = os.path.normcase(file_path)
         # create the media
         display.vlcMedia = display.vlcInstance.media_new_path(path)
@@ -163,8 +161,7 @@ class VlcPlayer(MediaPlayer):
         # and once to just get media length.
         # 
         # Media plugin depends on knowing media length before playback.
-        controller.media_info.length = \
-            int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+        controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         return True
 
     def media_state_wait(self, display, mediaState):
@@ -187,16 +184,14 @@ class VlcPlayer(MediaPlayer):
     def play(self, display):
         controller = display.controller
         start_time = 0
-        if self.state != MediaState.Paused and \
-           controller.media_info.start_time > 0:
+        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.vlcMediaPlayer.play()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
-        controller.media_info.length = \
-            int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+        controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         controller.seekSlider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
         display.vlcWidget.raise_()
@@ -236,13 +231,11 @@ class VlcPlayer(MediaPlayer):
             self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
-            if display.vlcMediaPlayer.get_time() > \
-                controller.media_info.end_time * 1000:
+            if display.vlcMediaPlayer.get_time() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.setSliderPosition( \
-                display.vlcMediaPlayer.get_time())
+            controller.seekSlider.setSliderPosition(display.vlcMediaPlayer.get_time())
 
     def get_info(self):
         return(translate('Media.player', 'VLC is an external player which '
