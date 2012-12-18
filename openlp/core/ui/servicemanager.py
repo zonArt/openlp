@@ -260,22 +260,18 @@ class ServiceManager(QtGui.QWidget):
         self.menu.addAction(self.serviceManagerList.delete)
         self.menu.addSeparator()
         # Add AutoPlay menu actions
-        self.AutoPlaySlidesGroup = QtGui.QMenu(
-            translate('OpenLP.ServiceManager', '&Auto play slides'))
+        self.AutoPlaySlidesGroup = QtGui.QMenu(translate('OpenLP.ServiceManager', '&Auto play slides'))
         self.menu.addMenu(self.AutoPlaySlidesGroup)
         self.AutoPlaySlidesLoop = create_widget_action(self.AutoPlaySlidesGroup,
             text=translate('OpenLP.ServiceManager', 'Auto play slides &Loop'),
-            checked=False,
-            triggers=self.toggleAutoPlaySlidesLoop)
+            checked=False, triggers=self.toggleAutoPlaySlidesLoop)
         self.AutoPlaySlidesOnce = create_widget_action(self.AutoPlaySlidesGroup,
             text=translate('OpenLP.ServiceManager', 'Auto play slides &Once'),
-            checked=False,
-            triggers=self.toggleAutoPlaySlidesOnce)
+            checked=False, triggers=self.toggleAutoPlaySlidesOnce)
         self.AutoPlaySlidesGroup.addSeparator()
         self.TimedSlideInterval = create_widget_action(self.AutoPlaySlidesGroup,
             text=translate('OpenLP.ServiceManager', '&Delay between slides'),
-            checked=False,
-            triggers=self.onTimedSlideInterval)
+            checked=False, triggers=self.onTimedSlideInterval)
         self.menu.addSeparator()
         self.previewAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', 'Show &Preview'),
             icon=u':/general/general_preview.png', triggers=self.makePreview)
@@ -800,7 +796,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 delay_suffix = u' ...'
             self.TimedSlideInterval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
-            # For future: make group explain itself more visual
+            # TOFO for future: make group explain itself more visually
             #self.AutoPlaySlidesGroup.setChecked(
             #    serviceItem[u'service_item'].timed_slide_interval > 0 and
             #    (serviceItem[u'service_item'].auto_play_slides_once or
@@ -886,14 +882,12 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         service_item = self.serviceItems[item][u'service_item']
         if service_item.timed_slide_interval == 0:
-            timed_slide_interval = Settings().value(u'loop delay',
-           QtCore.QVariant(5)).toInt()[0]
+            timed_slide_interval = Settings().value(u'loop delay', QtCore.QVariant(5)).toInt()[0]
         else:
             timed_slide_interval = service_item.timed_slide_interval
-        timed_slide_interval, ok = QtGui.QInputDialog.getInteger(self,
-            translate('OpenLP.ServiceManager', 'Input delay'),
-            translate('OpenLP.ServiceManager',
-            'Delay between slides in seconds.'), timed_slide_interval, 0, 180, 1)
+        timed_slide_interval, ok = QtGui.QInputDialog.getInteger(self, translate('OpenLP.ServiceManager', 
+            'Input delay'), translate('OpenLP.ServiceManager', 'Delay between slides in seconds.'), 
+            timed_slide_interval, 0, 180, 1)
         if ok:
             service_item.timed_slide_interval = timed_slide_interval
         if service_item.timed_slide_interval <> 0\

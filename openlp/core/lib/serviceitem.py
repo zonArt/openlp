@@ -400,6 +400,9 @@ class ServiceItem(object):
         self.start_time = header.get(u'start_time', 0)
         self.end_time = header.get(u'end_time', 0)
         self.media_length = header.get(u'media_length', 0)
+        self.auto_play_slides_once = header.get(u'auto_play_slides_once', False)
+        self.auto_play_slides_loop = header.get(u'auto_play_slides_loop', False)
+        self.timed_slide_interval = header.get(u'timed_slide_interval', 0)
         self.will_auto_start = header.get(u'will_auto_start', False)
         if u'background_audio' in header:
             self.background_audio = []
@@ -424,9 +427,6 @@ class ServiceItem(object):
                     self.add_from_command(path, text_image[u'title'], text_image[u'image'])
                 else:
                     self.add_from_command(text_image[u'path'], text_image[u'title'], text_image[u'image'])
-        self.auto_play_slides_once = header.get(u'auto_play_slides_once', False)
-        self.auto_play_slides_loop = header.get(u'auto_play_slides_loop', False)
-        self.timed_slide_interval = header.get(u'timed_slide_interval', 0)
         self._new_item()
 
     def get_display_title(self):
