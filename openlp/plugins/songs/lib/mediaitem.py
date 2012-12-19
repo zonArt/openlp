@@ -40,52 +40,15 @@ from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     check_directory_exists, ServiceItemContext
 from openlp.core.lib.ui import UiStrings, create_widget_action
 from openlp.core.lib.settings import Settings
-from openlp.core.utils import AppLocation, locale_direct_compare
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
-    clean_string
+    clean_string, natcmp
 from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
-
-
-def natcmp(a, b):
-    """
-    Natural string comparison which mimics the behaviour of Python's internal
-    cmp function.
-    """
-    log.debug('a: %s; b: %s', a, b)
-    if len(a) <= len(b):
-        for i, key in enumerate(a):
-            if isinstance(key, int) and isinstance(b[i], int):
-                result = cmp(key, b[i])
-            elif isinstance(key, int) and not isinstance(b[i], int):
-                result = locale_direct_compare(QtCore.QString(str(key)), b[i])
-            elif not isinstance(key, int) and isinstance(b[i], int):
-                result = locale_direct_compare(key, QtCore.QString(str(b[i])))
-            else:
-                result = locale_direct_compare(key, b[i])
-            if result != 0:
-                return result
-        if len(a) == len(b):
-            return 0
-        else:
-            return -1
-    else:
-        for i, key in enumerate(b):
-            if isinstance(a[i], int) and isinstance(key, int):
-                result = cmp(a[i], key)
-            elif isinstance(a[i], int) and not isinstance(key, int):
-                result = locale_direct_compare(QtCore.QString(str(a[i])), key)
-            elif not isinstance(a[i], int) and isinstance(key, int):
-                result = locale_direct_compare(a[i], QtCore.QString(str(key)))
-            else:
-                result = locale_direct_compare(a[i], key)
-            if result != 0:
-                return result
-        return 1
 
 
 class SongSearch(object):
