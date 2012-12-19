@@ -490,6 +490,9 @@ class AdvancedTab(SettingsTab):
             # Default to False on Gnome.
             x11_bypass_default = bool(not
                 os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+            # Default to False on XFce
+            if os.environ.get(u'DESKTOP_SESSION') == 'xfce':
+                x11_bypass_default = False
         self.x11BypassCheckBox.setChecked(settings.value(
             u'x11 bypass wm', QtCore.QVariant(x11_bypass_default)).toBool())
         self.defaultColor = settings.value(u'default color',
