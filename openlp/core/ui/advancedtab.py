@@ -312,7 +312,7 @@ class AdvancedTab(SettingsTab):
             QtCore.SIGNAL(u'clicked()'), self.onDefaultRevertButtonClicked)
         QtCore.QObject.connect(self.x11BypassCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
-            QtCore.QObject.connect(self.alternateRowsCheckBox,
+        QtCore.QObject.connect(self.alternateRowsCheckBox,
             QtCore.SIGNAL(u'toggled(bool)'), self.onAlternateRowsCheckBoxToggled)
         QtCore.QObject.connect(self.dataDirectoryBrowseButton,
             QtCore.SIGNAL(u'clicked()'),
