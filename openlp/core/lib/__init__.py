@@ -37,6 +37,14 @@ from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
 
+class ServiceItemContext(object):
+    """
+    The context in which a Service Item is being generated
+    """
+    Preview = 0
+    Live = 1
+    Service = 2
+
 
 class ImageSource(object):
     """
@@ -457,4 +465,4 @@ from dockwidget import OpenLPDockWidget
 from imagemanager import ImageManager
 from renderer import Renderer
 from mediamanageritem import MediaManagerItem
-from openlp.core.utils.actions import ActionList
+

@@ -389,7 +389,7 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        mainWindow.mainTitle = UiStrings().OLPV2
+        mainWindow.mainTitle = UiStrings().OLPV2x
         mainWindow.setWindowTitle(mainWindow.mainTitle)
         self.fileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.fileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
@@ -570,6 +570,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.headerSection = u'SettingsImport'
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
+        self.mediaController = MediaController(self)
         self.settingsForm = SettingsForm(self, self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
@@ -579,9 +580,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.pluginManager = PluginManager(plugin_path)
         self.pluginHelpers = {}
         self.imageManager = ImageManager()
-        self.mediaController = MediaController(self)
         # Set up the interface
         self.setupUi(self)
+        # Register the active media players and suffixes
+        self.mediaController.check_available_media_players()
         # Load settings after setupUi so default UI sizes are overwritten
         self.loadSettings()
         # Once settings are loaded update the menu with the recent files.
@@ -1155,7 +1157,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.serviceManagerContents.isModified():
             ret = self.serviceManagerContents.saveModifiedService()
             if ret == QtGui.QMessageBox.Save:
-                if self.serviceManagerContents.saveFile():
+                if self.serviceManagerContents.decideSaveMethod():
                     self.cleanUp()
                     event.accept()
                 else:

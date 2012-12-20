@@ -32,7 +32,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, create_separated_list, Settings
+    translate, create_separated_list, ServiceItemContext, Settings
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, \
     create_horizontal_adjusting_combo_box, critical_error_message_box, \
@@ -884,7 +884,7 @@ class BibleMediaItem(MediaManagerItem):
         return items
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Service):
         """
         Generates and formats the slides for the service item as well as the
         service item's title.

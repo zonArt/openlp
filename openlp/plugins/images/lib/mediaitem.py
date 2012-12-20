@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, check_directory_exists, \
-    Receiver, create_thumb, validate_thumb, Settings
+    Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, \
     get_images_filter
@@ -151,7 +151,7 @@ class ImageMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_normal')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Service):
         background = QtGui.QColor(Settings().value(self.settingsSection
             + u'/background color', u'#000000'))
         if item:

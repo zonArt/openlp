@@ -34,7 +34,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
     translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
-    validate_thumb, Settings
+    validate_thumb, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare
@@ -63,7 +63,10 @@ class PresentationMediaItem(MediaManagerItem):
         self.hasSearch = True
         self.singleServiceItem = False
         QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'), self.rebuild)
+            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
+            self.populateDisplayTypes)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'mediaitem_suffixes'), self.buildFileMaskString)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -131,14 +134,6 @@ class PresentationMediaItem(MediaManagerItem):
             self.settingsSection, u'presentations')
         self.loadList(files, True)
         self.populateDisplayTypes()
-
-    def rebuild(self):
-        """
-        Rebuild the tab in the media manager when changes are made in
-        the settings
-        """
-        self.populateDisplayTypes()
-        self.buildFileMaskString()
 
     def populateDisplayTypes(self):
         """
@@ -258,7 +253,7 @@ class PresentationMediaItem(MediaManagerItem):
                 u'presentations', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Service):
         """
         Load the relevant information for displaying the presentation
         in the slidecontroller. In the case of powerpoints, an image

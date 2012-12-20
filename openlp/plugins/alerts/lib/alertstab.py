@@ -122,7 +122,7 @@ class AlertsTab(SettingsTab):
             translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
         self.timeoutSpinBox.setSuffix(UiStrings().Seconds)
         self.previewGroupBox.setTitle(UiStrings().Preview)
-        self.fontPreview.setText(UiStrings().OLPV2)
+        self.fontPreview.setText(UiStrings().OLPV2x)
 
     def onBackgroundColorButtonClicked(self):
         new_color = QtGui.QColorDialog.getColor(

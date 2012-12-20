@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, build_icon, PluginStatus
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
+from openlp.core.ui.media import PlayerTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Initialise the settings form
         """
+        self.mainWindow = mainWindow
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
@@ -55,6 +57,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.themesTab = ThemesTab(self, mainWindow)
         # Advanced tab
         self.advancedTab = AdvancedTab(self)
+        # Advanced tab
+        self.playerTab = PlayerTab(self, mainWindow)
 
     def exec_(self):
         # load all the settings
@@ -65,7 +69,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.insertTab(self.generalTab, 0, PluginStatus.Active)
         self.insertTab(self.themesTab, 1, PluginStatus.Active)
         self.insertTab(self.advancedTab, 2, PluginStatus.Active)
-        count = 3
+        self.insertTab(self.playerTab, 3, PluginStatus.Active)
+        count = 4
         for plugin in self.plugins:
             if plugin.settingsTab:
                 self.insertTab(plugin.settingsTab, count, plugin.status)
@@ -94,6 +99,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
+        self.resetSuffixes = True
         for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
@@ -115,6 +121,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.generalTab.postSetUp()
         self.themesTab.postSetUp()
         self.advancedTab.postSetUp()
+        self.playerTab.postSetUp()
         for plugin in self.plugins:
             if plugin.settingsTab:
                 plugin.settingsTab.postSetUp()
@@ -125,3 +132,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         self.stackedLayout.setCurrentIndex(tabIndex)
         self.stackedLayout.currentWidget().tabVisible()
+
+    def resetSupportedSuffixes(self):
+        """
+        Control the resetting of the serviceManager suffix list as can be
+        called by a number of settings tab and only needs to be called once
+        per save.
+        """
+        if self.resetSuffixes:
+            self.mainWindow.serviceManagerContents.resetSupportedSuffixes()
+            self.resetSuffixes = False

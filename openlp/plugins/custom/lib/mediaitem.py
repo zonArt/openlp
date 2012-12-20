@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    check_item_selected, translate, Settings
+    check_item_selected, translate, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser
@@ -192,7 +192,7 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Service):
         item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)

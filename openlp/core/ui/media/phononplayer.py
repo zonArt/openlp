@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -31,11 +31,14 @@ import logging
 import mimetypes
 from datetime import datetime
 
+from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver
-from openlp.core.lib.mediaplayer import MediaPlayer
+from openlp.core.lib import Receiver, translate, Settings
+
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
+
 
 log = logging.getLogger(__name__)
 
@@ -56,6 +59,20 @@ ADDITIONAL_EXT = {
         u'video/mpeg' : [u'.mp4', u'.mts', u'.mov'],
         u'video/x-ms-wmv': [u'.wmv']}
 
+VIDEO_CSS = u"""
+#videobackboard {
+    z-index:3;
+    background-color: %s;
+}
+#video1 {
+    background-color: %s;
+    z-index:4;
+}
+#video2 {
+    background-color: %s;
+    z-index:4;
+}
+"""
 
 class PhononPlayer(MediaPlayer):
     """
@@ -84,8 +101,7 @@ class PhononPlayer(MediaPlayer):
             ext = u'*%s' % extension
             if ext not in list:
                 list.append(ext)
-        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype,
-            u' '.join(extensions)))
+        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype, u' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
         # This hack clears mimetypes' and operating system's shortcomings
         # by providing possibly missing extensions.
@@ -94,8 +110,8 @@ class PhononPlayer(MediaPlayer):
                 ext = u'*%s' % extension
                 if ext not in list:
                     list.append(ext)
-            log.info(u'MediaPlugin: %s additional extensions: %s' % (mimetype,
-                u' '.join(self.additional_extensions[mimetype])))
+            log.info(u'MediaPlugin: %s additional extensions: %s' %
+                (mimetype, u' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
         display.phononWidget = Phonon.VideoWidget(display)
@@ -103,8 +119,7 @@ class PhononPlayer(MediaPlayer):
         display.mediaObject = Phonon.MediaObject(display)
         Phonon.createPath(display.mediaObject, display.phononWidget)
         if display.hasAudio:
-            display.audio = Phonon.AudioOutput(
-                Phonon.VideoCategory, display.mediaObject)
+            display.audio = Phonon.AudioOutput(Phonon.VideoCategory, display.mediaObject)
             Phonon.createPath(display.mediaObject, display.audio)
         display.phononWidget.raise_()
         display.phononWidget.hide()
@@ -155,8 +170,7 @@ class PhononPlayer(MediaPlayer):
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         self.volume(display, controller.media_info.volume)
-        controller.media_info.length = \
-            int(display.mediaObject.totalTime() / 1000)
+        controller.media_info.length = int(display.mediaObject.totalTime() / 1000)
         controller.seekSlider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
         display.phononWidget.raise_()
@@ -193,15 +207,28 @@ class PhononPlayer(MediaPlayer):
             display.phononWidget.setVisible(status)
 
     def update_ui(self, display):
-        if display.mediaObject.state() == Phonon.PausedState and \
-            self.state != MediaState.Paused:
+        if display.mediaObject.state() == Phonon.PausedState and self.state != MediaState.Paused:
             self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
-            if display.mediaObject.currentTime() > \
-                controller.media_info.end_time * 1000:
+            if display.mediaObject.currentTime() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
             controller.seekSlider.setSliderPosition(
                 display.mediaObject.currentTime())
+
+    def get_media_display_css(self):
+        """
+        Add css style sheets to htmlbuilder
+        """
+        background = QtGui.QColor(Settings().value(u'players/background color', u'#000000')).name()
+        return VIDEO_CSS % (background,background,background)
+
+    def get_info(self):
+        return(translate('Media.player', 'Phonon is a media player which '
+            'interacts with the operating system to provide media capabilities.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(self.audio_extensions_list) +
+            u'<br/><strong>' + translate('Media.player', 'Video') +
+            u'</strong><br/>' + unicode(self.video_extensions_list) + u'<br/>')

@@ -29,7 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate
+from openlp.core.lib import SettingsTab, translate, Receiver, Settings
+from openlp.core.lib.ui import UiStrings
 
 class ImageTab(SettingsTab):
     """
@@ -67,10 +68,8 @@ class ImageTab(SettingsTab):
             QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
-        self.bgColorGroupBox.setTitle(
-            translate('ImagesPlugin.ImageTab', 'Background Color'))
-        self.backgroundColorLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Default Color:'))
+        self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
+        self.backgroundColorLabel.setText(UiStrings().DefaultColor)
         self.informationLabel.setText(
             translate('ImagesPlugin.ImageTab', 'Visible background for images '
             'with aspect ratio different to screen.'))

@@ -125,7 +125,8 @@ class OpenLP(QtGui.QApplication):
         # Correct stylesheet bugs
         if os.name == u'nt':
             base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
-            application_stylesheet = u'* {alternate-background-color: ' + base_color.name() + ';}\n'
+            application_stylesheet = \
+                u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += nt_repair_stylesheet
             self.setStyleSheet(application_stylesheet)
         show_splash = Settings().value(u'general/show splash', True)
