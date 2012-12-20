@@ -151,19 +151,20 @@ class RemoteTab(SettingsTab):
 
     def load(self):
         self.portSpinBox.setValue(
-            Settings().value(self.settingsSection + u'/port', 4316))
+            Settings().value(self.settingsSection + u'/port'))
         self.addressEdit.setText(
-            Settings().value(self.settingsSection + u'/ip address', ZERO_URL))
+            Settings().value(self.settingsSection + u'/ip address'))
         self.twelveHour = Settings().value(
-            self.settingsSection + u'/twelve hour', True)
+            self.settingsSection + u'/twelve hour')
         self.twelveHourCheckBox.setChecked(self.twelveHour)
         self.setUrls()
 
     def save(self):
         changed = False
+        #TODO: check
         if Settings().value(self.settingsSection + u'/ip address', ZERO_URL !=
             self.addressEdit.text() or Settings().value(self.settingsSection +
-            u'/port', 4316) != self.portSpinBox.value()):
+            u'/port') != self.portSpinBox.value()):
             changed = True
         Settings().setValue(self.settingsSection + u'/port',
             self.portSpinBox.value())

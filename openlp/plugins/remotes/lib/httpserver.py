@@ -171,10 +171,8 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
-        port = Settings().value(
-            self.plugin.settingsSection + u'/port', 4316)
-        address = Settings().value(
-            self.plugin.settingsSection + u'/ip address', u'0.0.0.0')
+        port = Settings().value(self.plugin.settingsSection + u'/port')
+        address = Settings().value(self.plugin.settingsSection + u'/ip address')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -406,7 +404,7 @@ class HttpConnection(object):
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u'',
-            u'twelve':Settings().value(u'remotes/twelve hour', True),
+            u'twelve':Settings().value(u'remotes/twelve hour'),
             u'blank': self.parent.plugin.liveController.blankScreen.isChecked(),
             u'theme': self.parent.plugin.liveController.themeScreen.isChecked(),
             u'display': \

@@ -128,7 +128,7 @@ class BibleManager(object):
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
         self.proxy_name = Settings().value(
-            self.settingsSection + u'/proxy name', u'')
+            self.settingsSection + u'/proxy name')
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
@@ -372,7 +372,7 @@ class BibleManager(object):
             # If None is returned, it's not the singleton object but a
             # BibleMeta object with the value "None"
             language_selection = Settings().value(
-                self.settingsSection + u'/book name language', 0)
+                self.settingsSection + u'/book name language')
         else:
             language_selection = language_selection.value
         try:

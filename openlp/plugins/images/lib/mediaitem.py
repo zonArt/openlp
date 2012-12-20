@@ -153,7 +153,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
         background = QtGui.QColor(Settings().value(self.settingsSection
-            + u'/background color', u'#000000'))
+            + u'/background color'))
         if item:
             items = [item]
         else:
@@ -222,7 +222,7 @@ class ImageMediaItem(MediaManagerItem):
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
             background = QtGui.QColor(Settings().value(
-                self.settingsSection + u'/background color', u'#000000'))
+                self.settingsSection + u'/background color'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
             filename = bitem.data(QtCore.Qt.UserRole)

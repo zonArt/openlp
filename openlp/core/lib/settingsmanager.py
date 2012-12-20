@@ -61,7 +61,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        return Settings().value(section + u'/' + name, u'')
+        return Settings().value(section + u'/' + name)
 
     @staticmethod
     def set_last_dir(section, directory, num=None):

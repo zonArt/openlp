@@ -104,10 +104,10 @@ class Ui_MainWindow(object):
         # Create slide controllers
         self.previewController = SlideController(self)
         self.liveController = SlideController(self, True)
-        previewVisible = Settings().value(u'user interface/preview panel', True)
+        previewVisible = Settings().value(u'user interface/preview panel')
         self.previewController.panel.setVisible(previewVisible)
-        liveVisible = Settings().value(u'user interface/live panel', True)
-        panelLocked = Settings().value(u'user interface/lock panel', False)
+        liveVisible = Settings().value(u'user interface/live panel')
+        panelLocked = Settings().value(u'user interface/lock panel')
         self.liveController.panel.setVisible(liveVisible)
         # Create menu
         self.menuBar = QtGui.QMenuBar(mainWindow)
@@ -701,8 +701,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
-        if Settings().value(u'advanced/save current plugin', False):
-            savedPlugin = Settings().value(u'advanced/current media plugin', -1)
+        if Settings().value(u'advanced/save current plugin'):
+            savedPlugin = Settings().value(u'advanced/current media plugin')
             if savedPlugin != -1:
                 self.mediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
@@ -754,10 +754,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 filename = unicode(filename, sys.getfilesystemencoding())
             self.serviceManagerContents.loadFile(filename)
         elif Settings().value(
-            self.generalSettingsSection + u'/auto open', False):
+            self.generalSettingsSection + u'/auto open'):
             self.serviceManagerContents.loadLastFile()
         view_mode = Settings().value(u'%s/view mode' %
-            self.generalSettingsSection, u'default')
+            self.generalSettingsSection)
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
         elif view_mode == u'setup':
@@ -1168,7 +1168,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 event.ignore()
         else:
-            if Settings().value(u'advanced/enable exit confirmation', True):
+            if Settings().value(u'advanced/enable exit confirmation'):
                 ret = QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow', 'Close OpenLP'),
                     translate('OpenLP.MainWindow',
@@ -1198,7 +1198,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Clean temporary files used by services
         self.serviceManagerContents.cleanUp()
         if save_settings:
-            if Settings().value(u'advanced/save current plugin', False):
+            if Settings().value(u'advanced/save current plugin'):
                 Settings().setValue(u'advanced/current media plugin',
                     self.mediaToolBox.currentIndex())
         # Call the cleanup method to shutdown plugins.
@@ -1340,7 +1340,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if Settings().contains(self.generalSettingsSection +
             u'/enable slide loop'):
             if Settings().value(self.generalSettingsSection +
-                u'/enable slide loop', True):
+                u'/enable slide loop'):
                 Settings().setValue(self.advancedSettingsSection +
                     u'/slide limits', SlideLimits.Wrap)
             else:
@@ -1399,7 +1399,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Updates the recent file menu with the latest list of service files
         accessed.
         """
-        recentFileCount = Settings().value(u'advanced/recent file count', 4)
+        recentFileCount = Settings().value(u'advanced/recent file count')
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
@@ -1431,7 +1431,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # The maxRecentFiles value does not have an interface and so never gets
         # actually stored in the settings therefore the default value of 20 will
         # always be used.
-        maxRecentFiles = Settings().value(u'advanced/max recent files', 20)
+        maxRecentFiles = Settings().value(u'advanced/max recent files')
         if filename:
             # Add some cleanup to reduce duplication in the recent file list
             filename = os.path.abspath(filename)

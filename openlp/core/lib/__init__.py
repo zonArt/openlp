@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
-
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
@@ -30,6 +29,7 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
+import datetime
 import logging
 import os
 
@@ -90,68 +90,6 @@ class ServiceItemAction(object):
     Next = 3
 
 
-class Settings(QtCore.QSettings):
-    """
-    Class to wrap QSettings.
-
-    * Exposes all the methods of QSettings.
-    * Adds functionality for OpenLP Portable. If the ``defaultFormat`` is set to
-    ``IniFormat``, and the path to the Ini file is set using ``setFilename``,
-    then the Settings constructor (without any arguments) will create a Settings
-    object for accessing settings stored in that Ini file.
-    """
-    __filePath__ = u''
-
-    @staticmethod
-    def setFilename(iniFile):
-        """
-        Sets the complete path to an Ini file to be used by Settings objects.
-
-        Does not affect existing Settings objects.
-        """
-        Settings.__filePath__ = iniFile
-
-    def __init__(self, *args):
-        if not args and Settings.__filePath__ and \
-            Settings.defaultFormat() == Settings.IniFormat:
-            QtCore.QSettings.__init__(self, Settings.__filePath__,
-                Settings.IniFormat)
-        else:
-            QtCore.QSettings.__init__(self, *args)
-
-    def value(self, key, defaultValue):
-        """
-        Returns the value for the given ``key``. The returned ``value`` is
-        of the same type as the ``defaultValue``.
-
-        ``key``
-            The key to return the value from.
-
-        ``defaultValue``
-            The value to be returned if the given ``key`` is not present in the
-            config. Note, the ``defaultValue``'s type defines the type the
-            returned is converted to. In other words, if the ``defaultValue`` is
-            a boolean, then the returned value will be converted to a boolean.
-
-            **Note**, this method only converts a few types and might need to be
-            extended if a certain type is missing!
-        """
-        setting =  super(Settings, self).value(key, defaultValue)
-        # An empty list saved to the settings results in a None type being
-        # returned.
-        if setting is None:
-            return []
-        # Convert the setting to the correct type.
-        if isinstance(defaultValue, bool):
-            if isinstance(setting, bool):
-                return setting
-            # Sometimes setting is string instead of a boolean.
-            return setting == u'true'
-        if isinstance(defaultValue, int):
-            return int(setting)
-        return setting
-
-
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
@@ -172,6 +110,256 @@ def translate(context, text, comment=None,
         within the same context.
     """
     return translate(context, text, comment, encoding, n)
+
+
+class Settings(QtCore.QSettings):
+    """
+    Class to wrap QSettings.
+
+    * Exposes all the methods of QSettings.
+    * Adds functionality for OpenLP Portable. If the ``defaultFormat`` is set to
+    ``IniFormat``, and the path to the Ini file is set using ``setFilename``,
+    then the Settings constructor (without any arguments) will create a Settings
+    object for accessing settings stored in that Ini file.
+    """
+    __filePath__ = u''
+    __defaultValues__ = {
+        u'advanced/x11 bypass wm': True,
+        u'advanced/default service enabled': True,
+        u'advanced/enable exit confirmation': True,
+        u'advanced/save current plugin': False,
+        u'advanced/single click preview': False,
+        u'advanced/default service day': 7,
+        u'advanced/max recent files': 20,
+        u'advanced/is portable': False,
+        u'advanced/hide mouse': True,
+        u'advanced/current media plugin': -1,
+        u'advanced/double click live': False,
+        u'advanced/default service hour': 11,
+        u'advanced/default color': u'#ffffff',
+        u'advanced/default image': u':/graphics/openlp-splash-screen.png',
+        u'advanced/expand service item': False,
+        u'advanced/recent file count': 4,
+        u'advanced/default service name': translate(
+            'OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
+            'This may not contain any of the following characters: '
+            '/\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
+            'datetime.html#strftime-strptime-behavior for more information.'),
+        u'advanced/default service minute': 0,
+        u'advanced/slide limits': SlideLimits.End,
+        u'alerts/font face': u'Sans',
+        u'alerts/font size': 40,
+        u'alerts/status': 0,#PluginStatus.Inactive,
+        u'alerts/db type': u'sqlite',
+        u'alerts/location': 2,
+        u'alerts/background color': u'#660000',
+        u'alerts/font color': u'#ffffff',
+        u'alerts/timeout': 5,
+        u'bibles/book name language': 0,
+        u'bibles/verse separator': u'',
+        u'bibles/advanced bible': u'',
+        u'bibles/proxy name': u'',
+        u'bibles/db type': u'sqlite',
+        u'bibles/status': 0, # PluginStatus.Inactive,
+        u'bibles/bible theme': u'',
+        u'bibles/range separator': u'',
+        u'bibles/display new chapter': False,
+        u'bibles/verse layout style': 0,
+        u'bibles/display brackets': 0,
+        u'bibles/list separator': u'',
+        u'bibles/second bibles': True,
+        u'bibles/quick bible': u'Afrikaans Bybel',
+        u'bibles/end separator': u'',
+        u'bibles/last search type': 1,
+        u'custom/db type': u'sqlite',
+        u'custom/display footer': True,
+        u'custom/last search type': 1,
+        u'custom/status': 0, # PluginStatus.Inactive,
+        u'displayTags/html_tags': u'',
+        u'general/ccli number': u'',
+        u'general/y position': 0,
+        u'general/has run wizard': False,
+        u'general/update check': True,
+        u'general/language': u'[en]',
+        u'general/songselect password': u'',
+        u'general/recent files': [],
+        u'general/save prompt': False,
+        u'general/auto preview': False,
+        u'general/override position': False,
+        u'general/view mode': u'default',
+        u'general/auto open': False,
+        u'general/enable slide loop': True,
+        u'general/show splash': True,
+        u'general/screen blank': False,
+        u'general/x position': 0,
+        u'general/loop delay': 5,
+        u'general/height': 1024,
+        u'general/monitor': 0,
+        u'general/songselect username': u'',
+        u'general/audio repeat list': False,
+        u'general/auto unblank': False,
+        u'general/display on monitor': True,
+        u'general/width': 1280,
+        u'general/audio start paused': True,
+        u'general/last version test': datetime.datetime.now().date(),
+        u'general/blank warning': False,
+        u'images/images count': 0,
+        u'images/background color': u'#000000',
+        u'images/status': 0, # PluginStatus.Inactive,
+        u'media/override player': QtCore.Qt.Unchecked,
+        u'media/media count': 0,
+        u'media/media auto start': QtCore.Qt.Unchecked,
+        u'media/status': 0, # PluginStatus.Inactive,
+        u'media/players': u'webkit',
+        u'players/background color': u'#000000',
+        u'presentations/Impress': 2,
+        u'presentations/override app': QtCore.Qt.Unchecked,
+        u'presentations/presentations count': 0,
+        u'presentations/Powerpoint': 2,
+        u'presentations/status': 0, # PluginStatus.Inactive,
+        u'presentations/Powerpoint Viewer': 2,
+        u'remotes/twelve hour': True,
+        u'remotes/status': 0, # PluginStatus.Inactive,
+        u'remotes/port': 4316,
+        u'remotes/ip address': u'0.0.0.0',
+        u'servicemanager/service theme': u'',
+        u'shortcuts/viewPreviewPanel': [QtGui.QKeySequence(u'F11')],
+        u'shortcuts/settingsImportItem': [],
+        u'shortcuts/settingsPluginListItem': [QtGui.QKeySequence(u'Alt+F7')],
+        u'shortcuts/modeLiveItem': [],
+        u'shortcuts/songUsageStatus': [QtCore.Qt.Key_F4],
+        u'shortcuts/nextTrackItem': [],
+        u'shortcuts/makeLive': [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
+        u'shortcuts/webSiteItem': [],
+        u'shortcuts/shortcutAction_P': [QtGui.QKeySequence(u'P')],
+        u'shortcuts/previousItem_live': [QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
+        u'shortcuts/shortcutAction_V': [QtGui.QKeySequence(u'V')],
+        u'shortcuts/fileOpenItem': [QtGui.QKeySequence(u'Ctrl+O')],
+        u'shortcuts/viewMediaManagerItem': [QtGui.QKeySequence(u'F8')],
+        u'shortcuts/desktopScreen': [QtGui.QKeySequence(u'D')],
+        u'shortcuts/songExportItem': [],
+        u'shortcuts/modeDefaultItem': [],
+        u'shortcuts/audioPauseItem': [],
+        u'shortcuts/themeScreen': [QtGui.QKeySequence(u'T')],
+        u'shortcuts/expand': [QtCore.Qt.Key_Plus],
+        u'shortcuts/exportThemeItem': [],
+        u'shortcuts/viewThemeManagerItem': [QtGui.QKeySequence(u'F10')],
+        u'shortcuts/playSlidesLoop': [],
+        u'shortcuts/playSlidesOnce': [],
+        u'shortcuts/toolsReindexItem': [],
+        u'shortcuts/toolsAlertItem': [u'F7'],
+        u'shortcuts/printServiceItem': [QtGui.QKeySequence(u'Ctrl+P')],
+        u'shortcuts/moveUp': [QtCore.Qt.Key_PageUp],
+        u'shortcuts/settingsShortcutsItem': [],
+        u'shortcuts/nextItem_live': [QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
+        u'shortcuts/moveTop': [QtCore.Qt.Key_Home],
+        u'shortcuts/blankScreen': [QtCore.Qt.Key_Period],
+        u'shortcuts/settingsConfigureItem': [],
+        u'shortcuts/modeSetupItem': [],
+        u'shortcuts/songUsageDelete': [],
+        u'shortcuts/shortcutAction_C': [QtGui.QKeySequence(u'C')],
+        u'shortcuts/shortcutAction_B': [QtGui.QKeySequence(u'B')],
+        u'shortcuts/shortcutAction_E': [QtGui.QKeySequence(u'E')],
+        u'shortcuts/shortcutAction_I': [QtGui.QKeySequence(u'I')],
+        u'shortcuts/shortcutAction_O': [QtGui.QKeySequence(u'O')],
+        u'shortcuts/importBibleItem': [],
+        u'shortcuts/fileExitItem': [QtGui.QKeySequence(u'Alt+F4')],
+        u'shortcuts/fileSaveItem': [QtGui.QKeySequence(u'Ctrl+S')],
+        u'shortcuts/up': [QtCore.Qt.Key_Up],
+        u'shortcuts/nextService': [QtCore.Qt.Key_Right],
+        u'shortcuts/songImportItem': [],
+        u'shortcuts/toolsOpenDataFolder': [],
+        u'shortcuts/fileNewItem': [QtGui.QKeySequence(u'Ctrl+N')],
+        u'shortcuts/aboutItem': [QtGui.QKeySequence(u'Ctrl+F1')],
+        u'shortcuts/viewLivePanel': [QtGui.QKeySequence(u'F12')],
+        u'shortcuts/songUsageReport': [],
+        u'shortcuts/updateThemeImages': [],
+        u'shortcuts/toolsAddToolItem': [],
+        u'shortcuts/fileSaveAsItem': [QtGui.QKeySequence(u'Ctrl+Shift+S')],
+        u'shortcuts/settingsExportItem': [],
+        u'shortcuts/onlineHelpItem': [QtGui.QKeySequence(u'Alt+F1')],
+        u'shortcuts/escapeItem': [QtCore.Qt.Key_Escape],
+        u'shortcuts/displayTagItem': [],
+        u'shortcuts/moveBottom': [QtCore.Qt.Key_End],
+        u'shortcuts/toolsFirstTimeWizard': [],
+        u'shortcuts/moveDown': [QtCore.Qt.Key_PageDown],
+        u'shortcuts/collapse': [QtCore.Qt.Key_Minus],
+        u'shortcuts/viewServiceManagerItem': [QtGui.QKeySequence(u'F9')],
+        u'shortcuts/previousService': [QtCore.Qt.Key_Left],
+        u'shortcuts/importThemeItem': [],
+        u'shortcuts/down': [QtCore.Qt.Key_Down],
+        u'songs/update service on edit': False,
+        u'songs/search as type': False,
+        u'songs/add song from service': True,
+        u'songs/display songbar': True,
+        u'songs/last search type': 1,  # BibleSearch.Reference,
+        u'songusage/db type': u'sqlite',
+        u'songusage/status': 0, # PluginStatus.Inactive,
+        u'songusage/active': False,
+        u'themes/theme level': 3,
+        u'themes/global theme': u'',
+        u'user interface/main window position': QtCore.QPoint(),
+        u'user interface/preview panel': True,
+        u'user interface/live panel': True,
+        u'user interface/main window geometry': QtCore.QByteArray(),
+        u'user interface/preview splitter geometry': QtCore.QByteArray(),
+        u'user interface/lock panel': False,
+        u'user interface/mainwindow splitter geometry': QtCore.QByteArray(),
+        u'user interface/live splitter geometry': QtCore.QByteArray(),
+        u'user interface/main window state': QtCore.QByteArray()
+}
+
+    @staticmethod
+    def setFilename(iniFile):
+        """
+        Sets the complete path to an Ini file to be used by Settings objects.
+
+        Does not affect existing Settings objects.
+        """
+        Settings.__filePath__ = iniFile
+
+    def __init__(self, *args):
+        if not args and Settings.__filePath__ and \
+            Settings.defaultFormat() == Settings.IniFormat:
+            QtCore.QSettings.__init__(self, Settings.__filePath__,
+                Settings.IniFormat)
+        else:
+            QtCore.QSettings.__init__(self, *args)
+
+    def value(self, key):
+        """
+        Returns the value for the given ``key``. The returned ``value`` is
+        of the same type as the ``defaultValue``.
+
+        ``key``
+            The key to return the value from.
+
+        ``defaultValue``
+            The value to be returned if the given ``key`` is not present in the
+            config. Note, the ``defaultValue``'s type defines the type the
+            returned is converted to. In other words, if the ``defaultValue`` is
+            a boolean, then the returned value will be converted to a boolean.
+
+            **Note**, this method only converts a few types and might need to be
+            extended if a certain type is missing!
+        """
+        if u'/' not in key:
+            key = self.group() +  u'/' + key
+        defaultValue = Settings.__defaultValues__[key]
+        setting =  super(Settings, self).value(key, defaultValue)
+        # An empty list saved to the settings results in a None type being
+        # returned.
+        if setting is None:
+            return []
+        # Convert the setting to the correct type.
+        if isinstance(defaultValue, bool):
+            if isinstance(setting, bool):
+                return setting
+            # Sometimes setting is string instead of a boolean.
+            return setting == u'true'
+        if isinstance(defaultValue, int):
+            return int(setting)
+        return setting
 
 
 def get_text_file_string(text_file):

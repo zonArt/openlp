@@ -105,6 +105,7 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
+            # TODO check
             checkbox.setChecked(Settings().value(
                 self.settingsSection + u'/' + controller.name,
                 QtCore.Qt.Checked))

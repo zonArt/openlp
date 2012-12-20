@@ -142,6 +142,7 @@ class MainDisplay(Display):
             # Default to False on Gnome.
             x11_bypass_default = bool(not
                 os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+        # TODO: check
         if Settings().value(u'advanced/x11 bypass wm', x11_bypass_default):
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # TODO: The following combination of windowFlags works correctly
@@ -209,11 +210,10 @@ class MainDisplay(Display):
             # Build the initial frame.
             background_color = QtGui.QColor()
             background_color.setNamedColor(Settings().value(
-                u'advanced/default color', u'#ffffff'))
+                u'advanced/default color'))
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
-            image_file = Settings().value(u'advanced/default image',
-                u':/graphics/openlp-splash-screen.png')
+            image_file = Settings().value(u'advanced/default image')
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
                 self.screen[u'size'].width(),
@@ -377,7 +377,7 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if Settings().value(u'general/display on monitor', True):
+                    if Settings().value(u'general/display on monitor'):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
@@ -428,7 +428,7 @@ class MainDisplay(Display):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
-            if Settings().value(u'general/auto unblank', False):
+            if Settings().value(u'general/auto unblank'):
                 Receiver.send_message(u'slidecontroller_live_unblank')
             else:
                 self.hideDisplay(self.hideMode)
@@ -451,7 +451,7 @@ class MainDisplay(Display):
         log.debug(u'hideDisplay mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor', True):
+            if not Settings().value(u'general/display on monitor'):
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -475,7 +475,7 @@ class MainDisplay(Display):
         log.debug(u'showDisplay')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor', True):
+            if not Settings().value(u'general/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
@@ -489,7 +489,7 @@ class MainDisplay(Display):
         """
         Hide mouse cursor when moved over display.
         """
-        if Settings().value(u'advanced/hide mouse', True):
+        if Settings().value(u'advanced/hide mouse'):
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
         else:
