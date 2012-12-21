@@ -358,7 +358,7 @@ class MediaController(object):
                 controller.media_info.start_time = 0
                 controller.media_info.end_time = 0
             else:
-                controller.media_info.start_time = display.serviceItem.start_time
+                controller.media_info.start_time = serviceItem.start_time
                 controller.media_info.end_time = serviceItem.end_time
         elif controller.previewDisplay:
             isValid = self._check_file_type(controller, display, serviceItem)
@@ -373,10 +373,14 @@ class MediaController(object):
         # now start playing - Preview is autoplay!
         autoplay = False
         # Preview requested
+        print serviceItem.will_auto_start
         if not controller.isLive:
             autoplay = True
         # Visible or background requested or Service Item wants to autostart
-        elif not hidden or controller.media_info.is_background or serviceItem.will_auto_start:
+        elif serviceItem.will_auto_start:
+            autoplay = True
+        # Visible or background requested or Service Item wants to autostart
+        elif (not hidden or controller.media_info.is_background) and not serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
         elif Settings().value(u'general/auto unblank', QtCore.QVariant(False)).toBool():
@@ -480,6 +484,8 @@ class MediaController(object):
             The controller to be played
         """
         log.debug(u'media_play')
+        controller.seekSlider.blockSignals(True)
+        controller.volumeSlider.blockSignals(True)
         display = self._define_display(controller)
         if not self.currentMediaPlayer[controller.controllerType].play(display):
             return False
@@ -504,6 +510,8 @@ class MediaController(object):
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
+        controller.seekSlider.blockSignals(False)
+        controller.volumeSlider.blockSignals(False)
         return True
 
     def media_pause_msg(self, msg):
@@ -576,7 +584,6 @@ class MediaController(object):
         ``msg``
             First element is the controller which should be used
         """
-
         log.debug(u'media_volume %d' % volume)
         display = self._define_display(controller)
         self.currentMediaPlayer[controller.controllerType].volume(display, volume)

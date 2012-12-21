@@ -936,8 +936,7 @@ class SlideController(DisplayController):
             else:
                 if not self.serviceItem.is_command():
                     Receiver.send_message(u'live_display_show')
-                Receiver.send_message(u'%s_unblank' % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive])
+                Receiver.send_message(u'%s_unblank' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
         else:
             if hide_mode:
                 Receiver.send_message(u'live_display_hide', hide_mode)
@@ -952,13 +951,11 @@ class SlideController(DisplayController):
         if self.serviceItem is not None:
             if hide:
                 Receiver.send_message(u'live_display_hide', HideMode.Screen)
-                Receiver.send_message(u'%s_hide' % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive])
+                Receiver.send_message(u'%s_hide' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
             else:
                 if not self.serviceItem.is_command():
                     Receiver.send_message(u'live_display_show')
-                Receiver.send_message(u'%s_unblank' % self.serviceItem.name.lower(),
-                    [self.serviceItem, self.isLive])
+                Receiver.send_message(u'%s_unblank' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
         else:
             if hide:
                 Receiver.send_message(u'live_display_hide', HideMode.Screen)
