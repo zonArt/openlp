@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,11 +34,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager, translate, \
+from openlp.core.lib import build_icon, Receiver, translate, \
     create_separated_list
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import locale_direct_compare
+from openlp.plugins.songs.lib import natcmp
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
 
@@ -253,8 +253,7 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         Receiver.send_message(u'cursor_busy')
         songs = self.plugin.manager.get_all_objects(Song)
-        songs.sort(
-            cmp=locale_direct_compare, key=lambda song: song.sort_string)
+        songs.sort(cmp=natcmp, key=lambda song: song.sort_key)
         for song in songs:
             # No need to export temporary songs.
             if song.temporary:

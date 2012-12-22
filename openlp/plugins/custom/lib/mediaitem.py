@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    check_item_selected, translate
+    check_item_selected, translate, ServiceItemContext
 from openlp.core.lib.ui import UiStrings
 from openlp.core.lib.settings import Settings
 from openlp.plugins.custom.forms import EditCustomForm
@@ -195,7 +195,7 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False):
+        remote=False, context=ServiceItemContext.Service):
         item_id = self._getIdOfItemToGenerate(item, self.remoteCustom)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)

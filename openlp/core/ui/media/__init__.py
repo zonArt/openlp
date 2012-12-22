@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -47,7 +47,7 @@ class MediaState(object):
 
 class MediaType(object):
     """
-    An enumeration of possibible Media Types
+    An enumeration of possible Media Types
     """
     Unused = 0
     Audio = 1
@@ -59,7 +59,7 @@ class MediaType(object):
 
 class MediaInfo(object):
     """
-    This class hold the media related infos
+    This class hold the media related info
     """
     file_info = None
     volume = 100
@@ -72,30 +72,25 @@ class MediaInfo(object):
 
 def get_media_players():
     """
-    This method extract the configured media players and overridden player from
-    the settings.
-
-    ``players_list``
-       A list with all active media players.
-
-    ``overridden_player``
-        Here an special media player is chosen for all media actions.
+    This method extracts the configured media players and overridden player
+    from the settings.
     """
     log.debug(u'get_media_players')
-    players = unicode(Settings().value(u'media/players').toString())
-    if not players:
-        players = u'webkit'
+    saved_players = unicode(Settings().value(u'media/players').toString())
+    if not saved_players:
+        # we must always have a player and Webkit is the core one.
+        saved_players = u'webkit'
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
     if Settings().value(u'media/override player',
         QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked:
-        if reg_ex.exactMatch(players):
+        if reg_ex.exactMatch(saved_players):
             overridden_player = u'%s' % reg_ex.cap(1)
         else:
             overridden_player = u'auto'
     else:
         overridden_player = u''
-    players_list = players.replace(u'[', u'').replace(u']', u'').split(u',')
-    return players_list, overridden_player
+    saved_players_list = saved_players.replace(u'[', u'').replace(u']',u'').split(u',')
+    return saved_players_list, overridden_player
 
 
 def set_media_players(players_list, overridden_player=u'auto'):
@@ -111,10 +106,10 @@ def set_media_players(players_list, overridden_player=u'auto'):
     """
     log.debug(u'set_media_players')
     players = u','.join(players_list)
-    if Settings().value(u'media/override player',
-        QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
-        QtCore.Qt.Checked and overridden_player != u'auto':
+    if Settings().value(u'media/override player', QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
+            QtCore.Qt.Checked and overridden_player != u'auto':
         players = players.replace(overridden_player, u'[%s]' % overridden_player)
     Settings().setValue(u'media/players', QtCore.QVariant(players))
 
 from mediacontroller import MediaController
+from playertab import PlayerTab

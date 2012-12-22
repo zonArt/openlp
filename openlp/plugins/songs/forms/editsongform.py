@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -183,8 +183,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for plugin in self.parent().pluginManager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
-                self.mediaForm.populateFiles(
-                    plugin.mediaItem.getList(MediaType.Audio))
+                self.mediaForm.populateFiles(plugin.mediaItem.getList(MediaType.Audio))
                 break
 
     def newSong(self):
@@ -203,7 +202,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.authorsListView.clear()
         self.topicsListView.clear()
         self.audioListWidget.clear()
-        self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.titleEdit.setFocus()
         self.songBookNumberEdit.clear()
         self.loadAuthors()
         self.loadTopics()
@@ -326,7 +325,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             media_file.setData(QtCore.Qt.UserRole,
                 QtCore.QVariant(media.file_name))
             self.audioListWidget.addItem(media_file)
-        self.titleEdit.setFocus(QtCore.Qt.OtherFocusReason)
+        self.titleEdit.setFocus()
         # Hide or show the preview button.
         self.previewButton.setVisible(preview)
 

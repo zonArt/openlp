@@ -11,7 +11,7 @@
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -53,8 +53,8 @@ log = logging.getLogger(__name__)
 class Display(QtGui.QGraphicsView):
     """
     This is a general display screen class. Here the general display settings
-   will done. It will be used as specialized classes by Main Display and
-   Preview display.
+    will done. It will be used as specialized classes by Main Display and
+    Preview display.
     """
     def __init__(self, parent, live, controller):
         if live:
@@ -327,7 +327,7 @@ class MainDisplay(Display):
         """
         log.debug(u'image to display')
         image = self.imageManager.getImageBytes(path, ImageSource.ImagePlugin)
-        self.controller.mediaController.video_reset(self.controller)
+        self.controller.mediaController.media_reset(self.controller)
         self.displayImage(image)
 
     def displayImage(self, image):
@@ -498,7 +498,7 @@ class MainDisplay(Display):
         Hide mouse cursor when moved over display.
         """
         if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool():
+            QtCore.QVariant(True)).toBool():
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
         else:
