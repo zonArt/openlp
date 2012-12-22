@@ -62,6 +62,8 @@ class CustomXMLBuilder(object):
         """
         # Create the minidom document
         self.custom_xml = Document()
+        self.new_document()
+        self.add_lyrics_to_song()
 
     def new_document(self):
         """
