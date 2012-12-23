@@ -30,7 +30,7 @@
 import logging
 
 from PyQt4 import QtCore, QtGui
-from sqlalchemy.sql import or_, func
+from sqlalchemy.sql import or_, func, and_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
     ServiceItemContext, PluginStatus
@@ -270,14 +270,16 @@ class CustomMediaItem(MediaManagerItem):
         Triggered by a song being loaded by the service manager.
         """
         log.debug(u'serviceLoad')
-        if not self.add_custom_from_service:
-            return
         if self.plugin.status != PluginStatus.Active:
             return
-        custom = self.plugin.manager.get_object_filtered(CustomSlide, CustomSlide.title == item.title)
+        custom = self.plugin.manager.get_object_filtered(CustomSlide,
+            and_(CustomSlide.title == item.title, CustomSlide.theme_name == item.theme,
+            CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
         if custom:
-            return
-        self.create_from_service_item(item)
+            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
+        else:
+            if self.add_custom_from_service:
+                self.create_from_service_item(item)
 
     def create_from_service_item(self, item):
         """
@@ -304,6 +306,7 @@ class CustomMediaItem(MediaManagerItem):
         self.plugin.manager.save_object(custom)
         self.onSearchTextButtonClicked()
         if item.name.lower() == u'custom':
+            self.plugin.serviceManager.replaceServiceItem(item)
             Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
 
     def onClearTextButtonClick(self):
