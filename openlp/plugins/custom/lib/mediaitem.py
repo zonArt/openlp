@@ -87,6 +87,8 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'custom_create_from_service'), self.create_from_service_item)
 
     def config_updated(self):
         self.add_custom_from_service = Settings().value(
@@ -275,9 +277,18 @@ class CustomMediaItem(MediaManagerItem):
         custom = self.plugin.manager.get_object_filtered(CustomSlide, CustomSlide.title == item.title)
         if custom:
             return
+        self.create_from_service_item(item)
+
+    def create_from_service_item(self, item):
+        """
+        Create a custom slide from a text service item
+        """
         custom = CustomSlide()
         custom.title = item.title
-        custom.theme_name = item.theme
+        if item.theme:
+            custom.theme_name = item.theme
+        else:
+            custom.theme_name = u''
         footer = u' '.join(item.raw_footer)
         if footer:
             if footer.startswith(item.title):
@@ -292,7 +303,8 @@ class CustomMediaItem(MediaManagerItem):
         custom.text = unicode(custom_xml.extract_xml(), u'utf-8')
         self.plugin.manager.save_object(custom)
         self.onSearchTextButtonClicked()
-        Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
+        if item.name.lower() == u'custom':
+            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
 
     def onClearTextButtonClick(self):
         """
