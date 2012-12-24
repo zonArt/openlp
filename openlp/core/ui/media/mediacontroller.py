@@ -414,9 +414,13 @@ class MediaController(object):
         """
         log.debug(u'video_play')
         controller = msg[0]
+        controller.seekSlider.blockSignals(True)
+        controller.volumeSlider.blockSignals(True)
         for display in self.curDisplayMediaPlayer.keys():
             if display.controller == controller:
                 if not self.curDisplayMediaPlayer[display].play(display):
+                    controller.seekSlider.blockSignals(False)
+                    controller.volumeSlider.blockSignals(False)
                     return False
                 if status:
                     display.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -428,6 +432,8 @@ class MediaController(object):
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
+        controller.seekSlider.blockSignals(False)
+        controller.volumeSlider.blockSignals(False)
         return True
 
     def video_pause(self, msg):
