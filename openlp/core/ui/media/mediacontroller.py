@@ -488,6 +488,8 @@ class MediaController(object):
         controller.volumeSlider.blockSignals(True)
         display = self._define_display(controller)
         if not self.currentMediaPlayer[controller.controllerType].play(display):
+            controller.seekSlider.blockSignals(False)
+            controller.volumeSlider.blockSignals(False)
             return False
         if controller.media_info.is_background:
             self.media_volume(controller, 0)
