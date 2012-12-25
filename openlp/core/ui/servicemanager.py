@@ -796,11 +796,7 @@ class ServiceManager(QtGui.QWidget):
             else:
                 delay_suffix = u' ...'
             self.TimedSlideInterval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
-            # TOFO for future: make group explain itself more visually
-            #self.AutoPlaySlidesGroup.setChecked(
-            #    serviceItem[u'service_item'].timed_slide_interval > 0 and
-            #    (serviceItem[u'service_item'].auto_play_slides_once or
-            #    serviceItem[u'service_item'].auto_play_slides_loop))
+            # TODO for future: make group explains itself more visually
         else:
             self.AutoPlaySlidesGroup.menuAction().setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.HasVariableStartTime):
