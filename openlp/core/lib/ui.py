@@ -377,7 +377,7 @@ def create_action(parent, name, **kwargs):
         True in case the action will be considered a separator.
 
     ``data``
-        The actions data.
+        The action's data.
 
     ``shortcuts``
         A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
