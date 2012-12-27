@@ -142,6 +142,9 @@ class MainDisplay(Display):
             # Default to False on Gnome.
             x11_bypass_default = bool(not
                 os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+            # Default to False on XFce
+            if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
+                x11_bypass_default = False
         if Settings().value(u'advanced/x11 bypass wm', x11_bypass_default):
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # TODO: The following combination of windowFlags works correctly
