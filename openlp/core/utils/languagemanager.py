@@ -83,11 +83,7 @@ class LanguageManager(object):
         # Remove qm files from the list which start with "qt_".
         file_names = filter(
             lambda file_: not file_.startswith(u'qt_'), file_names)
-        names = []
-        for name in file_names:
-            names.append(trans_dir.filePath(name))
-            #file_names.replaceInStrings(name, trans_dir.filePath(name))
-        return names
+        return map(trans_dir.filePath, file_names)
 
     @staticmethod
     def language_name(qm_file):
