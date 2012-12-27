@@ -136,7 +136,9 @@ class Settings(QtCore.QSettings):
             **Note**, this method only converts a few types and might need to be
             extended if a certain type is missing!
         """
-        # Check for none as u'' is passed as default and is valid!
+        # Check for none as u'' is passed as default and is valid! This is
+        # needed because the settings export does not know the default values,
+        # thus just passes None.
         if defaultValue is None and not super(Settings, self).contains(key):
             return None
         setting =  super(Settings, self).value(key, defaultValue)

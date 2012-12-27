@@ -213,11 +213,11 @@ class ActionList(object):
             empty ``objectName``.
 
         ``category``
-            The category this action belongs to. The category can be a QString
-            or python unicode string. **Note**, if the category is ``None``, the
-            category and its actions are being hidden in the shortcut dialog.
-            However, if they are added, it is possible to avoid assigning
-            shortcuts twice, which is important.
+            The category this action belongs to. The category has to be a python
+            string. . **Note**, if the category is ``None``, the category and
+            its actions are being hidden in the shortcut dialog. However, if
+            they are added, it is possible to avoid assigning shortcuts twice,
+            which is important.
 
         ``weight``
             The weight specifies how important a category is. However, this only

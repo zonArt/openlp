@@ -497,10 +497,8 @@ def locale_compare(string1, string2):
     is equal to it. Comparison is case insensitive.
     """
     # Function locale.strcoll() from standard Python library does not work
-    # properly on Windows and probably somewhere else.
+    # properly on Windows.
     return locale.strcoll(string1.lower(), string2.lower())
-    # TODO: check code
-    #return QtCore.QString.localeAwareCompare(string1.lower(), string2.lower())
 
 
 # For performance reasons provide direct reference to compare function
