@@ -1075,8 +1075,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings.endGroup()
         # Write all the sections and keys.
         for section_key in keys:
-            key_value = settings.value(section_key)
-            export_settings.setValue(section_key, key_value)
+            key_value = settings.value(section_key, None)
+            if key_value is not None:
+                export_settings.setValue(section_key, key_value)
         export_settings.sync()
         # Temp CONF file has been written.  Blanks in keys are now '%20'.
         # Read the  temp file and output the user's CONF file with blanks to

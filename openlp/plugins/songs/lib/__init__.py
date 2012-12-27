@@ -41,7 +41,7 @@ PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'"
     r"([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
 # RTF control words which specify a "destination" to be ignored.
 DESTINATIONS = frozenset((
-    u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor', 
+    u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor',
     u'atndate', u'atnicn', u'atnid', u'atnparent', u'atnref', u'atntime',
     u'atrfend', u'atrfstart', u'author', u'background', u'bkmkend',
     u'bkmkstart', u'blipuid', u'buptim', u'category',
@@ -579,7 +579,7 @@ def strip_rtf(text, default_encoding=None):
                 failed = False
                 while True:
                     try:
-                        encoding, default_encoding = get_encoding(font, 
+                        encoding, default_encoding = get_encoding(font,
                             font_table, default_encoding, failed=failed)
                         out.append(chr(charcode).decode(encoding))
                     except UnicodeDecodeError:
@@ -594,6 +594,7 @@ def strip_rtf(text, default_encoding=None):
     text = u''.join(out)
     return text, default_encoding
 
+
 def natcmp(a, b):
     """
     Natural string comparison which mimics the behaviour of Python's internal
@@ -604,9 +605,9 @@ def natcmp(a, b):
             if isinstance(key, int) and isinstance(b[i], int):
                 result = cmp(key, b[i])
             elif isinstance(key, int) and not isinstance(b[i], int):
-                result = locale_direct_compare(QtCore.QString(str(key)), b[i])
+                result = locale_direct_compare(str(key), b[i])
             elif not isinstance(key, int) and isinstance(b[i], int):
-                result = locale_direct_compare(key, QtCore.QString(str(b[i])))
+                result = locale_direct_compare(key, str(b[i]))
             else:
                 result = locale_direct_compare(key, b[i])
             if result != 0:
@@ -620,9 +621,9 @@ def natcmp(a, b):
             if isinstance(a[i], int) and isinstance(key, int):
                 result = cmp(a[i], key)
             elif isinstance(a[i], int) and not isinstance(key, int):
-                result = locale_direct_compare(QtCore.QString(str(a[i])), key)
+                result = locale_direct_compare(str(a[i]), key)
             elif not isinstance(a[i], int) and isinstance(key, int):
-                result = locale_direct_compare(a[i], QtCore.QString(str(key)))
+                result = locale_direct_compare(a[i], str(key))
             else:
                 result = locale_direct_compare(a[i], key)
             if result != 0:
