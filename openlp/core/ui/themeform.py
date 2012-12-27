@@ -562,9 +562,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.font_main_outline_size = self.field(u'outlineSizeSpinBox')
         self.theme.font_main_shadow_size = self.field(u'shadowSizeSpinBox')
         self.theme.font_main_bold = self.field(u'mainBoldCheckBox')
-        # FIXME ?
-        self.theme.font_main_italics = \
-            self.field(u'mainItalicsCheckBox')
+        self.theme.font_main_italics = self.field(u'mainItalicsCheckBox')
         # footer page
         self.theme.font_footer_name = \
             self.footerFontComboBox.currentFont().family()
@@ -574,7 +572,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.font_main_y = self.field(u'mainPositionY')
         self.theme.font_main_height = self.field(u'mainPositionHeight')
         self.theme.font_main_width = self.field(u'mainPositionWidth')
-        #print self.field(u'footerPositionX')
         self.theme.font_footer_x = self.field(u'footerPositionX')
         self.theme.font_footer_y = self.field(u'footerPositionY')
         self.theme.font_footer_height = self.field(u'footerPositionHeight')
@@ -583,7 +580,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.theme.display_horizontal_align = \
             self.horizontalComboBox.currentIndex()
         self.theme.display_vertical_align = self.verticalComboBox.currentIndex()
-        # TODO Check
         self.theme.display_slide_transition = self.field(u'slideTransition')
 
     def accept(self):
