@@ -184,7 +184,7 @@ class ThemesTab(SettingsTab):
         """
         # Reload as may have been triggered by the ThemeManager.
         self.global_theme = Settings().value(
-            self.settingsSection + u'/global theme')
+            self.settingsSection + u'/global theme', u'')
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)

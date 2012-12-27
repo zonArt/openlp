@@ -222,7 +222,7 @@ class PhononPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value(u'players/background color')).name()
+        background = QtGui.QColor(Settings().value(u'players/background color', u'#000000')).name()
         return VIDEO_CSS % (background,background,background)
 
     def get_info(self):

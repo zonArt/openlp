@@ -127,7 +127,7 @@ class SongUsagePlugin(Plugin):
             QtCore.SIGNAL(u'print_service_started'),
             self.printSongUsage)
         self.songUsageActive = Settings().value(
-            self.settingsSection + u'/active')
+            self.settingsSection + u'/active', False)
         # Set the button and checkbox state
         self.setButtonState()
         action_list = ActionList.get_instance()

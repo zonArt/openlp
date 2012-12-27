@@ -100,7 +100,6 @@ class CustomMediaItem(MediaManagerItem):
         ])
         self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
-        # TODO: check
         self.searchTextEdit.setCurrentSearchType(Settings().value(
             u'%s/last search type' % self.settingsSection, CustomSearch.Titles))
 
@@ -212,7 +211,8 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide)
-        if Settings().value(self.settingsSection + u'/display footer') or credit:
+        if Settings().value(self.settingsSection + u'/display footer',
+            True) or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))
         else:
             service_item.raw_footer.append(u'')

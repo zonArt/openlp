@@ -69,7 +69,7 @@ class CustomTab(SettingsTab):
 
     def load(self):
         self.displayFooter = Settings().value(
-            self.settingsSection + u'/display footer')
+            self.settingsSection + u'/display footer', True)
         self.displayFooterCheckBox.setChecked(self.displayFooter)
 
     def save(self):

@@ -72,17 +72,19 @@ class MediaTab(SettingsTab):
         self.autoStartCheckBox.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
 
     def load(self):
-        self.overridePlayerCheckBox.setChecked(Settings().value(self.settingsSection + u'/override player'))
-        self.autoStartCheckBox.setChecked(Settings().value(self.settingsSection + u'/media auto start'))
+        self.overridePlayerCheckBox.setChecked(Settings().value(self.settingsSection + u'/override player',
+            QtCore.Qt.Unchecked))
+        self.autoStartCheckBox.setChecked(Settings().value(self.settingsSection + u'/media auto start',
+            QtCore.Qt.Unchecked))
 
     def save(self):
         override_changed = False
         setting_key = self.settingsSection + u'/override player'
-        if Settings().value(setting_key) != self.overridePlayerCheckBox.checkState():
+        if Settings().value(setting_key, QtCore.Qt.Unchecked) != self.overridePlayerCheckBox.checkState():
             Settings().setValue(setting_key, self.overridePlayerCheckBox.checkState())
             override_changed = True
         setting_key = self.settingsSection + u'/media auto start'
-        if Settings().value(setting_key) != self.autoStartCheckBox.checkState():
+        if Settings().value(setting_key, QtCore.Qt.Unchecked) != self.autoStartCheckBox.checkState():
             Settings().setValue(setting_key, self.autoStartCheckBox.checkState())
         if override_changed:
             self.parent.resetSupportedSuffixes()

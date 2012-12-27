@@ -392,7 +392,6 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        # TODO: check
         if Settings().value(self.settings_section + u'/' + self.name,
             QtCore.Qt.Checked) == QtCore.Qt.Checked:
             return self.is_available()

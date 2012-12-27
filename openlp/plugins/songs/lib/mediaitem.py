@@ -171,11 +171,11 @@ class SongMediaItem(MediaManagerItem):
 
     def configUpdated(self):
         self.searchAsYouType = Settings().value(
-            self.settingsSection + u'/search as type')
+            self.settingsSection + u'/search as type', False)
         self.updateServiceOnEdit = Settings().value(
-            self.settingsSection + u'/update service on edit')
+            self.settingsSection + u'/update service on edit', False)
         self.addSongFromService = Settings().value(
-            self.settingsSection + u'/add song from service')
+            self.settingsSection + u'/add song from service', True)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -204,7 +204,6 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        # TODO: check
         self.searchTextEdit.setCurrentSearchType(Settings().value(
             u'%s/last search type' % self.settingsSection, SongSearch.Entire))
         self.configUpdated()
@@ -547,10 +546,10 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if Settings().value(u'general/ccli number'):
+        if Settings().value(u'general/ccli number', u''):
             service_item.raw_footer.append(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'general/ccli number'))
+                Settings().value(u'general/ccli number', u''))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]

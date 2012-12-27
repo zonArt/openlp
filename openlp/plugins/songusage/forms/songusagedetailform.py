@@ -61,7 +61,6 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         year = QtCore.QDate().currentDate().year()
         if QtCore.QDate().currentDate().month() < 9:
             year -= 1
-        # TODO: check
         toDate = Settings().value(self.plugin.settingsSection +
             u'/to date', QtCore.QDate(year, 8, 31))
         fromDate = Settings().value(self.plugin.settingsSection +
