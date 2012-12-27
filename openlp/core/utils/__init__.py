@@ -133,7 +133,7 @@ class AppLocation(object):
         """
         # Check if we have a different data location.
         if Settings().contains(u'advanced/data path'):
-            path = Settings().value(u'advanced/data path')
+            path = Settings().value(u'advanced/data path', u'')
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
