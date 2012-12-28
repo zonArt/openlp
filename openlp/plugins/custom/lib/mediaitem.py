@@ -90,8 +90,7 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_create_from_service'), self.create_from_service_item)
 
     def config_updated(self):
-        self.add_custom_from_service = Settings().value(
-            self.settingsSection + u'/add custom from service', QtCore.QVariant(u'True')).toBool()
+        self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service', True)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
