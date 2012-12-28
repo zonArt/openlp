@@ -301,7 +301,6 @@ class CustomMediaItem(MediaManagerItem):
         self.plugin.manager.save_object(custom)
         self.onSearchTextButtonClicked()
         if item.name.lower() == u'custom':
-            self.plugin.serviceManager.replaceServiceItem(item)
             Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
 
     def onClearTextButtonClick(self):
