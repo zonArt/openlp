@@ -70,7 +70,7 @@ class UiStrings(object):
         self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
         self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
-        self.Default = unicode(translate('OpenLP.Ui', 'Default'))
+        self.Default = translate('OpenLP.Ui', 'Default')
         self.DefaultColor = translate('OpenLP.Ui', 'Default Color:')
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
@@ -138,7 +138,7 @@ class UiStrings(object):
         self.Split = translate('OpenLP.Ui', 'Optional &Split')
         self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
             'only if it does not fit on the screen as one slide.')
-        self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
+        self.StartTimeCode = translate('OpenLP.Ui', 'Start %s')
         self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
             'Stop Play Slides in Loop')
         self.StopPlaySlidesToEnd = translate('OpenLP.Ui',
@@ -377,7 +377,7 @@ def create_action(parent, name, **kwargs):
         True in case the action will be considered a separator.
 
     ``data``
-        Data which is set as QVariant type.
+        The action's data.
 
     ``shortcuts``
         A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
@@ -411,7 +411,7 @@ def create_action(parent, name, **kwargs):
     if kwargs.pop(u'separator', False):
         action.setSeparator(True)
     if u'data' in kwargs:
-        action.setData(QtCore.QVariant(kwargs.pop(u'data')))
+        action.setData(kwargs.pop(u'data'))
     if kwargs.get(u'shortcuts'):
         action.setShortcuts(kwargs.pop(u'shortcuts'))
     if u'context' in kwargs:

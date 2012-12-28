@@ -36,8 +36,8 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver, \
+    Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
@@ -59,12 +59,12 @@ class AdvancedTab(SettingsTab):
         # 11 o'clock is the most popular time for morning service.
         self.defaultServiceHour = 11
         self.defaultServiceMinute = 0
-        self.defaultServiceName = unicode(translate('OpenLP.AdvancedTab',
+        self.defaultServiceName = translate('OpenLP.AdvancedTab',
             'Service %Y-%m-%d %H-%M',
             'This may not contain any of the following characters: '
             '/\\?*|<>\[\]":+\n'
             'See http://docs.python.org/library/datetime.html'
-            '#strftime-strptime-behavior for more information.'))
+            '#strftime-strptime-behavior for more information.')
         self.defaultImage = u':/graphics/openlp-splash-screen.png'
         self.defaultColor = u'#ffffff'
         self.dataExists = False
@@ -376,9 +376,9 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab', 'Name:'))
         self.serviceNameEdit.setToolTip(translate('OpenLP.AdvancedTab',
             'Consult the OpenLP manual for usage.'))
-        self.serviceNameRevertButton.setToolTip(unicode(
+        self.serviceNameRevertButton.setToolTip(
             translate('OpenLP.AdvancedTab',
-            'Revert to the default service name "%s".')) %
+            'Revert to the default service name "%s".') %
             self.defaultServiceName)
         self.serviceNameExampleLabel.setText(translate('OpenLP.AdvancedTab',
             'Example:'))
@@ -448,40 +448,30 @@ class AdvancedTab(SettingsTab):
         # The max recent files value does not have an interface and so never
         # gets actually stored in the settings therefore the default value of
         # 20 will always be used.
-        self.recentSpinBox.setMaximum(Settings().value(
-            u'max recent files', QtCore.QVariant(20)).toInt()[0])
-        self.recentSpinBox.setValue(settings.value(u'recent file count',
-            QtCore.QVariant(4)).toInt()[0])
+        self.recentSpinBox.setMaximum(settings.value(u'max recent files', 20))
+        self.recentSpinBox.setValue(settings.value(u'recent file count', 4))
         self.mediaPluginCheckBox.setChecked(
-            settings.value(u'save current plugin',
-            QtCore.QVariant(False)).toBool())
+            settings.value(u'save current plugin', False))
         self.doubleClickLiveCheckBox.setChecked(
-            settings.value(u'double click live',
-            QtCore.QVariant(False)).toBool())
+            settings.value(u'double click live', False))
         self.singleClickPreviewCheckBox.setChecked(
-            settings.value(u'single click preview',
-            QtCore.QVariant(False)).toBool())
+            settings.value(u'single click preview', False))
         self.expandServiceItemCheckBox.setChecked(
-            settings.value(u'expand service item',
-            QtCore.QVariant(False)).toBool())
+            settings.value(u'expand service item', False))
         self.enableAutoCloseCheckBox.setChecked(
-            settings.value(u'enable exit confirmation',
-            QtCore.QVariant(True)).toBool())
-        self.hideMouseCheckBox.setChecked(
-            settings.value(u'hide mouse', QtCore.QVariant(True)).toBool())
+            settings.value(u'enable exit confirmation', True))
+        self.hideMouseCheckBox.setChecked(settings.value(u'hide mouse', True))
         self.serviceNameDay.setCurrentIndex(
-            settings.value(u'default service day',
-            QtCore.QVariant(self.defaultServiceDay)).toInt()[0])
+            settings.value(u'default service day', self.defaultServiceDay))
         self.serviceNameTime.setTime(QtCore.QTime(
-            settings.value(u'default service hour',
-            self.defaultServiceHour).toInt()[0],
+            settings.value(u'default service hour', self.defaultServiceHour),
             settings.value(u'default service minute',
-            self.defaultServiceMinute).toInt()[0]))
+            self.defaultServiceMinute)))
         self.shouldUpdateServiceNameExample = True
         self.serviceNameEdit.setText(settings.value(u'default service name',
-            self.defaultServiceName).toString())
-        default_service_enabled = settings.value(u'default service enabled',
-            QtCore.QVariant(True)).toBool()
+            self.defaultServiceName))
+        default_service_enabled = settings.value(
+            u'default service enabled', True)
         self.serviceNameCheckBox.setChecked(default_service_enabled)
         self.serviceNameCheckBoxToggled(default_service_enabled)
         # Fix for bug #1014422.
@@ -490,14 +480,15 @@ class AdvancedTab(SettingsTab):
             # Default to False on Gnome.
             x11_bypass_default = bool(not
                 os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
-        self.x11BypassCheckBox.setChecked(settings.value(
-            u'x11 bypass wm', QtCore.QVariant(x11_bypass_default)).toBool())
-        self.defaultColor = settings.value(u'default color',
-            QtCore.QVariant(u'#ffffff')).toString()
+            # Default to False on XFce
+            if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
+                x11_bypass_default = False
+        self.x11BypassCheckBox.setChecked(
+            settings.value(u'x11 bypass wm', x11_bypass_default))
+        self.defaultColor = settings.value(u'default color', u'#ffffff')
         self.defaultFileEdit.setText(settings.value(u'default image',
-            QtCore.QVariant(u':/graphics/openlp-splash-screen.png')).toString())
-        self.slide_limits = settings.value(
-            u'slide limits', QtCore.QVariant(SlideLimits.End)).toInt()[0]
+            u':/graphics/openlp-splash-screen.png'))
+        self.slide_limits = settings.value(u'slide limits', SlideLimits.End)
         if self.slide_limits == SlideLimits.End:
             self.endSlideRadioButton.setChecked(True)
         elif self.slide_limits == SlideLimits.Wrap:
@@ -541,8 +532,7 @@ class AdvancedTab(SettingsTab):
         self.defaultColorButton.setStyleSheet(
             u'background-color: %s' % self.defaultColor)
         # Don't allow data directory move if running portable.
-        if Settings().value(u'advanced/is portable',
-            QtCore.QVariant(False)).toBool():
+        if settings.value(u'advanced/is portable', False):
             self.dataDirectoryGroupBox.hide()
 
     def save(self):
@@ -553,7 +543,7 @@ class AdvancedTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'default service enabled',
             self.serviceNameCheckBox.isChecked())
-        service_name = unicode(self.serviceNameEdit.text())
+        service_name = self.serviceNameEdit.text()
         preset_is_valid = self.generateServiceNameExample()[0]
         if service_name == self.defaultServiceName or not preset_is_valid:
             settings.remove(u'default service name')
@@ -566,25 +556,22 @@ class AdvancedTab(SettingsTab):
             self.serviceNameTime.time().hour())
         settings.setValue(u'default service minute',
             self.serviceNameTime.time().minute())
-        settings.setValue(u'recent file count',
-            QtCore.QVariant(self.recentSpinBox.value()))
+        settings.setValue(u'recent file count', self.recentSpinBox.value())
         settings.setValue(u'save current plugin',
-            QtCore.QVariant(self.mediaPluginCheckBox.isChecked()))
+            self.mediaPluginCheckBox.isChecked())
         settings.setValue(u'double click live',
-            QtCore.QVariant(self.doubleClickLiveCheckBox.isChecked()))
+            self.doubleClickLiveCheckBox.isChecked())
         settings.setValue(u'single click preview',
-            QtCore.QVariant(self.singleClickPreviewCheckBox.isChecked()))
+            self.singleClickPreviewCheckBox.isChecked())
         settings.setValue(u'expand service item',
-            QtCore.QVariant(self.expandServiceItemCheckBox.isChecked()))
+            self.expandServiceItemCheckBox.isChecked())
         settings.setValue(u'enable exit confirmation',
-            QtCore.QVariant(self.enableAutoCloseCheckBox.isChecked()))
-        settings.setValue(u'hide mouse',
-            QtCore.QVariant(self.hideMouseCheckBox.isChecked()))
-        settings.setValue(u'x11 bypass wm',
-            QtCore.QVariant(self.x11BypassCheckBox.isChecked()))
+            self.enableAutoCloseCheckBox.isChecked())
+        settings.setValue(u'hide mouse', self.hideMouseCheckBox.isChecked())
+        settings.setValue(u'x11 bypass wm', self.x11BypassCheckBox.isChecked())
         settings.setValue(u'default color', self.defaultColor)
         settings.setValue(u'default image', self.defaultFileEdit.text())
-        settings.setValue(u'slide limits', QtCore.QVariant(self.slide_limits))
+        settings.setValue(u'slide limits', self.slide_limits)
         settings.endGroup()
         if self.displayChanged:
             Receiver.send_message(u'config_screen_changed')

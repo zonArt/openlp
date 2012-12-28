@@ -32,13 +32,14 @@ The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 from datetime import datetime
 from distutils.version import LooseVersion
 import logging
+import locale
 import os
 import re
 from subprocess import Popen, PIPE
 import sys
 import urllib2
 
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings
 
 from PyQt4 import QtGui, QtCore
 
@@ -91,7 +92,7 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
-    
+
     # Base path where data/config/cache dir is located
     BaseDir = None
 
@@ -132,8 +133,7 @@ class AppLocation(object):
         """
         # Check if we have a different data location.
         if Settings().contains(u'advanced/data path'):
-            path = unicode(Settings().value(
-                u'advanced/data path').toString())
+            path = Settings().value(u'advanced/data path', u'')
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
@@ -296,10 +296,9 @@ def check_latest_version(current_version):
     # set to prod in the distribution config file.
     settings = Settings()
     settings.beginGroup(u'general')
-    last_test = unicode(settings.value(u'last version test',
-        QtCore.QVariant(datetime.now().date())).toString())
-    this_test = unicode(datetime.now().date())
-    settings.setValue(u'last version test', QtCore.QVariant(this_test))
+    last_test = settings.value(u'last version test', datetime.now().date())
+    this_test = datetime.now().date()
+    settings.setValue(u'last version test', this_test)
     settings.endGroup()
     if last_test != this_test:
         if current_version[u'build']:
@@ -497,15 +496,15 @@ def locale_compare(string1, string2):
     or 0, depending on whether string1 collates before or after string2 or
     is equal to it. Comparison is case insensitive.
     """
-    # Function locale.strcol() from standard Python library does not work
-    # properly on Windows and probably somewhere else.
-    return QtCore.QString.localeAwareCompare(string1.lower(), string2.lower())
+    # Function locale.strcoll() from standard Python library does not work
+    # properly on Windows.
+    return locale.strcoll(string1.lower(), string2.lower())
 
 
 # For performance reasons provide direct reference to compare function
 # without wrapping it in another function making te string lowercase.
 # This is needed for sorting songs.
-locale_direct_compare = QtCore.QString.localeAwareCompare
+locale_direct_compare = locale.strcoll
 
 
 from languagemanager import LanguageManager

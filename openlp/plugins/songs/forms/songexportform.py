@@ -220,8 +220,7 @@ class SongExportForm(OpenLPWizard):
             # Add the songs to the list of selected songs.
             for item in items:
                 song = QtGui.QListWidgetItem(item.text())
-                song.setData(QtCore.Qt.UserRole,
-                    QtCore.QVariant(item.data(QtCore.Qt.UserRole).toPyObject()))
+                song.setData(QtCore.Qt.UserRole, item.data(QtCore.Qt.UserRole))
                 song.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.selectedListWidget.addItem(song)
             return True
@@ -262,7 +261,7 @@ class SongExportForm(OpenLPWizard):
                 for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
             item = QtGui.QListWidgetItem(title)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(song))
+            item.setData(QtCore.Qt.UserRole, song)
             item.setFlags(QtCore.Qt.ItemIsSelectable|
                 QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setCheckState(QtCore.Qt.Unchecked)
@@ -284,11 +283,10 @@ class SongExportForm(OpenLPWizard):
         and calls the *do_export* method.
         """
         songs = [
-            song.data(QtCore.Qt.UserRole).toPyObject()
+            song.data(QtCore.Qt.UserRole)
             for song in self._findListWidgetItems(self.selectedListWidget)
         ]
-        exporter = OpenLyricsExport(
-            self, songs, unicode(self.directoryLineEdit.text()))
+        exporter = OpenLyricsExport(self, songs, self.directoryLineEdit.text())
         if exporter.do_export():
             self.progressLabel.setText(
                 translate('SongsPlugin.SongExportForm', 'Finished export. To '
@@ -310,8 +308,8 @@ class SongExportForm(OpenLPWizard):
         ``text``
             The text to search for. (unicode string)
         """
-        return [item for item in listWidget.findItems(
-            QtCore.QString(unicode(text)), QtCore.Qt.MatchContains)
+        return [
+            item for item in listWidget.findItems(text, QtCore.Qt.MatchContains)
         ]
 
     def onItemActivated(self, item):
@@ -333,11 +331,11 @@ class SongExportForm(OpenLPWizard):
         will be hidden, but not unchecked!
 
         ``text``
-            The text of the *searchLineEdit*. (QString)
+            The text of the *searchLineEdit*.
         """
         search_result = [
             song for song in self._findListWidgetItems(
-            self.availableListWidget, unicode(text))
+            self.availableListWidget, text)
         ]
         for item in self._findListWidgetItems(self.availableListWidget):
             item.setHidden(item not in search_result)

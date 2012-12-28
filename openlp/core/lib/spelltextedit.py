@@ -102,7 +102,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
-            text = unicode(self.textCursor().selectedText())
+            text = self.textCursor().selectedText()
             if not self.dictionary.check(text):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
                     'Spelling Suggestions'))
@@ -202,5 +202,4 @@ class SpellAction(QtGui.QAction):
 
     def __init__(self, *args):
         QtGui.QAction.__init__(self, *args)
-        self.triggered.connect(lambda x: self.correct.emit(
-            unicode(self.text())))
+        self.triggered.connect(lambda x: self.correct.emit(self.text()))

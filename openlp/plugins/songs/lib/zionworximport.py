@@ -89,10 +89,10 @@ class ZionWorxImport(SongImport):
             try:
                 records = list(songs_reader)
             except csv.Error, e:
-                self.logError(unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Error reading CSV file.')),
-                    unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Line %d: %s')) % (songs_reader.line_num, e))
+                self.logError(translate('SongsPlugin.ZionWorxImport',
+                    'Error reading CSV file.'),
+                    translate('SongsPlugin.ZionWorxImport',
+                    'Line %d: %s') % (songs_reader.line_num, e))
                 return
             num_records = len(records)
             log.info(u'%s records found in CSV file' % num_records)
@@ -109,15 +109,15 @@ class ZionWorxImport(SongImport):
                     self.addCopyright(self._decode(record[u'Copyright']))
                     lyrics = self._decode(record[u'Lyrics'])
                 except UnicodeDecodeError, e:
-                    self.logError(unicode(translate(
-                        'SongsPlugin.ZionWorxImport', 'Record %d' % index)),
-                        unicode(translate('SongsPlugin.ZionWorxImport',
-                        'Decoding error: %s')) % e)
+                    self.logError(translate(
+                        'SongsPlugin.ZionWorxImport', 'Record %d' % index),
+                        translate('SongsPlugin.ZionWorxImport',
+                        'Decoding error: %s') % e)
                     continue
                 except TypeError, e:
-                    self.logError(unicode(translate(
+                    self.logError(translate(
                         'SongsPlugin.ZionWorxImport', 'File not valid ZionWorx '
-                        'CSV format.')), u'TypeError: %s' % e)
+                        'CSV format.'), u'TypeError: %s' % e)
                     return
                 verse = u''
                 for line in lyrics.splitlines():
@@ -130,8 +130,7 @@ class ZionWorxImport(SongImport):
                     self.addVerse(verse)
                 title = self.title
                 if not self.finish():
-                    self.logError(unicode(translate(
-                        'SongsPlugin.ZionWorxImport', 'Record %d')) % index
+                    self.logError(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
                         + (u': "' + title + u'"' if title else u''))
 
     def _decode(self, str):

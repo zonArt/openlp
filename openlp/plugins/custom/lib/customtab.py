@@ -29,8 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import SettingsTab, translate, Settings
 
 class CustomTab(SettingsTab):
     """
@@ -76,16 +75,13 @@ class CustomTab(SettingsTab):
             self.displayFooter = True
 
     def on_add_from_service_check_box_changed(self, check_state):
-        self.update_load = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.update_load = True
+        self.update_load = (check_state == QtCore.Qt.Checked)
 
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.displayFooter = settings.value(u'/display footer', QtCore.QVariant(True)).toBool()
-        self.update_load = settings.value(u'add custom from service', QtCore.QVariant(True)).toBool()
+        self.displayFooter = settings.value(u'display footer', True)
+        self.update_load = settings.value(u'add custom from service', True)
         self.displayFooterCheckBox.setChecked(self.displayFooter)
         self.add_from_service_checkbox.setChecked(self.update_load)
         settings.endGroup()
@@ -93,6 +89,6 @@ class CustomTab(SettingsTab):
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(self.settingsSection + u'/display footer', QtCore.QVariant(self.displayFooter))
-        settings.setValue(u'add custom from service', QtCore.QVariant(self.update_load))
+        settings.setValue(u'display footer', self.displayFooter)
+        settings.setValue(u'add custom from service', self.update_load)
         settings.endGroup()

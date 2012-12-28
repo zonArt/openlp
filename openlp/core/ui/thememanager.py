@@ -38,10 +38,9 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, \
     Receiver, SettingsManager, translate, check_item_selected, \
-    check_directory_exists, create_thumb, validate_thumb, ImageSource
+    check_directory_exists, create_thumb, validate_thumb, ImageSource, Settings
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, \
     BackgroundGradientType
-from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
     create_widget_action
 from openlp.core.theme import Theme
@@ -167,9 +166,8 @@ class ThemeManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
-        self.global_theme = unicode(Settings().value(
-            self.settingsSection + u'/global theme',
-            QtCore.QVariant(u'')).toString())
+        self.global_theme = Settings().value(
+            self.settingsSection + u'/global theme', u'')
 
     def checkListState(self, item):
         """
@@ -177,8 +175,8 @@ class ThemeManager(QtGui.QWidget):
         """
         if item is None:
             return
-        real_theme_name = unicode(item.data(QtCore.Qt.UserRole).toString())
-        theme_name = unicode(item.text())
+        real_theme_name = item.data(QtCore.Qt.UserRole)
+        theme_name = item.text()
         # If default theme restrict actions
         if real_theme_name == theme_name:
             self.deleteToolbarAction.setVisible(True)
@@ -193,7 +191,7 @@ class ThemeManager(QtGui.QWidget):
         item = self.themeListWidget.itemAt(point)
         if item is None:
             return
-        real_theme_name = unicode(item.data(QtCore.Qt.UserRole).toString())
+        real_theme_name = item.data(QtCore.Qt.UserRole)
         theme_name = unicode(item.text())
         visible = real_theme_name == theme_name
         self.deleteAction.setVisible(visible)
@@ -211,13 +209,13 @@ class ThemeManager(QtGui.QWidget):
             # reset the old name
             item = self.themeListWidget.item(count)
             old_name = item.text()
-            new_name = unicode(item.data(QtCore.Qt.UserRole).toString())
+            new_name = item.data(QtCore.Qt.UserRole)
             if old_name != new_name:
                 self.themeListWidget.item(count).setText(new_name)
             # Set the new name
             if theme_name == new_name:
-                name = unicode(translate('OpenLP.ThemeManager',
-                    '%s (default)')) % new_name
+                name = translate('OpenLP.ThemeManager',
+                    '%s (default)') % new_name
                 self.themeListWidget.item(count).setText(name)
                 self.deleteToolbarAction.setVisible(
                     item not in self.themeListWidget.selectedItems())
@@ -233,19 +231,17 @@ class ThemeManager(QtGui.QWidget):
             item = self.themeListWidget.item(count)
             old_name = item.text()
             # reset the old name
-            if old_name != unicode(item.data(QtCore.Qt.UserRole).toString()):
+            if old_name != item.data(QtCore.Qt.UserRole):
                 self.themeListWidget.item(count).setText(
-                    unicode(item.data(QtCore.Qt.UserRole).toString()))
+                    item.data(QtCore.Qt.UserRole))
             # Set the new name
             if count == selected_row:
-                self.global_theme = unicode(
-                    self.themeListWidget.item(count).text())
-                name = unicode(translate('OpenLP.ThemeManager',
-                    '%s (default)')) % self.global_theme
+                self.global_theme = self.themeListWidget.item(count).text()
+                name = translate('OpenLP.ThemeManager',
+                    '%s (default)') % self.global_theme
                 self.themeListWidget.item(count).setText(name)
                 Settings().setValue(
-                    self.settingsSection + u'/global theme',
-                    QtCore.QVariant(self.global_theme))
+                    self.settingsSection + u'/global theme', self.global_theme)
                 Receiver.send_message(u'theme_update_global', self.global_theme)
                 self._pushThemes()
 
@@ -264,16 +260,16 @@ class ThemeManager(QtGui.QWidget):
         """
         Renames an existing theme to a new name
         """
-        if self._validate_theme_action(unicode(translate('OpenLP.ThemeManager',
-            'You must select a theme to rename.')),
-            unicode(translate('OpenLP.ThemeManager', 'Rename Confirmation')),
-            unicode(translate('OpenLP.ThemeManager', 'Rename %s theme?')),
+        if self._validate_theme_action(translate('OpenLP.ThemeManager',
+            'You must select a theme to rename.'),
+            translate('OpenLP.ThemeManager', 'Rename Confirmation'),
+            translate('OpenLP.ThemeManager', 'Rename %s theme?'),
             False, False):
             item = self.themeListWidget.currentItem()
-            old_theme_name = unicode(item.data(QtCore.Qt.UserRole).toString())
+            old_theme_name = item.data(QtCore.Qt.UserRole)
             self.fileRenameForm.fileNameEdit.setText(old_theme_name)
             if self.fileRenameForm.exec_():
-                new_theme_name = unicode(self.fileRenameForm.fileNameEdit.text())
+                new_theme_name = self.fileRenameForm.fileNameEdit.text()
                 if old_theme_name == new_theme_name:
                     return
                 if self.checkIfThemeExists(new_theme_name):
@@ -292,12 +288,12 @@ class ThemeManager(QtGui.QWidget):
         Copies an existing theme to a new name
         """
         item = self.themeListWidget.currentItem()
-        old_theme_name = unicode(item.data(QtCore.Qt.UserRole).toString())
+        old_theme_name = item.data(QtCore.Qt.UserRole)
         self.fileRenameForm.fileNameEdit.setText(
-            unicode(translate('OpenLP.ThemeManager',
-            'Copy of %s', 'Copy of <theme name>')) % old_theme_name)
+            translate('OpenLP.ThemeManager',
+            'Copy of %s', 'Copy of <theme name>') % old_theme_name)
         if self.fileRenameForm.exec_(True):
-            new_theme_name = unicode(self.fileRenameForm.fileNameEdit.text())
+            new_theme_name = self.fileRenameForm.fileNameEdit.text()
             if self.checkIfThemeExists(new_theme_name):
                 theme_data = self.getThemeData(old_theme_name)
                 self.cloneThemeData(theme_data, new_theme_name)
@@ -326,8 +322,7 @@ class ThemeManager(QtGui.QWidget):
         if check_item_selected(self.themeListWidget, translate(
             'OpenLP.ThemeManager', 'You must select a theme to edit.')):
             item = self.themeListWidget.currentItem()
-            theme = self.getThemeData(
-                unicode(item.data(QtCore.Qt.UserRole).toString()))
+            theme = self.getThemeData(item.data(QtCore.Qt.UserRole))
             if theme.background_type == u'image':
                 self.oldBackgroundImage = theme.background_filename
             self.themeForm.theme = theme
@@ -340,12 +335,12 @@ class ThemeManager(QtGui.QWidget):
         """
         Delete a theme
         """
-        if self._validate_theme_action(unicode(translate('OpenLP.ThemeManager',
-            'You must select a theme to delete.')),
-            unicode(translate('OpenLP.ThemeManager', 'Delete Confirmation')),
-            unicode(translate('OpenLP.ThemeManager', 'Delete %s theme?'))):
+        if self._validate_theme_action(translate('OpenLP.ThemeManager',
+            'You must select a theme to delete.'),
+            translate('OpenLP.ThemeManager', 'Delete Confirmation'),
+            translate('OpenLP.ThemeManager', 'Delete %s theme?')):
             item = self.themeListWidget.currentItem()
-            theme = unicode(item.text())
+            theme = item.text()
             row = self.themeListWidget.row(item)
             self.themeListWidget.takeItem(row)
             self.deleteTheme(theme)
@@ -380,10 +375,9 @@ class ThemeManager(QtGui.QWidget):
             critical_error_message_box(message=translate('OpenLP.ThemeManager',
                 'You have not selected a theme.'))
             return
-        theme = unicode(item.data(QtCore.Qt.UserRole).toString())
+        theme = item.data(QtCore.Qt.UserRole)
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            unicode(translate('OpenLP.ThemeManager',
-            'Save Theme - (%s)')) % theme,
+            translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
             SettingsManager.get_last_dir(self.settingsSection, 1))
         path = unicode(path)
         Receiver.send_message(u'cursor_busy')
@@ -423,8 +417,8 @@ class ThemeManager(QtGui.QWidget):
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             SettingsManager.get_last_dir(self.settingsSection),
-            unicode(translate('OpenLP.ThemeManager',
-            'OpenLP Themes (*.theme *.otz)')))
+            translate('OpenLP.ThemeManager',
+            'OpenLP Themes (*.theme *.otz)'))
         log.info(u'New Themes %s', unicode(files))
         if not files:
             return
@@ -454,8 +448,7 @@ class ThemeManager(QtGui.QWidget):
                 theme.theme_name = UiStrings().Default
                 self._writeTheme(theme, None, None)
                 Settings().setValue(
-                    self.settingsSection + u'/global theme',
-                    QtCore.QVariant(theme.theme_name))
+                    self.settingsSection + u'/global theme', theme.theme_name)
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
         # Sort the themes by its name considering language specific 
@@ -468,8 +461,8 @@ class ThemeManager(QtGui.QWidget):
             if os.path.exists(theme):
                 text_name = os.path.splitext(name)[0]
                 if text_name == self.global_theme:
-                    name = unicode(translate('OpenLP.ThemeManager',
-                        '%s (default)')) % text_name
+                    name = translate(
+                        'OpenLP.ThemeManager', '%s (default)') % text_name
                 else:
                     name = text_name
                 thumb = os.path.join(self.thumbPath, u'%s.png' % text_name)
@@ -479,8 +472,7 @@ class ThemeManager(QtGui.QWidget):
                 else:
                     icon = create_thumb(theme, thumb)
                 item_name.setIcon(icon)
-                item_name.setData(
-                    QtCore.Qt.UserRole, QtCore.QVariant(text_name))
+                item_name.setData(QtCore.Qt.UserRole, text_name)
                 self.themeListWidget.addItem(item_name)
                 self.themeList.append(text_name)
         self._pushThemes()
@@ -774,12 +766,11 @@ class ThemeManager(QtGui.QWidget):
         Check to see if theme has been selected and the destructive action
         is allowed.
         """
-        self.global_theme = unicode(Settings().value(
-            self.settingsSection + u'/global theme',
-            QtCore.QVariant(u'')).toString())
+        self.global_theme = Settings().value(
+            self.settingsSection + u'/global theme', u'')
         if check_item_selected(self.themeListWidget, select_text):
             item = self.themeListWidget.currentItem()
-            theme = unicode(item.text())
+            theme = item.text()
             # confirm deletion
             if confirm:
                 answer = QtGui.QMessageBox.question(self, confirm_title,
@@ -789,7 +780,7 @@ class ThemeManager(QtGui.QWidget):
                 if answer == QtGui.QMessageBox.No:
                     return False
             # should be the same unless default
-            if theme != unicode(item.data(QtCore.Qt.UserRole).toString()):
+            if theme != item.data(QtCore.Qt.UserRole):
                 critical_error_message_box(
                     message=translate('OpenLP.ThemeManager',
                     'You are unable to delete the default theme.'))
@@ -801,8 +792,8 @@ class ThemeManager(QtGui.QWidget):
                         critical_error_message_box(
                             translate('OpenLP.ThemeManager',
                             'Validation Error'),
-                            unicode(translate('OpenLP.ThemeManager',
-                            'Theme %s is used in the %s plugin.')) % \
+                            translate('OpenLP.ThemeManager',
+                            'Theme %s is used in the %s plugin.') % \
                             (theme, plugin.name))
                         return False
             return True

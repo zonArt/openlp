@@ -42,8 +42,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, \
     PluginManager, Receiver, translate, ImageManager, PluginStatus
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.lib.settings import Settings
-from openlp.core.lib import SlideLimits
+from openlp.core.lib import SlideLimits, Settings
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, \
     ThemeManager, SlideController, PluginForm, MediaDockManager, \
     ShortcutListForm, FormattingTagForm
@@ -105,13 +104,10 @@ class Ui_MainWindow(object):
         # Create slide controllers
         self.previewController = SlideController(self)
         self.liveController = SlideController(self, True)
-        previewVisible = Settings().value(
-            u'user interface/preview panel', QtCore.QVariant(True)).toBool()
+        previewVisible = Settings().value(u'user interface/preview panel', True)
         self.previewController.panel.setVisible(previewVisible)
-        liveVisible = Settings().value(u'user interface/live panel',
-            QtCore.QVariant(True)).toBool()
-        panelLocked = Settings().value(u'user interface/lock panel',
-            QtCore.QVariant(False)).toBool()
+        liveVisible = Settings().value(u'user interface/live panel', True)
+        panelLocked = Settings().value(u'user interface/lock panel', False)
         self.liveController.panel.setVisible(liveVisible)
         # Create menu
         self.menuBar = QtGui.QMenuBar(mainWindow)
@@ -182,7 +178,7 @@ class Ui_MainWindow(object):
             self.themeManagerDock)
         # Create the menu items
         action_list = ActionList.get_instance()
-        action_list.add_category(unicode(UiStrings().File),
+        action_list.add_category(UiStrings().File,
             CategoryOrder.standardMenu)
         self.fileNewItem = create_action(mainWindow, u'fileNewItem',
             icon=u':/general/general_new.png',
@@ -213,19 +209,19 @@ class Ui_MainWindow(object):
             category=UiStrings().File, triggers=mainWindow.close)
         # Give QT Extra Hint that this is the Exit Menu Item
         self.fileExitItem.setMenuRole(QtGui.QAction.QuitRole)
-        action_list.add_category(unicode(UiStrings().Import),
+        action_list.add_category(UiStrings().Import,
             CategoryOrder.standardMenu)
         self.importThemeItem = create_action(mainWindow,
             u'importThemeItem', category=UiStrings().Import)
         self.importLanguageItem = create_action(mainWindow,
             u'importLanguageItem')#, category=UiStrings().Import)
-        action_list.add_category(unicode(UiStrings().Export),
+        action_list.add_category(UiStrings().Export,
             CategoryOrder.standardMenu)
         self.exportThemeItem = create_action(mainWindow,
             u'exportThemeItem', category=UiStrings().Export)
         self.exportLanguageItem = create_action(mainWindow,
             u'exportLanguageItem')#, category=UiStrings().Export)
-        action_list.add_category(unicode(UiStrings().View),
+        action_list.add_category(UiStrings().View,
             CategoryOrder.standardMenu)
         self.viewMediaManagerItem = create_action(mainWindow,
             u'viewMediaManagerItem', shortcuts=[QtGui.QKeySequence(u'F8')],
@@ -250,7 +246,7 @@ class Ui_MainWindow(object):
             category=UiStrings().View, triggers=self.setLivePanelVisibility)
         self.lockPanel = create_action(mainWindow, u'lockPanel',
             checked=panelLocked, triggers=self.setLockPanel)
-        action_list.add_category(unicode(UiStrings().ViewMode),
+        action_list.add_category(UiStrings().ViewMode,
             CategoryOrder.standardMenu)
         self.modeDefaultItem = create_action(mainWindow, u'modeDefaultItem',
             checked=False, category=UiStrings().ViewMode)
@@ -263,8 +259,7 @@ class Ui_MainWindow(object):
         self.modeGroup.addAction(self.modeSetupItem)
         self.modeGroup.addAction(self.modeLiveItem)
         self.modeDefaultItem.setChecked(True)
-        action_list.add_category(unicode(UiStrings().Tools),
-            CategoryOrder.standardMenu)
+        action_list.add_category(UiStrings().Tools, CategoryOrder.standardMenu)
         self.toolsAddToolItem = create_action(mainWindow,
             u'toolsAddToolItem', icon=u':/tools/tools_add.png',
             category=UiStrings().Tools)
@@ -276,7 +271,7 @@ class Ui_MainWindow(object):
             category=UiStrings().Tools)
         self.updateThemeImages = create_action(mainWindow,
             u'updateThemeImages', category=UiStrings().Tools)
-        action_list.add_category(unicode(UiStrings().Settings),
+        action_list.add_category(UiStrings().Settings,
             CategoryOrder.standardMenu)
         self.settingsPluginListItem = create_action(mainWindow,
             u'settingsPluginListItem',
@@ -313,8 +308,7 @@ class Ui_MainWindow(object):
            u'settingsImportItem', category=UiStrings().Settings)
         self.settingsExportItem = create_action(mainWindow,
            u'settingsExportItem', category=UiStrings().Settings)
-        action_list.add_category(unicode(UiStrings().Help),
-            CategoryOrder.standardMenu)
+        action_list.add_category(UiStrings().Help, CategoryOrder.standardMenu)
         self.aboutItem = create_action(mainWindow, u'aboutItem',
             icon=u':/system/system_about.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+F1')],
@@ -512,8 +506,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.languageGroup.actions():
             item.setText(item.objectName())
-            item.setStatusTip(unicode(translate('OpenLP.MainWindow',
-                'Set the interface language to %s')) % item.objectName())
+            item.setStatusTip(translate('OpenLP.MainWindow',
+                'Set the interface language to %s') % item.objectName())
         self.autoLanguageItem.setText(
             translate('OpenLP.MainWindow', '&Autodetect'))
         self.autoLanguageItem.setStatusTip(translate('OpenLP.MainWindow',
@@ -580,7 +574,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm = SettingsForm(self, self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
-        self.recentFiles = QtCore.QStringList()
+        self.recentFiles = []
         # Set up the path with plugins
         plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(plugin_path)
@@ -707,10 +701,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
-        if Settings().value(u'advanced/save current plugin',
-            QtCore.QVariant(False)).toBool():
-            savedPlugin = Settings().value(
-                u'advanced/current media plugin', QtCore.QVariant()).toInt()[0]
+        if Settings().value(u'advanced/save current plugin', False):
+            savedPlugin = Settings().value(u'advanced/current media plugin', -1)
             if savedPlugin != -1:
                 self.mediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
@@ -737,10 +729,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Notifies the user that a newer version of OpenLP is available.
         Triggered by delay thread.
         """
-        version_text = unicode(translate('OpenLP.MainWindow',
+        version_text = translate('OpenLP.MainWindow',
             'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest '
-            'version from http://openlp.org/.'))
+            'version from http://openlp.org/.')
         QtGui.QMessageBox.question(self,
             translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
             version_text % (version, get_application_version()[u'full']))
@@ -762,11 +754,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 filename = unicode(filename, sys.getfilesystemencoding())
             self.serviceManagerContents.loadFile(filename)
         elif Settings().value(
-            self.generalSettingsSection + u'/auto open',
-            QtCore.QVariant(False)).toBool():
+            self.generalSettingsSection + u'/auto open', False):
             self.serviceManagerContents.loadLastFile()
-        view_mode = Settings().value(u'%s/view mode' % \
-            self.generalSettingsSection, u'default').toString()
+        view_mode = Settings().value(u'%s/view mode' %
+            self.generalSettingsSection, u'default')
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
         elif view_mode == u'setup':
@@ -849,9 +840,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings = Settings()
         self.liveController.mainDisplaySetBackground()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection,
-            QtCore.QVariant(False)).toBool():
+            False):
             if settings.value(u'%s/blank warning' % self.generalSettingsSection,
-                QtCore.QVariant(False)).toBool():
+                False):
                 QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow',
                         'OpenLP Main Display Blanked'),
@@ -960,11 +951,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        import_file_name = unicode(QtGui.QFileDialog.getOpenFileName(self,
-                translate('OpenLP.MainWindow', 'Open File'),
-                '',
+        import_file_name = QtGui.QFileDialog.getOpenFileName(self,
+                translate('OpenLP.MainWindow', 'Open File'), '',
                 translate('OpenLP.MainWindow',
-                'OpenLP Export Settings Files (*.conf)')))
+                'OpenLP Export Settings Files (*.conf)'))
         if not import_file_name:
             return
         setting_sections = []
@@ -982,8 +972,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for plugin in self.pluginManager.plugins:
             setting_sections.extend([plugin.name])
         settings = Settings()
-        import_settings = Settings(import_file_name,
-            Settings.IniFormat)
+        import_settings = Settings(import_file_name, Settings.IniFormat)
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
             # We need to handle the really bad files.
@@ -1011,14 +1000,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 return
         # We have a good file, import it.
         for section_key in import_keys:
-            value = import_settings.value(section_key)
-            settings.setValue(u'%s' % (section_key),
-                QtCore.QVariant(value))
+            value = import_settings.value(section_key, None)
+            if value is not None:
+                settings.setValue(u'%s' % (section_key), value)
         now = datetime.now()
         settings.beginGroup(self.headerSection)
-        settings.setValue(u'file_imported', QtCore.QVariant(import_file_name))
-        settings.setValue(u'file_date_imported',
-            now.strftime("%Y-%m-%d %H:%M"))
+        settings.setValue(u'file_imported', import_file_name)
+        settings.setValue(u'file_date_imported', now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
         settings.sync()
         # We must do an immediate restart or current configuration will
@@ -1039,10 +1027,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Export settings to a .conf file in INI format
         """
-        export_file_name = unicode(QtGui.QFileDialog.getSaveFileName(self,
+        export_file_name = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.MainWindow', 'Export Settings File'), '',
             translate('OpenLP.MainWindow',
-                'OpenLP Export Settings File (*.conf)')))
+            'OpenLP Export Settings File (*.conf)'))
         if not export_file_name:
             return
             # Make sure it's a .conf file.
@@ -1072,8 +1060,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.remove(self.headerSection)
         # Get the settings.
         keys = settings.allKeys()
-        export_settings = Settings(temp_file,
-            Settings.IniFormat)
+        export_settings = Settings(temp_file, Settings.IniFormat)
         # Add a header section.
         # This is to insure it's our conf file for import.
         now = datetime.now()
@@ -1089,8 +1076,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings.endGroup()
         # Write all the sections and keys.
         for section_key in keys:
-            key_value = settings.value(section_key)
-            export_settings.setValue(section_key, key_value)
+            key_value = settings.value(section_key, None)
+            if key_value is not None:
+                export_settings.setValue(section_key, key_value)
         export_settings.sync()
         # Temp CONF file has been written.  Blanks in keys are now '%20'.
         # Read the  temp file and output the user's CONF file with blanks to
@@ -1182,8 +1170,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             else:
                 event.ignore()
         else:
-            if Settings().value(u'advanced/enable exit confirmation',
-                QtCore.QVariant(True)).toBool():
+            if Settings().value(u'advanced/enable exit confirmation', True):
                 ret = QtGui.QMessageBox.question(self,
                     translate('OpenLP.MainWindow', 'Close OpenLP'),
                     translate('OpenLP.MainWindow',
@@ -1213,10 +1200,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Clean temporary files used by services
         self.serviceManagerContents.cleanUp()
         if save_settings:
-            if Settings().value(u'advanced/save current plugin',
-                QtCore.QVariant(False)).toBool():
+            if Settings().value(u'advanced/save current plugin', False):
                 Settings().setValue(u'advanced/current media plugin',
-                    QtCore.QVariant(self.mediaToolBox.currentIndex()))
+                    self.mediaToolBox.currentIndex())
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
         self.pluginManager.finalise_plugins()
@@ -1277,8 +1263,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def defaultThemeChanged(self, theme):
         self.defaultThemeLabel.setText(
-            unicode(translate('OpenLP.MainWindow', 'Default Theme: %s')) %
-                theme)
+            translate('OpenLP.MainWindow', 'Default Theme: %s') % theme)
 
     def toggleMediaManager(self):
         self.mediaManagerDock.setVisible(not self.mediaManagerDock.isVisible())
@@ -1301,8 +1286,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.previewController.panel.setVisible(visible)
-        Settings().setValue(u'user interface/preview panel',
-            QtCore.QVariant(visible))
+        Settings().setValue(u'user interface/preview panel', visible)
         self.viewPreviewPanel.setChecked(visible)
 
     def setLockPanel(self, lock):
@@ -1333,8 +1317,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.viewThemeManagerItem.setEnabled(True)
             self.viewPreviewPanel.setEnabled(True)
             self.viewLivePanel.setEnabled(True)
-        Settings().setValue(u'user interface/lock panel',
-            QtCore.QVariant(lock))
+        Settings().setValue(u'user interface/lock panel', lock)
 
     def setLivePanelVisibility(self, visible):
         """
@@ -1347,8 +1330,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 False - Hidden
         """
         self.liveController.panel.setVisible(visible)
-        Settings().setValue(u'user interface/live panel',
-            QtCore.QVariant(visible))
+        Settings().setValue(u'user interface/live panel', visible)
         self.viewLivePanel.setChecked(visible)
 
     def loadSettings(self):
@@ -1360,12 +1342,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if Settings().contains(self.generalSettingsSection +
             u'/enable slide loop'):
             if Settings().value(self.generalSettingsSection +
-                u'/enable slide loop', QtCore.QVariant(True)).toBool():
+                u'/enable slide loop', True):
                 Settings().setValue(self.advancedSettingsSection +
-                    u'/slide limits', QtCore.QVariant(SlideLimits.Wrap))
+                    u'/slide limits', SlideLimits.Wrap)
             else:
                 Settings().setValue(self.advancedSettingsSection +
-                    u'/slide limits', QtCore.QVariant(SlideLimits.End))
+                    u'/slide limits', SlideLimits.End)
             Settings().remove(self.generalSettingsSection +
                 u'/enable slide loop')
             Receiver.send_message(u'slidecontroller_update_slide_limits')
@@ -1374,20 +1356,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.remove(u'custom slide')
         settings.remove(u'service')
         settings.beginGroup(self.generalSettingsSection)
-        self.recentFiles = settings.value(u'recent files').toStringList()
+        self.recentFiles = settings.value(u'recent files', self.recentFiles)
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
-        self.move(settings.value(u'main window position',
-            QtCore.QVariant(QtCore.QPoint(0, 0))).toPoint())
+        self.move(settings.value(u'main window position', QtCore.QPoint(0, 0)))
         self.restoreGeometry(
-            settings.value(u'main window geometry').toByteArray())
-        self.restoreState(settings.value(u'main window state').toByteArray())
+            settings.value(u'main window geometry', QtCore.QByteArray()))
+        self.restoreState(
+            settings.value(u'main window state', QtCore.QByteArray()))
         self.liveController.splitter.restoreState(
-            settings.value(u'live splitter geometry').toByteArray())
+            settings.value(u'live splitter geometry', QtCore.QByteArray()))
         self.previewController.splitter.restoreState(
-            settings.value(u'preview splitter geometry').toByteArray())
-        self.controlSplitter.restoreState(
-            settings.value(u'mainwindow splitter geometry').toByteArray())
+            settings.value(u'preview splitter geometry', QtCore.QByteArray()))
+        self.controlSplitter.restoreState(settings.value(
+            u'mainwindow splitter geometry', QtCore.QByteArray()))
         settings.endGroup()
 
     def saveSettings(self):
@@ -1400,23 +1382,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.debug(u'Saving QSettings')
         settings = Settings()
         settings.beginGroup(self.generalSettingsSection)
-        recentFiles = QtCore.QVariant(self.recentFiles) \
-            if self.recentFiles else QtCore.QVariant()
-        settings.setValue(u'recent files', recentFiles)
+        settings.setValue(u'recent files', self.recentFiles)
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
-        settings.setValue(u'main window position',
-            QtCore.QVariant(self.pos()))
-        settings.setValue(u'main window state',
-            QtCore.QVariant(self.saveState()))
-        settings.setValue(u'main window geometry',
-            QtCore.QVariant(self.saveGeometry()))
+        settings.setValue(u'main window position', self.pos())
+        settings.setValue(u'main window state', self.saveState())
+        settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry',
-            QtCore.QVariant(self.liveController.splitter.saveState()))
+            self.liveController.splitter.saveState())
         settings.setValue(u'preview splitter geometry',
-            QtCore.QVariant(self.previewController.splitter.saveState()))
+            self.previewController.splitter.saveState())
         settings.setValue(u'mainwindow splitter geometry',
-            QtCore.QVariant(self.controlSplitter.saveState()))
+            self.controlSplitter.saveState())
         settings.endGroup()
 
     def updateRecentFilesMenu(self):
@@ -1424,8 +1401,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Updates the recent file menu with the latest list of service files
         accessed.
         """
-        recentFileCount = Settings().value(
-            u'advanced/recent file count', QtCore.QVariant(4)).toInt()[0]
+        recentFileCount = Settings().value(u'advanced/recent file count', 4)
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
@@ -1442,10 +1418,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             'Clear List of recent files'),
             statustip=translate('OpenLP.MainWindow',
             'Clear the list of recent files.'),
-            enabled=not self.recentFiles.isEmpty(),
-            triggers=self.recentFiles.clear)
+            enabled=bool(self.recentFiles),
+            triggers=self.clearRecentFileMenu)
         add_actions(self.recentFilesMenu, (None, clearRecentFilesAction))
-        clearRecentFilesAction.setEnabled(not self.recentFiles.isEmpty())
+        clearRecentFilesAction.setEnabled(bool(self.recentFiles))
 
     def addRecentFile(self, filename):
         """
@@ -1457,8 +1433,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # The maxRecentFiles value does not have an interface and so never gets
         # actually stored in the settings therefore the default value of 20 will
         # always be used.
-        maxRecentFiles = Settings().value(u'advanced/max recent files',
-            QtCore.QVariant(20)).toInt()[0]
+        maxRecentFiles = Settings().value(u'advanced/max recent files', 20)
         if filename:
             # Add some cleanup to reduce duplication in the recent file list
             filename = os.path.abspath(filename)
@@ -1466,13 +1441,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # in the given filename which then causes duplication.
             if filename[1:3] == ':\\':
                 filename = filename[0].upper() + filename[1:]
-            position = self.recentFiles.indexOf(filename)
-            if position != -1:
-                self.recentFiles.removeAt(position)
-            self.recentFiles.insert(0, QtCore.QString(filename))
-            while self.recentFiles.count() > maxRecentFiles:
-                # Don't care what API says takeLast works, removeLast doesn't!
-                self.recentFiles.takeLast()
+            if filename in self.recentFiles:
+                self.recentFiles.remove(filename)
+            self.recentFiles.insert(0, filename)
+            while len(self.recentFiles) > maxRecentFiles:
+                self.recentFiles.pop()
+
+    def clearRecentFileMenu(self):
+        """
+        Clears the recent files.
+        """
+        self.recentFiles = []
 
     def displayProgressBar(self, size):
         """

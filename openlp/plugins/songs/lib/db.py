@@ -72,14 +72,18 @@ class Song(BaseModel):
         self.sort_key = ()
 
     def _try_int(self, s):
-        "Convert to integer if possible."
+        """
+        Convert to integer if possible.
+        """
         try:
             return int(s)
         except:
-            return QtCore.QString(s.lower())
+            return s.lower()
 
     def _natsort_key(self, s):
-        "Used internally to get a tuple by which s is sorted."
+        """
+        Used internally to get a tuple by which s is sorted.
+        """
         return map(self._try_int, re.findall(r'(\d+|\D+)', s))
 
     # This decorator tells sqlalchemy to call this method everytime
