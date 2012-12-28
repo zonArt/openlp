@@ -34,8 +34,7 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Receiver, translate, Settings
 
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -223,8 +222,7 @@ class PhononPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = unicode(QtGui.QColor(Settings().value(u'players/background color',
-            QtCore.QVariant(u'#000000'))).name())
+        background = QtGui.QColor(Settings().value(u'players/background color', u'#000000')).name()
         return VIDEO_CSS % (background,background,background)
 
     def get_info(self):

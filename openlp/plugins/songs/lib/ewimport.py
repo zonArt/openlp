@@ -165,8 +165,8 @@ class EasyWorshipSongImport(SongImport):
                     if copy:
                         self.copyright += u', '
                     self.copyright += \
-                        unicode(translate('SongsPlugin.EasyWorshipSongImport',
-                            'Administered by %s')) % admin
+                        translate('SongsPlugin.EasyWorshipSongImport',
+                        'Administered by %s') % admin
                 if ccli:
                     self.ccliNumber = ccli
                 if authors:

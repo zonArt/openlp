@@ -33,8 +33,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, Receiver, MediaType, ServiceItem, build_html, ServiceItemContext
-from openlp.core.lib.settings import Settings
+    check_item_selected, Receiver, MediaType, ServiceItem, build_html, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
@@ -149,7 +148,7 @@ class MediaMediaItem(MediaManagerItem):
             translate('MediaPlugin.MediaItem',
             'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
-            filename = unicode(item.data(QtCore.Qt.UserRole).toString())
+            filename = item.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 service_item = ServiceItem()
                 service_item.title = u'webkit'
@@ -164,8 +163,8 @@ class MediaMediaItem(MediaManagerItem):
                         translate('MediaPlugin.MediaItem', 'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
-                    unicode(translate('MediaPlugin.MediaItem',
-                    'There was a problem replacing your background, the media file "%s" no longer exists.')) % filename)
+                    translate('MediaPlugin.MediaItem',
+                    'There was a problem replacing your background, the media file "%s" no longer exists.') % filename)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Live):
@@ -173,15 +172,15 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             if item is None:
                 return False
-        filename = unicode(item.data(QtCore.Qt.UserRole).toString())
+        filename = item.data(QtCore.Qt.UserRole)
         if not os.path.exists(filename):
             if not remote:
                 # File is no longer present
                 critical_error_message_box(
                     translate('MediaPlugin.MediaItem', 'Missing Media File'),
-                    unicode(translate('MediaPlugin.MediaItem', 'The file %s no longer exists.')) % filename)
+                    translate('MediaPlugin.MediaItem', 'The file %s no longer exists.') % filename)
             return False
-        service_item.title = unicode(self.displayTypeComboBox.currentText())
+        service_item.title = self.displayTypeComboBox.currentText()
         service_item.shortname = service_item.title
         (path, name) = os.path.split(filename)
         service_item.add_from_command(path, name, CLAPPERBOARD)
@@ -193,8 +192,7 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
-        if Settings().value(self.settingsSection + u'/media auto start',
-                QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked:
+        if Settings().value(self.settingsSection + u'/media auto start', QtCore.Qt.Unchecked) == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
@@ -212,7 +210,7 @@ class MediaMediaItem(MediaManagerItem):
         the settings
         """
         self.populateDisplayTypes()
-        self.onNewFileMasks = unicode(translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)')) % (
+        self.onNewFileMasks = translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)') % (
             u' '.join(self.plugin.mediaController.video_extensions_list),
             u' '.join(self.plugin.mediaController.audio_extensions_list), UiStrings().AllFiles)
 
@@ -268,7 +266,7 @@ class MediaMediaItem(MediaManagerItem):
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(ERROR)
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+                item_name.setData(QtCore.Qt.UserRole, track)
             elif track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
@@ -276,12 +274,12 @@ class MediaMediaItem(MediaManagerItem):
                     item_name.setIcon(AUDIO)
                 else:
                     item_name.setIcon(VIDEO)
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+                item_name.setData(QtCore.Qt.UserRole, track)
             else:
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(DVDICON))
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(track))
+                item_name.setData(QtCore.Qt.UserRole, track)
             item_name.setToolTip(track)
             self.listView.addItem(item_name)
 

@@ -54,25 +54,25 @@ class WizardStrings(object):
     FormatLabel = translate('OpenLP.Ui', 'Format:')
     HeaderStyle = u'<span style="font-size:14pt; font-weight:600;">%s</span>'
     Importing = translate('OpenLP.Ui', 'Importing')
-    ImportingType = unicode(translate('OpenLP.Ui', 'Importing "%s"...'))
+    ImportingType = translate('OpenLP.Ui', 'Importing "%s"...')
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
-    ImportSelectLong = unicode(translate('OpenLP.Ui',
-        'Select the import format and the location to import from.'))
+    ImportSelectLong = translate('OpenLP.Ui',
+        'Select the import format and the location to import from.')
     NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
         'disabled due to a missing Python module. If you want to use this '
         'importer, you will need to install the "python-sqlite" '
         'module.')
-    OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
-    OpenTypeFolder = unicode(translate('OpenLP.Ui', 'Open %s Folder'))
-    PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
+    OpenTypeFile = translate('OpenLP.Ui', 'Open %s File')
+    OpenTypeFolder = translate('OpenLP.Ui', 'Open %s Folder')
+    PercentSymbolFormat = translate('OpenLP.Ui', '%p%')
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
-    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify one '
-        '%s file to import from.', 'A file type e.g. OpenSong'))
-    YouSpecifyFiles = unicode(translate('OpenLP.Ui', 'You need to specify at '
-        'least one %s file to import from.', 'A file type e.g. OpenSong'))
-    YouSpecifyFolder = unicode(translate('OpenLP.Ui', 'You need to specify one '
-        '%s folder to import from.', 'A song format e.g. PowerSong'))
+    YouSpecifyFile = translate('OpenLP.Ui', 'You need to specify one '
+        '%s file to import from.', 'A file type e.g. OpenSong')
+    YouSpecifyFiles = translate('OpenLP.Ui', 'You need to specify at '
+        'least one %s file to import from.', 'A file type e.g. OpenSong')
+    YouSpecifyFolder = translate('OpenLP.Ui', 'You need to specify one '
+        '%s folder to import from.', 'A song format e.g. PowerSong')
 
 
 class OpenLPWizard(QtGui.QWizard):
