@@ -37,11 +37,10 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, \
     StringContent, build_icon, translate, Receiver, ListWidgetWithDnD, \
-    ServiceItemContext
+    ServiceItemContext, Settings
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import UiStrings, create_widget_action, \
     critical_error_message_box
-from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -342,7 +341,7 @@ class MediaManagerItem(QtGui.QWidget):
             self, self.onNewPrompt,
             SettingsManager.get_last_dir(self.settingsSection),
             self.onNewFileMasks)
-        log.info(u'New files(s) %s', unicode(files))
+        log.info(u'New files(s) %s', files)
         if files:
             Receiver.send_message(u'cursor_busy')
             self.validateAndLoad(files)
@@ -365,9 +364,8 @@ class MediaManagerItem(QtGui.QWidget):
                     critical_error_message_box(
                         translate('OpenLP.MediaManagerItem',
                         'Invalid File Type'),
-                        unicode(translate('OpenLP.MediaManagerItem',
-                        'Invalid File %s.\nSuffix not supported'))
-                        % file)
+                        translate('OpenLP.MediaManagerItem',
+                        'Invalid File %s.\nSuffix not supported') % file)
                     error_shown = True
             else:
                 new_files.append(file)
@@ -385,9 +383,8 @@ class MediaManagerItem(QtGui.QWidget):
         names = []
         full_list = []
         for count in range(self.listView.count()):
-            names.append(unicode(self.listView.item(count).text()))
-            full_list.append(unicode(self.listView.item(count).
-                data(QtCore.Qt.UserRole).toString()))
+            names.append(self.listView.item(count).text())
+            full_list.append(self.listView.item(count).data(QtCore.Qt.UserRole))
         duplicates_found = False
         files_added = False
         for file in files:
@@ -407,8 +404,8 @@ class MediaManagerItem(QtGui.QWidget):
         if duplicates_found:
             critical_error_message_box(
                 UiStrings().Duplicate,
-                unicode(translate('OpenLP.MediaManagerItem',
-                'Duplicate files were found on import and were ignored.')))
+                translate('OpenLP.MediaManagerItem',
+                'Duplicate files were found on import and were ignored.'))
 
     def contextMenu(self, point):
         item = self.listView.itemAt(point)
@@ -427,7 +424,7 @@ class MediaManagerItem(QtGui.QWidget):
         file_list = []
         while count < self.listView.count():
             bitem = self.listView.item(count)
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole)
             file_list.append(filename)
             count += 1
         return file_list
@@ -468,8 +465,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the list click action to be determined dynamically
         """
-        if Settings().value(u'advanced/double click live',
-            QtCore.QVariant(False)).toBool():
+        if Settings().value(u'advanced/double click live', False):
             self.onLiveClick()
         else:
             self.onPreviewClick()
@@ -479,8 +475,9 @@ class MediaManagerItem(QtGui.QWidget):
         Allows the change of current item in the list to be actioned
         """
         if Settings().value(u'advanced/single click preview',
-            QtCore.QVariant(False)).toBool() and self.quickPreviewAllowed and \
-            self.listView.selectedIndexes() and self.autoSelectId == -1:
+            False) and self.quickPreviewAllowed \
+            and self.listView.selectedIndexes() \
+            and self.autoSelectId == -1:
             self.onPreviewClick(True)
 
     def onPreviewClick(self, keepFocus=False):
@@ -528,7 +525,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()
-        item.setData(QtCore.Qt.UserRole, QtCore.QVariant(item_id))
+        item.setData(QtCore.Qt.UserRole, item_id)
         return item
 
     def onAddClick(self):
@@ -582,8 +579,8 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.MediaManagerItem',
                         'Invalid Service Item'),
-                    unicode(translate('OpenLP.MediaManagerItem',
-                        'You must select a %s service item.')) % self.title)
+                    translate('OpenLP.MediaManagerItem',
+                        'You must select a %s service item.') % self.title)
 
     def buildServiceItem(self, item=None, xmlVersion=False, remote=False,
             context=ServiceItemContext.Live):
@@ -634,11 +631,11 @@ class MediaManagerItem(QtGui.QWidget):
                 item = self.listView.currentItem()
                 if item is None:
                     return False
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                item_id = item.data(QtCore.Qt.UserRole)
             else:
                 item_id = remoteItem
         else:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole)
         return item_id
 
     def saveAutoSelectId(self):
@@ -649,7 +646,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.autoSelectId == -1:
             item = self.listView.currentItem()
             if item:
-                self.autoSelectId = item.data(QtCore.Qt.UserRole).toInt()[0]
+                self.autoSelectId = item.data(QtCore.Qt.UserRole)
 
     def search(self, string, showError=True):
         """

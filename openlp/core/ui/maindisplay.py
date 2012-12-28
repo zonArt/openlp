@@ -39,9 +39,8 @@ from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager, expand_tags, ImageSource
+    translate, PluginManager, expand_tags, Settings, ImageSource
 from openlp.core.lib.theme import BackgroundType
-from openlp.core.lib.settings import Settings
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
 
@@ -146,8 +145,7 @@ class MainDisplay(Display):
             # Default to False on XFce
             if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
                 x11_bypass_default = False
-        if Settings().value(u'advanced/x11 bypass wm',
-            QtCore.QVariant(x11_bypass_default)).toBool():
+        if Settings().value(u'advanced/x11 bypass wm', x11_bypass_default):
             windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
         # TODO: The following combination of windowFlags works correctly
         # on Mac OS X. For next OpenLP version we should test it on other
@@ -214,13 +212,11 @@ class MainDisplay(Display):
             # Build the initial frame.
             background_color = QtGui.QColor()
             background_color.setNamedColor(Settings().value(
-                u'advanced/default color',
-                QtCore.QVariant(u'#ffffff')).toString())
+                u'advanced/default color', u'#ffffff'))
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
             image_file = Settings().value(u'advanced/default image',
-                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
-                .toString()
+                u':/graphics/openlp-splash-screen.png')
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
                 self.screen[u'size'].width(),
@@ -290,7 +286,7 @@ class MainDisplay(Display):
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
-                alert_height = int(height.toString())
+                alert_height = int(height)
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
                 if location == AlertLocation.Middle:
@@ -370,7 +366,7 @@ class MainDisplay(Display):
             if self.serviceItem.themedata and \
                 self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') \
-                    .toString() == u'false':
+                     == u'false':
                     Receiver.send_message(u'openlp_process_events')
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
@@ -384,8 +380,7 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if Settings().value(u'general/display on monitor',
-                        QtCore.QVariant(True)).toBool():
+                    if Settings().value(u'general/display on monitor', True):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
@@ -436,8 +431,7 @@ class MainDisplay(Display):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
-            if Settings().value(u'general/auto unblank',
-                QtCore.QVariant(False)).toBool():
+            if Settings().value(u'general/auto unblank', False):
                 Receiver.send_message(u'slidecontroller_live_unblank')
             else:
                 self.hideDisplay(self.hideMode)
@@ -460,8 +454,7 @@ class MainDisplay(Display):
         log.debug(u'hideDisplay mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor',
-                QtCore.QVariant(True)).toBool():
+            if not Settings().value(u'general/display on monitor', True):
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -485,8 +478,7 @@ class MainDisplay(Display):
         log.debug(u'showDisplay')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor',
-                QtCore.QVariant(True)).toBool():
+            if not Settings().value(u'general/display on monitor', True):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
@@ -500,8 +492,7 @@ class MainDisplay(Display):
         """
         Hide mouse cursor when moved over display.
         """
-        if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(True)).toBool():
+        if Settings().value(u'advanced/hide mouse', True):
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
         else:

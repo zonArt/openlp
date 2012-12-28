@@ -123,8 +123,7 @@ import urlparse
 from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
 
-from openlp.core.lib import Receiver, PluginStatus, StringContent
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Receiver, Settings, PluginStatus, StringContent
 from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
@@ -173,11 +172,9 @@ class HttpServer(object):
         """
         log.debug(u'Start TCP server')
         port = Settings().value(
-            self.plugin.settingsSection + u'/port',
-            QtCore.QVariant(4316)).toInt()[0]
+            self.plugin.settingsSection + u'/port', 4316)
         address = Settings().value(
-            self.plugin.settingsSection + u'/ip address',
-            QtCore.QVariant(u'0.0.0.0')).toString()
+            self.plugin.settingsSection + u'/ip address', u'0.0.0.0')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
         QtCore.QObject.connect(Receiver.get_receiver(),
@@ -238,7 +235,7 @@ class HttpConnection(object):
         Initialise the http connection. Listen out for socket signals.
         """
         log.debug(u'Initialise HttpConnection: %s' %
-            socket.peerAddress().toString())
+            socket.peerAddress())
         self.socket = socket
         self.parent = parent
         self.routes = [
@@ -409,14 +406,11 @@ class HttpConnection(object):
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item._uuid \
                 if self.parent.current_item else u'',
-            u'twelve':Settings().value(
-            u'remotes/twelve hour', QtCore.QVariant(True)).toBool(),
-            u'blank': self.parent.plugin.liveController.blankScreen.\
-                isChecked(),
-            u'theme': self.parent.plugin.liveController.themeScreen.\
-                isChecked(),
-            u'display': self.parent.plugin.liveController.desktopScreen.\
-                isChecked()
+            u'twelve':Settings().value(u'remotes/twelve hour', True),
+            u'blank': self.parent.plugin.liveController.blankScreen.isChecked(),
+            u'theme': self.parent.plugin.liveController.themeScreen.isChecked(),
+            u'display': \
+                self.parent.plugin.liveController.desktopScreen.isChecked()
         }
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})

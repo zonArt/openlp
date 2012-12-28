@@ -32,8 +32,7 @@ import os
 import sys
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
     get_media_players, set_media_players
@@ -369,7 +368,7 @@ class MediaController(object):
         if not isValid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         # dont care about actual theme, set a black background
         if controller.isLive and not controller.media_info.is_background:
@@ -383,12 +382,12 @@ class MediaController(object):
         elif not hidden or controller.media_info.is_background or serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
-        elif Settings().value(u'general/auto unblank', QtCore.QVariant(False)).toBool():
+        elif Settings().value(u'general/auto unblank', False):
             autoplay = True
         if autoplay:
             if not self.media_play(controller):
                 critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                    unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                    translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
         log.debug(u'use %s controller' % self.currentMediaPlayer[controller.controllerType])
@@ -412,11 +411,11 @@ class MediaController(object):
         if not self._check_file_type(controller, display, serviceItem):
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         if not self.media_play(controller):
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         serviceItem.set_media_length(controller.media_info.length)
         self.media_stop(controller)
@@ -437,7 +436,7 @@ class MediaController(object):
         if serviceItem.title != UiStrings().Automatic:
             usedPlayers = [serviceItem.title.lower()]
         if controller.media_info.file_info.isFile():
-            suffix = u'*.%s' % controller.media_info.file_info.suffix().toLower()
+            suffix = u'*.%s' % controller.media_info.file_info.suffix().lower()
             for title in usedPlayers:
                 player = self.mediaPlayers[title]
                 if suffix in player.video_extensions_list:

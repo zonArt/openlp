@@ -90,6 +90,73 @@ class ServiceItemAction(object):
     Next = 3
 
 
+class Settings(QtCore.QSettings):
+    """
+    Class to wrap QSettings.
+
+    * Exposes all the methods of QSettings.
+    * Adds functionality for OpenLP Portable. If the ``defaultFormat`` is set to
+    ``IniFormat``, and the path to the Ini file is set using ``setFilename``,
+    then the Settings constructor (without any arguments) will create a Settings
+    object for accessing settings stored in that Ini file.
+    """
+    __filePath__ = u''
+
+    @staticmethod
+    def setFilename(iniFile):
+        """
+        Sets the complete path to an Ini file to be used by Settings objects.
+
+        Does not affect existing Settings objects.
+        """
+        Settings.__filePath__ = iniFile
+
+    def __init__(self, *args):
+        if not args and Settings.__filePath__ and \
+            Settings.defaultFormat() == Settings.IniFormat:
+            QtCore.QSettings.__init__(self, Settings.__filePath__,
+                Settings.IniFormat)
+        else:
+            QtCore.QSettings.__init__(self, *args)
+
+    def value(self, key, defaultValue):
+        """
+        Returns the value for the given ``key``. The returned ``value`` is
+        of the same type as the ``defaultValue``.
+
+        ``key``
+            The key to return the value from.
+
+        ``defaultValue``
+            The value to be returned if the given ``key`` is not present in the
+            config. Note, the ``defaultValue``'s type defines the type the
+            returned is converted to. In other words, if the ``defaultValue`` is
+            a boolean, then the returned value will be converted to a boolean.
+
+            **Note**, this method only converts a few types and might need to be
+            extended if a certain type is missing!
+        """
+        # Check for none as u'' is passed as default and is valid! This is
+        # needed because the settings export does not know the default values,
+        # thus just passes None.
+        if defaultValue is None and not super(Settings, self).contains(key):
+            return None
+        setting =  super(Settings, self).value(key, defaultValue)
+        # An empty list saved to the settings results in a None type being
+        # returned.
+        if setting is None:
+            return []
+        # Convert the setting to the correct type.
+        if isinstance(defaultValue, bool):
+            if isinstance(setting, bool):
+                return setting
+            # Sometimes setting is string instead of a boolean.
+            return setting == u'true'
+        if isinstance(defaultValue, int):
+            return int(setting)
+        return setting
+
+
 def translate(context, text, comment=None,
     encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
     translate=QtCore.QCoreApplication.translate):
@@ -369,22 +436,22 @@ def create_separated_list(stringlist):
         List of unicode strings
     """
     if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
-        return unicode(QtCore.QLocale().createSeparatedList(stringlist))
+        return QtCore.QLocale().createSeparatedList(stringlist)
     if not stringlist:
         return u''
     elif len(stringlist) == 1:
         return stringlist[0]
     elif len(stringlist) == 2:
-        return unicode(translate('OpenLP.core.lib', '%1 and %2',
-            'Locale list separator: 2 items').arg(stringlist[0], stringlist[1]))
+        return translate('OpenLP.core.lib', '%1 and %2',
+            'Locale list separator: 2 items') % (stringlist[0], stringlist[1])
     else:
-        merged = unicode(translate('OpenLP.core.lib', '%1, and %2',
-            u'Locale list separator: end').arg(stringlist[-2], stringlist[-1]))
+        merged = translate('OpenLP.core.lib', '%1, and %2',
+            u'Locale list separator: end') % (stringlist[-2], stringlist[-1])
         for index in reversed(range(1, len(stringlist) - 2)):
-            merged = unicode(translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: middle').arg(stringlist[index], merged))
-        return unicode(translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: start').arg(stringlist[0], merged))
+            merged = translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: middle') % (stringlist[index], merged)
+        return translate('OpenLP.core.lib', '%1, %2',
+            u'Locale list separator: start') % (stringlist[0], merged)
 
 
 from eventreceiver import Receiver

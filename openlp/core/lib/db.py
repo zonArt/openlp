@@ -41,10 +41,9 @@ from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, \
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Settings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
-from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -191,8 +190,7 @@ class Manager(object):
         self.db_url = u''
         self.is_dirty = False
         self.session = None
-        db_type = unicode(
-            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
+        db_type = settings.value(u'db type', u'sqlite')
         if db_type == u'sqlite':
             if db_file_name:
                 self.db_url = u'sqlite:///%s/%s' % (
@@ -203,13 +201,12 @@ class Manager(object):
                     AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                urlquote(unicode(settings.value(u'db username').toString())),
-                urlquote(unicode(settings.value(u'db password').toString())),
-                urlquote(unicode(settings.value(u'db hostname').toString())),
-                urlquote(unicode(settings.value(u'db database').toString())))
+                urlquote(settings.value(u'db username', u'')),
+                urlquote(settings.value(u'db password', u'')),
+                urlquote(settings.value(u'db hostname', u'')),
+                urlquote(settings.value(u'db database', u'')))
             if db_type == u'mysql':
-                db_encoding = unicode(
-                    settings.value(u'db encoding', u'utf8').toString())
+                db_encoding = settings.value(u'db encoding', u'utf8')
                 self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:
@@ -217,11 +214,11 @@ class Manager(object):
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
-                    unicode(translate('OpenLP.Manager', 'The database being '
+                    translate('OpenLP.Manager', 'The database being '
                         'loaded was created in a more recent version of '
                         'OpenLP. The database is version %d, while OpenLP '
                         'expects version %d. The database will not be loaded.'
-                        '\n\nDatabase: %s')) % \
+                        '\n\nDatabase: %s') % \
                         (db_ver, up_ver, self.db_url)
                 )
                 return
@@ -231,8 +228,8 @@ class Manager(object):
             log.exception(u'Error loading database: %s', self.db_url)
             critical_error_message_box(
                 translate('OpenLP.Manager', 'Database Error'),
-                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
-                    'database.\n\nDatabase: %s')) % self.db_url
+                translate('OpenLP.Manager', 'OpenLP cannot load your '
+                    'database.\n\nDatabase: %s') % self.db_url
             )
 
     def save_object(self, object_instance, commit=True):

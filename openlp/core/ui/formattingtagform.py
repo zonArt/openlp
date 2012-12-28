@@ -160,18 +160,18 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         html_expands = FormattingTags.get_html_tags()
         if self.selected != -1:
             html = html_expands[self.selected]
-            tag = unicode(self.tagLineEdit.text())
+            tag = self.tagLineEdit.text()
             for linenumber, html1 in enumerate(html_expands):
                 if self._strip(html1[u'start tag']) == tag and \
                     linenumber != self.selected:
                     critical_error_message_box(
                         translate('OpenLP.FormattingTagForm', 'Update Error'),
-                        unicode(translate('OpenLP.FormattingTagForm',
-                        'Tag %s already defined.')) % tag)
+                        translate('OpenLP.FormattingTagForm',
+                        'Tag %s already defined.') % tag)
                     return
-            html[u'desc'] = unicode(self.descriptionLineEdit.text())
-            html[u'start html'] = unicode(self.startTagLineEdit.text())
-            html[u'end html'] = unicode(self.endTagLineEdit.text())
+            html[u'desc'] = self.descriptionLineEdit.text()
+            html[u'start html'] = self.startTagLineEdit.text()
+            html[u'end html'] = self.endTagLineEdit.text()
             html[u'start tag'] = u'{%s}' % tag
             html[u'end tag'] = u'{/%s}' % tag
             # Keep temporary tags when the user changes one.

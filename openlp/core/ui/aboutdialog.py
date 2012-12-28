@@ -158,7 +158,7 @@ class Ui_AboutDialog(object):
         }
         documentors = [u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
-        self.creditsTextEdit.setPlainText(unicode(translate('OpenLP.AboutForm',
+        self.creditsTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'Project Lead\n'
             '    %s\n'
             '\n'
@@ -237,7 +237,7 @@ class Ui_AboutDialog(object):
             '    God our Father, for sending His Son to die\n'
             '    on the cross, setting us free from sin. We\n'
             '    bring this software to you for free because\n'
-            '    He has set us free.')) % (lead, u'\n    '.join(developers),
+            '    He has set us free.') % (lead, u'\n    '.join(developers),
             u'\n    '.join(contributors), u'\n    '.join(testers),
             u'\n    '.join(packagers), u'\n        '.join(translators[u'af']),
             u'\n        '.join(translators[u'cs']),
@@ -264,9 +264,9 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setTabText(
             self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
-        copyright = unicode(translate('OpenLP.AboutForm',
+        copyright = translate('OpenLP.AboutForm',
             'Copyright \xa9 2004-2012 %s\n'
-            'Portions copyright \xa9 2004-2012 %s')) % (u'Raoul Snyman',
+            'Portions copyright \xa9 2004-2012 %s') % (u'Raoul Snyman',
             u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
             u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
             u'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '

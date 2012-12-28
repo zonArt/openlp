@@ -33,8 +33,7 @@ plugin.
 import logging
 import re
 
-from openlp.core.lib import translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import translate, Settings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -182,17 +181,17 @@ def update_reference_separators():
     Updates separators and matches for parsing and formating scripture
     references.
     """
-    default_separators = unicode(translate('BiblesPlugin',
+    default_separators = translate('BiblesPlugin',
         ':|v|V|verse|verses;;-|to;;,|and;;end',
         'Double-semicolon delimited separators for parsing references. '
-        'Consult the developers for further information.')).split(u';;')
+        'Consult the developers for further information.').split(u';;')
     settings = Settings()
     settings.beginGroup(u'bibles')
     custom_separators = [
-        unicode(settings.value(u'verse separator').toString()),
-        unicode(settings.value(u'range separator').toString()),
-        unicode(settings.value(u'list separator').toString()),
-        unicode(settings.value(u'end separator').toString())]
+        settings.value(u'verse separator', u''),
+        settings.value(u'range separator', u''),
+        settings.value(u'list separator', u''),
+        settings.value(u'end separator', u'')]
     settings.endGroup()
     for index, role in enumerate([u'v', u'r', u'l', u'e']):
         if custom_separators[index].strip(u'|') == u'':

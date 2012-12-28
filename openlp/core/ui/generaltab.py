@@ -30,9 +30,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib import Receiver, Settings, SettingsTab, translate
 from openlp.core.lib.ui import UiStrings
-from openlp.core.lib.settings import Settings
 from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
@@ -272,49 +271,41 @@ class GeneralTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         self.monitorComboBox.clear()
         self.monitorComboBox.addItems(self.screens.get_screen_list())
-        monitorNumber = settings.value(u'monitor',
-            QtCore.QVariant(self.screens.display_count - 1)).toInt()[0]
+        monitorNumber = settings.value(
+            u'monitor', self.screens.display_count - 1)
         self.monitorComboBox.setCurrentIndex(monitorNumber)
-        self.numberEdit.setText(unicode(settings.value(
-            u'ccli number', QtCore.QVariant(u'')).toString()))
-        self.usernameEdit.setText(unicode(settings.value(
-            u'songselect username', QtCore.QVariant(u'')).toString()))
-        self.passwordEdit.setText(unicode(settings.value(
-            u'songselect password', QtCore.QVariant(u'')).toString()))
+        self.numberEdit.setText(settings.value(u'ccli number', u''))
+        self.usernameEdit.setText(settings.value(u'songselect username', u''))
+        self.passwordEdit.setText(settings.value(u'songselect password', u''))
         self.saveCheckServiceCheckBox.setChecked(settings.value(u'save prompt',
-            QtCore.QVariant(False)).toBool())
+            False))
         self.autoUnblankCheckBox.setChecked(settings.value(u'auto unblank',
-            QtCore.QVariant(False)).toBool())
+            False))
         self.displayOnMonitorCheck.setChecked(self.screens.display)
-        self.warningCheckBox.setChecked(settings.value(u'blank warning',
-            QtCore.QVariant(False)).toBool())
-        self.autoOpenCheckBox.setChecked(settings.value(u'auto open',
-            QtCore.QVariant(False)).toBool())
-        self.showSplashCheckBox.setChecked(settings.value(u'show splash',
-            QtCore.QVariant(True)).toBool())
+        self.warningCheckBox.setChecked(settings.value(u'blank warning', False))
+        self.autoOpenCheckBox.setChecked(settings.value(u'auto open', False))
+        self.showSplashCheckBox.setChecked(settings.value(u'show splash', True))
         self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check',
-            QtCore.QVariant(True)).toBool())
+            True))
         self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
-            QtCore.QVariant(False)).toBool())
-        self.timeoutSpinBox.setValue(settings.value(u'loop delay',
-           QtCore.QVariant(5)).toInt()[0])
+            False))
+        self.timeoutSpinBox.setValue(settings.value(u'loop delay', 5))
         self.monitorRadioButton.setChecked(
-            not settings.value(u'override position',
-            QtCore.QVariant(False)).toBool())
+            not settings.value(u'override position', False))
         self.overrideRadioButton.setChecked(settings.value(u'override position',
-            QtCore.QVariant(False)).toBool())
+            False))
         self.customXValueEdit.setValue(settings.value(u'x position',
-            QtCore.QVariant(self.screens.current[u'size'].x())).toInt()[0])
+            self.screens.current[u'size'].x()))
         self.customYValueEdit.setValue(settings.value(u'y position',
-            QtCore.QVariant(self.screens.current[u'size'].y())).toInt()[0])
+            self.screens.current[u'size'].y()))
         self.customHeightValueEdit.setValue(settings.value(u'height',
-            QtCore.QVariant(self.screens.current[u'size'].height())).toInt()[0])
+            self.screens.current[u'size'].height()))
         self.customWidthValueEdit.setValue(settings.value(u'width',
-            QtCore.QVariant(self.screens.current[u'size'].width())).toInt()[0])
+            self.screens.current[u'size'].width()))
         self.startPausedCheckBox.setChecked(settings.value(
-            u'audio start paused', QtCore.QVariant(True)).toBool())
+            u'audio start paused', True))
         self.repeatListCheckBox.setChecked(settings.value(
-            u'audio repeat list', QtCore.QVariant(False)).toBool())
+            u'audio repeat list', False))
         settings.endGroup()
         self.monitorComboBox.setDisabled(self.overrideRadioButton.isChecked())
         self.customXValueEdit.setEnabled(self.overrideRadioButton.isChecked())
@@ -332,46 +323,34 @@ class GeneralTab(SettingsTab):
         """
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'monitor',
-            QtCore.QVariant(self.monitorComboBox.currentIndex()))
+        settings.setValue(u'monitor', self.monitorComboBox.currentIndex())
         settings.setValue(u'display on monitor',
-            QtCore.QVariant(self.displayOnMonitorCheck.isChecked()))
-        settings.setValue(u'blank warning',
-            QtCore.QVariant(self.warningCheckBox.isChecked()))
-        settings.setValue(u'auto open',
-            QtCore.QVariant(self.autoOpenCheckBox.isChecked()))
-        settings.setValue(u'show splash',
-            QtCore.QVariant(self.showSplashCheckBox.isChecked()))
+            self.displayOnMonitorCheck.isChecked())
+        settings.setValue(u'blank warning', self.warningCheckBox.isChecked())
+        settings.setValue(u'auto open', self.autoOpenCheckBox.isChecked())
+        settings.setValue(u'show splash', self.showSplashCheckBox.isChecked())
         settings.setValue(u'update check',
-            QtCore.QVariant(self.checkForUpdatesCheckBox.isChecked()))
+            self.checkForUpdatesCheckBox.isChecked())
         settings.setValue(u'save prompt',
-            QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
-        settings.setValue(u'auto unblank',
-            QtCore.QVariant(self.autoUnblankCheckBox.isChecked()))
-        settings.setValue(u'auto preview',
-            QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
-        settings.setValue(u'loop delay',
-            QtCore.QVariant(self.timeoutSpinBox.value()))
-        settings.setValue(u'ccli number',
-            QtCore.QVariant(self.numberEdit.displayText()))
+            self.saveCheckServiceCheckBox.isChecked())
+        settings.setValue(u'auto unblank', self.autoUnblankCheckBox.isChecked())
+        settings.setValue(u'auto preview', self.autoPreviewCheckBox.isChecked())
+        settings.setValue(u'loop delay', self.timeoutSpinBox.value())
+        settings.setValue(u'ccli number', self.numberEdit.displayText())
         settings.setValue(u'songselect username',
-            QtCore.QVariant(self.usernameEdit.displayText()))
+            self.usernameEdit.displayText())
         settings.setValue(u'songselect password',
-            QtCore.QVariant(self.passwordEdit.displayText()))
-        settings.setValue(u'x position',
-            QtCore.QVariant(self.customXValueEdit.value()))
-        settings.setValue(u'y position',
-            QtCore.QVariant(self.customYValueEdit.value()))
-        settings.setValue(u'height',
-            QtCore.QVariant(self.customHeightValueEdit.value()))
-        settings.setValue(u'width',
-            QtCore.QVariant(self.customWidthValueEdit.value()))
+            self.passwordEdit.displayText())
+        settings.setValue(u'x position', self.customXValueEdit.value())
+        settings.setValue(u'y position', self.customYValueEdit.value())
+        settings.setValue(u'height', self.customHeightValueEdit.value())
+        settings.setValue(u'width', self.customWidthValueEdit.value())
         settings.setValue(u'override position',
-            QtCore.QVariant(self.overrideRadioButton.isChecked()))
+            self.overrideRadioButton.isChecked())
         settings.setValue(u'audio start paused',
-            QtCore.QVariant(self.startPausedCheckBox.isChecked()))
+            self.startPausedCheckBox.isChecked())
         settings.setValue(u'audio repeat list',
-            QtCore.QVariant(self.repeatListCheckBox.isChecked()))
+            self.repeatListCheckBox.isChecked())
         settings.endGroup()
         # On save update the screens as well
         self.postSetUp(True)
