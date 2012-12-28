@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -81,10 +81,8 @@ class SettingsTab(QtGui.QWidget):
         if event:
             QtGui.QWidget.resizeEvent(self, event)
         width = self.width() - self.tabLayout.spacing() - \
-            self.tabLayout.contentsMargins().left() - \
-            self.tabLayout.contentsMargins().right()
-        left_width = min(width - self.rightColumn.minimumSizeHint().width(),
-            width / 2)
+            self.tabLayout.contentsMargins().left() - self.tabLayout.contentsMargins().right()
+        left_width = min(width - self.rightColumn.minimumSizeHint().width(), width / 2)
         left_width = max(left_width, self.leftColumn.minimumSizeHint().width())
         self.leftColumn.setFixedWidth(left_width)
 

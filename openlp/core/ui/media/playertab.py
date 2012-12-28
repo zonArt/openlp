@@ -87,8 +87,7 @@ class PlayerTab(SettingsTab):
         self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
         self.playerOrderLayout = QtGui.QHBoxLayout(self.playerOrderGroupBox)
         self.playerOrderLayout.setObjectName(u'playerOrderLayout')
-        self.playerOrderlistWidget = QtGui.QListWidget(
-            self.playerOrderGroupBox)
+        self.playerOrderlistWidget = QtGui.QListWidget(self.playerOrderGroupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

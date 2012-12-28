@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -114,8 +114,7 @@ class Settings(QtCore.QSettings):
     def __init__(self, *args):
         if not args and Settings.__filePath__ and \
             Settings.defaultFormat() == Settings.IniFormat:
-            QtCore.QSettings.__init__(self, Settings.__filePath__,
-                Settings.IniFormat)
+            QtCore.QSettings.__init__(self, Settings.__filePath__, Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
 
@@ -236,14 +235,11 @@ def build_icon(icon):
         button_icon = icon
     elif isinstance(icon, basestring):
         if icon.startswith(u':/'):
-            button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                QtGui.QIcon.Off)
+            button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
-            button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif isinstance(icon, QtGui.QImage):
-        button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        button_icon.addPixmap(QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
 
@@ -361,12 +357,10 @@ def resize_image(image_path, width, height, background=u'#000000'):
     real_width = preview.width()
     real_height = preview.height()
     # and move it to the centre of the preview space
-    new_image = QtGui.QImage(width, height,
-        QtGui.QImage.Format_ARGB32_Premultiplied)
+    new_image = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
     painter.fillRect(new_image.rect(), QtGui.QColor(background))
-    painter.drawImage(
-        (width - real_width) / 2, (height - real_height) / 2, preview)
+    painter.drawImage((width - real_width) / 2, (height - real_height) / 2, preview)
     return new_image
 
 
