@@ -982,6 +982,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings = Settings()
         import_settings = Settings(import_file_name,
             Settings.IniFormat)
+        # Lets do a basic sanity check. If it contains this string we can
+        # assume it was created by OpenLP and so we'll load what we can
+        # from it, and just silently ignore anything we don't recognise
+        if import_settings.value(u'SettingsImport/type').toString() \
+            != u'OpenLP_settings_export':
+            QtGui.QMessageBox.critical(self,
+                translate('OpenLP.MainWindow', 'Import settings'),
+                translate('OpenLP.MainWindow',
+                    'The file you selected does appear to be a valid OpenLP '
+                    'settings file.\n\n'
+                    'Section [%s] is not valid \n\n'
+                    'Processing has terminated and no changed have been made.'
+                ).replace('%s', u'SettingsImport'),
+                QtGui.QMessageBox.StandardButtons(
+                    QtGui.QMessageBox.Ok))
+            return
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
             # We need to handle the really bad files.
@@ -991,22 +1007,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 section = u'unknown'
                 key = u''
             # Switch General back to lowercase.
-            if section == u'General':
+            if section == u'General' or section == u'%General':
                 section = u'general'
                 section_key = section + "/" + key
             # Make sure it's a valid section for us.
             if not section in setting_sections:
-                QtGui.QMessageBox.critical(self,
-                    translate('OpenLP.MainWindow', 'Import settings'),
-                    translate('OpenLP.MainWindow',
-                    'The file you selected does appear to be a valid OpenLP '
-                    'settings file.\n\n'
-                    'Section [%s] is not valid \n\n'
-                    'Processing has terminated and no changed have been made.'
-                    ).replace('%s', section),
-                    QtGui.QMessageBox.StandardButtons(
-                    QtGui.QMessageBox.Ok))
-                return
+                continue
         # We have a good file, import it.
         for section_key in import_keys:
             value = import_settings.value(section_key)
