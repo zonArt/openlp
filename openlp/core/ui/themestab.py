@@ -29,10 +29,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, translate
+from openlp.core.lib import Receiver, Settings, SettingsTab, translate
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
-from openlp.core.lib.settings import Settings
 
 class ThemesTab(SettingsTab):
     """
@@ -137,9 +136,8 @@ class ThemesTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.theme_level = settings.value(
-            u'theme level', ThemeLevel.Song).toInt()[0]
-        self.global_theme = unicode(settings.value(u'global theme').toString())
+        self.theme_level = settings.value(u'theme level', ThemeLevel.Song)
+        self.global_theme = settings.value(u'global theme', u'')
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.GlobalLevelRadioButton.setChecked(True)
@@ -151,8 +149,8 @@ class ThemesTab(SettingsTab):
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'theme level', QtCore.QVariant(self.theme_level))
-        settings.setValue(u'global theme', QtCore.QVariant(self.global_theme))
+        settings.setValue(u'theme level', self.theme_level)
+        settings.setValue(u'global theme', self.global_theme)
         settings.endGroup()
         self.mainwindow.renderer.set_global_theme(self.global_theme)
         self.mainwindow.renderer.set_theme_level(self.theme_level)
@@ -171,9 +169,8 @@ class ThemesTab(SettingsTab):
         self.theme_level = ThemeLevel.Global
 
     def onDefaultComboBoxChanged(self, value):
-        self.global_theme = unicode(self.DefaultComboBox.currentText())
+        self.global_theme = self.DefaultComboBox.currentText()
         self.mainwindow.renderer.set_global_theme(self.global_theme)
-        self.mainwindow.renderer.set_theme_level(self.theme_level)
         self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
@@ -186,9 +183,8 @@ class ThemesTab(SettingsTab):
                 [u'Bible Theme', u'Song Theme']
         """
         # Reload as may have been triggered by the ThemeManager.
-        self.global_theme = unicode(Settings().value(
-            self.settingsSection + u'/global theme',
-            QtCore.QVariant(u'')).toString())
+        self.global_theme = Settings().value(
+            self.settingsSection + u'/global theme', u'')
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)

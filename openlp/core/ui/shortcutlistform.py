@@ -32,8 +32,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Receiver, Settings
 from openlp.core.utils import translate
 from openlp.core.utils.actions import ActionList
 from shortcutlistdialog import Ui_ShortcutListDialog
@@ -131,11 +130,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 continue
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
-                actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
+                actionText = REMOVE_AMPERSAND.sub('', action.text())
                 actionItem = QtGui.QTreeWidgetItem([actionText])
                 actionItem.setIcon(0, action.icon())
-                actionItem.setData(0,
-                    QtCore.Qt.UserRole, QtCore.QVariant(action))
+                actionItem.setData(0, QtCore.Qt.UserRole, action)
                 item.addChild(actionItem)
             self.treeWidget.addTopLevelItem(item)
             item.setExpanded(True)
@@ -352,8 +350,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                         map(QtGui.QKeySequence.toString, action.shortcuts()))
                     action.setShortcuts(self.changedActions[action])
                     self.action_list.update_shortcut_map(action, old_shortcuts)
-                settings.setValue(
-                    action.objectName(), QtCore.QVariant(action.shortcuts()))
+                settings.setValue(action.objectName(), action.shortcuts())
         settings.endGroup()
 
     def onClearPrimaryButtonClicked(self, toggled):
@@ -446,9 +443,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             Receiver.send_message(u'openlp_warning_message', {
                 u'title': translate('OpenLP.ShortcutListDialog',
                 'Duplicate Shortcut'),
-                u'message': unicode(translate('OpenLP.ShortcutListDialog',
+                u'message': translate('OpenLP.ShortcutListDialog',
                 'The shortcut "%s" is already assigned to another action, '
-                'please use a different shortcut.')) % key_sequence.toString()
+                'please use a different shortcut.') % key_sequence.toString()
             })
         return is_valid
 
@@ -471,7 +468,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             item = self.treeWidget.currentItem()
             if item is None:
                 return
-        return item.data(0, QtCore.Qt.UserRole).toPyObject()
+        return item.data(0, QtCore.Qt.UserRole)
 
     def _adjustButton(self, button, checked=None, enabled=None, text=None):
         """

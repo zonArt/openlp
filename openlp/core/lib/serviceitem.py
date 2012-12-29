@@ -578,12 +578,12 @@ class ServiceItem(object):
         start = None
         end = None
         if self.start_time != 0:
-            start = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Start</strong>: %s')) % \
+            start = translate('OpenLP.ServiceItem',
+                '<strong>Start</strong>: %s') % \
                 unicode(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
-            end = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Length</strong>: %s')) % \
+            end = translate('OpenLP.ServiceItem',
+                '<strong>Length</strong>: %s') % \
                 unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return u''

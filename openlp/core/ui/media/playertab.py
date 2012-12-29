@@ -29,9 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import SettingsTab, translate, Receiver, Settings
 from openlp.core.lib.ui import UiStrings, create_button
-from openlp.core.lib.settings import Settings
 from openlp.core.ui.media import get_media_players, set_media_players
 
 class MediaQCheckBox(QtGui.QCheckBox):
@@ -179,7 +178,7 @@ class PlayerTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.updatePlayerList()
-        self.bg_color = unicode(settings.value(u'background color', QtCore.QVariant(u'#000000')).toString())
+        self.bg_color = settings.value(u'background color', u'#000000')
         self.initial_color = self.bg_color
         settings.endGroup()
         self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
@@ -188,7 +187,7 @@ class PlayerTab(SettingsTab):
         player_string_changed = False
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'background color', self.bg_color)
         settings.endGroup()
         old_players, override_player = get_media_players()
         if self.usedPlayers != old_players:
@@ -233,4 +232,4 @@ class PlayerTab(SettingsTab):
             if player.available:
                 checkbox.setText(player.display_name)
             else:
-                checkbox.setText(unicode(translate('OpenLP.PlayerTab', '%s (unavailable)')) % player.display_name)
+                checkbox.setText(translate('OpenLP.PlayerTab', '%s (unavailable)') % player.display_name)
