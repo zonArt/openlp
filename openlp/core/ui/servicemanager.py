@@ -234,11 +234,9 @@ class ServiceManager(QtGui.QWidget):
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
-        self.newAction = self.dndMenu.addAction(
-            translate('OpenLP.ServiceManager', '&Add New Item'))
+        self.newAction = self.dndMenu.addAction(translate('OpenLP.ServiceManager', '&Add New Item'))
         self.newAction.setIcon(build_icon(u':/general/general_edit.png'))
-        self.addToAction = self.dndMenu.addAction(
-            translate('OpenLP.ServiceManager', '&Add to Selected Item'))
+        self.addToAction = self.dndMenu.addAction(translate('OpenLP.ServiceManager', '&Add to Selected Item'))
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
         # build the context menu
         self.menu = QtGui.QMenu()
@@ -420,9 +418,7 @@ class ServiceManager(QtGui.QWidget):
         basename = os.path.splitext(file_name)[0]
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
-        SettingsManager.set_last_dir(
-            self.mainwindow.serviceManagerSettingsSection,
-            path)
+        SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, path)
         service = []
         write_list = []
         missing_list = []
@@ -1289,9 +1285,7 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItems[item][u'service_item'].is_valid:
             self.mainwindow.liveController.addServiceManagerItem(
                 self.serviceItems[item][u'service_item'], child)
-            if Settings().value(
-                self.mainwindow.generalSettingsSection + u'/auto preview',
-                False):
+            if Settings().value(self.mainwindow.generalSettingsSection + u'/auto preview', False):
                 item += 1
                 if self.serviceItems and item < len(self.serviceItems) and \
                         self.serviceItems[item][u'service_item'].is_capable(ItemCapabilities.CanPreview):

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -42,8 +42,7 @@ class Ui_ExceptionDialog(object):
         self.messageLayout.addSpacing(12)
         self.bugLabel = QtGui.QLabel(exceptionDialog)
         self.bugLabel.setPixmap(QtGui.QPixmap(u':/graphics/exception.png'))
-        self.bugLabel.setSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
+        self.bugLabel.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         self.bugLabel.setObjectName(u'bugLabel')
         self.messageLayout.addWidget(self.bugLabel)
         self.messageLayout.addSpacing(12)
@@ -65,18 +64,14 @@ class Ui_ExceptionDialog(object):
         self.exceptionTextEdit.setReadOnly(True)
         self.exceptionTextEdit.setObjectName(u'exceptionTextEdit')
         self.exceptionLayout.addWidget(self.exceptionTextEdit)
-        self.sendReportButton = create_button(exceptionDialog,
-            u'sendReportButton', icon=u':/general/general_email.png',
-            click=self.onSendReportButtonClicked)
-        self.saveReportButton = create_button(exceptionDialog,
-            u'saveReportButton', icon=u':/general/general_save.png',
-            click=self.onSaveReportButtonClicked)
-        self.attachFileButton = create_button(exceptionDialog,
-            u'attachFileButton', icon=u':/general/general_open.png',
-            click=self.onAttachFileButtonClicked)
+        self.sendReportButton = create_button(exceptionDialog, u'sendReportButton',
+            icon=u':/general/general_email.png', click=self.onSendReportButtonClicked)
+        self.saveReportButton = create_button(exceptionDialog,u'saveReportButton',
+            icon=u':/general/general_save.png', click=self.onSaveReportButtonClicked)
+        self.attachFileButton = create_button(exceptionDialog, u'attachFileButton',
+            icon=u':/general/general_open.png', click=self.onAttachFileButtonClicked)
         self.buttonBox = create_button_box(exceptionDialog, u'buttonBox',
-            [u'close'], [self.sendReportButton, self.saveReportButton,
-            self.attachFileButton])
+            [u'close'], [self.sendReportButton, self.saveReportButton, self.attachFileButton])
         self.exceptionLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(exceptionDialog)
@@ -84,8 +79,7 @@ class Ui_ExceptionDialog(object):
             QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
 
     def retranslateUi(self, exceptionDialog):
-        exceptionDialog.setWindowTitle(
-            translate('OpenLP.ExceptionDialog', 'Error Occurred'))
+        exceptionDialog.setWindowTitle(translate('OpenLP.ExceptionDialog', 'Error Occurred'))
         self.descriptionExplanation.setText(translate('OpenLP.ExceptionDialog',
             'Please enter a description of what you were doing to cause this '
             'error \n(Minimum 20 characters)'))

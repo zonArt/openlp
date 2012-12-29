@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -46,9 +46,7 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
         Run the Dialog with correct heading.
         """
         if copy:
-            self.setWindowTitle(translate('OpenLP.FileRenameForm',
-                'File Copy'))
+            self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Copy'))
         else:
-            self.setWindowTitle(translate('OpenLP.FileRenameForm',
-                'File Rename'))
+            self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Rename'))
         return QtGui.QDialog.exec_(self)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -69,8 +69,7 @@ class FormattingTags(object):
                     if isinstance(tag[element], unicode):
                         tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
-        Settings().setValue(u'displayTags/html_tags',
-            cPickle.dumps(tags) if tags else u'')
+        Settings().setValue(u'displayTags/html_tags', cPickle.dumps(tags) if tags else u'')
 
     @staticmethod
     def load_tags():
