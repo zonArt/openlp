@@ -596,7 +596,7 @@ class AdvancedTab(SettingsTab):
             # Check is they want to replace existing data.
             answer = QtGui.QMessageBox.warning(self,
                 translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
-                translate('OpenLP.AdvancedTab', 'WARNING: \n\n The location you have selected \n\n%s\n\n'
+                translate('OpenLP.AdvancedTab', 'WARNING: \n\nThe location you have selected \n\n%s\n\n'
                 'appears to contain OpenLP data files. Do you wish to replace these files with the current data files?'
                 ).replace('%s', os.path.abspath(data_path,)),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)

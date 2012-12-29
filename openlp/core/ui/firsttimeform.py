@@ -91,8 +91,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
         self.downloadCancelled = False
-        self.downloading = translate('OpenLP.FirstTimeWizard',
-            'Downloading %s...')
+        self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
             self.onCancelButtonClicked)
         QtCore.QObject.connect(self.noInternetFinishButton, QtCore.SIGNAL('clicked()'),
@@ -382,7 +381,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressBar.setValue(self.progressBar.maximum())
             if self.hasRunWizard:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
-                        'Download complete. Click the finish button to return to OpenLP.'))
+                    'Download complete. Click the finish button to return to OpenLP.'))
             else:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
                     'Download complete. Click the finish button to start OpenLP.'))

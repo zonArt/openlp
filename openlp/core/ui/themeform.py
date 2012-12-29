@@ -90,6 +90,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.mainSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.lineSpacingSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.outlineSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
+        QtCore.QObject.connect(self.shadowSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.mainFontComboBox, QtCore.SIGNAL(u'activated(int)'), self.calculateLines)
         QtCore.QObject.connect(self.footerFontComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateTheme)
         QtCore.QObject.connect(self.footerSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.updateTheme)

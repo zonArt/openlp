@@ -848,7 +848,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if not section in setting_sections:
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
                     translate('OpenLP.MainWindow', 'The file you selected does appear to be a valid OpenLP '
-                        'settings file.\n\n Section [%s] is not valid \n\n'
+                        'settings file.\n\nSection [%s] is not valid \n\n'
                         'Processing has terminated and no changed have been made.').replace('%s', section),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 return
