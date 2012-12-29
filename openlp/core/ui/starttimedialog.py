@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -101,15 +101,13 @@ class Ui_StartTimeDialog(object):
         self.secondFinishLabel.setAlignment(QtCore.Qt.AlignRight)
         self.dialogLayout.addWidget(self.secondFinishLabel, 3, 3, 1, 1)
         self.dialogLayout.addWidget(self.secondSpinBox, 3, 1, 1, 1)
-        self.buttonBox = create_button_box(StartTimeDialog, u'buttonBox',
-            [u'cancel', u'ok'])
+        self.buttonBox = create_button_box(StartTimeDialog, u'buttonBox', [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox, 5, 2, 1, 2)
         self.retranslateUi(StartTimeDialog)
         self.setMaximumHeight(self.sizeHint().height())
 
     def retranslateUi(self, StartTimeDialog):
-        self.setWindowTitle(translate('OpenLP.StartTimeForm',
-            'Item Start and Finish Time'))
+        self.setWindowTitle(translate('OpenLP.StartTimeForm', 'Item Start and Finish Time'))
         self.hourSpinBox.setSuffix(UiStrings().Hours)
         self.minuteSpinBox.setSuffix(UiStrings().Minutes)
         self.secondSpinBox.setSuffix(UiStrings().Seconds)
