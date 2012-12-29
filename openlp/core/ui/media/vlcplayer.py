@@ -216,6 +216,7 @@ class VlcPlayer(MediaPlayer):
 
     def seek(self, display, seekVal):
         if display.vlcMediaPlayer.is_seekable():
+            print "seeking"
             display.vlcMediaPlayer.set_time(seekVal)
 
     def reset(self, display):

@@ -35,13 +35,55 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import OpenLPToolbar, Receiver, translate
 from openlp.core.lib.settings import Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
-    get_media_players, set_media_players
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.utils import AppLocation
 from openlp.core.ui import DisplayControllerType
 
 log = logging.getLogger(__name__)
+
+class MediaSlider(QtGui.QSlider):
+    """
+    Set up key bindings and mouse behaviour for the Qslider
+        Let's say the user clicks at (100, 50), and the slider geometry is (30, 40, 200, 60).
+        Then the slider width is 200-30=170px.
+        Now, clicking at 100 pixels(relative to the slider) means the knob should be moved at 58.82% from the slider value.
+        So if the slider value goes from 1 to 440, then you should use QSlider:setValue(440*58.82/100).
+    """
+    def __init__(self, direction, manager, controller, parent=None):
+        QtGui.QSlider.__init__(self, direction)
+        self.manager = manager
+        self.controller = controller
+
+    def mouseMoveEvent(self, event):
+        #print "mme",self.sliderPosition()
+        QtGui.QSlider.mouseMoveEvent(self, event)
+
+    def mousePressEvent(self, event):
+        print "mpe",self.sliderPosition(), self.maximum(),self.minimum()
+        self.manager.media_seek(self.controller,self.sliderPosition())
+        QtGui.QSlider.mousePressEvent(self, event)
+
+    def mouseReleaseEvent(self, event):
+        #print "mre",self.sliderPosition()
+        QtGui.QSlider.mouseReleaseEvent(self, event)
+
+
+    def _calculate_position(self):
+        position = float(self.mapFromGlobal(QtGui.QCursor.pos()).x())
+        width = float(self.geometry().width() - self.geometry().x())
+        print position, width
+        percent = 0
+        if position > 0:
+            percent = position * (width / 100)
+        length = self.maximum() - self.minimum()
+        new_position = self.maximum()
+        if percent < 100:
+            new_position = int(length * (percent / 100) )
+        print length, percent, new_position, self.sliderPosition(), self.maximum()
+        #self.setSliderPosition(new_position)
+        self.manager.media_seek(self.controller, new_position)
+
 
 class MediaController(object):
     """
@@ -70,7 +112,7 @@ class MediaController(object):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackPlay'), self.media_play_msg)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackPause'), self.media_pause_msg)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackStop'), self.media_stop_msg)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'seekSlider'), self.media_seek)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'seekSlider'), self.media_seek_msg)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'volumeSlider'), self.media_volume_msg)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'media_hide'), self.media_hide)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'media_blank'), self.media_blank)
@@ -242,9 +284,10 @@ class MediaController(object):
             icon=u':/slides/media_playback_stop.png',
             tooltip=translate('OpenLP.SlideController', 'Stop playing media.'), triggers=controller.sendToPlugins)
         # Build the seekSlider.
-        controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        controller.seekSlider = MediaSlider(QtCore.Qt.Horizontal, self, controller)
         controller.seekSlider.setMaximum(1000)
-        controller.seekSlider.setTracking(False)
+        controller.seekSlider.setTracking(True)
+        controller.seekSlider.setMouseTracking(True)
         controller.seekSlider.setToolTip(translate('OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
         controller.seekSlider.setObjectName(u'seekSlider')
@@ -591,7 +634,7 @@ class MediaController(object):
         self.currentMediaPlayer[controller.controllerType].volume(display, volume)
         controller.volumeSlider.setValue(volume)
 
-    def media_seek(self, msg):
+    def media_seek_msg(self, msg):
         """
         Responds to the request to change the seek Slider of a loaded video
 
@@ -602,6 +645,17 @@ class MediaController(object):
         log.debug(u'media_seek')
         controller = msg[0]
         seekVal = msg[1][0]
+        self.media_seek(controller, seekVal)
+
+    def media_seek(self, controller, seekVal):
+        """
+        Responds to the request to change the seek Slider of a loaded video
+
+        ``msg``
+            First element is the controller which should be used
+            Second element is a list with the seek Value as first element
+        """
+        log.debug(u'media_seek')
         display = self._define_display(controller)
         self.currentMediaPlayer[controller.controllerType].seek(display, seekVal)
 
