@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -61,27 +61,20 @@ class Ui_PluginViewDialog(object):
         self.aboutLabel = QtGui.QLabel(self.pluginInfoGroupBox)
         self.aboutLabel.setObjectName(u'aboutLabel')
         self.aboutTextBrowser = QtGui.QTextBrowser(self.pluginInfoGroupBox)
-        self.aboutTextBrowser.setTextInteractionFlags(
-            QtCore.Qt.LinksAccessibleByMouse)
+        self.aboutTextBrowser.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
         self.aboutTextBrowser.setObjectName(u'aboutTextBrowser')
         self.pluginInfoLayout.addRow(self.aboutLabel, self.aboutTextBrowser)
         self.listLayout.addWidget(self.pluginInfoGroupBox)
         self.pluginLayout.addLayout(self.listLayout)
-        self.buttonBox = create_button_box(pluginViewDialog, u'buttonBox',
-            [u'ok'])
+        self.buttonBox = create_button_box(pluginViewDialog, u'buttonBox', [u'ok'])
         self.pluginLayout.addWidget(self.buttonBox)
         self.retranslateUi(pluginViewDialog)
 
     def retranslateUi(self, pluginViewDialog):
-        pluginViewDialog.setWindowTitle(
-            translate('OpenLP.PluginForm', 'Plugin List'))
-        self.pluginInfoGroupBox.setTitle(
-            translate('OpenLP.PluginForm', 'Plugin Details'))
+        pluginViewDialog.setWindowTitle(translate('OpenLP.PluginForm', 'Plugin List'))
+        self.pluginInfoGroupBox.setTitle(translate('OpenLP.PluginForm', 'Plugin Details'))
         self.versionLabel.setText(u'%s:' % UiStrings().Version)
         self.aboutLabel.setText(u'%s:' % UiStrings().About)
-        self.statusLabel.setText(
-            translate('OpenLP.PluginForm', 'Status:'))
-        self.statusComboBox.setItemText(0,
-            translate('OpenLP.PluginForm', 'Active'))
-        self.statusComboBox.setItemText(1,
-            translate('OpenLP.PluginForm', 'Inactive'))
+        self.statusLabel.setText(translate('OpenLP.PluginForm', 'Status:'))
+        self.statusComboBox.setItemText(0, translate('OpenLP.PluginForm', 'Active'))
+        self.statusComboBox.setItemText(1, translate('OpenLP.PluginForm', 'Inactive'))

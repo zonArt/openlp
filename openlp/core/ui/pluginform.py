@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -48,13 +48,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.load()
         self._clearDetails()
         # Right, now let's put some signals and slots together!
-        QtCore.QObject.connect(
-            self.pluginListWidget,
-            QtCore.SIGNAL(u'itemSelectionChanged()'),
+        QtCore.QObject.connect(self.pluginListWidget, QtCore.SIGNAL(u'itemSelectionChanged()'),
             self.onPluginListWidgetSelectionChanged)
-        QtCore.QObject.connect(
-            self.statusComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+        QtCore.QObject.connect(self.statusComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onStatusComboBoxChanged)
 
     def load(self):
@@ -85,10 +81,8 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
             pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
-                translate('OpenLP.PluginForm', '%s (Inactive)') %
-                plugin.nameStrings[u'singular']))
-        self.pluginListWidget.setFixedWidth(pluginListWidth +
-            self.pluginListWidget.iconSize().width() + 48)
+                translate('OpenLP.PluginForm', '%s (Inactive)') % plugin.nameStrings[u'singular']))
+        self.pluginListWidget.setFixedWidth(pluginListWidth + self.pluginListWidget.iconSize().width() + 48)
 
     def _clearDetails(self):
         self.statusComboBox.setCurrentIndex(-1)

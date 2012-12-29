@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -45,23 +45,20 @@ class Ui_ServiceItemEditDialog(object):
         self.dialogLayout.addWidget(self.listWidget, 0, 0)
         self.buttonLayout = QtGui.QVBoxLayout()
         self.buttonLayout.setObjectName(u'buttonLayout')
-        self.deleteButton = create_button(serviceItemEditDialog,
-            u'deleteButton', role=u'delete',
+        self.deleteButton = create_button(serviceItemEditDialog, u'deleteButton', role=u'delete',
             click=serviceItemEditDialog.onDeleteButtonClicked)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton = create_button(serviceItemEditDialog, u'upButton',
-            role=u'up', click=serviceItemEditDialog.onUpButtonClicked)
-        self.downButton = create_button(serviceItemEditDialog, u'downButton',
-            role=u'down', click=serviceItemEditDialog.onDownButtonClicked)
+        self.upButton = create_button(serviceItemEditDialog, u'upButton', role=u'up',
+            click=serviceItemEditDialog.onUpButtonClicked)
+        self.downButton = create_button(serviceItemEditDialog, u'downButton', role=u'down',
+            click=serviceItemEditDialog.onDownButtonClicked)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
-        self.buttonBox = create_button_box(serviceItemEditDialog, u'buttonBox',
-            [u'cancel', u'save'])
+        self.buttonBox = create_button_box(serviceItemEditDialog, u'buttonBox', [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
 
     def retranslateUi(self, serviceItemEditDialog):
-        serviceItemEditDialog.setWindowTitle(
-            translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
+        serviceItemEditDialog.setWindowTitle(translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
