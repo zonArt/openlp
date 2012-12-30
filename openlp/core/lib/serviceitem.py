@@ -628,7 +628,7 @@ class ServiceItem(object):
                 file = os.path.join(frame[u'path'],frame[u'title'])
                 if not os.path.exists(file):
                     self.is_valid = False
-                if suffix_list:
+                if suffix_list and not self.is_text():
                     type = frame[u'title'].split(u'.')[-1]
                     if type.lower() not in suffix_list:
                         self.is_valid = False
