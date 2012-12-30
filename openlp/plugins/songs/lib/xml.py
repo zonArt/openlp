@@ -732,15 +732,15 @@ class OpenLyrics(object):
         except AttributeError:
             raise OpenLyricsError(OpenLyricsError.LyricsError,
                 '<lyrics> tag is missing.',
-                unicode(translate('OpenLP.OpenLyricsImportError',
-                '<lyrics> tag is missing.')))
+                translate('OpenLP.OpenLyricsImportError',
+                '<lyrics> tag is missing.'))
         try:
             verse_list = lyrics.verse
         except AttributeError:
             raise OpenLyricsError(OpenLyricsError.VerseError,
                 '<verse> tag is missing.',
-                unicode(translate('OpenLP.OpenLyricsImportError',
-                '<verse> tag is missing.')))
+                translate('OpenLP.OpenLyricsImportError',
+                '<verse> tag is missing.'))
         # Loop over the "verse" elements.
         for verse in verse_list:
             text = u''

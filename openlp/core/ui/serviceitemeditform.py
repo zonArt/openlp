@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -42,8 +42,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.itemList = []
-        QtCore.QObject.connect(self.listWidget,
-            QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
     def setServiceItem(self, item):
         self.item = item

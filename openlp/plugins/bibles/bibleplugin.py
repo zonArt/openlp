@@ -31,9 +31,9 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Settings
 from openlp.core.lib.ui import create_action, UiStrings
-from openlp.core.lib.settings import Settings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
 from openlp.plugins.bibles.forms import BibleUpgradeForm
@@ -58,11 +58,9 @@ class BiblePlugin(Plugin):
         Plugin.initialise(self)
         self.importBibleItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.importBibleItem,
-            unicode(UiStrings().Import))
+        action_list.add_action(self.importBibleItem, UiStrings().Import)
         # Do not add the action to the list yet.
-        #action_list.add_action(self.exportBibleItem,
-        #    unicode(UiStrings().Export))
+        #action_list.add_action(self.exportBibleItem, UiStrings().Export)
         # Set to invisible until we can export bibles
         self.exportBibleItem.setVisible(False)
         self.toolsUpgradeItem.setVisible(bool(self.manager.old_bible_databases))
@@ -75,8 +73,7 @@ class BiblePlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.importBibleItem,
-            unicode(UiStrings().Import))
+        action_list.remove_action(self.importBibleItem, UiStrings().Import)
         self.importBibleItem.setVisible(False)
         #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
@@ -97,7 +94,7 @@ class BiblePlugin(Plugin):
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'bookname language'):
             settings.setValue(u'book name language', settings.value(
-                u'bookname language', QtCore.QVariant(0)).toInt()[0])
+                u'bookname language', 0))
             settings.remove(u'bookname language')
         settings.endGroup()
 

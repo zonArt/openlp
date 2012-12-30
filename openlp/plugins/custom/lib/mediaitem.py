@@ -33,9 +33,8 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    check_item_selected, translate, ServiceItemContext
+    check_item_selected, translate, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings
-from openlp.core.lib.settings import Settings
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -102,8 +101,7 @@ class CustomMediaItem(MediaManagerItem):
         self.loadList(self.manager.get_all_objects(
             CustomSlide, order_by_ref=CustomSlide.title))
         self.searchTextEdit.setCurrentSearchType(Settings().value(
-            u'%s/last search type' % self.settingsSection,
-            QtCore.QVariant(CustomSearch.Titles)).toInt()[0])
+            u'%s/last search type' % self.settingsSection, CustomSearch.Titles))
 
     def loadList(self, custom_slides):
         # Sort out what custom we want to select after loading the list.
@@ -112,8 +110,7 @@ class CustomMediaItem(MediaManagerItem):
         custom_slides.sort()
         for custom_slide in custom_slides:
             custom_name = QtGui.QListWidgetItem(custom_slide.title)
-            custom_name.setData(
-                QtCore.Qt.UserRole, QtCore.QVariant(custom_slide.id))
+            custom_name.setData(QtCore.Qt.UserRole, custom_slide.id)
             self.listView.addItem(custom_name)
             # Auto-select the custom.
             if custom_slide.id == self.autoSelectId:
@@ -161,7 +158,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole)
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
             self.autoSelectId = -1
@@ -185,7 +182,7 @@ class CustomMediaItem(MediaManagerItem):
                 return
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
-            id_list = [(item.data(QtCore.Qt.UserRole)).toInt()[0]
+            id_list = [(item.data(QtCore.Qt.UserRole))
                 for item in self.listView.selectedIndexes()]
             for id in id_list:
                 self.plugin.manager.delete_object(CustomSlide, id)
@@ -215,7 +212,7 @@ class CustomMediaItem(MediaManagerItem):
         for slide in raw_slides:
             service_item.add_from_text(slide)
         if Settings().value(self.settingsSection + u'/display footer',
-            QtCore.QVariant(True)).toBool() or credit:
+            True) or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))
         else:
             service_item.raw_footer.append(u'')
@@ -224,10 +221,9 @@ class CustomMediaItem(MediaManagerItem):
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
         Settings().setValue(u'%s/last search type' %
-            self.settingsSection,
-            QtCore.QVariant(self.searchTextEdit.currentSearchType()))
+            self.settingsSection, self.searchTextEdit.currentSearchType())
         # Reload the list considering the new search type.
-        search_keywords = unicode(self.searchTextEdit.displayText())
+        search_keywords = self.searchTextEdit.displayText()
         search_results = []
         search_type = self.searchTextEdit.currentSearchType()
         if search_type == CustomSearch.Titles:

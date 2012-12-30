@@ -35,8 +35,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Receiver, translate, Settings
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
@@ -114,7 +113,7 @@ class VlcPlayer(MediaPlayer):
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse', QtCore.QVariant(True)).toBool() and display.controller.isLive:
+        if Settings().value(u'advanced/hide mouse', True) and display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
         display.vlcInstance.set_log_verbosity(2)
@@ -147,7 +146,7 @@ class VlcPlayer(MediaPlayer):
         log.debug(u'load vid in Vlc Controller')
         controller = display.controller
         volume = controller.media_info.volume
-        file_path = str(controller.media_info.file_info.absoluteFilePath().toUtf8())
+        file_path = str(controller.media_info.file_info.absoluteFilePath())
         path = os.path.normcase(file_path)
         # create the media
         display.vlcMedia = display.vlcInstance.media_new_path(path)
@@ -159,7 +158,7 @@ class VlcPlayer(MediaPlayer):
         # We need to set media_info.length during load because we want
         # to avoid start and stop the video twice. Once for real playback
         # and once to just get media length.
-        # 
+        #
         # Media plugin depends on knowing media length before playback.
         controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         return True

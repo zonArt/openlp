@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -67,8 +67,7 @@ class MediaDockManager(object):
         log.debug(u'Inserting %s dock' % visible_title[u'title'])
         match = False
         for dock_index in range(self.media_dock.count()):
-            if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.plugin.name:
+            if self.media_dock.widget(dock_index).settingsSection == media_item.plugin.name:
                 match = True
                 break
         if not match:
@@ -85,7 +84,6 @@ class MediaDockManager(object):
         log.debug(u'remove %s dock' % visible_title[u'title'])
         for dock_index in range(self.media_dock.count()):
             if self.media_dock.widget(dock_index):
-                if self.media_dock.widget(dock_index).settingsSection == \
-                    media_item.plugin.name:
+                if self.media_dock.widget(dock_index).settingsSection == media_item.plugin.name:
                     self.media_dock.widget(dock_index).setVisible(False)
                     self.media_dock.removeItem(dock_index)

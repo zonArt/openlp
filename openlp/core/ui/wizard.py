@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -54,25 +54,24 @@ class WizardStrings(object):
     FormatLabel = translate('OpenLP.Ui', 'Format:')
     HeaderStyle = u'<span style="font-size:14pt; font-weight:600;">%s</span>'
     Importing = translate('OpenLP.Ui', 'Importing')
-    ImportingType = unicode(translate('OpenLP.Ui', 'Importing "%s"...'))
+    ImportingType = translate('OpenLP.Ui', 'Importing "%s"...')
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
-    ImportSelectLong = unicode(translate('OpenLP.Ui',
-        'Select the import format and the location to import from.'))
+    ImportSelectLong = translate('OpenLP.Ui',
+        'Select the import format and the location to import from.')
     NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
         'disabled due to a missing Python module. If you want to use this '
-        'importer, you will need to install the "python-sqlite" '
-        'module.')
-    OpenTypeFile = unicode(translate('OpenLP.Ui', 'Open %s File'))
-    OpenTypeFolder = unicode(translate('OpenLP.Ui', 'Open %s Folder'))
-    PercentSymbolFormat = unicode(translate('OpenLP.Ui', '%p%'))
+        'importer, you will need to install the "python-sqlite" module.')
+    OpenTypeFile = translate('OpenLP.Ui', 'Open %s File')
+    OpenTypeFolder = translate('OpenLP.Ui', 'Open %s Folder')
+    PercentSymbolFormat = translate('OpenLP.Ui', '%p%')
     Ready = translate('OpenLP.Ui', 'Ready.')
     StartingImport = translate('OpenLP.Ui', 'Starting import...')
-    YouSpecifyFile = unicode(translate('OpenLP.Ui', 'You need to specify one '
-        '%s file to import from.', 'A file type e.g. OpenSong'))
-    YouSpecifyFiles = unicode(translate('OpenLP.Ui', 'You need to specify at '
-        'least one %s file to import from.', 'A file type e.g. OpenSong'))
-    YouSpecifyFolder = unicode(translate('OpenLP.Ui', 'You need to specify one '
-        '%s folder to import from.', 'A song format e.g. PowerSong'))
+    YouSpecifyFile = translate('OpenLP.Ui', 'You need to specify one '
+        '%s file to import from.', 'A file type e.g. OpenSong')
+    YouSpecifyFiles = translate('OpenLP.Ui', 'You need to specify at '
+        'least one %s file to import from.', 'A file type e.g. OpenSong')
+    YouSpecifyFolder = translate('OpenLP.Ui', 'You need to specify one '
+        '%s folder to import from.', 'A song format e.g. PowerSong')
 
 
 class OpenLPWizard(QtGui.QWizard):
@@ -92,12 +91,9 @@ class OpenLPWizard(QtGui.QWizard):
         self.registerFields()
         self.customInit()
         self.customSignals()
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'),
-            self.onCurrentIdChanged)
-        QtCore.QObject.connect(self.errorCopyToButton,
-            QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
-        QtCore.QObject.connect(self.errorSaveToButton,
-            QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
+        QtCore.QObject.connect(self.errorCopyToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
+        QtCore.QObject.connect(self.errorSaveToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
 
     def setupUi(self, image):
         """
@@ -145,20 +141,17 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressLayout.addWidget(self.errorReportTextEdit)
         self.errorButtonLayout = QtGui.QHBoxLayout()
         self.errorButtonLayout.setObjectName(u'errorButtonLayout')
-        spacer = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacer = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.errorButtonLayout.addItem(spacer)
         self.errorCopyToButton = QtGui.QPushButton(self.progressPage)
         self.errorCopyToButton.setObjectName(u'errorCopyToButton')
         self.errorCopyToButton.setHidden(True)
-        self.errorCopyToButton.setIcon(
-            build_icon(u':/system/system_edit_copy.png'))
+        self.errorCopyToButton.setIcon(build_icon(u':/system/system_edit_copy.png'))
         self.errorButtonLayout.addWidget(self.errorCopyToButton)
         self.errorSaveToButton = QtGui.QPushButton(self.progressPage)
         self.errorSaveToButton.setObjectName(u'errorSaveToButton')
         self.errorSaveToButton.setHidden(True)
-        self.errorSaveToButton.setIcon(
-            build_icon(u':/general/general_save.png'))
+        self.errorSaveToButton.setIcon(build_icon(u':/general/general_save.png'))
         self.errorButtonLayout.addWidget(self.errorSaveToButton)
         self.progressLayout.addLayout(self.errorButtonLayout)
         self.addPage(self.progressPage)
@@ -280,9 +273,8 @@ class OpenLPWizard(QtGui.QWizard):
             An editbox (QLineEdit).
         """
         folder = unicode(QtGui.QFileDialog.getExistingDirectory(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), QtGui.QFileDialog.ShowDirsOnly))
+            os.path.dirname(SettingsManager.get_last_dir(self.plugin.settingsSection, 1)),
+                QtGui.QFileDialog.ShowDirsOnly))
         if folder:
             editbox.setText(folder)
-            SettingsManager.set_last_dir(self.plugin.settingsSection,
-                folder, 1)
+            SettingsManager.set_last_dir(self.plugin.settingsSection, folder, 1)

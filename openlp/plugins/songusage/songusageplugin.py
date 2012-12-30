@@ -32,11 +32,10 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, Receiver, build_icon, \
-    translate
+from openlp.core.lib import build_icon, Plugin, Receiver, Settings, \
+    StringContent, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
-from openlp.core.lib.settings import Settings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songusage.forms import SongUsageDetailForm, \
     SongUsageDeleteForm
@@ -115,8 +114,7 @@ class SongUsagePlugin(Plugin):
             QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.songUsageStatus.setChecked)
         QtCore.QObject.connect(self.songUsageActiveButton,
-            QtCore.SIGNAL(u'toggled(bool)'),
-            self.toggleSongUsageState)
+            QtCore.SIGNAL(u'toggled(bool)'), self.toggleSongUsageState)
         self.songUsageMenu.menuAction().setVisible(False)
 
     def initialise(self):
@@ -129,17 +127,16 @@ class SongUsagePlugin(Plugin):
             QtCore.SIGNAL(u'print_service_started'),
             self.printSongUsage)
         self.songUsageActive = Settings().value(
-            self.settingsSection + u'/active',
-            QtCore.QVariant(False)).toBool()
+            self.settingsSection + u'/active', False)
         # Set the button and checkbox state
         self.setButtonState()
         action_list = ActionList.get_instance()
         action_list.add_action(self.songUsageStatus,
-            unicode(translate('SongUsagePlugin', 'Song Usage')))
+            translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageDelete,
-            unicode(translate('SongUsagePlugin', 'Song Usage')))
+            translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageReport,
-            unicode(translate('SongUsagePlugin', 'Song Usage')))
+            translate('SongUsagePlugin', 'Song Usage'))
         self.songUsageDeleteForm = SongUsageDeleteForm(self.manager,
             self.formParent)
         self.songUsageDetailForm = SongUsageDetailForm(self, self.formParent)
@@ -156,11 +153,11 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.songUsageStatus,
-            unicode(translate('SongUsagePlugin', 'Song Usage')))
+            translate('SongUsagePlugin', 'Song Usage'))
         action_list.remove_action(self.songUsageDelete,
-            unicode(translate('SongUsagePlugin', 'Song Usage')))
+            translate('SongUsagePlugin', 'Song Usage'))
         action_list.remove_action(self.songUsageReport,
-            unicode(translate('SongUsagePlugin', 'Song Usage')))
+            translate('SongUsagePlugin', 'Song Usage'))
         self.songUsageActiveButton.hide()
         # stop any events being processed
         self.songUsageActive = False
@@ -172,7 +169,7 @@ class SongUsagePlugin(Plugin):
         """
         self.songUsageActive = not self.songUsageActive
         Settings().setValue(self.settingsSection + u'/active',
-            QtCore.QVariant(self.songUsageActive))
+            self.songUsageActive)
         self.setButtonState()
 
     def setButtonState(self):
@@ -202,15 +199,13 @@ class SongUsagePlugin(Plugin):
         """
         Song Usage for which has been displayed
         """
-        self._add_song_usage(unicode(translate('SongUsagePlugin',
-            'display')), item)
+        self._add_song_usage(translate('SongUsagePlugin', 'display'), item)
 
     def printSongUsage(self, item):
         """
         Song Usage for which has been printed
         """
-        self._add_song_usage(unicode(translate('SongUsagePlugin',
-            'printed')), item)
+        self._add_song_usage(translate('SongUsagePlugin', 'printed'), item)
 
     def _add_song_usage(self, source, item):
         audit = item[0].audit

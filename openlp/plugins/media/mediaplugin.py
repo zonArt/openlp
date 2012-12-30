@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Settings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -124,14 +124,14 @@ class MediaPlugin(Plugin):
             log.info(u'Found old Phonon setting')
             players = self.mediaController.mediaPlayers.keys()
             has_phonon = u'phonon' in players
-            if settings.value(u'use phonon').toBool() and has_phonon:
+            if settings.value(u'use phonon')  and has_phonon:
                 log.debug(u'Converting old setting to new setting')
                 new_players = []
                 if players:
                     new_players = [player for player in players if player != u'phonon']
                 new_players.insert(0, u'phonon')
                 self.mediaController.mediaPlayers[u'phonon'].isActive = True
-                settings.setValue(u'players', QtCore.QVariant(u','.join(new_players)))
+                settings.setValue(u'players', u','.join(new_players))
                 self.settingsTab.load()
             settings.remove(u'use phonon')
         settings.endGroup()

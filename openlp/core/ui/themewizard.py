@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -30,10 +30,8 @@
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
-from openlp.core.lib.theme import HorizontalType, BackgroundType, \
-    BackgroundGradientType
-from openlp.core.lib.ui import UiStrings, add_welcome_page, \
-    create_valign_selection_widgets
+from openlp.core.lib.theme import HorizontalType, BackgroundType, BackgroundGradientType
+from openlp.core.lib.ui import UiStrings, add_welcome_page, create_valign_selection_widgets
 
 class Ui_ThemeWizard(object):
     def setupUi(self, themeWizard):
@@ -43,8 +41,7 @@ class Ui_ThemeWizard(object):
         themeWizard.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.HaveCustomButton1)
-        self.spacer = QtGui.QSpacerItem(10, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
+        self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         # Welcome Page
         add_welcome_page(themeWizard, u':/wizards/wizard_createtheme.bmp')
         # Background Page
@@ -59,10 +56,8 @@ class Ui_ThemeWizard(object):
         self.backgroundComboBox = QtGui.QComboBox(self.backgroundPage)
         self.backgroundComboBox.addItems([u'', u'', u'', u''])
         self.backgroundComboBox.setObjectName(u'BackgroundComboBox')
-        self.backgroundTypeLayout.addRow(self.backgroundLabel,
-            self.backgroundComboBox)
-        self.backgroundTypeLayout.setItem(1, QtGui.QFormLayout.LabelRole,
-            self.spacer)
+        self.backgroundTypeLayout.addRow(self.backgroundLabel, self.backgroundComboBox)
+        self.backgroundTypeLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
         self.backgroundLayout.addLayout(self.backgroundTypeLayout)
         self.backgroundStack = QtGui.QStackedLayout()
         self.backgroundStack.setObjectName(u'BackgroundStack')
@@ -87,21 +82,18 @@ class Ui_ThemeWizard(object):
         self.gradientStartLabel.setObjectName(u'GradientStartLabel')
         self.gradientStartButton = QtGui.QPushButton(self.gradientWidget)
         self.gradientStartButton.setObjectName(u'GradientStartButton')
-        self.gradientLayout.addRow(self.gradientStartLabel,
-            self.gradientStartButton)
+        self.gradientLayout.addRow(self.gradientStartLabel, self.gradientStartButton)
         self.gradientEndLabel = QtGui.QLabel(self.gradientWidget)
         self.gradientEndLabel.setObjectName(u'GradientEndLabel')
         self.gradientEndButton = QtGui.QPushButton(self.gradientWidget)
         self.gradientEndButton.setObjectName(u'GradientEndButton')
-        self.gradientLayout.addRow(self.gradientEndLabel,
-            self.gradientEndButton)
+        self.gradientLayout.addRow(self.gradientEndLabel, self.gradientEndButton)
         self.gradientTypeLabel = QtGui.QLabel(self.gradientWidget)
         self.gradientTypeLabel.setObjectName(u'GradientTypeLabel')
         self.gradientComboBox = QtGui.QComboBox(self.gradientWidget)
         self.gradientComboBox.setObjectName(u'GradientComboBox')
         self.gradientComboBox.addItems([u'', u'', u'', u'', u''])
-        self.gradientLayout.addRow(self.gradientTypeLabel,
-            self.gradientComboBox)
+        self.gradientLayout.addRow(self.gradientTypeLabel, self.gradientComboBox)
         self.gradientLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.spacer)
         self.backgroundStack.addWidget(self.gradientWidget)
         self.imageWidget = QtGui.QWidget(self.backgroundPage)
@@ -123,8 +115,7 @@ class Ui_ThemeWizard(object):
         self.imageFileLayout.addWidget(self.imageFileEdit)
         self.imageBrowseButton = QtGui.QToolButton(self.imageWidget)
         self.imageBrowseButton.setObjectName(u'ImageBrowseButton')
-        self.imageBrowseButton.setIcon(
-            build_icon(u':/general/general_open.png'))
+        self.imageBrowseButton.setIcon(build_icon(u':/general/general_open.png'))
         self.imageFileLayout.addWidget(self.imageBrowseButton)
         self.imageLayout.addRow(self.imageLabel, self.imageFileLayout)
         self.imageLayout.setItem(2, QtGui.QFormLayout.LabelRole, self.spacer)
@@ -162,8 +153,7 @@ class Ui_ThemeWizard(object):
         self.mainItalicsCheckBox = QtGui.QCheckBox(self.mainAreaPage)
         self.mainItalicsCheckBox.setObjectName(u'MainItalicsCheckBox')
         self.mainPropertiesLayout.addWidget(self.mainItalicsCheckBox)
-        self.mainAreaLayout.addRow(self.mainColorLabel,
-            self.mainPropertiesLayout)
+        self.mainAreaLayout.addRow(self.mainColorLabel, self.mainPropertiesLayout)
         self.mainSizeLabel = QtGui.QLabel(self.mainAreaPage)
         self.mainSizeLabel.setObjectName(u'MainSizeLabel')
         self.mainSizeLayout = QtGui.QHBoxLayout()
@@ -183,8 +173,7 @@ class Ui_ThemeWizard(object):
         self.lineSpacingSpinBox.setMinimum(-50)
         self.lineSpacingSpinBox.setMaximum(50)
         self.lineSpacingSpinBox.setObjectName(u'LineSpacingSpinBox')
-        self.mainAreaLayout.addRow(self.lineSpacingLabel,
-            self.lineSpacingSpinBox)
+        self.mainAreaLayout.addRow(self.lineSpacingLabel, self.lineSpacingSpinBox)
         self.outlineCheckBox = QtGui.QCheckBox(self.mainAreaPage)
         self.outlineCheckBox.setObjectName(u'OutlineCheckBox')
         self.outlineLayout = QtGui.QHBoxLayout()
@@ -229,24 +218,20 @@ class Ui_ThemeWizard(object):
         self.footerFontLabel.setObjectName(u'FooterFontLabel')
         self.footerFontComboBox = QtGui.QFontComboBox(self.footerAreaPage)
         self.footerFontComboBox.setObjectName(u'footerFontComboBox')
-        self.footerAreaLayout.addRow(self.footerFontLabel,
-            self.footerFontComboBox)
+        self.footerAreaLayout.addRow(self.footerFontLabel, self.footerFontComboBox)
         self.footerColorLabel = QtGui.QLabel(self.footerAreaPage)
         self.footerColorLabel.setObjectName(u'FooterColorLabel')
         self.footerColorButton = QtGui.QPushButton(self.footerAreaPage)
         self.footerColorButton.setObjectName(u'footerColorButton')
-        self.footerAreaLayout.addRow(self.footerColorLabel,
-            self.footerColorButton)
+        self.footerAreaLayout.addRow(self.footerColorLabel, self.footerColorButton)
         self.footerSizeLabel = QtGui.QLabel(self.footerAreaPage)
         self.footerSizeLabel.setObjectName(u'FooterSizeLabel')
         self.footerSizeSpinBox = QtGui.QSpinBox(self.footerAreaPage)
         self.footerSizeSpinBox.setMaximum(999)
         self.footerSizeSpinBox.setValue(10)
         self.footerSizeSpinBox.setObjectName(u'FooterSizeSpinBox')
-        self.footerAreaLayout.addRow(self.footerSizeLabel,
-            self.footerSizeSpinBox)
-        self.footerAreaLayout.setItem(3, QtGui.QFormLayout.LabelRole,
-            self.spacer)
+        self.footerAreaLayout.addRow(self.footerSizeLabel, self.footerSizeSpinBox)
+        self.footerAreaLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.spacer)
         themeWizard.addPage(self.footerAreaPage)
         # Alignment Page
         self.alignmentPage = QtGui.QWizardPage()
@@ -258,10 +243,8 @@ class Ui_ThemeWizard(object):
         self.horizontalComboBox = QtGui.QComboBox(self.alignmentPage)
         self.horizontalComboBox.addItems([u'', u'', u'', u''])
         self.horizontalComboBox.setObjectName(u'HorizontalComboBox')
-        self.alignmentLayout.addRow(self.horizontalLabel,
-            self.horizontalComboBox)
-        self.verticalLabel, self.verticalComboBox = \
-            create_valign_selection_widgets(self.alignmentPage)
+        self.alignmentLayout.addRow(self.horizontalLabel, self.horizontalComboBox)
+        self.verticalLabel, self.verticalComboBox = create_valign_selection_widgets(self.alignmentPage)
         self.verticalLabel.setObjectName(u'verticalLabel')
         self.verticalComboBox.setObjectName(u'verticalComboBox')
         self.alignmentLayout.addRow(self.verticalLabel, self.verticalComboBox)
@@ -269,10 +252,8 @@ class Ui_ThemeWizard(object):
         self.transitionsLabel.setObjectName(u'TransitionsLabel')
         self.transitionsCheckBox = QtGui.QCheckBox(self.alignmentPage)
         self.transitionsCheckBox.setObjectName(u'TransitionsCheckBox')
-        self.alignmentLayout.addRow(self.transitionsLabel,
-            self.transitionsCheckBox)
-        self.alignmentLayout.setItem(3, QtGui.QFormLayout.LabelRole,
-            self.spacer)
+        self.alignmentLayout.addRow(self.transitionsLabel, self.transitionsCheckBox)
+        self.alignmentLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.spacer)
         themeWizard.addPage(self.alignmentPage)
         # Area Position Page
         self.areaPositionPage = QtGui.QWizardPage()
@@ -303,23 +284,19 @@ class Ui_ThemeWizard(object):
         self.mainWidthSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
         self.mainWidthSpinBox.setMaximum(9999)
         self.mainWidthSpinBox.setObjectName(u'MainWidthSpinBox')
-        self.mainPositionLayout.addRow(self.mainWidthLabel,
-            self.mainWidthSpinBox)
+        self.mainPositionLayout.addRow(self.mainWidthLabel, self.mainWidthSpinBox)
         self.mainHeightLabel = QtGui.QLabel(self.mainPositionGroupBox)
         self.mainHeightLabel.setObjectName(u'MainHeightLabel')
         self.mainHeightSpinBox = QtGui.QSpinBox(self.mainPositionGroupBox)
         self.mainHeightSpinBox.setMaximum(9999)
         self.mainHeightSpinBox.setObjectName(u'MainHeightSpinBox')
-        self.mainPositionLayout.addRow(self.mainHeightLabel,
-            self.mainHeightSpinBox)
+        self.mainPositionLayout.addRow(self.mainHeightLabel, self.mainHeightSpinBox)
         self.areaPositionLayout.addWidget(self.mainPositionGroupBox)
         self.footerPositionGroupBox = QtGui.QGroupBox(self.areaPositionPage)
         self.footerPositionGroupBox.setObjectName(u'FooterPositionGroupBox')
-        self.footerPositionLayout = QtGui.QFormLayout(
-            self.footerPositionGroupBox)
+        self.footerPositionLayout = QtGui.QFormLayout(self.footerPositionGroupBox)
         self.footerPositionLayout.setObjectName(u'FooterPositionLayout')
-        self.footerPositionCheckBox = QtGui.QCheckBox(
-            self.footerPositionGroupBox)
+        self.footerPositionCheckBox = QtGui.QCheckBox(self.footerPositionGroupBox)
         self.footerPositionCheckBox.setObjectName(u'FooterPositionCheckBox')
         self.footerPositionLayout.addRow(self.footerPositionCheckBox)
         self.footerXLabel = QtGui.QLabel(self.footerPositionGroupBox)
@@ -339,15 +316,13 @@ class Ui_ThemeWizard(object):
         self.footerWidthSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
         self.footerWidthSpinBox.setMaximum(9999)
         self.footerWidthSpinBox.setObjectName(u'FooterWidthSpinBox')
-        self.footerPositionLayout.addRow(self.footerWidthLabel,
-            self.footerWidthSpinBox)
+        self.footerPositionLayout.addRow(self.footerWidthLabel, self.footerWidthSpinBox)
         self.footerHeightLabel = QtGui.QLabel(self.footerPositionGroupBox)
         self.footerHeightLabel.setObjectName(u'FooterHeightLabel')
         self.footerHeightSpinBox = QtGui.QSpinBox(self.footerPositionGroupBox)
         self.footerHeightSpinBox.setMaximum(9999)
         self.footerHeightSpinBox.setObjectName(u'FooterHeightSpinBox')
-        self.footerPositionLayout.addRow(self.footerHeightLabel,
-            self.footerHeightSpinBox)
+        self.footerPositionLayout.addRow(self.footerHeightLabel, self.footerHeightSpinBox)
         self.areaPositionLayout.addWidget(self.footerPositionGroupBox)
         themeWizard.addPage(self.areaPositionPage)
         # Preview Page
@@ -360,8 +335,7 @@ class Ui_ThemeWizard(object):
         self.themeNameLabel = QtGui.QLabel(self.previewPage)
         self.themeNameLabel.setObjectName(u'ThemeNameLabel')
         self.themeNameEdit = QtGui.QLineEdit(self.previewPage)
-        self.themeNameEdit.setValidator(QtGui.QRegExpValidator(
-            QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
+        self.themeNameEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":<>+%]+'), self))
         self.themeNameEdit.setObjectName(u'ThemeNameEdit')
         self.themeNameLayout.addRow(self.themeNameLabel, self.themeNameEdit)
         self.previewLayout.addLayout(self.themeNameLayout)
@@ -380,78 +354,55 @@ class Ui_ThemeWizard(object):
         self.previewLayout.addWidget(self.previewArea)
         themeWizard.addPage(self.previewPage)
         self.retranslateUi(themeWizard)
-        QtCore.QObject.connect(self.backgroundComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.backgroundStack,
-            QtCore.SLOT(u'setCurrentIndex(int)'))
-        QtCore.QObject.connect(self.outlineCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.outlineColorButton,
+        QtCore.QObject.connect(self.backgroundComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
+            self.backgroundStack, QtCore.SLOT(u'setCurrentIndex(int)'))
+        QtCore.QObject.connect(self.outlineCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.outlineColorButton,
             QtCore.SLOT(u'setEnabled(bool)'))
-        QtCore.QObject.connect(self.outlineCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.outlineSizeSpinBox,
+        QtCore.QObject.connect(self.outlineCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.outlineSizeSpinBox,
             QtCore.SLOT(u'setEnabled(bool)'))
-        QtCore.QObject.connect(self.shadowCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.shadowColorButton,
+        QtCore.QObject.connect(self.shadowCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.shadowColorButton,
             QtCore.SLOT(u'setEnabled(bool)'))
-        QtCore.QObject.connect(self.shadowCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.shadowSizeSpinBox,
+        QtCore.QObject.connect(self.shadowCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.shadowSizeSpinBox,
             QtCore.SLOT(u'setEnabled(bool)'))
-        QtCore.QObject.connect(self.mainPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.mainXSpinBox,
+        QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.mainXSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.mainPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.mainYSpinBox,
+        QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.mainYSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.mainPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.mainWidthSpinBox,
+        QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.mainWidthSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.mainPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.mainHeightSpinBox,
+        QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.mainHeightSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.footerPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.footerXSpinBox,
+        QtCore.QObject.connect(self.footerPositionCheckBox,QtCore.SIGNAL(u'toggled(bool)'), self.footerXSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.footerPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.footerYSpinBox,
+        QtCore.QObject.connect(self.footerPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.footerYSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.footerPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.footerWidthSpinBox,
+        QtCore.QObject.connect(self.footerPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.footerWidthSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.footerPositionCheckBox,
-            QtCore.SIGNAL(u'toggled(bool)'), self.footerHeightSpinBox,
+        QtCore.QObject.connect(self.footerPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.footerHeightSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
 
     def retranslateUi(self, themeWizard):
-        themeWizard.setWindowTitle(
-            translate('OpenLP.ThemeWizard', 'Theme Wizard'))
-        self.titleLabel.setText(
-            u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
+        themeWizard.setWindowTitle(translate('OpenLP.ThemeWizard', 'Theme Wizard'))
+        self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
             translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard'))
         self.informationLabel.setText(
             translate('OpenLP.ThemeWizard', 'This wizard will help you to '
                 'create and edit your themes. Click the next button below to '
                 'start the process by setting up your background.'))
-        self.backgroundPage.setTitle(
-            translate('OpenLP.ThemeWizard', 'Set Up Background'))
-        self.backgroundPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'Set up your theme\'s background '
+        self.backgroundPage.setTitle(translate('OpenLP.ThemeWizard', 'Set Up Background'))
+        self.backgroundPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Set up your theme\'s background '
                 'according to the parameters below.'))
-        self.backgroundLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Background type:'))
+        self.backgroundLabel.setText(translate('OpenLP.ThemeWizard', 'Background type:'))
         self.backgroundComboBox.setItemText(BackgroundType.Solid,
             translate('OpenLP.ThemeWizard', 'Solid Color'))
         self.backgroundComboBox.setItemText(BackgroundType.Gradient,
             translate('OpenLP.ThemeWizard', 'Gradient'))
-        self.backgroundComboBox.setItemText(
-            BackgroundType.Image, UiStrings().Image)
-        self.backgroundComboBox.setItemText(BackgroundType.Transparent,
-            translate('OpenLP.ThemeWizard', 'Transparent'))
+        self.backgroundComboBox.setItemText(BackgroundType.Image, UiStrings().Image)
+        self.backgroundComboBox.setItemText(BackgroundType.Transparent, translate('OpenLP.ThemeWizard', 'Transparent'))
         self.colorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
-        self.gradientStartLabel.setText(
-            translate(u'OpenLP.ThemeWizard', 'Starting color:'))
-        self.gradientEndLabel.setText(
-            translate(u'OpenLP.ThemeWizard', 'Ending color:'))
-        self.gradientTypeLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Gradient:'))
+        self.gradientStartLabel.setText(translate(u'OpenLP.ThemeWizard', 'Starting color:'))
+        self.gradientEndLabel.setText(translate(u'OpenLP.ThemeWizard', 'Ending color:'))
+        self.gradientTypeLabel.setText(translate('OpenLP.ThemeWizard', 'Gradient:'))
         self.gradientComboBox.setItemText(BackgroundGradientType.Horizontal,
             translate('OpenLP.ThemeWizard', 'Horizontal'))
         self.gradientComboBox.setItemText(BackgroundGradientType.Vertical,
@@ -462,66 +413,46 @@ class Ui_ThemeWizard(object):
             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
         self.gradientComboBox.setItemText(BackgroundGradientType.LeftBottom,
             translate('OpenLP.ThemeWizard', 'Bottom Left - Top Right'))
-        self.imageColorLabel.setText(
-            translate(u'OpenLP.ThemeWizard', 'Background color:'))
+        self.imageColorLabel.setText(translate(u'OpenLP.ThemeWizard', 'Background color:'))
         self.imageLabel.setText(u'%s:' % UiStrings().Image)
-        self.mainAreaPage.setTitle(
-            translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
-        self.mainAreaPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'Define the font and display '
+        self.mainAreaPage.setTitle(translate('OpenLP.ThemeWizard', 'Main Area Font Details'))
+        self.mainAreaPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Define the font and display '
                 'characteristics for the Display text'))
         self.mainFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.mainColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.mainSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
         self.mainSizeSpinBox.setSuffix(UiStrings().FontSizePtUnit)
-        self.lineSpacingLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Line Spacing:'))
+        self.lineSpacingLabel.setText(translate('OpenLP.ThemeWizard', 'Line Spacing:'))
         self.lineSpacingSpinBox.setSuffix(UiStrings().FontSizePtUnit)
-        self.outlineCheckBox.setText(
-            translate('OpenLP.ThemeWizard', '&Outline:'))
+        self.outlineCheckBox.setText(translate('OpenLP.ThemeWizard', '&Outline:'))
         self.outlineSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
         self.outlineSizeSpinBox.setSuffix(UiStrings().FontSizePtUnit)
         self.shadowCheckBox.setText(translate('OpenLP.ThemeWizard', '&Shadow:'))
         self.shadowSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
         self.shadowSizeSpinBox.setSuffix(UiStrings().FontSizePtUnit)
         self.mainBoldCheckBox.setText(translate('OpenLP.ThemeWizard', 'Bold'))
-        self.mainItalicsCheckBox.setText(
-            translate('OpenLP.ThemeWizard', 'Italic'))
-        self.footerAreaPage.setTitle(
-            translate('OpenLP.ThemeWizard', 'Footer Area Font Details'))
-        self.footerAreaPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'Define the font and display '
+        self.mainItalicsCheckBox.setText(translate('OpenLP.ThemeWizard', 'Italic'))
+        self.footerAreaPage.setTitle(translate('OpenLP.ThemeWizard', 'Footer Area Font Details'))
+        self.footerAreaPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Define the font and display '
                 'characteristics for the Footer text'))
         self.footerFontLabel.setText(translate('OpenLP.ThemeWizard', 'Font:'))
         self.footerColorLabel.setText(translate('OpenLP.ThemeWizard', 'Color:'))
         self.footerSizeLabel.setText(translate('OpenLP.ThemeWizard', 'Size:'))
         self.footerSizeSpinBox.setSuffix(UiStrings().FontSizePtUnit)
-        self.alignmentPage.setTitle(
-            translate('OpenLP.ThemeWizard', 'Text Formatting Details'))
-        self.alignmentPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'Allows additional display '
+        self.alignmentPage.setTitle(translate('OpenLP.ThemeWizard', 'Text Formatting Details'))
+        self.alignmentPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Allows additional display '
                 'formatting information to be defined'))
-        self.horizontalLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Horizontal Align:'))
-        self.horizontalComboBox.setItemText(HorizontalType.Left,
-            translate('OpenLP.ThemeWizard', 'Left'))
-        self.horizontalComboBox.setItemText(HorizontalType.Right,
-            translate('OpenLP.ThemeWizard', 'Right'))
-        self.horizontalComboBox.setItemText(HorizontalType.Center,
-            translate('OpenLP.ThemeWizard', 'Center'))
-        self.horizontalComboBox.setItemText(HorizontalType.Justify,
-            translate('OpenLP.ThemeWizard', 'Justify'))
-        self.transitionsLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Transitions:'))
-        self.areaPositionPage.setTitle(
-            translate('OpenLP.ThemeWizard', 'Output Area Locations'))
-        self.areaPositionPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'Allows you to change and move the'
+        self.horizontalLabel.setText(translate('OpenLP.ThemeWizard', 'Horizontal Align:'))
+        self.horizontalComboBox.setItemText(HorizontalType.Left, translate('OpenLP.ThemeWizard', 'Left'))
+        self.horizontalComboBox.setItemText(HorizontalType.Right, translate('OpenLP.ThemeWizard', 'Right'))
+        self.horizontalComboBox.setItemText(HorizontalType.Center, translate('OpenLP.ThemeWizard', 'Center'))
+        self.horizontalComboBox.setItemText(HorizontalType.Justify, translate('OpenLP.ThemeWizard', 'Justify'))
+        self.transitionsLabel.setText(translate('OpenLP.ThemeWizard', 'Transitions:'))
+        self.areaPositionPage.setTitle(translate('OpenLP.ThemeWizard', 'Output Area Locations'))
+        self.areaPositionPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Allows you to change and move the'
                 ' main and footer areas.'))
-        self.mainPositionGroupBox.setTitle(
-            translate('OpenLP.ThemeWizard', '&Main Area'))
-        self.mainPositionCheckBox.setText(
-            translate('OpenLP.ThemeWizard', '&Use default location'))
+        self.mainPositionGroupBox.setTitle(translate('OpenLP.ThemeWizard', '&Main Area'))
+        self.mainPositionCheckBox.setText(translate('OpenLP.ThemeWizard', '&Use default location'))
         self.mainXLabel.setText(translate('OpenLP.ThemeWizard', 'X position:'))
         self.mainXSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
         self.mainYSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
@@ -529,37 +460,24 @@ class Ui_ThemeWizard(object):
         self.mainWidthSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
         self.mainWidthLabel.setText(translate('OpenLP.ThemeWizard', 'Width:'))
         self.mainHeightSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
-        self.mainHeightLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Height:'))
-        self.footerPositionGroupBox.setTitle(
-            translate('OpenLP.ThemeWizard', '&Footer Area'))
-        self.footerXLabel.setText(
-            translate('OpenLP.ThemeWizard', 'X position:'))
+        self.mainHeightLabel.setText(translate('OpenLP.ThemeWizard', 'Height:'))
+        self.footerPositionGroupBox.setTitle(translate('OpenLP.ThemeWizard', '&Footer Area'))
+        self.footerXLabel.setText(translate('OpenLP.ThemeWizard', 'X position:'))
         self.footerXSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
-        self.footerYLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Y position:'))
+        self.footerYLabel.setText(translate('OpenLP.ThemeWizard', 'Y position:'))
         self.footerYSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
-        self.footerWidthLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Width:'))
-        self.footerWidthSpinBox.setSuffix(
-            translate('OpenLP.ThemeWizard', 'px'))
-        self.footerHeightLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Height:'))
-        self.footerHeightSpinBox.setSuffix(
-            translate('OpenLP.ThemeWizard', 'px'))
-        self.footerPositionCheckBox.setText(
-            translate('OpenLP.ThemeWizard', 'Use default location'))
+        self.footerWidthLabel.setText(translate('OpenLP.ThemeWizard', 'Width:'))
+        self.footerWidthSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
+        self.footerHeightLabel.setText(translate('OpenLP.ThemeWizard', 'Height:'))
+        self.footerHeightSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
+        self.footerPositionCheckBox.setText(translate('OpenLP.ThemeWizard', 'Use default location'))
         themeWizard.setOption(QtGui.QWizard.HaveCustomButton1, False)
         themeWizard.setButtonText(QtGui.QWizard.CustomButton1,
             translate('OpenLP.ThemeWizard', 'Layout Preview'))
-        self.previewPage.setTitle(
-            translate('OpenLP.ThemeWizard', 'Preview and Save'))
-        self.previewPage.setSubTitle(
-            translate('OpenLP.ThemeWizard', 'Preview the theme and save it.'))
-        self.themeNameLabel.setText(
-            translate('OpenLP.ThemeWizard', 'Theme name:'))
+        self.previewPage.setTitle(translate('OpenLP.ThemeWizard', 'Preview and Save'))
+        self.previewPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Preview the theme and save it.'))
+        self.themeNameLabel.setText(translate('OpenLP.ThemeWizard', 'Theme name:'))
         # Align all QFormLayouts towards each other.
         labelWidth = max(self.backgroundLabel.minimumSizeHint().width(),
             self.horizontalLabel.minimumSizeHint().width())
-        self.spacer.changeSize(labelWidth, 0,
-            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.spacer.changeSize(labelWidth, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)

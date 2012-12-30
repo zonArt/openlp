@@ -43,8 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, check_directory_exists
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Receiver, Settings, check_directory_exists
 from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -119,13 +118,13 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
-        has_run_wizard = Settings().value(u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        has_run_wizard = Settings().value(u'general/has run wizard', False)
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
-                Settings().setValue(u'general/has run wizard', QtCore.QVariant(True))
+                Settings().setValue(u'general/has run wizard', True)
         # Correct stylesheet bugs
         application_stylesheet = u''
-        if Settings().value(u'advanced/alternate rows', QtCore.QVariant(sys.platform.startswith(u'win'))).toBool():
+        if Settings().value(u'advanced/alternate rows', sys.platform.startswith(u'win')):
             base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
             alternate_rows_repair_stylesheet = \
                 u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
@@ -134,8 +133,7 @@ class OpenLP(QtGui.QApplication):
             application_stylesheet += nt_repair_stylesheet
         if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
-        # show the splashscreen
-        show_splash = Settings().value(u'general/show splash', QtCore.QVariant(True)).toBool()
+        show_splash = Settings().value(u'general/show splash', True)
         if show_splash:
             self.splash = SplashScreen()
             self.splash.show()
@@ -154,7 +152,7 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         if not has_run_wizard:
             self.mainWindow.firstTime()
-        update_check = Settings().value(u'general/update check', QtCore.QVariant(True)).toBool()
+        update_check = Settings().value(u'general/update check', True)
         if update_check:
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
@@ -209,7 +207,7 @@ class OpenLP(QtGui.QApplication):
         if event.type() == QtCore.QEvent.FileOpen:
             file_name = event.file()
             log.debug(u'Got open file event for %s!', file_name)
-            self.args.insert(0, unicode(file_name))
+            self.args.insert(0, file_name)
             return True
         else:
             return QtGui.QApplication.event(self, event)
@@ -301,8 +299,7 @@ def main(args=None):
         if app.isAlreadyRunning():
             sys.exit()
     # First time checks in settings
-    if not Settings().value(u'general/has run wizard',
-        QtCore.QVariant(False)).toBool():
+    if not Settings().value(u'general/has run wizard', False):
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
             sys.exit()

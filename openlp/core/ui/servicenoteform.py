@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -57,10 +57,8 @@ class ServiceNoteForm(QtGui.QDialog):
         self.textEdit = SpellTextEdit(self, False)
         self.textEdit.setObjectName(u'textEdit')
         self.dialogLayout.addWidget(self.textEdit)
-        self.buttonBox = create_button_box(self, u'buttonBox',
-            [u'cancel', u'save'])
+        self.buttonBox = create_button_box(self, u'buttonBox', [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
 
     def retranslateUi(self):
-        self.setWindowTitle(
-            translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
+        self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
