@@ -410,10 +410,7 @@ class MediaController(object):
         if not controller.isLive:
             autoplay = True
         # Visible or background requested or Service Item wants to autostart
-        elif serviceItem.will_auto_start:
-            autoplay = True
-        # Visible or background requested or Service Item wants to autostart
-        elif (not hidden or controller.media_info.is_background) and not serviceItem.will_auto_start:
+        elif not hidden or controller.media_info.is_background or serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
         elif Settings().value(u'general/auto unblank', False):
