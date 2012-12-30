@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -46,22 +46,17 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         """
         Run the Dialog with correct heading.
         """
-        hour, minutes, seconds = self._time_split(
-            self.item[u'service_item'].start_time)
+        hour, minutes, seconds = self._time_split(self.item[u'service_item'].start_time)
         self.hourSpinBox.setValue(hour)
         self.minuteSpinBox.setValue(minutes)
         self.secondSpinBox.setValue(seconds)
-        hours, minutes, seconds = self._time_split(
-            self.item[u'service_item'].media_length)
+        hours, minutes, seconds = self._time_split(self.item[u'service_item'].media_length)
         self.hourFinishSpinBox.setValue(hours)
         self.minuteFinishSpinBox.setValue(minutes)
         self.secondFinishSpinBox.setValue(seconds)
-        self.hourFinishLabel.setText(u'%s%s' % (unicode(hour),
-            UiStrings().Hours))
-        self.minuteFinishLabel.setText(u'%s%s' %
-            (unicode(minutes), UiStrings().Minutes))
-        self.secondFinishLabel.setText(u'%s%s' %
-            (unicode(seconds), UiStrings().Seconds))
+        self.hourFinishLabel.setText(u'%s%s' % (unicode(hour), UiStrings().Hours))
+        self.minuteFinishLabel.setText(u'%s%s' % (unicode(minutes), UiStrings().Minutes))
+        self.secondFinishLabel.setText(u'%s%s' % (unicode(seconds), UiStrings().Seconds))
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
@@ -72,18 +67,12 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
             self.minuteFinishSpinBox.value() * 60 + \
             self.secondFinishSpinBox.value()
         if end > self.item[u'service_item'].media_length:
-            critical_error_message_box(
-                title=translate('OpenLP.StartTimeForm',
-                'Time Validation Error'),
-                message=translate('OpenLP.StartTimeForm',
-                'Finish time is set after the end of the media item'))
+            critical_error_message_box(title=translate('OpenLP.StartTimeForm', 'Time Validation Error'),
+                message=translate('OpenLP.StartTimeForm', 'Finish time is set after the end of the media item'))
             return
         elif start > end:
-            critical_error_message_box(
-                title=translate('OpenLP.StartTimeForm',
-                'Time Validation Error'),
-                message=translate('OpenLP.StartTimeForm',
-                'Start time is after the finish time of the media item'))
+            critical_error_message_box(title=translate('OpenLP.StartTimeForm', 'Time Validation Error'),
+                message=translate('OpenLP.StartTimeForm', 'Start time is after the finish time of the media item'))
             return
         self.item[u'service_item'].start_time = start
         self.item[u'service_item'].end_time = end

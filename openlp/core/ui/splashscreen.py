@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -34,8 +34,7 @@ class SplashScreen(QtGui.QSplashScreen):
     def __init__(self):
         QtGui.QSplashScreen.__init__(self)
         self.setupUi()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'close_splash'), self.close)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'close_splash'), self.close)
 
     def setupUi(self):
         self.setObjectName(u'splashScreen')

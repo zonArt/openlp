@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -32,8 +32,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Receiver, Settings
 from openlp.core.utils import translate
 from openlp.core.utils.actions import ActionList
 from shortcutlistdialog import Ui_ShortcutListDialog
@@ -52,57 +51,49 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.setupUi(self)
         self.changedActions = {}
         self.action_list = ActionList.get_instance()
-        QtCore.QObject.connect(self.primaryPushButton,
-            QtCore.SIGNAL(u'toggled(bool)'), self.onPrimaryPushButtonClicked)
-        QtCore.QObject.connect(self.alternatePushButton,
-            QtCore.SIGNAL(u'toggled(bool)'), self.onAlternatePushButtonClicked)
-        QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL(
-            u'currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)'),
-            self.onCurrentItemChanged)
+        QtCore.QObject.connect(self.primaryPushButton, QtCore.SIGNAL(u'toggled(bool)'),
+            self.onPrimaryPushButtonClicked)
+        QtCore.QObject.connect(self.alternatePushButton, QtCore.SIGNAL(u'toggled(bool)'),
+            self.onAlternatePushButtonClicked)
         QtCore.QObject.connect(self.treeWidget,
-            QtCore.SIGNAL(u'itemDoubleClicked(QTreeWidgetItem*, int)'),
+            QtCore.SIGNAL(u'currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)'), self.onCurrentItemChanged)
+        QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL(u'itemDoubleClicked(QTreeWidgetItem*, int)'),
             self.onItemDoubleClicked)
-        QtCore.QObject.connect(self.clearPrimaryButton,
-            QtCore.SIGNAL(u'clicked(bool)'), self.onClearPrimaryButtonClicked)
-        QtCore.QObject.connect(self.clearAlternateButton,
-            QtCore.SIGNAL(u'clicked(bool)'), self.onClearAlternateButtonClicked)
-        QtCore.QObject.connect(self.buttonBox,
-            QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
+        QtCore.QObject.connect(self.clearPrimaryButton, QtCore.SIGNAL(u'clicked(bool)'),
+            self.onClearPrimaryButtonClicked)
+        QtCore.QObject.connect(self.clearAlternateButton, QtCore.SIGNAL(u'clicked(bool)'),
+            self.onClearAlternateButtonClicked)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
             self.onRestoreDefaultsClicked)
-        QtCore.QObject.connect(self.defaultRadioButton,
-            QtCore.SIGNAL(u'clicked(bool)'), self.onDefaultRadioButtonClicked)
-        QtCore.QObject.connect(self.customRadioButton,
-            QtCore.SIGNAL(u'clicked(bool)'), self.onCustomRadioButtonClicked)
+        QtCore.QObject.connect(self.defaultRadioButton, QtCore.SIGNAL(u'clicked(bool)'),
+            self.onDefaultRadioButtonClicked)
+        QtCore.QObject.connect(self.customRadioButton, QtCore.SIGNAL(u'clicked(bool)'),
+            self.onCustomRadioButtonClicked)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Space:
             self.keyReleaseEvent(event)
-        elif self.primaryPushButton.isChecked() or \
-            self.alternatePushButton.isChecked():
+        elif self.primaryPushButton.isChecked() or self.alternatePushButton.isChecked():
             event.ignore()
         elif event.key() == QtCore.Qt.Key_Escape:
             event.accept()
             self.close()
 
     def keyReleaseEvent(self, event):
-        if not self.primaryPushButton.isChecked() and \
-            not self.alternatePushButton.isChecked():
+        if not self.primaryPushButton.isChecked() and not self.alternatePushButton.isChecked():
             return
         key = event.key()
         if key == QtCore.Qt.Key_Shift or key == QtCore.Qt.Key_Control or \
             key == QtCore.Qt.Key_Meta or key == QtCore.Qt.Key_Alt:
             return
         key_string = QtGui.QKeySequence(key).toString()
-        if event.modifiers() & QtCore.Qt.ControlModifier == \
-            QtCore.Qt.ControlModifier:
+        if event.modifiers() & QtCore.Qt.ControlModifier == QtCore.Qt.ControlModifier:
             key_string = u'Ctrl+' + key_string
         if event.modifiers() & QtCore.Qt.AltModifier == QtCore.Qt.AltModifier:
             key_string = u'Alt+' + key_string
-        if event.modifiers() & QtCore.Qt.ShiftModifier == \
-            QtCore.Qt.ShiftModifier:
+        if event.modifiers() & QtCore.Qt.ShiftModifier == QtCore.Qt.ShiftModifier:
             key_string = u'Shift+' + key_string
-        if event.modifiers() & QtCore.Qt.MetaModifier == \
-            QtCore.Qt.MetaModifier:
+        if event.modifiers() & QtCore.Qt.MetaModifier == QtCore.Qt.MetaModifier:
             key_string = u'Meta+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
         if self._validiate_shortcut(self._currentItemAction(), key_sequence):
@@ -131,11 +122,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 continue
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
-                actionText = REMOVE_AMPERSAND.sub('', unicode(action.text()))
+                actionText = REMOVE_AMPERSAND.sub('', action.text())
                 actionItem = QtGui.QTreeWidgetItem([actionText])
                 actionItem.setIcon(0, action.icon())
-                actionItem.setData(0,
-                    QtCore.Qt.UserRole, QtCore.QVariant(action))
+                actionItem.setData(0, QtCore.Qt.UserRole, action)
                 item.addChild(actionItem)
             self.treeWidget.addTopLevelItem(item)
             item.setExpanded(True)
@@ -274,8 +264,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         # been triggered by a signal.
         if item is None:
             return
-        if primary_label_text == primary_text and \
-            alternate_label_text == alternate_text:
+        if primary_label_text == primary_text and alternate_label_text == alternate_text:
             self.defaultRadioButton.toggle()
         else:
             self.customRadioButton.toggle()
@@ -284,15 +273,12 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Restores all default shortcuts.
         """
-        if self.buttonBox.buttonRole(button) != \
-            QtGui.QDialogButtonBox.ResetRole:
+        if self.buttonBox.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
             return
-        if QtGui.QMessageBox.question(self,
-            translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
+        if QtGui.QMessageBox.question(self, translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
             translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '
-            'shortcuts to their defaults?'), QtGui.QMessageBox.StandardButtons(
-            QtGui.QMessageBox.Yes |
-            QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
+                'shortcuts to their defaults?'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
             return
         self._adjustButton(self.primaryPushButton, False, text=u'')
         self._adjustButton(self.alternatePushButton, False, text=u'')
@@ -352,8 +338,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                         map(QtGui.QKeySequence.toString, action.shortcuts()))
                     action.setShortcuts(self.changedActions[action])
                     self.action_list.update_shortcut_map(action, old_shortcuts)
-                settings.setValue(
-                    action.objectName(), QtCore.QVariant(action.shortcuts()))
+                settings.setValue(action.objectName(), action.shortcuts())
         settings.endGroup()
 
     def onClearPrimaryButtonClicked(self, toggled):
@@ -375,8 +360,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             # shortcut (not the default one) will become primary shortcut, thus
             # the check will assume that an action were going to have the same
             # shortcut twice.
-            if not self._validiate_shortcut(action, new_shortcuts[0]) and \
-                new_shortcuts[0] != shortcuts[0]:
+            if not self._validiate_shortcut(action, new_shortcuts[0]) and new_shortcuts[0] != shortcuts[0]:
                 return
         if len(shortcuts) == 2:
             new_shortcuts.append(shortcuts[1])
@@ -424,11 +408,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 if key_sequence not in shortcuts:
                     continue
                 if action is changing_action:
-                    if self.primaryPushButton.isChecked() and \
-                        shortcuts.index(key_sequence) == 0:
+                    if self.primaryPushButton.isChecked() and shortcuts.index(key_sequence) == 0:
                         continue
-                    if self.alternatePushButton.isChecked() and \
-                        shortcuts.index(key_sequence) == 1:
+                    if self.alternatePushButton.isChecked() and shortcuts.index(key_sequence) == 1:
                         continue
                 # Have the same parent, thus they cannot have the same shortcut.
                 if action.parent() is changing_action.parent():
@@ -439,16 +421,14 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 if action.shortcutContext() in [QtCore.Qt.WindowShortcut,
                     QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
-                if changing_action.shortcutContext() in \
-                    [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
+                if changing_action.shortcutContext() in  [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
         if not is_valid:
             Receiver.send_message(u'openlp_warning_message', {
-                u'title': translate('OpenLP.ShortcutListDialog',
-                'Duplicate Shortcut'),
-                u'message': unicode(translate('OpenLP.ShortcutListDialog',
-                'The shortcut "%s" is already assigned to another action, '
-                'please use a different shortcut.')) % key_sequence.toString()
+                u'title': translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
+                u'message': translate('OpenLP.ShortcutListDialog',
+                    'The shortcut "%s" is already assigned to another action, '
+                    'please use a different shortcut.') % key_sequence.toString()
             })
         return is_valid
 
@@ -471,7 +451,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             item = self.treeWidget.currentItem()
             if item is None:
                 return
-        return item.data(0, QtCore.Qt.UserRole).toPyObject()
+        return item.data(0, QtCore.Qt.UserRole)
 
     def _adjustButton(self, button, checked=None, enabled=None, text=None):
         """

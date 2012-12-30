@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -68,7 +68,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         Add a widget and store it's handle under the widgets object name.
         """
         action = self.addWidget(widget)
-        self.actions[unicode(widget.objectName())] = action
+        self.actions[widget.objectName()] = action
 
     def setWidgetVisible(self, widgets, visible=True):
         """

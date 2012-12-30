@@ -29,11 +29,10 @@
 
 import logging
 import os
-import sys
+import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -56,33 +55,25 @@ class MediaSlider(QtGui.QSlider):
         self.controller = controller
 
     def mouseMoveEvent(self, event):
-        #print "mme",self.sliderPosition()
+        """
+        Override event to allow hover time to be displayed.
+        """
+        timevalue = QtGui.QStyle.sliderValueFromPosition(self.minimum(),self.maximum(),event.x(),self.width())
+        self.setToolTip(u'%s' % datetime.timedelta(seconds=int(timevalue/1000)))
         QtGui.QSlider.mouseMoveEvent(self, event)
 
     def mousePressEvent(self, event):
-        print "mpe",self.sliderPosition(), self.maximum(),self.minimum()
-        self.manager.media_seek(self.controller,self.sliderPosition())
+        """
+        Mouse Press event no new functionality
+        """
         QtGui.QSlider.mousePressEvent(self, event)
 
     def mouseReleaseEvent(self, event):
-        #print "mre",self.sliderPosition()
+        """
+        Set the slider position when the mouse is clicked and released on the slider.
+        """
+        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(),self.maximum(),event.x(),self.width()))
         QtGui.QSlider.mouseReleaseEvent(self, event)
-
-
-    def _calculate_position(self):
-        position = float(self.mapFromGlobal(QtGui.QCursor.pos()).x())
-        width = float(self.geometry().width() - self.geometry().x())
-        print position, width
-        percent = 0
-        if position > 0:
-            percent = position * (width / 100)
-        length = self.maximum() - self.minimum()
-        new_position = self.maximum()
-        if percent < 100:
-            new_position = int(length * (percent / 100) )
-        print length, percent, new_position, self.sliderPosition(), self.maximum()
-        #self.setSliderPosition(new_position)
-        self.manager.media_seek(self.controller, new_position)
 
 
 class MediaController(object):
@@ -408,7 +399,7 @@ class MediaController(object):
         if not isValid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         # dont care about actual theme, set a black background
         if controller.isLive and not controller.media_info.is_background:
@@ -416,7 +407,6 @@ class MediaController(object):
         # now start playing - Preview is autoplay!
         autoplay = False
         # Preview requested
-        print serviceItem.will_auto_start
         if not controller.isLive:
             autoplay = True
         # Visible or background requested or Service Item wants to autostart
@@ -426,12 +416,12 @@ class MediaController(object):
         elif (not hidden or controller.media_info.is_background) and not serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
-        elif Settings().value(u'general/auto unblank', QtCore.QVariant(False)).toBool():
+        elif Settings().value(u'general/auto unblank', False):
             autoplay = True
         if autoplay:
             if not self.media_play(controller):
                 critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                    unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                    translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
         log.debug(u'use %s controller' % self.currentMediaPlayer[controller.controllerType])
@@ -455,11 +445,11 @@ class MediaController(object):
         if not self._check_file_type(controller, display, serviceItem):
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         if not self.media_play(controller):
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem', 'Unsupported File')))
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         serviceItem.set_media_length(controller.media_info.length)
         self.media_stop(controller)
@@ -480,7 +470,7 @@ class MediaController(object):
         if serviceItem.title != UiStrings().Automatic:
             usedPlayers = [serviceItem.title.lower()]
         if controller.media_info.file_info.isFile():
-            suffix = u'*.%s' % controller.media_info.file_info.suffix().toLower()
+            suffix = u'*.%s' % controller.media_info.file_info.suffix().lower()
             for title in usedPlayers:
                 player = self.mediaPlayers[title]
                 if suffix in player.video_extensions_list:

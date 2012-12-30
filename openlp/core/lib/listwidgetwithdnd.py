@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -53,8 +53,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
             self.parent().loadFile)
 
     def mouseMoveEvent(self, event):
@@ -100,7 +99,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
             event.accept()
             files = []
             for url in event.mimeData().urls():
-                localFile = unicode(url.toLocalFile())
+                localFile = url.toLocalFile()
                 if os.path.isfile(localFile):
                     files.append(localFile)
                 elif os.path.isdir(localFile):

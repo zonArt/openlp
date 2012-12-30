@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -42,16 +42,13 @@ class Ui_FileRenameDialog(object):
         self.fileNameLabel.setObjectName(u'fileNameLabel')
         self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
         self.fileNameEdit = QtGui.QLineEdit(fileRenameDialog)
-        self.fileNameEdit.setValidator(QtGui.QRegExpValidator(
-            QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
+        self.fileNameEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
         self.fileNameEdit.setObjectName(u'fileNameEdit')
         self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
-        self.buttonBox = create_button_box(fileRenameDialog, u'buttonBox',
-            [u'cancel', u'ok'])
+        self.buttonBox = create_button_box(fileRenameDialog, u'buttonBox', [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(fileRenameDialog)
         self.setMaximumHeight(self.sizeHint().height())
 
     def retranslateUi(self, fileRenameDialog):
-        self.fileNameLabel.setText(translate('OpenLP.FileRenameForm',
-            'New File Name:'))
+        self.fileNameLabel.setText(translate('OpenLP.FileRenameForm', 'New File Name:'))

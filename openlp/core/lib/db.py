@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -36,15 +36,13 @@ from urllib import quote_plus as urlquote
 
 from PyQt4 import QtCore
 from sqlalchemy import Table, MetaData, Column, types, create_engine
-from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, \
-    OperationalError
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, OperationalError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Settings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
-from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
 
@@ -112,8 +110,7 @@ def upgrade_db(url, upgrade):
         while hasattr(upgrade, u'upgrade_%d' % version):
             log.debug(u'Running upgrade_%d', version)
             try:
-                getattr(upgrade, u'upgrade_%d' % version) \
-                    (session, metadata, tables)
+                getattr(upgrade, u'upgrade_%d' % version) (session, metadata, tables)
             except (SQLAlchemyError, DBAPIError):
                 log.exception(u'Could not run database upgrade script '
                     '"upgrade_%s", upgrade process has been halted.', version)
@@ -141,11 +138,9 @@ def delete_database(plugin_name, db_file_name=None):
     """
     db_file_path = None
     if db_file_name:
-        db_file_path = os.path.join(
-            AppLocation.get_section_data_path(plugin_name), db_file_name)
+        db_file_path = os.path.join(AppLocation.get_section_data_path(plugin_name), db_file_name)
     else:
-        db_file_path = os.path.join(
-            AppLocation.get_section_data_path(plugin_name), plugin_name)
+        db_file_path = os.path.join(AppLocation.get_section_data_path(plugin_name), plugin_name)
     return delete_file(db_file_path)
 
 
@@ -191,25 +186,20 @@ class Manager(object):
         self.db_url = u''
         self.is_dirty = False
         self.session = None
-        db_type = unicode(
-            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
+        db_type = settings.value(u'db type', u'sqlite')
         if db_type == u'sqlite':
             if db_file_name:
-                self.db_url = u'sqlite:///%s/%s' % (
-                    AppLocation.get_section_data_path(plugin_name),
-                    db_file_name)
+                self.db_url = u'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
             else:
-                self.db_url = u'sqlite:///%s/%s.sqlite' % (
-                    AppLocation.get_section_data_path(plugin_name), plugin_name)
+                self.db_url = u'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                urlquote(unicode(settings.value(u'db username').toString())),
-                urlquote(unicode(settings.value(u'db password').toString())),
-                urlquote(unicode(settings.value(u'db hostname').toString())),
-                urlquote(unicode(settings.value(u'db database').toString())))
+                urlquote(settings.value(u'db username', u'')),
+                urlquote(settings.value(u'db password', u'')),
+                urlquote(settings.value(u'db hostname', u'')),
+                urlquote(settings.value(u'db database', u'')))
             if db_type == u'mysql':
-                db_encoding = unicode(
-                    settings.value(u'db encoding', u'utf8').toString())
+                db_encoding = settings.value(u'db encoding', u'utf8')
                 self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:
@@ -217,11 +207,11 @@ class Manager(object):
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
-                    unicode(translate('OpenLP.Manager', 'The database being '
+                    translate('OpenLP.Manager', 'The database being '
                         'loaded was created in a more recent version of '
                         'OpenLP. The database is version %d, while OpenLP '
                         'expects version %d. The database will not be loaded.'
-                        '\n\nDatabase: %s')) % \
+                        '\n\nDatabase: %s') % \
                         (db_ver, up_ver, self.db_url)
                 )
                 return
@@ -229,10 +219,8 @@ class Manager(object):
             self.session = init_schema(self.db_url)
         except (SQLAlchemyError, DBAPIError):
             log.exception(u'Error loading database: %s', self.db_url)
-            critical_error_message_box(
-                translate('OpenLP.Manager', 'Database Error'),
-                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
-                    'database.\n\nDatabase: %s')) % self.db_url
+            critical_error_message_box(translate('OpenLP.Manager', 'Database Error'),
+                translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s') % self.db_url
             )
 
     def save_object(self, object_instance, commit=True):

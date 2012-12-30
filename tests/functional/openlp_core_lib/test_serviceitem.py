@@ -2,7 +2,7 @@
     Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
-from mock import MagicMock, patch
+from mock import MagicMock
 from openlp.core.lib import ServiceItem
 
 VERSE = u'The Lord said to {r}Noah{/r}: \n'\

@@ -35,9 +35,10 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, build_html, PluginManager, ServiceItem, ImageSource
+    translate, build_icon, build_html, PluginManager, ServiceItem, \
+    ImageSource, SlideLimits, ServiceItemAction, Settings
+from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.lib.settings import Settings
 from openlp.core.lib import SlideLimits, ServiceItemAction
 from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList, \
     DisplayControllerType
@@ -205,13 +206,12 @@ class SlideController(DisplayController):
             self.playSlidesMenu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Play Slides'), self.toolbar))
             self.toolbar.addToolbarWidget(self.playSlidesMenu)
             self.playSlidesLoop = create_action(self, u'playSlidesLoop', text=UiStrings().PlaySlidesInLoop,
-                icon=u':/media/media_time.png', checked=False, shortcuts=[], category=self.category,
-                triggers=self.onPlaySlidesLoop)
+                icon=u':/media/media_time.png', checked=False, shortcuts=[],
+                category=self.category, triggers=self.onPlaySlidesLoop)
             self.playSlidesOnce = create_action(self, u'playSlidesOnce', text=UiStrings().PlaySlidesToEnd,
-                icon=u':/media/media_time.png', checked=False, shortcuts=[], category=self.category,
-                triggers=self.onPlaySlidesOnce)
-            if Settings().value(self.parent().generalSettingsSection + u'/enable slide loop',
-                    QtCore.QVariant(True)).toBool():
+                icon=u':/media/media_time.png', checked=False, shortcuts=[],
+                category=self.category, triggers=self.onPlaySlidesOnce)
+            if Settings().value(self.parent().generalSettingsSection + u'/enable slide loop', True):
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
             else:
                 self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
@@ -392,7 +392,7 @@ class SlideController(DisplayController):
             SONGS_PLUGIN_AVAILABLE = True
         except ImportError:
             SONGS_PLUGIN_AVAILABLE = False
-        sender_name = unicode(self.sender().objectName())
+        sender_name = self.sender().objectName()
         verse_type = sender_name[15:] if sender_name[:15] == u'shortcutAction_' else u''
         if SONGS_PLUGIN_AVAILABLE:
             if verse_type == u'V':
@@ -570,7 +570,7 @@ class SlideController(DisplayController):
                     self.previewListWidget.setRowHeight(framenumber, width / self.ratio)
 
     def onSongBarHandler(self):
-        request = unicode(self.sender().text())
+        request = self.sender().text()
         slide_no = self.slideList[request]
         self.__updatePreviewSelection(slide_no)
         self.slideSelected()
@@ -585,8 +585,7 @@ class SlideController(DisplayController):
         """
         Updates the Slide Limits variable from the settings.
         """
-        self.slide_limits = Settings().value(self.parent().advancedSettingsSection + u'/slide limits',
-            QtCore.QVariant(SlideLimits.End)).toInt()[0]
+        self.slide_limits = Settings().value(self.parent().advancedSettingsSection + u'/slide limits', SlideLimits.End)
 
     def enableToolBar(self, item):
         """
@@ -614,8 +613,7 @@ class SlideController(DisplayController):
         self.playSlidesLoop.setChecked(False)
         self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
-            if Settings().value(self.parent().songsSettingsSection + u'/display songbar',
-                    QtCore.QVariant(True)).toBool() and self.slideList:
+            if Settings().value(self.parent().songsSettingsSection + u'/display songbar', True) and self.slideList:
                 self.songMenu.show()
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.setWidgetVisible(self.loopList)
@@ -729,9 +727,8 @@ class SlideController(DisplayController):
                     action.setData(counter)
                     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), self.onTrackTriggered)
                 self.display.audioPlayer.repeat = Settings().value(
-                    self.parent().generalSettingsSection + u'/audio repeat list', QtCore.QVariant(False)).toBool()
-                if Settings().value(
-                        self.parent().generalSettingsSection + u'/audio start paused', QtCore.QVariant(True)).toBool():
+                    self.parent().generalSettingsSection + u'/audio repeat list', False)
+                if Settings().value(self.parent().generalSettingsSection + u'/audio start paused', True):
                     self.audioPauseItem.setChecked(True)
                     self.display.audioPlayer.pause()
                 else:
@@ -841,7 +838,7 @@ class SlideController(DisplayController):
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.isLive)
         display_type = Settings().value(self.parent().generalSettingsSection + u'/screen blank',
-            QtCore.QVariant(u'')).toString()
+            u'')
         if self.screens.which_screen(self.window()) != self.screens.which_screen(self.display):
             # Order done to handle initial conversion
             if display_type == u'themed':
@@ -879,7 +876,7 @@ class SlideController(DisplayController):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(False)
         if checked:
-            Settings().setValue(self.parent().generalSettingsSection + u'/screen blank', QtCore.QVariant(u'blanked'))
+            Settings().setValue(self.parent().generalSettingsSection + u'/screen blank', u'blanked')
         else:
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
@@ -897,7 +894,7 @@ class SlideController(DisplayController):
         self.themeScreen.setChecked(checked)
         self.desktopScreen.setChecked(False)
         if checked:
-            Settings().setValue(self.parent().generalSettingsSection + u'/screen blank', QtCore.QVariant(u'themed'))
+            Settings().setValue(self.parent().generalSettingsSection + u'/screen blank', u'themed')
         else:
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
@@ -915,7 +912,7 @@ class SlideController(DisplayController):
         self.themeScreen.setChecked(False)
         self.desktopScreen.setChecked(checked)
         if checked:
-            Settings().setValue(self.parent().generalSettingsSection + u'/screen blank', QtCore.QVariant(u'hidden'))
+            Settings().setValue(self.parent().generalSettingsSection + u'/screen blank', u'hidden')
         else:
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
@@ -1192,7 +1189,7 @@ class SlideController(DisplayController):
         """
         triggered by clicking the Preview slide items
         """
-        if Settings().value(u'advanced/double click live', QtCore.QVariant(False)).toBool():
+        if Settings().value(u'advanced/double click live', False):
             # Live and Preview have issues if we have video or presentations
             # playing in both at the same time.
             if self.serviceItem.is_command():
@@ -1272,5 +1269,4 @@ class SlideController(DisplayController):
 
     def onTrackTriggered(self):
         action = self.sender()
-        index = action.data().toInt()[0]
-        self.display.audioPlayer.goTo(index)
+        self.display.audioPlayer.goTo(action.data())

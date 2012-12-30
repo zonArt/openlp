@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -31,8 +31,7 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.lib import ServiceItem, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
+from openlp.core.lib import ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
     ItemCapabilities, FormattingTags, ImageSource
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
@@ -81,8 +80,7 @@ class Renderer(object):
         self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web_frame = self.web.page().mainFrame()
@@ -115,8 +113,7 @@ class Renderer(object):
             Only remove the given ``theme_name`` from the ``_theme_dimensions``
             list. This can be used when a theme is permanently deleted.
         """
-        if old_theme_name is not None and \
-            old_theme_name in self._theme_dimensions:
+        if old_theme_name is not None and old_theme_name in self._theme_dimensions:
             del self._theme_dimensions[old_theme_name]
         if theme_name in self._theme_dimensions:
             del self._theme_dimensions[theme_name]
@@ -134,16 +131,13 @@ class Renderer(object):
             theme_data = self.theme_manager.getThemeData(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
             footer_rect = self.get_footer_rectangle(theme_data)
-            self._theme_dimensions[theme_name] = \
-                [theme_data, main_rect, footer_rect]
+            self._theme_dimensions[theme_name] = [theme_data, main_rect, footer_rect]
         else:
-            theme_data, main_rect, footer_rect = \
-                self._theme_dimensions[theme_name]
+            theme_data, main_rect, footer_rect = self._theme_dimensions[theme_name]
         # if No file do not update cache
         if theme_data.background_filename:
             self.image_manager.addImage(theme_data.background_filename,
-                ImageSource.Theme,
-                QtGui.QColor(theme_data.background_border_color))
+                ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
 
     def pre_render(self, override_theme_data=None):
         """
@@ -172,8 +166,7 @@ class Renderer(object):
         if override_theme_data is None:
             if theme_to_use not in self._theme_dimensions:
                 self._set_theme(theme_to_use)
-            theme_data, main_rect, footer_rect = \
-                self._theme_dimensions[theme_to_use]
+            theme_data, main_rect, footer_rect = self._theme_dimensions[theme_to_use]
         else:
             # Ignore everything and use own theme data.
             theme_data = override_theme_data
@@ -305,13 +298,11 @@ class Renderer(object):
                         text_contains_split = u'[---]' in text
                         if text_contains_split:
                             try:
-                                text_to_render, text = \
-                                    text.split(u'\n[---]\n', 1)
+                                text_to_render, text = text.split(u'\n[---]\n', 1)
                             except ValueError:
                                 text_to_render = text.split(u'\n[---]\n')[0]
                                 text = u''
-                            text_to_render, raw_tags, html_tags = \
-                                self._get_start_tags(text_to_render)
+                            text_to_render, raw_tags, html_tags = self._get_start_tags(text_to_render)
                             if text:
                                 text = raw_tags + text
                         else:
@@ -504,9 +495,8 @@ class Renderer(object):
                 # the line will not fit as a whole.
                 raw_words = self._words_split(line)
                 html_words = map(expand_tags, raw_words)
-                previous_html, previous_raw = self._binary_chop(
-                    formatted, previous_html, previous_raw, html_words,
-                    raw_words, u' ', line_end)
+                previous_html, previous_raw = \
+                    self._binary_chop(formatted, previous_html, previous_raw, html_words, raw_words, u' ', line_end)
             else:
                 previous_html += html_line + line_end
                 previous_raw += line + line_end
@@ -537,13 +527,9 @@ class Renderer(object):
         for tag in FormattingTags.get_html_tags():
             if tag[u'start tag'] == u'{br}':
                 continue
-            if raw_text.count(tag[u'start tag']) != \
-                raw_text.count(tag[u'end tag']):
-                raw_tags.append(
-                    (raw_text.find(tag[u'start tag']), tag[u'start tag'],
-                    tag[u'end tag']))
-                html_tags.append(
-                        (raw_text.find(tag[u'start tag']), tag[u'start html']))
+            if raw_text.count(tag[u'start tag']) != raw_text.count(tag[u'end tag']):
+                raw_tags.append((raw_text.find(tag[u'start tag']), tag[u'start tag'], tag[u'end tag']))
+                html_tags.append((raw_text.find(tag[u'start tag']), tag[u'start html']))
         # Sort the lists, so that the tags which were opened first on the first
         # slide (the text we are checking) will be opened first on the next
         # slide as well.
@@ -558,11 +544,9 @@ class Renderer(object):
         end_tags.reverse()
         # Remove the indexes.
         html_tags = [tag[1] for tag in html_tags]
-        return raw_text + u''.join(end_tags),  u''.join(start_tags), \
-            u''.join(html_tags)
+        return raw_text + u''.join(end_tags),  u''.join(start_tags), u''.join(html_tags)
 
-    def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
-        raw_list, separator, line_end):
+    def _binary_chop(self, formatted, previous_html, previous_raw, html_list, raw_list, separator, line_end):
         """
         This implements the binary chop algorithm for faster rendering. This
         algorithm works line based (line by line) and word based (word by word).
@@ -612,8 +596,7 @@ class Renderer(object):
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
-                text = previous_raw.rstrip(u'<br>') + \
-                    separator.join(raw_list[:index + 1])
+                text = previous_raw.rstrip(u'<br>') + separator.join(raw_list[:index + 1])
                 text, raw_tags, html_tags = self._get_start_tags(text)
                 formatted.append(text)
                 previous_html = u''
@@ -627,10 +610,8 @@ class Renderer(object):
             # Check if the remaining elements fit on the slide.
             if self._text_fits_on_slide(
                     html_tags + separator.join(html_list[index + 1:]).strip()):
-                previous_html = html_tags + separator.join(
-                    html_list[index + 1:]).strip() + line_end
-                previous_raw = raw_tags + separator.join(
-                    raw_list[index + 1:]).strip() + line_end
+                previous_html = html_tags + separator.join(html_list[index + 1:]).strip() + line_end
+                previous_raw = raw_tags + separator.join(raw_list[index + 1:]).strip() + line_end
                 break
             else:
                 # The remaining elements do not fit, thus reset the indexes,
@@ -652,8 +633,7 @@ class Renderer(object):
         ``text``
             The text to check. It may contain HTML tags.
         """
-        self.web_frame.evaluateJavaScript(u'show_text("%s")' %
-            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        self.web_frame.evaluateJavaScript(u'show_text("%s")' % text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.web_frame.contentsSize().height() <= self.empty_height
 
     def _words_split(self, line):

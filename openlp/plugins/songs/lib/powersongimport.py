@@ -101,10 +101,10 @@ class PowerSongImport(SongImport):
             else:
                 self.importSource = u''
         if not self.importSource or not isinstance(self.importSource, list):
-            self.logError(unicode(translate('SongsPlugin.PowerSongImport',
-                'No songs to import.')),
-                unicode(translate('SongsPlugin.PowerSongImport',
-                'No %s files found.')) % PS_string)
+            self.logError(translate('SongsPlugin.PowerSongImport',
+                'No songs to import.'),
+                translate('SongsPlugin.PowerSongImport',
+                'No %s files found.') % PS_string)
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:

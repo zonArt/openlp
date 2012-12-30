@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -36,7 +36,7 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings
 from openlp.core.utils import AppLocation
 
 class SettingsManager(object):
@@ -61,9 +61,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        last_dir = unicode(Settings().value(
-            section + u'/' + name, QtCore.QVariant(u'')).toString())
-        return last_dir
+        return Settings().value(section + u'/' + name, u'')
 
     @staticmethod
     def set_last_dir(section, directory, num=None):
@@ -84,8 +82,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        Settings().setValue(
-            section + u'/' + name, QtCore.QVariant(directory))
+        Settings().setValue(section + u'/' + name, directory)
 
     @staticmethod
     def set_list(section, name, list):
@@ -103,13 +100,11 @@ class SettingsManager(object):
         """
         settings = Settings()
         settings.beginGroup(section)
-        old_count = settings.value(
-            u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
+        old_count = settings.value(u'%s count' % name, 0)
         new_count = len(list)
-        settings.setValue(u'%s count' % name, QtCore.QVariant(new_count))
+        settings.setValue(u'%s count' % name, new_count)
         for counter in range(new_count):
-            settings.setValue(
-                u'%s %d' % (name, counter), QtCore.QVariant(list[counter-1]))
+            settings.setValue(u'%s %d' % (name, counter), list[counter - 1])
         if old_count > new_count:
             # Tidy up any old list items
             for counter in range(new_count, old_count):
@@ -129,13 +124,11 @@ class SettingsManager(object):
         """
         settings = Settings()
         settings.beginGroup(section)
-        list_count = settings.value(
-            u'%s count' % name, QtCore.QVariant(0)).toInt()[0]
+        list_count = settings.value(u'%s count' % name, 0)
         list = []
         if list_count:
             for counter in range(list_count):
-                item = unicode(
-                    settings.value(u'%s %d' % (name, counter)).toString())
+                item = settings.value(u'%s %d' % (name, counter), u'')
                 if item:
                     list.append(item)
         settings.endGroup()
