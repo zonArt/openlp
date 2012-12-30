@@ -116,8 +116,9 @@ class MediaMediaItem(MediaManagerItem):
         self.displayLayout.addRow(self.displayTypeLabel, self.displayTypeComboBox)
         # Add the Media widget to the page layout
         self.pageLayout.addWidget(self.mediaWidget)
-        QtCore.QObject.connect(self.displayTypeComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged (int)'), self.overridePlayerChanged)
+        QtCore.QObject.connect(self.displayTypeComboBox, QtCore.SIGNAL(u'currentIndexChanged (int)'),
+            self.overridePlayerChanged)
+
     def overridePlayerChanged(self, index):
         player = get_media_players()[0]
         if index == 0:
@@ -198,9 +199,7 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.servicePath = os.path.join(
-            AppLocation.get_section_data_path(self.settingsSection),
-            u'thumbnails')
+        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
         self.populateDisplayTypes()
@@ -248,8 +247,8 @@ class MediaMediaItem(MediaManagerItem):
         """
         Remove a media item from the list.
         """
-        if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
-                'You must select a media file to delete.')):
+        if check_item_selected(self.listView,
+                translate('MediaPlugin.MediaItem', 'You must select a media file to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:

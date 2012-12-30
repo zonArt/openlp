@@ -190,7 +190,7 @@ class VlcPlayer(MediaPlayer):
             return False
         self.volume(display, controller.media_info.volume)
         if start_time > 0:
-               self.seek(display, controller.media_info.start_time * 1000)
+            self.seek(display, controller.media_info.start_time * 1000)
         controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         controller.seekSlider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing

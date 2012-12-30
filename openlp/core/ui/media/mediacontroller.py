@@ -43,11 +43,7 @@ log = logging.getLogger(__name__)
 
 class MediaSlider(QtGui.QSlider):
     """
-    Set up key bindings and mouse behaviour for the Qslider
-        Let's say the user clicks at (100, 50), and the slider geometry is (30, 40, 200, 60).
-        Then the slider width is 200-30=170px.
-        Now, clicking at 100 pixels(relative to the slider) means the knob should be moved at 58.82% from the slider value.
-        So if the slider value goes from 1 to 440, then you should use QSlider:setValue(440*58.82/100).
+    Allows the mouse events of a slider to be overridden and extra functionality added
     """
     def __init__(self, direction, manager, controller, parent=None):
         QtGui.QSlider.__init__(self, direction)
