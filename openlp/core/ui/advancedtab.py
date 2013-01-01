@@ -240,18 +240,18 @@ class AdvancedTab(SettingsTab):
         self.nextItemRadioButton.setObjectName(u'nextItemRadioButton')
         self.slideLayout.addWidget(self.nextItemRadioButton)
         self.rightLayout.addWidget(self.slideGroupBox)
-        # Workarounds
-        self.workaroundGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.workaroundGroupBox.setObjectName(u'workaroundGroupBox')
-        self.workaroundLayout = QtGui.QVBoxLayout(self.workaroundGroupBox)
-        self.workaroundLayout.setObjectName(u'workaroundLayout')
-        self.x11BypassCheckBox = QtGui.QCheckBox(self.workaroundGroupBox)
+        # Display Workarounds
+        self.displayWorkaroundGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.displayWorkaroundGroupBox.setObjectName(u'displayWorkaroundGroupBox')
+        self.displayWorkaroundLayout = QtGui.QVBoxLayout(self.displayWorkaroundGroupBox)
+        self.displayWorkaroundLayout.setObjectName(u'displayWorkaroundLayout')
+        self.x11BypassCheckBox = QtGui.QCheckBox(self.displayWorkaroundGroupBox)
         self.x11BypassCheckBox.setObjectName(u'x11BypassCheckBox')
-        self.workaroundLayout.addWidget(self.x11BypassCheckBox)
-        self.alternateRowsCheckBox = QtGui.QCheckBox(self.workaroundGroupBox)
+        self.displayWorkaroundLayout.addWidget(self.x11BypassCheckBox)
+        self.alternateRowsCheckBox = QtGui.QCheckBox(self.displayWorkaroundGroupBox)
         self.alternateRowsCheckBox.setObjectName(u'alternateRowsCheckBox')
-        self.workaroundLayout.addWidget(self.alternateRowsCheckBox)
-        self.rightLayout.addWidget(self.workaroundGroupBox)
+        self.displayWorkaroundLayout.addWidget(self.alternateRowsCheckBox)
+        self.rightLayout.addWidget(self.displayWorkaroundGroupBox)
         self.rightLayout.addStretch()
         self.shouldUpdateServiceNameExample = False
         QtCore.QObject.connect(self.serviceNameCheckBox, QtCore.SIGNAL(u'toggled(bool)'),
@@ -340,7 +340,7 @@ class AdvancedTab(SettingsTab):
         self.newDataDirectoryHasFilesLabel.setText(
             translate('OpenLP.AdvancedTab', '<strong>WARNING:</strong> New data directory location contains '
                 'OpenLP data files.  These files WILL be replaced during a copy.'))
-        self.workaroundGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Workarounds'))
+        self.displayWorkaroundGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
         self.alternateRowsCheckBox.setText(translate('OpenLP.AdvancedTab',
             'Disable alternating row colors in lists'))
