@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -28,6 +28,7 @@
 ###############################################################################
 import logging
 import re
+
 try:
     import enchant
     from enchant import DictNotFoundError
@@ -72,8 +73,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
             # Rewrite the mouse event to a left button event so the cursor is
             # moved to the location of the pointer.
             event = QtGui.QMouseEvent(QtCore.QEvent.MouseButtonPress,
-                event.pos(), QtCore.Qt.LeftButton, QtCore.Qt.LeftButton,
-                QtCore.Qt.NoModifier)
+                event.pos(), QtCore.Qt.LeftButton, QtCore.Qt.LeftButton, QtCore.Qt.NoModifier)
         QtGui.QPlainTextEdit.mousePressEvent(self, event)
 
     def contextMenuEvent(self, event):
@@ -92,20 +92,17 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
             lang_menu = QtGui.QMenu(
                 translate('OpenLP.SpellTextEdit', 'Language:'))
             for lang in enchant.list_languages():
-                action = create_action(lang_menu, lang, text=lang,
-                    checked=lang == self.dictionary.tag)
+                action = create_action(lang_menu, lang, text=lang, checked=lang == self.dictionary.tag)
                 lang_menu.addAction(action)
             popupMenu.insertSeparator(popupMenu.actions()[0])
             popupMenu.insertMenu(popupMenu.actions()[0], lang_menu)
-            QtCore.QObject.connect(lang_menu,
-                QtCore.SIGNAL(u'triggered(QAction*)'), self.setLanguage)
+            QtCore.QObject.connect(lang_menu, QtCore.SIGNAL(u'triggered(QAction*)'), self.setLanguage)
         # Check if the selected word is misspelled and offer spelling
         # suggestions if it is.
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = self.textCursor().selectedText()
             if not self.dictionary.check(text):
-                spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
-                    'Spelling Suggestions'))
+                spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Spelling Suggestions'))
                 for word in self.dictionary.suggest(text):
                     action = SpellAction(word, spell_menu)
                     action.correct.connect(self.correctWord)
@@ -114,8 +111,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 # suggestions.
                 if spell_menu.actions():
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
-        tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit',
-            'Formatting Tags'))
+        tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Formatting Tags'))
         if self.formattingTagsAllowed:
             for html in FormattingTags.get_html_tags():
                 action = SpellAction(html[u'desc'], tagMenu)

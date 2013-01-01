@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -194,8 +194,7 @@ class Theme(object):
         ``xml``
             The data to apply to the theme
         """
-        root = ElementTree(element=XML(xml.encode(u'ascii',
-            u'xmlcharrefreplace')))
+        root = ElementTree(element=XML(xml.encode(u'ascii', u'xmlcharrefreplace')))
         xml_iter = root.getiterator()
         for element in xml_iter:
             delphi_color_change = False
@@ -219,16 +218,13 @@ class Theme(object):
                             val = int(element_text)
                         except ValueError:
                             val = element_text
-                if (element.tag.find(u'Color') > 0 or
-                    (element.tag.find(u'BackgroundParameter') == 0 and
+                if (element.tag.find(u'Color') > 0 or (element.tag.find(u'BackgroundParameter') == 0 and
                     isinstance(val, int))):
                     # convert to a wx.Colour
                     if not delphi_color_change:
-                        val = QtGui.QColor(
-                            val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
+                        val = QtGui.QColor(val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
                     else:
-                        val = QtGui.QColor(
-                            (val>>16)&0xFF, (val>>8)&0xFF, val&0xFF)
+                        val = QtGui.QColor((val>>16)&0xFF, (val>>8)&0xFF, val&0xFF)
                 setattr(self, element.tag, val)
 
     def __str__(self):

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -87,8 +87,7 @@ class PlayerTab(SettingsTab):
         self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
         self.playerOrderLayout = QtGui.QHBoxLayout(self.playerOrderGroupBox)
         self.playerOrderLayout.setObjectName(u'playerOrderLayout')
-        self.playerOrderlistWidget = QtGui.QListWidget(
-            self.playerOrderGroupBox)
+        self.playerOrderlistWidget = QtGui.QListWidget(self.playerOrderGroupBox)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

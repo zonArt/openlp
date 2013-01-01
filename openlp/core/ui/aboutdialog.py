@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -39,8 +39,7 @@ class Ui_AboutDialog(object):
         self.aboutDialogLayout = QtGui.QVBoxLayout(aboutDialog)
         self.aboutDialogLayout.setObjectName(u'aboutDialogLayout')
         self.logoLabel = QtGui.QLabel(aboutDialog)
-        self.logoLabel.setPixmap(
-            QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
+        self.logoLabel.setPixmap(QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
         self.logoLabel.setObjectName(u'logoLabel')
         self.aboutDialogLayout.addWidget(self.logoLabel)
         self.aboutNotebook = QtGui.QTabWidget(aboutDialog)
@@ -73,10 +72,8 @@ class Ui_AboutDialog(object):
         self.licenseTabLayout.addWidget(self.licenseTextEdit)
         self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
-        self.volunteerButton = create_button(None, u'volunteerButton',
-            icon=u':/system/system_volunteer.png')
-        self.buttonBox = create_button_box(aboutDialog, u'buttonBox',
-            [u'close'], [self.volunteerButton])
+        self.volunteerButton = create_button(None, u'volunteerButton', icon=u':/system/system_volunteer.png')
+        self.buttonBox = create_button_box(aboutDialog, u'buttonBox', [u'close'], [self.volunteerButton])
         self.aboutDialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(aboutDialog)
         self.aboutNotebook.setCurrentIndex(0)
@@ -99,8 +96,7 @@ class Ui_AboutDialog(object):
             'like to see more free Christian software being written, please '
             'consider volunteering by using the button below.'
         ))
-        self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.aboutTab), UiStrings().About)
+        self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.aboutTab), UiStrings().About)
         lead = u'Raoul "superfly" Snyman'
         developers = [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin',
             u'Michael "cocooncrash" Gorven',
@@ -261,12 +257,11 @@ class Ui_AboutDialog(object):
             u'\n        '.join(translators[u'ta_LK']),
             u'\n        '.join(translators[u'zh_CN']),
             u'\n    '.join(documentors)))
-        self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.creditsTab),
+        self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
         copyright = translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2012 %s\n'
-            'Portions copyright \xa9 2004-2012 %s') % (u'Raoul Snyman',
+            'Copyright \xa9 2004-2013 %s\n'
+            'Portions copyright \xa9 2004-2013 %s') % (u'Raoul Snyman',
             u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
             u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
             u'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
@@ -656,10 +651,7 @@ class Ui_AboutDialog(object):
             'linking proprietary applications with the library. If this is '
             'what you want to do, use the GNU Lesser General Public License '
             'instead of this License.')
-        self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' %
-            (copyright, licence, disclaimer, gpltext))
-        self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.licenseTab),
+        self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' % (copyright, licence, disclaimer, gpltext))
+        self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.licenseTab),
             translate('OpenLP.AboutForm', 'License'))
-        self.volunteerButton.setText(translate('OpenLP.AboutForm',
-            'Volunteer'))
+        self.volunteerButton.setText(translate('OpenLP.AboutForm', 'Volunteer'))

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -71,8 +71,8 @@ class MediaMediaItem(MediaManagerItem):
         self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
         self.displayController.previewDisplay.setup()
         self.plugin.mediaController.setup_display(self.displayController.previewDisplay, False)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'video_background_replaced'), self.videobackgroundReplaced)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'video_background_replaced'),
+            self.videobackgroundReplaced)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
         # Allow DnD from the desktop

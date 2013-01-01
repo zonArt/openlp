@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -287,8 +287,7 @@ class ActionList(object):
         # Remove empty categories.
         if not self.categories[category].actions:
             self.categories.remove(category)
-        shortcuts = map(unicode,
-            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        shortcuts = map(unicode, map(QtGui.QKeySequence.toString, action.shortcuts()))
         for shortcut in shortcuts:
             # Remove action from the list of actions which are using this
             # shortcut.
@@ -339,8 +338,7 @@ class ActionList(object):
             # Remove empty entries.
             if not ActionList.shortcut_map[old_shortcut]:
                 del ActionList.shortcut_map[old_shortcut]
-        new_shortcuts = map(unicode,
-            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        new_shortcuts = map(unicode, map(QtGui.QKeySequence.toString, action.shortcuts()))
         # Add the new shortcuts to the map.
         for new_shortcut in new_shortcuts:
             existing_actions = ActionList.shortcut_map.get(new_shortcut, [])
@@ -358,8 +356,7 @@ class ActionList(object):
         ``action``
             The action which wants to use a particular shortcut.
         """
-        local = action.shortcutContext() in \
-            [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
+        local = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = filter(lambda a: isinstance(a, QtGui.QAction),
             self.getAllChildObjects(action.parent())) if local else []
         for existing_action in existing_actions:
@@ -367,8 +364,7 @@ class ActionList(object):
                 continue
             if not local or existing_action in affected_actions:
                 return False
-            if existing_action.shortcutContext() \
-                in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
+            if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                 return False
             elif action in self.getAllChildObjects(existing_action.parent()):
                 return False
