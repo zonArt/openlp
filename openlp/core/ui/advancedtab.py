@@ -389,9 +389,9 @@ class AdvancedTab(SettingsTab):
         self.x11BypassCheckBox.setChecked(settings.value(u'x11 bypass wm', x11_bypass_default))
         # Fix for bug #936281.
         # Prevent the dialog displayed by the alternateRowsCheckBox to display.
-        signalsBlocked = self.alternateRowsCheckBox.blockSignals(True)
+        self.alternateRowsCheckBox.blockSignals(True)
         self.alternateRowsCheckBox.setChecked(settings.value(u'alternate rows', sys.platform.startswith(u'win')))
-        self.alternateRowsCheckBox.blockSignals(signalsBlocked)
+        self.alternateRowsCheckBox.blockSignals(False)
         self.defaultColor = settings.value(u'default color', u'#ffffff')
         self.defaultFileEdit.setText(settings.value(u'default image', u':/graphics/openlp-splash-screen.png'))
         self.slide_limits = settings.value(u'slide limits', SlideLimits.End)
@@ -659,8 +659,7 @@ class AdvancedTab(SettingsTab):
         """
         QtGui.QMessageBox.information(self,
             translate('OpenLP.AdvancedTab', 'Restart Required'),
-            translate('OpenLP.AdvancedTab',
-                'This change will only take effect once OpenLP has been restarted.'))
+            translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP has been restarted.'))
 
     def onEndSlideButtonClicked(self):
         self.slide_limits = SlideLimits.End
