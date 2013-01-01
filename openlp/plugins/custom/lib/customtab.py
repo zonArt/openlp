@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,8 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import SettingsTab, translate, Settings
 
 class CustomTab(SettingsTab):
     """
@@ -70,10 +69,9 @@ class CustomTab(SettingsTab):
 
     def load(self):
         self.displayFooter = Settings().value(
-            self.settingsSection + u'/display footer',
-            QtCore.QVariant(True)).toBool()
+            self.settingsSection + u'/display footer', True)
         self.displayFooterCheckBox.setChecked(self.displayFooter)
 
     def save(self):
         Settings().setValue(self.settingsSection + u'/display footer',
-            QtCore.QVariant(self.displayFooter))
+            self.displayFooter)

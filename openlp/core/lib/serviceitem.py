@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -570,12 +570,10 @@ class ServiceItem(object):
         start = None
         end = None
         if self.start_time != 0:
-            start = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Start</strong>: %s')) % \
+            start = translate('OpenLP.ServiceItem', '<strong>Start</strong>: %s') % \
                 unicode(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
-            end = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Length</strong>: %s')) % \
+            end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s') % \
                 unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return u''

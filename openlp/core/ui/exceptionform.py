@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -72,10 +72,8 @@ try:
     arg.Name = u'nodepath'
     arg.Value = u'/org.openoffice.Setup/Product'
     context = uno.getComponentContext()
-    provider = context.ServiceManager.createInstance(
-        u'com.sun.star.configuration.ConfigurationProvider')
-    node = provider.createInstanceWithArguments(
-        u'com.sun.star.configuration.ConfigurationAccess', (arg,))
+    provider = context.ServiceManager.createInstance(u'com.sun.star.configuration.ConfigurationProvider')
+    node = provider.createInstanceWithArguments(u'com.sun.star.configuration.ConfigurationAccess', (arg,))
     UNO_VERSION = node.getByName(u'ooSetupVersion')
 except ImportError:
     UNO_VERSION = u'-'
@@ -112,10 +110,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def _createReport(self):
         openlp_version = get_application_version()
-        description = unicode(self.descriptionTextEdit.toPlainText())
-        traceback = unicode(self.exceptionTextEdit.toPlainText())
-        system = unicode(translate('OpenLP.ExceptionForm',
-            'Platform: %s\n')) % platform.platform()
+        description = self.descriptionTextEdit.toPlainText()
+        traceback = self.exceptionTextEdit.toPlainText()
+        system = translate('OpenLP.ExceptionForm', 'Platform: %s\n') % platform.platform()
         libraries = u'Python: %s\n' % platform.python_version() + \
             u'Qt4: %s\n' % Qt.qVersion() + \
             u'Phonon: %s\n' % PHONON_VERSION + \
@@ -139,15 +136,15 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def onSaveReportButtonClicked(self):
         """
-        Saving exception log and system informations to a file.
+        Saving exception log and system information to a file.
         """
-        report_text = unicode(translate('OpenLP.ExceptionForm',
+        report_text = translate('OpenLP.ExceptionForm',
             '**OpenLP Bug Report**\n'
             'Version: %s\n\n'
             '--- Details of the Exception. ---\n\n%s\n\n '
             '--- Exception Traceback ---\n%s\n'
             '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n'))
+            '--- Library Versions ---\n%s\n')
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             SettingsManager.get_last_dir(self.settingsSection),
@@ -155,8 +152,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Text files (*.txt *.log *.text)'))
         if filename:
             filename = unicode(filename).replace(u'/', os.path.sep)
-            SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(
-                filename))
+            SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(filename))
             report_text = report_text % self._createReport()
             try:
                 report_file = open(filename, u'w')
@@ -178,7 +174,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Opening systems default email client and inserting exception log and
         system informations.
         """
-        body = unicode(translate('OpenLP.ExceptionForm',
+        body = translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
             'Version: %s\n\n'
             '--- Details of the Exception. ---\n\n%s\n\n '
@@ -186,7 +182,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- System information ---\n%s\n'
             '--- Library Versions ---\n%s\n',
             'Please add the information that bug reports are favoured written '
-            'in English.'))
+            'in English.')
         content = self._createReport()
         source = u''
         exception = u''
@@ -211,15 +207,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         else:
             self.__buttonState(False)
         self.descriptionWordCount.setText(
-            unicode(translate('OpenLP.ExceptionDialog',
-            'Description characters to enter : %s')) % count)
+            translate('OpenLP.ExceptionDialog', 'Description characters to enter : %s') % count)
 
     def onAttachFileButtonClicked(self):
         files = QtGui.QFileDialog.getOpenFileName(
-            self,translate('ImagePlugin.ExceptionDialog',
-            'Select Attachment'),
-            SettingsManager.get_last_dir(u'exceptions'),
-            u'%s (*.*) (*)' % UiStrings().AllFiles)
+            self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
+                SettingsManager.get_last_dir(u'exceptions'), u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.fileAttachment = unicode(files)

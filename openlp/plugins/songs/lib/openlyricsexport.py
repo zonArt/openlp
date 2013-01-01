@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -67,9 +67,8 @@ class OpenLyricsExport(object):
             Receiver.send_message(u'openlp_process_events')
             if self.parent.stop_export_flag:
                 return False
-            self.parent.incrementProgressBar(unicode(translate(
-                'SongsPlugin.OpenLyricsExport', 'Exporting "%s"...')) %
-                song.title)
+            self.parent.incrementProgressBar(translate(
+            'SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') % song.title)
             xml = openLyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml))
             filename = u'%s (%s)' % (song.title,

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -79,7 +79,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             order_by_ref=AlertItem.text)
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(alert.id))
+            item_name.setData(QtCore.Qt.UserRole, alert.id)
             self.alertListWidget.addItem(item_name)
             if alert.text == unicode(self.alertTextEdit.text()):
                 self.item_id = alert.id
@@ -87,10 +87,10 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                     self.alertListWidget.row(item_name))
 
     def onDisplayClicked(self):
-        self.triggerAlert(unicode(self.alertTextEdit.text()))
+        self.triggerAlert(self.alertTextEdit.text())
 
     def onDisplayCloseClicked(self):
-        if self.triggerAlert(unicode(self.alertTextEdit.text())):
+        if self.triggerAlert(self.alertTextEdit.text()):
             self.close()
 
     def onDeleteButtonClicked(self):
@@ -99,7 +99,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         item = self.alertListWidget.currentItem()
         if item:
-            item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = item.data(QtCore.Qt.UserRole)
             self.manager.delete_object(AlertItem, item_id)
             row = self.alertListWidget.row(item)
             self.alertListWidget.takeItem(row)
@@ -115,7 +115,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                 'clicking New.'))
         else:
             alert = AlertItem()
-            alert.text = unicode(self.alertTextEdit.text())
+            alert.text = self.alertTextEdit.text()
             self.manager.save_object(alert)
         self.loadList()
 
@@ -125,7 +125,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         if self.item_id:
             alert = self.manager.get_object(AlertItem, self.item_id)
-            alert.text = unicode(self.alertTextEdit.text())
+            alert.text = self.alertTextEdit.text()
             self.manager.save_object(alert)
             self.item_id = None
             self.loadList()
@@ -133,7 +133,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
 
     def onTextChanged(self):
         """
-        Enable save button when data has been changed by editing the form
+        Enable save button when data has been changed by editing the form.
         """
         # Only enable the button, if we are editing an item.
         if self.item_id:
@@ -147,26 +147,26 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
 
     def onDoubleClick(self):
         """
-        List item has been double clicked to display it
+        List item has been double clicked to display it.
         """
         item = self.alertListWidget.selectedIndexes()[0]
         bitem = self.alertListWidget.item(item.row())
-        self.triggerAlert(unicode(bitem.text()))
-        self.alertTextEdit.setText(unicode(bitem.text()))
-        self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.triggerAlert(bitem.text())
+        self.alertTextEdit.setText(bitem.text())
+        self.item_id = bitem.data(QtCore.Qt.UserRole)
         self.saveButton.setEnabled(False)
 
     def onSingleClick(self):
         """
-        List item has been single clicked to add it to
-        the edit field so it can be changed.
+        List item has been single clicked to add it to the edit field so it can
+        be changed.
         """
         item = self.alertListWidget.selectedIndexes()[0]
         bitem = self.alertListWidget.item(item.row())
-        self.alertTextEdit.setText(unicode(bitem.text()))
-        self.item_id = (bitem.data(QtCore.Qt.UserRole)).toInt()[0]
+        self.alertTextEdit.setText(bitem.text())
+        self.item_id = bitem.data(QtCore.Qt.UserRole)
         # If the alert does not contain '<>' we clear the ParameterEdit field.
-        if unicode(self.alertTextEdit.text()).find(u'<>') == -1:
+        if self.alertTextEdit.text().find(u'<>') == -1:
             self.parameterEdit.setText(u'')
         self.saveButton.setEnabled(False)
 
@@ -200,7 +200,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameterEdit.setFocus()
             return False
-        text = text.replace(u'<>', unicode(self.parameterEdit.text()))
+        text = text.replace(u'<>', self.parameterEdit.text())
         self.plugin.alertsmanager.displayAlert(text)
         return True
 

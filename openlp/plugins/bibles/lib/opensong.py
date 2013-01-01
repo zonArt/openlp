@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -63,7 +63,7 @@ class OpenSongBible(BibleDB):
             verse_text += self.get_text(sub_element)
         if element.tail:
             verse_text += element.tail
-        return verse_text   
+        return verse_text
 
     def do_import(self, bible_name=None):
         """
@@ -129,11 +129,11 @@ class OpenSongBible(BibleDB):
                             db_book.id,
                             chapter_number,
                             verse_number,
-                            unicode(self.get_text(verse)))
-                    self.wizard.incrementProgressBar(unicode(translate(
+                            self.get_text(verse))
+                    self.wizard.incrementProgressBar(translate(
                         'BiblesPlugin.Opensong', 'Importing %s %s...',
-                        'Importing <book name> <chapter>...')) %
-                        (db_book.name, chapter_number))
+                        'Importing <book name> <chapter>...')) % \
+                        (db_book.name, chapter_number)
                 self.session.commit()
             Receiver.send_message(u'openlp_process_events')
         except etree.XMLSyntaxError as inst:

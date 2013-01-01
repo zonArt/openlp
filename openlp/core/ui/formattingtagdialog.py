@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -41,15 +41,11 @@ class Ui_FormattingTagDialog(object):
         self.listdataGridLayout.setMargin(8)
         self.listdataGridLayout.setObjectName(u'listdataGridLayout')
         self.tagTableWidget = QtGui.QTableWidget(formattingTagDialog)
-        self.tagTableWidget.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.tagTableWidget.setEditTriggers(
-            QtGui.QAbstractItemView.NoEditTriggers)
+        self.tagTableWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.tagTableWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.tagTableWidget.setAlternatingRowColors(True)
-        self.tagTableWidget.setSelectionMode(
-            QtGui.QAbstractItemView.SingleSelection)
-        self.tagTableWidget.setSelectionBehavior(
-            QtGui.QAbstractItemView.SelectRows)
+        self.tagTableWidget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.tagTableWidget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.tagTableWidget.setCornerButtonEnabled(False)
         self.tagTableWidget.setObjectName(u'tagTableWidget')
         self.tagTableWidget.setColumnCount(4)
@@ -66,8 +62,7 @@ class Ui_FormattingTagDialog(object):
         self.listdataGridLayout.addWidget(self.tagTableWidget, 0, 0, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(u'horizontalLayout')
-        spacerItem = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.deletePushButton = QtGui.QPushButton(formattingTagDialog)
         self.deletePushButton.setObjectName(u'deletePushButton')
@@ -114,36 +109,25 @@ class Ui_FormattingTagDialog(object):
         self.savePushButton.setObjectName(u'savePushButton')
         self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
-        self.buttonBox = create_button_box(formattingTagDialog, 'buttonBox',
-            [u'close'])
+        self.buttonBox = create_button_box(formattingTagDialog, u'buttonBox', [u'close'])
         self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
 
         self.retranslateUi(formattingTagDialog)
 
     def retranslateUi(self, formattingTagDialog):
-        formattingTagDialog.setWindowTitle(translate(
-            'OpenLP.FormattingTagDialog', 'Configure Formatting Tags'))
-        self.editGroupBox.setTitle(
-            translate('OpenLP.FormattingTagDialog', 'Edit Selection'))
-        self.savePushButton.setText(
-            translate('OpenLP.FormattingTagDialog', 'Save'))
-        self.descriptionLabel.setText(
-            translate('OpenLP.FormattingTagDialog', 'Description'))
+        formattingTagDialog.setWindowTitle(translate('OpenLP.FormattingTagDialog', 'Configure Formatting Tags'))
+        self.editGroupBox.setTitle(translate('OpenLP.FormattingTagDialog', 'Edit Selection'))
+        self.savePushButton.setText(translate('OpenLP.FormattingTagDialog', 'Save'))
+        self.descriptionLabel.setText(translate('OpenLP.FormattingTagDialog', 'Description'))
         self.tagLabel.setText(translate('OpenLP.FormattingTagDialog', 'Tag'))
-        self.startTagLabel.setText(
-            translate('OpenLP.FormattingTagDialog', 'Start HTML'))
-        self.endTagLabel.setText(
-            translate('OpenLP.FormattingTagDialog', 'End HTML'))
+        self.startTagLabel.setText(translate('OpenLP.FormattingTagDialog', 'Start HTML'))
+        self.endTagLabel.setText(translate('OpenLP.FormattingTagDialog', 'End HTML'))
         self.deletePushButton.setText(UiStrings().Delete)
         self.newPushButton.setText(UiStrings().New)
-        self.tagTableWidget.horizontalHeaderItem(0).setText(
-            translate('OpenLP.FormattingTagDialog', 'Description'))
-        self.tagTableWidget.horizontalHeaderItem(1).setText(
-            translate('OpenLP.FormattingTagDialog', 'Tag'))
-        self.tagTableWidget.horizontalHeaderItem(2).setText(
-            translate('OpenLP.FormattingTagDialog', 'Start HTML'))
-        self.tagTableWidget.horizontalHeaderItem(3).setText(
-            translate('OpenLP.FormattingTagDialog', 'End HTML'))
+        self.tagTableWidget.horizontalHeaderItem(0).setText(translate('OpenLP.FormattingTagDialog', 'Description'))
+        self.tagTableWidget.horizontalHeaderItem(1).setText(translate('OpenLP.FormattingTagDialog', 'Tag'))
+        self.tagTableWidget.horizontalHeaderItem(2).setText(translate('OpenLP.FormattingTagDialog', 'Start HTML'))
+        self.tagTableWidget.horizontalHeaderItem(3).setText(translate('OpenLP.FormattingTagDialog', 'End HTML'))
         self.tagTableWidget.setColumnWidth(0, 120)
         self.tagTableWidget.setColumnWidth(1, 80)
         self.tagTableWidget.setColumnWidth(2, 330)

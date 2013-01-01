@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,8 +31,7 @@ import logging
 
 from PyQt4 import QtWebKit
 
-from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, \
-    VerticalType, HorizontalType
+from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, VerticalType, HorizontalType
 
 log = logging.getLogger(__name__)
 
@@ -258,8 +257,7 @@ def build_html(item, screen, islive, background, image=None,
         css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item, webkitvers),
-        u'true' if theme and theme.display_slide_transition and islive \
-            else u'false',
+        u'true' if theme and theme.display_slide_transition and islive else u'false',
         js_additions,
         bgimage_src, image_src,
         html_additions,
@@ -290,49 +288,26 @@ def build_background_css(item, width, height):
     theme = item.themedata
     background = u'background-color: black'
     if theme:
-        if theme.background_type == \
-            BackgroundType.to_string(BackgroundType.Transparent):
+        if theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
             background = u''
-        elif theme.background_type == \
-            BackgroundType.to_string(BackgroundType.Solid):
+        elif theme.background_type == BackgroundType.to_string(BackgroundType.Solid):
             background = u'background-color: %s' % theme.background_color
         else:
-            if theme.background_direction == BackgroundGradientType.to_string \
-                (BackgroundGradientType.Horizontal):
-                background = \
-                    u'background: ' \
-                    u'-webkit-gradient(linear, left top, left bottom, ' \
-                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
-                    theme.background_end_color)
-            elif theme.background_direction == \
-                BackgroundGradientType.to_string( \
-                BackgroundGradientType.LeftTop):
-                background = \
-                    u'background: ' \
-                    u'-webkit-gradient(linear, left top, right bottom, ' \
-                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
-                    theme.background_end_color)
-            elif theme.background_direction == \
-                BackgroundGradientType.to_string \
-                (BackgroundGradientType.LeftBottom):
-                background = \
-                    u'background: ' \
-                    u'-webkit-gradient(linear, left bottom, right top, ' \
-                    'from(%s), to(%s)) fixed' % (theme.background_start_color,
-                    theme.background_end_color)
-            elif theme.background_direction == \
-                BackgroundGradientType.to_string \
-                (BackgroundGradientType.Vertical):
-                background = \
-                    u'background: -webkit-gradient(linear, left top, ' \
-                    u'right top, from(%s), to(%s)) fixed' % \
+            if theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
+                background = u'background: -webkit-gradient(linear, left top, left bottom, from(%s), to(%s)) fixed' \
+                    % (theme.background_start_color, theme.background_end_color)
+            elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.LeftTop):
+                background = u'background: -webkit-gradient(linear, left top, right bottom, from(%s), to(%s)) fixed' \
+                    % (theme.background_start_color, theme.background_end_color)
+            elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.LeftBottom):
+                background = u'background: -webkit-gradient(linear, left bottom, right top, from(%s), to(%s)) fixed' \
+                    % (theme.background_start_color, theme.background_end_color)
+            elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Vertical):
+                background = u'background: -webkit-gradient(linear, left top, right top, from(%s), to(%s)) fixed' % \
                     (theme.background_start_color, theme.background_end_color)
             else:
-                background = \
-                    u'background: -webkit-gradient(radial, %s 50%%, 100, %s ' \
-                    u'50%%, %s, from(%s), to(%s)) fixed' % (width, width,
-                    width, theme.background_start_color,
-                    theme.background_end_color)
+                background = u'background: -webkit-gradient(radial, %s 50%%, 100, %s 50%%, %s, from(%s), to(%s)) fixed'\
+                    % (width, width, width, theme.background_start_color, theme.background_end_color)
     return background
 
 def build_lyrics_css(item, webkitvers):
@@ -376,8 +351,7 @@ def build_lyrics_css(item, webkitvers):
     shadow = u''
     if theme and item.main:
         lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
-        lyrics = build_lyrics_format_css(theme, item.main.width(),
-            item.main.height())
+        lyrics = build_lyrics_format_css(theme, item.main.width(), item.main.height())
         # For performance reasons we want to show as few DIV's as possible,
         # especially when animating/transitions.
         # However some bugs in older versions of qtwebkit mean we need to
@@ -400,9 +374,8 @@ def build_lyrics_css(item, webkitvers):
         if theme.font_main_shadow:
             if theme.font_main_outline and webkitvers <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
-                    (int(theme.font_main_shadow_size) +
-                    (int(theme.font_main_outline_size) * 2),
-                    theme.font_main_shadow_size)
+                    (int(theme.font_main_shadow_size) + (int(theme.font_main_outline_size) * 2),
+                     theme.font_main_shadow_size)
                 shadow += build_lyrics_outline_css(theme, True)
             else:
                 lyricsmain += u' text-shadow: %s %spx %spx;' % \
@@ -430,8 +403,7 @@ def build_lyrics_outline_css(theme, is_shadow=False):
         else:
             fill_color = theme.font_main_color
             outline_color = theme.font_main_outline_color
-        return u' -webkit-text-stroke: %sem %s; ' \
-            u'-webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
+        return u' -webkit-text-stroke: %sem %s; -webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
     else:
         return u''
 
@@ -467,11 +439,9 @@ def build_lyrics_format_css(theme, width, height):
     lyrics = u'%s word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
-        'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx;' \
-        'height: %spx; ' % \
+        'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
         (justify, align, valign, theme.font_main_name, theme.font_main_size,
-        theme.font_main_color, 100 + int(theme.font_main_line_adjustment),
-        padding_bottom, left_margin, width, height)
+        theme.font_main_color, 100 + int(theme.font_main_line_adjustment), padding_bottom, left_margin, width, height)
     if theme.font_main_outline:
         if webkit_version() <= 534.3:
             lyrics += u' letter-spacing: 1px;'
@@ -531,7 +501,6 @@ def build_footer_css(item, height):
     if not theme or not item.footer:
         return u''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
-    lyrics_html = style % (item.footer.x(), bottom,
-        item.footer.width(), theme.font_footer_name,
-        theme.font_footer_size, theme.font_footer_color)
+    lyrics_html = style % (item.footer.x(), bottom, item.footer.width(),
+        theme.font_footer_name, theme.font_footer_size, theme.font_footer_color)
     return lyrics_html

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,8 +29,7 @@
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings, SettingsTab, translate, Receiver
 
 ZERO_URL = u'0.0.0.0'
 
@@ -141,7 +140,7 @@ class RemoteTab(SettingsTab):
                     ip = addr.ip()
                     if ip.protocol() == 0 and \
                         ip != QtNetwork.QHostAddress.LocalHost:
-                        ipAddress = ip.toString()
+                        ipAddress = ip
                         break
         else:
             ipAddress = self.addressEdit.text()
@@ -152,30 +151,26 @@ class RemoteTab(SettingsTab):
 
     def load(self):
         self.portSpinBox.setValue(
-            Settings().value(self.settingsSection + u'/port',
-                QtCore.QVariant(4316)).toInt()[0])
+            Settings().value(self.settingsSection + u'/port', 4316))
         self.addressEdit.setText(
-            Settings().value(self.settingsSection + u'/ip address',
-                QtCore.QVariant(ZERO_URL)).toString())
+            Settings().value(self.settingsSection + u'/ip address', ZERO_URL))
         self.twelveHour = Settings().value(
-            self.settingsSection + u'/twelve hour',
-            QtCore.QVariant(True)).toBool()
+            self.settingsSection + u'/twelve hour', True)
         self.twelveHourCheckBox.setChecked(self.twelveHour)
         self.setUrls()
 
     def save(self):
         changed = False
-        if Settings().value(self.settingsSection + u'/ip address',
-            QtCore.QVariant(ZERO_URL).toString() != self.addressEdit.text() or
-            Settings().value(self.settingsSection + u'/port',
-            QtCore.QVariant(4316).toInt()[0]) != self.portSpinBox.value()):
+        if Settings().value(self.settingsSection + u'/ip address', ZERO_URL !=
+            self.addressEdit.text() or Settings().value(self.settingsSection +
+            u'/port', 4316) != self.portSpinBox.value()):
             changed = True
         Settings().setValue(self.settingsSection + u'/port',
-            QtCore.QVariant(self.portSpinBox.value()))
+            self.portSpinBox.value())
         Settings().setValue(self.settingsSection + u'/ip address',
-            QtCore.QVariant(self.addressEdit.text()))
+            self.addressEdit.text())
         Settings().setValue(self.settingsSection + u'/twelve hour',
-            QtCore.QVariant(self.twelveHour))
+            self.twelveHour)
         if changed:
             Receiver.send_message(u'remotes_config_updated')
 

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -34,10 +34,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, Settings
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.lib.settings import Settings
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, locale_compare
 from openlp.plugins.bibles.lib.manager import BibleFormat
@@ -434,50 +433,49 @@ class BibleImportForm(OpenLPWizard):
         if self.currentPage() == self.welcomePage:
             return True
         elif self.currentPage() == self.selectPage:
-            if self.field(u'source_format').toInt()[0] == BibleFormat.OSIS:
-                if not self.field(u'osis_location').toString():
+            if self.field(u'source_format') == BibleFormat.OSIS:
+                if not self.field(u'osis_location'):
                     critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OSIS)
                     self.osisFileEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == BibleFormat.CSV:
-                if not self.field(u'csv_booksfile').toString():
+            elif self.field(u'source_format') == BibleFormat.CSV:
+                if not self.field(u'csv_booksfile'):
                     critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file with books of '
                         'the Bible to use in the import.'))
                     self.csvBooksEdit.setFocus()
                     return False
-                elif not self.field(u'csv_versefile').toString():
+                elif not self.field(u'csv_versefile'):
                     critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file of Bible '
                         'verses to import.'))
                     self.csvVersesEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == \
+            elif self.field(u'source_format') == \
                 BibleFormat.OpenSong:
-                if not self.field(u'opensong_file').toString():
+                if not self.field(u'opensong_file'):
                     critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
-            elif self.field(u'source_format').toInt()[0] == \
+            elif self.field(u'source_format') == \
                 BibleFormat.WebDownload:
                 self.versionNameEdit.setText(
                     self.webTranslationComboBox.currentText())
                 return True
-            elif self.field(u'source_format').toInt()[0] == BibleFormat.OpenLP1:
-                if not self.field(u'openlp1_location').toString():
+            elif self.field(u'source_format') == BibleFormat.OpenLP1:
+                if not self.field(u'openlp1_location'):
                     critical_error_message_box(UiStrings().NFSs,
                         WizardStrings.YouSpecifyFile % UiStrings().OLPV1)
                     self.openlp1FileEdit.setFocus()
                     return False
             return True
         elif self.currentPage() == self.licenseDetailsPage:
-            license_version = unicode(self.field(u'license_version').toString())
-            license_copyright = \
-                unicode(self.field(u'license_copyright').toString())
+            license_version = self.field(u'license_version')
+            license_copyright = self.field(u'license_copyright')
             path = AppLocation.get_section_data_path(u'bibles')
             if not license_version:
                 critical_error_message_box(UiStrings().EmptyField,
@@ -597,27 +595,21 @@ class BibleImportForm(OpenLPWizard):
         self.restart()
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
-        self.setField(u'source_format', QtCore.QVariant(0))
-        self.setField(u'osis_location', QtCore.QVariant(''))
-        self.setField(u'csv_booksfile', QtCore.QVariant(''))
-        self.setField(u'csv_versefile', QtCore.QVariant(''))
-        self.setField(u'opensong_file', QtCore.QVariant(''))
-        self.setField(u'web_location', QtCore.QVariant(WebDownload.Crosswalk))
+        self.setField(u'source_format', 0)
+        self.setField(u'osis_location', '')
+        self.setField(u'csv_booksfile', '')
+        self.setField(u'csv_versefile', '')
+        self.setField(u'opensong_file', '')
+        self.setField(u'web_location', WebDownload.Crosswalk)
         self.setField(u'web_biblename',
-            QtCore.QVariant(self.webTranslationComboBox.currentIndex()))
-        self.setField(u'proxy_server',
-            settings.value(u'proxy address', QtCore.QVariant(u'')))
-        self.setField(u'proxy_username',
-            settings.value(u'proxy username', QtCore.QVariant(u'')))
-        self.setField(u'proxy_password',
-            settings.value(u'proxy password', QtCore.QVariant(u'')))
-        self.setField(u'openlp1_location', QtCore.QVariant(''))
-        self.setField(u'license_version',
-            QtCore.QVariant(self.versionNameEdit.text()))
-        self.setField(u'license_copyright',
-            QtCore.QVariant(self.copyrightEdit.text()))
-        self.setField(u'license_permissions',
-            QtCore.QVariant(self.permissionsEdit.text()))
+            self.webTranslationComboBox.currentIndex())
+        self.setField(u'proxy_server', settings.value(u'proxy address', u''))
+        self.setField(u'proxy_username', settings.value(u'proxy username', u''))
+        self.setField(u'proxy_password', settings.value(u'proxy password', u''))
+        self.setField(u'openlp1_location', '')
+        self.setField(u'license_version', self.versionNameEdit.text())
+        self.setField(u'license_copyright', self.copyrightEdit.text())
+        self.setField(u'license_permissions', self.permissionsEdit.text())
         self.onWebSourceComboBoxIndexChanged(WebDownload.Crosswalk)
         settings.endGroup()
 
@@ -652,7 +644,7 @@ class BibleImportForm(OpenLPWizard):
         Prepare the UI for the import.
         """
         OpenLPWizard.preWizard(self)
-        bible_type = self.field(u'source_format').toInt()[0]
+        bible_type = self.field(u'source_format')
         if bible_type == BibleFormat.WebDownload:
             self.progressLabel.setText(translate(
                 'BiblesPlugin.ImportWizardForm',
@@ -665,51 +657,49 @@ class BibleImportForm(OpenLPWizard):
         """
         Perform the actual import.
         """
-        bible_type = self.field(u'source_format').toInt()[0]
-        license_version = unicode(self.field(u'license_version').toString())
-        license_copyright = unicode(self.field(u'license_copyright').toString())
-        license_permissions = \
-            unicode(self.field(u'license_permissions').toString())
+        bible_type = self.field(u'source_format')
+        license_version = self.field(u'license_version')
+        license_copyright = self.field(u'license_copyright')
+        license_permissions = self.field(u'license_permissions')
         importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible.
             importer = self.manager.import_bible(BibleFormat.OSIS,
                 name=license_version,
-                filename=unicode(self.field(u'osis_location').toString())
+                filename=self.field(u'osis_location')
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible.
             importer = self.manager.import_bible(BibleFormat.CSV,
                 name=license_version,
-                booksfile=unicode(self.field(u'csv_booksfile').toString()),
-                versefile=unicode(self.field(u'csv_versefile').toString())
+                booksfile=self.field(u'csv_booksfile'),
+                versefile=self.field(u'csv_versefile')
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible.
             importer = self.manager.import_bible(BibleFormat.OpenSong,
                 name=license_version,
-                filename=unicode(self.field(u'opensong_file').toString())
+                filename=self.field(u'opensong_file')
             )
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web.
             self.progressBar.setMaximum(1)
-            download_location = self.field(u'web_location').toInt()[0]
-            bible_version = unicode(self.webTranslationComboBox.currentText())
+            download_location = self.field(u'web_location')
+            bible_version = self.webTranslationComboBox.currentText()
             bible = self.web_bible_list[download_location][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload, name=license_version,
                 download_source=WebDownload.Names[download_location],
                 download_name=bible,
-                proxy_server=unicode(self.field(u'proxy_server').toString()),
-                proxy_username=\
-                    unicode(self.field(u'proxy_username').toString()),
-                proxy_password=unicode(self.field(u'proxy_password').toString())
+                proxy_server=self.field(u'proxy_server'),
+                proxy_username=self.field(u'proxy_username'),
+                proxy_password=self.field(u'proxy_password')
             )
         elif bible_type == BibleFormat.OpenLP1:
             # Import an openlp.org 1.x bible.
             importer = self.manager.import_bible(BibleFormat.OpenLP1,
                 name=license_version,
-                filename=unicode(self.field(u'openlp1_location').toString())
+                filename=self.field(u'openlp1_location')
             )
         if importer.do_import(license_version):
             self.manager.save_meta_data(license_version, license_version,

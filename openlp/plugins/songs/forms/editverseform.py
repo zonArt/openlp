@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -104,7 +104,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         and the cursor's position.
         """
         position = self.verseTextEdit.textCursor().position()
-        text = unicode(self.verseTextEdit.toPlainText())
+        text = self.verseTextEdit.toPlainText()
         verse_name = VerseType.TranslatedNames[
             self.verseTypeComboBox.currentIndex()]
         if not text:
@@ -155,7 +155,8 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def getVerseAll(self):
         text = self.verseTextEdit.toPlainText()
-        if not text.startsWith(u'---['):
+        if not text.startswith(u'---['):
             text = u'---[%s:1]---\n%s' % \
                 (VerseType.TranslatedNames[VerseType.Verse], text)
         return text
+

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -36,29 +36,23 @@ class Ui_SettingsDialog(object):
     def setupUi(self, settingsDialog):
         settingsDialog.setObjectName(u'settingsDialog')
         settingsDialog.resize(800, 500)
-        settingsDialog.setWindowIcon(
-            build_icon(u':/system/system_settings.png'))
+        settingsDialog.setWindowIcon(build_icon(u':/system/system_settings.png'))
         self.dialogLayout = QtGui.QGridLayout(settingsDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.dialogLayout.setMargin(8)
         self.settingListWidget = QtGui.QListWidget(settingsDialog)
         self.settingListWidget.setUniformItemSizes(True)
         self.settingListWidget.setMinimumSize(QtCore.QSize(150, 0))
-        self.settingListWidget.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
+        self.settingListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.settingListWidget.setObjectName(u'settingListWidget')
         self.dialogLayout.addWidget(self.settingListWidget, 0, 0, 1, 1)
         self.stackedLayout = QtGui.QStackedLayout()
         self.stackedLayout.setObjectName(u'stackedLayout')
         self.dialogLayout.addLayout(self.stackedLayout, 0, 1, 1, 1)
-        self.buttonBox = create_button_box(settingsDialog, u'buttonBox',
-            [u'cancel', u'ok'])
+        self.buttonBox = create_button_box(settingsDialog, u'buttonBox', [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
-        QtCore.QObject.connect(self.settingListWidget,
-            QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.tabChanged)
+        QtCore.QObject.connect(self.settingListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.tabChanged)
 
     def retranslateUi(self, settingsDialog):
-        settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm',
-            'Configure OpenLP'))
+        settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm', 'Configure OpenLP'))

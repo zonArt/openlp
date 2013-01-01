@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -39,9 +39,7 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, \
-    check_directory_exists
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, check_directory_exists, Settings
 from openlp.core.utils import get_web_page, AppLocation, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -66,10 +64,9 @@ class ThemeScreenshotThread(QtCore.QThread):
             filename = config.get(u'theme_%s' % theme, u'filename')
             screenshot = config.get(u'theme_%s' % theme, u'screenshot')
             urllib.urlretrieve(u'%s%s' % (self.parent().web, screenshot),
-                os.path.join(unicode(gettempdir(), get_filesystem_encoding()),
-                u'openlp', screenshot))
+                os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themesListWidget)
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+            item.setData(QtCore.Qt.UserRole, filename)
             item.setCheckState(QtCore.Qt.Unchecked)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
 
@@ -94,16 +91,14 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
         self.downloadCancelled = False
-        self.downloading = unicode(translate('OpenLP.FirstTimeWizard',
-            'Downloading %s...'))
+        self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
             self.onCancelButtonClicked)
-        QtCore.QObject.connect(self.noInternetFinishButton,
-            QtCore.SIGNAL('clicked()'), self.onNoInternetFinishButtonClicked)
-        QtCore.QObject.connect(self,
-            QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_screen_changed'), self.updateScreenListCombo)
+        QtCore.QObject.connect(self.noInternetFinishButton, QtCore.SIGNAL('clicked()'),
+            self.onNoInternetFinishButtonClicked)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
+            self.updateScreenListCombo)
 
     def exec_(self):
         """
@@ -121,39 +116,30 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
-        self.hasRunWizard = Settings().value(
-            u'general/has run wizard', QtCore.QVariant(False)).toBool()
+        self.hasRunWizard = Settings().value(u'general/has run wizard', False)
         # Sort out internet access for downloads
         if self.webAccess:
             songs = self.config.get(u'songs', u'languages')
             songs = songs.split(u',')
             for song in songs:
-                title = unicode(self.config.get(
-                    u'songs_%s' % song, u'title'), u'utf8')
-                filename = unicode(self.config.get(
-                    u'songs_%s' % song, u'filename'), u'utf8')
+                title = unicode(self.config.get(u'songs_%s' % song, u'title'), u'utf8')
+                filename = unicode(self.config.get(u'songs_%s' % song, u'filename'), u'utf8')
                 item = QtGui.QListWidgetItem(title, self.songsListWidget)
-                item.setData(QtCore.Qt.UserRole, QtCore.QVariant(filename))
+                item.setData(QtCore.Qt.UserRole, filename)
                 item.setCheckState(QtCore.Qt.Unchecked)
                 item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             bible_languages = self.config.get(u'bibles', u'languages')
             bible_languages = bible_languages.split(u',')
             for lang in bible_languages:
-                language = unicode(self.config.get(
-                    u'bibles_%s' % lang, u'title'), u'utf8')
-                langItem = QtGui.QTreeWidgetItem(
-                    self.biblesTreeWidget, QtCore.QStringList(language))
+                language = unicode(self.config.get(u'bibles_%s' % lang, u'title'), u'utf8')
+                langItem = QtGui.QTreeWidgetItem(self.biblesTreeWidget, [language])
                 bibles = self.config.get(u'bibles_%s' % lang, u'translations')
                 bibles = bibles.split(u',')
                 for bible in bibles:
-                    title = unicode(self.config.get(
-                        u'bible_%s' % bible, u'title'), u'utf8')
-                    filename = unicode(self.config.get(
-                        u'bible_%s' % bible, u'filename'))
-                    item = QtGui.QTreeWidgetItem(
-                        langItem, QtCore.QStringList(title))
-                    item.setData(0, QtCore.Qt.UserRole,
-                        QtCore.QVariant(filename))
+                    title = unicode(self.config.get(u'bible_%s' % bible, u'title'), u'utf8')
+                    filename = unicode(self.config.get(u'bible_%s' % bible, u'filename'))
+                    item = QtGui.QTreeWidgetItem(langItem, [title])
+                    item.setData(0, QtCore.Qt.UserRole, filename)
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.biblesTreeWidget.expandAll()
@@ -203,8 +189,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if self.hasRunWizard:
                 self.noInternetLabel.setText(self.noInternetText)
             else:
-                self.noInternetLabel.setText(self.noInternetText +
-                    self.cancelWizardText)
+                self.noInternetLabel.setText(self.noInternetText + self.cancelWizardText)
         elif pageId == FirstTimePage.Defaults:
             self.themeComboBox.clear()
             for iter in xrange(self.themesListWidget.count()):
@@ -217,9 +202,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)
-                default_theme = unicode(Settings().value(
-                    u'themes/global theme',
-                    QtCore.QVariant(u'')).toString())
+                default_theme = Settings().value(u'themes/global theme', u'')
                 # Pre-select the current default theme.
                 index = self.themeComboBox.findText(default_theme)
                 self.themeComboBox.setCurrentIndex(index)
@@ -255,7 +238,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Process the triggering of the cancel button.
         """
         if self.lastId == FirstTimePage.NoInternet or \
-            (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
+                (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
         self.downloadCancelled = True
@@ -271,7 +254,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._performWizard()
         Receiver.send_message(u'cursor_normal')
         Receiver.send_message(u'openlp_process_events')
-        Settings().setValue(u'general/has run wizard', QtCore.QVariant(True))
+        Settings().setValue(u'general/has run wizard', True)
         self.close()
 
     def urlGetFile(self, url, fpath):
@@ -308,10 +291,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             screenshot = self.config.get(u'theme_%s' % theme, u'screenshot')
             for index in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(index)
-                if item.data(QtCore.Qt.UserRole) == QtCore.QVariant(filename):
+                if item.data(QtCore.Qt.UserRole) == filename:
                     break
-            item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
-                get_filesystem_encoding()), u'openlp', screenshot)))
+            item.setIcon(build_icon(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp',
+                screenshot)))
 
     def _getFileSize(self, url):
         site = urllib.urlopen(url)
@@ -351,7 +334,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             Receiver.send_message(u'openlp_process_events')
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole).toString()
+                filename = item.data(QtCore.Qt.UserRole)
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
         # Loop through the Bibles list and increase for each selected item
@@ -360,7 +343,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             Receiver.send_message(u'openlp_process_events')
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                filename = item.data(0, QtCore.Qt.UserRole).toString()
+                filename = item.data(0, QtCore.Qt.UserRole)
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
             iterator += 1
@@ -369,7 +352,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             Receiver.send_message(u'openlp_process_events')
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
-                filename = item.data(QtCore.Qt.UserRole).toString()
+                filename = item.data(QtCore.Qt.UserRole)
                 size = self._getFileSize(u'%s%s' % (self.web, filename))
                 self.max_progress += size
         if self.max_progress:
@@ -378,15 +361,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressBar.setValue(0)
             self.progressBar.setMinimum(0)
             self.progressBar.setMaximum(self.max_progress)
-            self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
-                'Setting Up And Downloading'))
-            self.progressPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-                'Please wait while OpenLP is set up '
-                'and your data is downloaded.'))
+            self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Setting Up And Downloading'))
+            self.progressPage.setSubTitle(
+                translate('OpenLP.FirstTimeWizard', 'Please wait while OpenLP is set up and your data is downloaded.'))
         else:
             self.progressBar.setVisible(False)
-            self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard',
-                'Setting Up'))
+            self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Setting Up'))
             self.progressPage.setSubTitle(u'Setup complete.')
         self.repaint()
         Receiver.send_message(u'openlp_process_events')
@@ -401,12 +381,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressBar.setValue(self.progressBar.maximum())
             if self.hasRunWizard:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
-                    'Download complete.'
-                    ' Click the finish button to return to OpenLP.'))
+                    'Download complete. Click the finish button to return to OpenLP.'))
             else:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
-                    'Download complete.'
-                    ' Click the finish button to start OpenLP.'))
+                    'Download complete. Click the finish button to start OpenLP.'))
         else:
             if self.hasRunWizard:
                 self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
@@ -425,15 +403,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Run the tasks in the wizard.
         """
         # Set plugin states
-        self._incrementProgressBar(translate('OpenLP.FirstTimeWizard',
-            'Enabling selected plugins...'))
+        self._incrementProgressBar(translate('OpenLP.FirstTimeWizard', 'Enabling selected plugins...'))
         self._setPluginStatus(self.songsCheckBox, u'songs/status')
         self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
         # TODO Presentation plugin is not yet working on Mac OS X.
         # For now just ignore it.
         if sys.platform != 'darwin':
-            self._setPluginStatus(self.presentationCheckBox,
-                u'presentations/status')
+            self._setPluginStatus(self.presentationCheckBox, u'presentations/status')
         self._setPluginStatus(self.imageCheckBox, u'images/status')
         self._setPluginStatus(self.mediaCheckBox, u'media/status')
         self._setPluginStatus(self.remoteCheckBox, u'remotes/status')
@@ -450,11 +426,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             for i in xrange(self.songsListWidget.count()):
                 item = self.songsListWidget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    filename = item.data(QtCore.Qt.UserRole).toString()
+                    filename = item.data(QtCore.Qt.UserRole)
                     self._incrementProgressBar(self.downloading % filename, 0)
                     self.previous_size = 0
-                    destination = os.path.join(songs_destination,
-                        unicode(filename))
+                    destination = os.path.join(songs_destination, unicode(filename))
                     self.urlGetFile(u'%s%s' % (self.web, filename), destination)
             # Download Bibles
             bibles_iterator = QtGui.QTreeWidgetItemIterator(
@@ -462,33 +437,27 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             while bibles_iterator.value():
                 item = bibles_iterator.value()
                 if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
-                    bible = unicode(item.data(0, QtCore.Qt.UserRole).toString())
+                    bible = item.data(0, QtCore.Qt.UserRole)
                     self._incrementProgressBar(self.downloading % bible, 0)
                     self.previous_size = 0
-                    self.urlGetFile(u'%s%s' % (self.web, bible),
-                        os.path.join(bibles_destination, bible))
+                    self.urlGetFile(u'%s%s' % (self.web, bible), os.path.join(bibles_destination, bible))
                 bibles_iterator += 1
             # Download themes
             for i in xrange(self.themesListWidget.count()):
                 item = self.themesListWidget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
-                    theme = unicode(item.data(QtCore.Qt.UserRole).toString())
+                    theme = item.data(QtCore.Qt.UserRole)
                     self._incrementProgressBar(self.downloading % theme, 0)
                     self.previous_size = 0
-                    self.urlGetFile(u'%s%s' % (self.web, theme),
-                        os.path.join(themes_destination, theme))
+                    self.urlGetFile(u'%s%s' % (self.web, theme), os.path.join(themes_destination, theme))
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
-            Settings().setValue(u'General/monitor',
-                QtCore.QVariant(self.displayComboBox.currentIndex()))
-            self.screens.set_current_display(
-                self.displayComboBox.currentIndex())
+            Settings().setValue(u'General/monitor', self.displayComboBox.currentIndex())
+            self.screens.set_current_display(self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:
-            Settings().setValue(u'themes/global theme',
-                QtCore.QVariant(self.themeComboBox.currentText()))
+            Settings().setValue(u'themes/global theme', self.themeComboBox.currentText())
 
     def _setPluginStatus(self, field, tag):
-        status = PluginStatus.Active if field.checkState() \
-            == QtCore.Qt.Checked else PluginStatus.Inactive
-        Settings().setValue(tag, QtCore.QVariant(status))
+        status = PluginStatus.Active if field.checkState() == QtCore.Qt.Checked else PluginStatus.Inactive
+        Settings().setValue(tag, status)

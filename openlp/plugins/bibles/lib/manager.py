@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,9 +32,8 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib import Receiver, SettingsManager, translate, Settings
 from openlp.core.utils import AppLocation, delete_file
-from openlp.core.lib.settings import Settings
 from openlp.plugins.bibles.lib import parse_reference, \
     get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -128,9 +127,8 @@ class BibleManager(object):
         self.web = u'Web'
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.proxy_name = unicode(
-            Settings().value(self.settingsSection + u'/proxy name',
-            QtCore.QVariant(u'')).toString())
+        self.proxy_name = Settings().value(
+            self.settingsSection + u'/proxy name', u'')
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
@@ -340,7 +338,7 @@ class BibleManager(object):
                 Receiver.send_message(u'openlp_information_message', {
                     u'title': translate('BiblesPlugin.BibleManager',
                     'Scripture Reference Error'),
-                    u'message': unicode(translate('BiblesPlugin.BibleManager',
+                    u'message': translate('BiblesPlugin.BibleManager',
                     'Your scripture reference is either not supported by '
                     'OpenLP or is invalid. Please make sure your reference '
                     'conforms to one of the following patterns or consult the '
@@ -355,7 +353,7 @@ class BibleManager(object):
                     'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
                     'Please pay attention to the appended "s" of the wildcards '
                     'and refrain from translating the words inside the '
-                    'names in the brackets.')) % reference_seperators
+                    'names in the brackets.') % reference_seperators
                     })
             return None
 
@@ -374,8 +372,7 @@ class BibleManager(object):
             # If None is returned, it's not the singleton object but a
             # BibleMeta object with the value "None"
             language_selection = Settings().value(
-                self.settingsSection + u'/book name language',
-                QtCore.QVariant(0)).toInt()[0]
+                self.settingsSection + u'/book name language', 0)
         else:
             language_selection = language_selection.value
         try:
@@ -436,7 +433,7 @@ class BibleManager(object):
                 })
             return None
 
-    def save_meta_data(self, bible, version, copyright, permissions, 
+    def save_meta_data(self, bible, version, copyright, permissions,
         book_name_language=None):
         """
         Saves the bibles meta data.
@@ -455,7 +452,7 @@ class BibleManager(object):
         """
         log.debug(u'get_meta %s,%s', bible, key)
         return self.db_cache[bible].get_object(BibleMeta, key)
-    
+
     def update_book(self, bible, book):
         """
         Update a book of the bible.

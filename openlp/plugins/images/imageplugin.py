@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,8 +32,7 @@ from PyQt4 import QtCore, QtGui
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    Receiver, ImageSource
-from openlp.core.lib.settings import Settings
+    Receiver, ImageSource, Settings
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -98,6 +97,6 @@ class ImagePlugin(Plugin):
         last part of saving the config.
         """
         background = QtGui.QColor(Settings().value(self.settingsSection
-            + u'/background color', QtCore.QVariant(u'#000000')))
+            + u'/background color', u'#000000'))
         self.liveController.imageManager.updateImagesBorder(
             ImageSource.ImagePlugin, background)

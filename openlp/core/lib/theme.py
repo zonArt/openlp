@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -478,8 +478,7 @@ class ThemeXML(object):
         Pull out the XML string formatted for human consumption
         """
         self._build_xml_from_attrs()
-        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n',
-            encoding=u'utf-8')
+        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n', encoding=u'utf-8')
 
     def parse(self, xml):
         """
@@ -512,18 +511,15 @@ class ThemeXML(object):
             if element.tag == u'background':
                 if element.attrib:
                     for attr in element.attrib:
-                        self._create_attr(element.tag, attr, \
-                        element.attrib[attr])
+                        self._create_attr(element.tag, attr, element.attrib[attr])
             parent = element.getparent()
             if parent is not None:
                 if parent.tag == u'font':
                     master = parent.tag + u'_' + parent.attrib[u'type']
                 # set up Outline and Shadow Tags and move to font_main
                 if parent.tag == u'display':
-                    if element.tag.startswith(u'shadow') or \
-                        element.tag.startswith(u'outline'):
-                        self._create_attr(u'font_main', element.tag,
-                            element.text)
+                    if element.tag.startswith(u'shadow') or element.tag.startswith(u'outline'):
+                        self._create_attr(u'font_main', element.tag, element.text)
                     master = parent.tag
                 if parent.tag == u'background':
                     master = parent.tag
@@ -533,12 +529,10 @@ class ThemeXML(object):
                     for attr in element.attrib:
                         base_element = attr
                         # correction for the shadow and outline tags
-                        if element.tag == u'shadow' or \
-                            element.tag == u'outline':
+                        if element.tag == u'shadow' or element.tag == u'outline':
                             if not attr.startswith(element.tag):
                                 base_element = element.tag + u'_' + attr
-                        self._create_attr(master, base_element,
-                            element.attrib[attr])
+                        self._create_attr(master, base_element, element.attrib[attr])
             else:
                 if element.tag == u'name':
                     self._create_attr(u'theme', element.tag, element.text)
@@ -570,8 +564,7 @@ class ThemeXML(object):
         """
         Create the attributes with the correct data types and name format
         """
-        reject, master, element, value = \
-            self._translate_tags(master, element, value)
+        reject, master, element, value = self._translate_tags(master, element, value)
         if reject:
             return
         field = self._de_hump(element)
@@ -611,21 +604,17 @@ class ThemeXML(object):
         Build the XML from the varables in the object
         """
         self._new_document(self.theme_name)
-        if self.background_type == \
-            BackgroundType.to_string(BackgroundType.Solid):
+        if self.background_type == BackgroundType.to_string(BackgroundType.Solid):
             self.add_background_solid(self.background_color)
-        elif self.background_type == \
-            BackgroundType.to_string(BackgroundType.Gradient):
+        elif self.background_type == BackgroundType.to_string(BackgroundType.Gradient):
             self.add_background_gradient(
                 self.background_start_color,
                 self.background_end_color,
                 self.background_direction)
-        elif self.background_type == \
-            BackgroundType.to_string(BackgroundType.Image):
+        elif self.background_type == BackgroundType.to_string(BackgroundType.Image):
             filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename, self.background_border_color)
-        elif self.background_type == \
-            BackgroundType.to_string(BackgroundType.Transparent):
+        elif self.background_type == BackgroundType.to_string(BackgroundType.Transparent):
             self.add_background_transparent()
         self.add_font(self.font_main_name,
             self.font_main_color,

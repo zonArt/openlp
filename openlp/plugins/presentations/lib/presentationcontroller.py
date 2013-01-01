@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -34,8 +34,7 @@ import shutil
 from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, check_directory_exists, create_thumb, \
-    validate_thumb
-from openlp.core.lib.settings import Settings
+    validate_thumb, Settings
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -393,10 +392,8 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if Settings().value(
-            self.settings_section + u'/' + self.name,
-            QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
-                QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + u'/' + self.name,
+            QtCore.Qt.Checked) == QtCore.Qt.Checked:
             return self.is_available()
         else:
             return False

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -35,9 +35,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsManager, translate
+from openlp.core.lib import Receiver, Settings, SettingsManager, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.lib.settings import Settings
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
 
@@ -239,8 +238,7 @@ class SongImportForm(OpenLPWizard):
             return True
         elif self.currentPage() == self.sourcePage:
             format = self.currentFormat
-            Settings().setValue(u'songs/last import type',
-                format)
+            Settings().setValue(u'songs/last import type', format)
             select_mode, class_, error_msg = SongFormat.get(format,
                 u'selectMode', u'class', u'invalidSourceMsg')
             if select_mode == SongFormatSelect.MultipleFiles:
@@ -293,7 +291,7 @@ class SongImportForm(OpenLPWizard):
         """
         Return a list of file from the listbox
         """
-        return [unicode(listbox.item(i).text()) for i in range(listbox.count())]
+        return [listbox.item(i).text() for i in range(listbox.count())]
 
     def removeSelectedItems(self, listbox):
         """
@@ -346,7 +344,7 @@ class SongImportForm(OpenLPWizard):
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
         last_import_type = Settings().value(
-            u'songs/last import type').toInt()[0]
+            u'songs/last import type', SongFormat.OpenLyrics)
         if last_import_type < 0 or \
             last_import_type >= self.formatComboBox.count():
             last_import_type = 0
@@ -379,11 +377,11 @@ class SongImportForm(OpenLPWizard):
         source_format = self.currentFormat
         select_mode = SongFormat.get(source_format, u'selectMode')
         if select_mode == SongFormatSelect.SingleFile:
-            importer = self.plugin.importSongs(source_format, filename=unicode(
-                self.formatWidgets[source_format][u'filepathEdit'].text()))
+            importer = self.plugin.importSongs(source_format, filename=
+                self.formatWidgets[source_format][u'filepathEdit'].text())
         elif select_mode == SongFormatSelect.SingleFolder:
-            importer = self.plugin.importSongs(source_format, folder=unicode(
-                self.formatWidgets[source_format][u'filepathEdit'].text()))
+            importer = self.plugin.importSongs(source_format, folder=
+                self.formatWidgets[source_format][u'filepathEdit'].text())
         else:
             importer = self.plugin.importSongs(source_format,
                 filenames=self.getListOfFiles(

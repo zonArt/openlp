@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -128,7 +128,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             self.correspondingComboBox.setFocus()
             return False
         else:
-            cor_book = unicode(self.correspondingComboBox.currentText())
+            cor_book = self.correspondingComboBox.currentText()
             for character in u'\\.^$*+?{}[]()':
                 cor_book = cor_book.replace(character, u'\\' + character)
             books = filter(lambda key:

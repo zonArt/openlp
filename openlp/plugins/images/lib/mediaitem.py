@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -34,9 +34,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
     SettingsManager, translate, check_item_selected, check_directory_exists, \
-    Receiver, create_thumb, validate_thumb, ServiceItemContext
+    Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.lib.settings import Settings
 from openlp.core.utils import AppLocation, delete_file, locale_compare, \
     get_images_filter
 
@@ -113,8 +112,7 @@ class ImageMediaItem(MediaManagerItem):
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
-                    delete_file(os.path.join(self.servicePath,
-                        unicode(text.text())))
+                    delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
                 self.plugin.formParent.incrementProgressBar()
             SettingsManager.set_list(self.settingsSection,
@@ -144,7 +142,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name = QtGui.QListWidgetItem(filename)
             item_name.setIcon(icon)
             item_name.setToolTip(imageFile)
-            item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(imageFile))
+            item_name.setData(QtCore.Qt.UserRole, imageFile)
             self.listView.addItem(item_name)
             if not initialLoad:
                 self.plugin.formParent.incrementProgressBar()
@@ -155,7 +153,7 @@ class ImageMediaItem(MediaManagerItem):
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
         background = QtGui.QColor(Settings().value(self.settingsSection
-            + u'/background color', QtCore.QVariant(u'#000000')))
+            + u'/background color', u'#000000'))
         if item:
             items = [item]
         else:
@@ -172,7 +170,7 @@ class ImageMediaItem(MediaManagerItem):
         missing_items = []
         missing_items_filenames = []
         for bitem in items:
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole)
             if not os.path.exists(filename):
                 missing_items.append(bitem)
                 missing_items_filenames.append(filename)
@@ -183,22 +181,22 @@ class ImageMediaItem(MediaManagerItem):
             if not remote:
                 critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                    unicode(translate('ImagePlugin.MediaItem',
-                    'The following image(s) no longer exist: %s')) %
+                    translate('ImagePlugin.MediaItem',
+                    'The following image(s) no longer exist: %s') %
                     u'\n'.join(missing_items_filenames))
             return False
         # We have missing as well as existing images. We ask what to do.
         elif missing_items and QtGui.QMessageBox.question(self,
             translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-            unicode(translate('ImagePlugin.MediaItem', 'The following '
+            translate('ImagePlugin.MediaItem', 'The following '
             'image(s) no longer exist: %s\nDo you want to add the other '
-            'images anyway?')) % u'\n'.join(missing_items_filenames),
+            'images anyway?') % u'\n'.join(missing_items_filenames),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
             QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             return False
         # Continue with the existing images.
         for bitem in items:
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole)
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
@@ -224,11 +222,10 @@ class ImageMediaItem(MediaManagerItem):
             translate('ImagePlugin.MediaItem',
             'You must select an image to replace the background with.')):
             background = QtGui.QColor(Settings().value(
-                self.settingsSection + u'/background color',
-                QtCore.QVariant(u'#000000')))
+                self.settingsSection + u'/background color', u'#000000'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 if self.plugin.liveController.display.directImage(
                     filename, background):
@@ -239,9 +236,9 @@ class ImageMediaItem(MediaManagerItem):
                         'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
-                    unicode(translate('ImagePlugin.MediaItem',
+                    translate('ImagePlugin.MediaItem',
                     'There was a problem replacing your background, '
-                    'the image file "%s" no longer exists.')) % filename)
+                    'the image file "%s" no longer exists.') % filename)
 
     def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'images')

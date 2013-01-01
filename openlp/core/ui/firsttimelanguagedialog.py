@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -49,22 +49,17 @@ class Ui_FirstTimeLanguageDialog(object):
         self.languageLabel.setObjectName(u'languageLabel')
         self.languageLayout.addWidget(self.languageLabel)
         self.languageComboBox = QtGui.QComboBox(languageDialog)
-        self.languageComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
+        self.languageComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.languageComboBox.setObjectName("languageComboBox")
         self.languageLayout.addWidget(self.languageComboBox)
         self.dialogLayout.addLayout(self.languageLayout)
-        self.buttonBox = create_button_box(languageDialog, u'buttonBox',
-            [u'cancel', u'ok'])
+        self.buttonBox = create_button_box(languageDialog, u'buttonBox', [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox)
-
         self.retranslateUi(languageDialog)
         self.setMaximumHeight(self.sizeHint().height())
 
     def retranslateUi(self, languageDialog):
-        self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm',
-                'Select Translation'))
-        self.infoLabel.setText(translate('OpenLP.FirstTimeLanguageForm',
-            'Choose the translation you\'d like to use in OpenLP.'))
-        self.languageLabel.setText(translate('OpenLP.FirstTimeLanguageForm',
-            'Translation:'))
+        self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm', 'Select Translation'))
+        self.infoLabel.setText(
+            translate('OpenLP.FirstTimeLanguageForm', 'Choose the translation you\'d like to use in OpenLP.'))
+        self.languageLabel.setText(translate('OpenLP.FirstTimeLanguageForm', 'Translation:'))

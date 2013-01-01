@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -129,11 +129,11 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         sxml.add_lyrics_to_song()
         for count in range(self.slideListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count + 1),
-                unicode(self.slideListView.item(count).text()))
-        self.customSlide.title = unicode(self.titleEdit.text())
+                self.slideListView.item(count).text())
+        self.customSlide.title = self.titleEdit.text()
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
-        self.customSlide.credits = unicode(self.creditEdit.text())
-        self.customSlide.theme_name = unicode(self.themeComboBox.currentText())
+        self.customSlide.credits = self.creditEdit.text()
+        self.customSlide.theme_name = self.themeComboBox.currentText()
         success = self.manager.save_object(self.customSlide)
         self.mediaitem.autoSelectId = self.customSlide.id
         return success

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,8 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import SettingsTab, translate, Receiver, Settings
 from openlp.core.lib.ui import UiStrings
 
 class ImageTab(SettingsTab):
@@ -86,8 +85,7 @@ class ImageTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.bg_color = unicode(settings.value(
-            u'background color', QtCore.QVariant(u'#000000')).toString())
+        self.bg_color = settings.value(u'background color', u'#000000')
         self.initial_color = self.bg_color
         settings.endGroup()
         self.backgroundColorButton.setStyleSheet(
@@ -96,7 +94,7 @@ class ImageTab(SettingsTab):
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'background color', self.bg_color)
         settings.endGroup()
         if self.initial_color != self.bg_color:
             Receiver.send_message(u'image_updated')

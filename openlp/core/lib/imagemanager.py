@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -190,8 +190,7 @@ class ImageManager(QtCore.QObject):
         self.imageThread = ImageThread(self)
         self._conversionQueue = PriorityQueue()
         self.stopManager = False
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_updated'), self.processUpdates)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.processUpdates)
 
     def updateDisplay(self):
         """
@@ -293,14 +292,12 @@ class ImageManager(QtCore.QObject):
         if not (path, source) in self._cache:
             image = Image(path, source, background)
             self._cache[(path, source)] = image
-            self._conversionQueue.put(
-                (image.priority, image.secondary_priority, image))
+            self._conversionQueue.put((image.priority, image.secondary_priority, image))
         # Check if the there are any images with the same path and check if the
         # timestamp has changed.
         for image in self._cache.values():
             if os.path.exists(path):
-                if image.path == path and \
-                    image.timestamp != os.stat(path).st_mtime:
+                if image.path == path and image.timestamp != os.stat(path).st_mtime:
                     image.timestamp = os.stat(path).st_mtime
                     self._resetImage(image)
         # We want only one thread.
@@ -324,8 +321,7 @@ class ImageManager(QtCore.QObject):
         image = self._conversionQueue.get()[2]
         # Generate the QImage for the image.
         if image.image is None:
-            image.image = resize_image(image.path, self.width, self.height,
-                image.background)
+            image.image = resize_image(image.path, self.width, self.height, image.background)
             # Set the priority to Lowest and stop here as we need to process
             # more important images first.
             if image.priority == Priority.Normal:
