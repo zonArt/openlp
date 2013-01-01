@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -47,22 +47,14 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.item_id = None
         QtGui.QDialog.__init__(self, plugin.formParent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.displayButton,
-            QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
-        QtCore.QObject.connect(self.displayCloseButton,
-            QtCore.SIGNAL(u'clicked()'), self.onDisplayCloseClicked)
-        QtCore.QObject.connect(self.alertTextEdit,
-            QtCore.SIGNAL(u'textChanged(const QString&)'), self.onTextChanged)
-        QtCore.QObject.connect(self.newButton,
-            QtCore.SIGNAL(u'clicked()'), self.onNewClick)
-        QtCore.QObject.connect(self.saveButton,
-            QtCore.SIGNAL(u'clicked()'), self.onSaveClick)
-        QtCore.QObject.connect(self.alertListWidget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onDoubleClick)
-        QtCore.QObject.connect(self.alertListWidget,
-            QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
-        QtCore.QObject.connect(self.alertListWidget,
-            QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        QtCore.QObject.connect(self.displayButton, QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
+        QtCore.QObject.connect(self.displayCloseButton, QtCore.SIGNAL(u'clicked()'), self.onDisplayCloseClicked)
+        QtCore.QObject.connect(self.alertTextEdit, QtCore.SIGNAL(u'textChanged(const QString&)'), self.onTextChanged)
+        QtCore.QObject.connect(self.newButton, QtCore.SIGNAL(u'clicked()'), self.onNewClick)
+        QtCore.QObject.connect(self.saveButton, QtCore.SIGNAL(u'clicked()'), self.onSaveClick)
+        QtCore.QObject.connect(self.alertListWidget, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onDoubleClick)
+        QtCore.QObject.connect(self.alertListWidget, QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSingleClick)
+        QtCore.QObject.connect(self.alertListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
     def exec_(self):
         self.displayButton.setEnabled(False)
@@ -75,16 +67,14 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Loads the list with alerts.
         """
         self.alertListWidget.clear()
-        alerts = self.manager.get_all_objects(AlertItem,
-            order_by_ref=AlertItem.text)
+        alerts = self.manager.get_all_objects(AlertItem, order_by_ref=AlertItem.text)
         for alert in alerts:
             item_name = QtGui.QListWidgetItem(alert.text)
             item_name.setData(QtCore.Qt.UserRole, alert.id)
             self.alertListWidget.addItem(item_name)
             if alert.text == unicode(self.alertTextEdit.text()):
                 self.item_id = alert.id
-                self.alertListWidget.setCurrentRow(
-                    self.alertListWidget.row(item_name))
+                self.alertListWidget.setCurrentRow(self.alertListWidget.row(item_name))
 
     def onDisplayClicked(self):
         self.triggerAlert(self.alertTextEdit.text())
@@ -110,9 +100,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if not self.alertTextEdit.text():
             QtGui.QMessageBox.information(self,
                 translate('AlertsPlugin.AlertForm', 'New Alert'),
-                translate('AlertsPlugin.AlertForm', 'You haven\'t specified '
-                'any text for your alert. Please type in some text before '
-                'clicking New.'))
+                translate('AlertsPlugin.AlertForm', 'You haven\'t specified any text for your alert. \n'
+                    'Please type in some text before clicking New.'))
         else:
             alert = AlertItem()
             alert.text = self.alertTextEdit.text()
@@ -180,24 +169,20 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if not text:
             return False
         # We found '<>' in the alert text, but the ParameterEdit field is empty.
-        if text.find(u'<>') != -1 and not self.parameterEdit.text() and \
-            QtGui.QMessageBox.question(self,
-            translate('AlertsPlugin.AlertForm', 'No Parameter Found'),
-            translate('AlertsPlugin.AlertForm', 'You have not entered a '
-            'parameter to be replaced.\nDo you want to continue anyway?'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-            QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+        if text.find(u'<>') != -1 and not self.parameterEdit.text() and QtGui.QMessageBox.question(self,
+                translate('AlertsPlugin.AlertForm', 'No Parameter Found'),
+                translate('AlertsPlugin.AlertForm', 'You have not entered a parameter to be replaced.\n'
+                    'Do you want to continue anyway?'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameterEdit.setFocus()
             return False
         # The ParameterEdit field is not empty, but we have not found '<>'
         # in the alert text.
-        elif text.find(u'<>') == -1 and self.parameterEdit.text() and \
-            QtGui.QMessageBox.question(self,
-            translate('AlertsPlugin.AlertForm', 'No Placeholder Found'),
-            translate('AlertsPlugin.AlertForm', 'The alert text does not'
-            ' contain \'<>\'.\nDo you want to continue anyway?'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-            QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+        elif text.find(u'<>') == -1 and self.parameterEdit.text() and QtGui.QMessageBox.question(self,
+                translate('AlertsPlugin.AlertForm', 'No Placeholder Found'),
+                translate('AlertsPlugin.AlertForm', 'The alert text does not contain \'<>\'.\n'
+                    'Do you want to continue anyway?'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameterEdit.setFocus()
             return False
         text = text.replace(u'<>', self.parameterEdit.text())

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -31,8 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
@@ -44,8 +43,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'bibles', plugin_helpers,
-            BibleMediaItem, BiblesTab)
+        Plugin.__init__(self, u'bibles', plugin_helpers, BibleMediaItem, BiblesTab)
         self.weight = -9
         self.iconPath = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.iconPath)
@@ -84,17 +82,16 @@ class BiblePlugin(Plugin):
         """
         if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.formParent,
-                translate('OpenLP', 'Information'), translate('OpenLP',
-                'Bible format has changed.\nYou have to upgrade your '
-                'existing Bibles.\nShould OpenLP upgrade now?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
+                translate('OpenLP', 'Information'),
+                translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your existing Bibles.\n'
+                    'Should OpenLP upgrade now?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
+                    QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'bookname language'):
-            settings.setValue(u'book name language', settings.value(
-                u'bookname language', 0))
+            settings.setValue(u'book name language', settings.value(u'bookname language', 0))
             settings.remove(u'bookname language')
         settings.endGroup()
 
@@ -122,8 +119,7 @@ class BiblePlugin(Plugin):
         log.debug(u'add tools menu')
         self.toolsUpgradeItem = create_action(tools_menu, u'toolsUpgradeItem',
             text=translate('BiblesPlugin', '&Upgrade older Bibles'),
-            statustip=translate('BiblesPlugin',
-            'Upgrade the Bible databases to the latest format.'),
+            statustip=translate('BiblesPlugin', 'Upgrade the Bible databases to the latest format.'),
             visible=False, triggers=self.onToolsUpgradeItemTriggered)
         tools_menu.addAction(self.toolsUpgradeItem)
 
@@ -132,8 +128,7 @@ class BiblePlugin(Plugin):
         Upgrade older bible databases.
         """
         if not hasattr(self, u'upgrade_wizard'):
-            self.upgrade_wizard = BibleUpgradeForm(self.formParent,
-                self.manager, self)
+            self.upgrade_wizard = BibleUpgradeForm(self.formParent, self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
             self.mediaItem.reloadBibles()
@@ -194,7 +189,6 @@ class BiblePlugin(Plugin):
             u'preview': translate('BiblesPlugin',
                 'Preview the selected Bible.'),
             u'live': translate('BiblesPlugin', 'Send the selected Bible live.'),
-            u'service': translate('BiblesPlugin',
-                'Add the selected Bible to the service.')
+            u'service': translate('BiblesPlugin', 'Add the selected Bible to the service.')
         }
         self.setPluginUiTextStrings(tooltips)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -69,30 +69,19 @@ class Ui_SongUsageDetailDialog(object):
         self.fileLineEdit.setReadOnly(True)
         self.fileHorizontalLayout.addWidget(self.fileLineEdit)
         self.saveFilePushButton = QtGui.QPushButton(self.fileGroupBox)
-        self.saveFilePushButton.setMaximumWidth(
-            self.saveFilePushButton.size().height())
-        self.saveFilePushButton.setIcon(
-            build_icon(u':/general/general_open.png'))
+        self.saveFilePushButton.setMaximumWidth(self.saveFilePushButton.size().height())
+        self.saveFilePushButton.setIcon(build_icon(u':/general/general_open.png'))
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
         self.fileHorizontalLayout.addWidget(self.saveFilePushButton)
         self.verticalLayout.addWidget(self.fileGroupBox)
-        self.buttonBox = create_button_box(songUsageDetailDialog, u'buttonBox',
-            [u'cancel', u'ok'])
+        self.buttonBox = create_button_box(songUsageDetailDialog, u'buttonBox', [u'cancel', u'ok'])
         self.verticalLayout.addWidget(self.buttonBox)
         self.retranslateUi(songUsageDetailDialog)
-        QtCore.QObject.connect(self.saveFilePushButton,
-            QtCore.SIGNAL(u'clicked()'),
+        QtCore.QObject.connect(self.saveFilePushButton, QtCore.SIGNAL(u'clicked()'),
             songUsageDetailDialog.defineOutputLocation)
 
     def retranslateUi(self, songUsageDetailDialog):
-        songUsageDetailDialog.setWindowTitle(
-            translate('SongUsagePlugin.SongUsageDetailForm',
-            'Song Usage Extraction'))
-        self.dateRangeGroupBox.setTitle(
-            translate('SongUsagePlugin.SongUsageDetailForm',
-            'Select Date Range'))
-        self.toLabel.setText(
-            translate('SongUsagePlugin.SongUsageDetailForm', 'to'))
-        self.fileGroupBox.setTitle(
-            translate('SongUsagePlugin.SongUsageDetailForm',
-            'Report Location'))
+        songUsageDetailDialog.setWindowTitle(translate('SongUsagePlugin.SongUsageDetailForm', 'Song Usage Extraction'))
+        self.dateRangeGroupBox.setTitle(translate('SongUsagePlugin.SongUsageDetailForm', 'Select Date Range'))
+        self.toLabel.setText(translate('SongUsagePlugin.SongUsageDetailForm', 'to'))
+        self.fileGroupBox.setTitle(translate('SongUsagePlugin.SongUsageDetailForm', 'Report Location'))

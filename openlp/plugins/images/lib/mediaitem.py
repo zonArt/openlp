@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -32,12 +32,10 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, \
-    SettingsManager, translate, check_item_selected, check_directory_exists, \
-    Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings
+from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
+    check_item_selected, check_directory_exists, Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
-from openlp.core.utils import AppLocation, delete_file, locale_compare, \
-    get_images_filter
+from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
 
 log = logging.getLogger(__name__)
 
@@ -52,8 +50,7 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.quickPreviewAllowed = True
         self.hasSearch = True
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -61,8 +58,7 @@ class ImageMediaItem(MediaManagerItem):
         self.onNewPrompt = translate('ImagePlugin.MediaItem',
             'Select Image(s)')
         file_formats = get_images_filter()
-        self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats,
-            UiStrings().AllFiles)
+        self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
         self.replaceAction.setText(UiStrings().ReplaceBG)
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
@@ -79,12 +75,9 @@ class ImageMediaItem(MediaManagerItem):
         log.debug(u'initialise')
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.servicePath = os.path.join(
-            AppLocation.get_section_data_path(self.settingsSection),
-            u'thumbnails')
+        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
-        self.loadList(SettingsManager.load_list(
-            self.settingsSection, u'images'), True)
+        self.loadList(SettingsManager.load_list(self.settingsSection, u'images'), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -94,8 +87,7 @@ class ImageMediaItem(MediaManagerItem):
         self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
             icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
         self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
-            icon=u':/system/system_close.png', visible=False,
-            triggers=self.onResetClick)
+            icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
 
     def onDeleteClick(self):
         """
@@ -103,8 +95,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         # Turn off auto preview triggers.
         self.listView.blockSignals(True)
-        if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
-            'You must select an image to delete.')):
+        if check_item_selected(self.listView, translate('ImagePlugin.MediaItem','You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             Receiver.send_message(u'cursor_busy')
@@ -115,8 +106,7 @@ class ImageMediaItem(MediaManagerItem):
                     delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
                 self.plugin.formParent.incrementProgressBar()
-            SettingsManager.set_list(self.settingsSection,
-                u'images', self.getFileList())
+            SettingsManager.set_list(self.settingsSection, u'images', self.getFileList())
             self.plugin.formParent.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
@@ -127,8 +117,7 @@ class ImageMediaItem(MediaManagerItem):
             self.plugin.formParent.displayProgressBar(len(images))
         # Sort the images by its filename considering language specific
         # characters.
-        images.sort(cmp=locale_compare,
-            key=lambda filename: os.path.split(unicode(filename))[1])
+        images.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         for imageFile in images:
             filename = os.path.split(unicode(imageFile))[1]
             thumb = os.path.join(self.servicePath, filename)
@@ -152,8 +141,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
-        background = QtGui.QColor(Settings().value(self.settingsSection
-            + u'/background color', u'#000000'))
+        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
         if item:
             items = [item]
         else:
@@ -181,18 +169,15 @@ class ImageMediaItem(MediaManagerItem):
             if not remote:
                 critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                    translate('ImagePlugin.MediaItem',
-                    'The following image(s) no longer exist: %s') %
-                    u'\n'.join(missing_items_filenames))
+                    translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s') %
+                        u'\n'.join(missing_items_filenames))
             return False
         # We have missing as well as existing images. We ask what to do.
         elif missing_items and QtGui.QMessageBox.question(self,
             translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-            translate('ImagePlugin.MediaItem', 'The following '
-            'image(s) no longer exist: %s\nDo you want to add the other '
-            'images anyway?') % u'\n'.join(missing_items_filenames),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No |
-            QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+            translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s\n'
+                'Do you want to add the other images anyway?') % u'\n'.join(missing_items_filenames),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             return False
         # Continue with the existing images.
         for bitem in items:
@@ -219,26 +204,21 @@ class ImageMediaItem(MediaManagerItem):
         Called to replace Live backgound with the image selected.
         """
         if check_item_selected(self.listView,
-            translate('ImagePlugin.MediaItem',
-            'You must select an image to replace the background with.')):
-            background = QtGui.QColor(Settings().value(
-                self.settingsSection + u'/background color', u'#000000'))
+                translate('ImagePlugin.MediaItem', 'You must select an image to replace the background with.')):
+            background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
             filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
-                if self.plugin.liveController.display.directImage(
-                    filename, background):
+                if self.plugin.liveController.display.directImage(filename, background):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
-                        translate('ImagePlugin.MediaItem',
-                        'There was no display item to amend.'))
+                        translate('ImagePlugin.MediaItem', 'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
-                    translate('ImagePlugin.MediaItem',
-                    'There was a problem replacing your background, '
-                    'the image file "%s" no longer exists.') % filename)
+                    translate('ImagePlugin.MediaItem', 'There was a problem replacing your background, '
+                        'the image file "%s" no longer exists.') % filename)
 
     def search(self, string, showError):
         files = SettingsManager.load_list(self.settingsSection, u'images')
