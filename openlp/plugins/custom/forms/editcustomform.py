@@ -125,8 +125,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         if not self._validate():
             return False
         sxml = CustomXMLBuilder()
-        sxml.new_document()
-        sxml.add_lyrics_to_song()
         for count in range(self.slideListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count + 1),
                 self.slideListView.item(count).text())
