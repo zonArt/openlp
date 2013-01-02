@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -60,27 +60,23 @@ class ImageTab(SettingsTab):
         self.formLayout.addRow(self.informationLabel)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
-        self.rightColumn.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
+        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
+            self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
         self.backgroundColorLabel.setText(UiStrings().DefaultColor)
         self.informationLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Visible background for images '
-            'with aspect ratio different to screen.'))
+            translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 
     def onbackgroundColorButtonClicked(self):
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.bg_color), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.bg_color), self)
         if new_color.isValid():
             self.bg_color = new_color.name()
-            self.backgroundColorButton.setStyleSheet(
-                u'background-color: %s' % self.bg_color)
+            self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def load(self):
         settings = Settings()
@@ -88,8 +84,7 @@ class ImageTab(SettingsTab):
         self.bg_color = settings.value(u'background color', u'#000000')
         self.initial_color = self.bg_color
         settings.endGroup()
-        self.backgroundColorButton.setStyleSheet(
-            u'background-color: %s' % self.bg_color)
+        self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def save(self):
         settings = Settings()

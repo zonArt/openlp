@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -125,8 +125,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         if not self._validate():
             return False
         sxml = CustomXMLBuilder()
-        sxml.new_document()
-        sxml.add_lyrics_to_song()
         for count in range(self.slideListView.count()):
             sxml.add_verse_to_lyrics(u'custom', unicode(count + 1),
                 self.slideListView.item(count).text())

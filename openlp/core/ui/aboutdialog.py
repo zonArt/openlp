@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -260,8 +260,8 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
         copyright = translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2012 %s\n'
-            'Portions copyright \xa9 2004-2012 %s') % (u'Raoul Snyman',
+            'Copyright \xa9 2004-2013 %s\n'
+            'Portions copyright \xa9 2004-2013 %s') % (u'Raoul Snyman',
             u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
             u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
             u'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
