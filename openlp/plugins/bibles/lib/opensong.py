@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -83,21 +83,17 @@ class OpenSongBible(BibleDB):
             bible = opensong.getroot()
             language_id = self.get_language(bible_name)
             if not language_id:
-                log.exception(u'Importing books from "%s" '\
-                    'failed' % self.filename)
+                log.exception(u'Importing books from "%s" failed' % self.filename)
                 return False
             for book in bible.b:
                 if self.stop_import_flag:
                     break
-                book_ref_id = self.get_book_ref_id_by_name(
-                    unicode(book.attrib[u'n']), len(bible.b), language_id)
+                book_ref_id = self.get_book_ref_id_by_name(unicode(book.attrib[u'n']), len(bible.b), language_id)
                 if not book_ref_id:
-                    log.exception(u'Importing books from "%s" '\
-                        'failed' % self.filename)
+                    log.exception(u'Importing books from "%s" failed' % self.filename)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                db_book = self.create_book(unicode(book.attrib[u'n']),
-                    book_ref_id, book_details[u'testament_id'])
+                db_book = self.create_book(unicode(book.attrib[u'n']), book_ref_id, book_details[u'testament_id'])
                 chapter_number = 0
                 for chapter in book.c:
                     if self.stop_import_flag:
@@ -130,15 +126,12 @@ class OpenSongBible(BibleDB):
                             chapter_number,
                             verse_number,
                             self.get_text(verse))
-                    self.wizard.incrementProgressBar(translate(
-                        'BiblesPlugin.Opensong', 'Importing %s %s...',
-                        'Importing <book name> <chapter>...')) % \
-                        (db_book.name, chapter_number)
+                    self.wizard.incrementProgressBar(translate('BiblesPlugin.Opensong', 'Importing %s %s...',
+                        'Importing <book name> <chapter>...')) % (db_book.name, chapter_number)
                 self.session.commit()
             Receiver.send_message(u'openlp_process_events')
         except etree.XMLSyntaxError as inst:
-            critical_error_message_box(
-                message=translate('BiblesPlugin.OpenSongImport',
+            critical_error_message_box(message=translate('BiblesPlugin.OpenSongImport',
                 'Incorrect Bible file type supplied. OpenSong Bibles may be '
                 'compressed. You must decompress them before import.'))
             log.exception(inst)

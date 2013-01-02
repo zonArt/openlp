@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -78,8 +78,7 @@ class AlertsTab(SettingsTab):
         self.timeoutSpinBox.setMaximum(180)
         self.timeoutSpinBox.setObjectName(u'timeoutSpinBox')
         self.fontLayout.addRow(self.timeoutLabel, self.timeoutSpinBox)
-        self.verticalLabel, self.verticalComboBox = \
-            create_valign_selection_widgets(self.fontGroupBox)
+        self.verticalLabel, self.verticalComboBox = create_valign_selection_widgets(self.fontGroupBox)
         self.verticalLabel.setObjectName(u'verticalLabel')
         self.verticalComboBox.setObjectName(u'verticalComboBox')
         self.fontLayout.addRow(self.verticalLabel, self.verticalComboBox)
@@ -95,54 +94,40 @@ class AlertsTab(SettingsTab):
         self.rightLayout.addWidget(self.previewGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'clicked()'), self.onBackgroundColorButtonClicked)
-        QtCore.QObject.connect(self.fontColorButton,
-            QtCore.SIGNAL(u'clicked()'), self.onFontColorButtonClicked)
-        QtCore.QObject.connect(self.fontComboBox,
-            QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
-        QtCore.QObject.connect(self.timeoutSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
-        QtCore.QObject.connect(self.fontSizeSpinBox,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
+        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
+            self.onBackgroundColorButtonClicked)
+        QtCore.QObject.connect(self.fontColorButton, QtCore.SIGNAL(u'clicked()'), self.onFontColorButtonClicked)
+        QtCore.QObject.connect(self.fontComboBox, QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
+        QtCore.QObject.connect(self.timeoutSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
+        QtCore.QObject.connect(self.fontSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
 
     def retranslateUi(self):
-        self.fontGroupBox.setTitle(
-            translate('AlertsPlugin.AlertsTab', 'Font'))
-        self.fontLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font name:'))
-        self.fontColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font color:'))
-        self.backgroundColorLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Background color:'))
-        self.fontSizeLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Font size:'))
+        self.fontGroupBox.setTitle(translate('AlertsPlugin.AlertsTab', 'Font'))
+        self.fontLabel.setText(translate('AlertsPlugin.AlertsTab', 'Font name:'))
+        self.fontColorLabel.setText(translate('AlertsPlugin.AlertsTab', 'Font color:'))
+        self.backgroundColorLabel.setText(translate('AlertsPlugin.AlertsTab', 'Background color:'))
+        self.fontSizeLabel.setText(translate('AlertsPlugin.AlertsTab', 'Font size:'))
         self.fontSizeSpinBox.setSuffix(UiStrings().FontSizePtUnit)
-        self.timeoutLabel.setText(
-            translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
+        self.timeoutLabel.setText(translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
         self.timeoutSpinBox.setSuffix(UiStrings().Seconds)
         self.previewGroupBox.setTitle(UiStrings().Preview)
         self.fontPreview.setText(UiStrings().OLPV2x)
 
     def onBackgroundColorButtonClicked(self):
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.bg_color), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.bg_color), self)
         if new_color.isValid():
             self.bg_color = new_color.name()
-            self.backgroundColorButton.setStyleSheet(
-                u'background-color: %s' % self.bg_color)
+            self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
             self.updateDisplay()
 
     def onFontComboBoxClicked(self):
         self.updateDisplay()
 
     def onFontColorButtonClicked(self):
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.font_color), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.font_color), self)
         if new_color.isValid():
             self.font_color = new_color.name()
-            self.fontColorButton.setStyleSheet(
-                u'background-color: %s' % self.font_color)
+            self.fontColorButton.setStyleSheet(u'background-color: %s' % self.font_color)
             self.updateDisplay()
 
     def onTimeoutSpinBoxChanged(self):
@@ -165,10 +150,8 @@ class AlertsTab(SettingsTab):
         settings.endGroup()
         self.fontSizeSpinBox.setValue(self.font_size)
         self.timeoutSpinBox.setValue(self.timeout)
-        self.fontColorButton.setStyleSheet(
-            u'background-color: %s' % self.font_color)
-        self.backgroundColorButton.setStyleSheet(
-            u'background-color: %s' % self.bg_color)
+        self.fontColorButton.setStyleSheet(u'background-color: %s' % self.font_color)
+        self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
         self.verticalComboBox.setCurrentIndex(self.location)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
@@ -180,8 +163,7 @@ class AlertsTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         # Check value has changed as no event handles this field
-        if settings.value(u'location', 1) != \
-            self.verticalComboBox.currentIndex():
+        if settings.value(u'location', 1) != self.verticalComboBox.currentIndex():
             self.changed = True
         settings.setValue(u'background color', self.bg_color)
         settings.setValue(u'font color', self.font_color)
@@ -202,7 +184,6 @@ class AlertsTab(SettingsTab):
         font.setBold(True)
         font.setPointSize(self.font_size)
         self.fontPreview.setFont(font)
-        self.fontPreview.setStyleSheet(u'background-color: %s; color: %s' %
-            (self.bg_color, self.font_color))
+        self.fontPreview.setStyleSheet(u'background-color: %s; color: %s' % (self.bg_color, self.font_color))
         self.changed = True
 

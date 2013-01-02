@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -46,10 +46,8 @@ class AlertsManager(QtCore.QObject):
         self.screen = None
         self.timer_id = 0
         self.alertList = []
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_display_active'), self.generateAlert)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_active'), self.generateAlert)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
 
     def onAlertText(self, message):
         """
@@ -71,8 +69,7 @@ class AlertsManager(QtCore.QObject):
             self.alertList.append(text)
             if self.timer_id != 0:
                 Receiver.send_message(u'mainwindow_status_text',
-                    translate('AlertsPlugin.AlertsManager',
-                    'Alert message created and displayed.'))
+                    translate('AlertsPlugin.AlertsManager', 'Alert message created and displayed.'))
                 return
             Receiver.send_message(u'mainwindow_status_text', u'')
             self.generateAlert()
