@@ -18,7 +18,7 @@ class TestServiceItem(TestCase):
 
     def serviceitem_basic_test(self):
         """
-        Test the Service Item
+        Test the Service Item basic test
         """
         #GIVEN: A new service item
 
@@ -26,12 +26,14 @@ class TestServiceItem(TestCase):
         service_item = ServiceItem(None)
 
         # THEN: We should get back a valid service item
+        print service_item
+        print dir(service_item)
         assert service_item.is_valid is True, u'A valid Service Item'
         assert service_item.missing_frames() is True, u'No frames loaded yet'
 
     def serviceitem_add_text_test(self):
         """
-        Test the Service Item
+        Test the Service Item add text test
         """
         #GIVEN: A new service item
         service_item = ServiceItem(None)
@@ -42,7 +44,7 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'A valid Service Item'
-        assert service_item.missing_frames() is False, u'frames loaded '
+        assert service_item.missing_frames() is False, u'check frames loaded '
 
         #GIVEN: A service item with text
         mocked_renderer =  MagicMock()
@@ -59,7 +61,7 @@ class TestServiceItem(TestCase):
 
     def serviceitem_add_image_test(self):
         """
-        Test the Service Item
+        Test the Service Item add image test
         """
         #GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
@@ -72,7 +74,6 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'A valid Service Item'
-        assert service_item.missing_frames() is False, u'frames loaded '
         assert len(service_item._display_frames) is 0, u'A blank Service Item'
 
         #THEN: We should should have a page of output.
@@ -104,9 +105,18 @@ class TestServiceItem(TestCase):
         #Then the service item should be valid
         assert service_item.is_valid is True, u'The service item is valid'
 
+        # WHEN: adding a second image to a service item
+        service_item.add_from_image(u'resources/church1.jpg', u'Image1 Title')
+
+        #When validating a service item
+        service_item.validate_item([u'jpg'])
+
+        #Then the service item should be valid
+        assert service_item.is_valid is False, u'The service item is not valid'
+
     def serviceitem_add_command_test(self):
         """
-        Test the Service Item
+        Test the Service Item add command test
         """
         #GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
@@ -119,7 +129,6 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'A valid Service Item'
-        assert service_item.missing_frames() is False, u'frames loaded '
         assert len(service_item._display_frames) is 0, u'A blank Service Item'
 
         #THEN: We should should have a page of output.
@@ -141,3 +150,9 @@ class TestServiceItem(TestCase):
 
         #Then the service item should be valid
         assert service_item.is_valid is True, u'The service item is valid'
+
+        #When validating a service item  with a different suffix
+        service_item.validate_item([u'png'])
+
+        #Then the service item should not be valid
+        assert service_item.is_valid is False, u'The service item is not valid'

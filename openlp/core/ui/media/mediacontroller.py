@@ -54,7 +54,7 @@ class MediaSlider(QtGui.QSlider):
         """
         Override event to allow hover time to be displayed.
         """
-        timevalue = QtGui.QStyle.sliderValueFromPosition(self.minimum(),self.maximum(),event.x(),self.width())
+        timevalue = QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
         self.setToolTip(u'%s' % datetime.timedelta(seconds=int(timevalue/1000)))
         QtGui.QSlider.mouseMoveEvent(self, event)
 
@@ -68,7 +68,7 @@ class MediaSlider(QtGui.QSlider):
         """
         Set the slider position when the mouse is clicked and released on the slider.
         """
-        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(),self.maximum(),event.x(),self.width()))
+        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width()))
         QtGui.QSlider.mouseReleaseEvent(self, event)
 
 
