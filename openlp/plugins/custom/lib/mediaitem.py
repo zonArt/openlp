@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -30,13 +30,13 @@
 import logging
 
 from PyQt4 import QtCore, QtGui
-from sqlalchemy.sql import or_, func
+from sqlalchemy.sql import or_, func, and_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    check_item_selected, translate, ServiceItemContext, Settings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
+    ServiceItemContext, Settings, PluginStatus
 from openlp.core.lib.ui import UiStrings
 from openlp.plugins.custom.forms import EditCustomForm
-from openlp.plugins.custom.lib import CustomXMLParser
+from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
@@ -85,6 +85,12 @@ class CustomMediaItem(MediaManagerItem):
             QtCore.SIGNAL(u'custom_load_list'), self.loadList)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
+        QtCore.QObject.connect(Receiver.get_receiver(),
+            QtCore.SIGNAL(u'custom_create_from_service'), self.create_from_service_item)
+
+    def config_updated(self):
+        self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service', True)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -102,6 +108,7 @@ class CustomMediaItem(MediaManagerItem):
             CustomSlide, order_by_ref=CustomSlide.title))
         self.searchTextEdit.setCurrentSearchType(Settings().value(
             u'%s/last search type' % self.settingsSection, CustomSearch.Titles))
+        self.config_updated()
 
     def loadList(self, custom_slides):
         # Sort out what custom we want to select after loading the list.
@@ -198,6 +205,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanSoftBreak)
+        service_item.add_capability(ItemCapabilities.OnLoadUpdate)
         customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
         title = customSlide.title
         credit = customSlide.credits
@@ -251,6 +259,49 @@ class CustomMediaItem(MediaManagerItem):
             self.onSearchTextButtonClicked()
         elif not text:
             self.onClearTextButtonClick()
+
+    def serviceLoad(self, item):
+        """
+        Triggered by a song being loaded by the service manager.
+        """
+        log.debug(u'serviceLoad')
+        if self.plugin.status != PluginStatus.Active:
+            return
+        custom = self.plugin.manager.get_object_filtered(CustomSlide,
+            and_(CustomSlide.title == item.title, CustomSlide.theme_name == item.theme,
+            CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
+        if custom:
+            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
+        else:
+            if self.add_custom_from_service:
+                self.create_from_service_item(item)
+
+    def create_from_service_item(self, item):
+        """
+        Create a custom slide from a text service item
+        """
+        custom = CustomSlide()
+        custom.title = item.title
+        if item.theme:
+            custom.theme_name = item.theme
+        else:
+            custom.theme_name = u''
+        footer = u' '.join(item.raw_footer)
+        if footer:
+            if footer.startswith(item.title):
+                custom.credits = footer[len(item.title) + 1:]
+            else:
+                custom.credits = footer
+        else:
+            custom.credits = u''
+        custom_xml = CustomXMLBuilder()
+        for (idx, slide) in enumerate(item._raw_frames):
+            custom_xml.add_verse_to_lyrics(u'custom', unicode(idx + 1), slide['raw_slide'])
+        custom.text = unicode(custom_xml.extract_xml(), u'utf-8')
+        self.plugin.manager.save_object(custom)
+        self.onSearchTextButtonClicked()
+        if item.name.lower() == u'custom':
+            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
 
     def onClearTextButtonClick(self):
         """

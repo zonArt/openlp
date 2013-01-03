@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -40,8 +40,7 @@ class VerseReferenceList(object):
 
     def add(self, book, chapter, verse, version, copyright, permission):
         self.add_version(version, copyright, permission)
-        if not self.verse_list or \
-            self.verse_list[self.current_index][u'book'] != book:
+        if not self.verse_list or self.verse_list[self.current_index][u'book'] != book:
             self.verse_list.append({u'version': version, u'book': book,
                 u'chapter': chapter, u'start': verse, u'end': verse})
             self.current_index += 1
@@ -60,26 +59,22 @@ class VerseReferenceList(object):
         for bible_version in self.version_list:
             if bible_version[u'version'] == version:
                 return
-        self.version_list.append({u'version': version, u'copyright': copyright,
-            u'permission': permission})
+        self.version_list.append({u'version': version, u'copyright': copyright, u'permission': permission})
 
     def format_verses(self):
         result = u''
         for index, verse in enumerate(self.verse_list):
             if index == 0:
-                result = u'%s %s:%s' % (verse[u'book'], verse[u'chapter'],
-                    verse[u'start'])
+                result = u'%s %s:%s' % (verse[u'book'], verse[u'chapter'], verse[u'start'])
                 if verse[u'start'] != verse[u'end']:
                     result = u'%s-%s' % (result, verse[u'end'])
                 continue
             prev = index - 1
             if self.verse_list[prev][u'version'] != verse[u'version']:
-                result = u'%s (%s)' % (result,
-                    self.verse_list[prev][u'version'])
+                result = u'%s (%s)' % (result, self.verse_list[prev][u'version'])
             result = result + u', '
             if self.verse_list[prev][u'book'] != verse[u'book']:
-                result = u'%s%s %s:' % (result, verse[u'book'],
-                    verse[u'chapter'])
+                result = u'%s%s %s:' % (result, verse[u'book'], verse[u'chapter'])
             elif self.verse_list[prev][u'chapter'] != verse[u'chapter']:
                 result = u'%s%s:' % (result, verse[u'chapter'])
             result = result + str(verse[u'start'])
@@ -96,8 +91,7 @@ class VerseReferenceList(object):
                 if result[-1] not in [u';', u',', u'.']:
                     result = result + u';'
                 result = result + u' '
-            result = u'%s%s, %s' % (result, version[u'version'],
-                version[u'copyright'])
+            result = u'%s%s, %s' % (result, version[u'version'], version[u'copyright'])
             if version[u'permission'].strip():
                 result = result + u', ' + version[u'permission']
         result = result.rstrip()
