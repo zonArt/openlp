@@ -668,7 +668,8 @@ class MediaController(object):
             return
         controller = self.mainWindow.liveController
         display = self._define_display(controller)
-        if self.currentMediaPlayer[controller.controllerType].state == MediaState.Playing:
+        if controller.controllerType in self.currentMediaPlayer and \
+            self.currentMediaPlayer[controller.controllerType].state == MediaState.Playing:
             self.currentMediaPlayer[controller.controllerType].pause(display)
             self.currentMediaPlayer[controller.controllerType].set_visible(display, False)
 
