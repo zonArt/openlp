@@ -45,6 +45,7 @@ from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
+from openlp.plugins.songs.lib.doublesfinder import DuplicateSongFinder
 
 log = logging.getLogger(__name__)
 
@@ -77,10 +78,12 @@ class SongsPlugin(Plugin):
         self.songImportItem.setVisible(True)
         self.songExportItem.setVisible(True)
         self.toolsReindexItem.setVisible(True)
+        self.toolsFindDuplicates.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.songImportItem, UiStrings().Import)
         action_list.add_action(self.songExportItem, UiStrings().Export)
         action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.add_action(self.toolsFindDuplicates, UiStrings().Tools)
         QtCore.QObject.connect(Receiver.get_receiver(),
             QtCore.SIGNAL(u'servicemanager_new_service'),
             self.clearTemporarySongs)
@@ -122,7 +125,7 @@ class SongsPlugin(Plugin):
 
     def addToolsMenuItem(self, tools_menu):
         """
-        Give the alerts plugin the opportunity to add items to the
+        Give the Songs plugin the opportunity to add items to the
         **Tools** menu.
 
         ``tools_menu``
@@ -137,6 +140,12 @@ class SongsPlugin(Plugin):
             'Re-index the songs database to improve searching and ordering.'),
             visible=False, triggers=self.onToolsReindexItemTriggered)
         tools_menu.addAction(self.toolsReindexItem)
+        self.toolsFindDuplicates = create_action(tools_menu, u'toolsFindDuplicates',
+            text=translate('SongsPlugin', 'Find &duplicate songs'),
+            statustip=translate('SongsPlugin',
+            'Find and remove duplicate songs in the song database.'),
+            visible=False, triggers=self.onToolsFindDuplicatesTriggered)
+        tools_menu.addAction(self.toolsFindDuplicates)
 
     def onToolsReindexItemTriggered(self):
         """
@@ -156,6 +165,25 @@ class SongsPlugin(Plugin):
             progressDialog.setValue(number + 1)
         self.manager.save_objects(songs)
         self.mediaItem.onSearchTextButtonClicked()
+
+    def onToolsFindDuplicatesTriggered(self):
+        """
+        Search for duplicates in the song database.
+        """
+        maxSongs = self.manager.get_object_count(Song)
+        if maxSongs == 0:
+            return
+        QtGui.QMessageBox.information(self.formParent,
+            "Find duplicates called", "Called...")
+        songs = self.manager.get_all_objects(Song)
+        for outerSongCounter in range(maxSongs-1):
+            for innerSongCounter in range(outerSongCounter+1, maxSongs):
+                doubleFinder = DuplicateSongFinder()
+                if doubleFinder.songsProbablyEqual(songs[outerSongCounter],
+                    songs[innerSongCounter]):
+                        QtGui.QMessageBox.information(self.formParent,
+                        "Double found", str(innerSongCounter) + " " +
+                        str(outerSongCounter))
 
     def onSongImportItemClicked(self):
         if self.mediaItem:
@@ -280,10 +308,12 @@ class SongsPlugin(Plugin):
         self.songImportItem.setVisible(False)
         self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
+        self.toolsFindDuplicates.setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.songImportItem, UiStrings().Import)
         action_list.remove_action(self.songExportItem, UiStrings().Export)
         action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.remove_action(self.toolsFindDuplicates, UiStrings().Tools)
         Plugin.finalise(self)
 
     def clearTemporarySongs(self):
