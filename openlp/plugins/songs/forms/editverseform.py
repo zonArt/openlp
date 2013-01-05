@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -51,18 +51,13 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.verseTextEdit,
-            QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
+        QtCore.QObject.connect(self.verseTextEdit, QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
             self.contextMenu)
-        QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'),
-            self.onInsertButtonClicked)
-        QtCore.QObject.connect(self.splitButton, QtCore.SIGNAL(u'clicked()'),
-            self.onSplitButtonClicked)
-        QtCore.QObject.connect(self.verseTextEdit,
-            QtCore.SIGNAL(u'cursorPositionChanged()'),
+        QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
+        QtCore.QObject.connect(self.splitButton, QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
+        QtCore.QObject.connect(self.verseTextEdit, QtCore.SIGNAL(u'cursorPositionChanged()'),
             self.onCursorPositionChanged)
-        QtCore.QObject.connect(self.verseTypeComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'),
+        QtCore.QObject.connect(self.verseTypeComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
             self.onVerseTypeComboBoxChanged)
 
     def contextMenu(self, point):
@@ -72,8 +67,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if self.verseTextEdit.textCursor().columnNumber() != 0:
             self.verseTextEdit.insertPlainText(u'\n')
         verse_tag = VerseType.translated_name(verse_tag)
-        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' %
-            (verse_tag, verse_num))
+        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' % (verse_tag, verse_num))
         self.verseTextEdit.setFocus()
 
     def onSplitButtonClicked(self):
@@ -139,8 +133,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.insertButton.setVisible(False)
         else:
             if not text:
-                text = u'---[%s:1]---\n' % \
-                    VerseType.TranslatedNames[VerseType.Verse]
+                text = u'---[%s:1]---\n' % VerseType.TranslatedNames[VerseType.Verse]
             self.verseTypeComboBox.setCurrentIndex(0)
             self.verseNumberBox.setValue(1)
             self.insertButton.setVisible(True)
@@ -149,14 +142,12 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verseTextEdit.moveCursor(QtGui.QTextCursor.End)
 
     def getVerse(self):
-        return self.verseTextEdit.toPlainText(), \
-            VerseType.Tags[self.verseTypeComboBox.currentIndex()], \
+        return self.verseTextEdit.toPlainText(), VerseType.Tags[self.verseTypeComboBox.currentIndex()], \
             unicode(self.verseNumberBox.value())
 
     def getVerseAll(self):
         text = self.verseTextEdit.toPlainText()
         if not text.startswith(u'---['):
-            text = u'---[%s:1]---\n%s' % \
-                (VerseType.TranslatedNames[VerseType.Verse], text)
+            text = u'---[%s:1]---\n%s' % (VerseType.TranslatedNames[VerseType.Verse], text)
         return text
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -40,7 +40,7 @@ log = logging.getLogger(__name__)
 
 class PptviewController(PresentationController):
     """
-    Class to control interactions with PowerPOint Viewer Presentations
+    Class to control interactions with PowerPoint Viewer Presentations
     It creates the runtime Environment , Loads the and Closes the Presentation
     As well as triggering the correct activities based on the users input
     """
@@ -52,8 +52,7 @@ class PptviewController(PresentationController):
         """
         log.debug(u'Initialising')
         self.process = None
-        PresentationController.__init__(self, plugin, u'Powerpoint Viewer',
-            PptviewDocument)
+        PresentationController.__init__(self, plugin, u'Powerpoint Viewer', PptviewDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
 
     def check_available(self):
@@ -84,8 +83,8 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug(u'start PPTView')
-            dllpath = os.path.join(self.plugin.pluginManager.basepath,
-                u'presentations', u'lib', u'pptviewlib', u'pptviewlib.dll')
+            dllpath = os.path.join(self.plugin.pluginManager.basepath, u'presentations', u'lib', u'pptviewlib',
+                u'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dllpath)
             if log.isEnabledFor(logging.DEBUG):
                 self.process.SetDebug(1)
@@ -117,7 +116,7 @@ class PptviewDocument(PresentationDocument):
     def load_presentation(self):
         """
         Called when a presentation is added to the SlideController.
-        It builds the environment, starts communcations with the background
+        It builds the environment, starts communication with the background
         PptView task started earlier.
         """
         log.debug(u'LoadPresentation')
@@ -127,8 +126,7 @@ class PptviewDocument(PresentationDocument):
         filepath = str(self.filepath.replace(u'/', u'\\'))
         if not os.path.isdir(self.get_temp_folder()):
             os.makedirs(self.get_temp_folder())
-        self.pptid = self.controller.process.OpenPPT(filepath, None, rect,
-            str(self.get_temp_folder()) + '\\slide')
+        self.pptid = self.controller.process.OpenPPT(filepath, None, rect, str(self.get_temp_folder()) + '\\slide')
         if self.pptid >= 0:
             self.create_thumbnails()
             self.stop_presentation()
@@ -146,14 +144,13 @@ class PptviewDocument(PresentationDocument):
             return
         log.debug(u'create_thumbnails proceeding')
         for idx in range(self.get_slide_count()):
-            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(),
-                unicode(idx + 1))
+            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(), unicode(idx + 1))
             self.convert_thumbnail(path, idx + 1)
 
     def close_presentation(self):
         """
         Close presentation and clean up objects
-        Triggerent by new object being added to SlideController orOpenLP
+        Triggered by new object being added to SlideController orOpenLP
         being shut down
         """
         log.debug(u'ClosePresentation')
@@ -187,7 +184,7 @@ class PptviewDocument(PresentationDocument):
 
     def unblank_screen(self):
         """
-        Unblanks (restores) the presentationn
+        Unblanks (restores) the presentation
         """
         self.controller.process.Unblank(self.pptid)
         self.blanked = False

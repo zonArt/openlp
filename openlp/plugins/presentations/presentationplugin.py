@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -64,8 +64,7 @@ class PresentationPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settingsTab = PresentationTab(parent, self.name,
-            visible_name[u'title'], self.controllers, self.iconPath)
+        self.settingsTab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers, self.iconPath)
 
     def initialise(self):
         """
@@ -120,12 +119,10 @@ class PresentationPlugin(Plugin):
             AppLocation.get_directory(AppLocation.PluginsDir),
             u'presentations', u'lib')
         for filename in os.listdir(controller_dir):
-            if filename.endswith(u'controller.py') and \
-                not filename == 'presentationcontroller.py':
+            if filename.endswith(u'controller.py') and not filename == 'presentationcontroller.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
-                    modulename = u'openlp.plugins.presentations.lib.' + \
-                        os.path.splitext(filename)[0]
+                    modulename = u'openlp.plugins.presentations.lib.' + os.path.splitext(filename)[0]
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
@@ -155,30 +152,22 @@ class PresentationPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('PresentationPlugin', 'Presentation',
-                'name singular'),
-            u'plural': translate('PresentationPlugin', 'Presentations',
-                'name plural')
+            u'singular': translate('PresentationPlugin', 'Presentation', 'name singular'),
+            u'plural': translate('PresentationPlugin', 'Presentations', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('PresentationPlugin', 'Presentations',
-                'container title')
+            u'title': translate('PresentationPlugin', 'Presentations', 'container title')
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('PresentationPlugin',
-                'Load a new presentation.'),
+            u'load': translate('PresentationPlugin', 'Load a new presentation.'),
             u'import': u'',
             u'new': u'',
             u'edit': u'',
-            u'delete': translate('PresentationPlugin',
-                'Delete the selected presentation.'),
-            u'preview': translate('PresentationPlugin',
-                'Preview the selected presentation.'),
-            u'live': translate('PresentationPlugin',
-                'Send the selected presentation live.'),
-            u'service': translate('PresentationPlugin',
-                'Add the selected presentation to the service.')
+            u'delete': translate('PresentationPlugin', 'Delete the selected presentation.'),
+            u'preview': translate('PresentationPlugin', 'Preview the selected presentation.'),
+            u'live': translate('PresentationPlugin', 'Send the selected presentation live.'),
+            u'service': translate('PresentationPlugin', 'Add the selected presentation to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
