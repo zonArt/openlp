@@ -45,7 +45,7 @@ from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
-from openlp.plugins.songs.lib.doublesfinder import DuplicateSongFinder
+from openlp.plugins.songs.lib.duplicatesongfinder import DuplicateSongFinder
 
 log = logging.getLogger(__name__)
 
