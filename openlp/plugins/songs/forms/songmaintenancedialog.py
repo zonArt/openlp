@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -45,14 +45,11 @@ class Ui_SongMaintenanceDialog(object):
         self.typeListWidget.setUniformItemSizes(True)
         self.typeListWidget.setObjectName(u'typeListWidget')
         self.listItemAuthors = QtGui.QListWidgetItem(self.typeListWidget)
-        self.listItemAuthors.setIcon(
-            build_icon(u':/songs/author_maintenance.png'))
+        self.listItemAuthors.setIcon(build_icon(u':/songs/author_maintenance.png'))
         self.listItemTopics = QtGui.QListWidgetItem(self.typeListWidget)
-        self.listItemTopics.setIcon(
-            build_icon(u':/songs/topic_maintenance.png'))
+        self.listItemTopics.setIcon(build_icon(u':/songs/topic_maintenance.png'))
         self.listItemBooks = QtGui.QListWidgetItem(self.typeListWidget)
-        self.listItemBooks.setIcon(
-            build_icon(u':/songs/book_maintenance.png'))
+        self.listItemBooks.setIcon(build_icon(u':/songs/book_maintenance.png'))
         self.dialogLayout.addWidget(self.typeListWidget, 0, 0)
         self.stackedLayout = QtGui.QStackedLayout()
         self.stackedLayout.setObjectName(u'stackedLayout')
@@ -76,8 +73,7 @@ class Ui_SongMaintenanceDialog(object):
         self.authorsEditButton.setObjectName(u'authorsEditButton')
         self.authorsButtonsLayout.addWidget(self.authorsEditButton)
         self.authorsDeleteButton = QtGui.QPushButton(self.authorsPage)
-        self.authorsDeleteButton.setIcon(
-            build_icon(u':/songs/author_delete.png'))
+        self.authorsDeleteButton.setIcon(build_icon(u':/songs/author_delete.png'))
         self.authorsDeleteButton.setObjectName(u'authorsDeleteButton')
         self.authorsButtonsLayout.addWidget(self.authorsDeleteButton)
         self.authorsLayout.addLayout(self.authorsButtonsLayout)
@@ -134,13 +130,11 @@ class Ui_SongMaintenanceDialog(object):
         self.stackedLayout.addWidget(self.booksPage)
         #
         self.dialogLayout.addLayout(self.stackedLayout, 0, 1)
-        self.buttonBox = create_button_box(songMaintenanceDialog, u'buttonBox',
-            [u'close'])
+        self.buttonBox = create_button_box(songMaintenanceDialog, u'buttonBox', [u'close'])
         self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
         self.retranslateUi(songMaintenanceDialog)
         self.stackedLayout.setCurrentIndex(0)
-        QtCore.QObject.connect(self.typeListWidget,
-            QtCore.SIGNAL(u'currentRowChanged(int)'),
+        QtCore.QObject.connect(self.typeListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'),
             self.stackedLayout.setCurrentIndex)
 
     def retranslateUi(self, songMaintenanceDialog):
@@ -158,7 +152,5 @@ class Ui_SongMaintenanceDialog(object):
         self.booksEditButton.setText(UiStrings().Edit)
         self.booksDeleteButton.setText(UiStrings().Delete)
         typeListWidth = max(self.fontMetrics().width(SongStrings.Authors),
-            self.fontMetrics().width(SongStrings.Topics),
-            self.fontMetrics().width(SongStrings.SongBooks))
-        self.typeListWidget.setFixedWidth(typeListWidth +
-            self.typeListWidget.iconSize().width() + 32)
+            self.fontMetrics().width(SongStrings.Topics), self.fontMetrics().width(SongStrings.SongBooks))
+        self.typeListWidget.setFixedWidth(typeListWidth + self.typeListWidget.iconSize().width() + 32)

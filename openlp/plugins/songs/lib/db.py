@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -53,8 +53,7 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return u'<Book id="%s" name="%s" publisher="%s" />' % (
-            str(self.id), self.name, self.publisher)
+        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
 
 
 class MediaFile(BaseModel):
@@ -88,6 +87,7 @@ class Song(BaseModel):
 
     # This decorator tells sqlalchemy to call this method everytime
     # any data on this object is updated.
+
     @reconstructor
     def init_on_load(self):
         """

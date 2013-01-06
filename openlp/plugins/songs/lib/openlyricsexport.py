@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -67,12 +67,11 @@ class OpenLyricsExport(object):
             Receiver.send_message(u'openlp_process_events')
             if self.parent.stop_export_flag:
                 return False
-            self.parent.incrementProgressBar(translate(
-            'SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') % song.title)
+            self.parent.incrementProgressBar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
+                song.title)
             xml = openLyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml))
-            filename = u'%s (%s)' % (song.title,
-                u', '.join([author.display_name for author in song.authors]))
+            filename = u'%s (%s)' % (song.title, u', '.join([author.display_name for author in song.authors]))
             filename = clean_filename(filename)
             # Ensure the filename isn't too long for some filesystems
             filename = u'%s.xml' % filename[0:250 - len(self.save_path)]

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -139,14 +139,12 @@ class SundayPlusImport(SongImport):
                         if len(value):
                             verse_type = VerseType.Tags[
                                 VerseType.from_loose_input(value[0])]
-                            if len(value) >= 2 and value[-1] in ['0', '1', '2',
-                                '3', '4', '5', '6', '7', '8', '9']:
+                            if len(value) >= 2 and value[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                                 verse_type = "%s%s" % (verse_type, value[-1])
                     elif name == 'Hotkey':
                         # Hotkey always appears after MARKER_NAME, so it
                         # effectively overrides MARKER_NAME, if present.
-                        if len(value) and \
-                            value in HOTKEY_TO_VERSE_TYPE.keys():
+                        if len(value) and value in HOTKEY_TO_VERSE_TYPE.keys():
                             verse_type = HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'rtf':
                         value = self.unescape(value)
