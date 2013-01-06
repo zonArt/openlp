@@ -26,10 +26,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-The :mod:`dreambeamimport` module provides the functionality for importing
-DreamBeam songs into the OpenLP database.
-"""
 import logging
 import difflib
 
@@ -41,7 +37,7 @@ log = logging.getLogger(__name__)
 
 class DuplicateSongFinder(object):
     """
-    The :class:`DreamBeamImport` class provides functionality to search for
+    The :class:`DuplicateSongFinder` class provides functionality to search for
     and remove duplicate songs.
     """
 
