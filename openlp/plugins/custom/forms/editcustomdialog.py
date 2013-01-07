@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -74,9 +74,9 @@ class Ui_CustomEditDialog(object):
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
         self.upButton = create_button(customEditDialog, u'upButton', role=u'up',
-            enable=False, click=customEditDialog.onUpButtonClicked)
+            enabled=False, click=customEditDialog.onUpButtonClicked)
         self.downButton = create_button(customEditDialog, u'downButton',
-            role=u'down', enable=False,
+            role=u'down', enabled=False,
             click=customEditDialog.onDownButtonClicked)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)

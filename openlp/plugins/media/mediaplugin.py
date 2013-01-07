@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
+    Settings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -41,8 +41,7 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'media', plugin_helpers,
-            MediaMediaItem)
+        Plugin.__init__(self, u'media', plugin_helpers, MediaMediaItem)
         self.weight = -6
         self.iconPath = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.iconPath)
@@ -54,8 +53,7 @@ class MediaPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'],
-            self.iconPath)
+        self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'], self.iconPath)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -84,8 +82,7 @@ class MediaPlugin(Plugin):
             u'delete': translate('MediaPlugin', 'Delete the selected media.'),
             u'preview': translate('MediaPlugin', 'Preview the selected media.'),
             u'live': translate('MediaPlugin', 'Send the selected media live.'),
-            u'service': translate('MediaPlugin',
-                'Add the selected media to the service.')
+            u'service': translate('MediaPlugin', 'Add the selected media to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 
@@ -127,16 +124,14 @@ class MediaPlugin(Plugin):
             log.info(u'Found old Phonon setting')
             players = self.mediaController.mediaPlayers.keys()
             has_phonon = u'phonon' in players
-            if settings.value(u'use phonon').toBool() and has_phonon:
+            if settings.value(u'use phonon')  and has_phonon:
                 log.debug(u'Converting old setting to new setting')
                 new_players = []
                 if players:
-                    new_players = [player for player in players \
-                        if player != u'phonon']
+                    new_players = [player for player in players if player != u'phonon']
                 new_players.insert(0, u'phonon')
                 self.mediaController.mediaPlayers[u'phonon'].isActive = True
-                settings.setValue(u'players', \
-                    QtCore.QVariant(u','.join(new_players)))
+                settings.setValue(u'players', u','.join(new_players))
                 self.settingsTab.load()
             settings.remove(u'use phonon')
         settings.endGroup()

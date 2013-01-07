@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -37,55 +37,17 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list, \
-    check_directory_exists, ServiceItemContext
+    check_directory_exists, ServiceItemContext, Settings
 from openlp.core.lib.ui import UiStrings, create_widget_action
-from openlp.core.lib.settings import Settings
-from openlp.core.utils import AppLocation, locale_direct_compare
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
 from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
-    clean_string
+    clean_string, natcmp
 from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
 log = logging.getLogger(__name__)
-
-
-def natcmp(a, b):
-    """
-    Natural string comparison which mimics the behaviour of Python's internal
-    cmp function.
-    """
-    log.debug('a: %s; b: %s', a, b)
-    if len(a) <= len(b):
-        for i, key in enumerate(a):
-            if isinstance(key, int) and isinstance(b[i], int):
-                result = cmp(key, b[i])
-            elif isinstance(key, int) and not isinstance(b[i], int):
-                result = locale_direct_compare(QtCore.QString(str(key)), b[i])
-            elif not isinstance(key, int) and isinstance(b[i], int):
-                result = locale_direct_compare(key, QtCore.QString(str(b[i])))
-            else:
-                result = locale_direct_compare(key, b[i])
-            if result != 0:
-                return result
-        if len(a) == len(b):
-            return 0
-        else:
-            return -1
-    else:
-        for i, key in enumerate(b):
-            if isinstance(a[i], int) and isinstance(key, int):
-                result = cmp(a[i], key)
-            elif isinstance(a[i], int) and not isinstance(key, int):
-                result = locale_direct_compare(QtCore.QString(str(a[i])), key)
-            elif not isinstance(a[i], int) and isinstance(key, int):
-                result = locale_direct_compare(a[i], QtCore.QString(str(key)))
-            else:
-                result = locale_direct_compare(a[i], key)
-            if result != 0:
-                return result
-        return 1
 
 
 class SongSearch(object):
@@ -172,14 +134,11 @@ class SongMediaItem(MediaManagerItem):
 
     def configUpdated(self):
         self.searchAsYouType = Settings().value(
-            self.settingsSection + u'/search as type',
-            QtCore.QVariant(u'False')).toBool()
+            self.settingsSection + u'/search as type', False)
         self.updateServiceOnEdit = Settings().value(
-            self.settingsSection + u'/update service on edit',
-            QtCore.QVariant(u'False')).toBool()
+            self.settingsSection + u'/update service on edit', False)
         self.addSongFromService = Settings().value(
-            self.settingsSection + u'/add song from service',
-            QtCore.QVariant(u'True')).toBool()
+            self.settingsSection + u'/add song from service', True)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -209,15 +168,13 @@ class SongMediaItem(MediaManagerItem):
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.searchTextEdit.setCurrentSearchType(Settings().value(
-            u'%s/last search type' % self.settingsSection,
-            QtCore.QVariant(SongSearch.Entire)).toInt()[0])
+            u'%s/last search type' % self.settingsSection, SongSearch.Entire))
         self.configUpdated()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
         Settings().setValue(u'%s/last search type' %
-            self.settingsSection,
-            QtCore.QVariant(self.searchTextEdit.currentSearchType()))
+            self.settingsSection, self.searchTextEdit.currentSearchType())
         # Reload the list considering the new search type.
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
@@ -308,7 +265,7 @@ class SongMediaItem(MediaManagerItem):
             song_detail = u'%s (%s)' % (song_title,
                 create_separated_list(author_list))
             song_name = QtGui.QListWidgetItem(song_detail)
-            song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+            song_name.setData(QtCore.Qt.UserRole, song.id)
             self.listView.addItem(song_name)
             # Auto-select the item if name has been set
             if song.id == self.autoSelectId:
@@ -325,7 +282,7 @@ class SongMediaItem(MediaManagerItem):
                     continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
-                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.listView.addItem(song_name)
 
     def displayResultsBook(self, searchresults, song_number=False):
@@ -343,7 +300,7 @@ class SongMediaItem(MediaManagerItem):
                 song_detail = u'%s - %s (%s)' % (book.name, song.song_number,
                     song.title)
                 song_name = QtGui.QListWidgetItem(song_detail)
-                song_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(song.id))
+                song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.listView.addItem(song_name)
 
     def onClearTextButtonClick(self):
@@ -423,7 +380,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onEditClick')
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
-            item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = self.editItem.data(QtCore.Qt.UserRole)
             self.editSongForm.loadSong(item_id, False)
             self.editSongForm.exec_()
             self.autoSelectId = -1
@@ -448,7 +405,7 @@ class SongMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_busy')
             self.plugin.formParent.displayProgressBar(len(items))
             for item in items:
-                item_id = (item.data(QtCore.Qt.UserRole)).toInt()[0]
+                item_id = item.data(QtCore.Qt.UserRole)
                 media_files = self.plugin.manager.get_all_objects(MediaFile,
                     MediaFile.song_id == item_id)
                 for media_file in media_files:
@@ -477,7 +434,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onCloneClick')
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
-            item_id = (self.editItem.data(QtCore.Qt.UserRole)).toInt()[0]
+            item_id = self.editItem.data(QtCore.Qt.UserRole)
             old_song = self.plugin.manager.get_object(Song, item_id)
             song_xml = self.openLyrics.song_to_xml(old_song)
             new_song = self.openLyrics.xml_to_song(song_xml)
@@ -552,12 +509,10 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if Settings().value(u'general/ccli number',
-            QtCore.QVariant(u'')).toString():
-            service_item.raw_footer.append(unicode(
+        if Settings().value(u'general/ccli number', u''):
+            service_item.raw_footer.append(
                 translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'general/ccli number',
-                QtCore.QVariant(u'')).toString()))
+                Settings().value(u'general/ccli number', u''))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -101,10 +101,10 @@ class PowerSongImport(SongImport):
             else:
                 self.importSource = u''
         if not self.importSource or not isinstance(self.importSource, list):
-            self.logError(unicode(translate('SongsPlugin.PowerSongImport',
-                'No songs to import.')),
-                unicode(translate('SongsPlugin.PowerSongImport',
-                'No %s files found.')) % PS_string)
+            self.logError(translate('SongsPlugin.PowerSongImport',
+                'No songs to import.'),
+                translate('SongsPlugin.PowerSongImport',
+                'No %s files found.') % PS_string)
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:

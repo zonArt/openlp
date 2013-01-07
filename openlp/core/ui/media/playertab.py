@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,9 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
+from openlp.core.lib import SettingsTab, translate, Receiver, Settings
 from openlp.core.lib.ui import UiStrings, create_button
-from openlp.core.lib.settings import Settings
 from openlp.core.ui.media import get_media_players, set_media_players
 
 class MediaQCheckBox(QtGui.QCheckBox):
@@ -76,8 +75,7 @@ class PlayerTab(SettingsTab):
         self.formLayout.addRow(self.informationLabel)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
-        self.rightColumn.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
         self.mediaPlayerGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.mediaPlayerGroupBox.setObjectName(u'mediaPlayerGroupBox')
@@ -89,30 +87,23 @@ class PlayerTab(SettingsTab):
         self.playerOrderGroupBox.setObjectName(u'playerOrderGroupBox')
         self.playerOrderLayout = QtGui.QHBoxLayout(self.playerOrderGroupBox)
         self.playerOrderLayout.setObjectName(u'playerOrderLayout')
-        self.playerOrderlistWidget = QtGui.QListWidget(
-            self.playerOrderGroupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-            QtGui.QSizePolicy.Expanding)
+        self.playerOrderlistWidget = QtGui.QListWidget(self.playerOrderGroupBox)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.playerOrderlistWidget.\
-        sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(self.playerOrderlistWidget.sizePolicy().hasHeightForWidth())
         self.playerOrderlistWidget.setSizePolicy(sizePolicy)
-        self.playerOrderlistWidget.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAsNeeded)
-        self.playerOrderlistWidget.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.playerOrderlistWidget.setEditTriggers(
-            QtGui.QAbstractItemView.NoEditTriggers)
+        self.playerOrderlistWidget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.playerOrderlistWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.playerOrderlistWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.playerOrderlistWidget.setObjectName(u'playerOrderlistWidget')
         self.playerOrderLayout.addWidget(self.playerOrderlistWidget)
         self.orderingButtonLayout = QtGui.QVBoxLayout()
         self.orderingButtonLayout.setObjectName(u'orderingButtonLayout')
         self.orderingButtonLayout.addStretch(1)
-        self.orderingUpButton = create_button(self, u'orderingUpButton',
-            role=u'up', click=self.onUpButtonClicked)
-        self.orderingDownButton = create_button(self, u'orderingDownButton',
-            role=u'down', click=self.onDownButtonClicked)
+        self.orderingUpButton = create_button(self, u'orderingUpButton', role=u'up', click=self.onUpButtonClicked)
+        self.orderingDownButton = create_button(self, u'orderingDownButton', role=u'down',
+            click=self.onDownButtonClicked)
         self.orderingButtonLayout.addWidget(self.orderingUpButton)
         self.orderingButtonLayout.addWidget(self.orderingDownButton)
         self.orderingButtonLayout.addStretch(1)
@@ -121,28 +112,23 @@ class PlayerTab(SettingsTab):
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
+        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
+            self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
-        self.mediaPlayerGroupBox.setTitle(
-            translate('OpenLP.PlayerTab', 'Available Media Players'))
-        self.playerOrderGroupBox.setTitle(
-            translate('OpenLP.PlayerTab', 'Player Search Order'))
+        self.mediaPlayerGroupBox.setTitle(translate('OpenLP.PlayerTab', 'Available Media Players'))
+        self.playerOrderGroupBox.setTitle(translate('OpenLP.PlayerTab', 'Player Search Order'))
         self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
         self.backgroundColorLabel.setText(UiStrings().DefaultColor)
-        self.informationLabel.setText(
-            translate('OpenLP.PlayerTab', 'Visible background for videos '
-            'with aspect ratio different to screen.'))
+        self.informationLabel.setText(translate('OpenLP.PlayerTab',
+            'Visible background for videos with aspect ratio different to screen.'))
         self.retranslatePlayers()
 
     def onbackgroundColorButtonClicked(self):
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.bg_color), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.bg_color), self)
         if new_color.isValid():
             self.bg_color = new_color.name()
-            self.backgroundColorButton.setStyleSheet(
-                u'background-color: %s' % self.bg_color)
+            self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def onPlayerCheckBoxChanged(self, check_state):
         player = self.sender().playerName
@@ -163,8 +149,7 @@ class PlayerTab(SettingsTab):
                     self.playerCheckBoxes[u'%s' % player].setEnabled(False)
                 else:
                     self.playerCheckBoxes[u'%s' % player].setEnabled(True)
-                self.playerOrderlistWidget.addItem(
-                    self.mediaPlayers[unicode(player)].original_name)
+                self.playerOrderlistWidget.addItem(self.mediaPlayers[unicode(player)].original_name)
 
     def onUpButtonClicked(self):
         row = self.playerOrderlistWidget.currentRow()
@@ -189,22 +174,19 @@ class PlayerTab(SettingsTab):
             self.usedPlayers = self.savedUsedPlayers
         self.usedPlayers = get_media_players()[0]
         self.savedUsedPlayers = self.usedPlayers
-
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.updatePlayerList()
-        self.bg_color = unicode(settings.value(
-            u'background color', QtCore.QVariant(u'#000000')).toString())
+        self.bg_color = settings.value(u'background color', u'#000000')
         self.initial_color = self.bg_color
         settings.endGroup()
-        self.backgroundColorButton.setStyleSheet(
-            u'background-color: %s' % self.bg_color)
+        self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def save(self):
         player_string_changed = False
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'background color', self.bg_color)
         settings.endGroup()
         old_players, override_player = get_media_players()
         if self.usedPlayers != old_players:
@@ -229,8 +211,7 @@ class PlayerTab(SettingsTab):
             checkbox.setToolTip(player.get_info())
             checkbox.setPlayerName(player.name)
             self.playerCheckBoxes[player.name] = checkbox
-            QtCore.QObject.connect(checkbox,QtCore.SIGNAL(u'stateChanged(int)'),
-                self.onPlayerCheckBoxChanged)
+            QtCore.QObject.connect(checkbox,QtCore.SIGNAL(u'stateChanged(int)'), self.onPlayerCheckBoxChanged)
             self.mediaPlayerLayout.addWidget(checkbox)
             if player.available and player.name in self.usedPlayers:
                 checkbox.setChecked(True)
@@ -250,6 +231,4 @@ class PlayerTab(SettingsTab):
             if player.available:
                 checkbox.setText(player.display_name)
             else:
-                checkbox.setText(
-                    unicode(translate('OpenLP.PlayerTab',
-                        '%s (unavailable)')) % player.display_name)
+                checkbox.setText(translate('OpenLP.PlayerTab', '%s (unavailable)') % player.display_name)

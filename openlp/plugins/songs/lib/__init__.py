@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -28,10 +28,10 @@
 ###############################################################################
 import re
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 from openlp.core.lib import translate
-from openlp.core.utils import CONTROL_CHARS
+from openlp.core.utils import CONTROL_CHARS, locale_direct_compare
 from db import Author
 from ui import SongStrings
 
@@ -41,7 +41,7 @@ PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'"
     r"([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
 # RTF control words which specify a "destination" to be ignored.
 DESTINATIONS = frozenset((
-    u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor', 
+    u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor',
     u'atndate', u'atnicn', u'atnid', u'atnparent', u'atnref', u'atntime',
     u'atrfend', u'atrfstart', u'author', u'background', u'bkmkend',
     u'bkmkstart', u'blipuid', u'buptim', u'category',
@@ -160,13 +160,13 @@ class VerseType(object):
     Tags = [name[0].lower() for name in Names]
 
     TranslatedNames = [
-        unicode(translate('SongsPlugin.VerseType', 'Verse')),
-        unicode(translate('SongsPlugin.VerseType', 'Chorus')),
-        unicode(translate('SongsPlugin.VerseType', 'Bridge')),
-        unicode(translate('SongsPlugin.VerseType', 'Pre-Chorus')),
-        unicode(translate('SongsPlugin.VerseType', 'Intro')),
-        unicode(translate('SongsPlugin.VerseType', 'Ending')),
-        unicode(translate('SongsPlugin.VerseType', 'Other'))]
+        translate('SongsPlugin.VerseType', 'Verse'),
+        translate('SongsPlugin.VerseType', 'Chorus'),
+        translate('SongsPlugin.VerseType', 'Bridge'),
+        translate('SongsPlugin.VerseType', 'Pre-Chorus'),
+        translate('SongsPlugin.VerseType', 'Intro'),
+        translate('SongsPlugin.VerseType', 'Ending'),
+        translate('SongsPlugin.VerseType', 'Other')]
     TranslatedTags = [name[0].lower() for name in TranslatedNames]
 
     @staticmethod
@@ -579,7 +579,7 @@ def strip_rtf(text, default_encoding=None):
                 failed = False
                 while True:
                     try:
-                        encoding, default_encoding = get_encoding(font, 
+                        encoding, default_encoding = get_encoding(font,
                             font_table, default_encoding, failed=failed)
                         out.append(chr(charcode).decode(encoding))
                     except UnicodeDecodeError:
@@ -594,6 +594,41 @@ def strip_rtf(text, default_encoding=None):
     text = u''.join(out)
     return text, default_encoding
 
+
+def natcmp(a, b):
+    """
+    Natural string comparison which mimics the behaviour of Python's internal
+    cmp function.
+    """
+    if len(a) <= len(b):
+        for i, key in enumerate(a):
+            if isinstance(key, int) and isinstance(b[i], int):
+                result = cmp(key, b[i])
+            elif isinstance(key, int) and not isinstance(b[i], int):
+                result = locale_direct_compare(str(key), b[i])
+            elif not isinstance(key, int) and isinstance(b[i], int):
+                result = locale_direct_compare(key, str(b[i]))
+            else:
+                result = locale_direct_compare(key, b[i])
+            if result != 0:
+                return result
+        if len(a) == len(b):
+            return 0
+        else:
+            return -1
+    else:
+        for i, key in enumerate(b):
+            if isinstance(a[i], int) and isinstance(key, int):
+                result = cmp(a[i], key)
+            elif isinstance(a[i], int) and not isinstance(key, int):
+                result = locale_direct_compare(str(a[i]), key)
+            elif not isinstance(a[i], int) and isinstance(key, int):
+                result = locale_direct_compare(a[i], str(key))
+            else:
+                result = locale_direct_compare(a[i], key)
+            if result != 0:
+                return result
+        return 1
 
 from xml import OpenLyrics, SongXML
 from songstab import SongsTab

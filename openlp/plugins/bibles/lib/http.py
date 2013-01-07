@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -42,8 +42,7 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
-    Book
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 
 UGLY_CHARS = {
     u'\u2014': u' - ',
@@ -94,10 +93,8 @@ class BGExtract(object):
         """
         if isinstance(tag, NavigableString):
             return None, unicode(tag)
-        elif tag.get('class') == 'versenum' or \
-             tag.get('class') == 'versenum mid-line':
-            verse = unicode(tag.string)\
-                .replace('[', '').replace(']', '').strip()
+        elif tag.get('class') == 'versenum' or tag.get('class') == 'versenum mid-line':
+            verse = unicode(tag.string).replace('[', '').replace(']', '').strip()
             return verse, None
         elif tag.get('class') == 'chapternum':
             verse = '1'
@@ -231,16 +228,13 @@ class BGExtract(object):
         ``chapter``
             Chapter number.
         """
-        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version,
-            book_name, chapter)
+        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_book_name = urllib.quote(book_name.encode("utf-8"))
-        url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter,
-            version)
+        url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter, version)
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
-            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='',
-            cleaner=cleaner)
+            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='', cleaner=cleaner)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
@@ -267,10 +261,8 @@ class BGExtract(object):
             The version of the Bible like NIV for New International Version
         """
         log.debug(u'BGExtract.get_books_from_http("%s")', version)
-        url_params = urllib.urlencode(
-            {u'action': 'getVersionInfo', u'vid': u'%s' % version})
-        reference_url = u'http://www.biblegateway.com/versions/?%s#books' % \
-            url_params
+        url_params = urllib.urlencode({u'action': 'getVersionInfo', u'vid': u'%s' % version})
+        reference_url = u'http://www.biblegateway.com/versions/?%s#books' % url_params
         page = get_web_page(reference_url)
         if not page:
             send_error_message(u'download')
@@ -512,9 +504,9 @@ class HTTPBible(BibleDB):
         ``True`` on success, ``False`` on failure.
         """
         self.wizard.progressBar.setMaximum(68)
-        self.wizard.incrementProgressBar(unicode(translate(
+        self.wizard.incrementProgressBar(translate(
             'BiblesPlugin.HTTPBible',
-            'Registering Bible and loading books...')))
+            'Registering Bible and loading books...'))
         self.save_meta(u'download_source', self.download_source)
         self.save_meta(u'download_name', self.download_name)
         if self.proxy_server:
@@ -537,8 +529,8 @@ class HTTPBible(BibleDB):
                 'failed' % (self.download_source,  self.download_name))
             return False
         self.wizard.progressBar.setMaximum(len(books)+2)
-        self.wizard.incrementProgressBar(unicode(translate(
-            'BiblesPlugin.HTTPBible', 'Registering Language...')))
+        self.wizard.incrementProgressBar(translate(
+            'BiblesPlugin.HTTPBible', 'Registering Language...'))
         bible = BiblesResourcesDB.get_webbible(self.download_name,
                 self.download_source.lower())
         if bible[u'language_id']:
@@ -553,9 +545,9 @@ class HTTPBible(BibleDB):
         for book in books:
             if self.stop_import_flag:
                 break
-            self.wizard.incrementProgressBar(unicode(translate(
+            self.wizard.incrementProgressBar(translate(
                 'BiblesPlugin.HTTPBible', 'Importing %s...',
-                'Importing <book name>...')) % book)
+                'Importing <book name>...') % book)
             book_ref_id = self.get_book_ref_id_by_name(book, len(books),
                 language_id)
             if not book_ref_id:

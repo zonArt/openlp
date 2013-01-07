@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,8 +33,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Receiver, Settings
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_application_version
 
@@ -173,11 +172,9 @@ class Plugin(QtCore.QObject):
         self.pluginManager = plugin_helpers[u'pluginmanager']
         self.formParent = plugin_helpers[u'formparent']
         self.mediaController = plugin_helpers[u'mediacontroller']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_add_service_item' % self.name),
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_config_updated' % self.name),
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_config_updated' % self.name),
             self.configUpdated)
 
     def checkPreConditions(self):
@@ -193,17 +190,14 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = Settings().value(
-            self.settingsSection + u'/status',
-            QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
+        self.status = Settings().value(self.settingsSection + u'/status', PluginStatus.Inactive)
 
     def toggleStatus(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
-        Settings().setValue(
-            self.settingsSection + u'/status', QtCore.QVariant(self.status))
+        Settings().setValue(self.settingsSection + u'/status', self.status)
         if new_status == PluginStatus.Active:
             self.initialise()
         elif new_status == PluginStatus.Inactive:
@@ -223,8 +217,7 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into OpenLP.
         """
         if self.mediaItemClass:
-            self.mediaItem = self.mediaItemClass(self.mediaDock.media_dock,
-                self, self.icon)
+            self.mediaItem = self.mediaItemClass(self.mediaDock.media_dock, self, self.icon)
 
     def addImportMenuItem(self, importMenu):
         """
@@ -260,8 +253,7 @@ class Plugin(QtCore.QObject):
         """
         if self.settingsTabClass:
             self.settingsTab = self.settingsTabClass(parent, self.name,
-                self.getString(StringContent.VisibleName)[u'title'],
-                self.iconPath)
+                self.getString(StringContent.VisibleName)[u'title'], self.iconPath)
 
     def addToMenu(self, menubar):
         """
@@ -276,8 +268,7 @@ class Plugin(QtCore.QObject):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
-        log.debug(u'processAddServiceEvent event called for plugin %s' %
-            self.name)
+        log.debug(u'processAddServiceEvent event called for plugin %s' % self.name)
         if replace:
             self.mediaItem.onAddEditClick()
         else:
@@ -288,8 +279,7 @@ class Plugin(QtCore.QObject):
         Show a dialog when the user clicks on the 'About' button in the plugin
         manager.
         """
-        raise NotImplementedError(
-            u'Plugin.about needs to be defined by the plugin')
+        raise NotImplementedError(u'Plugin.about needs to be defined by the plugin')
 
     def initialise(self):
         """
@@ -308,7 +298,7 @@ class Plugin(QtCore.QObject):
 
     def appStartup(self):
         """
-        Perform tasks on application starup
+        Perform tasks on application startup
         """
         pass
 
@@ -343,29 +333,21 @@ class Plugin(QtCore.QObject):
         Called to define all translatable texts of the plugin
         """
         ## Load Action ##
-        self.__setNameTextString(StringContent.Load,
-            UiStrings().Load, tooltips[u'load'])
+        self.__setNameTextString(StringContent.Load, UiStrings().Load, tooltips[u'load'])
         ## Import Action ##
-        self.__setNameTextString(StringContent.Import,
-            UiStrings().Import, tooltips[u'import'])
+        self.__setNameTextString(StringContent.Import, UiStrings().Import, tooltips[u'import'])
         ## New Action ##
-        self.__setNameTextString(StringContent.New,
-            UiStrings().Add, tooltips[u'new'])
+        self.__setNameTextString(StringContent.New, UiStrings().Add, tooltips[u'new'])
         ## Edit Action ##
-        self.__setNameTextString(StringContent.Edit,
-            UiStrings().Edit, tooltips[u'edit'])
+        self.__setNameTextString(StringContent.Edit, UiStrings().Edit, tooltips[u'edit'])
         ## Delete Action ##
-        self.__setNameTextString(StringContent.Delete,
-            UiStrings().Delete, tooltips[u'delete'])
+        self.__setNameTextString(StringContent.Delete, UiStrings().Delete, tooltips[u'delete'])
         ## Preview Action ##
-        self.__setNameTextString(StringContent.Preview,
-            UiStrings().Preview, tooltips[u'preview'])
+        self.__setNameTextString(StringContent.Preview, UiStrings().Preview, tooltips[u'preview'])
         ## Send Live Action ##
-        self.__setNameTextString(StringContent.Live,
-            UiStrings().Live, tooltips[u'live'])
+        self.__setNameTextString(StringContent.Live, UiStrings().Live, tooltips[u'live'])
         ## Add to Service Action ##
-        self.__setNameTextString(StringContent.Service,
-            UiStrings().Service, tooltips[u'service'])
+        self.__setNameTextString(StringContent.Service, UiStrings().Service, tooltips[u'service'])
 
     def __setNameTextString(self, name, title, tooltip):
         """

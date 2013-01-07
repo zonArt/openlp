@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -28,7 +28,7 @@
 ###############################################################################
 import logging
 
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings
 
 from PyQt4 import QtCore
 
@@ -76,21 +76,17 @@ def get_media_players():
     from the settings.
     """
     log.debug(u'get_media_players')
-    saved_players = unicode(Settings().value(u'media/players').toString())
-    if not saved_players:
-        # we must always have a player and Webkit is the core one.
-        saved_players = u'webkit'
+    saved_players = Settings().value(u'media/players', u'webkit')
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
     if Settings().value(u'media/override player',
-        QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == QtCore.Qt.Checked:
+        QtCore.Qt.Unchecked)== QtCore.Qt.Checked:
         if reg_ex.exactMatch(saved_players):
             overridden_player = u'%s' % reg_ex.cap(1)
         else:
             overridden_player = u'auto'
     else:
         overridden_player = u''
-    saved_players_list = saved_players.replace(u'[', u'').\
-        replace(u']',u'').split(u',')
+    saved_players_list = saved_players.replace(u'[', u'').replace(u']',u'').split(u',')
     return saved_players_list, overridden_player
 
 
@@ -107,11 +103,10 @@ def set_media_players(players_list, overridden_player=u'auto'):
     """
     log.debug(u'set_media_players')
     players = u','.join(players_list)
-    if Settings().value(u'media/override player',
-        QtCore.QVariant(QtCore.Qt.Unchecked)).toInt()[0] == \
-        QtCore.Qt.Checked and overridden_player != u'auto':
+    if Settings().value(u'media/override player', QtCore.Qt.Unchecked) == QtCore.Qt.Checked and \
+        overridden_player != u'auto':
         players = players.replace(overridden_player, u'[%s]' % overridden_player)
-    Settings().setValue(u'media/players', QtCore.QVariant(players))
+    Settings().setValue(u'media/players', players)
 
 from mediacontroller import MediaController
 from playertab import PlayerTab

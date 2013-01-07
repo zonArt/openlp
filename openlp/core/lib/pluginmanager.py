@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -107,13 +107,12 @@ class PluginManager(object):
                     modulename = modulename[len(prefix) + 1:]
                     modulename = modulename.replace(os.path.sep, '.')
                     # import the modules
-                    log.debug(u'Importing %s from %s. Depth %d',
-                        modulename, path, thisdepth)
+                    log.debug(u'Importing %s from %s. Depth %d', modulename, path, thisdepth)
                     try:
                         __import__(modulename, globals(), locals(), [])
                     except ImportError, e:
-                        log.exception(u'Failed to import module %s on path %s '
-                            'for reason %s', modulename, path, e.args[0])
+                        log.exception(u'Failed to import module %s on path %s for reason %s',
+                            modulename, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
@@ -197,8 +196,7 @@ class PluginManager(object):
         """
         log.info(u'Initialise Plugins - Started')
         for plugin in self.plugins:
-            log.info(u'initialising plugins %s in a %s state'
-                % (plugin.name, plugin.isActive()))
+            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.isActive()))
             if plugin.isActive():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)

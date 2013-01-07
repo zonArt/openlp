@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,13 +32,14 @@ The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 from datetime import datetime
 from distutils.version import LooseVersion
 import logging
+import locale
 import os
 import re
 from subprocess import Popen, PIPE
 import sys
 import urllib2
 
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings
 
 from PyQt4 import QtGui, QtCore
 
@@ -91,7 +92,7 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
-    
+
     # Base path where data/config/cache dir is located
     BaseDir = None
 
@@ -104,21 +105,15 @@ class AppLocation(object):
             The directory type you want, for instance the data directory.
         """
         if dir_type == AppLocation.AppDir:
-            return _get_frozen_path(
-                os.path.abspath(os.path.split(sys.argv[0])[0]),
-                os.path.split(openlp.__file__)[0])
+            return _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.PluginsDir:
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
             return _get_frozen_path(os.path.join(app_path, u'plugins'),
                 os.path.join(os.path.split(openlp.__file__)[0], u'plugins'))
         elif dir_type == AppLocation.VersionDir:
-            return _get_frozen_path(
-                os.path.abspath(os.path.split(sys.argv[0])[0]),
-                os.path.split(openlp.__file__)[0])
+            return _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.LanguageDir:
-            app_path = _get_frozen_path(
-                os.path.abspath(os.path.split(sys.argv[0])[0]),
-                _get_os_dir_path(dir_type))
+            app_path = _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), _get_os_dir_path(dir_type))
             return os.path.join(app_path, u'i18n')
         elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
             return os.path.join(AppLocation.BaseDir, 'data')
@@ -132,8 +127,7 @@ class AppLocation(object):
         """
         # Check if we have a different data location.
         if Settings().contains(u'advanced/data path'):
-            path = unicode(Settings().value(
-                u'advanced/data path').toString())
+            path = Settings().value(u'advanced/data path', u'')
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
@@ -157,8 +151,7 @@ def _get_os_dir_path(dir_type):
     encoding = sys.getfilesystemencoding()
     if sys.platform == u'win32':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
-                u'openlp', u'data')
+            return os.path.join(unicode(os.getenv(u'APPDATA'), encoding), u'openlp', u'data')
         elif dir_type == AppLocation.LanguageDir:
             return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'APPDATA'), encoding),
@@ -181,17 +174,13 @@ def _get_os_dir_path(dir_type):
             return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
-                return os.path.join(unicode(BaseDirectory.xdg_config_home,
-                    encoding), u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_config_home, encoding), u'openlp')
             elif dir_type == AppLocation.DataDir:
-                return os.path.join(
-                    unicode(BaseDirectory.xdg_data_home, encoding), u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_data_home, encoding), u'openlp')
             elif dir_type == AppLocation.CacheDir:
-                return os.path.join(unicode(BaseDirectory.xdg_cache_home,
-                    encoding), u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_cache_home, encoding), u'openlp')
         if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'HOME'), encoding),
-                u'.openlp', u'data')
+            return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp', u'data')
         return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp')
 
 
@@ -231,8 +220,7 @@ def get_application_version():
                 if revision_id in tags:
                     full_version = u'%s' % tags[revision_id][0]
                 else:
-                    full_version = '%s-bzr%s' % \
-                        (sorted(b.tags.get_tag_dict().keys())[-1], revno)
+                    full_version = '%s-bzr%s' % (sorted(b.tags.get_tag_dict().keys())[-1], revno)
             finally:
                 b.unlock()
         except:
@@ -254,8 +242,7 @@ def get_application_version():
             if code != 0:
                 raise Exception(u'Error running bzr log')
             latest = output.split(u':')[0]
-            full_version = latest == revision and tag or \
-               u'%s-bzr%s' % (tag, latest)
+            full_version = latest == revision and tag or u'%s-bzr%s' % (tag, latest)
     else:
         # We're not running the development version, let's use the file.
         filepath = AppLocation.get_directory(AppLocation.VersionDir)
@@ -277,8 +264,7 @@ def get_application_version():
         u'build': bits[1] if len(bits) > 1 else None
     }
     if APPLICATION_VERSION[u'build']:
-        log.info(u'Openlp version %s build %s',
-            APPLICATION_VERSION[u'version'], APPLICATION_VERSION[u'build'])
+        log.info(u'Openlp version %s build %s', APPLICATION_VERSION[u'version'], APPLICATION_VERSION[u'build'])
     else:
         log.info(u'Openlp version %s' % APPLICATION_VERSION[u'version'])
     return APPLICATION_VERSION
@@ -296,15 +282,13 @@ def check_latest_version(current_version):
     # set to prod in the distribution config file.
     settings = Settings()
     settings.beginGroup(u'general')
-    last_test = unicode(settings.value(u'last version test',
-        QtCore.QVariant(datetime.now().date())).toString())
-    this_test = unicode(datetime.now().date())
-    settings.setValue(u'last version test', QtCore.QVariant(this_test))
+    last_test = settings.value(u'last version test', datetime.now().date())
+    this_test = datetime.now().date()
+    settings.setValue(u'last version test', this_test)
     settings.endGroup()
     if last_test != this_test:
         if current_version[u'build']:
-            req = urllib2.Request(
-                u'http://www.openlp.org/files/dev_version.txt')
+            req = urllib2.Request(u'http://www.openlp.org/files/dev_version.txt')
         else:
             req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
@@ -359,8 +343,7 @@ def get_images_filter():
             for fmt in QtGui.QImageReader.supportedImageFormats()]
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
-        IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'),
-            visible_formats, actual_formats)
+        IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
     return IMAGES_FILTER
 
 
@@ -464,11 +447,9 @@ def get_uno_instance(resolver):
     """
     log.debug(u'get UNO Desktop Openoffice - resolve')
     if UNO_CONNECTION_TYPE == u'pipe':
-        return resolver.resolve(u'uno:pipe,name=openlp_pipe;' \
-            + u'urp;StarOffice.ComponentContext')
+        return resolver.resolve(u'uno:pipe,name=openlp_pipe; urp;StarOffice.ComponentContext')
     else:
-        return resolver.resolve(u'uno:socket,host=localhost,port=2002;' \
-            + u'urp;StarOffice.ComponentContext')
+        return resolver.resolve(u'uno:socket,host=localhost,port=2002; urp;StarOffice.ComponentContext')
 
 
 def format_time(text, local_time):
@@ -497,15 +478,15 @@ def locale_compare(string1, string2):
     or 0, depending on whether string1 collates before or after string2 or
     is equal to it. Comparison is case insensitive.
     """
-    # Function locale.strcol() from standard Python library does not work
-    # properly on Windows and probably somewhere else.
-    return QtCore.QString.localeAwareCompare(string1.lower(), string2.lower())
+    # Function locale.strcoll() from standard Python library does not work
+    # properly on Windows.
+    return locale.strcoll(string1.lower(), string2.lower())
 
 
 # For performance reasons provide direct reference to compare function
 # without wrapping it in another function making te string lowercase.
 # This is needed for sorting songs.
-locale_direct_compare = QtCore.QString.localeAwareCompare
+locale_direct_compare = locale.strcoll
 
 
 from languagemanager import LanguageManager
