@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,12 +32,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, \
-    translate, check_item_selected, Receiver, ItemCapabilities, create_thumb, \
-    validate_thumb, ServiceItemContext
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, \
-    create_horizontal_adjusting_combo_box
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, translate, check_item_selected, Receiver, \
+    ItemCapabilities, create_thumb, validate_thumb, ServiceItemContext, Settings
+from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare
 from openlp.plugins.presentations.lib import MessageListener
 
@@ -63,11 +60,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
         self.hasSearch = True
         self.singleServiceItem = False
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
             self.populateDisplayTypes)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_suffixes'), self.buildFileMaskString)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_suffixes'), self.buildFileMaskString)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -75,12 +70,9 @@ class PresentationMediaItem(MediaManagerItem):
         """
         The name of the plugin media displayed in UI
         """
-        self.onNewPrompt = translate('PresentationPlugin.MediaItem',
-            'Select Presentation(s)')
-        self.Automatic = translate('PresentationPlugin.MediaItem',
-            'Automatic')
-        self.displayTypeLabel.setText(
-            translate('PresentationPlugin.MediaItem', 'Present using:'))
+        self.onNewPrompt = translate('PresentationPlugin.MediaItem', 'Select Presentation(s)')
+        self.Automatic = translate('PresentationPlugin.MediaItem', 'Automatic')
+        self.displayTypeLabel.setText(translate('PresentationPlugin.MediaItem', 'Present using:'))
 
     def buildFileMaskString(self):
         """
@@ -89,14 +81,12 @@ class PresentationMediaItem(MediaManagerItem):
         fileType = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled():
-                types = self.controllers[controller].supports + \
-                    self.controllers[controller].alsosupports
+                types = self.controllers[controller].supports + self.controllers[controller].alsosupports
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
                         self.plugin.serviceManager.supportedSuffixes(type)
-        self.onNewFileMasks = unicode(translate('PresentationPlugin.MediaItem',
-            'Presentations (%s)')) % fileType
+        self.onNewFileMasks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % fileType
 
     def requiredIcons(self):
         """
@@ -118,11 +108,10 @@ class PresentationMediaItem(MediaManagerItem):
         self.displayLayout.setObjectName(u'displayLayout')
         self.displayTypeLabel = QtGui.QLabel(self.presentationWidget)
         self.displayTypeLabel.setObjectName(u'displayTypeLabel')
-        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(
-            self.presentationWidget, u'displayTypeComboBox')
+        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(self.presentationWidget,
+            u'displayTypeComboBox')
         self.displayTypeLabel.setBuddy(self.displayTypeComboBox)
-        self.displayLayout.addRow(self.displayTypeLabel,
-            self.displayTypeComboBox)
+        self.displayLayout.addRow(self.displayTypeLabel, self.displayTypeComboBox)
         # Add the Presentation widget to the page layout
         self.pageLayout.addWidget(self.presentationWidget)
 
@@ -131,8 +120,7 @@ class PresentationMediaItem(MediaManagerItem):
         Populate the media manager tab
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        files = SettingsManager.load_list(
-            self.settingsSection, u'presentations')
+        files = SettingsManager.load_list(self.settingsSection, u'presentations')
         self.loadList(files, True)
         self.populateDisplayTypes()
 
@@ -150,7 +138,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
         if Settings().value(self.settingsSection + u'/override app',
-            QtCore.QVariant(QtCore.Qt.Unchecked)) == QtCore.Qt.Checked:
+            QtCore.Qt.Unchecked) == QtCore.Qt.Checked:
             self.presentationWidget.show()
         else:
             self.presentationWidget.hide()
@@ -167,8 +155,7 @@ class PresentationMediaItem(MediaManagerItem):
         if not initialLoad:
             Receiver.send_message(u'cursor_busy')
             self.plugin.formParent.displayProgressBar(len(files))
-        # Sort the presentations by its filename considering language specific
-        # characters.
+        # Sort the presentations by its filename considering language specific characters.
         files.sort(cmp=locale_compare,
             key=lambda filename: os.path.split(unicode(filename))[1])
         for file in files:
@@ -180,25 +167,22 @@ class PresentationMediaItem(MediaManagerItem):
             if not os.path.exists(file):
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(ERROR))
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setData(QtCore.Qt.UserRole, file)
                 item_name.setToolTip(file)
                 self.listView.addItem(item_name)
             else:
                 if titles.count(filename) > 0:
                     if not initialLoad:
-                        critical_error_message_box(
+                        critical_error_message_box(translate('PresentationPlugin.MediaItem', 'File Exists'),
                             translate('PresentationPlugin.MediaItem',
-                            'File Exists'),
-                            translate('PresentationPlugin.MediaItem',
-                            'A presentation with that filename already exists.')
+                                'A presentation with that filename already exists.')
                             )
                     continue
                 controller_name = self.findControllerByType(filename)
                 if controller_name:
                     controller = self.controllers[controller_name]
                     doc = controller.add_document(unicode(file))
-                    thumb = os.path.join(doc.get_thumbnail_folder(),
-                        u'icon.png')
+                    thumb = os.path.join(doc.get_thumbnail_folder(), u'icon.png')
                     preview = doc.get_thumbnail_path(1, True)
                     if not preview and not initialLoad:
                         doc.load_presentation()
@@ -216,11 +200,10 @@ class PresentationMediaItem(MediaManagerItem):
                         icon = build_icon(u':/general/general_delete.png')
                     else:
                         critical_error_message_box(UiStrings().UnsupportedFile,
-                            translate('PresentationPlugin.MediaItem',
-                            'This type of presentation is not supported.'))
+                            translate('PresentationPlugin.MediaItem', 'This type of presentation is not supported.'))
                         continue
                 item_name = QtGui.QListWidgetItem(filename)
-                item_name.setData(QtCore.Qt.UserRole, QtCore.QVariant(file))
+                item_name.setData(QtCore.Qt.UserRole, file)
                 item_name.setIcon(icon)
                 item_name.setToolTip(file)
                 self.listView.addItem(item_name)
@@ -240,8 +223,7 @@ class PresentationMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_busy')
             self.plugin.formParent.displayProgressBar(len(row_list))
             for item in items:
-                filepath = unicode(item.data(
-                    QtCore.Qt.UserRole).toString())
+                filepath = unicode(item.data(QtCore.Qt.UserRole))
                 for cidx in self.controllers:
                     doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
@@ -251,8 +233,7 @@ class PresentationMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_normal')
             for row in row_list:
                 self.listView.takeItem(row)
-            SettingsManager.set_list(self.settingsSection,
-                u'presentations', self.getFileList())
+            SettingsManager.set_list(self.settingsSection, u'presentations', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
@@ -267,15 +248,15 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.listView.selectedItems()
             if len(items) > 1:
                 return False
-        service_item.title = unicode(self.displayTypeComboBox.currentText())
-        service_item.shortname = unicode(self.displayTypeComboBox.currentText())
+        service_item.title = self.displayTypeComboBox.currentText()
+        service_item.shortname = self.displayTypeComboBox.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
         if not shortname:
             return False
         for bitem in items:
-            filename = unicode(bitem.data(QtCore.Qt.UserRole).toString())
+            filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 if shortname == self.Automatic:
                     service_item.shortname = self.findControllerByType(filename)
@@ -298,22 +279,15 @@ class PresentationMediaItem(MediaManagerItem):
                 else:
                     # File is no longer present
                     if not remote:
-                        critical_error_message_box(
+                        critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
                             translate('PresentationPlugin.MediaItem',
-                            'Missing Presentation'),
-                            unicode(translate(
-                            'PresentationPlugin.MediaItem',
-                            'The presentation %s is incomplete,'
-                            ' please reload.')) % filename)
+                                'The presentation %s is incomplete, please reload.') % filename)
                     return False
             else:
                 # File is no longer present
                 if not remote:
-                    critical_error_message_box(
-                        translate('PresentationPlugin.MediaItem',
-                        'Missing Presentation'),
-                        unicode(translate('PresentationPlugin.MediaItem',
-                        'The presentation %s no longer exists.')) % filename)
+                    critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
+                        translate('PresentationPlugin.MediaItem', 'The presentation %s no longer exists.') % filename)
                 return False
 
     def findControllerByType(self, filename):

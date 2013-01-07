@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -69,34 +69,24 @@ class Ui_AlertDialog(object):
         self.saveButton.setIcon(build_icon(u':/general/general_save.png'))
         self.saveButton.setObjectName(u'saveButton')
         self.manageButtonLayout.addWidget(self.saveButton)
-        self.deleteButton = create_button(alertDialog, u'deleteButton',
-            role=u'delete', enabled=False,
+        self.deleteButton = create_button(alertDialog, u'deleteButton', role=u'delete', enabled=False,
             click=alertDialog.onDeleteButtonClicked)
         self.manageButtonLayout.addWidget(self.deleteButton)
         self.manageButtonLayout.addStretch()
         self.alertDialogLayout.addLayout(self.manageButtonLayout, 1, 1)
         displayIcon = build_icon(u':/general/general_live.png')
-        self.displayButton = create_button(alertDialog, u'displayButton',
-            icon=displayIcon, enabled=False)
-        self.displayCloseButton = create_button(alertDialog,
-            u'displayCloseButton', icon=displayIcon, enabled=False)
-        self.buttonBox = create_button_box(alertDialog, u'buttonBox',
-            [u'close'], [self.displayButton, self.displayCloseButton])
+        self.displayButton = create_button(alertDialog, u'displayButton', icon=displayIcon, enabled=False)
+        self.displayCloseButton = create_button(alertDialog, u'displayCloseButton', icon=displayIcon, enabled=False)
+        self.buttonBox = create_button_box(alertDialog, u'buttonBox', [u'close'],
+            [self.displayButton, self.displayCloseButton])
         self.alertDialogLayout.addWidget(self.buttonBox, 2, 0, 1, 2)
         self.retranslateUi(alertDialog)
 
     def retranslateUi(self, alertDialog):
-        alertDialog.setWindowTitle(
-            translate('AlertsPlugin.AlertForm', 'Alert Message'))
-        self.alertEntryLabel.setText(
-            translate('AlertsPlugin.AlertForm', 'Alert &text:'))
-        self.alertParameter.setText(
-            translate('AlertsPlugin.AlertForm', '&Parameter:'))
-        self.newButton.setText(
-            translate('AlertsPlugin.AlertForm', '&New'))
-        self.saveButton.setText(
-            translate('AlertsPlugin.AlertForm', '&Save'))
-        self.displayButton.setText(
-            translate('AlertsPlugin.AlertForm', 'Displ&ay'))
-        self.displayCloseButton.setText(
-            translate('AlertsPlugin.AlertForm', 'Display && Cl&ose'))
+        alertDialog.setWindowTitle(translate('AlertsPlugin.AlertForm', 'Alert Message'))
+        self.alertEntryLabel.setText(translate('AlertsPlugin.AlertForm', 'Alert &text:'))
+        self.alertParameter.setText(translate('AlertsPlugin.AlertForm', '&Parameter:'))
+        self.newButton.setText(translate('AlertsPlugin.AlertForm', '&New'))
+        self.saveButton.setText(translate('AlertsPlugin.AlertForm', '&Save'))
+        self.displayButton.setText(translate('AlertsPlugin.AlertForm', 'Displ&ay'))
+        self.displayCloseButton.setText(translate('AlertsPlugin.AlertForm', 'Display && Cl&ose'))

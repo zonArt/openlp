@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -58,16 +58,12 @@ class Ui_ThemeLayoutDialog(object):
         self.footerColourLabel = QtGui.QLabel(self.previewArea)
         self.footerColourLabel.setObjectName(u'footerColourLabel')
         self.previewLayout.addWidget(self.footerColourLabel)
-        self.buttonBox = create_button_box(themeLayoutDialog, u'buttonBox',
-            [u'ok'])
+        self.buttonBox = create_button_box(themeLayoutDialog, u'buttonBox', [u'ok'])
         self.previewLayout.addWidget(self.buttonBox)
         self.retranslateUi(themeLayoutDialog)
 
     def retranslateUi(self, themeLayoutDialog):
-        themeLayoutDialog.setWindowTitle(
-            translate('OpenLP.StartTimeForm', 'Theme Layout'))
-        self.mainColourLabel.setText(translate('OpenLP.StartTimeForm',
-            'The blue box shows the main area.'))
-        self.footerColourLabel.setText(translate('OpenLP.StartTimeForm',
-            'The red box shows the footer.'))
+        themeLayoutDialog.setWindowTitle(translate('OpenLP.StartTimeForm', 'Theme Layout'))
+        self.mainColourLabel.setText(translate('OpenLP.StartTimeForm', 'The blue box shows the main area.'))
+        self.footerColourLabel.setText(translate('OpenLP.StartTimeForm', 'The red box shows the footer.'))
 

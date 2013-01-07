@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,9 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    Receiver, ImageSource
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -42,13 +40,11 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem,
-            ImageTab)
+        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem, ImageTab)
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'image_updated'), self.image_updated)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'image_updated'), self.image_updated)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -74,8 +70,7 @@ class ImagePlugin(Plugin):
             u'plural': translate('ImagePlugin', 'Images', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('ImagePlugin', 'Images', 'container title')
+        self.textStrings[StringContent.VisibleName] = {u'title': translate('ImagePlugin', 'Images', 'container title')
         }
         # Middle Header Bar
         tooltips = {
@@ -86,8 +81,7 @@ class ImagePlugin(Plugin):
             u'delete': translate('ImagePlugin', 'Delete the selected image.'),
             u'preview': translate('ImagePlugin', 'Preview the selected image.'),
             u'live': translate('ImagePlugin', 'Send the selected image live.'),
-            u'service': translate('ImagePlugin',
-                'Add the selected image to the service.')
+            u'service': translate('ImagePlugin', 'Add the selected image to the service.')
         }
         self.setPluginUiTextStrings(tooltips)
 
@@ -97,7 +91,5 @@ class ImagePlugin(Plugin):
         image manager to require updates.  Actual update is triggered by the
         last part of saving the config.
         """
-        background = QtGui.QColor(Settings().value(self.settingsSection
-            + u'/background color', QtCore.QVariant(u'#000000')))
-        self.liveController.imageManager.updateImagesBorder(
-            ImageSource.ImagePlugin, background)
+        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
+        self.liveController.imageManager.updateImagesBorder(ImageSource.ImagePlugin, background)

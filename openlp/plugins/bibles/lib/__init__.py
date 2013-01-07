@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,8 +33,7 @@ plugin.
 import logging
 import re
 
-from openlp.core.lib import translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import translate, Settings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -182,17 +181,16 @@ def update_reference_separators():
     Updates separators and matches for parsing and formating scripture
     references.
     """
-    default_separators = unicode(translate('BiblesPlugin',
-        ':|v|V|verse|verses;;-|to;;,|and;;end',
-        'Double-semicolon delimited separators for parsing references. '
-        'Consult the developers for further information.')).split(u';;')
+    default_separators = translate('BiblesPlugin',
+        ':|v|V|verse|verses;;-|to;;,|and;;end Double-semicolon delimited separators for parsing references. '
+        'Consult the developers for further information.').split(u';;')
     settings = Settings()
     settings.beginGroup(u'bibles')
     custom_separators = [
-        unicode(settings.value(u'verse separator').toString()),
-        unicode(settings.value(u'range separator').toString()),
-        unicode(settings.value(u'list separator').toString()),
-        unicode(settings.value(u'end separator').toString())]
+        settings.value(u'verse separator', u''),
+        settings.value(u'range separator', u''),
+        settings.value(u'list separator', u''),
+        settings.value(u'end separator', u'')]
     settings.endGroup()
     for index, role in enumerate([u'v', u'r', u'l', u'e']):
         if custom_separators[index].strip(u'|') == u'':
@@ -202,8 +200,7 @@ def update_reference_separators():
         while u'||' in source_string:
             source_string = source_string.replace(u'||', u'|')
         if role != u'e':
-            REFERENCE_SEPARATORS[u'sep_%s_display' % role] = \
-                source_string.split(u'|')[0]
+            REFERENCE_SEPARATORS[u'sep_%s_display' % role] = source_string.split(u'|')[0]
         # escape reserved characters
         for character in u'\\.^$*+?{}[]()':
             source_string = source_string.replace(character, u'\\' + character)
@@ -212,23 +209,17 @@ def update_reference_separators():
             u'(?:[-\u00AD\u2010\u2011\u2012\u2013\u2014\u2212\uFE63\uFF0D])')
         source_string = source_string.replace(u',', u'(?:[,\u201A])')
         REFERENCE_SEPARATORS[u'sep_%s' % role] = u'\s*(?:%s)\s*' % source_string
-        REFERENCE_SEPARATORS[u'sep_%s_default' % role] = \
-            default_separators[index]
+        REFERENCE_SEPARATORS[u'sep_%s_default' % role] = default_separators[index]
     # verse range match: (<chapter>:)?<verse>(-((<chapter>:)?<verse>|end)?)?
     range_regex = u'(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?' \
         u'(?P<from_verse>[0-9]+)(?P<range_to>%(sep_r)s(?:(?:(?P<to_chapter>' \
-        u'[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % \
-        REFERENCE_SEPARATORS
-    REFERENCE_MATCHES[u'range'] = re.compile(u'^\s*%s\s*$' % range_regex,
-        re.UNICODE)
-    REFERENCE_MATCHES[u'range_separator'] = re.compile(
-        REFERENCE_SEPARATORS[u'sep_l'], re.UNICODE)
+        u'[0-9]+)%(sep_v)s)?(?P<to_verse>[0-9]+)|%(sep_e)s)?)?' % REFERENCE_SEPARATORS
+    REFERENCE_MATCHES[u'range'] = re.compile(u'^\s*%s\s*$' % range_regex, re.UNICODE)
+    REFERENCE_MATCHES[u'range_separator'] = re.compile(REFERENCE_SEPARATORS[u'sep_l'], re.UNICODE)
     # full reference match: <book>(<range>(,(?!$)|(?=$)))+
-    REFERENCE_MATCHES[u'full'] = re.compile(
-        u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
+    REFERENCE_MATCHES[u'full'] = re.compile(u'^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*'
         u'(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$' \
-        % dict(REFERENCE_SEPARATORS.items() + [(u'range_regex', range_regex)]),
-        re.UNICODE)
+        % dict(REFERENCE_SEPARATORS.items() + [(u'range_regex', range_regex)]), re.UNICODE)
 
 def get_reference_separator(separator_type):
     """
@@ -356,8 +347,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         log.debug(u'Matched reference %s' % reference)
         book = match.group(u'book')
         if not book_ref_id:
-            book_ref_id = bible.get_book_ref_id_by_localised_name(
-                book, language_selection)
+            book_ref_id = bible.get_book_ref_id_by_localised_name(book, language_selection)
         elif not bible.get_book_by_book_ref_id(book_ref_id):
             book_ref_id = False
         ranges = match.group(u'ranges')
@@ -410,11 +400,9 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
                         ref_list.append((book_ref_id, i, 1, -1))
                     ref_list.append((book_ref_id, to_chapter, 1, to_verse))
                 elif to_verse >= from_verse or to_verse == -1:
-                    ref_list.append((book_ref_id, from_chapter,
-                        from_verse, to_verse))
+                    ref_list.append((book_ref_id, from_chapter, from_verse, to_verse))
             elif from_verse:
-                ref_list.append((book_ref_id, from_chapter,
-                    from_verse, from_verse))
+                ref_list.append((book_ref_id, from_chapter, from_verse, from_verse))
             else:
                 ref_list.append((book_ref_id, from_chapter, 1, -1))
         return ref_list

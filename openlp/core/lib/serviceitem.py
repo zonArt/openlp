@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -37,8 +37,7 @@ import logging
 import os
 import uuid
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, \
-    ImageSource
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource
 
 log = logging.getLogger(__name__)
 
@@ -247,12 +246,10 @@ class ServiceItem(object):
             previous_pages = {}
             for slide in self._raw_frames:
                 verse_tag = slide[u'verseTag']
-                if verse_tag in previous_pages and \
-                    previous_pages[verse_tag][0] == slide[u'raw_slide']:
+                if verse_tag in previous_pages and previous_pages[verse_tag][0] == slide[u'raw_slide']:
                     pages = previous_pages[verse_tag][1]
                 else:
-                    pages = \
-                        self.renderer.format_slide(slide[u'raw_slide'], self)
+                    pages = self.renderer.format_slide(slide[u'raw_slide'], self)
                     previous_pages[verse_tag] = (slide[u'raw_slide'], pages)
                 for page in pages:
                     page = page.replace(u'<br>', u'{br}')
@@ -263,8 +260,7 @@ class ServiceItem(object):
                         u'html': html.replace(u'&amp;nbsp;', u'&nbsp;'),
                         u'verseTag': verse_tag
                     })
-        elif self.service_item_type == ServiceItemType.Image or \
-            self.service_item_type == ServiceItemType.Command:
+        elif self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command:
             pass
         else:
             log.error(u'Invalid value renderer: %s' % self.service_item_type)
@@ -290,8 +286,7 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.addImage(
-            path, ImageSource.ImagePlugin, self.image_border)
+        self.renderer.image_manager.addImage(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
     def add_from_text(self, raw_slide, verse_tag=None):
@@ -305,8 +300,7 @@ class ServiceItem(object):
             verse_tag = verse_tag.upper()
         self.service_item_type = ServiceItemType.Text
         title = raw_slide[:30].split(u'\n')[0]
-        self._raw_frames.append(
-            {u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
+        self._raw_frames.append({u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
         self._new_item()
 
     def add_from_command(self, path, file_name, image):
@@ -323,8 +317,7 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
-        self._raw_frames.append(
-            {u'title': file_name, u'image': image, u'path': path})
+        self._raw_frames.append({u'title': file_name, u'image': image, u'path': path})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -360,15 +353,12 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Image:
             if lite_save:
                 for slide in self._raw_frames:
-                    service_data.append(
-                        {u'title': slide[u'title'], u'path': slide[u'path']})
+                    service_data.append({u'title': slide[u'title'], u'path': slide[u'path']})
             else:
                 service_data = [slide[u'title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                service_data.append(
-                    {u'title': slide[u'title'], u'image': slide[u'image'],
-                     u'path': slide[u'path']})
+                service_data.append({u'title': slide[u'title'], u'image': slide[u'image'], u'path': slide[u'path']})
         return {u'header': service_header, u'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -421,17 +411,13 @@ class ServiceItem(object):
                     self.add_from_image(filename, text_image)
             else:
                 for text_image in serviceitem[u'serviceitem'][u'data']:
-                    self.add_from_image(text_image[u'path'],
-                        text_image[u'title'])
+                    self.add_from_image(text_image[u'path'], text_image[u'title'])
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
                 if path:
-                    self.add_from_command(
-                        path, text_image[u'title'], text_image[u'image'])
+                    self.add_from_command(path, text_image[u'title'], text_image[u'image'])
                 else:
-                    self.add_from_command(
-                        text_image[u'path'], text_image[u'title'],
-                        text_image[u'image'])
+                    self.add_from_command(text_image[u'path'], text_image[u'title'], text_image[u'image'])
 
         self._new_item()
 
@@ -505,8 +491,7 @@ class ServiceItem(object):
         """
         Confirms if the ServiceItem uses a file
         """
-        return self.service_item_type == ServiceItemType.Image or \
-            self.service_item_type == ServiceItemType.Command
+        return self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command
 
     def is_text(self):
         """
@@ -573,7 +558,7 @@ class ServiceItem(object):
 
     def remove_frame(self, frame):
         """
-        Remove the soecified frame from the item
+        Remove the specified frame from the item
         """
         if frame in self._raw_frames:
             self._raw_frames.remove(frame)
@@ -585,12 +570,10 @@ class ServiceItem(object):
         start = None
         end = None
         if self.start_time != 0:
-            start = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Start</strong>: %s')) % \
+            start = translate('OpenLP.ServiceItem', '<strong>Start</strong>: %s') % \
                 unicode(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
-            end = unicode(translate('OpenLP.ServiceItem',
-                '<strong>Length</strong>: %s')) % \
+            end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s') % \
                 unicode(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
             return u''

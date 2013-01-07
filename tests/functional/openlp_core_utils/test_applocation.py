@@ -48,8 +48,7 @@ class TestAppLocation(TestCase):
             data_path = AppLocation.get_data_path()
             # THEN: the mocked Settings methods were called and the value returned was our set up value
             mocked_settings.contains.assert_called_with(u'advanced/data path')
-            mocked_settings.value.assert_called_with(u'advanced/data path')
-            mocked_settings.value.return_value.toString.assert_called_with()
+            mocked_settings.value.assert_called_with(u'advanced/data path', u'')
             assert data_path == u'custom/dir', u'Result should be "custom/dir"'
 
     def get_section_data_path_test(self):

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -72,8 +72,7 @@ class OooImport(SongImport):
         except NoConnectException as exc:
             self.logError(
                 self.importSource[0],
-                translate('SongsPlugin.SongImport',
-                'Cannot access OpenOffice or LibreOffice'))
+                translate('SongsPlugin.SongImport', 'Cannot access OpenOffice or LibreOffice'))
             log.error(exc)
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
@@ -87,12 +86,9 @@ class OooImport(SongImport):
                     self.processOooDocument()
                     self.closeOooFile()
                 else:
-                    self.logError(self.filepath,
-                        translate('SongsPlugin.SongImport',
-                        'Unable to open file'))
+                    self.logError(self.filepath, translate('SongsPlugin.SongImport', 'Unable to open file'))
             else:
-                self.logError(self.filepath,
-                    translate('SongsPlugin.SongImport', 'File not found'))
+                self.logError(self.filepath, translate('SongsPlugin.SongImport', 'File not found'))
         self.closeOoo()
 
     def processOooDocument(self):
@@ -100,8 +96,7 @@ class OooImport(SongImport):
         Handle the import process for OpenOffice files. This method facilitates
         allowing subclasses to handle specific types of OpenOffice files.
         """
-        if self.document.supportsService(
-            "com.sun.star.presentation.PresentationDocument"):
+        if self.document.supportsService("com.sun.star.presentation.PresentationDocument"):
             self.processPres()
         if self.document.supportsService("com.sun.star.text.TextDocument"):
             self.processDoc()
@@ -113,12 +108,10 @@ class OooImport(SongImport):
         """
         if os.name == u'nt':
             self.startOooProcess()
-            self.desktop = self.oooManager.createInstance(
-                u'com.sun.star.frame.Desktop')
+            self.desktop = self.oooManager.createInstance(u'com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
-            resolver = context.ServiceManager.createInstanceWithContext(
-                u'com.sun.star.bridge.UnoUrlResolver', context)
+            resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
             uno_instance = None
             loop = 0
             while uno_instance is None and loop < 5:
@@ -131,8 +124,7 @@ class OooImport(SongImport):
                     loop += 1
                 else:
                     manager = uno_instance.ServiceManager
-                    self.desktop = manager.createInstanceWithContext(
-                        "com.sun.star.frame.Desktop", uno_instance)
+                    self.desktop = manager.createInstanceWithContext("com.sun.star.frame.Desktop", uno_instance)
                     return
             raise
 
@@ -166,13 +158,11 @@ class OooImport(SongImport):
         try:
             self.document = self.desktop.loadComponentFromURL(url, u'_blank',
                 0, properties)
-            if not self.document.supportsService(
-                "com.sun.star.presentation.PresentationDocument") and not \
-                self.document.supportsService("com.sun.star.text.TextDocument"):
+            if not self.document.supportsService("com.sun.star.presentation.PresentationDocument") and not \
+                    self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.closeOooFile()
             else:
-                self.importWizard.incrementProgressBar(
-                    u'Processing file ' + filepath, 0)
+                self.importWizard.incrementProgressBar(u'Processing file ' + filepath, 0)
         except AttributeError:
             log.exception("openOooFile failed: %s", url)
         return

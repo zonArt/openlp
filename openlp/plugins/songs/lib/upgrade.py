@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -68,10 +68,8 @@ def upgrade_1(session, metadata, tables):
     files can be ordered.
     """
     Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
-    Column(u'song_id', types.Integer(), default=None)\
-        .create(table=tables[u'media_files'])
-    Column(u'weight', types.Integer(), default=0)\
-        .create(table=tables[u'media_files'])
+    Column(u'song_id', types.Integer(), default=None).create(table=tables[u'media_files'])
+    Column(u'weight', types.Integer(), default=0).create(table=tables[u'media_files'])
     if metadata.bind.url.get_dialect().name != 'sqlite':
         # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
         ForeignKeyConstraint([u'song_id'], [u'songs.id'],
@@ -84,10 +82,8 @@ def upgrade_2(session, metadata, tables):
 
     This upgrade adds a create_date and last_modified date to the songs table
     """
-    Column(u'create_date', types.DateTime(), default=func.now())\
-        .create(table=tables[u'songs'])
-    Column(u'last_modified', types.DateTime(), default=func.now())\
-        .create(table=tables[u'songs'])
+    Column(u'create_date', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
+    Column(u'last_modified', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
 
 
 def upgrade_3(session, metadata, tables):
@@ -96,6 +92,5 @@ def upgrade_3(session, metadata, tables):
 
     This upgrade adds a temporary song flag to the songs table
     """
-    Column(u'temporary', types.Boolean(), default=False)\
-        .create(table=tables[u'songs'])
+    Column(u'temporary', types.Boolean(), default=False).create(table=tables[u'songs'])
 

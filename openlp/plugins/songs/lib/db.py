@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -53,8 +53,7 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return u'<Book id="%s" name="%s" publisher="%s" />' % (
-            str(self.id), self.name, self.publisher)
+        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
 
 
 class MediaFile(BaseModel):
@@ -72,18 +71,23 @@ class Song(BaseModel):
         self.sort_key = ()
 
     def _try_int(self, s):
-        "Convert to integer if possible."
+        """
+        Convert to integer if possible.
+        """
         try:
             return int(s)
         except:
-            return QtCore.QString(s.lower())
+            return s.lower()
 
     def _natsort_key(self, s):
-        "Used internally to get a tuple by which s is sorted."
+        """
+        Used internally to get a tuple by which s is sorted.
+        """
         return map(self._try_int, re.findall(r'(\d+|\D+)', s))
 
     # This decorator tells sqlalchemy to call this method everytime
     # any data on this object is updated.
+
     @reconstructor
     def init_on_load(self):
         """

@@ -5,8 +5,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
 # Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
@@ -27,7 +27,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+import sip
 import sys
+sip.setapi(u'QDate', 2)
+sip.setapi(u'QDateTime', 2)
+sip.setapi(u'QString', 2)
+sip.setapi(u'QTextStream', 2)
+sip.setapi(u'QTime', 2)
+sip.setapi(u'QUrl', 2)
+sip.setapi(u'QVariant', 2)
+
 from openlp.core import main
 
 
