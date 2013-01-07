@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -87,8 +87,7 @@ class EasySlidesImport(SongImport):
         else:
             self.setDefaults()
 
-    def _addUnicodeAttribute(self, self_attribute, import_attribute,
-        mandatory=False):
+    def _addUnicodeAttribute(self, self_attribute, import_attribute, mandatory=False):
         """
         Add imported values to the song model converting them to unicode at the
         same time. If the unicode decode fails or a mandatory attribute is not
@@ -117,8 +116,7 @@ class EasySlidesImport(SongImport):
     def _addAuthors(self, song):
         try:
             authors = unicode(song.Writer).split(u',')
-            self.authors = \
-                [author.strip() for author in authors if author.strip()]
+            self.authors = [author.strip() for author in authors if author.strip()]
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Writer')
             self._success = False
@@ -170,8 +168,7 @@ class EasySlidesImport(SongImport):
         # the number of different regions in song - 1
         if len(regionlines) > 1:
             log.info(u'EasySlidesImport: the file contained a song named "%s"'
-                u'with more than two regions, but only two regions are',
-                u'tested, encountered regions were: %s',
+                u'with more than two regions, but only two regions are tested, encountered regions were: %s',
                 self.title, u','.join(regionlines.keys()))
         # if the song has regions
         regions = (len(regionlines) > 0)
@@ -276,8 +273,8 @@ class EasySlidesImport(SongImport):
                 if tag in versetags:
                     self.verseOrderList.append(tag)
                 else:
-                    log.info(u'Got order item %s, which is not in versetags,'
-                        u'dropping item from presentation order', tag)
+                    log.info(u'Got order item %s, which is not in versetags, dropping item from presentation order',
+                        tag)
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Sequence')
             self._success = False

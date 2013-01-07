@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -340,15 +340,14 @@ def retrieve_windows_encoding(recommendation=None):
         choice = QtGui.QInputDialog.getItem(None,
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'The codepage setting is responsible\n'
-                'for the correct character representation.\n'
-                'Usually you are fine with the preselected choice.'),
+                'for the correct character representation.\nUsually you are fine with the preselected choice.'),
             [pair[1] for pair in encodings], recommended_index, False)
     else:
         choice = QtGui.QInputDialog.getItem(None,
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'Please choose the character encoding.\n'
-                'The encoding is responsible for the correct character '
-                'representation.'), [pair[1] for pair in encodings], 0, False)
+                'The encoding is responsible for the correct character representation.'),
+                [pair[1] for pair in encodings], 0, False)
     if not choice[1]:
         return None
     return filter(lambda item: item[1] == choice[0], encodings)[0][0]
@@ -395,15 +394,13 @@ def clean_song(manager, song):
         song.alternate_title = clean_title(song.alternate_title)
     else:
         song.alternate_title = u''
-    song.search_title = clean_string(song.title) + u'@' + \
-        clean_string(song.alternate_title)
+    song.search_title = clean_string(song.title) + u'@' + clean_string(song.alternate_title)
     # Only do this, if we the song is a 1.9.4 song (or older).
     if song.lyrics.find(u'<lyrics language="en">') != -1:
         # Remove the old "language" attribute from lyrics tag (prior to 1.9.5).
         # This is not very important, but this keeps the database clean. This
         # can be removed when everybody has cleaned his songs.
-        song.lyrics = song.lyrics.replace(
-            u'<lyrics language="en">', u'<lyrics>')
+        song.lyrics = song.lyrics.replace(u'<lyrics language="en">', u'<lyrics>')
         verses = SongXML().get_verses(song.lyrics)
         song.search_lyrics = u' '.join([clean_string(verse[1])
             for verse in verses])
@@ -414,16 +411,14 @@ def clean_song(manager, song):
         # List for later comparison.
         compare_order = []
         for verse in verses:
-            verse_type = VerseType.Tags[VerseType.from_loose_input(
-                verse[0][u'type'])]
+            verse_type = VerseType.Tags[VerseType.from_loose_input(verse[0][u'type'])]
             sxml.add_verse_to_lyrics(
                 verse_type,
                 verse[0][u'label'],
                 verse[1],
                 verse[0].get(u'lang')
             )
-            compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])
-                ).upper())
+            compare_order.append((u'%s%s' % (verse_type, verse[0][u'label'])).upper())
             if verse[0][u'label'] == u'1':
                 compare_order.append(verse_type.upper())
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
@@ -438,8 +433,7 @@ def clean_song(manager, song):
             verse_type = VerseType.Tags[
                 VerseType.from_loose_input(verse_def[0])]
             if len(verse_def) > 1:
-                new_order.append(
-                    (u'%s%s' % (verse_type, verse_def[1:])).upper())
+                new_order.append((u'%s%s' % (verse_type, verse_def[1:])).upper())
             else:
                 new_order.append(verse_type.upper())
         song.verse_order = u' '.join(new_order)
@@ -456,11 +450,9 @@ def clean_song(manager, song):
     # The song does not have any author, add one.
     if not song.authors:
         name = SongStrings.AuthorUnknown
-        author = manager.get_object_filtered(
-            Author, Author.display_name == name)
+        author = manager.get_object_filtered(Author, Author.display_name == name)
         if author is None:
-            author = Author.populate(
-                display_name=name, last_name=u'', first_name=u'')
+            author = Author.populate(display_name=name, last_name=u'', first_name=u'')
         song.authors.append(author)
     if song.copyright:
         song.copyright = CONTROL_CHARS.sub(u'', song.copyright).strip()
@@ -566,8 +558,7 @@ def strip_rtf(text, default_encoding=None):
                 font = arg
             elif word == u'ansicpg':
                 font_table[font] = 'cp' + arg
-            elif word == u'fcharset' and font not in font_table and \
-                word + arg in CHARSET_MAPPING:
+            elif word == u'fcharset' and font not in font_table and word + arg in CHARSET_MAPPING:
                 # \ansicpg overrides \fcharset, if present.
                 font_table[font] = CHARSET_MAPPING[word + arg]
         # \'xx
@@ -579,8 +570,7 @@ def strip_rtf(text, default_encoding=None):
                 failed = False
                 while True:
                     try:
-                        encoding, default_encoding = get_encoding(font,
-                            font_table, default_encoding, failed=failed)
+                        encoding, default_encoding = get_encoding(font, font_table, default_encoding, failed=failed)
                         out.append(chr(charcode).decode(encoding))
                     except UnicodeDecodeError:
                         failed = True

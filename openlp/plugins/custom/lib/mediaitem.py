@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -58,12 +58,11 @@ class CustomMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.edit_custom_form = EditCustomForm(self, self.plugin.formParent,
-            self.plugin.manager)
+        self.edit_custom_form = EditCustomForm(self, self.plugin.formParent, self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
         self.hasSearch = True
-        # Holds information about whether the edit is remotly triggered and
+        # Holds information about whether the edit is remotely triggered and
         # which Custom is required.
         self.remoteCustom = -1
         self.manager = plugin.manager
@@ -72,22 +71,16 @@ class CustomMediaItem(MediaManagerItem):
         self.toolbar.addSeparator()
         self.addSearchToToolBar()
         # Signals and slots
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
-        QtCore.QObject.connect(self.searchTextEdit,
-            QtCore.SIGNAL(u'searchTypeChanged(int)'),
+        QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
+        QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_load_list'), self.loadList)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_load_list'), self.loadList)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'custom_create_from_service'), self.create_from_service_item)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_create_from_service'),
+            self.create_from_service_item)
 
     def config_updated(self):
         self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service', True)
@@ -101,13 +94,11 @@ class CustomMediaItem(MediaManagerItem):
             (CustomSearch.Titles, u':/songs/song_search_title.png',
             translate('SongsPlugin.MediaItem', 'Titles'),
             translate('SongsPlugin.MediaItem', 'Search Titles...')),
-            (CustomSearch.Themes, u':/slides/slide_theme.png',
-            UiStrings().Themes, UiStrings().SearchThemes)
+            (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.loadList(self.manager.get_all_objects(
-            CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.setCurrentSearchType(Settings().value(
-            u'%s/last search type' % self.settingsSection, CustomSearch.Titles))
+        self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
+        self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection,
+            CustomSearch.Titles))
         self.config_updated()
 
     def loadList(self, custom_slides):
@@ -180,11 +171,9 @@ class CustomMediaItem(MediaManagerItem):
             if QtGui.QMessageBox.question(self,
                 UiStrings().ConfirmDelete,
                 translate('CustomPlugin.MediaItem',
-                'Are you sure you want to delete the %n selected custom'
-                ' slide(s)?', '',
+                    'Are you sure you want to delete the %n selected custom slide(s)?', '',
                 QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                QtGui.QMessageBox.No),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             row_list = [item.row() for item in self.listView.selectedIndexes()]
@@ -219,8 +208,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide)
-        if Settings().value(self.settingsSection + u'/display footer',
-            True) or credit:
+        if Settings().value(self.settingsSection + u'/display footer', True) or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))
         else:
             service_item.raw_footer.append(u'')
@@ -228,8 +216,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' %
-            self.settingsSection, self.searchTextEdit.currentSearchType())
+        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.currentSearchType())
         # Reload the list considering the new search type.
         search_keywords = self.searchTextEdit.displayText()
         search_results = []
@@ -237,14 +224,14 @@ class CustomMediaItem(MediaManagerItem):
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.plugin.manager.get_all_objects(CustomSlide,
-                CustomSlide.title.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords) + u'%'), order_by_ref=CustomSlide.title)
+                CustomSlide.title.like(u'%' + self.whitespace.sub(u' ', search_keywords) + u'%'),
+                    order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         elif search_type == CustomSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.plugin.manager.get_all_objects(CustomSlide,
-                CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ',
-                search_keywords) + u'%'), order_by_ref=CustomSlide.title)
+                CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ', search_keywords) + u'%'),
+                    order_by_ref=CustomSlide.title)
             self.loadList(search_results)
         self.checkSearchResult()
 
@@ -269,7 +256,7 @@ class CustomMediaItem(MediaManagerItem):
             return
         custom = self.plugin.manager.get_object_filtered(CustomSlide,
             and_(CustomSlide.title == item.title, CustomSlide.theme_name == item.theme,
-            CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
+                CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
         if custom:
             Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
         else:
@@ -312,10 +299,8 @@ class CustomMediaItem(MediaManagerItem):
 
     def search(self, string, showError):
         search_results = self.manager.get_all_objects(CustomSlide,
-            or_(func.lower(CustomSlide.title).like(u'%' +
-            string.lower() + u'%'),
-            func.lower(CustomSlide.text).like(u'%' +
-            string.lower() + u'%')),
+            or_(func.lower(CustomSlide.title).like(u'%' + string.lower() + u'%'),
+                func.lower(CustomSlide.text).like(u'%' + string.lower() + u'%')),
             order_by_ref=CustomSlide.title)
         return [[custom.id, custom.title] for custom in search_results]
 
