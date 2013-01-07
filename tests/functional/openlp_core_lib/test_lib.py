@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import MagicMock, patch, call
 
-from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string
+from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon
 
 class TestLib(TestCase):
 
@@ -209,4 +209,41 @@ class TestLib(TestCase):
             #mocked_contents.read.assert_called_with(3)
             #mocked_contents.decode.assert_called_with(u'utf-8')
             #assert result is None, u'None should be returned if the file cannot be decoded'
+
+    def build_icon_with_qicon_test(self):
+        """
+        Test the build_icon() function with a QIcon instance
+        """
+        with patch(u'openlp.core.lib.QtGui') as MockedQtGui:
+            # GIVEN: A mocked QIcon
+            MockedQtGui.QIcon = MagicMock
+            mocked_icon = MockedQtGui.QIcon()
+
+            # WHEN: We pass a QIcon instance in
+            result = build_icon(mocked_icon)
+
+            # THEN: The result should be our mocked QIcon
+            assert result is mocked_icon, u'The result should be the mocked QIcon'
+
+    def build_icon_with_resource_test(self):
+        """
+        Test the build_icon() function with a resource URI
+        """
+        with patch(u'openlp.core.lib.QtGui') as MockedQtGui, \
+             patch(u'openlp.core.lib.QtGui.QIcon') as MockedQIcon, \
+             patch(u'openlp.core.lib.QtGui.QPixmap') as MockedQPixmap:
+            # GIVEN: A mocked QIcon and a mocked QPixmap
+            MockedQtGui.QIcon = MagicMock
+            MockedQtGui.QIcon.Normal = 1
+            MockedQtGui.QIcon.Off = 2
+            MockedQPixmap.return_value = u'mocked_pixmap'
+            resource_uri = u':/resource/uri'
+
+            # WHEN: We pass a QIcon instance in
+            result = build_icon(resource_uri)
+
+            # THEN: The result should be our mocked QIcon
+            MockedQtGui.QIcon.assert_called_with(MockedQIcon)
+            MockedQPixmap.assert_called_with(resource_uri)
+            MockedQtGui.QIcon.addPixmap.assert_called_with(MockedQIcon, 'mocked_pixmap', 1, 2)
 
