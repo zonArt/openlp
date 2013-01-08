@@ -79,9 +79,10 @@ class OpenLPWizard(QtGui.QWizard):
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
     """
-    def __init__(self, parent, plugin, name, image):
+    def __init__(self, parent, plugin, name, image, addProgressPage=True):
         QtGui.QWizard.__init__(self, parent)
         self.plugin = plugin
+        self.withProgressPage = addProgressPage
         self.setObjectName(name)
         self.openIcon = build_icon(u':/general/general_open.png')
         self.deleteIcon = build_icon(u':/general/general_delete.png')
@@ -92,8 +93,9 @@ class OpenLPWizard(QtGui.QWizard):
         self.customInit()
         self.customSignals()
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        QtCore.QObject.connect(self.errorCopyToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
-        QtCore.QObject.connect(self.errorSaveToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
+        if self.withProgressPage:
+            QtCore.QObject.connect(self.errorCopyToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
+            QtCore.QObject.connect(self.errorSaveToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
 
     def setupUi(self, image):
         """
@@ -106,7 +108,8 @@ class OpenLPWizard(QtGui.QWizard):
             QtGui.QWizard.NoBackButtonOnLastPage)
         add_welcome_page(self, image)
         self.addCustomPages()
-        self.addProgressPage()
+        if self.withProgressPage:
+            self.addProgressPage()
         self.retranslateUi()
 
     def registerFields(self):
@@ -168,7 +171,7 @@ class OpenLPWizard(QtGui.QWizard):
         Stop the wizard on cancel button, close button or ESC key.
         """
         log.debug(u'Wizard cancelled by user.')
-        if self.currentPage() == self.progressPage:
+        if self.withProgressPage and self.currentPage() == self.progressPage:
             Receiver.send_message(u'openlp_stop_wizard')
         self.done(QtGui.QDialog.Rejected)
 
@@ -176,7 +179,7 @@ class OpenLPWizard(QtGui.QWizard):
         """
         Perform necessary functions depending on which wizard page is active.
         """
-        if self.page(pageId) == self.progressPage:
+        if self.withProgressPage and self.page(pageId) == self.progressPage:
             self.preWizard()
             self.performWizard()
             self.postWizard()

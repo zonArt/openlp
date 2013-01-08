@@ -46,6 +46,8 @@ from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 from openlp.plugins.songs.lib.duplicatesongfinder import DuplicateSongFinder
+from openlp.plugins.songs.forms.duplicatesongremovalform import \
+    DuplicateSongRemovalForm
 
 log = logging.getLogger(__name__)
 
@@ -184,6 +186,10 @@ class SongsPlugin(Plugin):
                         QtGui.QMessageBox.information(self.formParent,
                         "Double found", str(innerSongCounter) + " " +
                         str(outerSongCounter))
+        if not hasattr(self, u'duplicate_removal_wizard'):
+            self.duplicate_removal_wizard = \
+                    DuplicateSongRemovalForm(self.formParent, self)
+        self.duplicate_removal_wizard.exec_()
 
     def onSongImportItemClicked(self):
         if self.mediaItem:
