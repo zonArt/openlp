@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -54,17 +54,14 @@ class CustomTab(SettingsTab):
         self.leftLayout.addWidget(self.customModeGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
-        QtCore.QObject.connect(self.displayFooterCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.displayFooterCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onDisplayFooterCheckBoxChanged)
-        QtCore.QObject.connect(self.add_from_service_checkbox,
-            QtCore.SIGNAL(u'stateChanged(int)'), self.on_add_from_service_check_box_changed)
+        QtCore.QObject.connect(self.add_from_service_checkbox, QtCore.SIGNAL(u'stateChanged(int)'),
+            self.on_add_from_service_check_box_changed)
 
     def retranslateUi(self):
-        self.customModeGroupBox.setTitle(translate('CustomPlugin.CustomTab',
-            'Custom Display'))
-        self.displayFooterCheckBox.setText(
-            translate('CustomPlugin.CustomTab', 'Display footer'))
+        self.customModeGroupBox.setTitle(translate('CustomPlugin.CustomTab', 'Custom Display'))
+        self.displayFooterCheckBox.setText(translate('CustomPlugin.CustomTab', 'Display footer'))
         self.add_from_service_checkbox.setText(translate('CustomPlugin.CustomTab',
             'Import missing custom slides from service files'))
 

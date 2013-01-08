@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -40,22 +40,17 @@ class Ui_CustomSlideEditDialog(object):
         self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.dialogLayout.addWidget(self.slideTextEdit)
-        self.splitButton = create_button(customSlideEditDialog, u'splitButton',
-            icon=u':/general/general_add.png')
-        self.insertButton = create_button(customSlideEditDialog,
-            u'insertButton', icon=u':/general/general_add.png')
-        self.buttonBox = create_button_box(customSlideEditDialog, u'buttonBox',
-            [u'cancel', u'save'], [self.splitButton, self.insertButton])
+        self.splitButton = create_button(customSlideEditDialog, u'splitButton', icon=u':/general/general_add.png')
+        self.insertButton = create_button(customSlideEditDialog, u'insertButton', icon=u':/general/general_add.png')
+        self.buttonBox = create_button_box(customSlideEditDialog, u'buttonBox', [u'cancel', u'save'],
+            [self.splitButton, self.insertButton])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):
-        customSlideEditDialog.setWindowTitle(
-            translate('CustomPlugin.EditVerseForm', 'Edit Slide'))
+        customSlideEditDialog.setWindowTitle(translate('CustomPlugin.EditVerseForm', 'Edit Slide'))
         self.splitButton.setText(UiStrings().Split)
         self.splitButton.setToolTip(UiStrings().SplitToolTip)
-        self.insertButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
-        self.insertButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Split a slide into two '
-            'by inserting a slide splitter.'))
+        self.insertButton.setText(translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
+        self.insertButton.setToolTip(translate('CustomPlugin.EditCustomForm',
+            'Split a slide into two by inserting a slide splitter.'))

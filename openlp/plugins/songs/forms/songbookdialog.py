@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -53,15 +53,12 @@ class Ui_SongBookDialog(object):
         self.publisherLabel.setBuddy(self.publisherEdit)
         self.bookLayout.addRow(self.publisherLabel, self.publisherEdit)
         self.dialogLayout.addLayout(self.bookLayout)
-        self.buttonBox = create_button_box(songBookDialog, u'buttonBox',
-            [u'cancel', u'save'])
+        self.buttonBox = create_button_box(songBookDialog, u'buttonBox', [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(songBookDialog)
         songBookDialog.setMaximumHeight(songBookDialog.sizeHint().height())
 
     def retranslateUi(self, songBookDialog):
-        songBookDialog.setWindowTitle(
-            translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
+        songBookDialog.setWindowTitle(translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
         self.nameLabel.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
-        self.publisherLabel.setText(
-            translate('SongsPlugin.SongBookForm', '&Publisher:'))
+        self.publisherLabel.setText(translate('SongsPlugin.SongBookForm', '&Publisher:'))

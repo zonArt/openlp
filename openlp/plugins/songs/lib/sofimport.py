@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -169,8 +169,7 @@ class SofImport(OooImport):
             return
         if text == u'A Songs of Fellowship Worship Resource':
             return
-        if text.startswith(u'(NB.') or text.startswith(u'(Regrettably') \
-            or text.startswith(u'(From'):
+        if text.startswith(u'(NB.') or text.startswith(u'(Regrettably') or text.startswith(u'(From'):
             self.skipToCloseBracket = True
             return
         if text.startswith(u'Copyright'):
