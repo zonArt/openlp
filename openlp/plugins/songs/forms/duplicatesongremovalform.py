@@ -38,7 +38,9 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, Settings, SettingsManager, translate
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
+from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
+from openlp.plugins.songs.lib.duplicatesongfinder import DuplicateSongFinder
 
 log = logging.getLogger(__name__)
 
@@ -88,6 +90,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.verticalLayout.setObjectName('verticalLayout')
         self.duplicateSearchProgressBar = QtGui.QProgressBar(self.searchingPage)
         self.duplicateSearchProgressBar.setObjectName(u'duplicateSearchProgressBar')
+        self.duplicateSearchProgressBar.setFormat(WizardStrings.PercentSymbolFormat)
         self.verticalLayout.addWidget(self.duplicateSearchProgressBar)
         self.foundDuplicatesEdit = QtGui.QPlainTextEdit(self.searchingPage)
         self.foundDuplicatesEdit.setUndoRedoEnabled(False)
@@ -115,7 +118,20 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Called when changing to a page other than the progress page.
         """
-        pass
+        if self.page(pageId) == self.searchingPage:
+            maxSongs = self.plugin.manager.get_object_count(Song)
+            if maxSongs == 0 or maxSongs == 1:
+                return
+            # with x songs we have x*(x-1)/2 comparisons
+            maxProgressCount = maxSongs*(maxSongs-1)/2
+            self.duplicateSearchProgressBar.setMaximum(maxProgressCount)
+            songs = self.plugin.manager.get_all_objects(Song)
+            for outerSongCounter in range(maxSongs-1):
+                for innerSongCounter in range(outerSongCounter+1, maxSongs):
+                    doubleFinder = DuplicateSongFinder()
+                    if doubleFinder.songsProbablyEqual(songs[outerSongCounter], songs[innerSongCounter]):
+                        self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " + songs[innerSongCounter].title)
+                    self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
 
     def onAddButtonClicked(self):
         pass
@@ -128,6 +144,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Set default form values for the song import wizard.
         """
         self.restart()
+        self.duplicateSearchProgressBar.setValue(0)
         self.foundDuplicatesEdit.clear()
 
     def performWizard(self):
