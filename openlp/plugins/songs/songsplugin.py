@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -34,14 +34,12 @@ import sqlite3
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    Receiver
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
-from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, \
-    SongsTab
+from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
@@ -81,8 +79,7 @@ class SongsPlugin(Plugin):
         action_list.add_action(self.songImportItem, UiStrings().Import)
         action_list.add_action(self.songExportItem, UiStrings().Export)
         action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'servicemanager_new_service'),
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_new_service'),
             self.clearTemporarySongs)
 
 
@@ -98,8 +95,7 @@ class SongsPlugin(Plugin):
         # Main song import menu item - will eventually be the only one
         self.songImportItem = create_action(import_menu, u'songImportItem',
             text=translate('SongsPlugin', '&Song'),
-            tooltip=translate('SongsPlugin',
-            'Import songs using the import wizard.'),
+            tooltip=translate('SongsPlugin', 'Import songs using the import wizard.'),
             triggers=self.onSongImportItemClicked)
         import_menu.addAction(self.songImportItem)
 
@@ -115,8 +111,7 @@ class SongsPlugin(Plugin):
         # Main song import menu item - will eventually be the only one
         self.songExportItem = create_action(export_menu, u'songExportItem',
             text=translate('SongsPlugin', '&Song'),
-            tooltip=translate('SongsPlugin',
-            'Exports songs using the export wizard.'),
+            tooltip=translate('SongsPlugin', 'Exports songs using the export wizard.'),
             triggers=self.onSongExportItemClicked)
         export_menu.addAction(self.songExportItem)
 
@@ -133,8 +128,7 @@ class SongsPlugin(Plugin):
         self.toolsReindexItem = create_action(tools_menu, u'toolsReindexItem',
             text=translate('SongsPlugin', '&Re-index Songs'),
             icon=u':/plugins/plugin_songs.png',
-            statustip=translate('SongsPlugin',
-            'Re-index the songs database to improve searching and ordering.'),
+            statustip=translate('SongsPlugin', 'Re-index the songs database to improve searching and ordering.'),
             visible=False, triggers=self.onToolsReindexItemTriggered)
         tools_menu.addAction(self.toolsReindexItem)
 
@@ -145,8 +139,7 @@ class SongsPlugin(Plugin):
         maxSongs = self.manager.get_object_count(Song)
         if maxSongs == 0:
             return
-        progressDialog = QtGui.QProgressDialog(
-            translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
+        progressDialog = QtGui.QProgressDialog(translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
             0, maxSongs, self.formParent)
         progressDialog.setWindowTitle(translate('SongsPlugin', 'Reindexing songs'))
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
@@ -167,8 +160,7 @@ class SongsPlugin(Plugin):
 
     def about(self):
         return translate('SongsPlugin', '<strong>Songs Plugin</strong>'
-            '<br />The songs plugin provides the ability to display and '
-            'manage songs.')
+            '<br />The songs plugin provides the ability to display and manage songs.')
 
     def usesTheme(self, theme):
         """
@@ -239,8 +231,7 @@ class SongsPlugin(Plugin):
         Receiver.send_message(u'openlp_process_events')
         self.onToolsReindexItemTriggered()
         Receiver.send_message(u'openlp_process_events')
-        db_dir = unicode(os.path.join(
-            unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
+        db_dir = unicode(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         if not os.path.exists(db_dir):
             return
         song_dbs = []

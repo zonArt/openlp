@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -59,18 +59,13 @@ class Ui_AuthorsDialog(object):
         self.displayLabel.setBuddy(self.displayEdit)
         self.authorLayout.addRow(self.displayLabel, self.displayEdit)
         self.dialogLayout.addLayout(self.authorLayout)
-        self.buttonBox = create_button_box(authorsDialog, u'buttonBox',
-            [u'cancel', u'save'])
+        self.buttonBox = create_button_box(authorsDialog, u'buttonBox', [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(authorsDialog)
         authorsDialog.setMaximumHeight(authorsDialog.sizeHint().height())
 
     def retranslateUi(self, authorsDialog):
-        authorsDialog.setWindowTitle(
-            translate('SongsPlugin.AuthorsForm', 'Author Maintenance'))
-        self.displayLabel.setText(
-            translate('SongsPlugin.AuthorsForm', 'Display name:'))
-        self.firstNameLabel.setText(
-            translate('SongsPlugin.AuthorsForm', 'First name:'))
-        self.lastNameLabel.setText(
-            translate('SongsPlugin.AuthorsForm', 'Last name:'))
+        authorsDialog.setWindowTitle(translate('SongsPlugin.AuthorsForm', 'Author Maintenance'))
+        self.displayLabel.setText(translate('SongsPlugin.AuthorsForm', 'Display name:'))
+        self.firstNameLabel.setText(translate('SongsPlugin.AuthorsForm', 'First name:'))
+        self.lastNameLabel.setText(translate('SongsPlugin.AuthorsForm', 'Last name:'))

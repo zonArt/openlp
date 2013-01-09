@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -93,8 +93,7 @@ class CCLIFileImport(SongImport):
                         self.logError(filename)
                 else:
                     self.logError(filename,
-                        translate('SongsPlugin.CCLIFileImport',
-                        'The file does not have a valid extension.'))
+                        translate('SongsPlugin.CCLIFileImport', 'The file does not have a valid extension.'))
                     log.info(u'Extension %s is not valid', filename)
             if self.stopImportFlag:
                 return

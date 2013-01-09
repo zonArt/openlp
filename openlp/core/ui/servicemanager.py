@@ -40,7 +40,7 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, SettingsManager, \
-    translate, str_to_bool, check_directory_exists, Settings
+    translate, str_to_bool, check_directory_exists, Settings, PluginStatus
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
@@ -252,6 +252,9 @@ class ServiceManager(QtGui.QWidget):
             icon=u':/media/auto-start_active.png', triggers=self.onAutoStart)
         # Add already existing delete action to the menu.
         self.menu.addAction(self.serviceManagerList.delete)
+        self.create_custom_action = create_widget_action(self.menu,
+            text=translate('OpenLP.ServiceManager', 'Create New &Custom Slide'),
+            icon=u':/general/general_edit.png', triggers=self.create_custom)
         self.menu.addSeparator()
         # Add AutoPlay menu actions
         self.AutoPlaySlidesGroup = QtGui.QMenu(translate('OpenLP.ServiceManager', '&Auto play slides'))
@@ -765,6 +768,7 @@ class ServiceManager(QtGui.QWidget):
             pos = item.data(0, QtCore.Qt.UserRole)
         serviceItem = self.serviceItems[pos - 1]
         self.editAction.setVisible(False)
+        self.create_custom_action.setVisible(False)
         self.maintainAction.setVisible(False)
         self.notesAction.setVisible(False)
         self.timeAction.setVisible(False)
@@ -800,6 +804,11 @@ class ServiceManager(QtGui.QWidget):
             if serviceItem[u'service_item'].will_auto_start:
                 self.autoStartAction.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
                 self.autoStartAction.setIcon(self.active)
+        if serviceItem[u'service_item'].is_text():
+            for plugin in self.mainwindow.pluginManager.plugins:
+                if plugin.name == u'custom' and plugin.status == PluginStatus.Active:
+                    self.create_custom_action.setVisible(True)
+                    break
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.
         if serviceItem[u'service_item'].is_text() and self.mainwindow.renderer.theme_level == ThemeLevel.Song:
@@ -1390,6 +1399,13 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItems[item][u'service_item'].is_capable(ItemCapabilities.CanEdit):
             Receiver.send_message(u'%s_edit' % self.serviceItems[item][u'service_item'].name.lower(),
                 u'L:%s' % self.serviceItems[item][u'service_item'].edit_id)
+
+    def create_custom(self):
+        """
+        Saves the current text item as a custom slide
+        """
+        item = self.findServiceItem()[0]
+        Receiver.send_message(u'custom_create_from_service', self.serviceItems[item][u'service_item'])
 
     def findServiceItem(self):
         """

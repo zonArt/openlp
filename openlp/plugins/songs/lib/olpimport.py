@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -33,8 +33,7 @@ song databases into the current installation database.
 import logging
 
 from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import class_mapper, mapper, relation, scoped_session, \
-    sessionmaker
+from sqlalchemy.orm import class_mapper, mapper, relation, scoped_session, sessionmaker
 from sqlalchemy.orm.exc import UnmappedClassError
 
 from openlp.core.lib import translate
@@ -109,8 +108,7 @@ class OpenLPSongImport(SongImport):
         # Check the file type
         if not self.importSource.endswith(u'.sqlite'):
             self.logError(self.importSource,
-                translate('SongsPlugin.OpenLPSongImport',
-                'Not a valid OpenLP 2.0 song database.'))
+                translate('SongsPlugin.OpenLPSongImport', 'Not a valid OpenLP 2.0 song database.'))
             return
         self.importSource = u'sqlite:///%s' % self.importSource
         # Load the db file
@@ -131,8 +129,7 @@ class OpenLPSongImport(SongImport):
         source_media_files_songs_table = None
         if has_media_files:
             source_media_files_table = source_meta.tables[u'media_files']
-            source_media_files_songs_table = \
-                source_meta.tables.get(u'media_files_songs')
+            source_media_files_songs_table = source_meta.tables.get(u'media_files_songs')
             try:
                 class_mapper(OldMediaFile)
             except UnmappedClassError:
@@ -153,8 +150,7 @@ class OpenLPSongImport(SongImport):
                 song_props['media_files'] = relation(OldMediaFile,
                     backref='songs',
                     foreign_keys=[source_media_files_table.c.song_id],
-                    primaryjoin=source_songs_table.c.id == \
-                        source_media_files_table.c.song_id)
+                    primaryjoin=source_songs_table.c.id == source_media_files_table.c.song_id)
         try:
             class_mapper(OldAuthor)
         except UnmappedClassError:
@@ -195,8 +191,7 @@ class OpenLPSongImport(SongImport):
             new_song.theme_name = song.theme_name
             new_song.ccli_number = song.ccli_number
             for author in song.authors:
-                existing_author = self.manager.get_object_filtered(
-                    Author, Author.display_name == author.display_name)
+                existing_author = self.manager.get_object_filtered(Author, Author.display_name == author.display_name)
                 if existing_author is None:
                     existing_author = Author.populate(
                         first_name=author.first_name,
@@ -204,39 +199,32 @@ class OpenLPSongImport(SongImport):
                         display_name=author.display_name)
                 new_song.authors.append(existing_author)
             if song.book:
-                existing_song_book = self.manager.get_object_filtered(
-                    Book, Book.name == song.book.name)
+                existing_song_book = self.manager.get_object_filtered(Book, Book.name == song.book.name)
                 if existing_song_book is None:
-                    existing_song_book = Book.populate(name=song.book.name,
-                        publisher=song.book.publisher)
+                    existing_song_book = Book.populate(name=song.book.name, publisher=song.book.publisher)
                 new_song.book = existing_song_book
             if song.topics:
                 for topic in song.topics:
-                    existing_topic = self.manager.get_object_filtered(
-                        Topic, Topic.name == topic.name)
+                    existing_topic = self.manager.get_object_filtered(Topic, Topic.name == topic.name)
                     if existing_topic is None:
                         existing_topic = Topic.populate(name=topic.name)
                     new_song.topics.append(existing_topic)
             if has_media_files:
                 if song.media_files:
                     for media_file in song.media_files:
-                        existing_media_file = \
-                            self.manager.get_object_filtered(MediaFile,
+                        existing_media_file = self.manager.get_object_filtered(MediaFile,
                                 MediaFile.file_name == media_file.file_name)
                         if existing_media_file:
                             new_song.media_files.append(existing_media_file)
                         else:
-                            new_song.media_files.append(MediaFile.populate(
-                                file_name=media_file.file_name))
+                            new_song.media_files.append(MediaFile.populate(file_name=media_file.file_name))
             clean_song(self.manager, new_song)
             self.manager.save_object(new_song)
             if progressDialog:
                 progressDialog.setValue(progressDialog.value() + 1)
-                progressDialog.setLabelText(
-                    WizardStrings.ImportingType % new_song.title)
+                progressDialog.setLabelText(WizardStrings.ImportingType % new_song.title)
             else:
-                self.importWizard.incrementProgressBar(
-                    WizardStrings.ImportingType % new_song.title)
+                self.importWizard.incrementProgressBar(WizardStrings.ImportingType % new_song.title)
             if self.stopImportFlag:
                 break
         engine.dispose()

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -54,28 +54,23 @@ class Ui_LanguageDialog(object):
         self.languageLabel.setObjectName(u'languageLabel')
         self.languageHBoxLayout.addWidget(self.languageLabel)
         self.languageComboBox = QtGui.QComboBox(languageDialog)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
-            QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.languageComboBox.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(self.languageComboBox.sizePolicy().hasHeightForWidth())
         self.languageComboBox.setSizePolicy(sizePolicy)
         self.languageComboBox.setObjectName(u'languageComboBox')
         self.languageHBoxLayout.addWidget(self.languageComboBox)
         self.languageLayout.addLayout(self.languageHBoxLayout)
-        self.buttonBox = create_button_box(languageDialog, u'buttonBox',
-            [u'cancel', u'ok'])
+        self.buttonBox = create_button_box(languageDialog, u'buttonBox', [u'cancel', u'ok'])
         self.languageLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(languageDialog)
 
     def retranslateUi(self, languageDialog):
-        languageDialog.setWindowTitle(
-            translate('BiblesPlugin.LanguageDialog', 'Select Language'))
+        languageDialog.setWindowTitle(translate('BiblesPlugin.LanguageDialog', 'Select Language'))
         self.bibleLabel.setText(translate('BiblesPlugin.LanguageDialog', ''))
         self.infoLabel.setText(translate('BiblesPlugin.LanguageDialog',
-            'OpenLP is unable to determine the language of this translation '
-            'of the Bible. Please select the language from the list below.'))
-        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog',
-            'Language:'))
+            'OpenLP is unable to determine the language of this translation of the Bible. Please select the language '
+            'from the list below.'))
+        self.languageLabel.setText(translate('BiblesPlugin.LanguageDialog', 'Language:'))

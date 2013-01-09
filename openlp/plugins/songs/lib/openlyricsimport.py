@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -65,8 +65,7 @@ class OpenLyricsImport(SongImport):
         for file_path in self.importSource:
             if self.stopImportFlag:
                 return
-            self.importWizard.incrementProgressBar(
-                WizardStrings.ImportingType % os.path.basename(file_path))
+            self.importWizard.incrementProgressBar(WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 # Pass a file object, because lxml does not cope with some
                 # special characters in the path (see lp:757673 and lp:744337).

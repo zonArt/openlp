@@ -141,10 +141,21 @@ class Settings(QtCore.QSettings):
         if defaultValue is None and not super(Settings, self).contains(key):
             return None
         setting =  super(Settings, self).value(key, defaultValue)
-        # An empty list saved to the settings results in a None type being
-        # returned.
+        # On OS X (and probably on other platforms too) empty value from QSettings
+        # is represented as type PyQt4.QtCore.QPyNullVariant. This type has to be
+        # converted to proper 'None' Python type.
+        if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
+            setting = None
+        # Handle 'None' type (empty value) properly.
         if setting is None:
-            return []
+            # An empty string saved to the settings results in a None type being
+            # returned. Convert it to empty unicode string.
+            if isinstance(defaultValue, unicode):
+                return u''
+            # An empty list saved to the settings results in a None type being
+            # returned.
+            else:
+                return []
         # Convert the setting to the correct type.
         if isinstance(defaultValue, bool):
             if isinstance(setting, bool):
