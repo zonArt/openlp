@@ -103,12 +103,15 @@ class VlcPlayer(MediaPlayer):
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
         self.parent = parent
+        print "p",parent
         self.canFolder = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 
     def setup(self, display):
+        print "D",display
         display.vlcWidget = QtGui.QFrame(display)
+        display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:

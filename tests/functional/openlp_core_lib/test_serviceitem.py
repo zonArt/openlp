@@ -22,12 +22,10 @@ class TestServiceItem(TestCase):
         """
         #GIVEN: A new service item
 
-        # WHEN:A service item is created (without a plugin)
+        #WHEN:A service item is created (without a plugin)
         service_item = ServiceItem(None)
 
-        # THEN: We should get back a valid service item
-        print service_item
-        print dir(service_item)
+        #THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'A valid Service Item'
         assert service_item.missing_frames() is True, u'No frames loaded yet'
 
@@ -38,11 +36,11 @@ class TestServiceItem(TestCase):
         #GIVEN: A new service item
         service_item = ServiceItem(None)
 
-        # WHEN: adding text to a service item
+        #WHEN: adding text to a service item
         service_item.add_from_text(VERSE)
         service_item.raw_footer = FOOTER
 
-        # THEN: We should get back a valid service item
+        #THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'A valid Service Item'
         assert service_item.missing_frames() is False, u'check frames loaded '
 
@@ -69,10 +67,10 @@ class TestServiceItem(TestCase):
         mocked_renderer =  MagicMock()
         service_item.renderer = mocked_renderer
 
-        # WHEN: adding image to a service item
+        #WHEN: adding image to a service item
         service_item.add_from_image(u'resources/church.jpg', u'Image Title')
 
-        # THEN: We should get back a valid service item
+        #THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'A valid Service Item'
         assert len(service_item._display_frames) is 0, u'A blank Service Item'
 
@@ -80,7 +78,7 @@ class TestServiceItem(TestCase):
         assert len(service_item._raw_frames) is 1, u'A valid rendered Service Item has display frames'
         assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
 
-        # WHEN: adding a second image to a service item
+        #WHEN: adding a second image to a service item
         service_item.add_from_image(u'resources/church.jpg', u'Image1 Title')
 
         #THEN: We should should have an increased page of output.
@@ -124,10 +122,10 @@ class TestServiceItem(TestCase):
         mocked_renderer =  MagicMock()
         service_item.renderer = mocked_renderer
 
-        # WHEN: adding image to a service item
+        #WHEN: adding image to a service item
         service_item.add_from_command(u'resources', u'church.jpg', u'resources/church.jpg')
 
-        # THEN: We should get back a valid service item
+        #THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'A valid Service Item'
         assert len(service_item._display_frames) is 0, u'A blank Service Item'
 
