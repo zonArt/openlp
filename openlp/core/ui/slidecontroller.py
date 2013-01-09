@@ -889,6 +889,7 @@ class SlideController(DisplayController):
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
+        self.onToggleLoop()
 
     def onThemeDisplay(self, checked=None):
         """
@@ -907,6 +908,7 @@ class SlideController(DisplayController):
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
+        self.onToggleLoop()
 
     def onHideDisplay(self, checked=None):
         """
@@ -925,6 +927,7 @@ class SlideController(DisplayController):
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
+        self.onToggleLoop()
 
     def blankPlugin(self):
         """
@@ -1102,7 +1105,8 @@ class SlideController(DisplayController):
         """
         Toggles the loop state.
         """
-        if self.playSlidesLoop.isChecked() or self.playSlidesOnce.isChecked():
+        hide_mode = self.hideMode()
+        if hide_mode is None and (self.playSlidesLoop.isChecked() or self.playSlidesOnce.isChecked()):
             self.onStartLoop()
         else:
             self.onStopLoop()
