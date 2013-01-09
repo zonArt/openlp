@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -52,8 +52,7 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
 
     def accept(self):
         if not self.nameEdit.text():
-            critical_error_message_box(
-                message=translate('SongsPlugin.TopicsForm',
+            critical_error_message_box(message=translate('SongsPlugin.TopicsForm',
                 'You need to type in a topic name.'))
             self.nameEdit.setFocus()
             return False

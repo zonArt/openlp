@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -42,8 +42,7 @@ from openlp.core.lib import Receiver, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
-from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, \
-    Book
+from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 
 UGLY_CHARS = {
     u'\u2014': u' - ',
@@ -94,10 +93,8 @@ class BGExtract(object):
         """
         if isinstance(tag, NavigableString):
             return None, unicode(tag)
-        elif tag.get('class') == 'versenum' or \
-             tag.get('class') == 'versenum mid-line':
-            verse = unicode(tag.string)\
-                .replace('[', '').replace(']', '').strip()
+        elif tag.get('class') == 'versenum' or tag.get('class') == 'versenum mid-line':
+            verse = unicode(tag.string).replace('[', '').replace(']', '').strip()
             return verse, None
         elif tag.get('class') == 'chapternum':
             verse = '1'
@@ -231,16 +228,13 @@ class BGExtract(object):
         ``chapter``
             Chapter number.
         """
-        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version,
-            book_name, chapter)
+        log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_book_name = urllib.quote(book_name.encode("utf-8"))
-        url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter,
-            version)
+        url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter, version)
         cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
-            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='',
-            cleaner=cleaner)
+            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='', cleaner=cleaner)
         if not soup:
             return None
         Receiver.send_message(u'openlp_process_events')
@@ -267,10 +261,8 @@ class BGExtract(object):
             The version of the Bible like NIV for New International Version
         """
         log.debug(u'BGExtract.get_books_from_http("%s")', version)
-        url_params = urllib.urlencode(
-            {u'action': 'getVersionInfo', u'vid': u'%s' % version})
-        reference_url = u'http://www.biblegateway.com/versions/?%s#books' % \
-            url_params
+        url_params = urllib.urlencode({u'action': 'getVersionInfo', u'vid': u'%s' % version})
+        reference_url = u'http://www.biblegateway.com/versions/?%s#books' % url_params
         page = get_web_page(reference_url)
         if not page:
             send_error_message(u'download')

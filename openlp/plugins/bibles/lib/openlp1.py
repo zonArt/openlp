@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -56,12 +56,11 @@ class OpenLP1Bible(BibleDB):
         connection = None
         cursor = None
         try:
-            connection = sqlite.connect(
-                self.filename.encode(sys.getfilesystemencoding()))
+            connection = sqlite.connect(self.filename.encode(sys.getfilesystemencoding()))
             cursor = connection.cursor()
         except sqlite.DatabaseError:
             log.exception(u'File "%s" is encrypted or not a sqlite database, '
-            'therefore not an openlp.org 1.x database either' % self.filename)
+                'therefore not an openlp.org 1.x database either' % self.filename)
             # Please add an user error here!
             # This file is not an openlp.org 1.x bible database.
             return False
@@ -72,8 +71,7 @@ class OpenLP1Bible(BibleDB):
             return False
         # Create all books.
         try:
-            cursor.execute(
-                u'SELECT id, testament_id, name, abbreviation FROM book')
+            cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         except sqlite.DatabaseError as error:
             log.exception(u'DatabaseError: %s' % error)
             # Please add an user error here!
@@ -92,12 +90,10 @@ class OpenLP1Bible(BibleDB):
             book_ref_id = self.get_book_ref_id_by_name(name, len(books),
                 language_id)
             if not book_ref_id:
-                log.exception(u'Importing books from "%s" '\
-                    'failed' % self.filename)
+                log.exception(u'Importing books from "%s" failed' % self.filename)
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-            db_book = self.create_book(name, book_ref_id,
-                book_details[u'testament_id'])
+            db_book = self.create_book(name, book_ref_id, book_details[u'testament_id'])
             # Update the progess bar.
             self.wizard.incrementProgressBar(WizardStrings.ImportingType % name)
             # Import the verses for this book.

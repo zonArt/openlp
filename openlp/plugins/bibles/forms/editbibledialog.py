@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -39,8 +39,7 @@ class Ui_EditBibleDialog(object):
     def setupUi(self, editBibleDialog):
         editBibleDialog.setObjectName(u'editBibleDialog')
         editBibleDialog.resize(520, 400)
-        editBibleDialog.setWindowIcon(
-            build_icon(u':/icon/openlp-logo-16x16.png'))
+        editBibleDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         editBibleDialog.setModal(True)
         self.dialogLayout = QtGui.QVBoxLayout(editBibleDialog)
         self.dialogLayout.setSpacing(8)
@@ -55,43 +54,34 @@ class Ui_EditBibleDialog(object):
         self.metaTabLayout.setObjectName(u'metaTabLayout')
         self.licenseDetailsGroupBox = QtGui.QGroupBox(self.metaTab)
         self.licenseDetailsGroupBox.setObjectName(u'licenseDetailsGroupBox')
-        self.licenseDetailsLayout = QtGui.QFormLayout(
-            self.licenseDetailsGroupBox)
+        self.licenseDetailsLayout = QtGui.QFormLayout(self.licenseDetailsGroupBox)
         self.licenseDetailsLayout.setObjectName(u'licenseDetailsLayout')
         self.versionNameLabel = QtGui.QLabel(self.licenseDetailsGroupBox)
         self.versionNameLabel.setObjectName(u'versionNameLabel')
         self.versionNameEdit = QtGui.QLineEdit(self.licenseDetailsGroupBox)
         self.versionNameEdit.setObjectName(u'versionNameEdit')
         self.versionNameLabel.setBuddy(self.versionNameEdit)
-        self.licenseDetailsLayout.addRow(self.versionNameLabel,
-            self.versionNameEdit)
+        self.licenseDetailsLayout.addRow(self.versionNameLabel, self.versionNameEdit)
         self.copyrightLabel = QtGui.QLabel(self.licenseDetailsGroupBox)
         self.copyrightLabel.setObjectName(u'copyrightLabel')
         self.copyrightEdit = QtGui.QLineEdit(self.licenseDetailsGroupBox)
         self.copyrightEdit.setObjectName(u'copyrightEdit')
         self.copyrightLabel.setBuddy(self.copyrightEdit)
-        self.licenseDetailsLayout.addRow(self.copyrightLabel,
-            self.copyrightEdit)
+        self.licenseDetailsLayout.addRow(self.copyrightLabel, self.copyrightEdit)
         self.permissionsLabel = QtGui.QLabel(self.licenseDetailsGroupBox)
         self.permissionsLabel.setObjectName(u'permissionsLabel')
         self.permissionsEdit = QtGui.QLineEdit(self.licenseDetailsGroupBox)
         self.permissionsEdit.setObjectName(u'permissionsEdit')
         self.permissionsLabel.setBuddy(self.permissionsEdit)
-        self.licenseDetailsLayout.addRow(self.permissionsLabel,
-            self.permissionsEdit)
+        self.licenseDetailsLayout.addRow(self.permissionsLabel, self.permissionsEdit)
         self.metaTabLayout.addWidget(self.licenseDetailsGroupBox)
         self.languageSelectionGroupBox = QtGui.QGroupBox(self.metaTab)
-        self.languageSelectionGroupBox.setObjectName(
-            u'languageSelectionGroupBox')
-        self.languageSelectionLayout = QtGui.QVBoxLayout(
-            self.languageSelectionGroupBox)
-        self.languageSelectionLabel = QtGui.QLabel(
-            self.languageSelectionGroupBox)
+        self.languageSelectionGroupBox.setObjectName(u'languageSelectionGroupBox')
+        self.languageSelectionLayout = QtGui.QVBoxLayout(self.languageSelectionGroupBox)
+        self.languageSelectionLabel = QtGui.QLabel(self.languageSelectionGroupBox)
         self.languageSelectionLabel.setObjectName(u'languageSelectionLabel')
-        self.languageSelectionComboBox = QtGui.QComboBox(
-            self.languageSelectionGroupBox)
-        self.languageSelectionComboBox.setObjectName(
-            u'languageSelectionComboBox')
+        self.languageSelectionComboBox = QtGui.QComboBox(self.languageSelectionGroupBox)
+        self.languageSelectionComboBox.setObjectName(u'languageSelectionComboBox')
         self.languageSelectionComboBox.addItems([u'', u'', u'', u''])
         self.languageSelectionLayout.addWidget(self.languageSelectionLabel)
         self.languageSelectionLayout.addWidget(self.languageSelectionComboBox)
@@ -110,8 +100,7 @@ class Ui_EditBibleDialog(object):
         self.scrollArea = QtGui.QScrollArea(self.bookNameTab)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(u'scrollArea')
-        self.scrollArea.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.bookNameWidget = QtGui.QWidget(self.scrollArea)
         self.bookNameWidget.setObjectName(u'bookNameWidget')
         self.bookNameWidgetLayout = QtGui.QFormLayout(self.bookNameWidget)
@@ -119,14 +108,10 @@ class Ui_EditBibleDialog(object):
         self.bookNameLabel = {}
         self.bookNameEdit= {}
         for book in BiblesResourcesDB.get_books():
-            self.bookNameLabel[book[u'abbreviation']] = QtGui.QLabel(
-                self.bookNameWidget)
-            self.bookNameLabel[book[u'abbreviation']].setObjectName(
-                u'bookNameLabel[%s]' % book[u'abbreviation'])
-            self.bookNameEdit[book[u'abbreviation']] = QtGui.QLineEdit(
-                self.bookNameWidget)
-            self.bookNameEdit[book[u'abbreviation']].setObjectName(
-                u'bookNameEdit[%s]' % book[u'abbreviation'])
+            self.bookNameLabel[book[u'abbreviation']] = QtGui.QLabel(self.bookNameWidget)
+            self.bookNameLabel[book[u'abbreviation']].setObjectName(u'bookNameLabel[%s]' % book[u'abbreviation'])
+            self.bookNameEdit[book[u'abbreviation']] = QtGui.QLineEdit(self.bookNameWidget)
+            self.bookNameEdit[book[u'abbreviation']].setObjectName(u'bookNameEdit[%s]' % book[u'abbreviation'])
             self.bookNameWidgetLayout.addRow(
                 self.bookNameLabel[book[u'abbreviation']], 
                 self.bookNameEdit[book[u'abbreviation']])
@@ -136,48 +121,33 @@ class Ui_EditBibleDialog(object):
         self.bibleTabWidget.addTab(self.bookNameTab, u'')
         # Last few bits
         self.dialogLayout.addWidget(self.bibleTabWidget)
-        self.buttonBox = create_button_box(editBibleDialog, u'buttonBox',
-            [u'cancel', u'save'])
+        self.buttonBox = create_button_box(editBibleDialog, u'buttonBox', [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editBibleDialog)
         QtCore.QMetaObject.connectSlotsByName(editBibleDialog)
 
     def retranslateUi(self, editBibleDialog):
         self.book_names = BibleStrings().BookNames
-        editBibleDialog.setWindowTitle(
-            translate('BiblesPlugin.EditBibleForm', 'Bible Editor'))
+        editBibleDialog.setWindowTitle(translate('BiblesPlugin.EditBibleForm', 'Bible Editor'))
         # Meta tab
-        self.bibleTabWidget.setTabText(
-            self.bibleTabWidget.indexOf(self.metaTab),
+        self.bibleTabWidget.setTabText( self.bibleTabWidget.indexOf(self.metaTab),
             translate('SongsPlugin.EditBibleForm', 'Meta Data'))
-        self.licenseDetailsGroupBox.setTitle(
-            translate('BiblesPlugin.EditBibleForm', 'License Details'))
-        self.versionNameLabel.setText(
-            translate('BiblesPlugin.EditBibleForm', 'Version name:'))
-        self.copyrightLabel.setText(
-            translate('BiblesPlugin.EditBibleForm', 'Copyright:'))
-        self.permissionsLabel.setText(
-            translate('BiblesPlugin.EditBibleForm', 'Permissions:'))
-        self.languageSelectionGroupBox.setTitle(translate(
-            'BiblesPlugin.EditBibleForm', 'Default Bible Language'))
-        self.languageSelectionLabel.setText(
-            translate('BiblesPlugin.EditBibleForm',
-            'Book name language in search field, search results and on '
-            'display:'))
-        self.languageSelectionComboBox.setItemText(0,
-            translate('BiblesPlugin.EditBibleForm', 'Global Settings'))
+        self.licenseDetailsGroupBox.setTitle(translate('BiblesPlugin.EditBibleForm', 'License Details'))
+        self.versionNameLabel.setText(translate('BiblesPlugin.EditBibleForm', 'Version name:'))
+        self.copyrightLabel.setText(translate('BiblesPlugin.EditBibleForm', 'Copyright:'))
+        self.permissionsLabel.setText(translate('BiblesPlugin.EditBibleForm', 'Permissions:'))
+        self.languageSelectionGroupBox.setTitle(translate('BiblesPlugin.EditBibleForm', 'Default Bible Language'))
+        self.languageSelectionLabel.setText(translate('BiblesPlugin.EditBibleForm',
+            'Book name language in search field, search results and on display:'))
+        self.languageSelectionComboBox.setItemText(0, translate('BiblesPlugin.EditBibleForm', 'Global Settings'))
         self.languageSelectionComboBox.setItemText(LanguageSelection.Bible + 1,
             translate('BiblesPlugin.EditBibleForm', 'Bible Language'))
-        self.languageSelectionComboBox.setItemText(
-            LanguageSelection.Application + 1,
+        self.languageSelectionComboBox.setItemText(LanguageSelection.Application + 1,
             translate('BiblesPlugin.EditBibleForm', 'Application Language'))
-        self.languageSelectionComboBox.setItemText(
-            LanguageSelection.English + 1,
+        self.languageSelectionComboBox.setItemText(LanguageSelection.English + 1,
             translate('BiblesPlugin.EditBibleForm', 'English'))
         # Book name tab
-        self.bibleTabWidget.setTabText(
-            self.bibleTabWidget.indexOf(self.bookNameTab),
+        self.bibleTabWidget.setTabText(self.bibleTabWidget.indexOf(self.bookNameTab),
             translate('SongsPlugin.EditBibleForm', 'Custom Book Names'))
         for book in BiblesResourcesDB.get_books():
-            self.bookNameLabel[book[u'abbreviation']].setText(
-                u'%s:' % unicode(self.book_names[book[u'abbreviation']]))
+            self.bookNameLabel[book[u'abbreviation']].setText(u'%s:' % unicode(self.book_names[book[u'abbreviation']]))

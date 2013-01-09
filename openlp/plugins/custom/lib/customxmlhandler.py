@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -62,6 +62,8 @@ class CustomXMLBuilder(object):
         """
         # Create the minidom document
         self.custom_xml = Document()
+        self.new_document()
+        self.add_lyrics_to_song()
 
     def new_document(self):
         """

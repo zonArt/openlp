@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -133,9 +133,7 @@ class OpenSongImport(SongImport):
         root = tree.getroot()
         if root.tag != u'song':
             self.logError(file.name, unicode(
-                translate('SongsPlugin.OpenSongImport',
-                ('Invalid OpenSong song file. Missing '
-                'song tag.'))))
+                translate('SongsPlugin.OpenSongImport', ('Invalid OpenSong song file. Missing song tag.'))))
             return
         fields = dir(root)
         decode = {
@@ -179,8 +177,7 @@ class OpenSongImport(SongImport):
             if not this_line:
                 continue
             # skip guitar chords and page and column breaks
-            if this_line.startswith(u'.') or this_line.startswith(u'---') \
-                or this_line.startswith(u'-!!'):
+            if this_line.startswith(u'.') or this_line.startswith(u'---') or this_line.startswith(u'-!!'):
                 continue
             # verse/chorus/etc. marker
             if this_line.startswith(u'['):
@@ -200,12 +197,10 @@ class OpenSongImport(SongImport):
                     # the verse tag
                     verse_tag = content
                     verse_num = u'1'
-                verse_index = VerseType.from_loose_input(verse_tag) \
-                    if verse_tag else 0
+                verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
                 verse_tag = VerseType.Tags[verse_index]
                 inst = 1
-                if [verse_tag, verse_num, inst] in our_verse_order \
-                    and verse_num in verses.get(verse_tag, {}):
+                if [verse_tag, verse_num, inst] in our_verse_order and verse_num in verses.get(verse_tag, {}):
                     inst = len(verses[verse_tag][verse_num]) + 1
                 continue
             # number at start of line.. it's verse number
@@ -232,8 +227,7 @@ class OpenSongImport(SongImport):
             while(length < len(verse_num) and verse_num[length].isnumeric()):
                 length += 1
             verse_def = u'%s%s' % (verse_tag, verse_num[:length])
-            verse_joints[verse_def] = \
-                u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
+            verse_joints[verse_def] = u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
                 if verse_def in verse_joints else lines
         for verse_def, lines in verse_joints.iteritems():
             self.addVerse(lines, verse_def)

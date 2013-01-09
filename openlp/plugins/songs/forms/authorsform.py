@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -44,11 +44,9 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self._autoDisplayName = False
-        QtCore.QObject.connect(self.firstNameEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'),
+        QtCore.QObject.connect(self.firstNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
             self.onFirstNameEditTextEdited)
-        QtCore.QObject.connect(self.lastNameEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'),
+        QtCore.QObject.connect(self.lastNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
             self.onLastNameEditTextEdited)
 
     def exec_(self, clear=True):
@@ -82,24 +80,20 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     def accept(self):
         if not self.firstNameEdit.text():
             critical_error_message_box(
-                message=translate('SongsPlugin.AuthorsForm',
-                'You need to type in the first name of the author.'))
+                message=translate('SongsPlugin.AuthorsForm', 'You need to type in the first name of the author.'))
             self.firstNameEdit.setFocus()
             return False
         elif not self.lastNameEdit.text():
             critical_error_message_box(
-                message=translate('SongsPlugin.AuthorsForm',
-                'You need to type in the last name of the author.'))
+                message=translate('SongsPlugin.AuthorsForm', 'You need to type in the last name of the author.'))
             self.lastNameEdit.setFocus()
             return False
         elif not self.displayEdit.text():
             if critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm',
-                'You have not set a display name for the '
-                'author, combine the first and last names?'),
+                    'You have not set a display name for the author, combine the first and last names?'),
                 parent=self, question=True) == QtGui.QMessageBox.Yes:
-                self.displayEdit.setText(self.firstNameEdit.text() + \
-                    u' ' + self.lastNameEdit.text())
+                self.displayEdit.setText(self.firstNameEdit.text() + u' ' + self.lastNameEdit.text())
                 return QtGui.QDialog.accept(self)
             else:
                 self.displayEdit.setFocus()

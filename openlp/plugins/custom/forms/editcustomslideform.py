@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -47,10 +47,8 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.insertButton,
-            QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
-        QtCore.QObject.connect(self.splitButton,
-            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
+        QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
+        QtCore.QObject.connect(self.splitButton, QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
 
     def setText(self, text):
         """

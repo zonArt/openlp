@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -47,14 +47,11 @@ class Ui_TopicsDialog(object):
         self.nameLabel.setBuddy(self.nameEdit)
         self.nameLayout.addRow(self.nameLabel, self.nameEdit)
         self.dialogLayout.addLayout(self.nameLayout)
-        self.buttonBox = create_button_box(topicsDialog, u'buttonBox',
-            [u'cancel', u'save'])
+        self.buttonBox = create_button_box(topicsDialog, u'buttonBox', [u'cancel', u'save'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(topicsDialog)
         topicsDialog.setMaximumHeight(topicsDialog.sizeHint().height())
 
     def retranslateUi(self, topicsDialog):
-        topicsDialog.setWindowTitle(
-            translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
-        self.nameLabel.setText(
-            translate('SongsPlugin.TopicsForm', 'Topic name:'))
+        topicsDialog.setWindowTitle(translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
+        self.nameLabel.setText(translate('SongsPlugin.TopicsForm', 'Topic name:'))

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -67,34 +67,22 @@ class Ui_EditVerseDialog(object):
         self.verseTypeLayout.addWidget(self.insertButton)
         self.verseTypeLayout.addStretch()
         self.dialogLayout.addLayout(self.verseTypeLayout)
-        self.buttonBox = create_button_box(editVerseDialog, u'buttonBox',
-            [u'cancel', u'ok'])
+        self.buttonBox = create_button_box(editVerseDialog, u'buttonBox', [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(editVerseDialog)
 
     def retranslateUi(self, editVerseDialog):
-        editVerseDialog.setWindowTitle(
-            translate('SongsPlugin.EditVerseForm', 'Edit Verse'))
-        self.verseTypeLabel.setText(
-            translate('SongsPlugin.EditVerseForm', '&Verse type:'))
-        self.verseTypeComboBox.setItemText(VerseType.Verse,
-            VerseType.TranslatedNames[VerseType.Verse])
-        self.verseTypeComboBox.setItemText(VerseType.Chorus,
-            VerseType.TranslatedNames[VerseType.Chorus])
-        self.verseTypeComboBox.setItemText(VerseType.Bridge,
-            VerseType.TranslatedNames[VerseType.Bridge])
-        self.verseTypeComboBox.setItemText(VerseType.PreChorus,
-            VerseType.TranslatedNames[VerseType.PreChorus])
-        self.verseTypeComboBox.setItemText(VerseType.Intro,
-            VerseType.TranslatedNames[VerseType.Intro])
-        self.verseTypeComboBox.setItemText(VerseType.Ending,
-            VerseType.TranslatedNames[VerseType.Ending])
-        self.verseTypeComboBox.setItemText(VerseType.Other,
-            VerseType.TranslatedNames[VerseType.Other])
+        editVerseDialog.setWindowTitle(translate('SongsPlugin.EditVerseForm', 'Edit Verse'))
+        self.verseTypeLabel.setText(translate('SongsPlugin.EditVerseForm', '&Verse type:'))
+        self.verseTypeComboBox.setItemText(VerseType.Verse, VerseType.TranslatedNames[VerseType.Verse])
+        self.verseTypeComboBox.setItemText(VerseType.Chorus, VerseType.TranslatedNames[VerseType.Chorus])
+        self.verseTypeComboBox.setItemText(VerseType.Bridge, VerseType.TranslatedNames[VerseType.Bridge])
+        self.verseTypeComboBox.setItemText(VerseType.PreChorus, VerseType.TranslatedNames[VerseType.PreChorus])
+        self.verseTypeComboBox.setItemText(VerseType.Intro, VerseType.TranslatedNames[VerseType.Intro])
+        self.verseTypeComboBox.setItemText(VerseType.Ending, VerseType.TranslatedNames[VerseType.Ending])
+        self.verseTypeComboBox.setItemText(VerseType.Other, VerseType.TranslatedNames[VerseType.Other])
         self.splitButton.setText(UiStrings().Split)
         self.splitButton.setToolTip(UiStrings().SplitToolTip)
-        self.insertButton.setText(
-            translate('SongsPlugin.EditVerseForm', '&Insert'))
-        self.insertButton.setToolTip(
-            translate('SongsPlugin.EditVerseForm', 'Split a slide into two '
-            'by inserting a verse splitter.'))
+        self.insertButton.setText(translate('SongsPlugin.EditVerseForm', '&Insert'))
+        self.insertButton.setToolTip(translate('SongsPlugin.EditVerseForm',
+            'Split a slide into two by inserting a verse splitter.'))

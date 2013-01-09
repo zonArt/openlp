@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -38,8 +38,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.plugins.bibles.forms.booknamedialog import \
-    Ui_BookNameDialog
+from openlp.plugins.bibles.forms.booknamedialog import Ui_BookNameDialog
 from openlp.plugins.bibles.lib import BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
@@ -66,14 +65,11 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         Set up the signals used in the booknameform.
         """
-        QtCore.QObject.connect(self.oldTestamentCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.oldTestamentCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onCheckBoxIndexChanged)
-        QtCore.QObject.connect(self.newTestamentCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.newTestamentCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onCheckBoxIndexChanged)
-        QtCore.QObject.connect(self.apocryphaCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.apocryphaCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onCheckBoxIndexChanged)
 
     def onCheckBoxIndexChanged(self, index):
@@ -94,18 +90,14 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
                 if book.book_reference_id == item[u'id']:
                     addBook = False
                     break
-            if self.oldTestamentCheckBox.checkState() == QtCore.Qt.Unchecked \
-                and item[u'testament_id'] == 1:
+            if self.oldTestamentCheckBox.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 1:
                 addBook = False
-            elif self.newTestamentCheckBox.checkState() == QtCore.Qt.Unchecked \
-                and item[u'testament_id'] == 2:
+            elif self.newTestamentCheckBox.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 2:
                 addBook = False
-            elif self.apocryphaCheckBox.checkState() == QtCore.Qt.Unchecked \
-                and item[u'testament_id'] == 3:
+            elif self.apocryphaCheckBox.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 3:
                 addBook = False
             if addBook:
-                self.correspondingComboBox.addItem(
-                    self.book_names[item[u'abbreviation']])
+                self.correspondingComboBox.addItem(self.book_names[item[u'abbreviation']])
 
     def exec_(self, name, books, maxbooks):
         self.books = books
@@ -122,9 +114,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
 
     def accept(self):
         if self.correspondingComboBox.currentText() == u'':
-            critical_error_message_box(
-                message=translate('BiblesPlugin.BookNameForm',
-                'You need to select a book.'))
+            critical_error_message_box(message=translate('BiblesPlugin.BookNameForm', 'You need to select a book.'))
             self.correspondingComboBox.setFocus()
             return False
         else:
@@ -132,8 +122,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             for character in u'\\.^$*+?{}[]()':
                 cor_book = cor_book.replace(character, u'\\' + character)
             books = filter(lambda key:
-                re.match(cor_book, unicode(self.book_names[key]), re.UNICODE),
-                self.book_names.keys())
+                re.match(cor_book, unicode(self.book_names[key]), re.UNICODE), self.book_names.keys())
             books = filter(None, map(BiblesResourcesDB.get_book, books))
             if books:
                 self.book_id = books[0][u'id']
