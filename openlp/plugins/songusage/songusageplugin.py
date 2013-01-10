@@ -46,7 +46,10 @@ __default_settings__ = {
         u'songusage/db type': u'sqlite',
         u'songusage/status': PluginStatus.Inactive,
         u'songusage/active': False,
+        u'songusage/to date':  QtCore.QDate.currentDate(),
+        u'songusage/from date': QtCore.QDate.currentDate().addYears(-1)
     }
+
 
 class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
@@ -118,7 +121,7 @@ class SongUsagePlugin(Plugin):
             self.displaySongUsage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'print_service_started'),
             self.printSongUsage)
-        self.songUsageActive = Settings().value(self.settingsSection + u'/active', False)
+        self.songUsageActive = Settings().value(self.settingsSection + u'/active')
         # Set the button and checkbox state
         self.setButtonState()
         action_list = ActionList.get_instance()

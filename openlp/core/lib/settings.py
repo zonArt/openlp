@@ -32,11 +32,13 @@ This class contains the core default settings.
 import datetime
 import logging
 import os
+import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, SlideLimits
+from openlp.core.lib import SlideLimits, ScreenList
 from openlp.core.lib.theme import ThemeLevel
+from openlp.core.lib.ui import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -51,12 +53,23 @@ class Settings(QtCore.QSettings):
     object for accessing settings stored in that Ini file.
     """
     __filePath__ = u''
+
+    # Fix for bug #1014422.
+    x11_bypass_default = True
+    if sys.platform.startswith(u'linux'):
+        # Default to False on Gnome.
+        x11_bypass_default = bool(not os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+        # Default to False on XFce
+        if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
+            x11_bypass_default = False
+
     __default_settings__ = {
-        u'advanced/x11 bypass wm': True,
+        u'advanced/x11 bypass wm': x11_bypass_default,
         u'advanced/default service enabled': True,
         u'advanced/enable exit confirmation': True,
         u'advanced/save current plugin': False,
         u'advanced/single click preview': False,
+        # 7 stands for now, 0 to 6 is Monday to Sunday.
         u'advanced/default service day': 7,
         u'advanced/max recent files': 20,
         u'advanced/is portable': False,
@@ -69,14 +82,16 @@ class Settings(QtCore.QSettings):
         u'advanced/expand service item': False,
         u'advanced/recent file count': 4,
         # TODO: Check if translate already works at this stage. If not move the string to Ui String class.
-        u'advanced/default service name': translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
-            'This may not contain any of the following characters: /\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
-            'datetime.html#strftime-strptime-behavior for more information.'),
+        u'advanced/default service name': UiStrings().DefaultServiceName,
         u'advanced/default service minute': 0,
         u'advanced/slide limits': SlideLimits.End,
+        u'advanced/print slide text': False,
+        u'advanced/add page break': False,
+        u'advanced/print file meta data': False,
+        u'advanced/print notes': False,
+        u'advanced/display size': 0,
         u'displayTags/html_tags': u'',
         u'general/ccli number': u'',
-        u'general/y position': 0,
         u'general/has run wizard': False,
         u'general/update check': True,
         u'general/language': u'[en]',
@@ -90,15 +105,16 @@ class Settings(QtCore.QSettings):
         u'general/enable slide loop': True,
         u'general/show splash': True,
         u'general/screen blank': False,
-        u'general/x position': 0,
+        u'general/x position': 0, #ScreenList().current[u'size'].x()
+        u'general/y position': 0, # ScreenList().current[u'size'].y()
+        u'general/monitor': 0, # ScreenList().display_count - 1
+        u'general/height': 1024, # ScreenList().current[u'size'].height()
+        u'general/width': 1280, # ScreenList().current[u'size'].width()
         u'general/loop delay': 5,
-        u'general/height': 1024,
-        u'general/monitor': 0,
         u'general/songselect username': u'',
         u'general/audio repeat list': False,
         u'general/auto unblank': False,
         u'general/display on monitor': True,
-        u'general/width': 1280,
         u'general/audio start paused': True,
         u'general/last version test': datetime.datetime.now().date(),
         u'general/blank warning': False,
@@ -167,8 +183,9 @@ class Settings(QtCore.QSettings):
         u'shortcuts/previousService': [QtCore.Qt.Key_Left],
         u'shortcuts/importThemeItem': [],
         u'shortcuts/down': [QtCore.Qt.Key_Down],
-        u'themes/theme level': ThemeLevel.Global,
+        u'themes/theme level': ThemeLevel.Song,
         u'themes/global theme': u'',
+        u'themes/last directory': u'',
         u'user interface/main window position': QtCore.QPoint(),
         u'user interface/preview panel': True,
         u'user interface/live panel': True,
@@ -179,12 +196,19 @@ class Settings(QtCore.QSettings):
         u'user interface/live splitter geometry': QtCore.QByteArray(),
         u'user interface/main window state': QtCore.QByteArray(),
 
+        u'servicemanager/service theme': u'',
         u'players/background color': u'#000000',
-        u'servicemanager/service theme': u''
+
+        # HAS TO BE HERE. Should be FIXED.
+        u'media/players': u'webkit',
+        u'media/override player': QtCore.Qt.Unchecked
     }
 
     @staticmethod
     def extendDefaultSettings(defaultValues):
+        """
+
+        """
         Settings.__default_settings__ = dict(defaultValues.items() + Settings.__default_settings__.items())
 
     @staticmethod
@@ -203,7 +227,7 @@ class Settings(QtCore.QSettings):
         else:
             QtCore.QSettings.__init__(self, *args)
 
-    def value(self, key, defaultValue):
+    def value(self, key, defaultValue=0):
         """
         Returns the value for the given ``key``. The returned ``value`` is
         of the same type as the ``defaultValue``.
@@ -220,11 +244,22 @@ class Settings(QtCore.QSettings):
             **Note**, this method only converts a few types and might need to be
             extended if a certain type is missing!
         """
+        if defaultValue:
+            raise Exception(u'Should not happen')
+        if u'/' not in key:
+            key = u'/'.join((self.group(), key))
         # Check for none as u'' is passed as default and is valid! This is
         # needed because the settings export does not know the default values,
         # thus just passes None.
-        if defaultValue is None and not super(Settings, self).contains(key):
-            return None
+        defaultValue = Settings.__default_settings__[key]
+#        try:
+#            defaultValue = Settings.__default_settings__[key]
+#        except KeyError:
+#            return None
+
+        #if defaultValue is None and not super(Settings, self).contains(key):
+            #return None
+
         setting =  super(Settings, self).value(key, defaultValue)
         # On OS X (and probably on other platforms too) empty value from QSettings
         # is represented as type PyQt4.QtCore.QPyNullVariant. This type has to be

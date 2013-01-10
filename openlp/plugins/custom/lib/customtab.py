@@ -77,8 +77,8 @@ class CustomTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.displayFooter = settings.value(u'display footer', True)
-        self.update_load = settings.value(u'add custom from service', True)
+        self.displayFooter = settings.value(u'display footer')
+        self.update_load = settings.value(u'add custom from service')
         self.displayFooterCheckBox.setChecked(self.displayFooter)
         self.add_from_service_checkbox.setChecked(self.update_load)
         settings.endGroup()

@@ -34,7 +34,7 @@ import sqlite3
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, PluginStatus
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.utils import get_filesystem_encoding
@@ -47,11 +47,14 @@ from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
 __default_settings__ = {
+        u'songs/db type': u'sqlite',
+        u'songs/status': PluginStatus.Inactive,
+        u'songs/last search type': SongSearch.Entire,
+        u'songs/last import type': SongFormat.OpenLyrics,
         u'songs/update service on edit': False,
         u'songs/search as type': False,
         u'songs/add song from service': True,
-        u'songs/display songbar': True,
-        u'songs/last search type': SongSearch.Entire
+        u'songs/display songbar': True
     }
 
 class SongsPlugin(Plugin):

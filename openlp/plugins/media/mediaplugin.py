@@ -37,11 +37,9 @@ from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        u'media/override player': QtCore.Qt.Unchecked,
         u'media/media count': 0,
         u'media/media auto start': QtCore.Qt.Unchecked,
-        u'media/status': PluginStatus.Inactive,
-        u'media/players': u'webkit'
+        u'media/status': PluginStatus.Inactive
     }
 
 

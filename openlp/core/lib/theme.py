@@ -451,7 +451,8 @@ class ThemeXML(object):
         Set the header and footer size into the current primary screen.
         10 px on each side is removed to allow for a border.
         """
-        from openlp.core.ui import ScreenList
+        #FIXME
+        from openlp.core.lib import ScreenList
         current_screen = ScreenList().current
         self.font_main_y = 0
         self.font_main_width = current_screen[u'size'].width() - 20

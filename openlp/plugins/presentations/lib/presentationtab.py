@@ -101,9 +101,8 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setChecked(Settings().value(self.settingsSection + u'/' + controller.name, QtCore.Qt.Checked))
-        self.OverrideAppCheckBox.setChecked(Settings().value(self.settingsSection + u'/override app',
-            QtCore.Qt.Unchecked))
+            checkbox.setChecked(Settings().value(self.settingsSection + u'/' + controller.name))
+        self.OverrideAppCheckBox.setChecked(Settings().value(self.settingsSection + u'/override app'))
 
     def save(self):
         """
@@ -119,7 +118,7 @@ class PresentationTab(SettingsTab):
             if controller.is_available():
                 checkbox = self.PresenterCheckboxes[controller.name]
                 setting_key = self.settingsSection + u'/' + controller.name
-                if Settings().value(setting_key, QtCore.Qt.Checked) != checkbox.checkState():
+                if Settings().value(setting_key) != checkbox.checkState():
                     changed = True
                     Settings().setValue(setting_key, checkbox.checkState())
                     if checkbox.isChecked():
@@ -127,7 +126,7 @@ class PresentationTab(SettingsTab):
                     else:
                         controller.kill()
         setting_key = self.settingsSection + u'/override app'
-        if Settings().value(setting_key, QtCore.Qt.Checked) != self.OverrideAppCheckBox.checkState():
+        if Settings().value(setting_key) != self.OverrideAppCheckBox.checkState():
             Settings().setValue(setting_key, self.OverrideAppCheckBox.checkState())
             changed = True
         if changed:

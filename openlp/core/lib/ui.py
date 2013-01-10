@@ -33,8 +33,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, translate
-from openlp.core.utils.actions import ActionList
+from openlp.core.lib import build_icon, translate, Receiver
 
 log = logging.getLogger(__name__)
 
@@ -72,6 +71,9 @@ class UiStrings(object):
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
         self.Default = translate('OpenLP.Ui', 'Default')
         self.DefaultColor = translate('OpenLP.Ui', 'Default Color:')
+        self.DefaultServiceName = translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
+            'This may not contain any of the following characters: /\\?*|<>\[\]":+\n'
+            'See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for more information.')
         self.Delete = translate('OpenLP.Ui', '&Delete')
         self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
         self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
@@ -286,6 +288,7 @@ def create_button(parent, name, **kwargs):
     ``enabled``
         False in case the button should be disabled.
     """
+    from openlp.core.utils.actions import ActionList
     if u'role' in kwargs:
         role = kwargs.pop(u'role')
         if role == u'delete':
@@ -371,6 +374,7 @@ def create_action(parent, name, **kwargs):
     ``triggers``
         A slot which is connected to the actions ``triggered()`` slot.
     """
+    from openlp.core.utils.actions import ActionList
     action = QtGui.QAction(parent)
     action.setObjectName(name)
     if kwargs.get(u'text'):

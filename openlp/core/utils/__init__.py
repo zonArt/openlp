@@ -127,7 +127,7 @@ class AppLocation(object):
         """
         # Check if we have a different data location.
         if Settings().contains(u'advanced/data path'):
-            path = Settings().value(u'advanced/data path', u'')
+            path = Settings().value(u'advanced/data path')
         else:
             path = AppLocation.get_directory(AppLocation.DataDir)
             check_directory_exists(path)
@@ -282,7 +282,7 @@ def check_latest_version(current_version):
     # set to prod in the distribution config file.
     settings = Settings()
     settings.beginGroup(u'general')
-    last_test = settings.value(u'last version test', datetime.now().date())
+    last_test = settings.value(u'last version test')
     this_test = datetime.now().date()
     settings.setValue(u'last version test', this_test)
     settings.endGroup()

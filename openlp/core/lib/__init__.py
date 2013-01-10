@@ -382,8 +382,9 @@ def create_separated_list(stringlist):
             u'Locale list separator: start') % (stringlist[0], merged)
 
 
-from settings import Settings
 from eventreceiver import Receiver
+from screen import ScreenList
+from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
@@ -392,8 +393,7 @@ from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
 from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
-from htmlbuilder import build_html, build_lyrics_format_css, \
-    build_lyrics_outline_css
+from htmlbuilder import build_html, build_lyrics_format_css, build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from imagemanager import ImageManager

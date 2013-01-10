@@ -54,17 +54,6 @@ class AdvancedTab(SettingsTab):
         Initialise the settings tab
         """
         self.displayChanged = False
-        # 7 stands for now, 0 to 6 is Monday to Sunday.
-        self.defaultServiceDay = 7
-        # 11 o'clock is the most popular time for morning service.
-        self.defaultServiceHour = 11
-        self.defaultServiceMinute = 0
-        self.defaultServiceName = translate('OpenLP.AdvancedTab',
-            'Service %Y-%m-%d %H-%M',
-            'This may not contain any of the following characters: '
-            '/\\?*|<>\[\]":+\n'
-            'See http://docs.python.org/library/datetime.html'
-            '#strftime-strptime-behavior for more information.')
         self.defaultImage = u':/graphics/openlp-splash-screen.png'
         self.defaultColor = u'#ffffff'
         self.dataExists = False
@@ -311,7 +300,7 @@ class AdvancedTab(SettingsTab):
         self.serviceNameLabel.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.serviceNameEdit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.serviceNameRevertButton.setToolTip(
-            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') % self.defaultServiceName)
+            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') % UiStrings().DefaultServiceName)
         self.serviceNameExampleLabel.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
@@ -353,36 +342,26 @@ class AdvancedTab(SettingsTab):
         # The max recent files value does not have an interface and so never
         # gets actually stored in the settings therefore the default value of
         # 20 will always be used.
-        self.recentSpinBox.setMaximum(settings.value(u'max recent files', 20))
-        self.recentSpinBox.setValue(settings.value(u'recent file count', 4))
-        self.mediaPluginCheckBox.setChecked(settings.value(u'save current plugin', False))
-        self.doubleClickLiveCheckBox.setChecked(settings.value(u'double click live', False))
-        self.singleClickPreviewCheckBox.setChecked(settings.value(u'single click preview', False))
-        self.expandServiceItemCheckBox.setChecked(settings.value(u'expand service item', False))
-        self.enableAutoCloseCheckBox.setChecked(settings.value(u'enable exit confirmation', True))
-        self.hideMouseCheckBox.setChecked(settings.value(u'hide mouse', True))
-        self.serviceNameDay.setCurrentIndex(settings.value(u'default service day', self.defaultServiceDay))
-        self.serviceNameTime.setTime(QtCore.QTime(settings.value(u'default service hour', self.defaultServiceHour),
-            settings.value(u'default service minute',self.defaultServiceMinute)))
+        self.recentSpinBox.setMaximum(settings.value(u'max recent files'))
+        self.recentSpinBox.setValue(settings.value(u'recent file count'))
+        self.mediaPluginCheckBox.setChecked(settings.value(u'save current plugin'))
+        self.doubleClickLiveCheckBox.setChecked(settings.value(u'double click live'))
+        self.singleClickPreviewCheckBox.setChecked(settings.value(u'single click preview'))
+        self.expandServiceItemCheckBox.setChecked(settings.value(u'expand service item'))
+        self.enableAutoCloseCheckBox.setChecked(settings.value(u'enable exit confirmation'))
+        self.hideMouseCheckBox.setChecked(settings.value(u'hide mouse'))
+        self.serviceNameDay.setCurrentIndex(settings.value(u'default service day'))
+        self.serviceNameTime.setTime(QtCore.QTime(settings.value(u'default service hour'),
+            settings.value(u'default service minute')))
         self.shouldUpdateServiceNameExample = True
-        self.serviceNameEdit.setText(settings.value(u'default service name',
-            self.defaultServiceName))
-        default_service_enabled = settings.value(u'default service enabled', True)
+        self.serviceNameEdit.setText(settings.value(u'default service name'))
+        default_service_enabled = settings.value(u'default service enabled')
         self.serviceNameCheckBox.setChecked(default_service_enabled)
         self.serviceNameCheckBoxToggled(default_service_enabled)
-        # Fix for bug #1014422.
-        x11_bypass_default = True
-        if sys.platform.startswith(u'linux'):
-            # Default to False on Gnome.
-            x11_bypass_default = bool(not
-                os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
-            # Default to False on XFce
-            if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
-                x11_bypass_default = False
-        self.x11BypassCheckBox.setChecked(settings.value(u'x11 bypass wm', x11_bypass_default))
-        self.defaultColor = settings.value(u'default color', u'#ffffff')
-        self.defaultFileEdit.setText(settings.value(u'default image', u':/graphics/openlp-splash-screen.png'))
-        self.slide_limits = settings.value(u'slide limits', SlideLimits.End)
+        self.x11BypassCheckBox.setChecked(settings.value(u'x11 bypass wm'))
+        self.defaultColor = settings.value(u'default color')
+        self.defaultFileEdit.setText(settings.value(u'default image'))
+        self.slide_limits = settings.value(u'slide limits')
         if self.slide_limits == SlideLimits.End:
             self.endSlideRadioButton.setChecked(True)
         elif self.slide_limits == SlideLimits.Wrap:
@@ -424,7 +403,7 @@ class AdvancedTab(SettingsTab):
         self.dataDirectoryLabel.setText(os.path.abspath(self.currentDataPath))
         self.defaultColorButton.setStyleSheet(u'background-color: %s' % self.defaultColor)
         # Don't allow data directory move if running portable.
-        if settings.value(u'advanced/is portable', False):
+        if settings.value(u'advanced/is portable'):
             self.dataDirectoryGroupBox.hide()
 
     def save(self):
@@ -433,11 +412,10 @@ class AdvancedTab(SettingsTab):
         """
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'default service enabled',
-            self.serviceNameCheckBox.isChecked())
+        settings.setValue(u'default service enabled', self.serviceNameCheckBox.isChecked())
         service_name = self.serviceNameEdit.text()
         preset_is_valid = self.generateServiceNameExample()[0]
-        if service_name == self.defaultServiceName or not preset_is_valid:
+        if service_name == UiStrings().DefaultServiceName or not preset_is_valid:
             settings.remove(u'default service name')
             self.serviceNameEdit.setText(service_name)
         else:
@@ -504,7 +482,7 @@ class AdvancedTab(SettingsTab):
         self.updateServiceNameExample(None)
 
     def onServiceNameRevertButtonClicked(self):
-        self.serviceNameEdit.setText(self.defaultServiceName)
+        self.serviceNameEdit.setText(UiStrings().DefaultServiceName)
         self.serviceNameEdit.setFocus()
 
     def onDefaultColorButtonClicked(self):

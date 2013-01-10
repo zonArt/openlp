@@ -98,7 +98,7 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        language = Settings().value(u'general/language', u'[en]')
+        language = Settings().value(u'general/language')
         language = str(language)
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         if re.match(r'[[].*[]]', language):

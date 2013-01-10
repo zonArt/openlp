@@ -135,14 +135,16 @@ class RemoteTab(SettingsTab):
         self.stageUrl.setText(u'<a href="%s">%s</a>' % (url, url))
 
     def load(self):
-        self.portSpinBox.setValue(Settings().value(self.settingsSection + u'/port', 4316))
-        self.addressEdit.setText(Settings().value(self.settingsSection + u'/ip address', ZERO_URL))
-        self.twelveHour = Settings().value(self.settingsSection + u'/twelve hour', True)
+        self.portSpinBox.setValue(Settings().value(self.settingsSection + u'/port'))
+        # Check constant: ZERO_URL
+        self.addressEdit.setText(Settings().value(self.settingsSection + u'/ip address'))
+        self.twelveHour = Settings().value(self.settingsSection + u'/twelve hour')
         self.twelveHourCheckBox.setChecked(self.twelveHour)
         self.setUrls()
 
     def save(self):
         changed = False
+        # FIXME: What's going on here?
         if Settings().value(self.settingsSection + u'/ip address', ZERO_URL != self.addressEdit.text() or
                 Settings().value(self.settingsSection + u'/port', 4316) != self.portSpinBox.value()):
             changed = True

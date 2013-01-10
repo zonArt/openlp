@@ -119,8 +119,8 @@ class ThemesTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.theme_level = settings.value(u'theme level', ThemeLevel.Song)
-        self.global_theme = settings.value(u'global theme', u'')
+        self.theme_level = settings.value(u'theme level')
+        self.global_theme = settings.value(u'global theme')
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.GlobalLevelRadioButton.setChecked(True)
@@ -166,7 +166,7 @@ class ThemesTab(SettingsTab):
                 [u'Bible Theme', u'Song Theme']
         """
         # Reload as may have been triggered by the ThemeManager.
-        self.global_theme = Settings().value(self.settingsSection + u'/global theme', u'')
+        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)

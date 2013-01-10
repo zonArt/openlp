@@ -61,7 +61,7 @@ class SettingsManager(object):
             name = u'last directory %d' % num
         else:
             name = u'last directory'
-        return Settings().value(section + u'/' + name, u'')
+        return Settings().value(section + u'/' + name)
 
     @staticmethod
     def set_last_dir(section, directory, num=None):
@@ -100,7 +100,7 @@ class SettingsManager(object):
         """
         settings = Settings()
         settings.beginGroup(section)
-        old_count = settings.value(u'%s count' % name, 0)
+        old_count = settings.value(u'%s count' % name)
         new_count = len(list)
         settings.setValue(u'%s count' % name, new_count)
         for counter in range(new_count):
@@ -124,11 +124,11 @@ class SettingsManager(object):
         """
         settings = Settings()
         settings.beginGroup(section)
-        list_count = settings.value(u'%s count' % name, 0)
+        list_count = settings.value(u'%s count' % name)
         list = []
         if list_count:
             for counter in range(list_count):
-                item = settings.value(u'%s %d' % (name, counter), u'')
+                item = settings.value(u'%s %d' % (name, counter))
                 if item:
                     list.append(item)
         settings.endGroup()

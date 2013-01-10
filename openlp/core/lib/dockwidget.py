@@ -35,8 +35,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon
-from openlp.core.ui import ScreenList
+from openlp.core.lib import build_icon, ScreenList
 
 log = logging.getLogger(__name__)
 

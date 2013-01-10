@@ -29,12 +29,13 @@
 
 import logging
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, PluginStatus
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.lib.theme import VerticalType
+from openlp.core.ui import AlertLocation
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -114,11 +115,11 @@ HTML = """
 """
 
 __default_settings__ = {
-        u'alerts/font face': u'Sans',
+        u'alerts/font face': QtGui.QFont().family(),
         u'alerts/font size': 40,
         u'alerts/status': PluginStatus.Inactive,
         u'alerts/db type': u'sqlite',
-        u'alerts/location': 2,
+        u'alerts/location': AlertLocation.Bottom,
         u'alerts/background color': u'#660000',
         u'alerts/font color': u'#ffffff',
         u'alerts/timeout': 5

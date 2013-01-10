@@ -98,5 +98,5 @@ class ImagePlugin(Plugin):
         image manager to require updates.  Actual update is triggered by the
         last part of saving the config.
         """
-        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
+        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
         self.liveController.imageManager.updateImagesBorder(ImageSource.ImagePlugin, background)

@@ -444,7 +444,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the list click action to be determined dynamically
         """
-        if Settings().value(u'advanced/double click live', False):
+        if Settings().value(u'advanced/double click live'):
             self.onLiveClick()
         else:
             self.onPreviewClick()
@@ -453,7 +453,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the change of current item in the list to be actioned
         """
-        if Settings().value(u'advanced/single click preview', False) and self.quickPreviewAllowed \
+        if Settings().value(u'advanced/single click preview') and self.quickPreviewAllowed \
             and self.listView.selectedIndexes() and self.autoSelectId == -1:
             self.onPreviewClick(True)
 

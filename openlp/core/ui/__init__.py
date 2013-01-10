@@ -33,6 +33,7 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 
+
 class HideMode(object):
     """
     This is an enumeration class which specifies the different modes of hiding
@@ -54,6 +55,7 @@ class HideMode(object):
     Theme = 2
     Screen = 3
 
+
 class AlertLocation(object):
     """
     This is an enumeration class which controls where Alerts are placed on the
@@ -72,6 +74,7 @@ class AlertLocation(object):
     Middle = 1
     Bottom = 2
 
+
 class DisplayControllerType(object):
     """
     This is an enumeration class which says where a display controller
@@ -88,7 +91,7 @@ from themelayoutform import ThemeLayoutForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
-from screen import ScreenList
+#from screen import ScreenList
 from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm

@@ -331,16 +331,16 @@ class BiblesTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.show_new_chapters = settings.value(u'display new chapter', False)
-        self.display_style = settings.value(u'display brackets', 0)
-        self.layout_style = settings.value(u'verse layout style', 0)
-        self.bible_theme = settings.value(u'bible theme', u'')
-        self.second_bibles = settings.value(u'second bibles', True)
+        self.show_new_chapters = settings.value(u'display new chapter')
+        self.display_style = settings.value(u'display brackets')
+        self.layout_style = settings.value(u'verse layout style')
+        self.bible_theme = settings.value(u'bible theme')
+        self.second_bibles = settings.value(u'second bibles')
         self.newChaptersCheckBox.setChecked(self.show_new_chapters)
         self.displayStyleComboBox.setCurrentIndex(self.display_style)
         self.layoutStyleComboBox.setCurrentIndex(self.layout_style)
         self.bibleSecondCheckBox.setChecked(self.second_bibles)
-        verse_separator = settings.value(u'verse separator', u'')
+        verse_separator = settings.value(u'verse separator')
         if (verse_separator.strip(u'|') == u'') or (verse_separator == get_reference_separator(u'sep_v_default')):
             self.verseSeparatorLineEdit.setText(get_reference_separator(u'sep_v_default'))
             self.verseSeparatorLineEdit.setPalette(self.getGreyTextPalette(True))
@@ -349,7 +349,7 @@ class BiblesTab(SettingsTab):
             self.verseSeparatorLineEdit.setText(verse_separator)
             self.verseSeparatorLineEdit.setPalette(self.getGreyTextPalette(False))
             self.verseSeparatorCheckBox.setChecked(True)
-        range_separator = settings.value(u'range separator', u'')
+        range_separator = settings.value(u'range separator')
         if (range_separator.strip(u'|') == u'') or (range_separator == get_reference_separator(u'sep_r_default')):
             self.rangeSeparatorLineEdit.setText(get_reference_separator(u'sep_r_default'))
             self.rangeSeparatorLineEdit.setPalette(self.getGreyTextPalette(True))
@@ -358,7 +358,7 @@ class BiblesTab(SettingsTab):
             self.rangeSeparatorLineEdit.setText(range_separator)
             self.rangeSeparatorLineEdit.setPalette(self.getGreyTextPalette(False))
             self.rangeSeparatorCheckBox.setChecked(True)
-        list_separator = settings.value(u'list separator', u'')
+        list_separator = settings.value(u'list separator')
         if (list_separator.strip(u'|') == u'') or (list_separator == get_reference_separator(u'sep_l_default')):
             self.listSeparatorLineEdit.setText(get_reference_separator(u'sep_l_default'))
             self.listSeparatorLineEdit.setPalette(self.getGreyTextPalette(True))
@@ -367,7 +367,7 @@ class BiblesTab(SettingsTab):
             self.listSeparatorLineEdit.setText(list_separator)
             self.listSeparatorLineEdit.setPalette(self.getGreyTextPalette(False))
             self.listSeparatorCheckBox.setChecked(True)
-        end_separator = settings.value(u'end separator', u'')
+        end_separator = settings.value(u'end separator')
         if (end_separator.strip(u'|') == u'') or (end_separator == get_reference_separator(u'sep_e_default')):
             self.endSeparatorLineEdit.setText(get_reference_separator(u'sep_e_default'))
             self.endSeparatorLineEdit.setPalette(self.getGreyTextPalette(True))
@@ -376,7 +376,7 @@ class BiblesTab(SettingsTab):
             self.endSeparatorLineEdit.setText(end_separator)
             self.endSeparatorLineEdit.setPalette(self.getGreyTextPalette(False))
             self.endSeparatorCheckBox.setChecked(True)
-        self.language_selection = settings.value(u'book name language', 0)
+        self.language_selection = settings.value(u'book name language')
         self.languageSelectionComboBox.setCurrentIndex(self.language_selection)
         settings.endGroup()
 

@@ -141,12 +141,12 @@ class AlertsTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.timeout = settings.value(u'timeout', 5)
-        self.font_color = settings.value(u'font color', u'#ffffff')
-        self.font_size = settings.value(u'font size', 40)
-        self.bg_color = settings.value(u'background color', u'#660000')
-        self.font_face = settings.value(u'font face', QtGui.QFont().family())
-        self.location = settings.value(u'location', AlertLocation.Bottom)
+        self.timeout = settings.value(u'timeout')
+        self.font_color = settings.value(u'font color')
+        self.font_size = settings.value(u'font size')
+        self.bg_color = settings.value(u'background color')
+        self.font_face = settings.value(u'font face')
+        self.location = settings.value(u'location')
         settings.endGroup()
         self.fontSizeSpinBox.setValue(self.font_size)
         self.timeoutSpinBox.setValue(self.timeout)
@@ -163,7 +163,7 @@ class AlertsTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         # Check value has changed as no event handles this field
-        if settings.value(u'location', 1) != self.verticalComboBox.currentIndex():
+        if settings.value(u'location') != self.verticalComboBox.currentIndex():
             self.changed = True
         settings.setValue(u'background color', self.bg_color)
         settings.setValue(u'font color', self.font_color)

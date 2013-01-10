@@ -39,9 +39,10 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
         u'custom/db type': u'sqlite',
-        u'custom/display footer': True,
+        u'custom/status': PluginStatus.Inactive,
         u'custom/last search type':  CustomSearch.Titles,
-        u'custom/status': PluginStatus.Inactive
+        u'custom/display footer': True,
+        u'custom/add custom from service': True
     }
 
 

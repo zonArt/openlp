@@ -195,7 +195,7 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = Settings().value(self.settingsSection + u'/status', PluginStatus.Inactive)
+        self.status = Settings().value(self.settingsSection + u'/status')
 
     def toggleStatus(self, new_status):
         """

@@ -177,7 +177,7 @@ class PlayerTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.updatePlayerList()
-        self.bg_color = settings.value(u'background color', u'#000000')
+        self.bg_color = settings.value(u'background color')
         self.initial_color = self.bg_color
         settings.endGroup()
         self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
