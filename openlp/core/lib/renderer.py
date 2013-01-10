@@ -48,6 +48,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
 VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
+
 class Renderer(object):
     """
     Class to pull all Renderer interactions into one place. The plugins will
