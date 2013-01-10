@@ -179,6 +179,21 @@ class SongReviewWidget(QtGui.QWidget):
         self.songVerticalLayout.setObjectName('songVerticalLayout')
         self.songGroupBox = QtGui.QGroupBox(self)
         self.songGroupBox.setObjectName('songGroupBox')
+        self.songContentVerticalLayout = QtGui.QVBoxLayout(self.songGroupBox)
+        self.songContentVerticalLayout.setObjectName('songContentVerticalLayout')
+        self.songInfoFormLayout = QtGui.QFormLayout()
+        self.songInfoFormLayout.setObjectName('songInfoFormLayout')
+        #add ccli number, name, altname, authors, ... here
+        self.songNameLabel = QtGui.QLabel(self)
+        self.songNameLabel.setObjectName('songNameLabel')
+        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.songNameLabel)
+        self.songNameContent = QtGui.QLabel(self)
+        self.songNameContent.setObjectName('songNameContent')
+        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.songNameContent)
+        self.songContentVerticalLayout.addLayout(self.songInfoFormLayout)
+        self.songVerseButton = QtGui.QPushButton(self)
+        self.songVerseButton.setObjectName('songVerseButton')
+        self.songContentVerticalLayout.addWidget(self.songVerseButton)
         self.songVerticalLayout.addWidget(self.songGroupBox)
         self.songRemoveButton = QtGui.QPushButton(self)
         self.songRemoveButton.setObjectName('songRemoveButton')
@@ -187,3 +202,5 @@ class SongReviewWidget(QtGui.QWidget):
 
     def retranslateUi(self):
         self.songRemoveButton.setText(u'Remove')
+        self.songNameLabel.setText(u'Name:')
+
