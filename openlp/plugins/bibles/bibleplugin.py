@@ -41,23 +41,23 @@ from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
 __defaultValues__ = {
-    u'bibles/book name language': LanguageSelection.Bible,
-    u'bibles/verse separator': u'',
-    u'bibles/advanced bible': u'',
-    u'bibles/proxy name': u'',
-    u'bibles/db type': u'sqlite',
-    u'bibles/status': PluginStatus.Inactive,
-    u'bibles/bible theme': u'',
-    u'bibles/range separator': u'',
-    u'bibles/display new chapter': False,
-    u'bibles/verse layout style': LayoutStyle.VersePerSlide,
-    u'bibles/display brackets': DisplayStyle.NoBrackets,
-    u'bibles/list separator': u'',
-    u'bibles/second bibles': True,
-    u'bibles/quick bible': u'Afrikaans Bybel',
-    u'bibles/end separator': u'',
-    u'bibles/last search type': BibleSearch.Reference
-}
+        u'bibles/book name language': LanguageSelection.Bible,
+        u'bibles/verse separator': u'',
+        u'bibles/advanced bible': u'',
+        u'bibles/proxy name': u'',
+        u'bibles/db type': u'sqlite',
+        u'bibles/status': PluginStatus.Inactive,
+        u'bibles/bible theme': u'',
+        u'bibles/range separator': u'',
+        u'bibles/display new chapter': False,
+        u'bibles/verse layout style': LayoutStyle.VersePerSlide,
+        u'bibles/display brackets': DisplayStyle.NoBrackets,
+        u'bibles/list separator': u'',
+        u'bibles/second bibles': True,
+        u'bibles/quick bible': u'Afrikaans Bybel',
+        u'bibles/end separator': u'',
+        u'bibles/last search type': BibleSearch.Reference
+    }
 
 
 class BiblePlugin(Plugin):

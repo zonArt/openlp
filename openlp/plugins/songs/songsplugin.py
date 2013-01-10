@@ -47,12 +47,12 @@ from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
 __defaultValues__ = {
-    u'songs/update service on edit': False,
-    u'songs/search as type': False,
-    u'songs/add song from service': True,
-    u'songs/display songbar': True,
-    u'songs/last search type': SongSearch.Entire
-}
+        u'songs/update service on edit': False,
+        u'songs/search as type': False,
+        u'songs/add song from service': True,
+        u'songs/display songbar': True,
+        u'songs/last search type': SongSearch.Entire
+    }
 
 class SongsPlugin(Plugin):
     """

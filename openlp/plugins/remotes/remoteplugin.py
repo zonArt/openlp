@@ -39,7 +39,7 @@ __defaultValues__ = {
         u'remotes/status': PluginStatus.Inactive,
         u'remotes/port': 4316,
         u'remotes/ip address': u'0.0.0.0'
-}
+    }
 
 
 class RemotesPlugin(Plugin):

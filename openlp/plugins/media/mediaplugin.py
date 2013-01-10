@@ -36,12 +36,12 @@ from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
 __defaultValues__ = {
-    u'media/override player': QtCore.Qt.Unchecked,
-    u'media/media count': 0,
-    u'media/media auto start': QtCore.Qt.Unchecked,
-    u'media/status': PluginStatus.Inactive,
-    u'media/players': u'webkit'
-}
+        u'media/override player': QtCore.Qt.Unchecked,
+        u'media/media count': 0,
+        u'media/media auto start': QtCore.Qt.Unchecked,
+        u'media/status': PluginStatus.Inactive,
+        u'media/players': u'webkit'
+    }
 
 class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)

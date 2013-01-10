@@ -43,10 +43,10 @@ from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 log = logging.getLogger(__name__)
 
 __defaultValues__ = {
-    u'songusage/db type': u'sqlite',
-    u'songusage/status': PluginStatus.Inactive,
-    u'songusage/active': False,
-}
+        u'songusage/db type': u'sqlite',
+        u'songusage/status': PluginStatus.Inactive,
+        u'songusage/active': False,
+    }
 
 class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')

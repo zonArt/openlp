@@ -122,7 +122,7 @@ __defaultValues__ = {
         u'alerts/background color': u'#660000',
         u'alerts/font color': u'#ffffff',
         u'alerts/timeout': 5
-}
+    }
 
 
 class AlertsPlugin(Plugin):
