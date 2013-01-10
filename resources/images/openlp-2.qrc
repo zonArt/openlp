@@ -20,6 +20,7 @@
     <file>song_author_edit.png</file>
     <file>song_topic_edit.png</file>
     <file>song_book_edit.png</file>
+    <file>song_delete.png</file>
   </qresource>
   <qresource prefix="bibles">
     <file>bibles_search_text.png</file>
