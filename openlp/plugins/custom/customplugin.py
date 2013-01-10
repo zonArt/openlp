@@ -37,7 +37,7 @@ from openlp.plugins.custom.lib.mediaitem import CustomSearch
 
 log = logging.getLogger(__name__)
 
-__defaultValues__ = {
+__default_settings__ = {
         u'custom/db type': u'sqlite',
         u'custom/display footer': True,
         u'custom/last search type':  CustomSearch.Titles,
@@ -56,7 +56,7 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'custom', plugin_helpers, CustomMediaItem, CustomTab)
+        Plugin.__init__(self, u'custom', __default_settings__, plugin_helpers, CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
         self.iconPath = u':/plugins/plugin_custom.png'

@@ -119,7 +119,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, plugin_helpers=None, media_item_class=None,
+    def __init__(self, name, default_settings, plugin_helpers=None, media_item_class=None,
         settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
@@ -133,8 +133,8 @@ class Plugin(QtCore.QObject):
         ``name``
             Defaults to *None*. The name of the plugin.
 
-        ``version``
-            Defaults to *None*. The version of the plugin.
+        ``default_settings``
+            A dict containing the plugin's settings. The value to each key is the default value to be used.
 
         ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
@@ -144,10 +144,14 @@ class Plugin(QtCore.QObject):
 
         ``settings_tab_class``
             The class name of the plugin's settings tab.
+
+        ``version``
+            Defaults to *None*, which means that the same version number is used as OpenLP's version number.
         """
         log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
         self.name = name
+        Settings.extendDefaultSettings(default_settings)
         self.textStrings = {}
         self.setPluginTextStrings()
         self.nameStrings = self.textStrings[StringContent.Name]

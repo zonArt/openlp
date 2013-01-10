@@ -113,7 +113,7 @@ HTML = """
     <div id="alert" style="visibility:hidden"></div>
 """
 
-__defaultValues__ = {
+__default_settings__ = {
         u'alerts/font face': u'Sans',
         u'alerts/font size': 40,
         u'alerts/status': PluginStatus.Inactive,
@@ -129,7 +129,7 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'alerts', plugin_helpers, settings_tab_class=AlertsTab)
+        Plugin.__init__(self, u'alerts', __default_settings__, plugin_helpers, settings_tab_class=AlertsTab)
         self.weight = -3
         self.iconPath = u':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.iconPath)

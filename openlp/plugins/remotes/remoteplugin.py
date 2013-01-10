@@ -34,7 +34,7 @@ from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
 
-__defaultValues__ = {
+__default_settings__ = {
         u'remotes/twelve hour': True,
         u'remotes/status': PluginStatus.Inactive,
         u'remotes/port': 4316,
@@ -49,7 +49,7 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'remotes', plugin_helpers, settings_tab_class=RemoteTab)
+        Plugin.__init__(self, u'remotes', __default_settings__, plugin_helpers, settings_tab_class=RemoteTab)
         self.iconPath = u':/plugins/plugin_remote.png'
         self.icon = build_icon(self.iconPath)
         self.weight = -1

@@ -46,7 +46,7 @@ from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
-__defaultValues__ = {
+__default_settings__ = {
         u'songs/update service on edit': False,
         u'songs/search as type': False,
         u'songs/add song from service': True,
@@ -68,7 +68,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'songs', __default_settings__, plugin_helpers, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
         self.iconPath = u':/plugins/plugin_songs.png'

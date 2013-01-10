@@ -40,7 +40,7 @@ from openlp.plugins.bibles.lib.mediaitem import BibleSearch
 from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
-__defaultValues__ = {
+__default_settings__ = {
         u'bibles/book name language': LanguageSelection.Bible,
         u'bibles/verse separator': u'',
         u'bibles/advanced bible': u'',
@@ -64,7 +64,7 @@ class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'bibles', plugin_helpers, BibleMediaItem, BiblesTab)
+        Plugin.__init__(self, u'bibles', __default_settings__, plugin_helpers, BibleMediaItem, BiblesTab)
         self.weight = -9
         self.iconPath = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.iconPath)

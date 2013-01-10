@@ -42,7 +42,7 @@ from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
 
-__defaultValues__ = {
+__default_settings__ = {
         u'songusage/db type': u'sqlite',
         u'songusage/status': PluginStatus.Inactive,
         u'songusage/active': False,
@@ -52,7 +52,7 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'songusage', plugin_helpers)
+        Plugin.__init__(self, u'songusage', __default_settings__, plugin_helpers)
         self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')

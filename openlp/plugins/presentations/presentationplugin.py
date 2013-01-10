@@ -33,18 +33,20 @@ presentations from a variety of document formats.
 import os
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from PyQt4 import QtCore
+
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, PluginStatus
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
 
 log = logging.getLogger(__name__)
-__defaultValues__ = {
+__default_settings__ = {
         u'presentations/Impress': 2,
         u'presentations/override app': QtCore.Qt.Unchecked,
         u'presentations/presentations count': 0,
         u'presentations/Powerpoint': 2,
-        u'presentations/status': PluginStatus.Inactive,
+        u'presentations/status': PluginStatus.Inactive,   # Remove
         u'presentations/Powerpoint Viewer': 2
     }
 
@@ -63,7 +65,7 @@ class PresentationPlugin(Plugin):
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'presentations', plugin_helpers)
+        Plugin.__init__(self, u'presentations', __default_settings__, plugin_helpers, __default_settings__)
         self.weight = -8
         self.iconPath = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.iconPath)
