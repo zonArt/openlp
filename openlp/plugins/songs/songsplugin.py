@@ -41,10 +41,18 @@ from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
+from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
+__defaultValues__ = {
+    u'songs/update service on edit': False,
+    u'songs/search as type': False,
+    u'songs/add song from service': True,
+    u'songs/display songbar': True,
+    u'songs/last search type': SongSearch.Entire
+}
 
 class SongsPlugin(Plugin):
     """

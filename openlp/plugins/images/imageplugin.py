@@ -31,10 +31,15 @@ from PyQt4 import QtCore, QtGui
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings, PluginStatus
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
+__defaultValues__ = {
+    u'images/images count': 0,
+    u'images/background color': u'#000000',
+    u'images/status': PluginStatus.Inactive
+}
 
 class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')

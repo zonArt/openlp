@@ -31,13 +31,34 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, PluginStatus
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.utils.actions import ActionList
-from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
+from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem, LayoutStyle, DisplayStyle, \
+    LanguageSelection
+from openlp.plugins.bibles.lib.mediaitem import BibleSearch
 from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
+__defaultValues__ = {
+    u'bibles/book name language': LanguageSelection.Bible,
+    u'bibles/verse separator': u'',
+    u'bibles/advanced bible': u'',
+    u'bibles/proxy name': u'',
+    u'bibles/db type': u'sqlite',
+    u'bibles/status': PluginStatus.Inactive,
+    u'bibles/bible theme': u'',
+    u'bibles/range separator': u'',
+    u'bibles/display new chapter': False,
+    u'bibles/verse layout style': LayoutStyle.VersePerSlide,
+    u'bibles/display brackets': DisplayStyle.NoBrackets,
+    u'bibles/list separator': u'',
+    u'bibles/second bibles': True,
+    u'bibles/quick bible': u'Afrikaans Bybel',
+    u'bibles/end separator': u'',
+    u'bibles/last search type': BibleSearch.Reference
+}
+
 
 class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')

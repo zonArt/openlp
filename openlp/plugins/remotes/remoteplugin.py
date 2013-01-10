@@ -29,10 +29,18 @@
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, translate, build_icon
+from openlp.core.lib import Plugin, StringContent, translate, build_icon, PluginStatus
 from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
+
+__defaultValues__ = {
+        u'remotes/twelve hour': True,
+        u'remotes/status': PluginStatus.Inactive,
+        u'remotes/port': 4316,
+        u'remotes/ip address': u'0.0.0.0'
+}
+
 
 class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')

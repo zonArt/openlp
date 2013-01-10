@@ -31,11 +31,17 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, PluginStatus
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
+__defaultValues__ = {
+    u'media/override player': QtCore.Qt.Unchecked,
+    u'media/media count': 0,
+    u'media/media auto start': QtCore.Qt.Unchecked,
+    u'media/status': PluginStatus.Inactive,
+    u'media/players': u'webkit'
+}
 
 class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)

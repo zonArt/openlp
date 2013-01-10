@@ -32,7 +32,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Plugin, Receiver, Settings, StringContent, translate
+from openlp.core.lib import build_icon, Plugin, Receiver, Settings, StringContent, translate, PluginStatus
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
@@ -41,6 +41,12 @@ from openlp.plugins.songusage.lib import upgrade
 from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
+
+__defaultValues__ = {
+    u'songusage/db type': u'sqlite',
+    u'songusage/status': PluginStatus.Inactive,
+    u'songusage/active': False,
+}
 
 class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')

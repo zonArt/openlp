@@ -33,6 +33,7 @@ from openlp.core.lib import Receiver, Settings, SettingsTab, translate
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
 
+
 class ThemesTab(SettingsTab):
     """
     ThemesTab is the theme settings tab in the settings dialog.

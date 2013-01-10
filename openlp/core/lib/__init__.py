@@ -31,6 +31,7 @@ The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
 import logging
+import datetime
 import os
 
 from PyQt4 import QtCore, QtGui, Qt
@@ -101,6 +102,15 @@ class Settings(QtCore.QSettings):
     object for accessing settings stored in that Ini file.
     """
     __filePath__ = u''
+    __defaultValues__ = {
+        u'displayTags/html_tags': u'',
+        u'players/background color': u'#000000',
+        u'servicemanager/service theme': u'',
+}
+
+    @staticmethod
+    def appendDefaultValues(defaultValues):
+        Settings.__defaultValues__ = dict(defaultValues.items() + Settings.__defaultValues__.items())
 
     @staticmethod
     def setFilename(iniFile):

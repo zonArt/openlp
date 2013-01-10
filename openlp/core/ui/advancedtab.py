@@ -43,6 +43,7 @@ from openlp.core.lib import SlideLimits
 
 log = logging.getLogger(__name__)
 
+
 class AdvancedTab(SettingsTab):
     """
     The :class:`AdvancedTab` manages the advanced settings tab including the UI

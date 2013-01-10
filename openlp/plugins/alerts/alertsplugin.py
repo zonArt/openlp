@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, PluginStatus
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.lib.theme import VerticalType
@@ -112,6 +112,18 @@ CSS = """
 HTML = """
     <div id="alert" style="visibility:hidden"></div>
 """
+
+__defaultValues__ = {
+        u'alerts/font face': u'Sans',
+        u'alerts/font size': 40,
+        u'alerts/status': PluginStatus.Inactive,
+        u'alerts/db type': u'sqlite',
+        u'alerts/location': 2,
+        u'alerts/background color': u'#660000',
+        u'alerts/font color': u'#ffffff',
+        u'alerts/timeout': 5
+}
+
 
 class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
