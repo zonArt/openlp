@@ -40,6 +40,7 @@ from openlp.plugins.bibles.lib.mediaitem import BibleSearch
 from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
+
 __default_settings__ = {
         u'bibles/book name language': LanguageSelection.Bible,
         u'bibles/verse separator': u'',

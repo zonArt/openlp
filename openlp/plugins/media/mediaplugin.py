@@ -35,6 +35,7 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settin
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
+
 __default_settings__ = {
         u'media/override player': QtCore.Qt.Unchecked,
         u'media/media count': 0,
@@ -42,6 +43,7 @@ __default_settings__ = {
         u'media/status': PluginStatus.Inactive,
         u'media/players': u'webkit'
     }
+
 
 class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)

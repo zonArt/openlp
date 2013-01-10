@@ -44,6 +44,7 @@ __default_settings__ = {
         u'custom/status': PluginStatus.Inactive
     }
 
+
 class CustomPlugin(Plugin):
     """
     This plugin enables the user to create, edit and display

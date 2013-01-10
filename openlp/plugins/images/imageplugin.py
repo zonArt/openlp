@@ -35,11 +35,13 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiv
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
+
 __default_settings__ = {
         u'images/images count': 0,
         u'images/background color': u'#000000',
         u'images/status': PluginStatus.Inactive
     }
+
 
 class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
