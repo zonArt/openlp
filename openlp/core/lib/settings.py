@@ -42,6 +42,16 @@ from openlp.core.lib import UiStrings
 
 log = logging.getLogger(__name__)
 
+# Fix for bug #1014422.
+X11_BYPASS_DEFAULT = True
+if sys.platform.startswith(u'linux'):
+    # Default to False on Gnome.
+    X11_BYPASS_DEFAULT = bool(not os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+    # Default to False on Xfce.
+    if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
+        X11_BYPASS_DEFAULT = False
+
+
 class Settings(QtCore.QSettings):
     """
     Class to wrap QSettings.
@@ -53,16 +63,6 @@ class Settings(QtCore.QSettings):
     object for accessing settings stored in that Ini file.
     """
     __filePath__ = u''
-
-    # Fix for bug #1014422.
-    X11_BYPASS_DEFAULT = True
-    if sys.platform.startswith(u'linux'):
-        # Default to False on Gnome.
-        X11_BYPASS_DEFAULT = bool(not os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
-        # Default to False on Xfce.
-        if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
-            X11_BYPASS_DEFAULT = False
-
     __default_settings__ = {
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
         u'advanced/default service enabled': True,
