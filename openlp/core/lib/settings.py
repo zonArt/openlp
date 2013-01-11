@@ -204,7 +204,7 @@ class Settings(QtCore.QSettings):
     }
 
     @staticmethod
-    def extendDefaultSettings(defaultValues):
+    def extend_default_settings(defaultValues):
         """
         Static method to merge the given ``defaultValues`` with the ``Settings.__default_settings__``.
 
