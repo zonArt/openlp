@@ -65,6 +65,11 @@ class Settings(QtCore.QSettings):
     object for accessing settings stored in that Ini file.
     """
     __filePath__ = u''
+
+    __obsolete_settings__ = {
+        u'bibles/bookname language': u'bibles/book name language'
+    }
+
     __default_settings__ = {
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
         u'advanced/default service enabled': True,
@@ -223,6 +228,19 @@ class Settings(QtCore.QSettings):
         Does not affect existing Settings objects.
         """
         Settings.__filePath__ = iniFile
+
+    @staticmethod
+    def remove_obsolete_settings():
+        """
+        This method is only called to clean up the config. It removes all changed keys, but before doing so, we copy
+        the value to the new key.
+        """
+        for new_key, old_key in Settings.__obsolete_settings__.items():
+            settings = Settings()
+            if settings.contains(old_key):
+                # Copy the value from the old_key to the new_key.
+                settings.setValue(new_key. settings.value(key))
+                settings.remove(old_key)
 
     def __init__(self, *args):
         if not args and Settings.__filePath__ and Settings.defaultFormat() == Settings.IniFormat:

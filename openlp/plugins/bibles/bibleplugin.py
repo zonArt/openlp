@@ -41,6 +41,7 @@ from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
 
+
 __default_settings__ = {
         u'bibles/db type': u'sqlite',
         u'bibles/status': PluginStatus.Inactive,
@@ -50,8 +51,8 @@ __default_settings__ = {
         u'bibles/display brackets': DisplayStyle.NoBrackets,
         u'bibles/display new chapter': False,
         u'bibles/second bibles': True,
-        u'bibles/advanced bible': u'', # FIXME: check
-        u'bibles/quick bible': u'', # FIXME: check
+        u'bibles/advanced bible': u'',
+        u'bibles/quick bible': u'',
         u'bibles/proxy name': u'',
         u'bibles/proxy address': u'',
         u'bibles/proxy username': u'',
@@ -113,13 +114,6 @@ class BiblePlugin(Plugin):
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
                     QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()
-        settings = Settings()
-        settings.beginGroup(self.settingsSection)
-        if settings.contains(u'bookname language'):
-            # FIXME: Will that cause crashes?
-            settings.setValue(u'book name language', settings.value(u'bookname language'))
-            settings.remove(u'bookname language')
-        settings.endGroup()
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = create_action(import_menu, u'importBibleItem',
