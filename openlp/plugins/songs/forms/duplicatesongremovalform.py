@@ -36,6 +36,7 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, Settings, SettingsManager, translate, build_icon
+from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
@@ -69,7 +70,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Song wizard specific initialisation.
         """
-        pass
+        self.duplicateSongList = []
 
     def customSignals(self):
         """
@@ -107,8 +108,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.headerVerticalLayout.addWidget(self.reviewCounterLabel)
         self.songsHorizontalLayout = QtGui.QHBoxLayout()
         self.songsHorizontalLayout.setObjectName('songsHorizontalLayout')
-        self.songReviewWidget = SongReviewWidget(self.reviewPage)
-        self.songsHorizontalLayout.addWidget(self.songReviewWidget)
         self.headerVerticalLayout.addLayout(self.songsHorizontalLayout)
         self.addPage(self.reviewPage)
 
@@ -143,8 +142,36 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 for innerSongCounter in range(outerSongCounter+1, maxSongs):
                     doubleFinder = DuplicateSongFinder()
                     if doubleFinder.songsProbablyEqual(songs[outerSongCounter], songs[innerSongCounter]):
+                        self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
                         self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " + songs[innerSongCounter].title)
                     self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
+        elif self.page(pageId) == self.reviewPage:
+            print "asdf"
+            print self.duplicateSongList
+            for duplicates in self.duplicateSongList[0:1]:
+                print "qwer"
+                for duplicate in duplicates:
+                    print "zxcv"
+                    songReviewWidget = SongReviewWidget(self.reviewPage, duplicate)
+                    self.songsHorizontalLayout.addWidget(songReviewWidget)
+
+    def addDuplicatesToSongList(self, searchSong, duplicateSong):
+        duplicateGroupFound = False
+        for duplicates in self.duplicateSongList:
+            #skip the first song in the duplicate lists, since the first one has to be an earlier song
+            for duplicate in duplicates[1:]:
+                if duplicate == searchSong:
+                    duplicates.append(duplicateSong)
+                    duplicateGroupFound = True
+                    break
+                elif duplicate == duplicateSong:
+                    duplicates.appen(searchSong)
+                    duplicateGroupFound = True
+                    break
+            if duplicateGroupFound:
+                break
+        if not duplicateGroupFound:
+            self.duplicateSongList.append([searchSong, duplicateSong])
 
     def onAddButtonClicked(self):
         pass
@@ -169,8 +196,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         pass
 
 class SongReviewWidget(QtGui.QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, song):
         QtGui.QWidget.__init__(self, parent)
+        self.song = song
         self.setupUi()
         self.retranslateUi()
 
@@ -189,6 +217,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.songNameLabel)
         self.songNameContent = QtGui.QLabel(self)
         self.songNameContent.setObjectName('songNameContent')
+        self.songNameContent.setText(self.song.title)
         self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.songNameContent)
         self.songContentVerticalLayout.addLayout(self.songInfoFormLayout)
         self.songVerseButton = QtGui.QPushButton(self)
