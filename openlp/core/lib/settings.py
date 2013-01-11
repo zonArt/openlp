@@ -40,7 +40,9 @@ from openlp.core.lib import SlideLimits, ScreenList
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib import UiStrings
 
+
 log = logging.getLogger(__name__)
+
 
 # Fix for bug #1014422.
 X11_BYPASS_DEFAULT = True

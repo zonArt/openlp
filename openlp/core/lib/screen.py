@@ -37,7 +37,9 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 
+
 log = logging.getLogger(__name__)
+
 
 class ScreenList(object):
     """

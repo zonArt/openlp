@@ -36,6 +36,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon, translate, Receiver, UiStrings
 from openlp.core.utils.actions import ActionList
 
+
 log = logging.getLogger(__name__)
 
 

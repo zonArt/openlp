@@ -33,7 +33,9 @@ import logging
 
 from openlp.core.lib import translate
 
+
 log = logging.getLogger(__name__)
+
 
 class UiStrings(object):
     """
