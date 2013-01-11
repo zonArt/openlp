@@ -232,7 +232,7 @@ class Ui_MainWindow(object):
             checked=panelLocked, triggers=self.setLockPanel)
         action_list.add_category(UiStrings().ViewMode,
             CategoryOrder.standardMenu)
-        self.modeDefaultItem = create_action(mainWindow, u'modeDefaultItem',  checked=False,
+        self.modeDefaultItem = create_action(mainWindow, u'modeDefaultItem', checked=False,
             category=UiStrings().ViewMode)
         self.modeSetupItem = create_action(mainWindow, u'modeSetupItem', checked=False, category=UiStrings().ViewMode)
         self.modeLiveItem = create_action(mainWindow, u'modeLiveItem', checked=True, category=UiStrings().ViewMode)
@@ -937,11 +937,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Read the  temp file and output the user's CONF file with blanks to
         # make it more readable.
         temp_conf = open(temp_file, u'r')
-        export_conf = open(export_file_name,  u'w')
+        export_conf = open(export_file_name, u'w')
         for file_record in temp_conf:
             # Get rid of any invalid entries.
             if file_record.find(u'@Invalid()') == -1:
-                file_record = file_record.replace(u'%20',  u' ')
+                file_record = file_record.replace(u'%20', u' ')
                 export_conf.write(file_record)
         temp_conf.close()
         export_conf.close()
@@ -1329,7 +1329,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     '- Please wait for copy to finish').replace('%s', self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
-            except (IOError, os.error, DistutilsFileError),  why:
+            except (IOError, os.error, DistutilsFileError), why:
                 Receiver.send_message(u'cursor_normal')
                 log.exception(u'Data copy failed %s' % unicode(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),

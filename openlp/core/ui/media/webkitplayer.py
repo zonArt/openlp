@@ -253,7 +253,7 @@ VIDEO_EXT = [
         , u'*.mp4'
         , u'*.ogv'
         , u'*.webm'
-        , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
+        , u'*.mpg', u'*.wmv', u'*.mpeg', u'*.avi'
         , u'*.swf'
     ]
 

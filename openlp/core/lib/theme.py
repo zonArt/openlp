@@ -36,7 +36,7 @@ import logging
 from xml.dom.minidom import Document
 from lxml import etree, objectify
 
-from openlp.core.lib import str_to_bool
+from openlp.core.lib import str_to_bool, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -380,8 +380,7 @@ class ThemeXML(object):
         # Create italics name element
         self.child_element(background, u'italics', unicode(italics))
         # Create indentation name element
-        self.child_element(
-            background, u'line_adjustment', unicode(line_adjustment))
+        self.child_element(background, u'line_adjustment', unicode(line_adjustment))
         # Create Location element
         element = self.theme_xml.createElement(u'location')
         element.setAttribute(u'override', unicode(override))
@@ -451,8 +450,6 @@ class ThemeXML(object):
         Set the header and footer size into the current primary screen.
         10 px on each side is removed to allow for a border.
         """
-        #FIXME
-        from openlp.core.lib import ScreenList
         current_screen = ScreenList().current
         self.font_main_y = 0
         self.font_main_width = current_screen[u'size'].width() - 20

@@ -228,7 +228,7 @@ class BibleMediaItem(MediaManagerItem):
         self.addSearchFields(u'advanced', UiStrings().Advanced)
         # Combo Boxes
         QtCore.QObject.connect(self.quickVersionComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickSecondComboBox,  QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
+        QtCore.QObject.connect(self.quickSecondComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.advancedVersionComboBox,QtCore.SIGNAL(u'activated(int)'),
             self.onAdvancedVersionComboBox)
         QtCore.QObject.connect(self.advancedSecondComboBox, QtCore.SIGNAL(u'activated(int)'),

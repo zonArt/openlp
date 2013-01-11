@@ -72,7 +72,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.onGradientStartButtonClicked)
         QtCore.QObject.connect(self.gradientEndButton, QtCore.SIGNAL(u'clicked()'), self.onGradientEndButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton, QtCore.SIGNAL(u'clicked()'), self.onImageBrowseButtonClicked)
-        QtCore.QObject.connect(self.mainColorButton,   QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
+        QtCore.QObject.connect(self.mainColorButton,  QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
         QtCore.QObject.connect(self.outlineColorButton, QtCore.SIGNAL(u'clicked()'), self.onOutlineColorButtonClicked)
         QtCore.QObject.connect(self.shadowColorButton, QtCore.SIGNAL(u'clicked()'), self.onShadowColorButtonClicked)
         QtCore.QObject.connect(self.outlineCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),

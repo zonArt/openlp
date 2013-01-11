@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`ui` module provides standard UI components for OpenLP.
+The :mod:`uistrings` module provides standard strings for OpenLP.
 """
 import logging
 

@@ -245,7 +245,7 @@ class ServiceManager(QtGui.QWidget):
         self.maintainAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
             icon=u':/general/general_edit.png', triggers=self.onServiceItemEditForm)
         self.notesAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Notes'),
-            icon=u':/services/service_notes.png',  triggers=self.onServiceItemNoteForm)
+            icon=u':/services/service_notes.png', triggers=self.onServiceItemNoteForm)
         self.timeAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
         self.autoStartAction = create_widget_action(self.menu, text=u'',
