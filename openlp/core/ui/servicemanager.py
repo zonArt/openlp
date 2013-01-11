@@ -242,6 +242,8 @@ class ServiceManager(QtGui.QWidget):
         self.menu = QtGui.QMenu()
         self.editAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
             icon=u':/general/general_edit.png', triggers=self.remoteEdit)
+        self.RenameAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Rename...'),            
+            triggers=self.onServiceItemRename)  
         self.maintainAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
             icon=u':/general/general_edit.png', triggers=self.onServiceItemEditForm)
         self.notesAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Notes'),
@@ -829,6 +831,31 @@ class ServiceManager(QtGui.QWidget):
         if self.serviceItemEditForm.exec_():
             self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
                 replace=True, expand=self.serviceItems[item][u'expanded'])
+    
+    def onServiceItemRename(self):
+        """
+        Opens a dialog to rename the service item.
+        """
+        item = self.findServiceItem()[0]
+        if not self.serviceItems[item][u'service_item'].is_text()\
+            and ItemCapabilities.HasDetailedTitleDisplay in self.serviceItems[item][u'service_item'].capabilities\
+            or len(self.serviceItems[item][u'service_item']._raw_frames) == 1:
+            get_main_title = False
+            Title = self.serviceItems[item][u'service_item']._raw_frames[0][u'title']
+        else:
+            get_main_title = True
+            Title = self.serviceItems[item][u'service_item'].title
+        Title, ok = QtGui.QInputDialog.getText(self,
+            self.tr(translate('OpenLP.ServiceManager', 'Input title')), 
+            self.tr(translate('OpenLP.ServiceManager', 'Title')),  
+            QtGui.QLineEdit.Normal,  self.trUtf8(Title))
+        if ok:
+            if get_main_title:
+                self.serviceItems[item][u'service_item'].title = unicode(Title)
+            else:
+                self.serviceItems[item][u'service_item']._raw_frames[0][u'title']= unicode(Title)
+            self.repaintServiceList(item, -1)
+            self.setModified()
 
     def previewLive(self, message):
         """
