@@ -150,7 +150,6 @@ class Plugin(QtCore.QObject):
         log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
         self.name = name
-        # TODO: Should we overwrite the plugins status so that third party plugins cannot be enabled by default?
         Settings.extend_default_settings(default_settings)
         self.textStrings = {}
         self.setPluginTextStrings()
