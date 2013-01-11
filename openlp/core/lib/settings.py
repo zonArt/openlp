@@ -204,14 +204,14 @@ class Settings(QtCore.QSettings):
     }
 
     @staticmethod
-    def extend_default_settings(defaultValues):
+    def extend_default_settings(default_values):
         """
-        Static method to merge the given ``defaultValues`` with the ``Settings.__default_settings__``.
+        Static method to merge the given ``default_values`` with the ``Settings.__default_settings__``.
 
-        ``defaultValues``
+        ``default_values``
             A dict with setting keys and their default values.
         """
-        Settings.__default_settings__ = dict(defaultValues.items() + Settings.__default_settings__.items())
+        Settings.__default_settings__ = dict(default_values.items() + Settings.__default_settings__.items())
 
     @staticmethod
     def setFilename(iniFile):
@@ -241,13 +241,13 @@ class Settings(QtCore.QSettings):
         try:
             # if group() is empty the group has been specified together with the key.
             if self.group():
-                defaultValue = Settings.__default_settings__[self.group() + u'/' + key]
+                default_value = Settings.__default_settings__[self.group() + u'/' + key]
             else:
-                defaultValue = Settings.__default_settings__[key]
+                default_value = Settings.__default_settings__[key]
         except KeyError:
             print u'KeyError: %s' % key
             return None
-        setting =  super(Settings, self).value(key, defaultValue)
+        setting =  super(Settings, self).value(key, default_value)
         # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
         # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
         if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
@@ -256,18 +256,18 @@ class Settings(QtCore.QSettings):
         if setting is None:
             # An empty string saved to the settings results in a None type being returned.
             # Convert it to empty unicode string.
-            if isinstance(defaultValue, unicode):
+            if isinstance(default_value, unicode):
                 return u''
             # An empty list saved to the settings results in a None type being returned.
             else:
                 return []
         # Convert the setting to the correct type.
-        if isinstance(defaultValue, bool):
+        if isinstance(default_value, bool):
             if isinstance(setting, bool):
                 return setting
             # Sometimes setting is string instead of a boolean.
             return setting == u'true'
-        if isinstance(defaultValue, int):
+        if isinstance(default_value, int):
             return int(setting)
         return setting
 
