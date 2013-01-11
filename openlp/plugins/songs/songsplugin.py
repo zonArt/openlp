@@ -34,9 +34,9 @@ import sqlite3
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, PluginStatus
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, PluginStatus, UiStrings
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings, create_action
+from openlp.core.lib.ui import create_action
 from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, SongsTab

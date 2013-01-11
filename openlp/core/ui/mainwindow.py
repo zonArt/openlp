@@ -40,8 +40,8 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus, ScreenList
-from openlp.core.lib.ui import UiStrings, create_action
+    PluginStatus, ScreenList, UiStrings
+from openlp.core.lib.ui import create_action
 from openlp.core.lib import SlideLimits, Settings
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm

@@ -38,7 +38,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SlideLimits, ScreenList
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -55,16 +55,16 @@ class Settings(QtCore.QSettings):
     __filePath__ = u''
 
     # Fix for bug #1014422.
-    x11_bypass_default = True
+    X11_BYPASS_DEFAULT = True
     if sys.platform.startswith(u'linux'):
         # Default to False on Gnome.
-        x11_bypass_default = bool(not os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
-        # Default to False on XFce
+        X11_BYPASS_DEFAULT = bool(not os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
+        # Default to False on Xfce.
         if os.environ.get(u'DESKTOP_SESSION') == u'xfce':
-            x11_bypass_default = False
+            X11_BYPASS_DEFAULT = False
 
     __default_settings__ = {
-        u'advanced/x11 bypass wm': x11_bypass_default,
+        u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
         u'advanced/default service enabled': True,
         u'advanced/enable exit confirmation': True,
         u'advanced/save current plugin': False,
@@ -118,6 +118,8 @@ class Settings(QtCore.QSettings):
         u'general/audio start paused': True,
         u'general/last version test': datetime.datetime.now().date(),
         u'general/blank warning': False,
+        u'players/background color': u'#000000',
+        u'servicemanager/service theme': u'',
         u'shortcuts/viewPreviewPanel': [QtGui.QKeySequence(u'F11')],
         u'shortcuts/settingsImportItem': [],
         u'shortcuts/settingsPluginListItem': [QtGui.QKeySequence(u'Alt+F7')],
@@ -196,9 +198,6 @@ class Settings(QtCore.QSettings):
         u'user interface/live splitter geometry': QtCore.QByteArray(),
         u'user interface/main window state': QtCore.QByteArray(),
 
-        u'servicemanager/service theme': u'',
-        u'players/background color': u'#000000',
-
         # HAS TO BE HERE. Should be FIXED.
         u'media/players': u'webkit',
         u'media/override player': QtCore.Qt.Unchecked
@@ -221,59 +220,40 @@ class Settings(QtCore.QSettings):
         Settings.__filePath__ = iniFile
 
     def __init__(self, *args):
-        if not args and Settings.__filePath__ and \
-            Settings.defaultFormat() == Settings.IniFormat:
+        if not args and Settings.__filePath__ and Settings.defaultFormat() == Settings.IniFormat:
             QtCore.QSettings.__init__(self, Settings.__filePath__, Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
 
-    def value(self, key, defaultValue=0):
+    def value(self, key):
         """
-        Returns the value for the given ``key``. The returned ``value`` is
-        of the same type as the ``defaultValue``.
+        Returns the value for the given ``key``. The returned ``value`` is of the same type as the default value in the
+        *Settings.__default_settings__* dict.
+
+        **Note**, this method only converts a few types and might need to be extended if a certain type is missing!
 
         ``key``
             The key to return the value from.
-
-        ``defaultValue``
-            The value to be returned if the given ``key`` is not present in the
-            config. Note, the ``defaultValue``'s type defines the type the
-            returned is converted to. In other words, if the ``defaultValue`` is
-            a boolean, then the returned value will be converted to a boolean.
-
-            **Note**, this method only converts a few types and might need to be
-            extended if a certain type is missing!
         """
-        if defaultValue:
-            raise Exception(u'Should not happen')
         if u'/' not in key:
             key = u'/'.join((self.group(), key))
-        # Check for none as u'' is passed as default and is valid! This is
-        # needed because the settings export does not know the default values,
-        # thus just passes None.
-        defaultValue = Settings.__default_settings__[key]
-#        try:
-#            defaultValue = Settings.__default_settings__[key]
-#        except KeyError:
-#            return None
-
-        #if defaultValue is None and not super(Settings, self).contains(key):
-            #return None
-
+        try:
+            defaultValue = Settings.__default_settings__[key]
+        except KeyError:
+            print u'KeyError: %s' % key
+            return None
         setting =  super(Settings, self).value(key, defaultValue)
-        # On OS X (and probably on other platforms too) empty value from QSettings
-        # is represented as type PyQt4.QtCore.QPyNullVariant. This type has to be
-        # converted to proper 'None' Python type.
+        # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
+        # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
         if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
             setting = None
         # Handle 'None' type (empty value) properly.
         if setting is None:
-            # An empty string saved to the settings results in a None type being
-            # returned. Convert it to empty unicode string.
+            # An empty string saved to the settings results in a None type being returned.
+            # Convert it to empty unicode string.
             if isinstance(defaultValue, unicode):
                 return u''
-            # An empty list saved to the settings results in a None type being
-            # returned.
+            # An empty list saved to the settings results in a None type being returned.
             else:
                 return []
         # Convert the setting to the correct type.
@@ -285,7 +265,4 @@ class Settings(QtCore.QSettings):
         if isinstance(defaultValue, int):
             return int(setting)
         return setting
-
-
-
 

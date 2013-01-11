@@ -37,8 +37,8 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list, \
-    check_directory_exists, ServiceItemContext, Settings
-from openlp.core.lib.ui import UiStrings, create_widget_action
+    check_directory_exists, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm

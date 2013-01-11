@@ -36,20 +36,17 @@ from openlp.core.lib import translate
 
 class HideMode(object):
     """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
+    This is an enumeration class which specifies the different modes of hiding the display.
 
     ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
+        This mode is used to hide all output, specifically by covering the display with a black screen.
 
     ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
+        This mode is used to hide all output, but covers the display with the current theme background, as opposed to
+        black.
 
     ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
+        This mode hides all output by minimising the display, leaving the user's desktop showing.
     """
     Blank = 1
     Theme = 2
@@ -58,8 +55,7 @@ class HideMode(object):
 
 class AlertLocation(object):
     """
-    This is an enumeration class which controls where Alerts are placed on the
-    screen.
+    This is an enumeration class which controls where Alerts are placed on the screen.
 
     ``Top``
         Place the text at the top of the screen.
@@ -77,8 +73,7 @@ class AlertLocation(object):
 
 class DisplayControllerType(object):
     """
-    This is an enumeration class which says where a display controller
-    originated from.
+    This is an enumeration class which says where a display controller originated from.
     """
     Live = 0
     Preview = 1
@@ -91,7 +86,6 @@ from themelayoutform import ThemeLayoutForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
-#from screen import ScreenList
 from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm

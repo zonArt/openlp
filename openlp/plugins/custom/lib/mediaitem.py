@@ -33,8 +33,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
-    ServiceItemContext, Settings, PluginStatus
-from openlp.core.lib.ui import UiStrings
+    ServiceItemContext, Settings, PluginStatus, UiStrings
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide

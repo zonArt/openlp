@@ -33,8 +33,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, Receiver, MediaType, ServiceItem, build_html, ServiceItemContext, Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
+    check_item_selected, Receiver, MediaType, ServiceItem, build_html, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
 from openlp.core.utils import locale_compare

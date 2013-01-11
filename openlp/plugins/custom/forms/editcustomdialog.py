@@ -29,8 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button_box, create_button
+from openlp.core.lib import build_icon, translate, UiStrings
+from openlp.core.lib.ui import create_button_box, create_button
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):

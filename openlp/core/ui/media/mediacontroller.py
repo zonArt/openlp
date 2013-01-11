@@ -32,8 +32,8 @@ import os
 import sys
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings, UiStrings
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
     get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer

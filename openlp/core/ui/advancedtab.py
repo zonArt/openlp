@@ -36,8 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver, Settings
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver, Settings, UiStrings
 from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 

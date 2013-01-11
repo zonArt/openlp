@@ -27,9 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Provide handling for persisting OpenLP settings.  OpenLP uses QSettings to
-manage settings persistence.  QSettings provides a single API for saving and
-retrieving settings from the application but writes to disk in an OS dependant
+Provide handling for persisting OpenLP settings.  OpenLP uses QSettings to manage settings persistence.  QSettings
+provides a single API for saving and retrieving settings from the application but writes to disk in an OS dependant
 format.
 """
 import os
@@ -39,10 +38,10 @@ from PyQt4 import QtCore
 from openlp.core.lib import Settings
 from openlp.core.utils import AppLocation
 
+
 class SettingsManager(object):
     """
-    Class to provide helper functions for the loading and saving of application
-    settings.
+    Class to provide helper functions for the loading and saving of application settings.
     """
 
     @staticmethod
@@ -51,8 +50,7 @@ class SettingsManager(object):
         Read the last directory used for plugin.
 
         ``section``
-            The section of code calling the method. This is used in the
-            settings key.
+            The section of code calling the method. This is used in the settings key.
 
         ``num``
             Defaults to *None*. A further qualifier.
@@ -69,8 +67,7 @@ class SettingsManager(object):
         Save the last directory used for plugin.
 
         ``section``
-            The section of code calling the method. This is used in the
-            settings key.
+            The section of code calling the method. This is used in the settings key.
 
         ``directory``
             The directory being stored in the settings.
@@ -140,8 +137,7 @@ class SettingsManager(object):
         Get a list of files from the data files path.
 
         ``section``
-            Defaults to *None*. The section of code getting the files - used
-            to load from a section's data subdirectory.
+            Defaults to *None*. The section of code getting the files - used to load from a section's data subdirectory.
 
         ``extension``
             Defaults to *None*. The extension to search for.
@@ -154,8 +150,7 @@ class SettingsManager(object):
         except OSError:
             return []
         if extension:
-            return [filename for filename in files
-                if extension == os.path.splitext(filename)[1]]
+            return [filename for filename in files if extension == os.path.splitext(filename)[1]]
         else:
             # no filtering required
             return files

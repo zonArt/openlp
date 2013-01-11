@@ -33,8 +33,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Settings
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import Receiver, Settings, UiStrings
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)

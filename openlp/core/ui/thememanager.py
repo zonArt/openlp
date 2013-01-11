@@ -37,9 +37,9 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, Receiver, SettingsManager, translate, \
-    check_item_selected, check_directory_exists, create_thumb, validate_thumb, ImageSource, Settings
+    check_item_selected, check_directory_exists, create_thumb, validate_thumb, ImageSource, Settings, UiStrings
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, BackgroundGradientType
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_widget_action
+from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_filesystem_encoding

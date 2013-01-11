@@ -34,8 +34,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, translate, create_separated_list
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import build_icon, Receiver, translate, create_separated_list, UiStrings
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib import natcmp
 from openlp.plugins.songs.lib.db import Song

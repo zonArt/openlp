@@ -29,8 +29,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import translate, UiStrings
+from openlp.core.lib.ui import create_button_box
+
 
 class Ui_FormattingTagDialog(object):
 

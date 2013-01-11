@@ -36,9 +36,10 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, \
-    Receiver, ListWidgetWithDnD, ServiceItemContext, Settings
+    Receiver, ListWidgetWithDnD, ServiceItemContext, Settings, UiStrings
 from openlp.core.lib.searchedit import SearchEdit
-from openlp.core.lib.ui import UiStrings, create_widget_action, critical_error_message_box
+from openlp.core.lib.ui import create_widget_action, critical_error_message_box
+
 
 log = logging.getLogger(__name__)
 
@@ -336,8 +337,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def loadFile(self, files):
         """
-        Turn file from Drag and Drop into an array so the Validate code
-        can run it.
+        Turn file from Drag and Drop into an array so the Validate code can run it.
 
         ``files``
             The list of files to be loaded

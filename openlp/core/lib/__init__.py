@@ -382,6 +382,7 @@ def create_separated_list(stringlist):
             u'Locale list separator: start') % (stringlist[0], merged)
 
 
+from uistrings import UiStrings
 from eventreceiver import Receiver
 from screen import ScreenList
 from settings import Settings

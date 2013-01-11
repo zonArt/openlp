@@ -322,8 +322,7 @@ def add_actions(target, actions):
 
 def get_filesystem_encoding():
     """
-    Returns the name of the encoding used to convert Unicode filenames into
-    system file names.
+    Returns the name of the encoding used to convert Unicode filenames into system file names.
     """
     encoding = sys.getfilesystemencoding()
     if encoding is None:
@@ -333,8 +332,7 @@ def get_filesystem_encoding():
 
 def get_images_filter():
     """
-    Returns a filter string for a file dialog containing all the supported
-    image formats.
+    Returns a filter string for a file dialog containing all the supported image formats.
     """
     global IMAGES_FILTER
     if not IMAGES_FILTER:
@@ -462,6 +460,7 @@ def format_time(text, local_time):
 
     ``text``
         The text to be processed.
+
     ``local_time``
         The time to be used to add to the string.  This is a time object
     """
@@ -478,8 +477,7 @@ def locale_compare(string1, string2):
     or 0, depending on whether string1 collates before or after string2 or
     is equal to it. Comparison is case insensitive.
     """
-    # Function locale.strcoll() from standard Python library does not work
-    # properly on Windows.
+    # Function locale.strcoll() from standard Python library does not work properly on Windows.
     return locale.strcoll(string1.lower(), string2.lower())
 
 

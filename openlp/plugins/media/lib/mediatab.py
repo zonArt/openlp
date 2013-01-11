@@ -29,8 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate
-from openlp.core.lib.ui import UiStrings, create_button
+from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
+from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
 class MediaQCheckBox(QtGui.QCheckBox):

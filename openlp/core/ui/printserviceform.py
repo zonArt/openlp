@@ -33,8 +33,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string, Receiver, Settings
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import translate, get_text_file_string, Receiver, Settings, UiStrings
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 

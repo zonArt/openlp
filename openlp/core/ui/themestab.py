@@ -29,9 +29,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate
+from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
+from openlp.core.lib.ui import find_and_set_in_combo_box
 
 
 class ThemesTab(SettingsTab):

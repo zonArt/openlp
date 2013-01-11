@@ -31,10 +31,10 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, create_separated_list, ServiceItemContext, Settings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, create_separated_list, \
+    ServiceItemContext, Settings, UiStrings
 from openlp.core.lib.searchedit import SearchEdit
-from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
+from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
 from openlp.core.utils import locale_compare
 from openlp.plugins.bibles.forms import BibleImportForm, EditBibleForm
