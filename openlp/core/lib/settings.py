@@ -188,7 +188,7 @@ class Settings(QtCore.QSettings):
         u'themes/theme level': ThemeLevel.Song,
         u'themes/global theme': u'',
         u'themes/last directory': u'',
-        u'user interface/main window position': QtCore.QPoint(),
+        u'user interface/main window position': QtCore.QPoint(0, 0),
         u'user interface/preview panel': True,
         u'user interface/live panel': True,
         u'user interface/main window geometry': QtCore.QByteArray(),
@@ -235,10 +235,11 @@ class Settings(QtCore.QSettings):
         ``key``
             The key to return the value from.
         """
-        if u'/' not in key:
-            key = u'/'.join((self.group(), key))
         try:
-            defaultValue = Settings.__default_settings__[key]
+            if self.group():
+                defaultValue = Settings.__default_settings__[self.group() + u'/' + key]
+            else:
+                defaultValue = Settings.__default_settings__[key]
         except KeyError:
             print u'KeyError: %s' % key
             return None
