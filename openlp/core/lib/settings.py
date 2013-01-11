@@ -81,7 +81,7 @@ class Settings(QtCore.QSettings):
         u'advanced/default image': u':/graphics/openlp-splash-screen.png',
         u'advanced/expand service item': False,
         u'advanced/recent file count': 4,
-        # TODO: Check if translate already works at this stage. If not move the string to Ui String class.
+        # FIXME: Does not work:
         u'advanced/default service name': UiStrings().DefaultServiceName,
         u'advanced/default service minute': 0,
         u'advanced/slide limits': SlideLimits.End,

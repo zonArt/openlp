@@ -923,8 +923,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings.beginGroup(self.headerSection)
         export_settings.setValue(u'Make_Changes', u'At_Own_RISK')
         export_settings.setValue(u'type', u'OpenLP_settings_export')
-        export_settings.setValue(u'file_date_created',
-            now.strftime("%Y-%m-%d %H:%M"))
+        export_settings.setValue(u'file_date_created', now.strftime("%Y-%m-%d %H:%M"))
         export_settings.setValue(u'version', application_version[u'full'])
         export_settings.endGroup()
         # Write all the sections and keys.
