@@ -206,7 +206,10 @@ class Settings(QtCore.QSettings):
     @staticmethod
     def extendDefaultSettings(defaultValues):
         """
+        Static method to merge the given ``defaultValues`` with the ``Settings.__default_settings__``.
 
+        ``defaultValues``
+            A dict with setting keys and their default values.
         """
         Settings.__default_settings__ = dict(defaultValues.items() + Settings.__default_settings__.items())
 
@@ -236,6 +239,7 @@ class Settings(QtCore.QSettings):
             The key to return the value from.
         """
         try:
+            # if group() is empty the group has been specified together with the key.
             if self.group():
                 defaultValue = Settings.__default_settings__[self.group() + u'/' + key]
             else:
