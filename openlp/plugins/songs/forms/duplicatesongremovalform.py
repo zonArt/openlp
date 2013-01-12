@@ -146,12 +146,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                         self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " + songs[innerSongCounter].title)
                     self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
         elif self.page(pageId) == self.reviewPage:
-            print "asdf"
-            print self.duplicateSongList
             for duplicates in self.duplicateSongList[0:1]:
-                print "qwer"
                 for duplicate in duplicates:
-                    print "zxcv"
                     songReviewWidget = SongReviewWidget(self.reviewPage, duplicate)
                     self.songsHorizontalLayout.addWidget(songReviewWidget)
 
@@ -212,13 +208,60 @@ class SongReviewWidget(QtGui.QWidget):
         self.songInfoFormLayout = QtGui.QFormLayout()
         self.songInfoFormLayout.setObjectName('songInfoFormLayout')
         #add ccli number, name, altname, authors, ... here
-        self.songNameLabel = QtGui.QLabel(self)
-        self.songNameLabel.setObjectName('songNameLabel')
-        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.songNameLabel)
-        self.songNameContent = QtGui.QLabel(self)
-        self.songNameContent.setObjectName('songNameContent')
-        self.songNameContent.setText(self.song.title)
-        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.songNameContent)
+        self.songTitleLabel = QtGui.QLabel(self)
+        self.songTitleLabel.setObjectName('songTitleLabel')
+        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.songTitleLabel)
+        self.songTitleContent = QtGui.QLabel(self)
+        self.songTitleContent.setObjectName('songTitleContent')
+        self.songTitleContent.setText(self.song.title)
+        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.songTitleContent)
+        self.songAlternateTitleLabel = QtGui.QLabel(self)
+        self.songAlternateTitleLabel.setObjectName('songAlternateTitleLabel')
+        self.songInfoFormLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.songAlternateTitleLabel)
+        self.songAlternateTitleContent = QtGui.QLabel(self)
+        self.songAlternateTitleContent.setObjectName('songAlternateTitleContent')
+        self.songAlternateTitleContent.setText(self.song.alternate_title)
+        self.songInfoFormLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.songAlternateTitleContent)
+        self.songCCLINumberLabel = QtGui.QLabel(self)
+        self.songCCLINumberLabel.setObjectName('songCCLINumberLabel')
+        self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.songCCLINumberLabel)
+        self.songCCLINumberContent = QtGui.QLabel(self)
+        self.songCCLINumberContent.setObjectName('songCCLINumberContent')
+        self.songCCLINumberContent.setText(self.song.ccli_number)
+        self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.songCCLINumberContent)
+        self.songVerseOrderLabel = QtGui.QLabel(self)
+        self.songVerseOrderLabel.setObjectName('songVerseOrderLabel')
+        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.songVerseOrderLabel)
+        self.songVerseOrderContent = QtGui.QLabel(self)
+        self.songVerseOrderContent.setObjectName('songVerseOrderContent')
+        self.songVerseOrderContent.setText(self.song.verse_order)
+        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.songVerseOrderContent)
+        self.songCopyrightLabel = QtGui.QLabel(self)
+        self.songCopyrightLabel.setObjectName('songCopyrightLabel')
+        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.songCopyrightLabel)
+        self.songCopyrightContent = QtGui.QLabel(self)
+        self.songCopyrightContent.setObjectName('songCopyrightContent')
+        self.songCopyrightContent.setText(self.song.copyright)
+        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.songCopyrightContent)
+        self.songCommentsLabel = QtGui.QLabel(self)
+        self.songCommentsLabel.setObjectName('songCommentsLabel')
+        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.LabelRole, self.songCommentsLabel)
+        self.songCommentsContent = QtGui.QLabel(self)
+        self.songCommentsContent.setObjectName('songCommentsContent')
+        self.songCommentsContent.setText(self.song.comments)
+        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.songCommentsContent)
+        self.songAuthorsLabel = QtGui.QLabel(self)
+        self.songAuthorsLabel.setObjectName('songAuthorsLabel')
+        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.songAuthorsLabel)
+        self.songAuthorsContent = QtGui.QLabel(self)
+        self.songAuthorsContent.setObjectName('songAuthorsContent')
+        authorsText = u''
+        for author in self.song.authors:
+            authorsText += author.display_name + ', '
+        if authorsText:
+            authorsText = authorsText[:-2]
+        self.songAuthorsContent.setText(authorsText)
+        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.songAuthorsContent)
         self.songContentVerticalLayout.addLayout(self.songInfoFormLayout)
         self.songVerseButton = QtGui.QPushButton(self)
         self.songVerseButton.setObjectName('songVerseButton')
@@ -231,5 +274,11 @@ class SongReviewWidget(QtGui.QWidget):
 
     def retranslateUi(self):
         self.songRemoveButton.setText(u'Remove')
-        self.songNameLabel.setText(u'Name:')
+        self.songTitleLabel.setText(u'Title:')
+        self.songAlternateTitleLabel.setText(u'Alternate Title:')
+        self.songCCLINumberLabel.setText(u'CCLI Number:')
+        self.songVerseOrderLabel.setText(u'Verse Order:')
+        self.songCopyrightLabel.setText(u'Copyright:')
+        self.songCommentsLabel.setText(u'Comments:')
+        self.songAuthorsLabel.setText(u'Authors:')
 
