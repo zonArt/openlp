@@ -63,6 +63,14 @@ class Settings(QtCore.QSettings):
     ``IniFormat``, and the path to the Ini file is set using ``setFilename``,
     then the Settings constructor (without any arguments) will create a Settings
     object for accessing settings stored in that Ini file.
+
+    ``__obsolete_settings__``
+        Put any settings whose key changes or is removed here. In the case that the key is completely removed just leave
+        the dict value for this key empty (empty string). If you renamed a key, but the old name first and the new name
+        as value for this key.
+
+    ``__default_settings__``
+        This dict contains all core settings with their default values.
     """
     __filePath__ = u''
 
@@ -237,13 +245,15 @@ class Settings(QtCore.QSettings):
 
     def remove_obsolete_settings(self):
         """
-        This method is only called to clean up the config. It removes all changed keys, but before doing so, we copy
-        the value to the new key.
+        This method is only called to clean up the config. It does two things: First it completely remove old settings
+        (to do this, just leave the new_key empty). And it copies the value from old_key to new_key and then removes the
+        old_key.
         """
         for old_key, new_key in Settings.__obsolete_settings__.items():
             if self.contains(old_key):
-                # Copy the value from the old_key to the new_key.
-                self.setValue(new_key, super(Settings, self).value(old_key))
+                if new_key:
+                    # Copy the value from the old_key to the new_key.
+                    self.setValue(new_key, super(Settings, self).value(old_key))
                 self.remove(old_key)
 
     def value(self, key):
