@@ -229,24 +229,22 @@ class Settings(QtCore.QSettings):
         """
         Settings.__filePath__ = iniFile
 
-    @staticmethod
-    def remove_obsolete_settings():
-        """
-        This method is only called to clean up the config. It removes all changed keys, but before doing so, we copy
-        the value to the new key.
-        """
-        for new_key, old_key in Settings.__obsolete_settings__.items():
-            settings = Settings()
-            if settings.contains(old_key):
-                # Copy the value from the old_key to the new_key.
-                settings.setValue(new_key. settings.value(key))
-                settings.remove(old_key)
-
     def __init__(self, *args):
         if not args and Settings.__filePath__ and Settings.defaultFormat() == Settings.IniFormat:
             QtCore.QSettings.__init__(self, Settings.__filePath__, Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
+
+    def remove_obsolete_settings(self):
+        """
+        This method is only called to clean up the config. It removes all changed keys, but before doing so, we copy
+        the value to the new key.
+        """
+        for old_key, new_key in Settings.__obsolete_settings__.items():
+            if self.contains(old_key):
+                # Copy the value from the old_key to the new_key.
+                self.setValue(new_key, super(Settings, self).value(old_key))
+                self.remove(old_key)
 
     def value(self, key):
         """
@@ -259,7 +257,7 @@ class Settings(QtCore.QSettings):
             The key to return the value from.
         """
         try:
-            # if group() is empty the group has been specified together with the key.
+            # if group() is not empty the group has not been specified together with the key.
             if self.group():
                 default_value = Settings.__default_settings__[self.group() + u'/' + key]
             else:
