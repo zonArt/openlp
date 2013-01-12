@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -72,8 +72,7 @@ class OSISBible(BibleDB):
             r'<divineName(.*?)>(.*?)</divineName>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         filepath = os.path.join(
-            AppLocation.get_directory(AppLocation.PluginsDir), u'bibles',
-            u'resources', u'osisbooks.csv')
+            AppLocation.get_directory(AppLocation.PluginsDir), u'bibles', u'resources', u'osisbooks.csv')
 
     def do_import(self, bible_name=None):
         """
@@ -133,19 +132,16 @@ class OSISBible(BibleDB):
                     if not language_id:
                         language_id = self.get_language(bible_name)
                         if not language_id:
-                            log.exception(u'Importing books from "%s" failed'
-                                % self.filename)
+                            log.exception(u'Importing books from "%s" failed' % self.filename)
                             return False
                     match_count += 1
                     book = unicode(match.group(1))
                     chapter = int(match.group(2))
                     verse = int(match.group(3))
                     verse_text = match.group(4)
-                    book_ref_id = self.get_book_ref_id_by_name(book, book_count,
-                        language_id)
+                    book_ref_id = self.get_book_ref_id_by_name(book, book_count, language_id)
                     if not book_ref_id:
-                        log.exception(u'Importing books from "%s" failed' %
-                            self.filename)
+                        log.exception(u'Importing books from "%s" failed' % self.filename)
                         return False
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                     if not db_book or db_book.name != book_details[u'name']:
@@ -159,10 +155,8 @@ class OSISBible(BibleDB):
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.incrementProgressBar(translate(
-                            'BiblesPlugin.OsisImport', 'Importing %s %s...',
-                            'Importing <book name> <chapter>...') %
-                            (book_details[u'name'], chapter))
+                        self.wizard.incrementProgressBar(translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
+                            'Importing <book name> <chapter>...') % (book_details[u'name'], chapter))
                         last_chapter = chapter
                     # All of this rigmarol below is because the mod2osis
                     # tool from the Sword library embeds XML in the OSIS
@@ -182,9 +176,9 @@ class OSISBible(BibleDB):
                     verse_text = self.q_regex.sub(u'', verse_text)
                     verse_text = self.divine_name_regex.sub(repl, verse_text)
                     verse_text = self.trans_regex.sub(u'', verse_text)
-                    verse_text = verse_text.replace(u'</lb>', u'')\
-                        .replace(u'</l>', u'').replace(u'<lg>', u'')\
-                        .replace(u'</lg>', u'').replace(u'</q>', u'')\
+                    verse_text = verse_text.replace(u'</lb>', u'') \
+                        .replace(u'</l>', u'').replace(u'<lg>', u'') \
+                        .replace(u'</lg>', u'').replace(u'</q>', u'') \
                         .replace(u'</div>', u'').replace(u'</w>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)

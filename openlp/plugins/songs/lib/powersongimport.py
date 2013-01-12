@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -101,10 +101,8 @@ class PowerSongImport(SongImport):
             else:
                 self.importSource = u''
         if not self.importSource or not isinstance(self.importSource, list):
-            self.logError(translate('SongsPlugin.PowerSongImport',
-                'No songs to import.'),
-                translate('SongsPlugin.PowerSongImport',
-                'No %s files found.') % PS_string)
+            self.logError(translate('SongsPlugin.PowerSongImport', 'No songs to import.'),
+                translate('SongsPlugin.PowerSongImport', 'No %s files found.') % PS_string)
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
@@ -122,9 +120,8 @@ class PowerSongImport(SongImport):
                     except ValueError:
                         parse_error = True
                         self.logError(os.path.basename(file), unicode(
-                            translate('SongsPlugin.PowerSongImport',
-                            'Invalid %s file. Unexpected byte value.'))
-                            % PS_string)
+                            translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Unexpected byte value.')) %
+                                PS_string)
                         break
                     else:
                         if label == u'TITLE':
@@ -141,21 +138,18 @@ class PowerSongImport(SongImport):
             # Check that file had TITLE field
             if not self.title:
                 self.logError(os.path.basename(file), unicode(
-                    translate('SongsPlugin.PowerSongImport',
-                    'Invalid %s file. Missing "TITLE" header.')) % PS_string)
+                    translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "TITLE" header.')) % PS_string)
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
                 self.logError(self.title, unicode(
-                    translate('SongsPlugin.PowerSongImport',
-                    'Invalid %s file. Missing "COPYRIGHTLINE" '
-                    'header.')) % PS_string)
+                    translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "COPYRIGHTLINE" header.')) %
+                        PS_string)
                 continue
             # Check that file had at least one verse
             if not self.verses:
                 self.logError(self.title, unicode(
-                    translate('SongsPlugin.PowerSongImport',
-                    'Verses not found. Missing "PART" header.')))
+                    translate('SongsPlugin.PowerSongImport', 'Verses not found. Missing "PART" header.')))
                 continue
             if not self.finish():
                 self.logError(self.title)

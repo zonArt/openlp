@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -70,15 +70,13 @@ class OpenLP1SongImport(SongImport):
         """
         if not self.importSource.endswith(u'.olp'):
             self.logError(self.importSource,
-                translate('SongsPlugin.OpenLP1SongImport',
-                'Not a valid openlp.org 1.x song database.'))
+                translate('SongsPlugin.OpenLP1SongImport', 'Not a valid openlp.org 1.x song database.'))
             return
         encoding = self.getEncoding()
         if not encoding:
             return
         # Connect to the database.
-        connection = sqlite.connect(self.importSource, mode=0444,
-            encoding=(encoding, 'replace'))
+        connection = sqlite.connect(self.importSource, mode=0444, encoding=(encoding, 'replace'))
         cursor = connection.cursor()
         # Determine if the db supports linking audio to songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
@@ -212,9 +210,7 @@ class OpenLP1SongImport(SongImport):
         ``filename``
             The filename to expand.
         """
-        if sys.platform != u'win32' and \
-            not os.environ.get(u'ALLUSERSPROFILE') and \
-            not os.environ.get(u'APPDATA'):
+        if sys.platform != u'win32' and not os.environ.get(u'ALLUSERSPROFILE') and not os.environ.get(u'APPDATA'):
             return filename
         common_app_data = os.path.join(os.environ[u'ALLUSERSPROFILE'],
             os.path.split(os.environ[u'APPDATA'])[1])

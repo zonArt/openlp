@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -36,8 +36,7 @@ class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
         customEditDialog.setObjectName(u'customEditDialog')
         customEditDialog.resize(450, 350)
-        customEditDialog.setWindowIcon(
-            build_icon(u':/icon/openlp-logo-16x16.png'))
+        customEditDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         self.dialogLayout = QtGui.QVBoxLayout(customEditDialog)
         self.dialogLayout.setObjectName(u'dialogLayout')
         self.titleLayout = QtGui.QHBoxLayout()
@@ -68,15 +67,14 @@ class Ui_CustomEditDialog(object):
         self.editAllButton = QtGui.QPushButton(customEditDialog)
         self.editAllButton.setObjectName(u'editAllButton')
         self.buttonLayout.addWidget(self.editAllButton)
-        self.deleteButton = create_button(customEditDialog, u'deleteButton',
-            role=u'delete', click=customEditDialog.onDeleteButtonClicked)
+        self.deleteButton = create_button(customEditDialog, u'deleteButton', role=u'delete',
+            click=customEditDialog.onDeleteButtonClicked)
         self.deleteButton.setEnabled(False)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton = create_button(customEditDialog, u'upButton', role=u'up',
-            enabled=False, click=customEditDialog.onUpButtonClicked)
-        self.downButton = create_button(customEditDialog, u'downButton',
-            role=u'down', enabled=False,
+        self.upButton = create_button(customEditDialog, u'upButton', role=u'up', enabled=False,
+            click=customEditDialog.onUpButtonClicked)
+        self.downButton = create_button(customEditDialog, u'downButton', role=u'down', enabled=False,
             click=customEditDialog.onDownButtonClicked)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
@@ -99,31 +97,19 @@ class Ui_CustomEditDialog(object):
         self.bottomFormLayout.addRow(self.creditLabel, self.creditEdit)
         self.dialogLayout.addLayout(self.bottomFormLayout)
         self.previewButton = QtGui.QPushButton()
-        self.buttonBox = create_button_box(customEditDialog, u'buttonBox',
-            [u'cancel', u'save'], [self.previewButton])
+        self.buttonBox = create_button_box(customEditDialog, u'buttonBox', [u'cancel', u'save'], [self.previewButton])
         self.dialogLayout.addWidget(self.buttonBox)
         self.retranslateUi(customEditDialog)
 
     def retranslateUi(self, customEditDialog):
-        customEditDialog.setWindowTitle(
-            translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
-        self.titleLabel.setText(
-            translate('CustomPlugin.EditCustomForm', '&Title:'))
+        customEditDialog.setWindowTitle(translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
+        self.titleLabel.setText(translate('CustomPlugin.EditCustomForm', '&Title:'))
         self.addButton.setText(UiStrings().Add)
-        self.addButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Add a new slide at '
-            'bottom.'))
+        self.addButton.setToolTip(translate('CustomPlugin.EditCustomForm', 'Add a new slide at bottom.'))
         self.editButton.setText(UiStrings().Edit)
-        self.editButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Edit the selected '
-            'slide.'))
-        self.editAllButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Ed&it All'))
-        self.editAllButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Edit all the slides at '
-            'once.'))
-        self.themeLabel.setText(
-            translate('CustomPlugin.EditCustomForm', 'The&me:'))
-        self.creditLabel.setText(
-            translate('CustomPlugin.EditCustomForm', '&Credits:'))
+        self.editButton.setToolTip(translate('CustomPlugin.EditCustomForm', 'Edit the selected slide.'))
+        self.editAllButton.setText(translate('CustomPlugin.EditCustomForm', 'Ed&it All'))
+        self.editAllButton.setToolTip(translate('CustomPlugin.EditCustomForm', 'Edit all the slides at once.'))
+        self.themeLabel.setText(translate('CustomPlugin.EditCustomForm', 'The&me:'))
+        self.creditLabel.setText(translate('CustomPlugin.EditCustomForm', '&Credits:'))
         self.previewButton.setText(UiStrings().SaveAndPreview)

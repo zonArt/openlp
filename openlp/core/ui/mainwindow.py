@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -468,6 +468,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceManagerSettingsSection = u'servicemanager'
         self.songsSettingsSection = u'songs'
         self.themesSettingsSection = u'themes'
+        self.playersSettingsSection = u'players'
         self.displayTagsSection = u'displayTags'
         self.headerSection = u'SettingsImport'
         self.serviceNotSaved = False
@@ -824,6 +825,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections.extend([self.shortcutsSettingsSection])
         setting_sections.extend([self.serviceManagerSettingsSection])
         setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.playersSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         setting_sections.extend([self.headerSection])
         setting_sections.extend([u'crashreport'])
@@ -832,6 +834,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             setting_sections.extend([plugin.name])
         settings = Settings()
         import_settings = Settings(import_file_name, Settings.IniFormat)
+        # Lets do a basic sanity check. If it contains this string we can
+        # assume it was created by OpenLP and so we'll load what we can
+        # from it, and just silently ignore anything we don't recognise
+        if import_settings.value(u'SettingsImport/type', u'') != u'OpenLP_settings_export':
+            QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
+                translate('OpenLP.MainWindow', 'The file you have selected does not appear to be a valid OpenLP '
+                    'settings file.\n\nProcessing has terminated and no changes have been made.'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            return
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
             # We need to handle the really bad files.
@@ -841,17 +852,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 section = u'unknown'
                 key = u''
             # Switch General back to lowercase.
-            if section == u'General':
+            if section == u'General' or section == u'%General':
                 section = u'general'
                 section_key = section + "/" + key
             # Make sure it's a valid section for us.
             if not section in setting_sections:
-                QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
-                    translate('OpenLP.MainWindow', 'The file you selected does appear to be a valid OpenLP '
-                        'settings file.\n\nSection [%s] is not valid \n\n'
-                        'Processing has terminated and no changed have been made.').replace('%s', section),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-                return
+                continue
         # We have a good file, import it.
         for section_key in import_keys:
             value = import_settings.value(section_key, None)

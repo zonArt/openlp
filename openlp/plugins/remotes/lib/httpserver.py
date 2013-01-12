@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -156,9 +156,7 @@ class HttpServer(object):
         """
         log.debug(u'Initialise httpserver')
         self.plugin = plugin
-        self.html_dir = os.path.join(
-            AppLocation.get_directory(AppLocation.PluginsDir),
-            u'remotes', u'html')
+        self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'remotes', u'html')
         self.connections = []
         self.current_item = None
         self.current_slide = None
@@ -171,20 +169,15 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
-        port = Settings().value(
-            self.plugin.settingsSection + u'/port', 4316)
-        address = Settings().value(
-            self.plugin.settingsSection + u'/ip address', u'0.0.0.0')
+        port = Settings().value(self.plugin.settingsSection + u'/port', 4316)
+        address = Settings().value(self.plugin.settingsSection + u'/ip address', u'0.0.0.0')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_live_changed'),
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'slidecontroller_live_changed'),
             self.slide_change)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_live_started'),
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'slidecontroller_live_started'),
             self.item_change)
-        QtCore.QObject.connect(self.server,
-            QtCore.SIGNAL(u'newConnection()'), self.new_connection)
+        QtCore.QObject.connect(self.server, QtCore.SIGNAL(u'newConnection()'), self.new_connection)
         log.debug(u'TCP listening on port %d' % port)
 
     def slide_change(self, row):
@@ -234,8 +227,7 @@ class HttpConnection(object):
         """
         Initialise the http connection. Listen out for socket signals.
         """
-        log.debug(u'Initialise HttpConnection: %s' %
-            socket.peerAddress())
+        log.debug(u'Initialise HttpConnection: %s' % socket.peerAddress())
         self.socket = socket
         self.parent = parent
         self.routes = [
@@ -252,10 +244,8 @@ class HttpConnection(object):
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
         ]
-        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'),
-            self.ready_read)
-        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'),
-            self.disconnected)
+        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'), self.ready_read)
+        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'), self.disconnected)
         self.translate()
 
     def _get_service_items(self):
@@ -281,13 +271,10 @@ class HttpConnection(object):
         Translate various strings in the mobile app.
         """
         self.template_vars = {
-            'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.0 Remote'),
-            'stage_title': translate('RemotePlugin.Mobile',
-                'OpenLP 2.0 Stage View'),
-            'service_manager': translate('RemotePlugin.Mobile',
-                'Service Manager'),
-            'slide_controller': translate('RemotePlugin.Mobile',
-                'Slide Controller'),
+            'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Remote'),
+            'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Stage View'),
+            'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
+            'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
             'search': translate('RemotePlugin.Mobile', 'Search'),
             'home': translate('RemotePlugin.Mobile', 'Home'),
@@ -301,10 +288,8 @@ class HttpConnection(object):
             'text': translate('RemotePlugin.Mobile', 'Text'),
             'show_alert': translate('RemotePlugin.Mobile', 'Show Alert'),
             'go_live': translate('RemotePlugin.Mobile', 'Go Live'),
-            'add_to_service': translate('RemotePlugin.Mobile',
-                'Add to Service'),
-            'add_and_go_to_service': translate('RemotePlugin.Mobile',
-                'Add &amp; Go to Service'),
+            'add_to_service': translate('RemotePlugin.Mobile', 'Add to Service'),
+            'add_and_go_to_service': translate('RemotePlugin.Mobile', 'Add &amp; Go to Service'),
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options'),
             'service': translate('RemotePlugin.Mobile', 'Service'),
@@ -367,8 +352,7 @@ class HttpConnection(object):
         if ext == u'.html':
             mimetype = u'text/html'
             variables = self.template_vars
-            html = Template(filename=path, input_encoding=u'utf-8',
-                output_encoding=u'utf-8').render(**variables)
+            html = Template(filename=path, input_encoding=u'utf-8', output_encoding=u'utf-8').render(**variables)
         elif ext == u'.css':
             mimetype = u'text/css'
         elif ext == u'.js':
@@ -404,13 +388,11 @@ class HttpConnection(object):
         result = {
             u'service': self.parent.plugin.serviceManager.serviceId,
             u'slide': self.parent.current_slide or 0,
-            u'item': self.parent.current_item._uuid \
-                if self.parent.current_item else u'',
+            u'item': self.parent.current_item._uuid if self.parent.current_item else u'',
             u'twelve':Settings().value(u'remotes/twelve hour', True),
             u'blank': self.parent.plugin.liveController.blankScreen.isChecked(),
             u'theme': self.parent.plugin.liveController.themeScreen.isChecked(),
-            u'display': \
-                self.parent.plugin.liveController.desktopScreen.isChecked()
+            u'display': self.parent.plugin.liveController.desktopScreen.isChecked()
         }
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})
@@ -433,8 +415,7 @@ class HttpConnection(object):
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name("alerts")
         if plugin.status == PluginStatus.Active:
             try:
-                text = json.loads(
-                    self.url_params[u'data'][0])[u'request'][u'text']
+                text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
             except KeyError, ValueError:
                 return HttpResponse(code=u'400 Bad Request')
             text = urllib.unquote(text)
@@ -498,8 +479,7 @@ class HttpConnection(object):
     def service(self, action):
         event = u'servicemanager_%s' % action
         if action == u'list':
-            return HttpResponse(
-                json.dumps({u'results': {u'items': self._get_service_items()}}),
+            return HttpResponse(json.dumps({u'results': {u'items': self._get_service_items()}}),
                 {u'Content-Type': u'application/json'})
         else:
             event += u'_item'
@@ -525,10 +505,8 @@ class HttpConnection(object):
         if action == u'search':
             searches = []
             for plugin in self.parent.plugin.pluginManager.plugins:
-                if plugin.status == PluginStatus.Active and \
-                    plugin.mediaItem and plugin.mediaItem.hasSearch:
-                    searches.append([plugin.name, unicode(
-                        plugin.textStrings[StringContent.Name][u'plural'])])
+                if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
+                    searches.append([plugin.name, unicode(plugin.textStrings[StringContent.Name][u'plural'])])
             return HttpResponse(
                 json.dumps({u'results': {u'items': searches}}),
                 {u'Content-Type': u'application/json'})
@@ -546,13 +524,11 @@ class HttpConnection(object):
             return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
         plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
-        if plugin.status == PluginStatus.Active and \
-            plugin.mediaItem and plugin.mediaItem.hasSearch:
+        if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
             results = plugin.mediaItem.search(text, False)
         else:
             results = []
-        return HttpResponse(
-            json.dumps({u'results': {u'items': results}}),
+        return HttpResponse(json.dumps({u'results': {u'items': results}}),
             {u'Content-Type': u'application/json'})
 
     def go_live(self, type):

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -55,36 +55,27 @@ class SongsTab(SettingsTab):
         self.updateOnEditCheckBox = QtGui.QCheckBox(self.modeGroupBox)
         self.updateOnEditCheckBox.setObjectName(u'updateOnEditCheckBox')
         self.modeLayout.addWidget(self.updateOnEditCheckBox)
-        self.addFromServiceCheckBox = QtGui.QCheckBox(
-            self.modeGroupBox)
-        self.addFromServiceCheckBox.setObjectName(
-            u'addFromServiceCheckBox')
+        self.addFromServiceCheckBox = QtGui.QCheckBox(self.modeGroupBox)
+        self.addFromServiceCheckBox.setObjectName(u'addFromServiceCheckBox')
         self.modeLayout.addWidget(self.addFromServiceCheckBox)
         self.leftLayout.addWidget(self.modeGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
-        QtCore.QObject.connect(self.searchAsTypeCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.searchAsTypeCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onSearchAsTypeCheckBoxChanged)
-        QtCore.QObject.connect(self.toolBarActiveCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.toolBarActiveCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onToolBarActiveCheckBoxChanged)
-        QtCore.QObject.connect(self.updateOnEditCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.updateOnEditCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onUpdateOnEditCheckBoxChanged)
-        QtCore.QObject.connect(self.addFromServiceCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
+        QtCore.QObject.connect(self.addFromServiceCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onAddFromServiceCheckBoxChanged)
 
     def retranslateUi(self):
-        self.modeGroupBox.setTitle(
-            translate('SongsPlugin.SongsTab', 'Songs Mode'))
-        self.searchAsTypeCheckBox.setText(
-            translate('SongsPlugin.SongsTab', 'Enable search as you type'))
+        self.modeGroupBox.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
+        self.searchAsTypeCheckBox.setText(translate('SongsPlugin.SongsTab', 'Enable search as you type'))
         self.toolBarActiveCheckBox.setText(translate('SongsPlugin.SongsTab',
             'Display verses on live tool bar'))
-        self.updateOnEditCheckBox.setText(
-            translate('SongsPlugin.SongsTab', 'Update service from song edit'))
+        self.updateOnEditCheckBox.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
         self.addFromServiceCheckBox.setText(translate('SongsPlugin.SongsTab',
             'Import missing songs from service files'))
 

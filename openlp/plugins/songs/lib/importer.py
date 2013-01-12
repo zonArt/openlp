@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -170,8 +170,7 @@ class SongFormat(object):
         u'selectMode': SongFormatSelect.MultipleFiles,
         u'filter': u'',
         u'comboBoxText': None,
-        u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
-            'This importer has been disabled.'),
+        u'disabledLabelText': translate('SongsPlugin.ImportWizardForm', 'This importer has been disabled.'),
         u'getFilesTitle': None,
         u'invalidSourceMsg': None,
         u'descriptionText': None
@@ -183,75 +182,64 @@ class SongFormat(object):
             u'class': OpenLyricsImport,
             u'name': u'OpenLyrics',
             u'prefix': u'openLyrics',
-            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
-                'OpenLyrics Files'),
-            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
-                'OpenLyrics or OpenLP 2.0 Exported Song')
+            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
         },
         OpenLP2: {
             u'class': OpenLPSongImport,
             u'name': UiStrings().OLPV2,
             u'prefix': u'openLP2',
             u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.sqlite)' % (translate(
-                'SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
+            u'filter': u'%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
         },
         OpenLP1: {
             u'name': UiStrings().OLPV1,
             u'prefix': u'openLP1',
             u'canDisable': True,
             u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.olp)' % translate('SongsPlugin.ImportWizardForm',
-                'openlp.org v1.x Databases'),
+            u'filter': u'%s (*.olp)' % translate('SongsPlugin.ImportWizardForm', 'openlp.org v1.x Databases'),
             u'disabledLabelText': WizardStrings.NoSqlite
         },
         Generic: {
-            u'name': translate('SongsPlugin.ImportWizardForm',
-                'Generic Document/Presentation'),
+            u'name': translate('SongsPlugin.ImportWizardForm', 'Generic Document/Presentation'),
             u'prefix': u'generic',
             u'canDisable': True,
             u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The generic document/presentation importer has been disabled '
                 'because OpenLP cannot access OpenOffice or LibreOffice.'),
-            u'getFilesTitle': translate('SongsPlugin.ImportWizardForm',
-                'Select Document/Presentation Files')
+            u'getFilesTitle': translate('SongsPlugin.ImportWizardForm', 'Select Document/Presentation Files')
         },
         CCLI: {
             u'class': CCLIFileImport,
             u'name': u'CCLI/SongSelect',
             u'prefix': u'ccli',
-            u'filter': u'%s (*.usr *.txt)' % translate(
-                'SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
+            u'filter': u'%s (*.usr *.txt)' % translate('SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
         },
         DreamBeam: {
             u'class': DreamBeamImport,
             u'name': u'DreamBeam',
             u'prefix': u'dreamBeam',
-            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
-                'DreamBeam Song Files')
+            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'DreamBeam Song Files')
         },
         EasySlides: {
             u'class': EasySlidesImport,
             u'name': u'EasySlides',
             u'prefix': u'easySlides',
             u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm',
-                'EasySlides XML File')
+            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'EasySlides XML File')
         },
         EasyWorship: {
             u'class': EasyWorshipSongImport,
             u'name': u'EasyWorship',
             u'prefix': u'ew',
             u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.db)' % translate('SongsPlugin.ImportWizardForm',
-                'EasyWorship Song Database')
+            u'filter': u'%s (*.db)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Song Database')
         },
         FoilPresenter: {
             u'class': FoilPresenterImport,
             u'name': u'Foilpresenter',
             u'prefix': u'foilPresenter',
-            u'filter': u'%s (*.foil)' % translate(
-                'SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
+            u'filter': u'%s (*.foil)' % translate('SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
         MediaShout: {
             u'name': u'MediaShout',
@@ -291,10 +279,8 @@ class SongFormat(object):
             u'name': u'SongPro',
             u'prefix': u'songPro',
             u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.txt)' % translate('SongsPlugin.ImportWizardForm',
-                'SongPro Text Files'),
-            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
-                'SongPro (Export File)'),
+            u'filter': u'%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'SongPro Text Files'),
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'SongPro (Export File)'),
             u'descriptionText': translate('SongsPlugin.ImportWizardForm',
                 'In SongPro, export your songs using the File -> Export menu')
         },
@@ -302,15 +288,13 @@ class SongFormat(object):
             u'class': SongShowPlusImport,
             u'name': u'SongShow Plus',
             u'prefix': u'songShowPlus',
-            u'filter': u'%s (*.sbsong)' % translate(
-                'SongsPlugin.ImportWizardForm', 'SongShow Plus Song Files')
+            u'filter': u'%s (*.sbsong)' % translate('SongsPlugin.ImportWizardForm', 'SongShow Plus Song Files')
         },
         SongsOfFellowship: {
             u'name': u'Songs of Fellowship',
             u'prefix': u'songsOfFellowship',
             u'canDisable': True,
-            u'filter': u'%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm',
-                'Songs Of Fellowship Song Files'),
+            u'filter': u'%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm', 'Songs Of Fellowship Song Files'),
             u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The Songs of Fellowship importer has been disabled because '
                 'OpenLP cannot access OpenOffice or LibreOffice.')
@@ -319,23 +303,21 @@ class SongFormat(object):
             u'class': SundayPlusImport,
             u'name': u'SundayPlus',
             u'prefix': u'sundayPlus',
-            u'filter': u'%s (*.ptf)' % translate(
-                'SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
+            u'filter': u'%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
         WordsOfWorship: {
             u'class': WowImport,
             u'name': u'Words of Worship',
             u'prefix': u'wordsOfWorship',
-            u'filter': u'%s (*.wsg *.wow-song)' % translate(
-                'SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
+            u'filter': u'%s (*.wsg *.wow-song)' %
+                translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
         },
         ZionWorx: {
             u'class': ZionWorxImport,
             u'name': u'ZionWorx',
             u'prefix': u'zionWorx',
             u'selectMode': SongFormatSelect.SingleFile,
-            u'comboBoxText': translate('SongsPlugin.ImportWizardForm',
-                'ZionWorx (CSV)'),
+            u'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'ZionWorx (CSV)'),
             u'descriptionText': translate('SongsPlugin.ImportWizardForm',
                 'First convert your ZionWorx database to a CSV text file, as '
                 'explained in the <a href="http://manual.openlp.org/songs.html'
@@ -391,14 +373,12 @@ class SongFormat(object):
             return SongFormat.__attributes__.get(format)
         elif len(attributes) == 1:
             default = SongFormat.__defaults__.get(attributes[0])
-            return SongFormat.__attributes__[format].get(attributes[0],
-                default)
+            return SongFormat.__attributes__[format].get(attributes[0], default)
         else:
             values = []
             for attr in attributes:
                 default = SongFormat.__defaults__.get(attr)
-                values.append(SongFormat.__attributes__[format].get(attr,
-                    default))
+                values.append(SongFormat.__attributes__[format].get(attr, default))
             return tuple(values)
 
     @staticmethod
