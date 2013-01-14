@@ -471,6 +471,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.playersSettingsSection = u'players'
         self.displayTagsSection = u'displayTags'
         self.headerSection = u'SettingsImport'
+        Settings().set_up_default_values()
         Settings().remove_obsolete_settings()
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)

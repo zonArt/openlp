@@ -60,24 +60,18 @@ class Settings(QtCore.QSettings):
 
     * Exposes all the methods of QSettings.
     * Adds functionality for OpenLP Portable. If the ``defaultFormat`` is set to
-    ``IniFormat``, and the path to the Ini file is set using ``setFilename``,
+    ``IniFormat``, and the path to the Ini file is set using ``set_filename``,
     then the Settings constructor (without any arguments) will create a Settings
     object for accessing settings stored in that Ini file.
+
+    ``__default_settings__``
+        This dict contains all core settings with their default values.
 
     ``__obsolete_settings__``
         Put any settings whose key changes or is removed here. In the case that the key is completely removed just leave
         the dict value for this key empty (empty string). If you renamed a key, but the old name first and the new name
         as value for this key.
-
-    ``__default_settings__``
-        This dict contains all core settings with their default values.
     """
-    __filePath__ = u''
-
-    __obsolete_settings__ = {
-        u'bibles/bookname language': u'bibles/book name language'
-    }
-
     __default_settings__ = {
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
         u'advanced/default service enabled': True,
@@ -96,7 +90,6 @@ class Settings(QtCore.QSettings):
         u'advanced/default image': u':/graphics/openlp-splash-screen.png',
         u'advanced/expand service item': False,
         u'advanced/recent file count': 4,
-        # FIXME: Does not work:
         u'advanced/default service name': UiStrings().DefaultServiceName,
         u'advanced/default service minute': 0,
         u'advanced/slide limits': SlideLimits.End,
@@ -217,6 +210,10 @@ class Settings(QtCore.QSettings):
         u'media/players': u'webkit',
         u'media/override player': QtCore.Qt.Unchecked
     }
+    __file_path__ = u''
+    __obsolete_settings__ = {
+        u'bibles/bookname language': u'bibles/book name language'
+    }
 
     @staticmethod
     def extend_default_settings(default_values):
@@ -229,17 +226,26 @@ class Settings(QtCore.QSettings):
         Settings.__default_settings__ = dict(default_values.items() + Settings.__default_settings__.items())
 
     @staticmethod
-    def setFilename(iniFile):
+    def set_filename(iniFile):
         """
         Sets the complete path to an Ini file to be used by Settings objects.
 
         Does not affect existing Settings objects.
         """
-        Settings.__filePath__ = iniFile
+        Settings.__file_path__ = iniFile
+
+    @staticmethod
+    def set_up_default_values():
+        """
+        This static method is called on start up. It is used to perform any operation on the __default_settings__ dict.
+        """
+        # Make sure the string is translated (when building the dict the string is not translated because the translate
+        # function was not set up as this stage).
+        Settings.__default_settings__[u'advanced/default service name'] = UiStrings().DefaultServiceName
 
     def __init__(self, *args):
-        if not args and Settings.__filePath__ and Settings.defaultFormat() == Settings.IniFormat:
-            QtCore.QSettings.__init__(self, Settings.__filePath__, Settings.IniFormat)
+        if not args and Settings.__file_path__ and Settings.defaultFormat() == Settings.IniFormat:
+            QtCore.QSettings.__init__(self, Settings.__file_path__, Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
 
@@ -256,7 +262,7 @@ class Settings(QtCore.QSettings):
                     self.setValue(new_key, super(Settings, self).value(old_key))
                 self.remove(old_key)
 
-    def value(self, key):
+    def value(self, key, default_value=None):
         """
         Returns the value for the given ``key``. The returned ``value`` is of the same type as the default value in the
         *Settings.__default_settings__* dict.
@@ -265,16 +271,17 @@ class Settings(QtCore.QSettings):
 
         ``key``
             The key to return the value from.
+
+        ``defaultValue``
+            **Note**, do **not** use this. It is *only* for dynamic keys such as ``something %d``.
         """
-        try:
+        assert not(default_value is not None and key in Settings.__default_settings__)
+        if default_value is None:
             # if group() is not empty the group has not been specified together with the key.
             if self.group():
                 default_value = Settings.__default_settings__[self.group() + u'/' + key]
             else:
                 default_value = Settings.__default_settings__[key]
-        except KeyError:
-            print u'KeyError: %s' % key
-            return None
         setting =  super(Settings, self).value(key, default_value)
         # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
         # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
