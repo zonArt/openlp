@@ -282,7 +282,7 @@ class Settings(QtCore.QSettings):
                 default_value = Settings.__default_settings__[self.group() + u'/' + key]
             else:
                 default_value = Settings.__default_settings__[key]
-        setting =  super(Settings, self).value(key, default_value)
+        setting = super(Settings, self).value(key, default_value)
         # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
         # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
         if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
