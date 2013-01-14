@@ -35,12 +35,12 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsManager, translate, build_icon
+from openlp.core.lib import translate, build_icon
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.db import Song
-from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
+from openlp.plugins.songs.lib.xml import SongXML
 from openlp.plugins.songs.lib.duplicatesongfinder import DuplicateSongFinder
 
 log = logging.getLogger(__name__)
@@ -106,25 +106,21 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.reviewCounterLabel = QtGui.QLabel(self.reviewPage)
         self.reviewCounterLabel.setObjectName('reviewCounterLabel')
         self.headerVerticalLayout.addWidget(self.reviewCounterLabel)
-
-        #self.songsHorizontalLayout = QtGui.QHBoxLayout()
-        #self.songsHorizontalLayout.setObjectName('songsHorizontalLayout')
-        #self.headerVerticalLayout.addLayout(self.songsHorizontalLayout)
-
         self.songsHorizontalScrollArea = QtGui.QScrollArea(self.reviewPage)
         self.songsHorizontalScrollArea.setObjectName('songsHorizontalScrollArea')
         self.songsHorizontalScrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.songsHorizontalScrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.songsHorizontalScrollArea.setFrameStyle(QtGui.QFrame.NoFrame)
         self.songsHorizontalScrollArea.setWidgetResizable(True)
+        self.songsHorizontalScrollArea.setStyleSheet("QScrollArea#songsHorizontalScrollArea {background-color:transparent;}");
         self.songsHorizontalSongsWidget = QtGui.QWidget(self.songsHorizontalScrollArea)
         self.songsHorizontalSongsWidget.setObjectName('songsHorizontalSongsWidget')
+        self.songsHorizontalSongsWidget.setStyleSheet("QWidget#songsHorizontalSongsWidget {background-color:transparent;}");
         self.songsHorizontalLayout = QtGui.QHBoxLayout(self.songsHorizontalSongsWidget)
         self.songsHorizontalLayout.setObjectName('songsHorizontalLayout')
         self.songsHorizontalLayout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
         self.songsHorizontalScrollArea.setWidget(self.songsHorizontalSongsWidget)
         self.headerVerticalLayout.addWidget(self.songsHorizontalScrollArea)
-
         self.addPage(self.reviewPage)
 
     def retranslateUi(self):
@@ -226,8 +222,6 @@ class SongReviewWidget(QtGui.QWidget):
         self.songGroupBox.setObjectName(u'songGroupBox')
         self.songGroupBox.setMinimumWidth(300)
         self.songGroupBox.setMaximumWidth(300)
-        #self.songGroupBox.setMinimumHeight(300)
-        #self.songGroupBox.setMaximumHeight(300)
         self.songGroupBoxLayout = QtGui.QVBoxLayout(self.songGroupBox)
         self.songGroupBoxLayout.setObjectName(u'songGroupBoxLayout')
         self.songScrollArea = QtGui.QScrollArea(self)
@@ -238,14 +232,11 @@ class SongReviewWidget(QtGui.QWidget):
         self.songScrollArea.setWidgetResizable(True)
         self.songContentWidget = QtGui.QWidget(self.songScrollArea)
         self.songContentWidget.setObjectName(u'songContentWidget')
-        #self.songContentWidget.setMinimumWidth(300)
-        #self.songContentWidget.setMaximumWidth(300)
         self.songContentVerticalLayout = QtGui.QVBoxLayout(self.songContentWidget)
         self.songContentVerticalLayout.setObjectName(u'songContentVerticalLayout')
         self.songContentVerticalLayout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
         self.songInfoFormLayout = QtGui.QFormLayout()
         self.songInfoFormLayout.setObjectName(u'songInfoFormLayout')
-        #add ccli number, name, altname, authors, ... here
         self.songTitleLabel = QtGui.QLabel(self)
         self.songTitleLabel.setObjectName(u'songTitleLabel')
         self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.songTitleLabel)
@@ -303,17 +294,30 @@ class SongReviewWidget(QtGui.QWidget):
         self.songAuthorsContent.setText(authorsText)
         self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.songAuthorsContent)
         self.songContentVerticalLayout.addLayout(self.songInfoFormLayout)
+
+
+
+        songXml = SongXML()
+        verses = songXml.get_verses(self.song.lyrics)
+        print verses
+
+
+
         self.songVerseButton = QtGui.QPushButton(self)
         self.songVerseButton.setObjectName(u'songVerseButton')
         self.songContentVerticalLayout.addWidget(self.songVerseButton)
+
+
+
+        self.songContentVerticalLayout.addStretch()
         self.songScrollArea.setWidget(self.songContentWidget)
         self.songGroupBoxLayout.addWidget(self.songScrollArea)
-        #self.songGroupBoxLayout.addStretch()
         self.songVerticalLayout.addWidget(self.songGroupBox)
         self.songRemoveButton = QtGui.QPushButton(self)
         self.songRemoveButton.setObjectName(u'songRemoveButton')
         self.songRemoveButton.setIcon(build_icon(u':/songs/song_delete.png'))
-        self.songVerticalLayout.addWidget(self.songRemoveButton)
+        self.songRemoveButton.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.songVerticalLayout.addWidget(self.songRemoveButton, alignment = QtCore.Qt.AlignHCenter)
 
     def retranslateUi(self):
         self.songRemoveButton.setText(u'Remove')
