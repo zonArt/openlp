@@ -258,31 +258,24 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCCLINumberContent.setObjectName(u'songCCLINumberContent')
         self.songCCLINumberContent.setText(self.song.ccli_number)
         self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.songCCLINumberContent)
-        self.songVerseOrderLabel = QtGui.QLabel(self)
-        self.songVerseOrderLabel.setObjectName(u'songVerseOrderLabel')
-        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.songVerseOrderLabel)
-        self.songVerseOrderContent = QtGui.QLabel(self)
-        self.songVerseOrderContent.setObjectName(u'songVerseOrderContent')
-        self.songVerseOrderContent.setText(self.song.verse_order)
-        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.songVerseOrderContent)
         self.songCopyrightLabel = QtGui.QLabel(self)
         self.songCopyrightLabel.setObjectName(u'songCopyrightLabel')
-        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.songCopyrightLabel)
+        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.songCopyrightLabel)
         self.songCopyrightContent = QtGui.QLabel(self)
         self.songCopyrightContent.setObjectName(u'songCopyrightContent')
         self.songCopyrightContent.setWordWrap(True)
         self.songCopyrightContent.setText(self.song.copyright)
-        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.songCopyrightContent)
+        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.songCopyrightContent)
         self.songCommentsLabel = QtGui.QLabel(self)
         self.songCommentsLabel.setObjectName(u'songCommentsLabel')
-        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.LabelRole, self.songCommentsLabel)
+        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.songCommentsLabel)
         self.songCommentsContent = QtGui.QLabel(self)
         self.songCommentsContent.setObjectName(u'songCommentsContent')
         self.songCommentsContent.setText(self.song.comments)
-        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.songCommentsContent)
+        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.songCommentsContent)
         self.songAuthorsLabel = QtGui.QLabel(self)
         self.songAuthorsLabel.setObjectName(u'songAuthorsLabel')
-        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.songAuthorsLabel)
+        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.LabelRole, self.songAuthorsLabel)
         self.songAuthorsContent = QtGui.QLabel(self)
         self.songAuthorsContent.setObjectName(u'songAuthorsContent')
         self.songAuthorsContent.setWordWrap(True)
@@ -292,23 +285,26 @@ class SongReviewWidget(QtGui.QWidget):
         if authorsText:
             authorsText = authorsText[:-2]
         self.songAuthorsContent.setText(authorsText)
-        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.songAuthorsContent)
+        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.songAuthorsContent)
+        self.songVerseOrderLabel = QtGui.QLabel(self)
+        self.songVerseOrderLabel.setObjectName(u'songVerseOrderLabel')
+        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.songVerseOrderLabel)
+        self.songVerseOrderContent = QtGui.QLabel(self)
+        self.songVerseOrderContent.setObjectName(u'songVerseOrderContent')
+        self.songVerseOrderContent.setText(self.song.verse_order)
+        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.songVerseOrderContent)
         self.songContentVerticalLayout.addLayout(self.songInfoFormLayout)
-
-
-
+        self.songInfoVerseGroupBox = QtGui.QGroupBox(self.songGroupBox)
+        self.songInfoVerseGroupBox.setObjectName(u'songInfoVerseGroupBox')
+        self.songInfoVerseGroupBoxLayout = QtGui.QFormLayout(self.songInfoVerseGroupBox)
         songXml = SongXML()
         verses = songXml.get_verses(self.song.lyrics)
-        print verses
-
-
-
-        self.songVerseButton = QtGui.QPushButton(self)
-        self.songVerseButton.setObjectName(u'songVerseButton')
-        self.songContentVerticalLayout.addWidget(self.songVerseButton)
-
-
-
+        for verse in verses:
+            verseMarker = verse[0]['type'] + verse[0]['label']
+            verseLabel = QtGui.QLabel(self.songInfoVerseGroupBox)
+            verseLabel.setText(verse[1])
+            self.songInfoVerseGroupBoxLayout.addRow(verseMarker, verseLabel)
+        self.songContentVerticalLayout.addWidget(self.songInfoVerseGroupBox)
         self.songContentVerticalLayout.addStretch()
         self.songScrollArea.setWidget(self.songContentWidget)
         self.songGroupBoxLayout.addWidget(self.songScrollArea)
@@ -328,4 +324,5 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCopyrightLabel.setText(u'Copyright:')
         self.songCommentsLabel.setText(u'Comments:')
         self.songAuthorsLabel.setText(u'Authors:')
+        self.songInfoVerseGroupBox.setTitle(u'Verses')
 
