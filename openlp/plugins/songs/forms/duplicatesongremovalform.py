@@ -77,10 +77,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Song wizard specific signals.
         """
-        #QtCore.QObject.connect(self.addButton,
-        #        QtCore.SIGNAL(u'clicked()'), self.onAddButtonClicked)
-        #QtCore.QObject.connect(self.removeButton,
-        #    QtCore.SIGNAL(u'clicked()'), self.onRemoveButtonClicked)
+        QtCore.QObject.connect(self.finishButton, QtCore.SIGNAL(u'clicked()'), self.onWizardExit)
+        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL(u'clicked()'), self.onWizardExit)
 
     def addCustomPages(self):
         """
@@ -190,10 +188,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         if not duplicateGroupFound:
             self.duplicateSongList.append([searchSong, duplicateSong])
 
-    def onAddButtonClicked(self):
-        pass
-
-    def onRemoveButtonClicked(self):
+    def onWizardExit(self):
+        #refresh the song list
+        self.plugin.mediaItem.onSearchTextButtonClicked()
         pass
 
     def setDefaults(self):
@@ -213,10 +210,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         pass
 
     def removeButtonClicked(self, songReviewWidget):
-        #TODO: turn this method into a slot
-        #check if last song
-        #disable remove button
-        #remove GUI elements
         #remove song
         item_id = songReviewWidget.song.id
         media_files = self.plugin.manager.get_all_objects(MediaFile,
@@ -235,6 +228,14 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         except OSError:
             log.exception(u'Could not remove directory: %s', save_path)
         self.plugin.manager.delete_object(Song, item_id)
+        #remove GUI elements
+        self.songsHorizontalLayout.removeWidget(songReviewWidget)
+        songReviewWidget.setParent(None)
+        #check if we only have one SongReviewWidget left
+        # 4 stretches + 1 SongReviewWidget = 5
+        # the SongReviewWidget is then at position 3
+        if self.songsHorizontalLayout.count() == 5:
+            self.songsHorizontalLayout.itemAt(2).widget().songRemoveButton.setEnabled(False)
 
 class SongReviewWidget(QtGui.QWidget):
     def __init__(self, parent, song):
