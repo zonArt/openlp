@@ -205,7 +205,7 @@ class SlideController(DisplayController):
             self.hideMenu.menu().addAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
-            #Wide menu of display control buttons
+            # Wide menu of display control buttons.
             self.wideMenu1 = QtGui.QToolButton(self.toolbar)
             self.wideMenu1.setObjectName(u'wideMenu1')
             self.toolbar.addToolbarWidget(self.wideMenu1)
@@ -590,15 +590,15 @@ class SlideController(DisplayController):
                 width = self.parent().controlSplitter.sizes()[self.split]
                 for framenumber in range(len(self.serviceItem.get_frames())):
                     self.previewListWidget.setRowHeight(framenumber, width / self.ratio)
-        self.onControllerSizeChanged(self.controller.width() , self.controller.height())
+        self.onControllerSizeChanged(self.controller.width(), self.controller.height())
 
-    def onControllerSizeChanged(self,  width,  height):
+    def onControllerSizeChanged(self, width, height):
         """
         Change layout of display control buttons on controller size change
         """
         if self.isLive:
             if width > 300 and self.hideMenu.isVisible():
-                self.toolbar.setWidgetVisible(self.hideMenuList,  False)
+                self.toolbar.setWidgetVisible(self.hideMenuList, False)
                 self.toolbar.setWidgetVisible(self.wideMenu)
             elif width < 300 and not self.hideMenu.isVisible():
                 self.toolbar.setWidgetVisible(self.wideMenu, False)
