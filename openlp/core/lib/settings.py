@@ -124,7 +124,8 @@ class Settings(QtCore.QSettings):
         u'general/auto unblank': False,
         u'general/display on monitor': True,
         u'general/audio start paused': True,
-        u'general/last version test': datetime.datetime.now().date(),
+        # This defaults to yesterday in order to force the update check to run when you've never run it before.
+        u'general/last version test': datetime.datetime.now().date() - timedelta(days=1),
         u'general/blank warning': False,
         u'players/background color': u'#000000',
         u'servicemanager/service theme': u'',

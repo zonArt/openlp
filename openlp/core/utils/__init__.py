@@ -29,12 +29,13 @@
 """
 The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from distutils.version import LooseVersion
 import logging
 import locale
 import os
 import re
+from reportlab.graphics.charts.utils import seconds2str
 from subprocess import Popen, PIPE
 import sys
 import urllib2
@@ -277,6 +278,12 @@ def check_latest_version(current_version):
 
     ``current_version``
         The current version of OpenLP.
+
+    **Rules around versions and version files:**
+
+    * If a version number has a build (i.e. -bzr1234), then it is a nightly.
+    * If a version number's minor version is an odd number, it is a development release.
+    * If a version number's minor version is an even number, it is a stable release.
     """
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
@@ -288,9 +295,13 @@ def check_latest_version(current_version):
     settings.endGroup()
     if last_test != this_test:
         if current_version[u'build']:
-            req = urllib2.Request(u'http://www.openlp.org/files/dev_version.txt')
+            req = urllib2.Request(u'http://www.openlp.org/files/nightly_version.txt')
         else:
-            req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
+            version_parts = current_version[u'version'].split(u'.')
+            if int(version_parts[1]) % 2 != 0:
+                req = urllib2.Request(u'http://www.openlp.org/files/dev_version.txt')
+            else:
+                req = urllib2.Request(u'http://www.openlp.org/files/version.txt')
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
         remote_version = None
         try:
