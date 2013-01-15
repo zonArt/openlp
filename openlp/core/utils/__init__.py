@@ -35,7 +35,6 @@ import logging
 import locale
 import os
 import re
-from reportlab.graphics.charts.utils import seconds2str
 from subprocess import Popen, PIPE
 import sys
 import urllib2
