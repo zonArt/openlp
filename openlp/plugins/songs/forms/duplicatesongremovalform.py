@@ -39,7 +39,8 @@ from openlp.core.lib import translate, build_icon
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.plugins.songs.lib.db import Song
+from openlp.core.utils import AppLocation
+from openlp.plugins.songs.lib.db import Song, MediaFile
 from openlp.plugins.songs.lib.xml import SongXML
 from openlp.plugins.songs.lib.duplicatesongfinder import DuplicateSongFinder
 
@@ -164,6 +165,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             for duplicates in self.duplicateSongList[0:1]:
                 for duplicate in duplicates:
                     songReviewWidget = SongReviewWidget(self.reviewPage, duplicate)
+                    QtCore.QObject.connect(songReviewWidget,
+                            QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'),
+                            self.removeButtonClicked)
                     self.songsHorizontalLayout.addWidget(songReviewWidget)
             self.songsHorizontalLayout.addStretch()
             self.songsHorizontalLayout.addStretch()
@@ -208,12 +212,37 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         pass
 
+    def removeButtonClicked(self, songReviewWidget):
+        #TODO: turn this method into a slot
+        #check if last song
+        #disable remove button
+        #remove GUI elements
+        #remove song
+        item_id = songReviewWidget.song.id
+        media_files = self.plugin.manager.get_all_objects(MediaFile,
+            MediaFile.song_id == item_id)
+        for media_file in media_files:
+            try:
+                os.remove(media_file.file_name)
+            except:
+                log.exception('Could not remove file: %s',
+                    media_file.file_name)
+        try:
+            save_path = os.path.join(AppLocation.get_section_data_path(
+                self.plugin.name), 'audio', str(item_id))
+            if os.path.exists(save_path):
+                os.rmdir(save_path)
+        except OSError:
+            log.exception(u'Could not remove directory: %s', save_path)
+        self.plugin.manager.delete_object(Song, item_id)
+
 class SongReviewWidget(QtGui.QWidget):
     def __init__(self, parent, song):
         QtGui.QWidget.__init__(self, parent)
         self.song = song
         self.setupUi()
         self.retranslateUi()
+        QtCore.QObject.connect(self.songRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onRemoveButtonClicked)
 
     def setupUi(self):
         self.songVerticalLayout = QtGui.QVBoxLayout(self)
@@ -243,6 +272,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songTitleContent = QtGui.QLabel(self)
         self.songTitleContent.setObjectName(u'songTitleContent')
         self.songTitleContent.setText(self.song.title)
+        self.songTitleContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.songTitleContent)
         self.songAlternateTitleLabel = QtGui.QLabel(self)
         self.songAlternateTitleLabel.setObjectName(u'songAlternateTitleLabel')
@@ -250,6 +280,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songAlternateTitleContent = QtGui.QLabel(self)
         self.songAlternateTitleContent.setObjectName(u'songAlternateTitleContent')
         self.songAlternateTitleContent.setText(self.song.alternate_title)
+        self.songAlternateTitleContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.songAlternateTitleContent)
         self.songCCLINumberLabel = QtGui.QLabel(self)
         self.songCCLINumberLabel.setObjectName(u'songCCLINumberLabel')
@@ -257,6 +288,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCCLINumberContent = QtGui.QLabel(self)
         self.songCCLINumberContent.setObjectName(u'songCCLINumberContent')
         self.songCCLINumberContent.setText(self.song.ccli_number)
+        self.songCCLINumberContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.songCCLINumberContent)
         self.songCopyrightLabel = QtGui.QLabel(self)
         self.songCopyrightLabel.setObjectName(u'songCopyrightLabel')
@@ -272,6 +304,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCommentsContent = QtGui.QLabel(self)
         self.songCommentsContent.setObjectName(u'songCommentsContent')
         self.songCommentsContent.setText(self.song.comments)
+        self.songCommentsContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.songCommentsContent)
         self.songAuthorsLabel = QtGui.QLabel(self)
         self.songAuthorsLabel.setObjectName(u'songAuthorsLabel')
@@ -292,6 +325,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songVerseOrderContent = QtGui.QLabel(self)
         self.songVerseOrderContent.setObjectName(u'songVerseOrderContent')
         self.songVerseOrderContent.setText(self.song.verse_order)
+        self.songVerseOrderContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.songVerseOrderContent)
         self.songContentVerticalLayout.addLayout(self.songInfoFormLayout)
         self.songInfoVerseGroupBox = QtGui.QGroupBox(self.songGroupBox)
@@ -325,4 +359,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCommentsLabel.setText(u'Comments:')
         self.songAuthorsLabel.setText(u'Authors:')
         self.songInfoVerseGroupBox.setTitle(u'Verses')
+
+    def onRemoveButtonClicked(self):
+        self.emit(QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'), self)
 
