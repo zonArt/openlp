@@ -125,7 +125,7 @@ class Settings(QtCore.QSettings):
         u'general/display on monitor': True,
         u'general/audio start paused': True,
         # This defaults to yesterday in order to force the update check to run when you've never run it before.
-        u'general/last version test': datetime.datetime.now().date() - timedelta(days=1),
+        u'general/last version test': datetime.datetime.now().date() - datetime.timedelta(days=1),
         u'general/blank warning': False,
         u'players/background color': u'#000000',
         u'servicemanager/service theme': u'',
@@ -209,7 +209,9 @@ class Settings(QtCore.QSettings):
 
         # HAS TO BE HERE. Should be FIXED.
         u'media/players': u'webkit',
-        u'media/override player': QtCore.Qt.Unchecked
+        u'media/override player': QtCore.Qt.Unchecked,
+
+        u'images 1': u' '
     }
     __file_path__ = u''
     __obsolete_settings__ = {
@@ -276,7 +278,7 @@ class Settings(QtCore.QSettings):
         ``defaultValue``
             **Note**, do **not** use this. It is *only* for dynamic keys such as ``something %d``.
         """
-        assert not(default_value is not None and key in Settings.__default_settings__)
+
         if default_value is None:
             # if group() is not empty the group has not been specified together with the key.
             if self.group():
