@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -33,8 +33,7 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, check_directory_exists, create_thumb, \
-    validate_thumb, Settings
+from openlp.core.lib import Receiver, check_directory_exists, create_thumb, validate_thumb, Settings
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -124,7 +123,7 @@ class PresentationDocument(object):
 
     def get_file_name(self):
         """
-        Return just the filename of the presention, without the directory
+        Return just the filename of the presentation, without the directory
         """
         return os.path.split(self.filepath)[1]
 
@@ -179,7 +178,7 @@ class PresentationDocument(object):
 
     def unblank_screen(self):
         """
-        Unblanks (restores) the presentationn
+        Unblanks (restores) the presentation
         """
         pass
 
@@ -275,8 +274,7 @@ class PresentationDocument(object):
             prefix = u'live'
         else:
             prefix = u'preview'
-        Receiver.send_message(u'slidecontroller_%s_change' % prefix,
-            self.slidenumber - 1)
+        Receiver.send_message(u'slidecontroller_%s_change' % prefix, self.slidenumber - 1)
 
     def get_slide_text(self, slide_no):
         """
@@ -379,11 +377,8 @@ class PresentationController(object):
         self.document_class = document_class
         self.settings_section = self.plugin.settingsSection
         self.available = None
-        self.temp_folder = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section), name)
-        self.thumbnail_folder = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section),
-            u'thumbnails')
+        self.temp_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), name)
+        self.thumbnail_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         self.thumbnail_prefix = u'slide'
         check_directory_exists(self.thumbnail_folder)
         check_directory_exists(self.temp_folder)
@@ -392,8 +387,7 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if Settings().value(self.settings_section + u'/' + self.name,
-            QtCore.Qt.Checked) == QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + u'/' + self.name, QtCore.Qt.Checked) == QtCore.Qt.Checked:
             return self.is_available()
         else:
             return False

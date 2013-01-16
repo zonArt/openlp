@@ -992,6 +992,7 @@ class SlideController(DisplayController):
             self.selectedRow = row
             self.__checkUpdateSelectedSlide(row)
         Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix, row)
+        self.display.setFocus()
 
     def onSlideChange(self, row):
         """

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -34,8 +34,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, translate, \
-    create_separated_list
+from openlp.core.lib import build_icon, Receiver, translate, create_separated_list
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib import natcmp
@@ -61,11 +60,9 @@ class SongExportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard',
-            u':/wizards/wizard_exportsong.bmp')
+        OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard', u':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_export)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_export)
 
     def stop_export(self):
         """
@@ -90,18 +87,13 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard specific signals.
         """
-        QtCore.QObject.connect(self.availableListWidget,
-            QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'),
+        QtCore.QObject.connect(self.availableListWidget, QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'),
             self.onItemActivated)
-        QtCore.QObject.connect(self.searchLineEdit,
-            QtCore.SIGNAL(u'textEdited(const QString&)'),
+        QtCore.QObject.connect(self.searchLineEdit, QtCore.SIGNAL(u'textEdited(const QString&)'),
             self.onSearchLineEditChanged)
-        QtCore.QObject.connect(self.uncheckButton,
-            QtCore.SIGNAL(u'clicked()'), self.onUncheckButtonClicked)
-        QtCore.QObject.connect(self.checkButton,
-            QtCore.SIGNAL(u'clicked()'), self.onCheckButtonClicked)
-        QtCore.QObject.connect(self.directoryButton,
-            QtCore.SIGNAL(u'clicked()'), self.onDirectoryButtonClicked)
+        QtCore.QObject.connect(self.uncheckButton, QtCore.SIGNAL(u'clicked()'), self.onUncheckButtonClicked)
+        QtCore.QObject.connect(self.checkButton, QtCore.SIGNAL(u'clicked()'), self.onCheckButtonClicked)
+        QtCore.QObject.connect(self.directoryButton, QtCore.SIGNAL(u'clicked()'), self.onDirectoryButtonClicked)
 
     def addCustomPages(self):
         """
@@ -125,8 +117,7 @@ class SongExportForm(OpenLPWizard):
         self.searchLineEdit = QtGui.QLineEdit(self.availableSongsPage)
         self.searchLineEdit.setObjectName(u'searchLineEdit')
         self.horizontalLayout.addWidget(self.searchLineEdit)
-        spacerItem = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.uncheckButton = QtGui.QPushButton(self.availableSongsPage)
         self.uncheckButton.setObjectName(u'uncheckButton')
@@ -167,35 +158,23 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard localisation.
         """
-        self.setWindowTitle(
-            translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
+        self.setWindowTitle(translate('SongsPlugin.ExportWizardForm', 'Song Export Wizard'))
         self.titleLabel.setText(WizardStrings.HeaderStyle %
             translate('OpenLP.Ui', 'Welcome to the Song Export Wizard'))
-        self.informationLabel.setText(
-            translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
-            ' export your songs to the open and free <strong>OpenLyrics'
-            '</strong> worship song format.'))
-        self.availableSongsPage.setTitle(
-            translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
-        self.availableSongsPage.setSubTitle(
-            translate('SongsPlugin.ExportWizardForm',
+        self.informationLabel.setText(translate('SongsPlugin.ExportWizardForm', 'This wizard will help to'
+            ' export your songs to the open and free <strong>OpenLyrics </strong> worship song format.'))
+        self.availableSongsPage.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
+        self.availableSongsPage.setSubTitle(translate('SongsPlugin.ExportWizardForm',
             'Check the songs you want to export.'))
         self.searchLabel.setText(u'%s:' % UiStrings().Search)
-        self.uncheckButton.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
-        self.checkButton.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Check All'))
-        self.exportSongPage.setTitle(
-            translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
-        self.exportSongPage.setSubTitle(
-            translate('SongsPlugin.ExportWizardForm',
+        self.uncheckButton.setText(translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
+        self.checkButton.setText(translate('SongsPlugin.ExportWizardForm', 'Check All'))
+        self.exportSongPage.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
+        self.exportSongPage.setSubTitle(translate('SongsPlugin.ExportWizardForm',
             'Select the directory where you want the songs to be saved.'))
-        self.directoryLabel.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Directory:'))
-        self.progressPage.setTitle(
-            translate('SongsPlugin.ExportWizardForm', 'Exporting'))
-        self.progressPage.setSubTitle(
-            translate('SongsPlugin.ExportWizardForm',
+        self.directoryLabel.setText(translate('SongsPlugin.ExportWizardForm', 'Directory:'))
+        self.progressPage.setTitle(translate('SongsPlugin.ExportWizardForm', 'Exporting'))
+        self.progressPage.setSubTitle(translate('SongsPlugin.ExportWizardForm',
             'Please wait while your songs are exported.'))
         self.progressLabel.setText(WizardStrings.Ready)
         self.progressBar.setFormat(WizardStrings.PercentSymbolFormat)
@@ -213,8 +192,7 @@ class SongExportForm(OpenLPWizard):
             ]
             if not items:
                 critical_error_message_box(UiStrings().NISp,
-                    translate('SongsPlugin.ExportWizardForm',
-                    'You need to add at least one Song to export.'))
+                    translate('SongsPlugin.ExportWizardForm', 'You need to add at least one Song to export.'))
                 return False
             self.selectedListWidget.clear()
             # Add the songs to the list of selected songs.
@@ -227,10 +205,8 @@ class SongExportForm(OpenLPWizard):
         elif self.currentPage() == self.exportSongPage:
             if not self.directoryLineEdit.text():
                 critical_error_message_box(
-                    translate('SongsPlugin.ExportWizardForm',
-                    'No Save Location specified'),
-                    translate('SongsPlugin.ExportWizardForm',
-                    'You need to specify a directory.'))
+                    translate('SongsPlugin.ExportWizardForm', 'No Save Location specified'),
+                    translate('SongsPlugin.ExportWizardForm', 'You need to specify a directory.'))
                 return False
             return True
         elif self.currentPage() == self.progressPage:
@@ -257,13 +233,11 @@ class SongExportForm(OpenLPWizard):
             # No need to export temporary songs.
             if song.temporary:
                 continue
-            authors = create_separated_list([author.display_name
-                for author in song.authors])
+            authors = create_separated_list([author.display_name for author in song.authors])
             title = u'%s (%s)' % (unicode(song.title), authors)
             item = QtGui.QListWidgetItem(title)
             item.setData(QtCore.Qt.UserRole, song)
-            item.setFlags(QtCore.Qt.ItemIsSelectable|
-                QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+            item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setCheckState(QtCore.Qt.Unchecked)
             self.availableListWidget.addItem(item)
         Receiver.send_message(u'cursor_normal')
@@ -273,8 +247,7 @@ class SongExportForm(OpenLPWizard):
         Perform pre export tasks.
         """
         OpenLPWizard.preWizard(self)
-        self.progressLabel.setText(
-            translate('SongsPlugin.ExportWizardForm', 'Starting export...'))
+        self.progressLabel.setText(translate('SongsPlugin.ExportWizardForm', 'Starting export...'))
         Receiver.send_message(u'openlp_process_events')
 
     def performWizard(self):
@@ -288,14 +261,10 @@ class SongExportForm(OpenLPWizard):
         ]
         exporter = OpenLyricsExport(self, songs, self.directoryLineEdit.text())
         if exporter.do_export():
-            self.progressLabel.setText(
-                translate('SongsPlugin.SongExportForm', 'Finished export. To '
-                'import these files use the <strong>OpenLyrics</strong> '
-                'importer.'))
+            self.progressLabel.setText(translate('SongsPlugin.SongExportForm',
+                    'Finished export. To import these files use the <strong>OpenLyrics</strong> importer.'))
         else:
-            self.progressLabel.setText(
-                translate('SongsPlugin.SongExportForm',
-                'Your song export failed.'))
+            self.progressLabel.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed.'))
 
     def _findListWidgetItems(self, listWidget, text=u''):
         """
@@ -334,8 +303,7 @@ class SongExportForm(OpenLPWizard):
             The text of the *searchLineEdit*.
         """
         search_result = [
-            song for song in self._findListWidgetItems(
-            self.availableListWidget, text)
+            song for song in self._findListWidgetItems(self.availableListWidget, text)
         ]
         for item in self._findListWidgetItems(self.availableListWidget):
             item.setHidden(item not in search_result)
@@ -363,5 +331,4 @@ class SongExportForm(OpenLPWizard):
         Called when the *directoryButton* was clicked. Opens a dialog and writes
         the path to *directoryLineEdit*.
         """
-        self.getFolder(translate('SongsPlugin.ExportWizardForm',
-            'Select Destination Folder'), self.directoryLineEdit)
+        self.getFolder(translate('SongsPlugin.ExportWizardForm', 'Select Destination Folder'), self.directoryLineEdit)

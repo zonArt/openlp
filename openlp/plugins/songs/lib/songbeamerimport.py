@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -135,8 +135,7 @@ class SongBeamerImport(SongImport):
                 elif line.startswith(u'---'):
                     if self.currentVerse:
                         self.replaceHtmlTags()
-                        self.addVerse(self.currentVerse,
-                            self.currentVerseType)
+                        self.addVerse(self.currentVerse, self.currentVerseType)
                         self.currentVerse = u''
                         self.currentVerseType = VerseType.Tags[VerseType.Verse]
                     read_verses = True
