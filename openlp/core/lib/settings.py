@@ -81,9 +81,9 @@ class Settings(QtCore.QSettings):
 
             (SlideLimits.Wrap, True)
 
-        This means, that if the value of ``general/enable slide loop`` is ``True`` then we set ``advanced/slide limits``
-        to ``SlideLimits.Wrap``. **NOTE**, this means that the rules have to cover all cases! So, if the type of the old
-        value is bool, then there must be two rules.
+        This means, that if the value of ``general/enable slide loop`` is equal (``==``) ``True`` then we set
+        ``advanced/slide limits`` to ``SlideLimits.Wrap``. **NOTE**, this means that the rules have to cover all cases!
+        So, if the type of the old value is bool, then there must be two rules.
     """
     __default_settings__ = {
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
