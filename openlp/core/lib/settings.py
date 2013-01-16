@@ -220,12 +220,8 @@ class Settings(QtCore.QSettings):
         u'user interface/mainwindow splitter geometry': QtCore.QByteArray(),
         u'user interface/live splitter geometry': QtCore.QByteArray(),
         u'user interface/main window state': QtCore.QByteArray(),
-
-        # HAS TO BE HERE. Should be FIXED.
         u'media/players': u'webkit',
-        u'media/override player': QtCore.Qt.Unchecked,
-
-        u'images 1': u' '
+        u'media/override player': QtCore.Qt.Unchecked
     }
     __file_path__ = u''
     __obsolete_settings__ = [

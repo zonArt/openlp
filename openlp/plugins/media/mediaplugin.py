@@ -36,6 +36,7 @@ from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
 
+# Some settings starting with "media" are in core, because they are needed for core functionality.
 __default_settings__ = {
         u'media/media auto start': QtCore.Qt.Unchecked
     }
