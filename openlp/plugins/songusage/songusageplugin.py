@@ -42,11 +42,17 @@ from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
 
+
+YEAR = QtCore.QDate().currentDate().year()
+if QtCore.QDate().currentDate().month() < 9:
+    YEAR -= 1
+
+
 __default_settings__ = {
         u'songusage/db type': u'sqlite',
         u'songusage/active': False,
-        u'songusage/to date':  QtCore.QDate.currentDate(),
-        u'songusage/from date': QtCore.QDate.currentDate().addYears(-1)
+        u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
+        u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1)
     }
 
 
