@@ -35,7 +35,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, PluginStatus
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
@@ -47,7 +47,6 @@ __default_settings__ = {
         u'presentations/override app': QtCore.Qt.Unchecked,
         u'presentations/presentations count': 0,
         u'presentations/Powerpoint': 2,
-        u'presentations/status': PluginStatus.Inactive,
         u'presentations/Powerpoint Viewer': 2
     }
 

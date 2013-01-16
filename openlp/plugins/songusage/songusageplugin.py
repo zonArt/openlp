@@ -32,7 +32,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Plugin, Receiver, Settings, StringContent, translate, PluginStatus
+from openlp.core.lib import build_icon, Plugin, Receiver, Settings, StringContent, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
@@ -44,7 +44,6 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
         u'songusage/db type': u'sqlite',
-        u'songusage/status': PluginStatus.Inactive,
         u'songusage/active': False,
         u'songusage/to date':  QtCore.QDate.currentDate(),
         u'songusage/from date': QtCore.QDate.currentDate().addYears(-1)

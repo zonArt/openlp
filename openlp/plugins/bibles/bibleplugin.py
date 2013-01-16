@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, PluginStatus
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem, LayoutStyle, DisplayStyle, \
@@ -44,7 +44,6 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
         u'bibles/db type': u'sqlite',
-        u'bibles/status': PluginStatus.Inactive,
         u'bibles/last search type': BibleSearch.Reference,
         u'bibles/verse layout style': LayoutStyle.VersePerSlide,
         u'bibles/book name language': LanguageSelection.Bible,

@@ -150,7 +150,6 @@ class Plugin(QtCore.QObject):
         log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
         self.name = name
-        Settings.extend_default_settings(default_settings)
         self.textStrings = {}
         self.setPluginTextStrings()
         self.nameStrings = self.textStrings[StringContent.Name]
@@ -175,6 +174,10 @@ class Plugin(QtCore.QObject):
         self.pluginManager = plugin_helpers[u'pluginmanager']
         self.formParent = plugin_helpers[u'formparent']
         self.mediaController = plugin_helpers[u'mediacontroller']
+        # Add the default status to the default settings.
+        default_settings[name + u'/status'] = PluginStatus.Inactive
+        # Add settings to the dict of all settings.
+        Settings.extend_default_settings(default_settings)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_config_updated' % self.name),

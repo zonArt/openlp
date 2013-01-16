@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, PluginStatus
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -39,7 +39,6 @@ log = logging.getLogger(__name__)
 __default_settings__ = {
         u'media/media count': 0,
         u'media/media auto start': QtCore.Qt.Unchecked,
-        u'media/status': PluginStatus.Inactive
     }
 
 

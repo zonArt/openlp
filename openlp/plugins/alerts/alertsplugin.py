@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, PluginStatus
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.lib.theme import VerticalType
@@ -117,7 +117,6 @@ HTML = """
 __default_settings__ = {
         u'alerts/font face': QtGui.QFont().family(),
         u'alerts/font size': 40,
-        u'alerts/status': PluginStatus.Inactive,
         u'alerts/db type': u'sqlite',
         u'alerts/location': AlertLocation.Bottom,
         u'alerts/background color': u'#660000',

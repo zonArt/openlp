@@ -29,7 +29,7 @@
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, PluginStatus
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
 from openlp.plugins.custom.lib.db import CustomSlide, init_schema
@@ -39,7 +39,6 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
         u'custom/db type': u'sqlite',
-        u'custom/status': PluginStatus.Inactive,
         u'custom/last search type':  CustomSearch.Titles,
         u'custom/display footer': True,
         u'custom/add custom from service': True
