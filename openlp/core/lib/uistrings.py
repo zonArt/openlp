@@ -71,7 +71,7 @@ class UiStrings(object):
         self.Continuous = translate('OpenLP.Ui', 'Continuous')
         self.Default = translate('OpenLP.Ui', 'Default')
         self.DefaultColor = translate('OpenLP.Ui', 'Default Color:')
-        self.DefaultServiceName = translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
+        self.DefaultServiceName = translate('OpenLP.Ui', 'Service %Y-%m-%d %H-%M',
             'This may not contain any of the following characters: /\\?*|<>\[\]":+\n'
             'See http://docs.python.org/library/datetime.html#strftime-strptime-behavior for more information.')
         self.Delete = translate('OpenLP.Ui', '&Delete')
