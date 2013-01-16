@@ -43,11 +43,11 @@ from openlp.plugins.presentations.lib import PresentationController, \
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        u'presentations/Impress': 2,
         u'presentations/override app': QtCore.Qt.Unchecked,
-        u'presentations/presentations count': 0,
-        u'presentations/Powerpoint': 2,
-        u'presentations/Powerpoint Viewer': 2
+        u'presentations/Impress': QtCore.Qt.Checked,
+        u'presentations/Powerpoint': QtCore.Qt.Checked,
+        u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
+        u'presentations/presentations count': 0
     }
 
 
