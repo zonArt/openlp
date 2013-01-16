@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SlideLimits, ScreenList
+from openlp.core.lib import SlideLimits
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib import UiStrings
 
@@ -107,17 +107,18 @@ class Settings(QtCore.QSettings):
         u'general/recent files': [],
         u'general/save prompt': False,
         u'general/auto preview': False,
-        u'general/override position': False,
         u'general/view mode': u'default',
         u'general/auto open': False,
         u'general/enable slide loop': True,
         u'general/show splash': True,
         u'general/screen blank': False,
-        u'general/x position': 0, #ScreenList().current[u'size'].x()
-        u'general/y position': 0, # ScreenList().current[u'size'].y()
-        u'general/monitor': 0, # ScreenList().display_count - 1
-        u'general/height': 1024, # ScreenList().current[u'size'].height()
-        u'general/width': 1280, # ScreenList().current[u'size'].width()
+        u'general/override position': False,
+        # Display defaults are set in core/lib/screen.py due to a circle dependency.
+        u'general/x position': -1,
+        u'general/y position': -1,
+        u'general/monitor': -1,
+        u'general/height': -1,
+        u'general/width': -1,
         u'general/loop delay': 5,
         u'general/songselect username': u'',
         u'general/audio repeat list': False,

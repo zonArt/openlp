@@ -246,13 +246,31 @@ class ScreenList(object):
         from openlp.core.lib import Settings
         settings = Settings()
         settings.beginGroup(u'general')
-        self.set_current_display(settings.value(u'monitor'))
+        monitor = settings.value(u'monitor')
+        # If -1 has been returned we have to use default values.
+        if monitor == -1:
+            monitor = self.display_count - 1
+            settings.setValue(u'monitor', monitor)
+        self.set_current_display(monitor)
         self.display = settings.value(u'display on monitor')
         override_display = settings.value(u'override position')
         x = settings.value(u'x position')
         y = settings.value(u'y position')
         width = settings.value(u'width')
         height = settings.value(u'height')
+        # If -1 has been returned we have to use default values.
+        if x == -1:
+            x = self.current[u'size'].x()
+            settings.setValue(u'x position', x)
+        if y == -1:
+            self.current[u'size'].y()
+            settings.setValue(u'y position', y)
+        if width == -1:
+            width = self.current[u'size'].width()
+            settings.setValue(u'width', width)
+        if height == -1:
+            height = self.current[u'size'].height()
+            settings.setValue(u'height', height)
         self.override[u'size'] = QtCore.QRect(x, y, width, height)
         self.override[u'primary'] = False
         settings.endGroup()
