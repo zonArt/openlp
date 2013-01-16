@@ -53,7 +53,7 @@ class TestServiceItem(TestCase):
         assert len(service_item._display_frames) is 0, u'A blank Service Item'
         service_item.render(True)
 
-        #THEN: We should should have a page of output.
+        #THEN: We should have a page of output.
         assert len(service_item._display_frames) is 1, u'A valid rendered Service Item has display frames'
         assert service_item.get_rendered_frame(0) == VERSE.split(u'\n')[0], u'A valid render'
 
@@ -74,14 +74,14 @@ class TestServiceItem(TestCase):
         assert service_item.is_valid is True, u'A valid Service Item'
         assert len(service_item._display_frames) is 0, u'A blank Service Item'
 
-        #THEN: We should should have a page of output.
+        #THEN: We should have a page of output.
         assert len(service_item._raw_frames) is 1, u'A valid rendered Service Item has display frames'
         assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
 
         #WHEN: adding a second image to a service item
         service_item.add_from_image(u'resources/church.jpg', u'Image1 Title')
 
-        #THEN: We should should have an increased page of output.
+        #THEN: We should have an increased page of output.
         assert len(service_item._raw_frames) is 2, u'A valid rendered Service Item has display frames'
         assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
         assert service_item.get_rendered_frame(0) == service_item.get_rendered_frame(1)
@@ -89,7 +89,7 @@ class TestServiceItem(TestCase):
         #When requesting a saved service item
         service = service_item.get_service_repr(True)
 
-        #THEN: We should should have two parts of the service.
+        #THEN: We should have two parts of the service.
         assert len(service) is 2, u'A saved service has two parts'
         assert service[u'header'][u'name']  == u'test' , u'A test plugin'
         assert service[u'data'][0][u'title'] == u'Image Title' , u'The first title name '
@@ -129,14 +129,14 @@ class TestServiceItem(TestCase):
         assert service_item.is_valid is True, u'A valid Service Item'
         assert len(service_item._display_frames) is 0, u'A blank Service Item'
 
-        #THEN: We should should have a page of output.
+        #THEN: We should have a page of output.
         assert len(service_item._raw_frames) is 1, u'A valid rendered Service Item has display frames'
         assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
 
         #When requesting a saved service item
         service = service_item.get_service_repr(True)
 
-        #THEN: We should should have two parts of the service.
+        #THEN: We should have two parts of the service.
         assert len(service) is 2, u'A saved service has two parts'
         assert service[u'header'][u'name']  == u'test' , u'A test plugin'
         assert service[u'data'][0][u'title'] == u'church.jpg' , u'The first title name '

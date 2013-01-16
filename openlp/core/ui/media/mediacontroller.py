@@ -320,7 +320,6 @@ class MediaController(object):
             display.hasAudio = False
         for player in self.mediaPlayers.values():
             if player.isActive:
-                print "z"
                 player.setup(display)
 
     def set_controls_visible(self, controller, value):
