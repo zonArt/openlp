@@ -37,7 +37,6 @@ from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        u'images/images count': 0,
         u'images/background color': u'#000000'
     }
 

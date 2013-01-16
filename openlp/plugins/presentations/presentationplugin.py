@@ -46,8 +46,7 @@ __default_settings__ = {
         u'presentations/override app': QtCore.Qt.Unchecked,
         u'presentations/Impress': QtCore.Qt.Checked,
         u'presentations/Powerpoint': QtCore.Qt.Checked,
-        u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
-        u'presentations/presentations count': 0
+        u'presentations/Powerpoint Viewer': QtCore.Qt.Checked
     }
 
 
