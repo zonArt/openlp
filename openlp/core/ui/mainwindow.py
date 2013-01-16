@@ -459,8 +459,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.application = application
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args
-        # Set up settings sections for the main application
-        # (not for use by plugins)
+        # Set up settings sections for the main application (not for use by plugins).
         self.uiSettingsSection = u'user interface'
         self.generalSettingsSection = u'general'
         self.advancedSettingsSection = u'advanced'
@@ -930,6 +929,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings.endGroup()
         # Write all the sections and keys.
         for section_key in keys:
+            # FIXME: We are conflicting with the standard "General" section.
+            section_key = section_key.lower()
             key_value = settings.value(section_key)
             if key_value is not None:
                 export_settings.setValue(section_key, key_value)
@@ -1179,7 +1180,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Load the main window settings.
         """
         log.debug(u'Loading QSettings')
-       # Migrate Wrap Settings to Slide Limits Settings
+        # FIXME
+        # Migrate Wrap Settings to Slide Limits Settings
         if Settings().contains(self.generalSettingsSection + u'/enable slide loop'):
             if Settings().value(self.generalSettingsSection + u'/enable slide loop'):
                 Settings().setValue(self.advancedSettingsSection + u'/slide limits', SlideLimits.Wrap)
