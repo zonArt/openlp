@@ -68,7 +68,7 @@ class Settings(QtCore.QSettings):
         This dict contains all core settings with their default values.
 
     ``__obsolete_settings__``
-        Each tuple is structured in the following way::
+        Each entry is structured in the following way::
 
             (u'general/enable slide loop',  u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
 
