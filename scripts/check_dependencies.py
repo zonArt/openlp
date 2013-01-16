@@ -38,6 +38,7 @@ modules, simply run this script::
 """
 import os
 import sys
+from distutils.version import LooseVersion
 
 is_win = sys.platform.startswith('win')
 
@@ -89,15 +90,13 @@ OPTIONAL_MODULES = [
 w = sys.stdout.write
 
 def check_vers(version, required, text):
-    if type(version) is str:
-        version = version.split('.')
-        version = map(int, version)
-    if type(required) is str:
-        required = required.split('.')
-        required = map(int, required)
-    w('  %s >= %s ...    ' % (text, '.'.join(map(str, required))))
-    if version >= required:
-        w('.'.join(map(str, version)) + os.linesep)
+    if type(version) is not str:
+        version = '.'.join(map(str, version))
+    if type(required) is not str:
+        required = '.'.join(map(str, required))
+    w('  %s >= %s ...    ' % (text, required))
+    if LooseVersion(version) >= LooseVersion(required):
+        w(version + os.linesep)
         return True
     else:
         w('FAIL' + os.linesep)
