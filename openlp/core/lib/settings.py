@@ -276,10 +276,10 @@ class Settings(QtCore.QSettings):
         ``key``
             The key to return the value from.
 
-        ``defaultValue``
+        ``default_value``
             **Note**, do **not** use this. It is *only* for dynamic keys such as ``something %d``.
         """
-
+        # FIXME: rework default_value
         if default_value is None:
             # if group() is not empty the group has not been specified together with the key.
             if self.group():
