@@ -68,9 +68,22 @@ class Settings(QtCore.QSettings):
         This dict contains all core settings with their default values.
 
     ``__obsolete_settings__``
-        Put any settings whose key changes or is removed here. In the case that the key is completely removed just leave
-        the dict value for this key empty (empty string). If you renamed a key, but the old name first and the new name
-        as value for this key.
+        Each tuple is structured in the following way::
+
+            (u'general/enable slide loop',  u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
+
+        The first entry is the *old key*; it will be removed.
+
+        The second entry is the *new key*; we will add it to the config.
+
+        The last entry is a list containing two-pair tuples. If the list is empty, no conversion is made. Otherwise each
+        pair describes how to convert the old setting's value::
+
+            (SlideLimits.Wrap, True)
+
+        This means, that if the value of ``general/enable slide loop`` is ``True`` then we set ``advanced/slide limits``
+        to ``SlideLimits.Wrap``. **NOTE**, this means that the rules have to cover all cases! So, if the type of the old
+        value is bool, then there must be two rules.
     """
     __default_settings__ = {
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
@@ -215,9 +228,10 @@ class Settings(QtCore.QSettings):
         u'images 1': u' '
     }
     __file_path__ = u''
-    __obsolete_settings__ = {
-        u'bibles/bookname language': u'bibles/book name language'
-    }
+    __obsolete_settings__ = [
+        (u'bibles/bookname language', u'bibles/book name language', []),
+        (u'general/enable slide loop',  u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
+    ]
 
     @staticmethod
     def extend_default_settings(default_values):
@@ -255,15 +269,23 @@ class Settings(QtCore.QSettings):
 
     def remove_obsolete_settings(self):
         """
-        This method is only called to clean up the config. It does two things: First it completely remove old settings
-        (to do this, just leave the new_key empty). And it copies the value from old_key to new_key and then removes the
-        old_key.
+        This method is only called to clean up the config. It removes old settings and it renames settings. See
+        ``__obsolete_settings__`` for more details.
         """
-        for old_key, new_key in Settings.__obsolete_settings__.items():
+        for old_key, new_key, rules in Settings.__obsolete_settings__:
+            # Once removed we don't have to do this again.
             if self.contains(old_key):
                 if new_key:
-                    # Copy the value from the old_key to the new_key.
-                    self.setValue(new_key, super(Settings, self).value(old_key))
+                    # Get the value of the old_key.
+                    old_value = super(Settings, self).value(old_key)
+                    # Iterate over our rules and check what the old_value should be "converted" to.
+                    for new, old in rules:
+                        # If the value matches with the condition (rule), then use the provided value. This is used to
+                        # convert values. E. g. an old value 1 results in True, and 0 in False.
+                        if old == old_value:
+                            old_value = new
+                            break
+                    self.setValue(new_key, old_value)
                 self.remove(old_key)
 
     def value(self, key, default_value=None):
