@@ -26,3 +26,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.core.ui.media.vendor` module contains any scripts or libraries
+from 3rd party vendors which are required to make certain media modules work.
+"""
