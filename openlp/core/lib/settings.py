@@ -235,7 +235,7 @@ class Settings(QtCore.QSettings):
 #        bibles/last directory 1 -> bibles/last directory backup
 #        themes/last directory -> themes/last directory import
 #        themes/last directory 1-> themes/last directory export
-#        songs/last directory 1 -> songs/last directory error log
+#        songs/last directory 1 -> songs/last directory import
     ]
 
     @staticmethod

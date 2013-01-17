@@ -361,7 +361,7 @@ class SongImportForm(OpenLPWizard):
         Save the error report to a file.
         """
         filename = QtGui.QFileDialog.getSaveFileName(self,
-            Settings().value(self.plugin.settingsSection + u'last directory error log'))
+            Settings().value(self.plugin.settingsSection + u'last directory import'))
         if not filename:
             return
         report_file = codecs.open(filename, u'w', u'utf-8')

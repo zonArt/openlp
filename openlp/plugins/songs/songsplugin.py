@@ -54,8 +54,7 @@ __default_settings__ = {
         u'songs/search as type': False,
         u'songs/add song from service': True,
         u'songs/display songbar': True,
-        u'songs/last directory import': u'',
-        u'songs/last directory error log': u''
+        u'songs/last directory import': u''
     }
 
 
