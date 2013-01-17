@@ -266,7 +266,7 @@ class ServiceManager(QtGui.QWidget):
             text=translate('OpenLP.ServiceManager', 'Auto play slides &Once'),
             checked=False, triggers=self.toggleAutoPlaySlidesOnce)
         self.autoPlaySlidesGroup.addSeparator()
-        self.TimedSlideInterval = create_widget_action(self.autoPlaySlidesGroup,
+        self.timedSlideInterval = create_widget_action(self.autoPlaySlidesGroup,
             text=translate('OpenLP.ServiceManager', '&Delay between slides'),
             checked=False, triggers=self.onTimedSlideInterval)
         self.menu.addSeparator()
