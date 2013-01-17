@@ -176,6 +176,7 @@ class Plugin(QtCore.QObject):
         self.mediaController = plugin_helpers[u'mediacontroller']
         # Add the default status to the default settings.
         default_settings[name + u'/status'] = PluginStatus.Inactive
+        default_settings[name + u'/last directory'] = u''
         # Add settings to the dict of all settings.
         Settings.extend_default_settings(default_settings)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),

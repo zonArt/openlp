@@ -173,6 +173,7 @@ class OpenLP(QtGui.QApplication):
             return False
 
     def hookException(self, exctype, value, traceback):
+        print ''.join(format_exception(exctype, value, traceback))
         if not hasattr(self, u'mainWindow'):
             log.exception(''.join(format_exception(exctype, value, traceback)))
             return

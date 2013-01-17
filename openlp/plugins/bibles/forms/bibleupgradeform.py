@@ -36,7 +36,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsManager, translate, check_directory_exists, Settings, UiStrings
+from openlp.core.lib import Receiver, translate, check_directory_exists, Settings, UiStrings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
@@ -117,10 +117,10 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         filename = QtGui.QFileDialog.getExistingDirectory(self,
             translate('BiblesPlugin.UpgradeWizardForm', 'Select a Backup Directory'),
-            os.path.dirname(SettingsManager.get_last_dir(self.plugin.settingsSection, 1)))
+            os.path.dirname(Settings(self.plugin.settingsSection).value(u'last directory backup')))
         if filename:
             self.backupDirectoryEdit.setText(filename)
-            SettingsManager.set_last_dir(self.plugin.settingsSection, filename, 1)
+            Settings(self.plugin.settingsSection).setValue(u'last directory backup', filename)
 
     def onNoBackupCheckBoxToggled(self, checked):
         """

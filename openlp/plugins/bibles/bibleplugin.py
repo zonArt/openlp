@@ -60,7 +60,8 @@ __default_settings__ = {
         u'bibles/verse separator': u'',
         u'bibles/range separator': u'',
         u'bibles/list separator': u'',
-        u'bibles/end separator': u''
+        u'bibles/end separator': u'',
+        u'bibles/last directory backup': u''
     }
 
 

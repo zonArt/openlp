@@ -85,7 +85,7 @@ except AttributeError:
     WEBKIT_VERSION = u'-'
 
 
-from openlp.core.lib import translate, SettingsManager, UiStrings
+from openlp.core.lib import translate, UiStrings, Settings
 from openlp.core.utils import get_application_version
 
 from exceptiondialog import Ui_ExceptionDialog
@@ -146,12 +146,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- Library Versions ---\n%s\n')
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
-            SettingsManager.get_last_dir(self.settingsSection),
+            Settings().value(self.settingsSection + u'/last directory'),
             translate('OpenLP.ExceptionForm',
             'Text files (*.txt *.log *.text)'))
         if filename:
             filename = unicode(filename).replace(u'/', os.path.sep)
-            SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(filename))
+            Settings().setValue(self.settingsSection + u'/last directory', os.path.dirname(filename))
             report_text = report_text % self._createReport()
             try:
                 report_file = open(filename, u'w')
@@ -211,7 +211,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     def onAttachFileButtonClicked(self):
         files = QtGui.QFileDialog.getOpenFileName(
             self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
-                SettingsManager.get_last_dir(u'exceptions'), u'%s (*.*) (*)' % UiStrings().AllFiles)
+                Settings().value(self.settingsSection + u'/last directory'), u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.fileAttachment = unicode(files)

@@ -360,12 +360,12 @@ class ThemeManager(QtGui.QWidget):
         theme = item.data(QtCore.Qt.UserRole)
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
-            SettingsManager.get_last_dir(self.settingsSection, 1))
-        path = unicode(path)
+            Settings().value(self.settingsSection + u'/last directory export'))
         Receiver.send_message(u'cursor_busy')
         if path:
-            SettingsManager.set_last_dir(self.settingsSection, path, 1)
+            Settings().setValue(self.settingsSection + u'/last directory export', path)
             theme_path = os.path.join(path, theme + u'.otz')
+            # FIXME: Do not overwrite build-in.
             zip = None
             try:
                 zip = zipfile.ZipFile(theme_path, u'w')
@@ -396,14 +396,14 @@ class ThemeManager(QtGui.QWidget):
         """
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
-            SettingsManager.get_last_dir(self.settingsSection),
+            Settings().value(self.settingsSection + u'/last directory import'),
             translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
         log.info(u'New Themes %s', unicode(files))
         if not files:
             return
         Receiver.send_message(u'cursor_busy')
         for file in files:
-            SettingsManager.set_last_dir(self.settingsSection, unicode(file))
+            Settings().setValue(self.settingsSection + u'/last directory import', unicode(file))
             self.unzipTheme(file, self.path)
         self.loadThemes()
         Receiver.send_message(u'cursor_normal')

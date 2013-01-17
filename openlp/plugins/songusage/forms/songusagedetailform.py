@@ -30,11 +30,10 @@
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import Receiver, Settings, SettingsManager, translate, \
-    check_directory_exists
+from openlp.core.lib import Receiver, Settings, translate, check_directory_exists
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -62,7 +61,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         fromDate = Settings().value(self.plugin.settingsSection + u'/from date')
         self.fromDate.setSelectedDate(fromDate)
         self.toDate.setSelectedDate(toDate)
-        self.fileLineEdit.setText(SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+        self.fileLineEdit.setText(Settings().value(self.plugin.settingsSection + u'/last directory'))
 
     def defineOutputLocation(self):
         """
@@ -70,10 +69,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
-        path = unicode(path)
+            Settings().value(self.plugin.settingsSection + u'/last directory'))
         if path:
-            SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
+            Settings().setValue(self.plugin.settingsSection + u'/last directory', path)
             self.fileLineEdit.setText(path)
 
     def accept(self):

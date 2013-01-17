@@ -45,43 +45,6 @@ class SettingsManager(object):
     """
 
     @staticmethod
-    def get_last_dir(section, num=None):
-        """
-        Read the last directory used for plugin.
-
-        ``section``
-            The section of code calling the method. This is used in the settings key.
-
-        ``num``
-            Defaults to *None*. A further qualifier.
-        """
-        if num:
-            name = u'last directory %d' % num
-        else:
-            name = u'last directory'
-        return Settings().value(section + u'/' + name, u'')
-
-    @staticmethod
-    def set_last_dir(section, directory, num=None):
-        """
-        Save the last directory used for plugin.
-
-        ``section``
-            The section of code calling the method. This is used in the settings key.
-
-        ``directory``
-            The directory being stored in the settings.
-
-        ``num``
-            Defaults to *None*. A further qualifier.
-        """
-        if num:
-            name = u'last directory %d' % num
-        else:
-            name = u'last directory'
-        Settings().setValue(section + u'/' + name, directory)
-
-    @staticmethod
     def set_list(section, name, list_to_save):
         """
         Save a list to application settings.

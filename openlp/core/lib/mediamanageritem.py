@@ -328,7 +328,7 @@ class MediaManagerItem(QtGui.QWidget):
         Add a file to the list widget to make it available for showing
         """
         files = QtGui.QFileDialog.getOpenFileNames(self, self.onNewPrompt,
-            SettingsManager.get_last_dir(self.settingsSection), self.onNewFileMasks)
+            Settings.value(u'last directory'), self.onNewFileMasks)
         log.info(u'New files(s) %s', files)
         if files:
             Receiver.send_message(u'cursor_busy')
@@ -382,7 +382,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.listView.clear()
             self.loadList(full_list)
             last_dir = os.path.split(unicode(files[0]))[0]
-            SettingsManager.set_last_dir(self.settingsSection, last_dir)
+            Settings(self.settingsSection).setValue(u'last directory', last_dir)
             SettingsManager.set_list(self.settingsSection,
                 self.settingsSection, self.getFileList())
         if duplicates_found:

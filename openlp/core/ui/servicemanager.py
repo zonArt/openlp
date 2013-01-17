@@ -39,7 +39,7 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, SettingsManager, \
+from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, \
     translate, str_to_bool, check_directory_exists, Settings, PluginStatus, UiStrings
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
@@ -369,13 +369,13 @@ class ServiceManager(QtGui.QWidget):
         if not loadFile:
             fileName = QtGui.QFileDialog.getOpenFileName(self.mainwindow,
                 translate('OpenLP.ServiceManager', 'Open File'),
-                SettingsManager.get_last_dir(self.mainwindow.serviceManagerSettingsSection),
+                Settings().value(self.mainwindow.serviceManagerSettingsSection + u'/last directory'),
                 translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)'))
             if not fileName:
                 return False
         else:
             fileName = loadFile
-        SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, split_filename(fileName)[0])
+        Settings().setValue(self.mainwindow.serviceManagerSettingsSection + u'/last directory', split_filename(fileName)[0])
         self.loadFile(fileName)
 
     def saveModifiedService(self):
@@ -421,7 +421,7 @@ class ServiceManager(QtGui.QWidget):
         basename = os.path.splitext(file_name)[0]
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
-        SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, path)
+        Settings().setValue(self.mainwindow.serviceManagerSettingsSection + u'/last directory', path)
         service = []
         write_list = []
         missing_list = []
@@ -547,7 +547,7 @@ class ServiceManager(QtGui.QWidget):
         basename = os.path.splitext(file_name)[0]
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
-        SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, path)
+        Settings().setValue(self.mainwindow.serviceManagerSettingsSection + u'/last directory', path)
         service = []
         Receiver.send_message(u'cursor_busy')
         # Number of items + 1 to zip it
@@ -612,7 +612,7 @@ class ServiceManager(QtGui.QWidget):
             default_filename = format_time(default_pattern, local_time)
         else:
             default_filename = u''
-        directory = SettingsManager.get_last_dir(self.mainwindow.serviceManagerSettingsSection)
+        directory = Settings().value(self.mainwindow.serviceManagerSettingsSection + u'/last directory')
         path = os.path.join(directory, default_filename)
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.

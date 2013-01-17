@@ -506,9 +506,9 @@ class AdvancedTab(SettingsTab):
         """
         old_root_path = unicode(self.dataDirectoryLabel.text())
         # Get the new directory location.
-        new_data_path = unicode(QtGui.QFileDialog.getExistingDirectory(self,
+        new_data_path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.AdvancedTab', 'Select Data Directory Location'), old_root_path,
-            options = QtGui.QFileDialog.ShowDirsOnly))
+            options = QtGui.QFileDialog.ShowDirsOnly)
         # Set the new data path.
         if new_data_path:
             new_data_path = os.path.normpath(new_data_path)

@@ -103,7 +103,7 @@ class Settings(QtCore.QSettings):
         u'advanced/default image': u':/graphics/openlp-splash-screen.png',
         u'advanced/expand service item': False,
         u'advanced/recent file count': 4,
-        u'advanced/default service name': UiStrings().DefaultServiceName,
+        u'advanced/default service name': u'',#UiStrings().DefaultServiceName,
         u'advanced/default service minute': 0,
         u'advanced/slide limits': SlideLimits.End,
         u'advanced/print slide text': False,
@@ -111,6 +111,7 @@ class Settings(QtCore.QSettings):
         u'advanced/print file meta data': False,
         u'advanced/print notes': False,
         u'advanced/display size': 0,
+        u'crashreport/last directory': u'',
         u'displayTags/html_tags': u'',
         u'general/ccli number': u'',
         u'general/has run wizard': False,
@@ -143,6 +144,7 @@ class Settings(QtCore.QSettings):
         u'general/blank warning': False,
         u'players/background color': u'#000000',
         u'servicemanager/service theme': u'',
+        u'servicemanager/last directory': u'',
         u'shortcuts/viewPreviewPanel': [QtGui.QKeySequence(u'F11')],
         u'shortcuts/settingsImportItem': [],
         u'shortcuts/settingsPluginListItem': [QtGui.QKeySequence(u'Alt+F7')],
@@ -211,6 +213,8 @@ class Settings(QtCore.QSettings):
         u'themes/theme level': ThemeLevel.Song,
         u'themes/global theme': u'',
         u'themes/last directory': u'',
+        u'themes/last directory export': u'',
+        u'themes/last directory import': u'',
         u'user interface/main window position': QtCore.QPoint(0, 0),
         u'user interface/preview panel': True,
         u'user interface/live panel': True,
@@ -227,6 +231,11 @@ class Settings(QtCore.QSettings):
     __obsolete_settings__ = [
         (u'bibles/bookname language', u'bibles/book name language', []),
         (u'general/enable slide loop',  u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
+#        song usage/last directory 1 -> last directory import
+#        bibles/last directory 1 -> bibles/last directory backup
+#        themes/last directory -> themes/last directory import
+#        themes/last directory 1-> themes/last directory export
+#        songs/last directory 1 -> songs/last directory error log
     ]
 
     @staticmethod
@@ -297,7 +306,7 @@ class Settings(QtCore.QSettings):
         ``default_value``
             **Note**, do **not** use this. It is *only* for dynamic keys such as ``something %d``.
         """
-        # FIXME: rework default_value
+        # FIXME: remove default_value
         if default_value is None:
             # if group() is not empty the group has not been specified together with the key.
             if self.group():
