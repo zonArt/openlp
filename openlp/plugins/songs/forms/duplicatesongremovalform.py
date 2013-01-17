@@ -63,10 +63,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        from PyQt4.QtCore import pyqtRemoveInputHook
-        pyqtRemoveInputHook()
-
-        
+        self.duplicateSongList = []
+        self.reviewCurrentCount = 0
+        self.reviewTotalCount = 0
         self.clipboard = plugin.formParent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_importsong.bmp', False)
@@ -75,7 +74,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Song wizard specific initialisation.
         """
-        self.duplicateSongList = []
+        pass
 
     def customSignals(self):
         """
@@ -141,9 +140,13 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             'This wizard will help you to remove duplicate songs from the song database.'))
         self.searchingPage.setTitle(translate('Wizard', 'Searching for doubles'))
         self.searchingPage.setSubTitle(translate('Wizard', 'The song database is searched for double songs.'))
-        self.reviewPage.setTitle(translate('Wizard', 'Review duplicate songs'))
+        self.updateReviewCounterText()
         self.reviewPage.setSubTitle(translate('Wizard',
             'This page shows all duplicate songs to review which ones to remove and which ones to keep.'))
+
+    def updateReviewCounterText(self):
+        self.reviewPage.setTitle(translate('Wizard', 'Review duplicate songs (%s/%s)') % \
+                (self.reviewCurrentCount, self.reviewTotalCount))
 
     def customPageChanged(self, pageId):
         """
@@ -167,6 +170,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                         self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
                         self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " + songs[innerSongCounter].title)
                     self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
+            self.reviewTotalCount = len(self.duplicateSongList)
         elif pageId == self.reviewPageId:
             self.nextReviewButtonClicked()
 
@@ -255,7 +259,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.songsHorizontalLayout.itemAt(2).widget().songRemoveButton.setEnabled(False)
 
     def nextReviewButtonClicked(self):
-        #show/hide finish/cancel/nextReview buttons
+        self.reviewCurrentCount = self.reviewTotalCount - (len(self.duplicateSongList) - 1)
+        self.updateReviewCounterText()
         if len(self.duplicateSongList) <= 1:
             self.button(QtGui.QWizard.CancelButton).setEnabled(False)
         # remove all previous elements
