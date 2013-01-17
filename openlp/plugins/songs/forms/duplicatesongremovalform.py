@@ -63,6 +63,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
+        from PyQt4.QtCore import pyqtRemoveInputHook
+        pyqtRemoveInputHook()
+
+        
         self.clipboard = plugin.formParent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_importsong.bmp', False)
@@ -84,7 +88,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Add song wizard specific pages.
         """
-        self.searchingPage = QtGui.QWizardPage()
+        #add custom pages
+        self.searchingPage = SearchWizardPage(self, self.getNextPageForSearchWizardPage)
         self.searchingPage.setObjectName('searchingPage')
         self.searchingVerticalLayout = QtGui.QVBoxLayout(self.searchingPage)
         self.searchingVerticalLayout.setObjectName('searchingVerticalLayout')
@@ -97,7 +102,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.foundDuplicatesEdit.setReadOnly(True)
         self.foundDuplicatesEdit.setObjectName('foundDuplicatesEdit')
         self.searchingVerticalLayout.addWidget(self.foundDuplicatesEdit)
-        self.addPage(self.searchingPage)
+        self.searchingPageId = self.addPage(self.searchingPage)
         self.reviewPage = QtGui.QWizardPage()
         self.reviewPage.setObjectName('reviewPage')
         self.headerVerticalLayout = QtGui.QVBoxLayout(self.reviewPage)
@@ -120,7 +125,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.songsHorizontalLayout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
         self.songsHorizontalScrollArea.setWidget(self.songsHorizontalSongsWidget)
         self.headerVerticalLayout.addWidget(self.songsHorizontalScrollArea)
-        self.addPage(self.reviewPage)
+        self.reviewPageId = self.addPage(self.reviewPage)
+        self.finalPage = QtGui.QWizardPage()
+        self.finalPage.setObjectName('finalPage')
+        self.finalPageId = self.addPage(self.finalPage)
 
     def retranslateUi(self):
         """
@@ -141,7 +149,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Called when changing to a page other than the progress page.
         """
-        if self.page(pageId) == self.searchingPage:
+        #hide back button
+        self.button(QtGui.QWizard.BackButton).hide()
+
+        if pageId == self.searchingPageId:
             maxSongs = self.plugin.manager.get_object_count(Song)
             if maxSongs == 0 or maxSongs == 1:
                 return
@@ -156,19 +167,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                         self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
                         self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " + songs[innerSongCounter].title)
                     self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
-        elif self.page(pageId) == self.reviewPage:
-            #a stretch doesn't seem to stretch endlessly, so I add two to get enough stetch for 1400x1050
-            self.songsHorizontalLayout.addStretch()
-            self.songsHorizontalLayout.addStretch()
-            for duplicates in self.duplicateSongList[0:1]:
-                for duplicate in duplicates:
-                    songReviewWidget = SongReviewWidget(self.reviewPage, duplicate)
-                    QtCore.QObject.connect(songReviewWidget,
-                            QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'),
-                            self.removeButtonClicked)
-                    self.songsHorizontalLayout.addWidget(songReviewWidget)
-            self.songsHorizontalLayout.addStretch()
-            self.songsHorizontalLayout.addStretch()
+        elif pageId == self.reviewPageId:
+            self.nextReviewButtonClicked()
 
     def addDuplicatesToSongList(self, searchSong, duplicateSong):
         duplicateGroupFound = False
@@ -209,6 +209,23 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         pass
 
+    def getNextPageForSearchWizardPage(self):
+        #if we have not found any duplicates we advance directly to the final page
+        if len(self.duplicateSongList) == 0:
+            return self.finalPageId
+        else:
+            return self.reviewPageId
+
+    def validateCurrentPage(self):
+        if self.currentId() == self.reviewPageId:
+            #as long as the duplicate list is not empty we revisit the review page
+            if len(self.duplicateSongList) == 0:
+                return True
+            else:
+                self.nextReviewButtonClicked()
+                return False
+        return OpenLPWizard.validateCurrentPage(self)
+
     def removeButtonClicked(self, songReviewWidget):
         #remove song
         item_id = songReviewWidget.song.id
@@ -228,14 +245,53 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         except OSError:
             log.exception(u'Could not remove directory: %s', save_path)
         self.plugin.manager.delete_object(Song, item_id)
-        #remove GUI elements
+        # remove GUI elements
         self.songsHorizontalLayout.removeWidget(songReviewWidget)
         songReviewWidget.setParent(None)
-        #check if we only have one SongReviewWidget left
+        # check if we only have one SongReviewWidget left
         # 4 stretches + 1 SongReviewWidget = 5
-        # the SongReviewWidget is then at position 3
+        # the SongReviewWidget is then at position 2
         if self.songsHorizontalLayout.count() == 5:
             self.songsHorizontalLayout.itemAt(2).widget().songRemoveButton.setEnabled(False)
+
+    def nextReviewButtonClicked(self):
+        #show/hide finish/cancel/nextReview buttons
+        if len(self.duplicateSongList) <= 1:
+            self.button(QtGui.QWizard.CancelButton).setEnabled(False)
+        # remove all previous elements
+        for i in reversed(range(self.songsHorizontalLayout.count())): 
+            item = self.songsHorizontalLayout.itemAt(i)
+            if isinstance(item, QtGui.QWidgetItem):
+                # the order is important here, if the .setParent(None) call is done before the .removeItem() call, a
+                # segfault occurs
+                widget = item.widget()
+                self.songsHorizontalLayout.removeItem(item) 
+                widget.setParent(None)
+            else:
+                self.songsHorizontalLayout.removeItem(item) 
+        #add next set of duplicates
+        if len(self.duplicateSongList) > 0:
+            # a stretch doesn't seem to stretch endlessly, so I add two to get enough stetch for 1400x1050
+            self.songsHorizontalLayout.addStretch()
+            self.songsHorizontalLayout.addStretch()
+            for duplicate in self.duplicateSongList.pop(0):
+                songReviewWidget = SongReviewWidget(self.reviewPage, duplicate)
+                QtCore.QObject.connect(songReviewWidget,
+                        QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'),
+                        self.removeButtonClicked)
+                self.songsHorizontalLayout.addWidget(songReviewWidget)
+            self.songsHorizontalLayout.addStretch()
+            self.songsHorizontalLayout.addStretch()
+        # add counter
+
+
+class SearchWizardPage(QtGui.QWizardPage):
+    def __init__(self, parent, nextPageCallback):
+        QtGui.QWizardPage.__init__(self, parent)
+        self.nextPageCallback = nextPageCallback
+
+    def nextId(self):
+        return self.nextPageCallback()
 
 class SongReviewWidget(QtGui.QWidget):
     def __init__(self, parent, song):
@@ -338,6 +394,7 @@ class SongReviewWidget(QtGui.QWidget):
             verseMarker = verse[0]['type'] + verse[0]['label']
             verseLabel = QtGui.QLabel(self.songInfoVerseGroupBox)
             verseLabel.setText(verse[1])
+            verseLabel.setWordWrap(True)
             self.songInfoVerseGroupBoxLayout.addRow(verseMarker, verseLabel)
         self.songContentVerticalLayout.addWidget(self.songInfoVerseGroupBox)
         self.songContentVerticalLayout.addStretch()

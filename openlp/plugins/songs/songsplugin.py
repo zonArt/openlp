@@ -171,24 +171,7 @@ class SongsPlugin(Plugin):
         """
         Search for duplicates in the song database.
         """
-        #maxSongs = self.manager.get_object_count(Song)
-        #if maxSongs == 0:
-        #    return
-        #QtGui.QMessageBox.information(self.formParent,
-        #    "Find duplicates called", "Called...")
-        #songs = self.manager.get_all_objects(Song)
-        #for outerSongCounter in range(maxSongs-1):
-        #    for innerSongCounter in range(outerSongCounter+1, maxSongs):
-        #        doubleFinder = DuplicateSongFinder()
-        #        if doubleFinder.songsProbablyEqual(songs[outerSongCounter],
-        #            songs[innerSongCounter]):
-        #                QtGui.QMessageBox.information(self.formParent,
-        #                "Double found", str(innerSongCounter) + " " +
-        #                str(outerSongCounter))
-        if not hasattr(self, u'duplicate_removal_wizard'):
-            self.duplicate_removal_wizard = \
-                    DuplicateSongRemovalForm(self.formParent, self)
-        self.duplicate_removal_wizard.exec_()
+        DuplicateSongRemovalForm(self.formParent, self).exec_()
 
     def onSongImportItemClicked(self):
         if self.mediaItem:
