@@ -342,8 +342,7 @@ class AdvancedTab(SettingsTab):
                 'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.displayWorkaroundGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
-        self.alternateRowsCheckBox.setText(translate('OpenLP.AdvancedTab',
-            'Disable alternating row colors in lists'))
+        self.alternateRowsCheckBox.setText(translate('OpenLP.AdvancedTab', 'Enable alternating row colors in lists'))
         # Slide Limits
         self.slideGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
         self.slideLabel.setText(translate('OpenLP.GeneralTab', 'Behavior of next/previous on the last/first slide:'))
@@ -390,7 +389,7 @@ class AdvancedTab(SettingsTab):
         # Fix for bug #936281.
         # Prevent the dialog displayed by the alternateRowsCheckBox to display.
         self.alternateRowsCheckBox.blockSignals(True)
-        self.alternateRowsCheckBox.setChecked(settings.value(u'alternate rows', sys.platform.startswith(u'win')))
+        self.alternateRowsCheckBox.setChecked(settings.value(u'alternate rows', not sys.platform.startswith(u'win')))
         self.alternateRowsCheckBox.blockSignals(False)
         self.defaultColor = settings.value(u'default color', u'#ffffff')
         self.defaultFileEdit.setText(settings.value(u'default image', u':/graphics/openlp-splash-screen.png'))

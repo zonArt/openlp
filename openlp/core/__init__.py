@@ -124,7 +124,7 @@ class OpenLP(QtGui.QApplication):
                 Settings().setValue(u'general/has run wizard', True)
         # Correct stylesheet bugs
         application_stylesheet = u''
-        if Settings().value(u'advanced/alternate rows', sys.platform.startswith(u'win')):
+        if not Settings().value(u'advanced/alternate rows', not sys.platform.startswith(u'win')):
             base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
             alternate_rows_repair_stylesheet = \
                 u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
