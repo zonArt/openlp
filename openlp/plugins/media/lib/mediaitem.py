@@ -201,7 +201,7 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
+        self.loadList(Settings().value(self.settingsSection + u'/media files'))
         self.populateDisplayTypes()
 
     def rebuild_players(self):
@@ -253,8 +253,7 @@ class MediaMediaItem(MediaManagerItem):
             row_list.sort(reverse=True)
             for row in row_list:
                 self.listView.takeItem(row)
-            SettingsManager.set_list(self.settingsSection,
-                u'media', self.getFileList())
+            Settings().setValue(self.settingsSection + u'/media files', self.getFileList())
 
     def loadList(self, media):
         # Sort the media by its filename considering language specific
@@ -284,7 +283,7 @@ class MediaMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
 
     def getList(self, type=MediaType.Audio):
-        media = SettingsManager.load_list(self.settingsSection, u'media')
+        media = Settings().value(self.settingsSection + u'/media files')
         media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
@@ -296,7 +295,7 @@ class MediaMediaItem(MediaManagerItem):
         return media
 
     def search(self, string, showError):
-        files = SettingsManager.load_list(self.settingsSection, u'media')
+        files = Settings().value(self.settingsSection + u'/media files')
         results = []
         string = string.lower()
         for file in files:

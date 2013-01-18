@@ -383,8 +383,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.loadList(full_list)
             last_dir = os.path.split(unicode(files[0]))[0]
             Settings().setValue(self.settingsSection + u'/last directory', last_dir)
-            SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+            Settings().setValue(u'%s/%s files' % (self.settingsSection, self.settingsSection), self.getFileList())
         if duplicates_found:
             critical_error_message_box(UiStrings().Duplicate,
                 translate('OpenLP.MediaManagerItem', 'Duplicate files were found on import and were ignored.'))

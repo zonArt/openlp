@@ -78,7 +78,7 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
-        self.loadList(SettingsManager.load_list(self.settingsSection, u'images'), True)
+        self.loadList(Settings().value(self.settingsSection +  u'/image files'), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -107,7 +107,7 @@ class ImageMediaItem(MediaManagerItem):
                     delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
                 self.plugin.formParent.incrementProgressBar()
-            SettingsManager.set_list(self.settingsSection, u'images', self.getFileList())
+            Settings().setValue(self.settingsSection + u'/image files', self.getFileList())
             self.plugin.formParent.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
@@ -222,7 +222,7 @@ class ImageMediaItem(MediaManagerItem):
                         'the image file "%s" no longer exists.') % filename)
 
     def search(self, string, showError):
-        files = SettingsManager.load_list(self.settingsSection, u'images')
+        files = Settings().value(self.settingsSection + u'/image files')
         results = []
         string = string.lower()
         for file in files:

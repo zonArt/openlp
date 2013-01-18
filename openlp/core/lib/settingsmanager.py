@@ -45,56 +45,6 @@ class SettingsManager(object):
     """
 
     @staticmethod
-    def set_list(section, name, list_to_save):
-        """
-        Save a list to application settings.
-
-        ``section``
-            The section of the settings to store this list.
-
-        ``name``
-            The name of the list to save.
-
-        ``list_to_save``
-            The list of values to save.
-        """
-        settings = Settings()
-        settings.beginGroup(section)
-        old_count = settings.value(u'%s count' % name, 0)
-        new_count = len(list_to_save)
-        settings.setValue(u'%s count' % name, new_count)
-        for counter in range(new_count):
-            settings.setValue(u'%s %d' % (name, counter), list_to_save[counter - 1])
-        if old_count > new_count:
-            # Tidy up any old list items
-            for counter in range(new_count, old_count):
-                settings.remove(u'%s %d' % (name, counter))
-        settings.endGroup()
-
-    @staticmethod
-    def load_list(section, name):
-        """
-        Load a list from the config file.
-
-        ``section``
-            The section of the settings to load the list from.
-
-        ``name``
-            The name of the list.
-        """
-        settings = Settings()
-        settings.beginGroup(section)
-        list_count = settings.value(u'%s count' % name, 0)
-        loaded_list = []
-        if list_count:
-            for counter in range(list_count):
-                item = settings.value(u'%s %d' % (name, counter), u'')
-                if item:
-                    loaded_list.append(item)
-        settings.endGroup()
-        return loaded_list
-
-    @staticmethod
     def get_files(section=None, extension=None):
         """
         Get a list of files from the data files path.

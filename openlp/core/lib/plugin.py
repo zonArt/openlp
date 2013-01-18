@@ -177,6 +177,8 @@ class Plugin(QtCore.QObject):
         # Add the default status to the default settings.
         default_settings[name + u'/status'] = PluginStatus.Inactive
         default_settings[name + u'/last directory'] = u''
+        if media_item_class is not None:
+            default_settings[u'%s/%s files' % (name, name)] = []
         # Add settings to the dict of all settings.
         Settings.extend_default_settings(default_settings)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
