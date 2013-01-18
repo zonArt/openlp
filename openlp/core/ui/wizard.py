@@ -280,5 +280,5 @@ class OpenLPWizard(QtGui.QWizard):
             Settings().value(self.plugin.settingsSection + u'/' + setting_name),
             QtGui.QFileDialog.ShowDirsOnly)
         if folder:
-            editbox.setText(folder
+            editbox.setText(folder)
         Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)

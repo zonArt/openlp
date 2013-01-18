@@ -259,16 +259,13 @@ class ScreenList(object):
         width = settings.value(u'width')
         height = settings.value(u'height')
         # If -1 has been returned we have to use default values.
-        if x == -1:
+        if width == -1 or height == -1:
             x = self.current[u'size'].x()
             settings.setValue(u'x position', x)
-        if y == -1:
-            self.current[u'size'].y()
+            y = self.current[u'size'].y()
             settings.setValue(u'y position', y)
-        if width == -1:
             width = self.current[u'size'].width()
             settings.setValue(u'width', width)
-        if height == -1:
             height = self.current[u'size'].height()
             settings.setValue(u'height', height)
         self.override[u'size'] = QtCore.QRect(x, y, width, height)

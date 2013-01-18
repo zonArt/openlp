@@ -128,8 +128,8 @@ class Settings(QtCore.QSettings):
         u'general/screen blank': False,
         u'general/override position': False,
         # Display defaults are set in core/lib/screen.py due to a circle dependency.
-        u'general/x position': -1,
-        u'general/y position': -1,
+        u'general/x position': 0, # All integers are valid, that is why we use 0.
+        u'general/y position': 0, # All integers are valid, that is why we use 0.
         u'general/monitor': -1,
         u'general/height': -1,
         u'general/width': -1,
