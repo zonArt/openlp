@@ -124,6 +124,7 @@ class MediaPlugin(Plugin):
         we want to check if we have the old "Use Phonon" setting, and convert
         it to "enable Phonon" and "make it the first one in the list".
         """
+        Plugin.appStartup(self)
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):

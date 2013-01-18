@@ -120,7 +120,7 @@ class PresentationMediaItem(MediaManagerItem):
         Populate the media manager tab
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        files = Settings().value(self.settingsSection + u'/presentation files')
+        files = Settings().value(self.settingsSection + u'/presentations files')
         self.loadList(files, True)
         self.populateDisplayTypes()
 
@@ -232,7 +232,7 @@ class PresentationMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_normal')
             for row in row_list:
                 self.listView.takeItem(row)
-            Settings().setValue(self.settingsSection + u'/presentation files', self.getFileList())
+            Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
@@ -311,7 +311,7 @@ class PresentationMediaItem(MediaManagerItem):
         return None
 
     def search(self, string, showError):
-        files = Settings().value(self.settingsSection + u'/presentation files')
+        files = Settings().value(self.settingsSection + u'/presentations files')
         results = []
         string = string.lower()
         for file in files:

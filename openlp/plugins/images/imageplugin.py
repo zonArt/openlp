@@ -38,7 +38,7 @@ log = logging.getLogger(__name__)
 
 __default_settings__ = {
         u'images/background color': u'#000000',
-        u'images/image files': []
+        u'images/images files': []
     }
 
 

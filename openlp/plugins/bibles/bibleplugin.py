@@ -106,6 +106,7 @@ class BiblePlugin(Plugin):
         """
         Perform tasks on application startup
         """
+        Plugin.appStartup(self)
         if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.formParent,
                 translate('OpenLP', 'Information'),
