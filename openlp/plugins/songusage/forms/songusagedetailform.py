@@ -61,7 +61,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         fromDate = Settings().value(self.plugin.settingsSection + u'/from date')
         self.fromDate.setSelectedDate(fromDate)
         self.toDate.setSelectedDate(toDate)
-        self.fileLineEdit.setText(Settings().value(self.plugin.settingsSection + u'/last directory'))
+        self.fileLineEdit.setText(Settings().value(self.plugin.settingsSection + u'/last directory export'))
 
     def defineOutputLocation(self):
         """
@@ -69,9 +69,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
-            Settings().value(self.plugin.settingsSection + u'/last directory'))
+            Settings().value(self.plugin.settingsSection + u'/last directory export'))
         if path:
-            Settings().setValue(self.plugin.settingsSection + u'/last directory', path)
+            Settings().setValue(self.plugin.settingsSection + u'/last directory export', path)
             self.fileLineEdit.setText(path)
 
     def accept(self):

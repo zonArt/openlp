@@ -52,7 +52,8 @@ __default_settings__ = {
         u'songusage/db type': u'sqlite',
         u'songusage/active': False,
         u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
-        u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1)
+        u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
+        u'songusage/last directory export': u''
     }
 
 

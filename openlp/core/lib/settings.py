@@ -231,11 +231,11 @@ class Settings(QtCore.QSettings):
     __obsolete_settings__ = [
         (u'bibles/bookname language', u'bibles/book name language', []),
         (u'general/enable slide loop',  u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
-#        song usage/last directory 1 -> last directory import
+#        songusage/last directory 1 -> songusage/last directory export
 #        bibles/last directory 1 -> bibles/last directory backup
+#        songs/last directory 1 -> songs/last directory import
 #        themes/last directory -> themes/last directory import
 #        themes/last directory 1-> themes/last directory export
-#        songs/last directory 1 -> songs/last directory import
     ]
 
     @staticmethod
