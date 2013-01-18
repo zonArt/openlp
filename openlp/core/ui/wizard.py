@@ -276,14 +276,9 @@ class OpenLPWizard(QtGui.QWizard):
         ``setting_name``
             The place where to save the last opened directory.
         """
-        print setting_name
-        print u'asdf', Settings().value(self.plugin.settingsSection + u'/' + setting_name)
-
         folder = QtGui.QFileDialog.getExistingDirectory(self, title,
             Settings().value(self.plugin.settingsSection + u'/' + setting_name),
             QtGui.QFileDialog.ShowDirsOnly)
-        print os.path.dirname(Settings().value(self.plugin.settingsSection + u'/' + setting_name))
         if folder:
-            editbox.setText(folder)
-        print folder
+            editbox.setText(folder
         Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)
