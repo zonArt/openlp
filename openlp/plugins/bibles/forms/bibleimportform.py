@@ -469,34 +469,34 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the OSIS file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit)
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit, u'last directory import')
 
     def onCsvBooksBrowseButtonClicked(self):
         """
         Show the file open dialog for the books CSV file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, u'%s (*.csv)'
-            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, u'last directory import',
+            u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onCsvVersesBrowseButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, u'%s (*.csv)'
-            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, u'last directory import',
+            u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
         Show the file open dialog for the OpenSong file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit)
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit, u'last directory import')
 
     def onOpenlp1BrowseButtonClicked(self):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1, self.openlp1FileEdit, u'%s (*.bible)' %
-            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x Bible Files'))
+        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1, self.openlp1FileEdit, u'last directory import',
+            u'%s (*.bible)' % translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x Bible Files'))
 
     def registerFields(self):
         """

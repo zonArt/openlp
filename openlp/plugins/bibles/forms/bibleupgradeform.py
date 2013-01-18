@@ -116,11 +116,9 @@ class BibleUpgradeForm(OpenLPWizard):
         Show the file open dialog for the OSIS file.
         """
         filename = QtGui.QFileDialog.getExistingDirectory(self,
-            translate('BiblesPlugin.UpgradeWizardForm', 'Select a Backup Directory'),
-            os.path.dirname(Settings(self.plugin.settingsSection).value(u'last directory backup')))
+            translate('BiblesPlugin.UpgradeWizardForm', 'Select a Backup Directory'), u'')
         if filename:
             self.backupDirectoryEdit.setText(filename)
-            Settings(self.plugin.settingsSection).setValue(u'last directory backup', filename)
 
     def onNoBackupCheckBoxToggled(self, checked):
         """

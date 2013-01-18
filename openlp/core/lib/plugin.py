@@ -177,6 +177,8 @@ class Plugin(QtCore.QObject):
         # Add the default status to the default settings.
         default_settings[name + u'/status'] = PluginStatus.Inactive
         default_settings[name + u'/last directory'] = u''
+        # Append a setting for files in the mediamanager (note not all plugins
+        # which have a mediamanager need this).
         if media_item_class is not None:
             default_settings[u'%s/%s files' % (name, name)] = []
         # Add settings to the dict of all settings.

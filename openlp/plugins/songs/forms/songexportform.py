@@ -331,4 +331,5 @@ class SongExportForm(OpenLPWizard):
         Called when the *directoryButton* was clicked. Opens a dialog and writes
         the path to *directoryLineEdit*.
         """
-        self.getFolder(translate('SongsPlugin.ExportWizardForm', 'Select Destination Folder'), self.directoryLineEdit)
+        self.getFolder(translate('SongsPlugin.ExportWizardForm', 'Select Destination Folder'),
+            self.directoryLineEdit, u'last directory export')

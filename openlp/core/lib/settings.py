@@ -232,10 +232,11 @@ class Settings(QtCore.QSettings):
         (u'bibles/bookname language', u'bibles/book name language', []),
         (u'general/enable slide loop', u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)]),
         (u'themes/last directory', u'themes/last directory import', []),
-        (u'themes/last directory 1', u'themes/last directory export', [])
+        (u'themes/last directory 1', u'themes/last directory export', []),
+        (u'servicemanager/last directory', u'', [])
 #        songusage/last directory 1 -> songusage/last directory export
-#        bibles/last directory 1 -> bibles/last directory backup
 #        songs/last directory 1 -> songs/last directory import
+#        bibles/last directory 1 -> bibles/last directory import
     ]
 
     @staticmethod

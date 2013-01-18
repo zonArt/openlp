@@ -276,9 +276,9 @@ class SongImportForm(OpenLPWizard):
             u'name', u'filter')
         filepathEdit = self.formatWidgets[format][u'filepathEdit']
         if select_mode == SongFormatSelect.SingleFile:
-            self.getFileName(WizardStrings.OpenTypeFile % format_name, filepathEdit, filter)
+            self.getFileName(WizardStrings.OpenTypeFile % format_name, filepathEdit, u'last directory import', filter)
         elif select_mode == SongFormatSelect.SingleFolder:
-            self.getFolder(WizardStrings.OpenTypeFolder % format_name, filepathEdit)
+            self.getFolder(WizardStrings.OpenTypeFolder % format_name, filepathEdit, u'last directory import')
 
     def onAddButtonClicked(self):
         format = self.currentFormat
