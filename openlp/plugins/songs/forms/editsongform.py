@@ -26,6 +26,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.songs.forms.editsongform` module contains the form
+used to edit songs.
+"""
 
 import logging
 import re
@@ -43,7 +47,7 @@ from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
 from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
-from editsongdialog import Ui_EditSongDialog
+from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)
 
@@ -57,7 +61,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(EditSongForm, self).__init__(parent)
         self.mediaitem = mediaitem
         self.song = None
         # can this be automated?
@@ -114,12 +118,18 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.whitespace = re.compile(r'\W+', re.UNICODE)
 
     def initialise(self):
+        """
+        Set up the form for when it is displayed.
+        """
         self.verseEditButton.setEnabled(False)
         self.verseDeleteButton.setEnabled(False)
         self.authorRemoveButton.setEnabled(False)
         self.topicRemoveButton.setEnabled(False)
 
     def loadAuthors(self):
+        """
+        Load the authors from the database into the combobox.
+        """
         authors = self.manager.get_all_objects(Author,
             order_by_ref=Author.display_name)
         self.authorsComboBox.clear()
@@ -133,14 +143,23 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         set_case_insensitive_completer(self.authors, self.authorsComboBox)
 
     def loadTopics(self):
+        """
+        Load the topics into the combobox.
+        """
         self.topics = []
         self.__loadObjects(Topic, self.topicsComboBox, self.topics)
 
     def loadBooks(self):
+        """
+        Load the song books into the combobox
+        """
         self.books = []
         self.__loadObjects(Book, self.songBookComboBox, self.books)
 
     def __loadObjects(self, cls, combo, cache):
+        """
+        Generically load a set of objects into a cache and a combobox.
+        """
         objects = self.manager.get_all_objects(cls, order_by_ref=cls.name)
         combo.clear()
         combo.addItem(u'')
@@ -152,6 +171,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         set_case_insensitive_completer(cache, combo)
 
     def loadThemes(self, theme_list):
+        """
+        Load the themes into a combobox.
+        """
         self.themeComboBox.clear()
         self.themeComboBox.addItem(u'')
         self.themes = theme_list
@@ -159,6 +181,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         set_case_insensitive_completer(self.themes, self.themeComboBox)
 
     def loadMediaFiles(self):
+        """
+        Load the media files into a combobox.
+        """
         self.audioAddFromMediaButton.setVisible(False)
         for plugin in self.parent().pluginManager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
@@ -167,6 +192,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 break
 
     def newSong(self):
+        """
+        Blank the edit form out in preparation for a new song.
+        """
         log.debug(u'New Song')
         self.song = None
         self.initialise()
@@ -314,6 +342,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verseListWidget.repaint()
 
     def onAuthorAddButtonClicked(self):
+        """
+        Add the author to the list of authors associated with this song when the button is clicked.
+        """
         item = int(self.authorsComboBox.currentIndex())
         text = self.authorsComboBox.currentText().strip(u' \r\n\t')
         # This if statement is for OS X, which doesn't seem to work well with
@@ -362,10 +393,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.authorsListView.addItem(author_item)
 
     def onAuthorsListViewClicked(self):
+        """
+        Run a set of actions when an author in the list is selected (mainly enable the delete button).
+        """
         if self.authorsListView.count() > 1:
             self.authorRemoveButton.setEnabled(True)
 
     def onAuthorRemoveButtonClicked(self):
+        """
+        Remove the author from the list when the delete button is clicked.
+        """
         self.authorRemoveButton.setEnabled(False)
         item = self.authorsListView.currentItem()
         row = self.authorsListView.row(item)

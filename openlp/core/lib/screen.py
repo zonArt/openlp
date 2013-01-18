@@ -71,7 +71,7 @@ class ScreenList(object):
         screen_list.screen_list = []
         screen_list.display_count = 0
         screen_list.screen_count_changed()
-        screen_list._load_screen_settings()
+        screen_list.load_screen_settings()
         QtCore.QObject.connect(desktop, QtCore.SIGNAL(u'resized(int)'), screen_list.screen_resolution_changed)
         QtCore.QObject.connect(desktop, QtCore.SIGNAL(u'screenCountChanged(int)'), screen_list.screen_count_changed)
         return screen_list
@@ -239,7 +239,7 @@ class ScreenList(object):
                 y >= size.y() and y <= (size.y() + size.height()):
                 return screen[u'number']
 
-    def _load_screen_settings(self):
+    def load_screen_settings(self):
         """
         Loads the screen size and the monitor number from the settings.
         """
