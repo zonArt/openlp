@@ -42,7 +42,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
     PluginStatus, ScreenList, UiStrings
 from openlp.core.lib.ui import create_action
-from openlp.core.lib import SlideLimits, Settings
+from openlp.core.lib import Settings
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
@@ -858,6 +858,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 continue
         # We have a good file, import it.
         for section_key in import_keys:
+            if u'eneral' in section_key:
+                section_key = section_key.lower()
             value = import_settings.value(section_key)
             if value is not None:
                 settings.setValue(u'%s' % (section_key), value)
