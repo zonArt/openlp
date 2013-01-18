@@ -298,7 +298,7 @@ class Settings(QtCore.QSettings):
                     self.setValue(new_key, old_value)
                 self.remove(old_key)
 
-    def value(self, key, default_value=None):
+    def value(self, key):
         """
         Returns the value for the given ``key``. The returned ``value`` is of the same type as the default value in the
         *Settings.__default_settings__* dict.
