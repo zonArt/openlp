@@ -233,10 +233,10 @@ class Settings(QtCore.QSettings):
         (u'general/enable slide loop', u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)]),
         (u'themes/last directory', u'themes/last directory import', []),
         (u'themes/last directory 1', u'themes/last directory export', []),
-        (u'servicemanager/last directory', u'', [])
-#        songusage/last directory 1 -> songusage/last directory export
-#        songs/last directory 1 -> songs/last directory import
-#        bibles/last directory 1 -> bibles/last directory import
+        (u'servicemanager/last directory', u'', []),
+        (u'songs/last directory 1', u'songs/last directory import', []),
+        (u'bibles/last directory 1', u'bibles/last directory import', []),
+        (u'songusage/last directory 1', u'songusage/last directory export', [])
     ]
 
     @staticmethod
@@ -303,17 +303,12 @@ class Settings(QtCore.QSettings):
 
         ``key``
             The key to return the value from.
-
-        ``default_value``
-            **Note**, do **not** use this. It is *only* for dynamic keys such as ``something %d``.
         """
-        # FIXME: remove default_value
-        if default_value is None:
-            # if group() is not empty the group has not been specified together with the key.
-            if self.group():
-                default_value = Settings.__default_settings__[self.group() + u'/' + key]
-            else:
-                default_value = Settings.__default_settings__[key]
+        # if group() is not empty the group has not been specified together with the key.
+        if self.group():
+            default_value = Settings.__default_settings__[self.group() + u'/' + key]
+        else:
+            default_value = Settings.__default_settings__[key]
         setting = super(Settings, self).value(key, default_value)
         # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
         # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
