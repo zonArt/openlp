@@ -33,11 +33,11 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, Receiver, MediaType, ServiceItem, build_html, ServiceItemContext, Settings
+    check_item_selected, Receiver, MediaType, ServiceItem, ServiceItemContext, Settings, check_directory_exists
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
-from openlp.core.utils import locale_compare
+from openlp.core.utils import AppLocation, locale_compare
 
 log = logging.getLogger(__name__)
 
@@ -130,8 +130,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the media selected,
         """
-        self.plugin.liveController.mediaController.media_reset(
-            self.plugin.liveController)
+        self.plugin.liveController.mediaController.media_reset(self.plugin.liveController)
         self.resetAction.setVisible(False)
 
     def videobackgroundReplaced(self):
@@ -145,8 +144,7 @@ class MediaMediaItem(MediaManagerItem):
         Called to replace Live background with the media selected.
         """
         if check_item_selected(self.listView,
-            translate('MediaPlugin.MediaItem',
-            'You must select a media file to replace the background with.')):
+                translate('MediaPlugin.MediaItem', 'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
             filename = item.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
@@ -166,8 +164,8 @@ class MediaMediaItem(MediaManagerItem):
                     translate('MediaPlugin.MediaItem',
                     'There was a problem replacing your background, the media file "%s" no longer exists.') % filename)
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False, context=ServiceItemContext.Live):
+    def generateSlideData(self, service_item, item=None, xmlVersion=False, remote=False,
+            context=ServiceItemContext.Live):
         if item is None:
             item = self.listView.currentItem()
             if item is None:
@@ -201,6 +199,8 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
+        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
+        check_directory_exists(self.servicePath)
         self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
         self.populateDisplayTypes()
 
@@ -247,14 +247,13 @@ class MediaMediaItem(MediaManagerItem):
         """
         Remove a media item from the list.
         """
-        if check_item_selected(self.listView, translate('MediaPlugin.MediaItem',
-                'You must select a media file to delete.')):
+        if check_item_selected(self.listView,
+                translate('MediaPlugin.MediaItem', 'You must select a media file to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
                 self.listView.takeItem(row)
-            SettingsManager.set_list(self.settingsSection,
-                u'media', self.getFileList())
+            SettingsManager.set_list(self.settingsSection, u'media', self.getFileList())
 
     def loadList(self, media):
         # Sort the media by its filename considering language specific
