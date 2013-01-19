@@ -1,6 +1,8 @@
 """
     Package to test the openlp.core.lib package.
 """
+import os
+
 from unittest import TestCase
 from mock import MagicMock
 from openlp.core.lib import ServiceItem
@@ -13,6 +15,8 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
+
+TESTPATH = os.path.join(os.getcwd(),u'tests',u'functional',u'openlp_core_lib',u'resources')
 
 class TestServiceItem(TestCase):
 
@@ -68,7 +72,8 @@ class TestServiceItem(TestCase):
         service_item.renderer = mocked_renderer
 
         # WHEN: adding image to a service item
-        service_item.add_from_image(u'resources/church.jpg', u'Image Title')
+        test_image = os.path.join(TESTPATH, u'church.jpg')
+        service_item.add_from_image(test_image, u'Image Title')
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -76,14 +81,14 @@ class TestServiceItem(TestCase):
 
         # THEN: We should have a page of output.
         assert len(service_item._raw_frames) == 1, u'A valid rendered Service Item has display frames'
-        assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
+        assert service_item.get_rendered_frame(0) == test_image
 
         # WHEN: adding a second image to a service item
-        service_item.add_from_image(u'resources/church.jpg', u'Image1 Title')
+        service_item.add_from_image(test_image, u'Image1 Title')
 
         # THEN: We should have an increased page of output.
         assert len(service_item._raw_frames) == 2, u'A valid rendered Service Item has display frames'
-        assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
+        assert service_item.get_rendered_frame(0) == test_image
         assert service_item.get_rendered_frame(0) == service_item.get_rendered_frame(1)
 
         # WHEN requesting a saved service item
@@ -93,7 +98,7 @@ class TestServiceItem(TestCase):
         assert len(service) == 2, u'A saved service has two parts'
         assert service[u'header'][u'name']  == u'test' , u'A test plugin was returned'
         assert service[u'data'][0][u'title'] == u'Image Title' , u'The first title name matches the request'
-        assert service[u'data'][0][u'path'] == u'resources/church.jpg' , u'The first image name matches'
+        assert service[u'data'][0][u'path'] == test_image , u'The first image name matches'
         assert service[u'data'][0][u'title'] != service[u'data'][1][u'title'], \
             u'The individual titles should not match'
         assert service[u'data'][0][u'path'] == service[u'data'][1][u'path'], u'The file paths should match'
@@ -124,7 +129,8 @@ class TestServiceItem(TestCase):
         service_item.renderer = mocked_renderer
 
         # WHEN: adding image to a service item
-        service_item.add_from_command(u'resources', u'church.jpg', u'resources/church.jpg')
+        test_file = os.path.join(TESTPATH, u'church.jpg')
+        service_item.add_from_command(TESTPATH, u'church.jpg', test_file)
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -132,7 +138,7 @@ class TestServiceItem(TestCase):
 
         # THEN: We should have a page of output.
         assert len(service_item._raw_frames) == 1, u'A valid rendered Service Item has one raw frame'
-        assert service_item.get_rendered_frame(0) == u'resources/church.jpg', u'The image matches the input'
+        assert service_item.get_rendered_frame(0) == test_file, u'The image matches the input'
 
         # WHEN requesting a saved service item
         service = service_item.get_service_repr(True)
@@ -141,8 +147,8 @@ class TestServiceItem(TestCase):
         assert len(service) == 2, u'A saved service has two parts'
         assert service[u'header'][u'name']  == u'test' , u'A test plugin'
         assert service[u'data'][0][u'title'] == u'church.jpg' , u'The first title name '
-        assert service[u'data'][0][u'path'] == u'resources' , u'The first image name'
-        assert service[u'data'][0][u'image'] == u'resources/church.jpg' , u'The first image name'
+        assert service[u'data'][0][u'path'] == TESTPATH , u'The first image name'
+        assert service[u'data'][0][u'image'] == test_file , u'The first image name'
 
         # WHEN validating a service item
         service_item.validate_item([u'jpg'])
