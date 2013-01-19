@@ -236,7 +236,9 @@ class VlcPlayer(MediaPlayer):
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
+            controller.seekSlider.blockSignals(True)
             controller.seekSlider.setSliderPosition(display.vlcMediaPlayer.get_time())
+            controller.seekSlider.blockSignals(False)
 
     def get_info(self):
         return(translate('Media.player', 'VLC is an external player which '

@@ -215,8 +215,9 @@ class PhononPlayer(MediaPlayer):
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.setSliderPosition(
-                display.mediaObject.currentTime())
+            controller.seekSlider.blockSignals(True)
+            controller.seekSlider.setSliderPosition(display.mediaObject.currentTime())
+            controller.seekSlider.blockSignals(False)
 
     def get_media_display_css(self):
         """
