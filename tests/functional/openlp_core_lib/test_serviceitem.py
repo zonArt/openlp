@@ -20,137 +20,138 @@ class TestServiceItem(TestCase):
         """
         Test the Service Item basic test
         """
-        #GIVEN: A new service item
+        # GIVEN: A new service item
 
-        #WHEN:A service item is created (without a plugin)
+        # WHEN:A service item is created (without a plugin)
         service_item = ServiceItem(None)
 
-        #THEN: We should get back a valid service item
-        assert service_item.is_valid is True, u'A valid Service Item'
-        assert service_item.missing_frames() is True, u'No frames loaded yet'
+        # THEN: We should get back a valid service item
+        assert service_item.is_valid is True, u'The new service item should be valid'
+        assert service_item.missing_frames() is True, u'There should not be any frames in the service item'
 
     def serviceitem_add_text_test(self):
         """
         Test the Service Item add text test
         """
-        #GIVEN: A new service item
+        # GIVEN: A new service item
         service_item = ServiceItem(None)
 
-        #WHEN: adding text to a service item
+        # WHEN: adding text to a service item
         service_item.add_from_text(VERSE)
         service_item.raw_footer = FOOTER
 
-        #THEN: We should get back a valid service item
-        assert service_item.is_valid is True, u'A valid Service Item'
+        # THEN: We should get back a valid service item
+        assert service_item.is_valid is True, u'The new service item should be valid'
         assert service_item.missing_frames() is False, u'check frames loaded '
 
-        #GIVEN: A service item with text
+        # GIVEN: A service item with text
         mocked_renderer =  MagicMock()
         mocked_renderer.format_slide.return_value = [VERSE]
         service_item.renderer = mocked_renderer
 
-        #WHEN: Render called
-        assert len(service_item._display_frames) is 0, u'A blank Service Item'
+        # WHEN: Render called
+        assert len(service_item._display_frames) == 0, u'A blank Service Item with no display frames'
         service_item.render(True)
 
-        #THEN: We should have a page of output.
-        assert len(service_item._display_frames) is 1, u'A valid rendered Service Item has display frames'
-        assert service_item.get_rendered_frame(0) == VERSE.split(u'\n')[0], u'A valid render'
+        # THEN: We should have a page of output.
+        assert len(service_item._display_frames) == 1, u'A valid rendered Service Item has 1 display frame'
+        assert service_item.get_rendered_frame(0) == VERSE.split(u'\n')[0], u'A output has rendered correctly.'
 
     def serviceitem_add_image_test(self):
         """
         Test the Service Item add image test
         """
-        #GIVEN: A new service item and a mocked renderer
+        # GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
         service_item.name = u'test'
         mocked_renderer =  MagicMock()
         service_item.renderer = mocked_renderer
 
-        #WHEN: adding image to a service item
+        # WHEN: adding image to a service item
         service_item.add_from_image(u'resources/church.jpg', u'Image Title')
 
-        #THEN: We should get back a valid service item
-        assert service_item.is_valid is True, u'A valid Service Item'
-        assert len(service_item._display_frames) is 0, u'A blank Service Item'
+        # THEN: We should get back a valid service item
+        assert service_item.is_valid is True, u'The new service item should be valid'
+        assert len(service_item._display_frames) == 0, u'The service item has no display frames'
 
-        #THEN: We should have a page of output.
-        assert len(service_item._raw_frames) is 1, u'A valid rendered Service Item has display frames'
+        # THEN: We should have a page of output.
+        assert len(service_item._raw_frames) == 1, u'A valid rendered Service Item has display frames'
         assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
 
-        #WHEN: adding a second image to a service item
+        # WHEN: adding a second image to a service item
         service_item.add_from_image(u'resources/church.jpg', u'Image1 Title')
 
-        #THEN: We should have an increased page of output.
-        assert len(service_item._raw_frames) is 2, u'A valid rendered Service Item has display frames'
+        # THEN: We should have an increased page of output.
+        assert len(service_item._raw_frames) == 2, u'A valid rendered Service Item has display frames'
         assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
         assert service_item.get_rendered_frame(0) == service_item.get_rendered_frame(1)
 
-        #When requesting a saved service item
+        # WHEN requesting a saved service item
         service = service_item.get_service_repr(True)
 
-        #THEN: We should have two parts of the service.
-        assert len(service) is 2, u'A saved service has two parts'
-        assert service[u'header'][u'name']  == u'test' , u'A test plugin'
-        assert service[u'data'][0][u'title'] == u'Image Title' , u'The first title name '
-        assert service[u'data'][0][u'path'] == u'resources/church.jpg' , u'The first image name'
-        assert service[u'data'][0][u'title'] != service[u'data'][1][u'title'], u'The titles should not match'
-        assert service[u'data'][0][u'path'] == service[u'data'][1][u'path'], u'The files should match'
+        # THEN: We should have two parts of the service.
+        assert len(service) == 2, u'A saved service has two parts'
+        assert service[u'header'][u'name']  == u'test' , u'A test plugin was returned'
+        assert service[u'data'][0][u'title'] == u'Image Title' , u'The first title name matches the request'
+        assert service[u'data'][0][u'path'] == u'resources/church.jpg' , u'The first image name matches'
+        assert service[u'data'][0][u'title'] != service[u'data'][1][u'title'], \
+            u'The individual titles should not match'
+        assert service[u'data'][0][u'path'] == service[u'data'][1][u'path'], u'The file paths should match'
 
-        #When validating a service item
+        # WHEN validating a service item
         service_item.validate_item([u'jpg'])
 
-        #Then the service item should be valid
-        assert service_item.is_valid is True, u'The service item is valid'
+        # THEN the service item should be valid
+        assert service_item.is_valid is True, u'The new service item should be valid'
 
         # WHEN: adding a second image to a service item
         service_item.add_from_image(u'resources/church1.jpg', u'Image1 Title')
 
-        #When validating a service item
+        # WHEN validating a service item
         service_item.validate_item([u'jpg'])
 
-        #Then the service item should be valid
-        assert service_item.is_valid is False, u'The service item is not valid'
+        # THEN the service item should be valid
+        assert service_item.is_valid is False, u'The service item is not valid due to validation changes'
 
     def serviceitem_add_command_test(self):
         """
         Test the Service Item add command test
         """
-        #GIVEN: A new service item and a mocked renderer
+        # GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
         service_item.name = u'test'
         mocked_renderer =  MagicMock()
         service_item.renderer = mocked_renderer
 
-        #WHEN: adding image to a service item
+        # WHEN: adding image to a service item
         service_item.add_from_command(u'resources', u'church.jpg', u'resources/church.jpg')
 
-        #THEN: We should get back a valid service item
-        assert service_item.is_valid is True, u'A valid Service Item'
-        assert len(service_item._display_frames) is 0, u'A blank Service Item'
+        # THEN: We should get back a valid service item
+        assert service_item.is_valid is True, u'The new service item should be valid'
+        assert len(service_item._display_frames) == 0, u'The service item has no display frames '
 
-        #THEN: We should have a page of output.
-        assert len(service_item._raw_frames) is 1, u'A valid rendered Service Item has display frames'
-        assert service_item.get_rendered_frame(0) == u'resources/church.jpg'
+        # THEN: We should have a page of output.
+        assert len(service_item._raw_frames) == 1, u'A valid rendered Service Item has one raw frame'
+        assert service_item.get_rendered_frame(0) == u'resources/church.jpg', u'The image matches the input'
 
-        #When requesting a saved service item
+        # WHEN requesting a saved service item
         service = service_item.get_service_repr(True)
 
-        #THEN: We should have two parts of the service.
-        assert len(service) is 2, u'A saved service has two parts'
+        # THEN: We should have two parts of the service.
+        assert len(service) == 2, u'A saved service has two parts'
         assert service[u'header'][u'name']  == u'test' , u'A test plugin'
         assert service[u'data'][0][u'title'] == u'church.jpg' , u'The first title name '
         assert service[u'data'][0][u'path'] == u'resources' , u'The first image name'
         assert service[u'data'][0][u'image'] == u'resources/church.jpg' , u'The first image name'
 
-        #When validating a service item
+        # WHEN validating a service item
         service_item.validate_item([u'jpg'])
 
-        #Then the service item should be valid
+        # THEN the service item should be valid
         assert service_item.is_valid is True, u'The service item is valid'
 
-        #When validating a service item  with a different suffix
+        # WHEN validating a service item with a different suffix
         service_item.validate_item([u'png'])
 
-        #Then the service item should not be valid
+        # THEN the service item should not be valid
         assert service_item.is_valid is False, u'The service item is not valid'
