@@ -16,7 +16,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
-TESTPATH = os.path.join(os.getcwd(),u'tests',u'functional',u'openlp_core_lib',u'resources')
+TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'resources'))
 
 class TestServiceItem(TestCase):
 
