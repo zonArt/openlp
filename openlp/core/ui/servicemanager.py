@@ -621,7 +621,7 @@ class ServiceManager(QtGui.QWidget):
         path = os.path.join(directory, default_filename)
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.
-        if self._fileName.endswith(u'oszl') or not self._fileName:
+        if self._fileName.endswith(u'oszl') or self.service_has_all_original_files:
             fileName = QtGui.QFileDialog.getSaveFileName(self.mainwindow, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
                     'OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)'))
