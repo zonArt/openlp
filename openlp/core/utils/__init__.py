@@ -465,7 +465,7 @@ def get_uno_instance(resolver):
 
 def format_time(text, local_time):
     """
-    Workaround for Python built-in time formatting fuction time.strftime().
+    Workaround for Python built-in time formatting function time.strftime().
 
     time.strftime() accepts only ascii characters. This function accepts
     unicode string and passes individual % placeholders to time.strftime().

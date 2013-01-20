@@ -2,6 +2,7 @@
     Package to test the openlp.core.lib package.
 """
 import os
+import cPickle
 
 from unittest import TestCase
 from mock import MagicMock
@@ -18,11 +19,12 @@ FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'resources'))
 
+
 class TestServiceItem(TestCase):
 
     def serviceitem_basic_test(self):
         """
-        Test the Service Item basic test
+        Test the Service Item - basic test
         """
         # GIVEN: A new service item
 
@@ -35,7 +37,7 @@ class TestServiceItem(TestCase):
 
     def serviceitem_add_text_test(self):
         """
-        Test the Service Item add text test
+        Test the Service Item - add text test
         """
         # GIVEN: A new service item
         service_item = ServiceItem(None)
@@ -63,7 +65,7 @@ class TestServiceItem(TestCase):
 
     def serviceitem_add_image_test(self):
         """
-        Test the Service Item add image test
+        Test the Service Item - add image test
         """
         # GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
@@ -120,7 +122,7 @@ class TestServiceItem(TestCase):
 
     def serviceitem_add_command_test(self):
         """
-        Test the Service Item add command test
+        Test the Service Item - add command test
         """
         # GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
@@ -161,3 +163,35 @@ class TestServiceItem(TestCase):
 
         # THEN the service item should not be valid
         assert service_item.is_valid is False, u'The service item is not valid'
+
+    def serviceitem_load_custom_from_service_test(self):
+        """
+        Test the Service Item - adding from a saved service
+        """
+        # GIVEN: A new service item and a mocked add icon function
+        service_item = ServiceItem(None)
+        mocked_add_icon =  MagicMock()
+        service_item.add_icon = mocked_add_icon
+        mocked_renderer =  MagicMock()
+        service_item.renderer = mocked_renderer
+
+        # WHEN: adding a custom from a saved Service
+        line = self.convert_file_service_item(u'serviceitem_custom1.osd')
+        service_item.set_from_service(line)
+
+        # THEN: We should get back a valid service item
+        assert service_item.is_valid is True, u'The new service item should be valid'
+        assert len(service_item._display_frames) == 0, u'The service item has no display frames'
+        assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
+        service_item.render(True)
+        assert (service_item.get_display_title()) == u'Test Custom', u'The custom title is correct'
+
+    def convert_file_service_item(self, name):
+        service_file = os.path.join(TESTPATH, name)
+        try:
+            open_file = open(service_file, u'r')
+            items = cPickle.load(open_file)
+            first_line = items[0]
+        except:
+            first_line = u''
+        return first_line

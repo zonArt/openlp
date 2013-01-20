@@ -629,10 +629,10 @@ class ServiceItem(object):
             if self.is_image() and not os.path.exists((frame[u'path'])):
                 self.is_valid = False
             elif self.is_command():
-                file = os.path.join(frame[u'path'],frame[u'title'])
-                if not os.path.exists(file):
+                file_name = os.path.join(frame[u'path'], frame[u'title'])
+                if not os.path.exists(file_name):
                     self.is_valid = False
                 if suffix_list and not self.is_text():
-                    type = frame[u'title'].split(u'.')[-1]
-                    if type.lower() not in suffix_list:
+                    file_suffix = frame[u'title'].split(u'.')[-1]
+                    if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
