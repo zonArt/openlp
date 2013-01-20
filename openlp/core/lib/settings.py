@@ -126,13 +126,9 @@ class Settings(QtCore.QSettings):
         u'general/enable slide loop': True,
         u'general/show splash': True,
         u'general/screen blank': False,
+        # The oder display settings (display position and dimensions) are defined in the ScreenList class due to crycle
+        # dependency.
         u'general/override position': False,
-        # Display defaults are set in core/lib/screen.py due to a circle dependency.
-        u'general/x position': 0, # All integers are valid, that is why we use 0.
-        u'general/y position': 0, # All integers are valid, that is why we use 0.
-        u'general/monitor': -1,
-        u'general/height': -1,
-        u'general/width': -1,
         u'general/loop delay': 5,
         u'general/songselect username': u'',
         u'general/audio repeat list': False,
