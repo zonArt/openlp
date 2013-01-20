@@ -34,7 +34,7 @@ import logging
 import re
 
 from openlp.core.lib import translate, Settings
-from openlp.plugins.bibles.lib.db import BiblesResourcesDB
+
 
 log = logging.getLogger(__name__)
 

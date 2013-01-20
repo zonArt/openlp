@@ -31,8 +31,6 @@ Provide HTML Tag management and Formatting Tag access class
 """
 import cPickle
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import translate, Settings
 
 class FormattingTags(object):
