@@ -251,13 +251,13 @@ class Settings(QtCore.QSettings):
         Settings.__default_settings__ = dict(default_values.items() + Settings.__default_settings__.items())
 
     @staticmethod
-    def set_filename(iniFile):
+    def set_filename(ini_file):
         """
         Sets the complete path to an Ini file to be used by Settings objects.
 
         Does not affect existing Settings objects.
         """
-        Settings.__file_path__ = iniFile
+        Settings.__file_path__ = ini_file
 
     @staticmethod
     def set_up_default_values():
