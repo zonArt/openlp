@@ -6,7 +6,7 @@ from unittest import TestCase
 from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
-    image_to_byte
+    image_to_byte, check_item_selected
 
 class TestLib(TestCase):
 
@@ -259,3 +259,43 @@ class TestLib(TestCase):
             mocked_image.save.assert_called_with(mocked_buffer, "PNG")
             mocked_byte_array.toBase64.assert_called_with()
             assert result == u'base64mock', u'The result should be the return value of the mocked out base64 method'
+
+    def check_item_selected_true_test(self):
+        """
+        Test that the check_item_selected() function returns True when there are selected indexes.
+        """
+        # GIVEN: A mocked out QtGui module and a list widget with selected indexes
+        MockedQtGui = patch(u'openlp.core.lib.QtGui')
+        mocked_list_widget = MagicMock()
+        mocked_list_widget.selectedIndexes.return_value = True
+        message = u'message'
+
+        # WHEN: We check if there are selected items
+        result = check_item_selected(mocked_list_widget, message)
+
+        # THEN: The selectedIndexes function should have been called and the result should be true
+        mocked_list_widget.selectedIndexes.assert_called_with()
+        assert result, u'The result should be True'
+
+    def check_item_selected_false_test(self):
+        """
+        Test that the check_item_selected() function returns False when there are no selected indexes.
+        """
+        # GIVEN: A mocked out QtGui module and a list widget with selected indexes
+        with patch(u'openlp.core.lib.QtGui') as MockedQtGui, \
+             patch(u'openlp.core.lib.translate') as mocked_translate:
+            mocked_translate.return_value = u'mocked translate'
+            mocked_list_widget = MagicMock()
+            mocked_list_widget.selectedIndexes.return_value = False
+            mocked_list_widget.parent.return_value = u'parent'
+            message = u'message'
+
+            # WHEN: We check if there are selected items
+            result = check_item_selected(mocked_list_widget, message)
+
+            # THEN: The selectedIndexes function should have been called and the result should be true
+            mocked_list_widget.selectedIndexes.assert_called_with()
+            MockedQtGui.QMessageBox.information.assert_called_with(u'parent', u'mocked translate', 'message')
+            assert not result, u'The result should be False'
+
+
