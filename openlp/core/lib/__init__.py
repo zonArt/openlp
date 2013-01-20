@@ -415,17 +415,21 @@ def expand_tags(text):
     return text
 
 
-def check_directory_exists(dir):
+def check_directory_exists(directory, do_not_log=False):
     """
     Check a theme directory exists and if not create it
 
-    ``dir``
-        Theme directory to make sure exists
+    ``directory``
+        The directory to make sure exists
+
+    ``do_not_log``
+        To not log anything. This is need for the start up, when the log isn't ready.
     """
-    log.debug(u'check_directory_exists %s' % dir)
+    if not do_not_log:
+        log.debug(u'check_directory_exists %s' % directory)
     try:
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
     except IOError:
         pass
 
