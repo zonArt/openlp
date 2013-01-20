@@ -114,6 +114,7 @@ class ServiceManager(QtGui.QWidget):
         # is a new service and has not been saved
         self._modified = False
         self._fileName = u''
+        self.service_has_all_original_files = True
         self.serviceNoteForm = ServiceNoteForm(self.mainwindow)
         self.serviceItemEditForm = ServiceItemEditForm(self.mainwindow)
         self.startTimeForm = StartTimeForm(self.mainwindow)
@@ -458,7 +459,7 @@ class ServiceManager(QtGui.QWidget):
         for item in list(self.serviceItems):
             self.mainwindow.incrementProgressBar()
             item[u'service_item'].remove_invalid_frames(missing_list)
-            if not item[u'service_item'].validate():
+            if item[u'service_item'].missing_frames():
                 self.serviceItems.remove(item)
             else:
                 service_item = item[u'service_item'].get_service_repr(self._saveLite)
@@ -620,7 +621,7 @@ class ServiceManager(QtGui.QWidget):
         path = os.path.join(directory, default_filename)
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.
-        if self._fileName.endswith(u'oszl') or not self._fileName:
+        if self._fileName.endswith(u'oszl') or self.service_has_all_original_files:
             fileName = QtGui.QFileDialog.getSaveFileName(self.mainwindow, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
                     'OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)'))
@@ -693,7 +694,7 @@ class ServiceManager(QtGui.QWidget):
                         serviceItem.set_from_service(item)
                     else:
                         serviceItem.set_from_service(item, self.servicePath)
-                    self.validateItem(serviceItem)
+                    serviceItem.validate_item(self.suffixes)
                     self.load_item_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' % serviceItem.name.lower(), serviceItem)
@@ -1032,9 +1033,12 @@ class ServiceManager(QtGui.QWidget):
         """
         # Correct order of items in array
         count = 1
+        self.service_has_all_original_files = True
         for item in self.serviceItems:
             item[u'order'] = count
             count += 1
+            if not item[u'service_item'].has_original_files:
+                self.service_has_all_original_files = False
         # Repaint the screen
         self.serviceManagerList.clear()
         for itemcount, item in enumerate(self.serviceItems):
@@ -1093,18 +1097,6 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceManagerList.setCurrentItem(treewidgetitem)
             treewidgetitem.setExpanded(item[u'expanded'])
 
-    def validateItem(self, serviceItem):
-        """
-        Validates the service item and if the suffix matches an accepted
-        one it allows the item to be displayed.
-        """
-        #@todo check file items exist
-        if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
-            if type.lower() not in self.suffixes:
-                serviceItem.is_valid = False
-            #@todo check file items exist
-
     def cleanUp(self):
         """
         Empties the servicePath of temporary files on system exit.
@@ -1144,7 +1136,7 @@ class ServiceManager(QtGui.QWidget):
         Receiver.send_message(u'cursor_busy')
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
-        self.mainwindow.renderer.themedata = None
+        self.service_has_all_original_files = True
         if self.serviceItems:
             for item in self.serviceItems:
                 item[u'selected'] = False

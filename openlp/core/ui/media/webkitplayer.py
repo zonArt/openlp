@@ -423,7 +423,9 @@ class WebkitPlayer(MediaPlayer):
             controller.media_info.length = length
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
+                controller.seekSlider.blockSignals(True)
                 controller.seekSlider.setSliderPosition(currentTime)
+                controller.seekSlider.blockSignals(False)
 
     def get_info(self):
         return(translate('Media.player', 'Webkit is a media player which runs '

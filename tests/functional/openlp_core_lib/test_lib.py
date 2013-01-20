@@ -3,7 +3,7 @@ Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
 
-from mock import MagicMock, patch, call
+from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon
 
