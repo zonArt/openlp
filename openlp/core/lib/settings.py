@@ -210,6 +210,7 @@ class Settings(QtCore.QSettings):
         u'shortcuts/previousService': [QtCore.Qt.Key_Left],
         u'shortcuts/importThemeItem': [],
         u'shortcuts/down': [QtCore.Qt.Key_Down],
+        u'shortcuts/offlineHelpItem': [],
         u'themes/theme level': ThemeLevel.Song,
         u'themes/global theme': u'',
         u'themes/last directory': u'',
