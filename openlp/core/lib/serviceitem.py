@@ -37,7 +37,7 @@ import logging
 import os
 import uuid
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource, Settings
 

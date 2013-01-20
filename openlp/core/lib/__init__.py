@@ -468,8 +468,7 @@ from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
 from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
-from htmlbuilder import build_html, build_lyrics_format_css, \
-    build_lyrics_outline_css
+from htmlbuilder import build_html, build_lyrics_format_css, build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from imagemanager import ImageManager

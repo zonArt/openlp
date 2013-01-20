@@ -5,8 +5,11 @@ import os
 import cPickle
 
 from unittest import TestCase
-from mock import MagicMock
-from openlp.core.lib import ServiceItem
+from mock import MagicMock, patch
+
+from PyQt4 import QtGui
+
+from openlp.core.lib import ServiceItem, Settings
 
 VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n'\
@@ -166,7 +169,7 @@ class TestServiceItem(TestCase):
 
     def serviceitem_load_custom_from_service_test(self):
         """
-        Test the Service Item - adding from a saved service
+        Test the Service Item - adding a custom slide from a saved service
         """
         # GIVEN: A new service item and a mocked add icon function
         service_item = ServiceItem(None)
@@ -185,6 +188,28 @@ class TestServiceItem(TestCase):
         assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
         service_item.render(True)
         assert (service_item.get_display_title()) == u'Test Custom', u'The custom title is correct'
+
+    def serviceitem_load_image_from_service_test(self):
+        """
+        Test the Service Item - adding an image from a saved service
+        """
+        # GIVEN: A new service item and a mocked add icon function
+        service_item = ServiceItem(None)
+        mocked_add_icon =  MagicMock()
+        service_item.add_icon = mocked_add_icon
+        mocked_renderer =  MagicMock()
+        service_item.renderer = mocked_renderer
+
+        # WHEN: adding a custom from a saved Service
+        #with patch(u'openlp_core_lib_settings') as mocked_settings:
+        #    line = self.convert_file_service_item(u'serviceitem_image1.osd')
+        #    service_item.set_from_service(line)
+
+        # THEN: We should get back a valid service item
+        #assert service_item.is_valid is True, u'The new service item should be valid'
+        #assert len(service_item._display_frames) == 0, u'The service item has no display frames'
+        #assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
+        #assert (service_item.get_display_title()) == u'Test Custom', u'The custom title is correct'
 
     def convert_file_service_item(self, name):
         service_file = os.path.join(TESTPATH, name)
