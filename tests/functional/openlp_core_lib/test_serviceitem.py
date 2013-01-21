@@ -206,7 +206,7 @@ class TestServiceItem(TestCase):
         #    service_item.set_from_service(line)
 
         # THEN: We should get back a valid service item
-        #assert service_item.is_valid is True, u'The new service item should be valid'
+        assert service_item.is_valid is True, u'The new service item should be valid'
         #assert len(service_item._display_frames) == 0, u'The service item has no display frames'
         #assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
         #assert (service_item.get_display_title()) == u'Test Custom', u'The custom title is correct'

@@ -1523,6 +1523,9 @@ class ServiceManager(QtGui.QWidget):
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):
+        """
+        Handles theme change events
+        """
         theme = self.sender().objectName()
         # No object name means that the "Default" theme is supposed to be used.
         if not theme:
@@ -1532,6 +1535,9 @@ class ServiceManager(QtGui.QWidget):
         self.regenerateServiceItems(True)
 
     def _get_parent_item_data(self, item):
+        """
+        Finds and returns the parent item for any item
+        """
         parent_item = item.parent()
         if parent_item is None:
             return item.data(0, QtCore.Qt.UserRole)
