@@ -20,6 +20,9 @@ class TestStartTimeDialog(TestCase):
         self.form = starttimeform.StartTimeForm(self.window)
 
     def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
         del self.form
         del self.window
         del self.app

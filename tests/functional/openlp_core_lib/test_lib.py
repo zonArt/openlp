@@ -298,4 +298,25 @@ class TestLib(TestCase):
             MockedQtGui.QMessageBox.information.assert_called_with(u'parent', u'mocked translate', 'message')
             assert not result, u'The result should be False'
 
+    def validate_thumb_file_exists_test(self):
+        """
+        Test the validate_thumb() function when a file exists
+        """
+        # GIVEN: A mocked out os module, functions rigged to work for us, and fake paths to a file and a thumb
+        with patch(u'openlp.core.lib.os') as mocked_os:
+            file_path = u'path/to/file'
+            thumb_path = u'path/to/thumb'
+            file_mocked_stat = MagicMock()
+            file_mocked_stat.st_mtime = datetime.now()
+            thumb_mocked_stat = MagicMock()
+            thumb_mocked_stat.st_mtime = datetime.now() + timedelta(seconds=10)
+            mocked_os.path.exists.return_value = True
+            mocked_os.stat.side_effect = {
+                file_path: file_mocked_stat,
+                thumb_path: thumb_mocked_stat
+            }
 
+            # WHEN: we run the validate_thumb() function
+
+            # THEN: we should have called a few functions, and the result should be True
+            mocked_os.path.exists.assert_called_with(file_path)
