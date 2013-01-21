@@ -30,8 +30,6 @@
 The :mod:`dreambeamimport` module provides the functionality for importing
 DreamBeam songs into the OpenLP database.
 """
-import os
-import sys
 import logging
 
 from lxml import etree, objectify
@@ -46,11 +44,11 @@ class DreamBeamImport(SongImport):
     """
     The :class:`DreamBeamImport` class provides the ability to import song files from
     DreamBeam.
-    
+
     An example of DreamBeam xml mark-up::
-    
+
         <?xml version="1.0"?>
-        <DreamSong xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        <DreamSong xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
           <WordWrap>false</WordWrap>
           <Version>0.80</Version>
@@ -84,7 +82,7 @@ class DreamBeamImport(SongImport):
 
         * \*.xml
     """
-    
+
     def doImport(self):
         """
         Receive a single file or a list of files to import.

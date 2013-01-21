@@ -20,7 +20,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
-TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'resources'))
+TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 
 class TestServiceItem(TestCase):
@@ -166,6 +166,7 @@ class TestServiceItem(TestCase):
 
         # THEN the service item should not be valid
         assert service_item.is_valid is False, u'The service item is not valid'
+
 
     def serviceitem_load_custom_from_service_test(self):
         """
