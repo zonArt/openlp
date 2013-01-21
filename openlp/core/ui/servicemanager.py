@@ -393,6 +393,9 @@ class ServiceManager(QtGui.QWidget):
         self.loadFile(fileName)
 
     def saveModifiedService(self):
+        """
+        Check to see if a service needs to be saved.
+        """
         return QtGui.QMessageBox.question(self.mainwindow,
             translate('OpenLP.ServiceManager', 'Modified Service'),
             translate('OpenLP.ServiceManager',
@@ -400,6 +403,9 @@ class ServiceManager(QtGui.QWidget):
             QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel, QtGui.QMessageBox.Save)
 
     def onRecentServiceClicked(self):
+        """
+        Load a recent file as the service triggered by mainwindow recent service list.
+        """
         sender = self.sender()
         self.loadFile(sender.data())
 
@@ -477,10 +483,8 @@ class ServiceManager(QtGui.QWidget):
             else:
                 service_item = item[u'service_item'].get_service_repr(self._saveLite)
                 if service_item[u'header'][u'background_audio']:
-                    for i, filename in enumerate(
-                        service_item[u'header'][u'background_audio']):
-                        new_file_item= os.path.join(u'audio',
-                            item[u'service_item'].unique_identifier, filename)
+                    for i, filename in enumerate(service_item[u'header'][u'background_audio']):
+                        new_file = os.path.join(u'audio', item[u'service_item'].unique_identifier, filename)
                         audio_files.append((filename, new_file))
                         service_item[u'header'][u'background_audio'][i] = new_file
                 # Add the service item to the service.
@@ -508,7 +512,7 @@ class ServiceManager(QtGui.QWidget):
                 zip_file.write(write_from, write_from.encode(u'utf-8'))
             for audio_from, audio_to in audio_files:
                 if audio_from.startswith(u'audio'):
-                    # When items are saved, they get new UUID's. Let's copy the
+                    # When items are saved, they get new unique_identifier. Let's copy the
                     # file to the new location. Unused files can be ignored,
                     # OpenLP automatically cleans up the service manager dir on
                     # exit.
@@ -543,12 +547,8 @@ class ServiceManager(QtGui.QWidget):
 
     def saveLocalFile(self):
         """
-        Save the current service file.
-
-        A temporary file is created so that we don't overwrite the existing one
-        and leave a mangled service file should there be an error when saving.
-        No files are added to this version of the service as it is deisgned
-        to only work on the machine it was save on if there are files.
+        Save the current service file but leave all the file references alone to point to the current machine.
+        This format is not transportable as it will not contain any files.
         """
         if not self.fileName():
             return self.saveFileAs()
@@ -558,8 +558,8 @@ class ServiceManager(QtGui.QWidget):
         log.debug(temp_file_name)
         path_file_name = unicode(self.fileName())
         path, file_name = os.path.split(path_file_name)
-        basename = os.path.splitext(file_name)[0]
-        service_file_name = '%s.osd' % basename
+        base_name = os.path.splitext(file_name)[0]
+        service_file_name = '%s.osd' % base_name
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
         SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, path)
         service = []
@@ -759,6 +759,9 @@ class ServiceManager(QtGui.QWidget):
             self.loadFile(fileName)
 
     def contextMenu(self, point):
+        """
+        The Right click context menu from the Serviceitem list
+        """
         item = self.serviceManagerList.itemAt(point)
         if item is None:
             return
@@ -780,15 +783,13 @@ class ServiceManager(QtGui.QWidget):
         if item.parent() is None:
             self.notesAction.setVisible(True)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanLoop) and  \
-            len(serviceItem[u'service_item'].get_frames()) > 1:
+                len(serviceItem[u'service_item'].get_frames()) > 1:
             self.autoPlaySlidesGroup.menuAction().setVisible(True)
             self.autoPlaySlidesOnce.setChecked(serviceItem[u'service_item'].auto_play_slides_once)
             self.autoPlaySlidesLoop.setChecked(serviceItem[u'service_item'].auto_play_slides_loop)
             self.timedSlideInterval.setChecked(serviceItem[u'service_item'].timed_slide_interval > 0)
             if serviceItem[u'service_item'].timed_slide_interval > 0:
-                delay_suffix = u' '
-                delay_suffix += unicode(serviceItem[u'service_item'].timed_slide_interval)
-                delay_suffix += u' s'
+                delay_suffix = u' %s s' % unicode(serviceItem[u'service_item'].timed_slide_interval)
             else:
                 delay_suffix = u' ...'
             self.timedSlideInterval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
@@ -885,8 +886,8 @@ class ServiceManager(QtGui.QWidget):
             timed_slide_interval, 0, 180, 1)
         if ok:
             service_item.timed_slide_interval = timed_slide_interval
-        if service_item.timed_slide_interval <> 0 and not service_item.auto_play_slides_loop\
-            and not service_item.auto_play_slides_once:
+        if service_item.timed_slide_interval != 0 and not service_item.auto_play_slides_loop \
+                and not service_item.auto_play_slides_once:
             service_item.auto_play_slides_loop = True
         elif service_item.timed_slide_interval == 0:
             service_item.auto_play_slides_loop = False
@@ -1463,7 +1464,7 @@ class ServiceManager(QtGui.QWidget):
                 if item is None:
                     endpos = len(self.serviceItems)
                 else:
-                    endpos = self._getparent_itemData(item) - 1
+                    endpos = self._get_parent_item_data(item) - 1
                 serviceItem = self.serviceItems[startpos]
                 self.serviceItems.remove(serviceItem)
                 self.serviceItems.insert(endpos, serviceItem)
@@ -1476,21 +1477,21 @@ class ServiceManager(QtGui.QWidget):
                     self.dropPosition = len(self.serviceItems)
                 else:
                     # we are over something so lets investigate
-                    pos = self._getparent_itemData(item) - 1
+                    pos = self._get_parent_item_data(item) - 1
                     serviceItem = self.serviceItems[pos]
                     if (plugin == serviceItem[u'service_item'].name and
                             serviceItem[u'service_item'].is_capable(ItemCapabilities.CanAppend)):
                         action = self.dndMenu.exec_(QtGui.QCursor.pos())
                         # New action required
                         if action == self.newAction:
-                            self.dropPosition = self._getparent_itemData(item)
+                            self.dropPosition = self._get_parent_item_data(item)
                         # Append to existing action
                         if action == self.addToAction:
-                            self.dropPosition = self._getparent_itemData(item)
+                            self.dropPosition = self._get_parent_item_data(item)
                             item.setSelected(True)
                             replace = True
                     else:
-                        self.dropPosition = self._getparent_itemData(item)
+                        self.dropPosition = self._get_parent_item_data(item)
                 Receiver.send_message(u'%s_add_service_item' % plugin, replace)
 
     def updateThemeList(self, theme_list):
@@ -1530,7 +1531,7 @@ class ServiceManager(QtGui.QWidget):
         self.serviceItems[item][u'service_item'].update_theme(theme)
         self.regenerateServiceItems(True)
 
-    def _getparent_itemData(self, item):
+    def _get_parent_item_data(self, item):
         parent_item = item.parent()
         if parent_item is None:
             return item.data(0, QtCore.Qt.UserRole)
