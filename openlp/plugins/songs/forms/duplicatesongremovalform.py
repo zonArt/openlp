@@ -138,12 +138,14 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.titleLabel.setText(WizardStrings.HeaderStyle % translate(u'OpenLP.Ui',
             u'Welcome to the Duplicate Song Removal Wizard'))
         self.informationLabel.setText(translate("Wizard",
-            u'This wizard will help you to remove duplicate songs from the song database.'))
-        self.searchingPage.setTitle(translate(u'Wizard', u'Searching for doubles'))
+            u'This wizard will help you to remove duplicate songs from the song database. You will have a chance to '
+            u'review every potential duplicate song before it is deleted. So no songs will be deleted without your '
+            u'explicit approval.'))
+        self.searchingPage.setTitle(translate(u'Wizard', u'Searching for duplicate songs.'))
         self.searchingPage.setSubTitle(translate(u'Wizard', u'The song database is searched for double songs.'))
         self.updateReviewCounterText()
         self.reviewPage.setSubTitle(translate(u'Wizard',
-            u'This page shows all duplicate songs to review which ones to remove and which ones to keep.'))
+            u'Here you can decide which songs to remove and which ones to keep.'))
 
     def updateReviewCounterText(self):
         self.reviewPage.setTitle(translate(u'Wizard', u'Review duplicate songs (%s/%s)') % \
