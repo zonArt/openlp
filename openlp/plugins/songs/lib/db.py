@@ -36,7 +36,6 @@ import re
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func
-from PyQt4 import QtCore
 
 from openlp.core.lib.db import BaseModel, init_db
 

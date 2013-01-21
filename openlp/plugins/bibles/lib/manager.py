@@ -30,8 +30,6 @@
 import logging
 import os
 
-from PyQt4 import QtCore
-
 from openlp.core.lib import Receiver, SettingsManager, translate, Settings
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection

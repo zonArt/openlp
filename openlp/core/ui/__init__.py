@@ -29,9 +29,7 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
-from PyQt4 import QtGui
 
-from openlp.core.lib import translate
 
 class HideMode(object):
     """

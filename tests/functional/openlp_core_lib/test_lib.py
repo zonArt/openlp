@@ -5,7 +5,8 @@ from unittest import TestCase
 
 from mock import MagicMock, patch
 
-from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string
+from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
+    image_to_byte, check_item_selected
 
 class TestLib(TestCase):
 
@@ -196,4 +197,105 @@ class TestLib(TestCase):
         Test the get_text_file_string() method when the contents cannot be decoded
         """
         assert True, u'Impossible to test due to conflicts when mocking out the "open" function'
+
+    def build_icon_with_qicon_test(self):
+        """
+        Test the build_icon() function with a QIcon instance
+        """
+        with patch(u'openlp.core.lib.QtGui') as MockedQtGui:
+            # GIVEN: A mocked QIcon
+            MockedQtGui.QIcon = MagicMock
+            mocked_icon = MockedQtGui.QIcon()
+
+            # WHEN: We pass a QIcon instance in
+            result = build_icon(mocked_icon)
+
+            # THEN: The result should be our mocked QIcon
+            assert result is mocked_icon, u'The result should be the mocked QIcon'
+
+    def build_icon_with_resource_test(self):
+        """
+        Test the build_icon() function with a resource URI
+        """
+        with patch(u'openlp.core.lib.QtGui') as MockedQtGui, \
+             patch(u'openlp.core.lib.QtGui.QPixmap') as MockedQPixmap:
+            # GIVEN: A mocked QIcon and a mocked QPixmap
+            MockedQtGui.QIcon = MagicMock
+            MockedQtGui.QIcon.Normal = 1
+            MockedQtGui.QIcon.Off = 2
+            MockedQPixmap.return_value = u'mocked_pixmap'
+            resource_uri = u':/resource/uri'
+
+            # WHEN: We pass a QIcon instance in
+            result = build_icon(resource_uri)
+
+            # THEN: The result should be our mocked QIcon
+            MockedQPixmap.assert_called_with(resource_uri)
+            # There really should be more assert statements here but due to type checking and things they all break. The
+            # best we can do is to assert that we get back a MagicMock object.
+            assert isinstance(result, MagicMock), u'The result should be a MagicMock, because we mocked it out'
+
+    def image_to_byte_test(self):
+        """
+        Test the image_to_byte() function
+        """
+        with patch(u'openlp.core.lib.QtCore') as MockedQtCore:
+            # GIVEN: A set of mocked-out Qt classes
+            mocked_byte_array = MagicMock()
+            MockedQtCore.QByteArray.return_value = mocked_byte_array
+            mocked_byte_array.toBase64.return_value = u'base64mock'
+            mocked_buffer = MagicMock()
+            MockedQtCore.QBuffer.return_value = mocked_buffer
+            MockedQtCore.QIODevice.WriteOnly = u'writeonly'
+            mocked_image = MagicMock()
+
+            # WHEN: We convert an image to a byte array
+            result = image_to_byte(mocked_image)
+
+            # THEN: We should receive a value of u'base64mock'
+            MockedQtCore.QByteArray.assert_called_with()
+            MockedQtCore.QBuffer.assert_called_with(mocked_byte_array)
+            mocked_buffer.open.assert_called_with(u'writeonly')
+            mocked_image.save.assert_called_with(mocked_buffer, "PNG")
+            mocked_byte_array.toBase64.assert_called_with()
+            assert result == u'base64mock', u'The result should be the return value of the mocked out base64 method'
+
+    def check_item_selected_true_test(self):
+        """
+        Test that the check_item_selected() function returns True when there are selected indexes.
+        """
+        # GIVEN: A mocked out QtGui module and a list widget with selected indexes
+        MockedQtGui = patch(u'openlp.core.lib.QtGui')
+        mocked_list_widget = MagicMock()
+        mocked_list_widget.selectedIndexes.return_value = True
+        message = u'message'
+
+        # WHEN: We check if there are selected items
+        result = check_item_selected(mocked_list_widget, message)
+
+        # THEN: The selectedIndexes function should have been called and the result should be true
+        mocked_list_widget.selectedIndexes.assert_called_with()
+        assert result, u'The result should be True'
+
+    def check_item_selected_false_test(self):
+        """
+        Test that the check_item_selected() function returns False when there are no selected indexes.
+        """
+        # GIVEN: A mocked out QtGui module and a list widget with selected indexes
+        with patch(u'openlp.core.lib.QtGui') as MockedQtGui, \
+             patch(u'openlp.core.lib.translate') as mocked_translate:
+            mocked_translate.return_value = u'mocked translate'
+            mocked_list_widget = MagicMock()
+            mocked_list_widget.selectedIndexes.return_value = False
+            mocked_list_widget.parent.return_value = u'parent'
+            message = u'message'
+
+            # WHEN: We check if there are selected items
+            result = check_item_selected(mocked_list_widget, message)
+
+            # THEN: The selectedIndexes function should have been called and the result should be true
+            mocked_list_widget.selectedIndexes.assert_called_with()
+            MockedQtGui.QMessageBox.information.assert_called_with(u'parent', u'mocked translate', 'message')
+            assert not result, u'The result should be False'
+
 

@@ -77,7 +77,7 @@ class PresentationPlugin(Plugin):
             if self.controllers[controller].enabled():
                 try:
                     self.controllers[controller].start_process()
-                except:
+                except Exception:
                     log.warn(u'Failed to start controller process')
                     self.controllers[controller].available = False
         self.mediaItem.buildFileMaskString()
