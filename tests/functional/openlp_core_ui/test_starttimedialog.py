@@ -2,9 +2,10 @@
 Package to test the openlp.core.ui package.
 """
 import sys
-
 from unittest import TestCase
+
 from mock import MagicMock
+
 from openlp.core.ui import starttimeform
 from PyQt4 import QtCore, QtGui, QtTest
 
@@ -14,9 +15,17 @@ class TestStartTimeDialog(TestCase):
         """
         Create the UI
         """
-        self.app = QtGui.QApplication(sys.argv)
+        self.app = QtGui.QApplication([])
         self.window = QtGui.QMainWindow()
         self.form = starttimeform.StartTimeForm(self.window)
+
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        del self.form
+        del self.window
+        del self.app
 
     def ui_defaults_test(self):
         """
@@ -40,7 +49,7 @@ class TestStartTimeDialog(TestCase):
         Test StartTimeDialog display initialisation
         """
         #GIVEN: A service item with with time
-        mocked_serviceitem =  MagicMock()
+        mocked_serviceitem = MagicMock()
         mocked_serviceitem.start_time = 61
         mocked_serviceitem.end_time = 3701
 

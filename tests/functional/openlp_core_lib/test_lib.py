@@ -2,11 +2,12 @@
 Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
+from datetime import datetime, timedelta
 
 from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
-    image_to_byte, check_item_selected
+    image_to_byte, check_item_selected, validate_thumb
 
 class TestLib(TestCase):
 
@@ -298,4 +299,63 @@ class TestLib(TestCase):
             MockedQtGui.QMessageBox.information.assert_called_with(u'parent', u'mocked translate', 'message')
             assert not result, u'The result should be False'
 
+    def validate_thumb_file_does_not_exist_test(self):
+        """
+        Test the validate_thumb() function when the thumbnail does not exist
+        """
+        # GIVEN: A mocked out os module, with path.exists returning False, and fake paths to a file and a thumb
+        with patch(u'openlp.core.lib.os') as mocked_os:
+            file_path = u'path/to/file'
+            thumb_path = u'path/to/thumb'
+            mocked_os.path.exists.return_value = False
+            
+            # WHEN: we run the validate_thumb() function
+            result = validate_thumb(file_path, thumb_path)
+            
+            # THEN: we should have called a few functions, and the result should be False
+            mocked_os.path.exists.assert_called_with(thumb_path)
+            assert result is False, u'The result should be False'
+            
+    def validate_thumb_file_exists_and_newer_test(self):
+        """
+        Test the validate_thumb() function when the thumbnail exists and has a newer timestamp than the file
+        """
+        # GIVEN: A mocked out os module, functions rigged to work for us, and fake paths to a file and a thumb
+        with patch(u'openlp.core.lib.os') as mocked_os:
+            file_path = u'path/to/file'
+            thumb_path = u'path/to/thumb'
+            file_mocked_stat = MagicMock()
+            file_mocked_stat.st_mtime = datetime.now()
+            thumb_mocked_stat = MagicMock()
+            thumb_mocked_stat.st_mtime = datetime.now() + timedelta(seconds=10)
+            mocked_os.path.exists.return_value = True
+            mocked_os.stat.side_effect = [file_mocked_stat, thumb_mocked_stat]
 
+            # WHEN: we run the validate_thumb() function
+
+            # THEN: we should have called a few functions, and the result should be True
+            #mocked_os.path.exists.assert_called_with(thumb_path)
+
+    def validate_thumb_file_exists_and_older_test(self):
+        """
+        Test the validate_thumb() function when the thumbnail exists but is older than the file
+        """
+        # GIVEN: A mocked out os module, functions rigged to work for us, and fake paths to a file and a thumb
+        with patch(u'openlp.core.lib.os') as mocked_os:
+            file_path = u'path/to/file'
+            thumb_path = u'path/to/thumb'
+            file_mocked_stat = MagicMock()
+            file_mocked_stat.st_mtime = datetime.now()
+            thumb_mocked_stat = MagicMock()
+            thumb_mocked_stat.st_mtime = datetime.now() - timedelta(seconds=10)
+            mocked_os.path.exists.return_value = True
+            mocked_os.stat.side_effect = lambda fname: file_mocked_stat if fname == file_path else thumb_mocked_stat
+                
+            # WHEN: we run the validate_thumb() function
+            result = validate_thumb(file_path, thumb_path)
+
+            # THEN: we should have called a few functions, and the result should be False
+            mocked_os.path.exists.assert_called_with(thumb_path)
+            mocked_os.stat.assert_any_call(file_path)
+            mocked_os.stat.assert_any_call(thumb_path)
+            assert result is False, u'The result should be False'
