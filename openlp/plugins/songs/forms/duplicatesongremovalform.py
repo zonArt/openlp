@@ -89,9 +89,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         #add custom pages
         self.searchingPage = QtGui.QWizardPage()
-        self.searchingPage.setObjectName('searchingPage')
+        self.searchingPage.setObjectName(u'searchingPage')
         self.searchingVerticalLayout = QtGui.QVBoxLayout(self.searchingPage)
-        self.searchingVerticalLayout.setObjectName('searchingVerticalLayout')
+        self.searchingVerticalLayout.setObjectName(u'searchingVerticalLayout')
         self.duplicateSearchProgressBar = QtGui.QProgressBar(self.searchingPage)
         self.duplicateSearchProgressBar.setObjectName(u'duplicateSearchProgressBar')
         self.duplicateSearchProgressBar.setFormat(WizardStrings.PercentSymbolFormat)
@@ -99,28 +99,28 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.foundDuplicatesEdit = QtGui.QPlainTextEdit(self.searchingPage)
         self.foundDuplicatesEdit.setUndoRedoEnabled(False)
         self.foundDuplicatesEdit.setReadOnly(True)
-        self.foundDuplicatesEdit.setObjectName('foundDuplicatesEdit')
+        self.foundDuplicatesEdit.setObjectName(u'foundDuplicatesEdit')
         self.searchingVerticalLayout.addWidget(self.foundDuplicatesEdit)
         self.searchingPageId = self.addPage(self.searchingPage)
         self.reviewPage = QtGui.QWizardPage()
-        self.reviewPage.setObjectName('reviewPage')
+        self.reviewPage.setObjectName(u'reviewPage')
         self.headerVerticalLayout = QtGui.QVBoxLayout(self.reviewPage)
-        self.headerVerticalLayout.setObjectName('headerVerticalLayout')
+        self.headerVerticalLayout.setObjectName(u'headerVerticalLayout')
         self.reviewCounterLabel = QtGui.QLabel(self.reviewPage)
-        self.reviewCounterLabel.setObjectName('reviewCounterLabel')
+        self.reviewCounterLabel.setObjectName(u'reviewCounterLabel')
         self.headerVerticalLayout.addWidget(self.reviewCounterLabel)
         self.songsHorizontalScrollArea = QtGui.QScrollArea(self.reviewPage)
-        self.songsHorizontalScrollArea.setObjectName('songsHorizontalScrollArea')
+        self.songsHorizontalScrollArea.setObjectName(u'songsHorizontalScrollArea')
         self.songsHorizontalScrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.songsHorizontalScrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.songsHorizontalScrollArea.setFrameStyle(QtGui.QFrame.NoFrame)
         self.songsHorizontalScrollArea.setWidgetResizable(True)
-        self.songsHorizontalScrollArea.setStyleSheet("QScrollArea#songsHorizontalScrollArea {background-color:transparent;}");
+        self.songsHorizontalScrollArea.setStyleSheet(u'QScrollArea#songsHorizontalScrollArea {background-color:transparent;}')
         self.songsHorizontalSongsWidget = QtGui.QWidget(self.songsHorizontalScrollArea)
-        self.songsHorizontalSongsWidget.setObjectName('songsHorizontalSongsWidget')
-        self.songsHorizontalSongsWidget.setStyleSheet("QWidget#songsHorizontalSongsWidget {background-color:transparent;}");
+        self.songsHorizontalSongsWidget.setObjectName(u'songsHorizontalSongsWidget')
+        self.songsHorizontalSongsWidget.setStyleSheet(u'QWidget#songsHorizontalSongsWidget {background-color:transparent;}')
         self.songsHorizontalLayout = QtGui.QHBoxLayout(self.songsHorizontalSongsWidget)
-        self.songsHorizontalLayout.setObjectName('songsHorizontalLayout')
+        self.songsHorizontalLayout.setObjectName(u'songsHorizontalLayout')
         self.songsHorizontalLayout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
         self.songsHorizontalScrollArea.setWidget(self.songsHorizontalSongsWidget)
         self.headerVerticalLayout.addWidget(self.songsHorizontalScrollArea)
@@ -134,19 +134,19 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Song wizard localisation.
         """
-        self.setWindowTitle(translate('Wizard', 'Wizard'))
-        self.titleLabel.setText(WizardStrings.HeaderStyle % translate('OpenLP.Ui',
-            'Welcome to the Duplicate Song Removal Wizard'))
+        self.setWindowTitle(translate(u'Wizard', u'Wizard'))
+        self.titleLabel.setText(WizardStrings.HeaderStyle % translate(u'OpenLP.Ui',
+            u'Welcome to the Duplicate Song Removal Wizard'))
         self.informationLabel.setText(translate("Wizard",
-            'This wizard will help you to remove duplicate songs from the song database.'))
-        self.searchingPage.setTitle(translate('Wizard', 'Searching for doubles'))
-        self.searchingPage.setSubTitle(translate('Wizard', 'The song database is searched for double songs.'))
+            u'This wizard will help you to remove duplicate songs from the song database.'))
+        self.searchingPage.setTitle(translate(u'Wizard', u'Searching for doubles'))
+        self.searchingPage.setSubTitle(translate(u'Wizard', u'The song database is searched for double songs.'))
         self.updateReviewCounterText()
-        self.reviewPage.setSubTitle(translate('Wizard',
-            'This page shows all duplicate songs to review which ones to remove and which ones to keep.'))
+        self.reviewPage.setSubTitle(translate(u'Wizard',
+            u'This page shows all duplicate songs to review which ones to remove and which ones to keep.'))
 
     def updateReviewCounterText(self):
-        self.reviewPage.setTitle(translate('Wizard', 'Review duplicate songs (%s/%s)') % \
+        self.reviewPage.setTitle(translate(u'Wizard', u'Review duplicate songs (%s/%s)') % \
                 (self.reviewCurrentCount, self.reviewTotalCount))
 
     def customPageChanged(self, pageId):
@@ -176,8 +176,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 self.button(QtGui.QWizard.FinishButton).show()
                 self.button(QtGui.QWizard.FinishButton).setEnabled(True)
                 self.button(QtGui.QWizard.NextButton).hide()
-                QtGui.QMessageBox.information(self, translate('Wizard', 'Information'),
-                    translate('Wizard', 'No duplicate songs have been found in the database.'),
+                QtGui.QMessageBox.information(self, translate(u'Wizard', u'Information'),
+                    translate(u'Wizard', u'No duplicate songs have been found in the database.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
         elif pageId == self.reviewPageId:
             self.nextReviewButtonClicked()
@@ -240,11 +240,11 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             try:
                 os.remove(media_file.file_name)
             except:
-                log.exception('Could not remove file: %s',
+                log.exception(u'Could not remove file: %s',
                     media_file.file_name)
         try:
             save_path = os.path.join(AppLocation.get_section_data_path(
-                self.plugin.name), 'audio', str(item_id))
+                self.plugin.name), u'audio', str(item_id))
             if os.path.exists(save_path):
                 os.rmdir(save_path)
         except OSError:
