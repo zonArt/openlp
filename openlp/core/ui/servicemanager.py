@@ -480,7 +480,7 @@ class ServiceManager(QtGui.QWidget):
                     for i, filename in enumerate(
                         service_item[u'header'][u'background_audio']):
                         new_file_item= os.path.join(u'audio',
-                            item[u'service_item'].unique_identifyer, filename)
+                            item[u'service_item'].unique_identifier, filename)
                         audio_files.append((filename, new_file))
                         service_item[u'header'][u'background_audio'][i] = new_file
                 # Add the service item to the service.
@@ -489,7 +489,7 @@ class ServiceManager(QtGui.QWidget):
         for file_item in write_list:
             file_size = os.path.getsize(file_item)
             total_size += file_size
-        log.debug(u'ServiceManager.savefile_item - ZIP contents size is %i bytes' % total_size)
+        log.debug(u'ServiceManager.savefile - ZIP contents size is %i bytes' % total_size)
         service_content = cPickle.dumps(service)
         # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
         # extracted using unzip in UNIX.
@@ -708,11 +708,11 @@ class ServiceManager(QtGui.QWidget):
                     else:
                         serviceItem.set_from_service(item, self.servicePath)
                     serviceItem.validate_item(self.suffixes)
-                    self.load_item_unique_identifyer = 0
+                    self.load_item_unique_identifier = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' % serviceItem.name.lower(), serviceItem)
                     # if the item has been processed
-                    if serviceItem.unique_identifyer == self.load_item_unique_identifyer:
+                    if serviceItem.unique_identifier == self.load_item_unique_identifier:
                         serviceItem.edit_id = int(self.load_item_edit_id)
                         serviceItem.temporary_edit = self.load_item_temporary
                     self.addServiceItem(serviceItem, repaint=False)
@@ -918,9 +918,9 @@ class ServiceManager(QtGui.QWidget):
         Called by the SlideController to request a preview item be made live
         and allows the next preview to be updated if relevant.
         """
-        unique_identifyer, row = message.split(u':')
+        unique_identifier, row = message.split(u':')
         for sitem in self.serviceItems:
-            if sitem[u'service_item'].unique_identifyer == unique_identifyer:
+            if sitem[u'service_item'].unique_identifier == unique_identifier:
                 item = self.serviceManagerList.topLevelItem(sitem[u'order'] - 1)
                 self.serviceManagerList.setCurrentItem(item)
                 self.makeLive(int(row))
@@ -1254,7 +1254,7 @@ class ServiceManager(QtGui.QWidget):
         Triggered from plugins to update service items.
         Save the values as they will be used as part of the service load
         """
-        edit_id, self.load_item_unique_identifyer, temporary = message.split(u':')
+        edit_id, self.load_item_unique_identifier, temporary = message.split(u':')
         self.load_item_edit_id = int(edit_id)
         self.load_item_temporary = str_to_bool(temporary)
 

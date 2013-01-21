@@ -252,17 +252,17 @@ class HttpConnection(object):
         service_items = []
         service_manager = self.parent.plugin.serviceManager
         if self.parent.current_item:
-            current_unique_identifyer = self.parent.current_item.unique_identifyer
+            current_unique_identifier = self.parent.current_item.unique_identifier
         else:
-            current_unique_identifyer = None
+            current_unique_identifier = None
         for item in service_manager.serviceItems:
             service_item = item[u'service_item']
             service_items.append({
-                u'id': unicode(service_item.unique_identifyer),
+                u'id': unicode(service_item.unique_identifier),
                 u'title': unicode(service_item.get_display_title()),
                 u'plugin': unicode(service_item.name),
                 u'notes': unicode(service_item.notes),
-                u'selected': (service_item.unique_identifyer == current_unique_identifyer)
+                u'selected': (service_item.unique_identifier == current_unique_identifier)
             })
         return service_items
 
@@ -388,7 +388,7 @@ class HttpConnection(object):
         result = {
             u'service': self.parent.plugin.serviceManager.service_id,
             u'slide': self.parent.current_slide or 0,
-            u'item': self.parent.current_item.unique_identifyer if self.parent.current_item else u'',
+            u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
             u'twelve':Settings().value(u'remotes/twelve hour', True),
             u'blank': self.parent.plugin.liveController.blankScreen.isChecked(),
             u'theme': self.parent.plugin.liveController.themeScreen.isChecked(),
@@ -459,7 +459,7 @@ class HttpConnection(object):
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
             if current_item:
-                json_data[u'results'][u'item'] = self.parent.current_item.unique_identifyer
+                json_data[u'results'][u'item'] = self.parent.current_item.unique_identifier
         else:
             if self.url_params and self.url_params.get(u'data'):
                 try:

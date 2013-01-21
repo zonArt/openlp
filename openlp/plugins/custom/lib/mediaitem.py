@@ -258,7 +258,7 @@ class CustomMediaItem(MediaManagerItem):
             and_(CustomSlide.title == item.title, CustomSlide.theme_name == item.theme,
                 CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
         if custom:
-            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifyer, False))
+            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
         else:
             if self.add_custom_from_service:
                 self.create_from_service_item(item)
@@ -288,7 +288,7 @@ class CustomMediaItem(MediaManagerItem):
         self.plugin.manager.save_object(custom)
         self.onSearchTextButtonClicked()
         if item.name.lower() == u'custom':
-            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifyer, False))
+            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
 
     def onClearTextButtonClick(self):
         """

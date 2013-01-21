@@ -1219,7 +1219,7 @@ class SlideController(DisplayController):
         if -1 < row < self.previewListWidget.rowCount():
             if self.serviceItem.from_service:
                 Receiver.send_message('servicemanager_preview_live', u'%s:%s' %
-                    (self.serviceItem.unique_identifyer, row))
+                    (self.serviceItem.unique_identifier, row))
             else:
                 self.parent().liveController.addServiceManagerItem(self.serviceItem, row)
 
