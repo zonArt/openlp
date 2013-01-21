@@ -689,6 +689,14 @@ class SlideController(DisplayController):
             self.slideSelected()
         else:
             self._processItem(item, slidenum)
+            if self.isLive and item.auto_play_slides_loop and item.timed_slide_interval > 0:
+                self.playSlidesLoop.setChecked(item.auto_play_slides_loop)
+                self.delaySpinBox.setValue(int(item.timed_slide_interval))
+                self.onPlaySlidesLoop()
+            elif self.isLive and  item.auto_play_slides_once and item.timed_slide_interval > 0:
+                self.playSlidesOnce.setChecked(item.auto_play_slides_once)
+                self.delaySpinBox.setValue(int(item.timed_slide_interval))
+                self.onPlaySlidesOnce()
 
     def _processItem(self, serviceItem, slideno):
         """
@@ -877,6 +885,7 @@ class SlideController(DisplayController):
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
+        self.onToggleLoop()
 
     def onThemeDisplay(self, checked=None):
         """
@@ -895,6 +904,7 @@ class SlideController(DisplayController):
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
+        self.onToggleLoop()
 
     def onHideDisplay(self, checked=None):
         """
@@ -913,6 +923,7 @@ class SlideController(DisplayController):
             Settings().remove(self.parent().generalSettingsSection + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
+        self.onToggleLoop()
 
     def blankPlugin(self):
         """
@@ -1088,7 +1099,8 @@ class SlideController(DisplayController):
         """
         Toggles the loop state.
         """
-        if self.playSlidesLoop.isChecked() or self.playSlidesOnce.isChecked():
+        hide_mode = self.hideMode()
+        if hide_mode is None and (self.playSlidesLoop.isChecked() or self.playSlidesOnce.isChecked()):
             self.onStartLoop()
         else:
             self.onStopLoop()
@@ -1122,11 +1134,11 @@ class SlideController(DisplayController):
             self.playSlidesLoop.setText(UiStrings().StopPlaySlidesInLoop)
             self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
             self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
+            self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
+            self.playSlidesOnce.setChecked(False)
         else:
             self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
             self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
-        self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
-        self.playSlidesOnce.setChecked(False)
         self.onToggleLoop()
 
     def onPlaySlidesOnce(self, checked=None):
@@ -1143,11 +1155,11 @@ class SlideController(DisplayController):
             self.playSlidesOnce.setText(UiStrings().StopPlaySlidesToEnd)
             self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
             self.playSlidesLoop.setText(UiStrings().PlaySlidesInLoop)
+            self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
+            self.playSlidesLoop.setChecked(False)
         else:
             self.playSlidesOnce.setIcon(build_icon(u':/media/media_time'))
             self.playSlidesOnce.setText(UiStrings().PlaySlidesToEnd)
-        self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
-        self.playSlidesLoop.setChecked(False)
         self.onToggleLoop()
 
     def setAudioItemsVisibility(self, visible):

@@ -16,7 +16,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
-TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'resources'))
+TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 class TestServiceItem(TestCase):
 
