@@ -114,6 +114,7 @@ class ServiceManager(QtGui.QWidget):
         # is a new service and has not been saved
         self._modified = False
         self._fileName = u''
+        self.service_has_all_original_files = True
         self.serviceNoteForm = ServiceNoteForm(self.mainwindow)
         self.serviceItemEditForm = ServiceItemEditForm(self.mainwindow)
         self.startTimeForm = StartTimeForm(self.mainwindow)
@@ -255,6 +256,20 @@ class ServiceManager(QtGui.QWidget):
         self.create_custom_action = create_widget_action(self.menu,
             text=translate('OpenLP.ServiceManager', 'Create New &Custom Slide'),
             icon=u':/general/general_edit.png', triggers=self.create_custom)
+        self.menu.addSeparator()
+        # Add AutoPlay menu actions
+        self.autoPlaySlidesGroup = QtGui.QMenu(translate('OpenLP.ServiceManager', '&Auto play slides'))
+        self.menu.addMenu(self.autoPlaySlidesGroup)
+        self.autoPlaySlidesLoop = create_widget_action(self.autoPlaySlidesGroup,
+            text=translate('OpenLP.ServiceManager', 'Auto play slides &Loop'),
+            checked=False, triggers=self.toggleAutoPlaySlidesLoop)
+        self.autoPlaySlidesOnce = create_widget_action(self.autoPlaySlidesGroup,
+            text=translate('OpenLP.ServiceManager', 'Auto play slides &Once'),
+            checked=False, triggers=self.toggleAutoPlaySlidesOnce)
+        self.autoPlaySlidesGroup.addSeparator()
+        self.timedSlideInterval = create_widget_action(self.autoPlaySlidesGroup,
+            text=translate('OpenLP.ServiceManager', '&Delay between slides'),
+            checked=False, triggers=self.onTimedSlideInterval)
         self.menu.addSeparator()
         self.previewAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', 'Show &Preview'),
             icon=u':/general/general_preview.png', triggers=self.makePreview)
@@ -458,7 +473,7 @@ class ServiceManager(QtGui.QWidget):
         for item in list(self.serviceItems):
             self.mainwindow.incrementProgressBar()
             item[u'service_item'].remove_invalid_frames(missing_list)
-            if not item[u'service_item'].validate():
+            if item[u'service_item'].missing_frames():
                 self.serviceItems.remove(item)
             else:
                 service_item = item[u'service_item'].get_service_repr(self._saveLite)
@@ -620,7 +635,7 @@ class ServiceManager(QtGui.QWidget):
         path = os.path.join(directory, default_filename)
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.
-        if self._fileName.endswith(u'oszl') or not self._fileName:
+        if self._fileName.endswith(u'oszl') or self.service_has_all_original_files:
             fileName = QtGui.QFileDialog.getSaveFileName(self.mainwindow, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
                     'OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)'))
@@ -693,7 +708,7 @@ class ServiceManager(QtGui.QWidget):
                         serviceItem.set_from_service(item)
                     else:
                         serviceItem.set_from_service(item, self.servicePath)
-                    self.validateItem(serviceItem)
+                    serviceItem.validate_item(self.suffixes)
                     self.load_item_uuid = 0
                     if serviceItem.is_capable(ItemCapabilities.OnLoadUpdate):
                         Receiver.send_message(u'%s_service_load' % serviceItem.name.lower(), serviceItem)
@@ -765,6 +780,22 @@ class ServiceManager(QtGui.QWidget):
             self.maintainAction.setVisible(True)
         if item.parent() is None:
             self.notesAction.setVisible(True)
+        if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanLoop) and  \
+            len(serviceItem[u'service_item'].get_frames()) > 1:
+            self.autoPlaySlidesGroup.menuAction().setVisible(True)
+            self.autoPlaySlidesOnce.setChecked(serviceItem[u'service_item'].auto_play_slides_once)
+            self.autoPlaySlidesLoop.setChecked(serviceItem[u'service_item'].auto_play_slides_loop)
+            self.timedSlideInterval.setChecked(serviceItem[u'service_item'].timed_slide_interval > 0)
+            if serviceItem[u'service_item'].timed_slide_interval > 0:
+                delay_suffix = u' '
+                delay_suffix += unicode(serviceItem[u'service_item'].timed_slide_interval)
+                delay_suffix += u' s'
+            else:
+                delay_suffix = u' ...'
+            self.timedSlideInterval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
+            # TODO for future: make group explains itself more visually
+        else:
+            self.autoPlaySlidesGroup.menuAction().setVisible(False)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.HasVariableStartTime):
             self.timeAction.setVisible(True)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
@@ -809,6 +840,59 @@ class ServiceManager(QtGui.QWidget):
         self.startTimeForm.item = self.serviceItems[item]
         if self.startTimeForm.exec_():
             self.repaintServiceList(item, -1)
+
+    def toggleAutoPlaySlidesOnce(self):
+        """
+        Toggle Auto play slide once.
+        Inverts auto play once option for the item
+        """
+        item = self.findServiceItem()[0]
+        service_item = self.serviceItems[item][u'service_item']
+        service_item.auto_play_slides_once = not service_item.auto_play_slides_once
+        if service_item.auto_play_slides_once:
+            service_item.auto_play_slides_loop = False
+            self.autoPlaySlidesLoop.setChecked(False)
+        if service_item.auto_play_slides_once and service_item.timed_slide_interval == 0:
+            service_item.timed_slide_interval = Settings().value(u'loop delay', 5)
+        self.setModified()
+
+    def toggleAutoPlaySlidesLoop(self):
+        """
+        Toggle Auto play slide loop.
+        """
+        item = self.findServiceItem()[0]
+        service_item = self.serviceItems[item][u'service_item']
+        service_item.auto_play_slides_loop = not service_item.auto_play_slides_loop
+        if service_item.auto_play_slides_loop:
+            service_item.auto_play_slides_once = False
+            self.autoPlaySlidesOnce.setChecked(False)
+        if service_item.auto_play_slides_loop and service_item.timed_slide_interval == 0:
+            service_item.timed_slide_interval = Settings().value(u'loop delay', 5)
+        self.setModified()
+
+    def onTimedSlideInterval(self):
+        """
+        on set times slide interval.
+        Shows input dialog for enter interval in seconds for delay
+        """
+        item = self.findServiceItem()[0]
+        service_item = self.serviceItems[item][u'service_item']
+        if service_item.timed_slide_interval == 0:
+            timed_slide_interval = Settings().value(u'loop delay', 5)
+        else:
+            timed_slide_interval = service_item.timed_slide_interval
+        timed_slide_interval, ok = QtGui.QInputDialog.getInteger(self, translate('OpenLP.ServiceManager',
+            'Input delay'), translate('OpenLP.ServiceManager', 'Delay between slides in seconds.'),
+            timed_slide_interval, 0, 180, 1)
+        if ok:
+            service_item.timed_slide_interval = timed_slide_interval
+        if service_item.timed_slide_interval <> 0 and not service_item.auto_play_slides_loop\
+            and not service_item.auto_play_slides_once:
+            service_item.auto_play_slides_loop = True
+        elif service_item.timed_slide_interval == 0:
+            service_item.auto_play_slides_loop = False
+            service_item.auto_play_slides_once = False
+        self.setModified()
 
     def onAutoStart(self):
         """
@@ -1032,9 +1116,12 @@ class ServiceManager(QtGui.QWidget):
         """
         # Correct order of items in array
         count = 1
+        self.service_has_all_original_files = True
         for item in self.serviceItems:
             item[u'order'] = count
             count += 1
+            if not item[u'service_item'].has_original_files:
+                self.service_has_all_original_files = False
         # Repaint the screen
         self.serviceManagerList.clear()
         for itemcount, item in enumerate(self.serviceItems):
@@ -1093,18 +1180,6 @@ class ServiceManager(QtGui.QWidget):
                         self.serviceManagerList.setCurrentItem(treewidgetitem)
             treewidgetitem.setExpanded(item[u'expanded'])
 
-    def validateItem(self, serviceItem):
-        """
-        Validates the service item and if the suffix matches an accepted
-        one it allows the item to be displayed.
-        """
-        #@todo check file items exist
-        if serviceItem.is_command():
-            type = serviceItem._raw_frames[0][u'title'].split(u'.')[-1]
-            if type.lower() not in self.suffixes:
-                serviceItem.is_valid = False
-            #@todo check file items exist
-
     def cleanUp(self):
         """
         Empties the servicePath of temporary files on system exit.
@@ -1144,7 +1219,7 @@ class ServiceManager(QtGui.QWidget):
         Receiver.send_message(u'cursor_busy')
         log.debug(u'regenerateServiceItems')
         # force reset of renderer as theme data has changed
-        self.mainwindow.renderer.themedata = None
+        self.service_has_all_original_files = True
         if self.serviceItems:
             for item in self.serviceItems:
                 item[u'selected'] = False
@@ -1299,6 +1374,8 @@ class ServiceManager(QtGui.QWidget):
                 if self.serviceItems and item < len(self.serviceItems) and \
                         self.serviceItems[item][u'service_item'].is_capable(ItemCapabilities.CanPreview):
                     self.mainwindow.previewController.addServiceManagerItem(self.serviceItems[item][u'service_item'], 0)
+                    next_item = self.serviceManagerList.topLevelItem(item)
+                    self.serviceManagerList.setCurrentItem(next_item)
                     self.mainwindow.liveController.previewListWidget.setFocus()
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
