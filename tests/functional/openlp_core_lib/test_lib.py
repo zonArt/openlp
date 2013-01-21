@@ -2,6 +2,7 @@
 Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
+from datetime import datetime
 
 from mock import MagicMock, patch
 
