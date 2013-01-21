@@ -205,7 +205,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
     def onWizardExit(self):
         #refresh the song list
         self.plugin.mediaItem.onSearchTextButtonClicked()
-        pass
 
     def setDefaults(self):
         """
@@ -214,14 +213,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.restart()
         self.duplicateSearchProgressBar.setValue(0)
         self.foundDuplicatesEdit.clear()
-
-    def performWizard(self):
-        """
-        Perform the actual import. This method pulls in the correct importer
-        class, and then runs the ``doImport`` method of the importer to do
-        the actual importing.
-        """
-        pass
 
     def validateCurrentPage(self):
         if self.currentId() == self.reviewPageId:
