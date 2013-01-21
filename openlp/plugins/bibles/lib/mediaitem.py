@@ -340,7 +340,6 @@ class BibleMediaItem(MediaManagerItem):
             self.initialiseAdvancedBible(unicode(bible))
         elif bibles:
             self.initialiseAdvancedBible(bibles[0])
-        # Check: causes crashes?
         bible = Settings().value(self.settingsSection + u'/quick bible')
         find_and_set_in_combo_box(self.quickVersionComboBox, bible)
 
