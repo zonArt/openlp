@@ -65,7 +65,6 @@ class Display(QtGui.QGraphicsView):
         self.isLive = live
         self.controller = controller
         self.screen = {}
-        self.plugins = PluginManager.get_instance().plugins
         # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
         # OpenGL. Only white blank screen is shown on the 2nd monitor all the
         # time. We need to investigate more how to use OpenGL properly on Mac OS
@@ -182,8 +181,8 @@ class MainDisplay(Display):
         Call the plugins to rebuild the Live display CSS as the screen has
         not been rebuild on exit of config.
         """
-        if self.rebuildCSS and self.plugins:
-            for plugin in self.plugins:
+        if self.rebuildCSS and PluginManager.get_instance().plugins:
+            for plugin in PluginManager.get_instance().plugins:
                 plugin.refreshCss(self.frame)
         self.rebuildCSS = False
 
@@ -223,7 +222,7 @@ class MainDisplay(Display):
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
             self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.isLive, None, plugins=self.plugins))
+                self.isLive, None))
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
 
@@ -402,7 +401,7 @@ class MainDisplay(Display):
             image_bytes = self.imageManager.getImageBytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes, self.plugins)
+        html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')

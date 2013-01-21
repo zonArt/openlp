@@ -32,6 +32,7 @@ import logging
 from PyQt4 import QtWebKit
 
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, VerticalType, HorizontalType
+from openlp.core.lib import PluginManager
 
 log = logging.getLogger(__name__)
 
@@ -248,8 +249,8 @@ def build_html(item, screen, islive, background, image=None,
     css_additions = u''
     js_additions = u''
     html_additions = u''
-    if plugins:
-        for plugin in plugins:
+    if PluginManager.get_instance().plugins:
+        for plugin in PluginManager.get_instance().plugins:
             css_additions += plugin.getDisplayCss()
             js_additions += plugin.getDisplayJavaScript()
             html_additions += plugin.getDisplayHtml()
