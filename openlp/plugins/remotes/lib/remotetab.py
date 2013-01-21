@@ -32,6 +32,9 @@ from PyQt4 import QtCore, QtGui, QtNetwork
 from openlp.core.lib import Settings, SettingsTab, translate, Receiver
 
 
+ZERO_URL = u'0.0.0.0'
+
+
 class RemoteTab(SettingsTab):
     """
     RemoteTab is the Remotes settings tab in the settings dialog.
@@ -114,7 +117,7 @@ class RemoteTab(SettingsTab):
 
     def setUrls(self):
         ipAddress = u'localhost'
-        if self.addressEdit.text() == Settings().value(self.settingsSection + u'/ip address'):
+        if self.addressEdit.text() == ZERO_URL:
             ifaces = QtNetwork.QNetworkInterface.allInterfaces()
             for iface in ifaces:
                 if not iface.isValid():
