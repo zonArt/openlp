@@ -167,7 +167,6 @@ class TestServiceItem(TestCase):
         # THEN the service item should not be valid
         assert service_item.is_valid is False, u'The service item is not valid'
 
-
     def serviceitem_load_custom_from_service_test(self):
         """
         Test the Service Item - adding a custom slide from a saved service

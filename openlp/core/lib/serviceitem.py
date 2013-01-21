@@ -161,7 +161,7 @@ class ServiceItem(object):
         self.service_item_type = None
         self._raw_frames = []
         self._display_frames = []
-        self._uuid = 0
+        self.unique_identifyer = 0
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
@@ -195,7 +195,7 @@ class ServiceItem(object):
         Method to set the internal id of the item. This is used to compare
         service items to see if they are the same.
         """
-        self._uuid = unicode(uuid.uuid1())
+        self.unique_identifyer = unicode(uuid.uuid1())
         self.validate_item()
 
     def add_capability(self, capability):
@@ -454,14 +454,14 @@ class ServiceItem(object):
 
     def merge(self, other):
         """
-        Updates the _uuid with the value from the original one
-        The _uuid is unique for a given service item but this allows one to
+        Updates the unique_identifyer with the value from the original one
+        The unique_identifyer is unique for a given service item but this allows one to
         replace an original version.
 
         ``other``
             The service item to be merged with
         """
-        self._uuid = other._uuid
+        self.unique_identifyer = other.unique_identifyer
         self.notes = other.notes
         self.temporary_edit = other.temporary_edit
         # Copy theme over if present.
@@ -478,13 +478,13 @@ class ServiceItem(object):
         """
         if not other:
             return False
-        return self._uuid == other._uuid
+        return self.unique_identifyer == other.unique_identifyer
 
     def __ne__(self, other):
         """
         Confirms the service items are not for the same instance
         """
-        return self._uuid != other._uuid
+        return self.unique_identifyer != other.unique_identifyer
 
     def is_media(self):
         """
