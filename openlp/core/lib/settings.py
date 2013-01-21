@@ -141,6 +141,7 @@ class Settings(QtCore.QSettings):
         u'players/background color': u'#000000',
         u'servicemanager/service theme': u'',
         u'servicemanager/last directory': u'',
+        u'servicemanager/last file': u'',
         u'SettingsImport/Make_Changes': u'At_Own_RISK',
         u'SettingsImport/type': u'OpenLP_settings_export',
         u'SettingsImport/file_date_created': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
