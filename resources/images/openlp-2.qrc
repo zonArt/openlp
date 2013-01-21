@@ -99,6 +99,7 @@
     <file>wizard_importbible.bmp</file>
     <file>wizard_firsttime.bmp</file>
     <file>wizard_createtheme.bmp</file>
+    <file>wizard_duplicateremoval.bmp</file>
   </qresource>
   <qresource prefix="services">
     <file>service_collapse_all.png</file>

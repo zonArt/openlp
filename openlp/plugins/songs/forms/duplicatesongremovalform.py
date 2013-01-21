@@ -68,7 +68,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.reviewTotalCount = 0
         self.clipboard = plugin.formParent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'duplicateSongRemovalWizard',
-            u':/wizards/wizard_importsong.bmp', False)
+            u':/wizards/wizard_duplicateremoval.bmp', False)
 
     def customInit(self):
         """
@@ -88,7 +88,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Add song wizard specific pages.
         """
         #add custom pages
-        self.searchingPage = SearchWizardPage(self, self.getNextPageForSearchWizardPage)
+        self.searchingPage = QtGui.QWizardPage()
         self.searchingPage.setObjectName('searchingPage')
         self.searchingVerticalLayout = QtGui.QVBoxLayout(self.searchingPage)
         self.searchingVerticalLayout.setObjectName('searchingVerticalLayout')
@@ -125,21 +125,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.songsHorizontalScrollArea.setWidget(self.songsHorizontalSongsWidget)
         self.headerVerticalLayout.addWidget(self.songsHorizontalScrollArea)
         self.reviewPageId = self.addPage(self.reviewPage)
-        self.finalPage = QtGui.QWizardPage()
-        self.finalPage.setObjectName(u'finalPage')
-        self.finalPage.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(u':/wizards/wizard_importsong.bmp'))
-        self.finalLayout = QtGui.QVBoxLayout(self.finalPage)
-        self.finalLayout.setObjectName(u'finalLayout')
-        self.finalTitleLabel = QtGui.QLabel(self.finalPage)
-        self.finalTitleLabel.setObjectName(u'finalTitleLabel')
-        self.finalLayout.addWidget(self.finalTitleLabel)
-        self.finalLayout.addSpacing(40)
-        self.finalInformationLabel = QtGui.QLabel(self.finalPage)
-        self.finalInformationLabel.setWordWrap(True)
-        self.finalInformationLabel.setObjectName(u'finalInformationLabel')
-        self.finalLayout.addWidget(self.finalInformationLabel)
-        self.finalLayout.addStretch()
-        self.finalPageId = self.addPage(self.finalPage)
+        #add a dummy page to the end, to prevent the finish button to appear and the next button do disappear on the
+        #review page
+        self.dummyPage = QtGui.QWizardPage()
+        self.dummyPageId = self.addPage(self.dummyPage)
 
     def retranslateUi(self):
         """
@@ -155,9 +144,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.updateReviewCounterText()
         self.reviewPage.setSubTitle(translate('Wizard',
             'This page shows all duplicate songs to review which ones to remove and which ones to keep.'))
-        self.finalTitleLabel.setText(WizardStrings.HeaderStyle % translate('Wizard', 'Duplicate Song Removal Wizard sucessfully finished'))
-        self.finalInformationLabel.setText(translate('Wizard',
-            'The Duplicate Song Removal Wizard has finished sucessfully.'))
 
     def updateReviewCounterText(self):
         self.reviewPage.setTitle(translate('Wizard', 'Review duplicate songs (%s/%s)') % \
@@ -187,6 +173,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                     self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
             self.reviewTotalCount = len(self.duplicateSongList)
             if self.reviewTotalCount == 0:
+                self.button(QtGui.QWizard.FinishButton).show()
+                self.button(QtGui.QWizard.FinishButton).setEnabled(True)
+                self.button(QtGui.QWizard.NextButton).hide()
                 QtGui.QMessageBox.information(self, translate('Wizard', 'Information'),
                     translate('Wizard', 'No duplicate songs have been found in the database.'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
@@ -231,13 +220,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         the actual importing.
         """
         pass
-
-    def getNextPageForSearchWizardPage(self):
-        #if we have not found any duplicates we advance directly to the final page
-        if len(self.duplicateSongList) == 0:
-            return self.finalPageId
-        else:
-            return self.reviewPageId
 
     def validateCurrentPage(self):
         if self.currentId() == self.reviewPageId:
@@ -305,14 +287,11 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 self.songsHorizontalLayout.addWidget(songReviewWidget)
             self.songsHorizontalLayout.addStretch()
             self.songsHorizontalLayout.addStretch()
-
-class SearchWizardPage(QtGui.QWizardPage):
-    def __init__(self, parent, nextPageCallback):
-        QtGui.QWizardPage.__init__(self, parent)
-        self.nextPageCallback = nextPageCallback
-
-    def nextId(self):
-        return self.nextPageCallback()
+        #change next button to finish button on last review
+        if len(self.duplicateSongList) == 0:
+            self.button(QtGui.QWizard.FinishButton).show()
+            self.button(QtGui.QWizard.FinishButton).setEnabled(True)
+            self.button(QtGui.QWizard.NextButton).hide()
 
 class SongReviewWidget(QtGui.QWidget):
     def __init__(self, parent, song):
