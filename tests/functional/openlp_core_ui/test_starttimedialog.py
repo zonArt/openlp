@@ -1,5 +1,5 @@
 """
-    Package to test the openlp.core.ui package.
+Package to test the openlp.core.ui package.
 """
 import sys
 
