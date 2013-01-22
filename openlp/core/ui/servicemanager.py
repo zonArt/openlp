@@ -804,7 +804,7 @@ class ServiceManager(QtGui.QWidget):
                 self.autoStartAction.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
                 self.autoStartAction.setIcon(self.active)
         if serviceItem[u'service_item'].is_text():
-            for plugin in self.mainwindow.pluginManager.plugins:
+            for plugin in self.plugin_manager.plugins:
                 if plugin.name == u'custom' and plugin.status == PluginStatus.Active:
                     self.create_custom_action.setVisible(True)
                     break
@@ -1268,7 +1268,7 @@ class ServiceManager(QtGui.QWidget):
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaintServiceList(itemcount + 1, 0)
-                self.mainwindow.liveController.replaceServiceManagerItem(newItem)
+                self.live_controller.replaceServiceManagerItem(newItem)
                 self.setModified()
 
     def addServiceItem(self, item, rebuild=False, expand=None, replace=False, repaint=True, selected=False):
@@ -1290,7 +1290,7 @@ class ServiceManager(QtGui.QWidget):
             item.merge(self.serviceItems[sitem][u'service_item'])
             self.serviceItems[sitem][u'service_item'] = item
             self.repaintServiceList(sitem, child)
-            self.mainwindow.liveController.replaceServiceManagerItem(item)
+            self.live_controller.replaceServiceManagerItem(item)
         else:
             item.render()
             # nothing selected for dnd
@@ -1313,7 +1313,7 @@ class ServiceManager(QtGui.QWidget):
                 self.repaintServiceList(self.dropPosition, -1)
             # if rebuilding list make sure live is fixed.
             if rebuild:
-                self.mainwindow.liveController.replaceServiceManagerItem(item)
+                self.live_controller.replaceServiceManagerItem(item)
         self.dropPosition = 0
         self.setModified()
 
@@ -1324,8 +1324,7 @@ class ServiceManager(QtGui.QWidget):
         Receiver.send_message(u'cursor_busy')
         item, child = self.findServiceItem()
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.mainwindow.previewController.addServiceManagerItem(
-                self.serviceItems[item][u'service_item'], child)
+            self.preview_controller.addServiceManagerItem(self.serviceItems[item][u'service_item'], child)
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
@@ -1365,16 +1364,15 @@ class ServiceManager(QtGui.QWidget):
             child = row
         Receiver.send_message(u'cursor_busy')
         if self.serviceItems[item][u'service_item'].is_valid:
-            self.mainwindow.liveController.addServiceManagerItem(
-                self.serviceItems[item][u'service_item'], child)
+            self.live_controller.addServiceManagerItem(self.serviceItems[item][u'service_item'], child)
             if Settings().value(self.mainwindow.generalSettingsSection + u'/auto preview', False):
                 item += 1
                 if self.serviceItems and item < len(self.serviceItems) and \
                         self.serviceItems[item][u'service_item'].is_capable(ItemCapabilities.CanPreview):
-                    self.mainwindow.previewController.addServiceManagerItem(self.serviceItems[item][u'service_item'], 0)
+                    self.preview_controller.addServiceManagerItem(self.serviceItems[item][u'service_item'], 0)
                     next_item = self.serviceManagerList.topLevelItem(item)
                     self.serviceManagerList.setCurrentItem(next_item)
-                    self.mainwindow.liveController.previewListWidget.setFocus()
+                    self.live_controller.previewListWidget.setFocus()
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
@@ -1553,3 +1551,33 @@ class ServiceManager(QtGui.QWidget):
         return self._renderer
 
     renderer = property(_get_renderer)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
+
+    def _get_preview_controller(self):
+        """
+        Adds the preview controller to the class dynamically
+        """
+        if not hasattr(self, u'_preview_controller'):
+            self._preview_controller = Registry().get(u'preview_controller')
+        return self._preview_controller
+
+    preview_controller = property(_get_preview_controller)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)

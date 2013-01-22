@@ -109,6 +109,7 @@ class SlideController(DisplayController):
         # Type label for the top of the slide controller
         self.typeLabel = QtGui.QLabel(self.panel)
         if self.isLive:
+            Registry().register(u'live_controller', self)
             self.typeLabel.setText(UiStrings().Live)
             self.split = 1
             self.typePrefix = u'live'
@@ -117,6 +118,7 @@ class SlideController(DisplayController):
             self.category = UiStrings().LiveToolbar
             ActionList.get_instance().add_category(unicode(self.category), CategoryOrder.standardToolbar)
         else:
+            Registry().register(u'preview_controller', self)
             self.typeLabel.setText(UiStrings().Preview)
             self.split = 0
             self.typePrefix = u'preview'
