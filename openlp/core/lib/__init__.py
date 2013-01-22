@@ -458,7 +458,7 @@ def create_separated_list(stringlist):
             u'Locale list separator: start') % (stringlist[0], merged)
 
 
-from kernel import Kernel
+from registry import Registry
 from eventreceiver import Receiver
 from listwidgetwithdnd import ListWidgetWithDnD
 from formattingtags import FormattingTags

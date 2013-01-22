@@ -32,7 +32,7 @@ import logging
 from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags, ImageSource, Kernel
+    ItemCapabilities, FormattingTags, ImageSource, Registry
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay, ScreenList
 
@@ -71,7 +71,7 @@ class Renderer(object):
         self.theme_manager = theme_manager
         self.image_manager = image_manager
         self.screens = ScreenList()
-        Kernel().register(u'renderer', self)
+        Registry().register(u'renderer', self)
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = u''
         self.service_theme_name = u''
