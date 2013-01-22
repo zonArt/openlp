@@ -43,7 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, check_directory_exists
+from openlp.core.lib import Receiver, Settings, check_directory_exists, Kernel
 from openlp.core.lib.ui import UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -288,6 +288,7 @@ def main(args=None):
         portable_settings.sync()
     else:
         app.setApplicationName(u'OpenLP')
+    kernel = Kernel.create()
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:

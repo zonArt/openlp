@@ -112,8 +112,7 @@ class Settings(QtCore.QSettings):
         Settings.__filePath__ = iniFile
 
     def __init__(self, *args):
-        if not args and Settings.__filePath__ and \
-            Settings.defaultFormat() == Settings.IniFormat:
+        if not args and Settings.__filePath__ and Settings.defaultFormat() == Settings.IniFormat:
             QtCore.QSettings.__init__(self, Settings.__filePath__, Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
@@ -459,6 +458,7 @@ def create_separated_list(stringlist):
             u'Locale list separator: start') % (stringlist[0], merged)
 
 
+from kernel import Kernel
 from eventreceiver import Receiver
 from listwidgetwithdnd import ListWidgetWithDnD
 from formattingtags import FormattingTags

@@ -39,7 +39,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource, Settings
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource, Settings, Kernel
 
 log = logging.getLogger(__name__)
 
@@ -240,11 +240,13 @@ class ServiceItem(object):
             for the theme manager.
         """
         log.debug(u'Render called')
+        renderer = Kernel().get(u'renderer')
+        print renderer
         self._display_frames = []
         self.bg_image_bytes = None
         if not provides_own_theme_data:
-            self.renderer.set_item_theme(self.theme)
-            self.themedata, self.main, self.footer = self.renderer.pre_render()
+            renderer.set_item_theme(self.theme)
+            self.themedata, self.main, self.footer = renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug(u'Formatting slides: %s' % self.title)
             # Save rendered pages to this dict. In the case that a slide is used
@@ -256,7 +258,7 @@ class ServiceItem(object):
                 if verse_tag in previous_pages and previous_pages[verse_tag][0] == slide[u'raw_slide']:
                     pages = previous_pages[verse_tag][1]
                 else:
-                    pages = self.renderer.format_slide(slide[u'raw_slide'], self)
+                    pages = renderer.format_slide(slide[u'raw_slide'], self)
                     previous_pages[verse_tag] = (slide[u'raw_slide'], pages)
                 for page in pages:
                     page = page.replace(u'<br>', u'{br}')
