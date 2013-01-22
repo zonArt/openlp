@@ -78,6 +78,22 @@ class OpenLPWizard(QtGui.QWizard):
     """
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
+
+    ``parent``
+        The QWidget-derived parent of the wizard.
+
+    ``plugin``
+        Plugin this wizard is part of. The plugin will be saved in the "plugin" variable.
+        The plugin will also be used as basis for the file dialog methods this class provides.
+
+    ``name``
+        The object name this wizard should have.
+
+    ``image``
+        The image to display on the "welcome" page of the wizard. Should be 163x350.
+
+    ``addProgressPage``
+        Whether to add a progress page with a progressbar at the end of the wizard.
     """
     def __init__(self, parent, plugin, name, image, addProgressPage=True):
         QtGui.QWizard.__init__(self, parent)
