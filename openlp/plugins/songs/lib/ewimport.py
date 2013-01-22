@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -75,8 +75,7 @@ class EasyWorshipSongImport(SongImport):
         db_file = open(self.importSource, 'rb')
         self.memoFile = open(import_source_mb, 'rb')
         # Don't accept files that are clearly not paradox files
-        record_size, header_size, block_size, first_block, num_fields \
-            = struct.unpack('<hhxb8xh17xh', db_file.read(35))
+        record_size, header_size, block_size, first_block, num_fields = struct.unpack('<hhxb8xh17xh', db_file.read(35))
         if header_size != 0x800 or block_size < 1 or block_size > 4:
             db_file.close()
             self.memoFile.close()
@@ -116,15 +115,12 @@ class EasyWorshipSongImport(SongImport):
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
         db_file.seek(4 + (num_fields * 4) + 261, os.SEEK_CUR)
-        field_names = db_file.read(header_size - db_file.tell()).split('\0',
-            num_fields)
+        field_names = db_file.read(header_size - db_file.tell()).split('\0', num_fields)
         field_names.pop()
         field_descs = []
         for i, field_name in enumerate(field_names):
-            field_type, field_size = struct.unpack_from('BB',
-                field_info, i * 2)
-            field_descs.append(FieldDescEntry(field_name, field_type,
-                field_size))
+            field_type, field_size = struct.unpack_from('BB', field_info, i * 2)
+            field_descs.append(FieldDescEntry(field_name, field_type, field_size))
         self.setRecordStruct(field_descs)
         # Pick out the field description indexes we will need
         try:
@@ -164,9 +160,7 @@ class EasyWorshipSongImport(SongImport):
                 if admin:
                     if copy:
                         self.copyright += u', '
-                    self.copyright += \
-                        translate('SongsPlugin.EasyWorshipSongImport',
-                        'Administered by %s') % admin
+                    self.copyright += translate('SongsPlugin.EasyWorshipSongImport', 'Administered by %s') % admin
                 if ccli:
                     self.ccliNumber = ccli
                 if authors:
@@ -217,10 +211,8 @@ class EasyWorshipSongImport(SongImport):
                                 if first_line_is_tag else verse,
                             verse_type)
                 if len(self.comments) > 5:
-                    self.comments += unicode(
-                        translate('SongsPlugin.EasyWorshipSongImport',
-                        '\n[above are Song Tags with notes imported from \
-                        EasyWorship]'))
+                    self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
+                        '\n[above are Song Tags with notes imported from EasyWorship]'))
                 if self.stopImportFlag:
                     break
                 if not self.finish():
@@ -286,8 +278,7 @@ class EasyWorshipSongImport(SongImport):
             return (field ^ 0x80 == 1)
         elif field_desc.type == 0x0c or field_desc.type == 0x0d:
             # Memo or Blob
-            block_start, blob_size = \
-                struct.unpack_from('<II', field, len(field)-10)
+            block_start, blob_size = struct.unpack_from('<II', field, len(field)-10)
             sub_block = block_start & 0xff
             block_start &= ~0xff
             self.memoFile.seek(block_start)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -28,7 +28,6 @@
 ###############################################################################
 
 import logging
-import os
 
 from PyQt4 import QtCore
 
@@ -271,8 +270,7 @@ class Controller(object):
             return
         if not self.activate():
             return
-        if self.doc.slidenumber and \
-            self.doc.slidenumber != self.doc.get_slide_number():
+        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
         Receiver.send_message(u'live_display_hide', HideMode.Screen)
@@ -296,30 +294,19 @@ class MessageListener(object):
         self.preview_handler = Controller(False)
         self.live_handler = Controller(True)
         # messages are sent from core.ui.slidecontroller
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_start'), self.startup)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_stop'), self.shutdown)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_hide'), self.hide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_first'), self.first)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_previous'), self.previous)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_next'), self.next)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_last'), self.last)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_slide'), self.slide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_blank'), self.blank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_unblank'), self.unblank)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_start'), self.startup)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_stop'), self.shutdown)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_hide'), self.hide)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_first'), self.first)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_previous'), self.previous)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_next'), self.next)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_last'), self.last)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_slide'), self.slide)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_blank'), self.blank)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_unblank'), self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
-        QtCore.QObject.connect(
-            self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
 
     def startup(self, message):
         """
@@ -340,8 +327,7 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        controller.add_handler(self.controllers[self.handler], file, hide_mode,
-            message[3])
+        controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
 
     def slide(self, message):
         """
@@ -433,7 +419,7 @@ class MessageListener(object):
     def timeout(self):
         """
         The presentation may be timed or might be controlled by the
-        application directly, rather than through OpenLP. Poll occassionally
+        application directly, rather than through OpenLP. Poll occasionally
         to check which slide is currently displayed so the slidecontroller
         view can be updated
         """

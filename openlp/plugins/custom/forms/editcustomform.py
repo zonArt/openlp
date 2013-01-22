@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -57,20 +57,13 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         # Create other objects and forms.
         self.editSlideForm = EditCustomSlideForm(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.previewButton,
-            QtCore.SIGNAL(u'clicked()'), self.onPreviewButtonClicked)
-        QtCore.QObject.connect(self.addButton,
-            QtCore.SIGNAL(u'clicked()'), self.onAddButtonClicked)
-        QtCore.QObject.connect(self.editButton,
-            QtCore.SIGNAL(u'clicked()'), self.onEditButtonClicked)
-        QtCore.QObject.connect(self.editAllButton,
-            QtCore.SIGNAL(u'clicked()'), self.onEditAllButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
-        QtCore.QObject.connect(self.slideListView,
-            QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
-        QtCore.QObject.connect(self.slideListView,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+        QtCore.QObject.connect(self.previewButton, QtCore.SIGNAL(u'clicked()'), self.onPreviewButtonClicked)
+        QtCore.QObject.connect(self.addButton, QtCore.SIGNAL(u'clicked()'), self.onAddButtonClicked)
+        QtCore.QObject.connect(self.editButton, QtCore.SIGNAL(u'clicked()'), self.onEditButtonClicked)
+        QtCore.QObject.connect(self.editAllButton, QtCore.SIGNAL(u'clicked()'), self.onEditAllButtonClicked)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
+        QtCore.QObject.connect(self.slideListView, QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        QtCore.QObject.connect(self.slideListView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onEditButtonClicked)
 
     def loadThemes(self, themelist):
@@ -126,8 +119,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             return False
         sxml = CustomXMLBuilder()
         for count in range(self.slideListView.count()):
-            sxml.add_verse_to_lyrics(u'custom', unicode(count + 1),
-                self.slideListView.item(count).text())
+            sxml.add_verse_to_lyrics(u'custom', unicode(count + 1), self.slideListView.item(count).text())
         self.customSlide.title = self.titleEdit.text()
         self.customSlide.text = unicode(sxml.extract_xml(), u'utf-8')
         self.customSlide.credits = self.creditEdit.text()
@@ -244,14 +236,11 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         # We must have a title.
         if not self.titleEdit.displayText():
             self.titleEdit.setFocus()
-            critical_error_message_box(
-                message=translate('CustomPlugin.EditCustomForm',
-                'You need to type in a title.'))
+            critical_error_message_box(message=translate('CustomPlugin.EditCustomForm', 'You need to type in a title.'))
             return False
         # We must have at least one slide.
         if self.slideListView.count() == 0:
-            critical_error_message_box(
-                message=translate('CustomPlugin.EditCustomForm',
+            critical_error_message_box(message=translate('CustomPlugin.EditCustomForm',
                 'You need to add at least one slide'))
             return False
         return True

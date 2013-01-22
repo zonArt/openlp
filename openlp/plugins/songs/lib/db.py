@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -36,7 +36,6 @@ import re
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func
-from PyQt4 import QtCore
 
 from openlp.core.lib.db import BaseModel, init_db
 
@@ -53,8 +52,7 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return u'<Book id="%s" name="%s" publisher="%s" />' % (
-            str(self.id), self.name, self.publisher)
+        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
 
 
 class MediaFile(BaseModel):
@@ -88,6 +86,7 @@ class Song(BaseModel):
 
     # This decorator tells sqlalchemy to call this method everytime
     # any data on this object is updated.
+
     @reconstructor
     def init_on_load(self):
         """

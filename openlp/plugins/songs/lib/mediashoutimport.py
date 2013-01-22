@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -30,8 +30,6 @@
 The :mod:`mediashoutimport` module provides the functionality for importing
 a MediaShout database into the OpenLP database.
 """
-import re
-import os
 import pyodbc
 
 from openlp.core.lib import translate
@@ -60,8 +58,7 @@ class MediaShoutImport(SongImport):
         except:
             # Unfortunately no specific exception type
             self.logError(self.importSource,
-                translate('SongsPlugin.MediaShoutImport',
-                    'Unable to open the MediaShout database.'))
+                translate('SongsPlugin.MediaShoutImport', 'Unable to open the MediaShout database.'))
             return
         cursor = conn.cursor()
         cursor.execute(u'SELECT Record, Title, Author, Copyright, '
@@ -82,8 +79,8 @@ class MediaShoutImport(SongImport):
                 u'WHERE SongThemes.Record = %s' % song.Record)
             topics = cursor.fetchall()
             cursor.execute(u'SELECT Name FROM Groups INNER JOIN SongGroups '
-                           u'ON SongGroups.GroupId = Groups.GroupId '
-                           u'WHERE SongGroups.Record = %s' % song.Record)
+                u'ON SongGroups.GroupId = Groups.GroupId '
+                u'WHERE SongGroups.Record = %s' % song.Record)
             topics += cursor.fetchall()
             self.processSong(song, verses, verse_order, topics)
 
@@ -103,11 +100,9 @@ class MediaShoutImport(SongImport):
         else:
             self.songBookName = song.SongID
         for verse in verses:
-            tag = VERSE_TAGS[verse.Type] + unicode(verse.Number) \
-                if verse.Type < len(VERSE_TAGS) else u'O'
+            tag = VERSE_TAGS[verse.Type] + unicode(verse.Number) if verse.Type < len(VERSE_TAGS) else u'O'
             self.addVerse(verse.Text, tag)
         for order in verse_order:
             if order.Type < len(VERSE_TAGS):
-                self.verseOrderList.append(VERSE_TAGS[order.Type]
-                    + unicode(order.Number))
+                self.verseOrderList.append(VERSE_TAGS[order.Type] + unicode(order.Number))
         self.finish()

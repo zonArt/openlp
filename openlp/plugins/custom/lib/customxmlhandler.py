@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -50,6 +50,7 @@ from lxml import etree, objectify
 
 log = logging.getLogger(__name__)
 
+#TODO: These classes need to be refactored into a single class.
 class CustomXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
@@ -84,11 +85,11 @@ class CustomXMLBuilder(object):
         self.lyrics.setAttribute(u'language', u'en')
         self.song.appendChild(self.lyrics)
 
-    def add_verse_to_lyrics(self, type, number, content):
+    def add_verse_to_lyrics(self, verse_type, number, content):
         """
         Add a verse to the ``<lyrics>`` tag.
 
-        ``type``
+        ``verse_type``
             A string denoting the type of verse. Possible values are "Chorus",
             "Verse", "Bridge", and "Custom".
 
@@ -99,7 +100,7 @@ class CustomXMLBuilder(object):
             The actual text of the verse to be stored.
         """
         verse = self.custom_xml.createElement(u'verse')
-        verse.setAttribute(u'type', type)
+        verse.setAttribute(u'type', verse_type)
         verse.setAttribute(u'label', number)
         self.lyrics.appendChild(verse)
         # add data as a CDATA section to protect the XML from special chars

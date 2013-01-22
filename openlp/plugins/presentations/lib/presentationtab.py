@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -78,25 +78,21 @@ class PresentationTab(SettingsTab):
         """
         Make any translation changes
         """
-        self.ControllersGroupBox.setTitle(
-            translate('PresentationPlugin.PresentationTab',
-            'Available Controllers'))
+        self.ControllersGroupBox.setTitle(translate('PresentationPlugin.PresentationTab', 'Available Controllers'))
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
             self.setControllerText(checkbox, controller)
         self.AdvancedGroupBox.setTitle(UiStrings().Advanced)
         self.OverrideAppCheckBox.setText(
-            translate('PresentationPlugin.PresentationTab',
-            'Allow presentation application to be overridden'))
+            translate('PresentationPlugin.PresentationTab', 'Allow presentation application to be overridden'))
 
     def setControllerText(self, checkbox, controller):
         if checkbox.isEnabled():
             checkbox.setText(controller.name)
         else:
             checkbox.setText(
-                translate('PresentationPlugin.PresentationTab',
-                '%s (unavailable)') % controller.name)
+                translate('PresentationPlugin.PresentationTab', '%s (unavailable)') % controller.name)
 
     def load(self):
         """
@@ -105,11 +101,9 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setChecked(Settings().value(
-                self.settingsSection + u'/' + controller.name,
-                QtCore.Qt.Checked))
-        self.OverrideAppCheckBox.setChecked(Settings().value(
-            self.settingsSection + u'/override app', QtCore.Qt.Unchecked))
+            checkbox.setChecked(Settings().value(self.settingsSection + u'/' + controller.name, QtCore.Qt.Checked))
+        self.OverrideAppCheckBox.setChecked(Settings().value(self.settingsSection + u'/override app',
+            QtCore.Qt.Unchecked))
 
     def save(self):
         """
@@ -125,8 +119,7 @@ class PresentationTab(SettingsTab):
             if controller.is_available():
                 checkbox = self.PresenterCheckboxes[controller.name]
                 setting_key = self.settingsSection + u'/' + controller.name
-                if Settings().value(setting_key, QtCore.Qt.Checked) != \
-                    checkbox.checkState():
+                if Settings().value(setting_key, QtCore.Qt.Checked) != checkbox.checkState():
                     changed = True
                     Settings().setValue(setting_key, checkbox.checkState())
                     if checkbox.isChecked():
@@ -134,10 +127,8 @@ class PresentationTab(SettingsTab):
                     else:
                         controller.kill()
         setting_key = self.settingsSection + u'/override app'
-        if Settings().value(setting_key, QtCore.Qt.Checked) != \
-            self.OverrideAppCheckBox.checkState():
-            Settings().setValue(setting_key,
-                self.OverrideAppCheckBox.checkState())
+        if Settings().value(setting_key, QtCore.Qt.Checked) != self.OverrideAppCheckBox.checkState():
+            Settings().setValue(setting_key, self.OverrideAppCheckBox.checkState())
             changed = True
         if changed:
             self.parent.resetSupportedSuffixes()

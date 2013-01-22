@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -41,8 +41,7 @@ class RemotesPlugin(Plugin):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'remotes', plugin_helpers,
-            settings_tab_class=RemoteTab)
+        Plugin.__init__(self, u'remotes', plugin_helpers, settings_tab_class=RemoteTab)
         self.iconPath = u':/plugins/plugin_remote.png'
         self.icon = build_icon(self.iconPath)
         self.weight = -1

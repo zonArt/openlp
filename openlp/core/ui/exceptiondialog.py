@@ -29,7 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button, create_button_box
 
 class Ui_ExceptionDialog(object):
