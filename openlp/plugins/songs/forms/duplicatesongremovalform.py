@@ -148,12 +148,15 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             u'Here you can decide which songs to remove and which ones to keep.'))
 
     def updateReviewCounterText(self):
+        """
+        Set the wizard review page header text.
+        """
         self.reviewPage.setTitle(translate(u'Wizard', u'Review duplicate songs (%s/%s)') % \
                 (self.reviewCurrentCount, self.reviewTotalCount))
 
     def customPageChanged(self, pageId):
         """
-        Called when changing to a page other than the progress page.
+        Called when changing the wizard page.
         """
         #hide back button
         self.button(QtGui.QWizard.BackButton).hide()
@@ -171,7 +174,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                     doubleFinder = DuplicateSongFinder()
                     if doubleFinder.songsProbablyEqual(songs[outerSongCounter], songs[innerSongCounter]):
                         self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
-                        self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " + songs[innerSongCounter].title)
+                        self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " +
+                                songs[innerSongCounter].title)
                     self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
             self.reviewTotalCount = len(self.duplicateSongList)
             if self.reviewTotalCount == 0:
@@ -185,6 +189,11 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.nextReviewButtonClicked()
 
     def addDuplicatesToSongList(self, searchSong, duplicateSong):
+        """
+        Inserts a song duplicate (two simliar songs) to the duplicate song list.
+        If one of the two songs is already part of the duplicate song list,
+        don't add another duplicate group but add the other song to that group.
+        """
         duplicateGroupFound = False
         for duplicates in self.duplicateSongList:
             #skip the first song in the duplicate lists, since the first one has to be an earlier song
@@ -203,7 +212,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.duplicateSongList.append([searchSong, duplicateSong])
 
     def onWizardExit(self):
-        #refresh the song list
+        """
+        Once the wizard is finished, refresh the song list,
+        since we potentially removed songs from it.
+        """
         self.plugin.mediaItem.onSearchTextButtonClicked()
 
     def setDefaults(self):
@@ -215,6 +227,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.foundDuplicatesEdit.clear()
 
     def validateCurrentPage(self):
+        """
+        Controls whether we should switch to the next wizard page. This method loops
+        on the review page as long as there are more song duplicates to review.
+        """
         if self.currentId() == self.reviewPageId:
             #as long as the duplicate list is not empty we revisit the review page
             if len(self.duplicateSongList) == 0:
@@ -225,6 +241,11 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         return OpenLPWizard.validateCurrentPage(self)
 
     def removeButtonClicked(self, songReviewWidget):
+        """
+        Removes a song from the database, removes the GUI element representing the
+        song on the review page, and disable the remove button if only one duplicate
+        is left.
+        """
         #remove song
         item_id = songReviewWidget.song.id
         media_files = self.plugin.manager.get_all_objects(MediaFile,
@@ -253,6 +274,13 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.songsHorizontalLayout.itemAt(2).widget().songRemoveButton.setEnabled(False)
 
     def nextReviewButtonClicked(self):
+        """
+        Called whenever the "next" button is clicked on the review page.
+        Update the review counter in the wizard header, remove all previous
+        song widgets, add song widgets for the current duplicate group to review,
+        if it's the last duplicate song group, hide the "next" button and show
+        the "finish" button.
+        """
         # update counter
         self.reviewCurrentCount = self.reviewTotalCount - (len(self.duplicateSongList) - 1)
         self.updateReviewCounterText()
@@ -287,6 +315,13 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.button(QtGui.QWizard.NextButton).hide()
 
 class SongReviewWidget(QtGui.QWidget):
+    """
+    A widget representing a song on the duplicate song review page.
+    It displays most of the information a song contains and
+    provides a "remove" button to remove the song from the database.
+    The remove logic is not implemented here, but a signal is provided
+    when the remove button is clicked.
+    """
     def __init__(self, parent, song):
         QtGui.QWidget.__init__(self, parent)
         self.song = song
@@ -305,6 +340,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songGroupBoxLayout.setObjectName(u'songGroupBoxLayout')
         self.songInfoFormLayout = QtGui.QFormLayout()
         self.songInfoFormLayout.setObjectName(u'songInfoFormLayout')
+        #title
         self.songTitleLabel = QtGui.QLabel(self)
         self.songTitleLabel.setObjectName(u'songTitleLabel')
         self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.songTitleLabel)
@@ -313,6 +349,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songTitleContent.setText(self.song.title)
         self.songTitleContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.songTitleContent)
+        #alternate title
         self.songAlternateTitleLabel = QtGui.QLabel(self)
         self.songAlternateTitleLabel.setObjectName(u'songAlternateTitleLabel')
         self.songInfoFormLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.songAlternateTitleLabel)
@@ -321,6 +358,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songAlternateTitleContent.setText(self.song.alternate_title)
         self.songAlternateTitleContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.songAlternateTitleContent)
+        #CCLI number
         self.songCCLINumberLabel = QtGui.QLabel(self)
         self.songCCLINumberLabel.setObjectName(u'songCCLINumberLabel')
         self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.songCCLINumberLabel)
@@ -329,6 +367,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCCLINumberContent.setText(self.song.ccli_number)
         self.songCCLINumberContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.songCCLINumberContent)
+        #copyright
         self.songCopyrightLabel = QtGui.QLabel(self)
         self.songCopyrightLabel.setObjectName(u'songCopyrightLabel')
         self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.songCopyrightLabel)
@@ -337,6 +376,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCopyrightContent.setWordWrap(True)
         self.songCopyrightContent.setText(self.song.copyright)
         self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.songCopyrightContent)
+        #comments
         self.songCommentsLabel = QtGui.QLabel(self)
         self.songCommentsLabel.setObjectName(u'songCommentsLabel')
         self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.songCommentsLabel)
@@ -345,6 +385,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songCommentsContent.setText(self.song.comments)
         self.songCommentsContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.songCommentsContent)
+        #authors
         self.songAuthorsLabel = QtGui.QLabel(self)
         self.songAuthorsLabel.setObjectName(u'songAuthorsLabel')
         self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.LabelRole, self.songAuthorsLabel)
@@ -358,6 +399,7 @@ class SongReviewWidget(QtGui.QWidget):
             authorsText = authorsText[:-2]
         self.songAuthorsContent.setText(authorsText)
         self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.songAuthorsContent)
+        #verse order
         self.songVerseOrderLabel = QtGui.QLabel(self)
         self.songVerseOrderLabel.setObjectName(u'songVerseOrderLabel')
         self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.songVerseOrderLabel)
@@ -366,6 +408,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.songVerseOrderContent.setText(self.song.verse_order)
         self.songVerseOrderContent.setWordWrap(True)
         self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.songVerseOrderContent)
+        #verses
         self.songGroupBoxLayout.addLayout(self.songInfoFormLayout)
         self.songInfoVerseGroupBox = QtGui.QGroupBox(self.songGroupBox)
         self.songInfoVerseGroupBox.setObjectName(u'songInfoVerseGroupBox')
@@ -399,5 +442,8 @@ class SongReviewWidget(QtGui.QWidget):
         self.songInfoVerseGroupBox.setTitle(u'Verses')
 
     def onRemoveButtonClicked(self):
+        """
+        Signal emitted when the "remove" button is clicked.
+        """
         self.emit(QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'), self)
 
