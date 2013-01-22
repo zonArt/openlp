@@ -157,6 +157,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
     def customPageChanged(self, pageId):
         """
         Called when changing the wizard page.
+
+        ``pageId``
+            ID of the page the wizard changed to.
         """
         #hide back button
         self.button(QtGui.QWizard.BackButton).hide()
@@ -193,6 +196,12 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Inserts a song duplicate (two simliar songs) to the duplicate song list.
         If one of the two songs is already part of the duplicate song list,
         don't add another duplicate group but add the other song to that group.
+
+        ``searchSong``
+            The song we searched the duplicate for.
+
+        ``duplicateSong``
+            The duplicate song.
         """
         duplicateGroupFound = False
         for duplicates in self.duplicateSongList:
@@ -245,6 +254,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Removes a song from the database, removes the GUI element representing the
         song on the review page, and disable the remove button if only one duplicate
         is left.
+
+        ``songReviewWidget``
+            The SongReviewWidget whose song we should delete.
         """
         #remove song
         item_id = songReviewWidget.song.id
@@ -323,6 +335,13 @@ class SongReviewWidget(QtGui.QWidget):
     when the remove button is clicked.
     """
     def __init__(self, parent, song):
+        """
+        ``parent``
+            The QWidget-derived parent of the wizard.
+
+        ``song``
+            The Song which this SongReviewWidget should represent.
+        """
         QtGui.QWidget.__init__(self, parent)
         self.song = song
         self.setupUi()
