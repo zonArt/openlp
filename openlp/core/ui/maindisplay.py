@@ -38,8 +38,8 @@ import sys
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, translate, PluginManager, expand_tags,\
-    Settings, ImageSource
+from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, translate, expand_tags,\
+    Settings, ImageSource, Registry
 from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.ui import HideMode, ScreenList, AlertLocation
@@ -114,9 +114,8 @@ class MainDisplay(Display):
     """
     This is the display screen as a specialized class from the Display class
     """
-    def __init__(self, parent, imageManager, live, controller):
+    def __init__(self, parent, live, controller):
         Display.__init__(self, parent, live, controller)
-        self.imageManager = imageManager
         self.screens = ScreenList()
         self.rebuildCSS = False
         self.hideMode = None
@@ -181,8 +180,8 @@ class MainDisplay(Display):
         Call the plugins to rebuild the Live display CSS as the screen has
         not been rebuild on exit of config.
         """
-        if self.rebuildCSS and PluginManager.get_instance().plugins:
-            for plugin in PluginManager.get_instance().plugins:
+        if self.rebuildCSS and self.plugin_manager.plugins:
+            for plugin in self.plugin_manager.plugins:
                 plugin.refreshCss(self.frame)
         self.rebuildCSS = False
 
@@ -221,8 +220,8 @@ class MainDisplay(Display):
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
-            self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.isLive, None))
+            self.webView.setHtml(build_html(serviceItem, self.screen, self.isLive, None,
+                plugins=self.plugin_manager.plugins))
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
 
@@ -288,7 +287,7 @@ class MainDisplay(Display):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.imageManager.addImage(path, ImageSource.ImagePlugin, background)
+        self.image_manager.addImage(path, ImageSource.ImagePlugin, background)
         if not hasattr(self, u'serviceItem'):
             return False
         self.override[u'image'] = path
@@ -310,7 +309,7 @@ class MainDisplay(Display):
             re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.imageManager.getImageBytes(path, ImageSource.ImagePlugin)
+        image = self.image_manager.getImageBytes(path, ImageSource.ImagePlugin)
         self.controller.mediaController.media_reset(self.controller)
         self.displayImage(image)
 
@@ -391,17 +390,18 @@ class MainDisplay(Display):
                 self.override = {}
             else:
                 # replace the background
-                background = self.imageManager.getImageBytes(self.override[u'image'], ImageSource.ImagePlugin)
+                background = self.image_manager.getImageBytes(self.override[u'image'], ImageSource.ImagePlugin)
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.imageManager.getImageBytes(
+            self.serviceItem.bg_image_bytes = self.image_manager.getImageBytes(
                 self.serviceItem.themedata.background_filename,ImageSource.Theme)
         if image_path:
-            image_bytes = self.imageManager.getImageBytes(image_path, ImageSource.ImagePlugin)
+            image_bytes = self.image_manager.getImageBytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes)
+        html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes,
+            plugins=self.plugin_manager.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.webView.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
@@ -475,6 +475,26 @@ class MainDisplay(Display):
         else:
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
+
+    def _get_plugin_manager(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
 
 
 class AudioPlayer(QtCore.QObject):
@@ -599,3 +619,4 @@ class AudioPlayer(QtCore.QObject):
     #@todo is this used?
     def connectSlot(self, signal, slot):
         QtCore.QObject.connect(self.mediaObject, signal, slot)
+

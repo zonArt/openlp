@@ -34,14 +34,10 @@ from collections import deque
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, \
-    translate, build_icon, build_html, PluginManager, ServiceItem, \
-    ImageSource, SlideLimits, ServiceItemAction, Settings
-from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList
+from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, translate, build_icon, build_html, \
+    ServiceItem, ImageSource, SlideLimits, ServiceItemAction, Settings, Registry
+from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList, DisplayControllerType
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.lib import SlideLimits, ServiceItemAction
-from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList, \
-    DisplayControllerType
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
@@ -510,7 +506,7 @@ class SlideController(DisplayController):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self.imageManager, self.isLive, self)
+        self.display = MainDisplay(self, self.isLive, self)
         self.display.setup()
         if self.isLive:
             self.__addActionsToWidget(self.display)
@@ -525,7 +521,7 @@ class SlideController(DisplayController):
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
         self.previewDisplay.webView.setHtml(build_html(serviceItem, self.previewDisplay.screen, None, self.isLive,
-            plugins=PluginManager.get_instance().plugins))
+            plugins=self.plugin_manager.plugins))
         self.mediaController.setup_display(self.previewDisplay,True)
         if self.serviceItem:
             self.refreshServiceItem()
@@ -1283,3 +1279,13 @@ class SlideController(DisplayController):
     def onTrackTriggered(self):
         action = self.sender()
         self.display.audioPlayer.goTo(action.data())
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)

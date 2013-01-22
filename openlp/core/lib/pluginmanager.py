@@ -33,7 +33,7 @@ import os
 import sys
 import logging
 
-from openlp.core.lib import Plugin, PluginStatus
+from openlp.core.lib import Plugin, PluginStatus, Registry
 
 log = logging.getLogger(__name__)
 
@@ -43,13 +43,6 @@ class PluginManager(object):
     and executes all the hooks, as and when necessary.
     """
     log.info(u'Plugin manager loaded')
-    __instance__ = None
-    @staticmethod
-    def get_instance():
-        """
-        Obtain a single instance of class.
-        """
-        return PluginManager.__instance__
 
     def __init__(self, plugin_dir):
         """
@@ -60,7 +53,7 @@ class PluginManager(object):
             The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
-        PluginManager.__instance__ = self
+        Registry().register(u'plugin_manager', self)
         if not plugin_dir in sys.path:
             log.debug(u'Inserting %s into sys.path', plugin_dir)
             sys.path.insert(0, plugin_dir)

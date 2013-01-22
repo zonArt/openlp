@@ -40,7 +40,7 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, SettingsManager, \
-    translate, str_to_bool, check_directory_exists, Settings, PluginStatus
+    translate, str_to_bool, check_directory_exists, Settings, PluginStatus, Registry
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
@@ -313,8 +313,7 @@ class ServiceManager(QtGui.QWidget):
         Setter for service file.
         """
         self._fileName = unicode(fileName)
-        self.mainwindow.setServiceModified(self.isModified(),
-            self.shortFileName())
+        self.mainwindow.setServiceModified(self.isModified(), self.shortFileName())
         Settings().setValue(u'servicemanager/last file', fileName)
         self._saveLite = self._fileName.endswith(u'.oszl')
 
@@ -384,8 +383,8 @@ class ServiceManager(QtGui.QWidget):
         if not loadFile:
             fileName = QtGui.QFileDialog.getOpenFileName(self.mainwindow,
                 translate('OpenLP.ServiceManager', 'Open File'),
-                SettingsManager.get_last_dir(self.mainwindow.serviceManagerSettingsSection),
-                translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)'))
+                    SettingsManager.get_last_dir(self.mainwindow.serviceManagerSettingsSection),
+                    translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)'))
             if not fileName:
                 return False
         else:
@@ -703,7 +702,6 @@ class ServiceManager(QtGui.QWidget):
                 for item in items:
                     self.mainwindow.incrementProgressBar()
                     serviceItem = ServiceItem()
-                    serviceItem.renderer = self.mainwindow.renderer
                     if self._saveLite:
                         serviceItem.set_from_service(item)
                     else:
@@ -812,7 +810,7 @@ class ServiceManager(QtGui.QWidget):
                     break
         self.themeMenu.menuAction().setVisible(False)
         # Set up the theme menu.
-        if serviceItem[u'service_item'].is_text() and self.mainwindow.renderer.theme_level == ThemeLevel.Song:
+        if serviceItem[u'service_item'].is_text() and self.renderer.theme_level == ThemeLevel.Song:
             self.themeMenu.menuAction().setVisible(True)
             # The service item does not have a theme, check the "Default".
             if serviceItem[u'service_item'].theme is None:
@@ -1197,7 +1195,7 @@ class ServiceManager(QtGui.QWidget):
         """
         log.debug(u'onThemeComboBoxSelected')
         self.service_theme = self.themeComboBox.currentText()
-        self.mainwindow.renderer.set_service_theme(self.service_theme)
+        self.renderer.set_service_theme(self.service_theme)
         Settings().setValue(self.mainwindow.serviceManagerSettingsSection + u'/service theme', self.service_theme)
         self.regenerateServiceItems(True)
 
@@ -1207,7 +1205,7 @@ class ServiceManager(QtGui.QWidget):
         sure the theme combo box is in the correct state.
         """
         log.debug(u'themeChange')
-        visible = self.mainwindow.renderer.theme_level == ThemeLevel.Global
+        visible = self.renderer.theme_level == ThemeLevel.Global
         self.themeLabel.setVisible(visible)
         self.themeComboBox.setVisible(visible)
 
@@ -1520,7 +1518,7 @@ class ServiceManager(QtGui.QWidget):
             themeGroup.addAction(create_widget_action(self.themeMenu, theme, text=theme, checked=False,
                 triggers=self.onThemeChangeAction))
         find_and_set_in_combo_box(self.themeComboBox, self.service_theme)
-        self.mainwindow.renderer.set_service_theme(self.service_theme)
+        self.renderer.set_service_theme(self.service_theme)
         self.regenerateServiceItems()
 
     def onThemeChangeAction(self):
@@ -1545,3 +1543,13 @@ class ServiceManager(QtGui.QWidget):
         """
         settingDialog = PrintServiceForm(self.mainwindow, self)
         settingDialog.exec_()
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)

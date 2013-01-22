@@ -27,18 +27,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Provide plugin management
+Provide Registry Services
 """
-import os
-import sys
 import logging
 
 log = logging.getLogger(__name__)
 
 class Registry(object):
     """
-    This is the Plugin manager, which loads all the plugins,
-    and executes all the hooks, as and when necessary.
+    This is the Component Registry.  It is a singleton object and is used to provide a
+    look up service for common objects.
     """
     log.info(u'Registry loaded')
     __instance__ = None
@@ -52,16 +50,15 @@ class Registry(object):
     @classmethod
     def create(self):
         """
-        The constructor for the plugin manager. Passes the controllers on to
-        the plugins for them to interact with via their ServiceItems.
-
-        ``plugin_dir``
-            The directory to search for plugins.
+        The constructor for the component registry providing a single registry of objects.
         """
         log.info(u'Registry Initialising')
         self.service_list = {}
 
     def get(self, key):
+        """
+        Extracts the registry value from the list based on the key passed in
+        """
         if key in self.service_list:
             return self.service_list[key]
         else:
@@ -69,10 +66,11 @@ class Registry(object):
             return None
 
     def register(self, key, reference):
-        print "register"
+        """
+        Registers a component against a key.
+        """
         if key in self.service_list:
             log.error(u'Duplicate service exception %s' % key)
             raise Exception(u'Duplicate service exception %s' % key)
         else:
             self.service_list[key] = reference
-        print self.service_list
