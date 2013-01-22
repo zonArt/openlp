@@ -5,7 +5,7 @@ import os
 
 from unittest import TestCase
 from mock import MagicMock
-from openlp.core.lib import ServiceItem
+from openlp.core.lib import ServiceItem, Registry
 
 VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n'\
@@ -19,6 +19,17 @@ FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 class TestServiceItem(TestCase):
+
+    def setUp(self):
+        """
+        Set up the Registry
+        """
+        registry = Registry.create()
+        mocked_renderer =  MagicMock()
+        mocked_image_manager =  MagicMock()
+        mocked_renderer.format_slide.return_value = [VERSE]
+        Registry().register(u'renderer', mocked_renderer)
+        Registry().register(u'image_manager', mocked_image_manager)
 
     def serviceitem_basic_test(self):
         """
@@ -48,11 +59,6 @@ class TestServiceItem(TestCase):
         assert service_item.is_valid is True, u'The new service item should be valid'
         assert service_item.missing_frames() is False, u'check frames loaded '
 
-        # GIVEN: A service item with text
-        mocked_renderer =  MagicMock()
-        mocked_renderer.format_slide.return_value = [VERSE]
-        service_item.renderer = mocked_renderer
-
         # WHEN: Render called
         assert len(service_item._display_frames) == 0, u'A blank Service Item with no display frames'
         service_item.render(True)
@@ -68,8 +74,6 @@ class TestServiceItem(TestCase):
         # GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
         service_item.name = u'test'
-        mocked_renderer =  MagicMock()
-        service_item.renderer = mocked_renderer
 
         # WHEN: adding image to a service item
         test_image = os.path.join(TESTPATH, u'church.jpg')
@@ -125,8 +129,6 @@ class TestServiceItem(TestCase):
         # GIVEN: A new service item and a mocked renderer
         service_item = ServiceItem(None)
         service_item.name = u'test'
-        mocked_renderer =  MagicMock()
-        service_item.renderer = mocked_renderer
 
         # WHEN: adding image to a service item
         test_file = os.path.join(TESTPATH, u'church.jpg')

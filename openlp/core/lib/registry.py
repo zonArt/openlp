@@ -41,7 +41,6 @@ class Registry(object):
     log.info(u'Registry loaded')
     __instance__ = None
 
-
     def __new__(cls):
         if not cls.__instance__:
             cls.__instance__ = object.__new__(cls)
