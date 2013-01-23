@@ -387,7 +387,7 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if Settings().value(self.settings_section + u'/' + self.name, QtCore.Qt.Checked) == QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + u'/' + self.name) == QtCore.Qt.Checked:
             return self.is_available()
         else:
             return False

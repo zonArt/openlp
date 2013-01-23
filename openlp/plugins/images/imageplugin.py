@@ -36,11 +36,17 @@ from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
 
+__default_settings__ = {
+        u'images/background color': u'#000000',
+        u'images/images files': []
+    }
+
+
 class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem, ImageTab)
+        Plugin.__init__(self, u'images', __default_settings__, plugin_helpers, ImageMediaItem, ImageTab)
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)
@@ -91,5 +97,5 @@ class ImagePlugin(Plugin):
         image manager to require updates.  Actual update is triggered by the
         last part of saving the config.
         """
-        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
+        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
         self.liveController.imageManager.updateImagesBorder(ImageSource.ImagePlugin, background)

@@ -32,9 +32,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, UiStrings
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
 from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
@@ -72,7 +72,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.onGradientStartButtonClicked)
         QtCore.QObject.connect(self.gradientEndButton, QtCore.SIGNAL(u'clicked()'), self.onGradientEndButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton, QtCore.SIGNAL(u'clicked()'), self.onImageBrowseButtonClicked)
-        QtCore.QObject.connect(self.mainColorButton,   QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
+        QtCore.QObject.connect(self.mainColorButton,  QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
         QtCore.QObject.connect(self.outlineColorButton, QtCore.SIGNAL(u'clicked()'), self.onOutlineColorButtonClicked)
         QtCore.QObject.connect(self.shadowColorButton, QtCore.SIGNAL(u'clicked()'), self.onShadowColorButtonClicked)
         QtCore.QObject.connect(self.outlineCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),

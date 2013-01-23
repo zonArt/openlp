@@ -778,7 +778,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             The source of the webbible.
         """
         log.debug(u'BiblesResourcesDB.get_webbibles("%s")', source)
-        if not isinstance(source,  unicode):
+        if not isinstance(source, unicode):
             source = unicode(source)
         source = BiblesResourcesDB.get_download_source(source)
         bibles = BiblesResourcesDB.run_sql(u'SELECT id, name, abbreviation, '
@@ -953,7 +953,7 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         return cursor.fetchall()
 
     @staticmethod
-    def get_book_reference_id(name,  language_id=None):
+    def get_book_reference_id(name, language_id=None):
         """
         Return a book_reference_id if the name matches.
 

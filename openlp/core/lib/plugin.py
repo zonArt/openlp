@@ -33,8 +33,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Settings
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import Receiver, Settings, UiStrings
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -119,7 +118,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, plugin_helpers=None, media_item_class=None,
+    def __init__(self, name, default_settings, plugin_helpers=None, media_item_class=None,
         settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
@@ -133,8 +132,8 @@ class Plugin(QtCore.QObject):
         ``name``
             Defaults to *None*. The name of the plugin.
 
-        ``version``
-            Defaults to *None*. The version of the plugin.
+        ``default_settings``
+            A dict containing the plugin's settings. The value to each key is the default value to be used.
 
         ``plugin_helpers``
             Defaults to *None*. A list of helper objects.
@@ -144,6 +143,9 @@ class Plugin(QtCore.QObject):
 
         ``settings_tab_class``
             The class name of the plugin's settings tab.
+
+        ``version``
+            Defaults to *None*, which means that the same version number is used as OpenLP's version number.
         """
         log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
@@ -172,6 +174,15 @@ class Plugin(QtCore.QObject):
         self.pluginManager = plugin_helpers[u'pluginmanager']
         self.formParent = plugin_helpers[u'formparent']
         self.mediaController = plugin_helpers[u'mediacontroller']
+        # Add the default status to the default settings.
+        default_settings[name + u'/status'] = PluginStatus.Inactive
+        default_settings[name + u'/last directory'] = u''
+        # Append a setting for files in the mediamanager (note not all plugins
+        # which have a mediamanager need this).
+        if media_item_class is not None:
+            default_settings[u'%s/%s files' % (name, name)] = []
+        # Add settings to the dict of all settings.
+        Settings.extend_default_settings(default_settings)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_config_updated' % self.name),
@@ -190,7 +201,7 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = Settings().value(self.settingsSection + u'/status', PluginStatus.Inactive)
+        self.status = Settings().value(self.settingsSection + u'/status')
 
     def toggleStatus(self, new_status):
         """
@@ -300,7 +311,28 @@ class Plugin(QtCore.QObject):
         """
         Perform tasks on application startup
         """
-        pass
+        # FIXME: Remove after 2.2 release.
+        # This is needed to load the list of images/media/presentation from the config saved
+        # before the settings rewrite.
+        if self.mediaItemClass is not None:
+            # We need QSettings instead of Settings here to bypass our central settings dict.
+            # Do NOT do this anywhere else!
+            settings = QtCore.QSettings()
+            settings.beginGroup(self.settingsSection)
+            if settings.contains(u'%s count' % self.name):
+                list_count = int(settings.value(u'%s count' % self.name, 0))
+                loaded_list = []
+                if list_count:
+                    for counter in range(list_count):
+                        item = settings.value(u'%s %d' % (self.name, counter), u'')
+                        if item:
+                            loaded_list.append(item)
+                        settings.remove(u'%s %d' % (self.name, counter))
+                settings.remove(u'%s count' % self.name)
+                # Now save the list to the config using our Settings class.
+                Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
+            settings.endGroup()
+
 
     def usesTheme(self, theme):
         """

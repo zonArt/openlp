@@ -41,6 +41,7 @@ REMOVE_AMPERSAND = re.compile(r'&{1}')
 
 log = logging.getLogger(__name__)
 
+
 class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
     The shortcut list dialog

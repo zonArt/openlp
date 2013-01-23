@@ -32,9 +32,9 @@ import logging
 from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags, ImageSource
+    ItemCapabilities, FormattingTags, ImageSource, ScreenList
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.ui import MainDisplay, ScreenList
+from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
+
 
 class Renderer(object):
     """

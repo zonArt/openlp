@@ -29,8 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, SpellTextEdit
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import build_icon, translate, SpellTextEdit, UiStrings
 
 class ZoomSize(object):
     """

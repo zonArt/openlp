@@ -29,9 +29,10 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate
+from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, find_and_set_in_combo_box
+from openlp.core.lib.ui import find_and_set_in_combo_box
+
 
 class ThemesTab(SettingsTab):
     """
@@ -118,8 +119,8 @@ class ThemesTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.theme_level = settings.value(u'theme level', ThemeLevel.Song)
-        self.global_theme = settings.value(u'global theme', u'')
+        self.theme_level = settings.value(u'theme level')
+        self.global_theme = settings.value(u'global theme')
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.GlobalLevelRadioButton.setChecked(True)
@@ -165,7 +166,7 @@ class ThemesTab(SettingsTab):
                 [u'Bible Theme', u'Song Theme']
         """
         # Reload as may have been triggered by the ThemeManager.
-        self.global_theme = Settings().value(self.settingsSection + u'/global theme', u'')
+        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)

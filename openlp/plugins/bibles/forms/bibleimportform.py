@@ -34,9 +34,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, Settings
+from openlp.core.lib import Receiver, translate, Settings, UiStrings
 from openlp.core.lib.db import delete_database
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, locale_compare
 from openlp.plugins.bibles.lib.manager import BibleFormat
@@ -469,34 +469,34 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the OSIS file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit)
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit, u'last directory import')
 
     def onCsvBooksBrowseButtonClicked(self):
         """
         Show the file open dialog for the books CSV file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, u'%s (*.csv)'
-            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, u'last directory import',
+            u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onCsvVersesBrowseButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, u'%s (*.csv)'
-            % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, u'last directory import',
+            u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
         Show the file open dialog for the OpenSong file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit)
+        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit, u'last directory import')
 
     def onOpenlp1BrowseButtonClicked(self):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1, self.openlp1FileEdit, u'%s (*.bible)' %
-            translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x Bible Files'))
+        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1, self.openlp1FileEdit, u'last directory import',
+            u'%s (*.bible)' % translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x Bible Files'))
 
     def registerFields(self):
         """
@@ -533,9 +533,9 @@ class BibleImportForm(OpenLPWizard):
         self.setField(u'opensong_file', '')
         self.setField(u'web_location', WebDownload.Crosswalk)
         self.setField(u'web_biblename', self.webTranslationComboBox.currentIndex())
-        self.setField(u'proxy_server', settings.value(u'proxy address', u''))
-        self.setField(u'proxy_username', settings.value(u'proxy username', u''))
-        self.setField(u'proxy_password', settings.value(u'proxy password', u''))
+        self.setField(u'proxy_server', settings.value(u'proxy address'))
+        self.setField(u'proxy_username', settings.value(u'proxy username'))
+        self.setField(u'proxy_password', settings.value(u'proxy password'))
         self.setField(u'openlp1_location', '')
         self.setField(u'license_version', self.versionNameEdit.text())
         self.setField(u'license_copyright', self.copyrightEdit.text())

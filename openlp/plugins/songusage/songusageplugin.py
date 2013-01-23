@@ -42,11 +42,26 @@ from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
 
+
+YEAR = QtCore.QDate().currentDate().year()
+if QtCore.QDate().currentDate().month() < 9:
+    YEAR -= 1
+
+
+__default_settings__ = {
+        u'songusage/db type': u'sqlite',
+        u'songusage/active': False,
+        u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
+        u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
+        u'songusage/last directory export': u''
+    }
+
+
 class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'songusage', plugin_helpers)
+        Plugin.__init__(self, u'songusage', __default_settings__, plugin_helpers)
         self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
@@ -112,7 +127,7 @@ class SongUsagePlugin(Plugin):
             self.displaySongUsage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'print_service_started'),
             self.printSongUsage)
-        self.songUsageActive = Settings().value(self.settingsSection + u'/active', False)
+        self.songUsageActive = Settings().value(self.settingsSection + u'/active')
         # Set the button and checkbox state
         self.setButtonState()
         action_list = ActionList.get_instance()
