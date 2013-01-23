@@ -301,7 +301,7 @@ class MainDisplay(Display):
         """
         log.debug(u'image to display')
         image = self.image_manager.getImageBytes(path, ImageSource.ImagePlugin)
-        self.controller.mediaController.media_reset(self.controller)
+        self.controller.media_controller.media_reset(self.controller)
         self.displayImage(image)
 
     def displayImage(self, image):

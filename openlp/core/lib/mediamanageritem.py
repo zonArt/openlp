@@ -470,7 +470,7 @@ class MediaManagerItem(QtGui.QWidget):
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
-                self.plugin.previewController.addServiceItem(serviceItem)
+                self.preview_controller.addServiceItem(serviceItem)
                 if keepFocus:
                     self.listView.setFocus()
 
@@ -496,7 +496,7 @@ class MediaManagerItem(QtGui.QWidget):
                 serviceItem.from_plugin = True
             if remote:
                 serviceItem.will_auto_start = True
-            self.plugin.liveController.addServiceItem(serviceItem)
+            self.live_controller.addServiceItem(serviceItem)
 
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()
@@ -511,7 +511,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items to add.'))
         else:
-            # Is it posssible to process multiple list items to generate
+            # Is it possible to process multiple list items to generate
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(u'%s Add requested', self.plugin.name)
@@ -525,7 +525,7 @@ class MediaManagerItem(QtGui.QWidget):
         serviceItem = self.buildServiceItem(item, True, remote=remote, context=ServiceItemContext.Service)
         if serviceItem:
             serviceItem.from_plugin = False
-            self.plugin.serviceManager.addServiceItem(serviceItem, replace=replace)
+            self.service_manager.addServiceItem(serviceItem, replace=replace)
 
     def onAddEditClick(self):
         """
@@ -542,7 +542,7 @@ class MediaManagerItem(QtGui.QWidget):
                     translate('OpenLP.MediaManagerItem', 'You must select an existing service item to add to.'))
             elif self.plugin.name == serviceItem.name:
                 self.generateSlideData(serviceItem)
-                self.plugin.serviceManager.addServiceItem(serviceItem, replace=True)
+                self.service_manager.addServiceItem(serviceItem, replace=True)
             else:
                 # Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self, translate('OpenLP.MediaManagerItem', 'Invalid Service Item'),

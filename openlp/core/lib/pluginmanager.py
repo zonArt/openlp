@@ -62,16 +62,13 @@ class PluginManager(object):
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, plugin_dir, plugin_helpers):
+    def find_plugins(self, plugin_dir):
         """
         Scan the directory ``plugin_dir`` for objects inheriting from the
         ``Plugin`` class.
 
         ``plugin_dir``
             The directory to scan.
-
-        ``plugin_helpers``
-            A list of helper objects to pass to the plugins.
 
         """
         log.info(u'Finding plugins')
@@ -110,7 +107,7 @@ class PluginManager(object):
         plugin_objects = []
         for p in plugin_classes:
             try:
-                plugin = p(plugin_helpers)
+                plugin = p()
                 log.debug(u'Loaded plugin %s', unicode(p))
                 plugin_objects.append(plugin)
             except TypeError:

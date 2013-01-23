@@ -118,8 +118,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, default_settings, plugin_helpers=None, media_item_class=None,
-        settings_tab_class=None, version=None):
+    def __init__(self, name, default_settings, media_item_class=None, settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -134,9 +133,6 @@ class Plugin(QtCore.QObject):
 
         ``default_settings``
             A dict containing the plugin's settings. The value to each key is the default value to be used.
-
-        ``plugin_helpers``
-            Defaults to *None*. A list of helper objects.
 
         ``media_item_class``
             The class name of the plugin's media item.
@@ -165,8 +161,6 @@ class Plugin(QtCore.QObject):
         self.mediaItem = None
         self.weight = 0
         self.status = PluginStatus.Inactive
-        self.previewController = plugin_helpers[u'preview']
-        self.liveController = plugin_helpers[u'live']
         # Add the default status to the default settings.
         default_settings[name + u'/status'] = PluginStatus.Inactive
         default_settings[name + u'/last directory'] = u''

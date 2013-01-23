@@ -73,11 +73,11 @@ class SongsPlugin(Plugin):
     """
     log.info(u'Song Plugin loaded')
 
-    def __init__(self, plugin_helpers):
+    def __init__(self):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'songs', __default_settings__, plugin_helpers, SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'songs', __default_settings__, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
         self.iconPath = u':/plugins/plugin_songs.png'

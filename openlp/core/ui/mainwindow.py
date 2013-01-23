@@ -482,7 +482,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Set up the path with plugins
         plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(plugin_path)
-        self.pluginHelpers = {}
         self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
@@ -547,17 +546,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
-        # make the controllers available to the plugins
-        self.pluginHelpers[u'preview'] = self.previewController
-        self.pluginHelpers[u'live'] = self.liveController
-        self.pluginHelpers[u'renderer'] = self.renderer
-        self.pluginHelpers[u'service'] = self.serviceManagerContents
-        self.pluginHelpers[u'settings form'] = self.settingsForm
-        self.pluginHelpers[u'toolbox'] = self.mediaDockManager
-        self.pluginHelpers[u'pluginmanager'] = self.pluginManager
-        self.pluginHelpers[u'formparent'] = self
-        self.pluginHelpers[u'mediacontroller'] = self.mediaController
-        self.pluginManager.find_plugins(plugin_path, self.pluginHelpers)
+        self.pluginManager.find_plugins(plugin_path)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs

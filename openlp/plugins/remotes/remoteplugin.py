@@ -44,11 +44,11 @@ __default_settings__ = {
 class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')
 
-    def __init__(self, plugin_helpers):
+    def __init__(self):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'remotes', __default_settings__, plugin_helpers, settings_tab_class=RemoteTab)
+        Plugin.__init__(self, u'remotes', __default_settings__, settings_tab_class=RemoteTab)
         self.iconPath = u':/plugins/plugin_remote.png'
         self.icon = build_icon(self.iconPath)
         self.weight = -1

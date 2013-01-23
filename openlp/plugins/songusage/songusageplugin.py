@@ -60,8 +60,8 @@ __default_settings__ = {
 class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'songusage', __default_settings__, plugin_helpers)
+    def __init__(self):
+        Plugin.__init__(self, u'songusage', __default_settings__)
         self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')

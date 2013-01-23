@@ -35,9 +35,9 @@ from collections import deque
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, translate, build_icon, build_html, \
-    ServiceItem, ImageSource, SlideLimits, ServiceItemAction, Settings, Registry, UiStrings
-from openlp.core.ui import HideMode, MainDisplay, Display, ScreenList, DisplayControllerType
-from openlp.core.lib.ui import UiStrings, create_action
+    ServiceItem, ImageSource, SlideLimits, ServiceItemAction, Settings, Registry, UiStrings, ScreenList
+from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
+from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
