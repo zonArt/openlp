@@ -6,10 +6,11 @@ import cPickle
 
 from unittest import TestCase
 from mock import MagicMock, patch
+from openlp.core.lib import Renderer, Settings
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import ServiceItem, Settings
+from openlp.core.lib import ServiceItem, Settings, PluginManager
 
 VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n'\
@@ -175,6 +176,13 @@ class TestServiceItem(TestCase):
         service_item = ServiceItem(None)
         mocked_add_icon =  MagicMock()
         service_item.add_icon = mocked_add_icon
+        #mocked_image_manager = MagicMock()
+        #mocked_theme_contents = MagicMock()
+        #plugin_manager = PluginManager(TESTPATH)
+        #with patch(u'openlp.core.ui.maindisplay.QtGui') as mocked_QTGui, \
+        #    patch(u'openlp.core.ui.maindisplay.QtOpenGL.QGLWidget') as mocked_QTOpenGL,\
+        #    patch(u'openlp.core.ui.maindisplay.QtGui.QAbstractScrollArea') as mocked_QWidgetL:
+        #    mocked_renderer =  Renderer(mocked_image_manager, mocked_theme_contents)
         mocked_renderer =  MagicMock()
         service_item.renderer = mocked_renderer
 
@@ -201,7 +209,7 @@ class TestServiceItem(TestCase):
         service_item.renderer = mocked_renderer
 
         # WHEN: adding a custom from a saved Service
-        #with patch(u'openlp_core_lib_settings') as mocked_settings:
+        #with patch(u'openlp.core.lib.settings') as mocked_settings:
         #    line = self.convert_file_service_item(u'serviceitem_image1.osd')
         #    service_item.set_from_service(line)
 
