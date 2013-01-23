@@ -5,7 +5,7 @@ import os
 
 from unittest import TestCase
 from mock import MagicMock
-from openlp.core.lib import ServiceItem, Registry
+from openlp.core.lib import Registry
 
 TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
