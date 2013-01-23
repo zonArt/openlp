@@ -349,7 +349,7 @@ class TestLib(TestCase):
             thumb_mocked_stat = MagicMock()
             thumb_mocked_stat.st_mtime = datetime.now() - timedelta(seconds=10)
             mocked_os.path.exists.return_value = True
-            mocked_os.stat.side_effect = [file_mocked_stat, thumb_mocked_stat]
+            mocked_os.stat.side_effect = lambda fname: file_mocked_stat if fname == file_path else thumb_mocked_stat
                 
             # WHEN: we run the validate_thumb() function
             result = validate_thumb(file_path, thumb_path)
