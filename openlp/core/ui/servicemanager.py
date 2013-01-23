@@ -40,9 +40,9 @@ log = logging.getLogger(__name__)
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, SettingsManager, \
-    translate, str_to_bool, check_directory_exists, Settings, PluginStatus, Registry
+    translate, str_to_bool, check_directory_exists, Settings, PluginStatus, Registry, UiStrings
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_widget_action, find_and_set_in_combo_box
+from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
 from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, split_filename, format_time
@@ -232,7 +232,7 @@ class ServiceManager(QtGui.QWidget):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.themeChange)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'service_item_update'), self.serviceItemUpdate)
         # Last little bits of setting up
-        self.service_theme = Settings().value(self.mainwindow.serviceManagerSettingsSection + u'/service theme', u'')
+        self.service_theme = Settings().value(self.mainwindow.serviceManagerSettingsSection + u'/service theme')
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
         # build the drag and drop context menu
         self.dndMenu = QtGui.QMenu()
@@ -247,7 +247,7 @@ class ServiceManager(QtGui.QWidget):
         self.maintainAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
             icon=u':/general/general_edit.png', triggers=self.onServiceItemEditForm)
         self.notesAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Notes'),
-            icon=u':/services/service_notes.png',  triggers=self.onServiceItemNoteForm)
+            icon=u':/services/service_notes.png', triggers=self.onServiceItemNoteForm)
         self.timeAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.onStartTimeForm)
         self.autoStartAction = create_widget_action(self.menu, text=u'',
@@ -334,7 +334,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
-        self.expandTabs = Settings().value(u'advanced/expand service item', False)
+        self.expandTabs = Settings().value(u'advanced/expand service item')
 
     def resetSupportedSuffixes(self):
         """
@@ -390,7 +390,7 @@ class ServiceManager(QtGui.QWidget):
                 return False
         else:
             fileName = loadFile
-        SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, split_filename(fileName)[0])
+        Settings().setValue(self.mainwindow.serviceManagerSettingsSection + u'/last directory', split_filename(fileName)[0])
         self.loadFile(fileName)
 
     def saveModifiedService(self):
@@ -436,7 +436,7 @@ class ServiceManager(QtGui.QWidget):
         basename = os.path.splitext(file_name)[0]
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
-        SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, path)
+        Settings().setValue(self.mainwindow.serviceManagerSettingsSection + u'/last directory', path)
         service = []
         write_list = []
         missing_list = []
@@ -562,7 +562,7 @@ class ServiceManager(QtGui.QWidget):
         basename = os.path.splitext(file_name)[0]
         service_file_name = '%s.osd' % basename
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
-        SettingsManager.set_last_dir(self.mainwindow.serviceManagerSettingsSection, path)
+        Settings().setValue(self.mainwindow.serviceManagerSettingsSection + u'/last directory', path)
         service = []
         Receiver.send_message(u'cursor_busy')
         # Number of items + 1 to zip it
@@ -609,29 +609,25 @@ class ServiceManager(QtGui.QWidget):
         Get a file name and then call :func:`ServiceManager.saveFile` to
         save the file.
         """
-        default_service_enabled = Settings().value(u'advanced/default service enabled', True)
+        default_service_enabled = Settings().value(u'advanced/default service enabled')
         if default_service_enabled:
-            service_day = Settings().value(u'advanced/default service day', 7)
+            service_day = Settings().value(u'advanced/default service day')
             if service_day == 7:
                 local_time = datetime.now()
             else:
-                service_hour = Settings().value(u'advanced/default service hour', 11)
-                service_minute = Settings().value(u'advanced/default service minute', 0)
+                service_hour = Settings().value(u'advanced/default service hour')
+                service_minute = Settings().value(u'advanced/default service minute')
                 now = datetime.now()
                 day_delta = service_day - now.weekday()
                 if day_delta < 0:
                     day_delta += 7
                 time = now + timedelta(days=day_delta)
                 local_time = time.replace(hour=service_hour, minute=service_minute)
-            default_pattern = Settings().value(u'advanced/default service name',
-                translate('OpenLP.AdvancedTab', 'Service %Y-%m-%d %H-%M',
-                    'This may not contain any of the following characters: '
-                    '/\\?*|<>\[\]":+\nSee http://docs.python.org/library/'
-                    'datetime.html#strftime-strptime-behavior for more information.'))
+            default_pattern = Settings().value(u'advanced/default service name')
             default_filename = format_time(default_pattern, local_time)
         else:
             default_filename = u''
-        directory = SettingsManager.get_last_dir(self.mainwindow.serviceManagerSettingsSection)
+        directory = Settings().value(self.mainwindow.serviceManagerSettingsSection + u'/last directory')
         path = os.path.join(directory, default_filename)
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.
@@ -754,7 +750,7 @@ class ServiceManager(QtGui.QWidget):
         service was last closed. Can be blank if there was no service
         present.
         """
-        fileName = Settings().value(u'servicemanager/last file', u'')
+        fileName = Settings().value(u'servicemanager/last file')
         if fileName:
             self.loadFile(fileName)
 
@@ -852,7 +848,7 @@ class ServiceManager(QtGui.QWidget):
             service_item.auto_play_slides_loop = False
             self.autoPlaySlidesLoop.setChecked(False)
         if service_item.auto_play_slides_once and service_item.timed_slide_interval == 0:
-            service_item.timed_slide_interval = Settings().value(u'loop delay', 5)
+            service_item.timed_slide_interval = Settings().value(u'loop delay')
         self.setModified()
 
     def toggleAutoPlaySlidesLoop(self):
@@ -866,7 +862,7 @@ class ServiceManager(QtGui.QWidget):
             service_item.auto_play_slides_once = False
             self.autoPlaySlidesOnce.setChecked(False)
         if service_item.auto_play_slides_loop and service_item.timed_slide_interval == 0:
-            service_item.timed_slide_interval = Settings().value(u'loop delay', 5)
+            service_item.timed_slide_interval = Settings().value(u'loop delay')
         self.setModified()
 
     def onTimedSlideInterval(self):
@@ -877,7 +873,7 @@ class ServiceManager(QtGui.QWidget):
         item = self.findServiceItem()[0]
         service_item = self.serviceItems[item][u'service_item']
         if service_item.timed_slide_interval == 0:
-            timed_slide_interval = Settings().value(u'loop delay', 5)
+            timed_slide_interval = Settings().value(u'loop delay')
         else:
             timed_slide_interval = service_item.timed_slide_interval
         timed_slide_interval, ok = QtGui.QInputDialog.getInteger(self, translate('OpenLP.ServiceManager',
@@ -1366,7 +1362,7 @@ class ServiceManager(QtGui.QWidget):
         Receiver.send_message(u'cursor_busy')
         if self.serviceItems[item][u'service_item'].is_valid:
             self.live_controller.addServiceManagerItem(self.serviceItems[item][u'service_item'], child)
-            if Settings().value(self.mainwindow.generalSettingsSection + u'/auto preview', False):
+            if Settings().value(self.mainwindow.generalSettingsSection + u'/auto preview'):
                 item += 1
                 if self.serviceItems and item < len(self.serviceItems) and \
                         self.serviceItems[item][u'service_item'].is_capable(ItemCapabilities.CanPreview):

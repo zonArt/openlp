@@ -36,11 +36,18 @@ from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
 
+# Some settings starting with "media" are in core, because they are needed for core functionality.
+__default_settings__ = {
+        u'media/media auto start': QtCore.Qt.Unchecked,
+        u'media/media files': []
+    }
+
+
 class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'media', plugin_helpers, MediaMediaItem)
+        Plugin.__init__(self, u'media', __default_settings__, plugin_helpers, MediaMediaItem)
         self.weight = -6
         self.iconPath = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.iconPath)
@@ -117,6 +124,7 @@ class MediaPlugin(Plugin):
         we want to check if we have the old "Use Phonon" setting, and convert
         it to "enable Phonon" and "make it the first one in the list".
         """
+        Plugin.appStartup(self)
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):

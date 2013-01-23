@@ -33,8 +33,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, translate, check_item_selected, Receiver, \
-    ItemCapabilities, create_thumb, validate_thumb, ServiceItemContext, Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
+    ItemCapabilities, create_thumb, validate_thumb, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare
 from openlp.plugins.presentations.lib import MessageListener
 
@@ -120,7 +120,7 @@ class PresentationMediaItem(MediaManagerItem):
         Populate the media manager tab
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        files = SettingsManager.load_list(self.settingsSection, u'presentations')
+        files = Settings().value(self.settingsSection + u'/presentations files')
         self.loadList(files, True)
         self.populateDisplayTypes()
 
@@ -137,8 +137,7 @@ class PresentationMediaItem(MediaManagerItem):
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
-        if Settings().value(self.settingsSection + u'/override app',
-            QtCore.Qt.Unchecked) == QtCore.Qt.Checked:
+        if Settings().value(self.settingsSection + u'/override app') == QtCore.Qt.Checked:
             self.presentationWidget.show()
         else:
             self.presentationWidget.hide()
@@ -233,7 +232,7 @@ class PresentationMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_normal')
             for row in row_list:
                 self.listView.takeItem(row)
-            SettingsManager.set_list(self.settingsSection, u'presentations', self.getFileList())
+            Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
@@ -312,8 +311,7 @@ class PresentationMediaItem(MediaManagerItem):
         return None
 
     def search(self, string, showError):
-        files = SettingsManager.load_list(
-            self.settingsSection, u'presentations')
+        files = Settings().value(self.settingsSection + u'/presentations files')
         results = []
         string = string.lower()
         for file in files:

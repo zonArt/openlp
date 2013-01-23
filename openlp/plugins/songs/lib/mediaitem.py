@@ -37,8 +37,8 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list, \
-    check_directory_exists, ServiceItemContext, Settings
-from openlp.core.lib.ui import UiStrings, create_widget_action
+    check_directory_exists, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
@@ -121,9 +121,9 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def configUpdated(self):
-        self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type', False)
-        self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit', False)
-        self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service', True)
+        self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type')
+        self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit')
+        self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service',)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -150,8 +150,7 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.setCurrentSearchType(Settings().value(
-            u'%s/last search type' % self.settingsSection, SongSearch.Entire))
+        self.searchTextEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
         self.configUpdated()
 
     def onSearchTextButtonClicked(self):
@@ -469,9 +468,9 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if Settings().value(u'general/ccli number', u''):
+        if Settings().value(u'general/ccli number'):
             service_item.raw_footer.append(translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'general/ccli number', u''))
+                Settings().value(u'general/ccli number'))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]

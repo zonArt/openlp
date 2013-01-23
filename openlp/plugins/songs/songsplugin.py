@@ -38,17 +38,30 @@ import sqlite3
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, UiStrings
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings, create_action
+from openlp.core.lib.ui import create_action
 from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
+from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
+__default_settings__ = {
+        u'songs/db type': u'sqlite',
+        u'songs/last search type': SongSearch.Entire,
+        u'songs/last import type': SongFormat.OpenLyrics,
+        u'songs/update service on edit': False,
+        u'songs/search as type': False,
+        u'songs/add song from service': True,
+        u'songs/display songbar': True,
+        u'songs/last directory import': u'',
+        u'songs/last directory export': u''
+    }
+
 
 class SongsPlugin(Plugin):
     """
@@ -64,7 +77,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'songs', __default_settings__, plugin_helpers, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
         self.iconPath = u':/plugins/plugin_songs.png'

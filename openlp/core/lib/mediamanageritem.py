@@ -35,10 +35,11 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, \
-    Receiver, ListWidgetWithDnD, ServiceItemContext, Settings, Registry
+from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, Receiver, \
+    ListWidgetWithDnD, ServiceItemContext, Settings, Registry, UiStrings
 from openlp.core.lib.searchedit import SearchEdit
-from openlp.core.lib.ui import UiStrings, create_widget_action, critical_error_message_box
+from openlp.core.lib.ui import create_widget_action, critical_error_message_box
+
 
 log = logging.getLogger(__name__)
 
@@ -328,7 +329,7 @@ class MediaManagerItem(QtGui.QWidget):
         Add a file to the list widget to make it available for showing
         """
         files = QtGui.QFileDialog.getOpenFileNames(self, self.onNewPrompt,
-            SettingsManager.get_last_dir(self.settingsSection), self.onNewFileMasks)
+            Settings().value(self.settingsSection + u'/last directory'), self.onNewFileMasks)
         log.info(u'New files(s) %s', files)
         if files:
             Receiver.send_message(u'cursor_busy')
@@ -337,8 +338,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def loadFile(self, files):
         """
-        Turn file from Drag and Drop into an array so the Validate code
-        can run it.
+        Turn file from Drag and Drop into an array so the Validate code can run it.
 
         ``files``
             The list of files to be loaded
@@ -383,9 +383,8 @@ class MediaManagerItem(QtGui.QWidget):
             self.listView.clear()
             self.loadList(full_list)
             last_dir = os.path.split(unicode(files[0]))[0]
-            SettingsManager.set_last_dir(self.settingsSection, last_dir)
-            SettingsManager.set_list(self.settingsSection,
-                self.settingsSection, self.getFileList())
+            Settings().setValue(self.settingsSection + u'/last directory', last_dir)
+            Settings().setValue(u'%s/%s files' % (self.settingsSection, self.settingsSection), self.getFileList())
         if duplicates_found:
             critical_error_message_box(UiStrings().Duplicate,
                 translate('OpenLP.MediaManagerItem', 'Duplicate files were found on import and were ignored.'))
@@ -445,7 +444,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the list click action to be determined dynamically
         """
-        if Settings().value(u'advanced/double click live', False):
+        if Settings().value(u'advanced/double click live'):
             self.onLiveClick()
         else:
             self.onPreviewClick()
@@ -454,7 +453,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the change of current item in the list to be actioned
         """
-        if Settings().value(u'advanced/single click preview', False) and self.quickPreviewAllowed \
+        if Settings().value(u'advanced/single click preview') and self.quickPreviewAllowed \
             and self.listView.selectedIndexes() and self.autoSelectId == -1:
             self.onPreviewClick(True)
 
