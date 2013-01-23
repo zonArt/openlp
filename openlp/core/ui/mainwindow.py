@@ -158,7 +158,7 @@ class Ui_MainWindow(object):
         # Create the service manager
         self.serviceManagerDock = OpenLPDockWidget(mainWindow, u'serviceManagerDock',
             u':/system/system_servicemanager.png')
-        self.serviceManagerContents = ServiceManager(mainWindow, self.serviceManagerDock)
+        self.serviceManagerContents = ServiceManager(self.serviceManagerDock)
         self.serviceManagerDock.setWidget(self.serviceManagerContents)
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.serviceManagerDock)
         # Create the theme manager
