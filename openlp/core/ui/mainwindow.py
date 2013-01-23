@@ -475,7 +475,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.mediaController = MediaController(self)
-        self.settingsForm = SettingsForm(self, self)
+        self.settingsForm = SettingsForm(self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = []

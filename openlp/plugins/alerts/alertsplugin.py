@@ -139,7 +139,7 @@ class AlertsPlugin(Plugin):
             text=translate('AlertsPlugin', '&Alert'), icon=u':/plugins/plugin_alerts.png',
             statustip=translate('AlertsPlugin', 'Show an alert message.'),
             visible=False, shortcuts=[u'F7'], triggers=self.onAlertsTrigger)
-        self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
+        self.main_window.toolsMenu.addAction(self.toolsAlertItem)
 
     def initialise(self):
         log.info(u'Alerts Initialising')

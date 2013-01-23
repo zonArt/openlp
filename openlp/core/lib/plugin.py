@@ -165,10 +165,6 @@ class Plugin(QtCore.QObject):
         self.status = PluginStatus.Inactive
         self.previewController = plugin_helpers[u'preview']
         self.liveController = plugin_helpers[u'live']
-        self.renderer = plugin_helpers[u'renderer']
-        self.serviceManager = plugin_helpers[u'service']
-        self.settingsForm = plugin_helpers[u'settings form']
-        self.pluginManager = plugin_helpers[u'pluginmanager']
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_config_updated' % self.name),
@@ -396,3 +392,4 @@ class Plugin(QtCore.QObject):
         return self._main_window
 
     main_window = property(_get_main_window)
+

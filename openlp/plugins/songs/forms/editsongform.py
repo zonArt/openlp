@@ -38,7 +38,8 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, create_separated_list, check_directory_exists
+from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, create_separated_list, \
+    check_directory_exists, Registry
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, critical_error_message_box, \
     find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -87,8 +88,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewClicked)
         QtCore.QObject.connect(self.verseOrderEdit, QtCore.SIGNAL(u'textChanged(QString)'),
             self.onVerseOrderTextChanged)
-        QtCore.QObject.connect(self.themeAddButton, QtCore.SIGNAL(u'clicked()'),
-            self.mediaitem.plugin.renderer.theme_manager.onAddTheme)
+        QtCore.QObject.connect(self.themeAddButton, QtCore.SIGNAL(u'clicked()'), self.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton, QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.audioAddFromFileButton, QtCore.SIGNAL(u'clicked()'),
             self.onAudioAddFromFileButtonClicked)
@@ -908,3 +908,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         except:
             log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
 
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)

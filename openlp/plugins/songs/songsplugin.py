@@ -187,8 +187,7 @@ class SongsPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        songsUsingTheme = self.manager.get_all_objects(Song,
-            Song.theme_name == oldTheme)
+        songsUsingTheme = self.manager.get_all_objects(Song, Song.theme_name == oldTheme)
         for song in songsUsingTheme:
             song.theme_name = newTheme
             self.manager.save_object(song)
