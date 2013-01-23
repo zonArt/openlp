@@ -31,8 +31,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, \
-    Settings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings, Registry
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 log = logging.getLogger(__name__)
@@ -91,26 +90,26 @@ class MediaPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Media Finalising')
-        self.mediaController.finalise()
+        self.media_controller.finalise()
         Plugin.finalise(self)
 
     def getDisplayCss(self):
         """
         Add css style sheets to htmlbuilder
         """
-        return self.mediaController.get_media_display_css()
+        return self.media_controller.get_media_display_css()
 
     def getDisplayJavaScript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        return self.mediaController.get_media_display_javascript()
+        return self.media_controller.get_media_display_javascript()
 
     def getDisplayHtml(self):
         """
         Add html code to htmlbuilder
         """
-        return self.mediaController.get_media_display_html()
+        return self.media_controller.get_media_display_html()
 
     def appStartup(self):
         """
@@ -122,7 +121,7 @@ class MediaPlugin(Plugin):
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):
             log.info(u'Found old Phonon setting')
-            players = self.mediaController.mediaPlayers.keys()
+            players = self.media_controller.mediaPlayers.keys()
             has_phonon = u'phonon' in players
             if settings.value(u'use phonon')  and has_phonon:
                 log.debug(u'Converting old setting to new setting')
@@ -130,8 +129,18 @@ class MediaPlugin(Plugin):
                 if players:
                     new_players = [player for player in players if player != u'phonon']
                 new_players.insert(0, u'phonon')
-                self.mediaController.mediaPlayers[u'phonon'].isActive = True
+                self.media_controller.mediaPlayers[u'phonon'].isActive = True
                 settings.setValue(u'players', u','.join(new_players))
                 self.settingsTab.load()
             settings.remove(u'use phonon')
         settings.endGroup()
+
+    def _get_media_controller(self):
+        """
+        Adds the media controller to the class dynamically
+        """
+        if not hasattr(self, u'_media_controller'):
+            self._media_controller = Registry().get(u'media_controller')
+        return self._media_controller
+
+    media_controller = property(_get_media_controller)

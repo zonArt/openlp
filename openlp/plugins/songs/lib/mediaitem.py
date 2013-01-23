@@ -71,8 +71,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.editSongForm = EditSongForm(self, self.plugin.formParent,
-            self.plugin.manager)
+        self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
         self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
@@ -374,7 +373,7 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(items))
+            self.main_window.displayProgressBar(len(items))
             for item in items:
                 item_id = item.data(QtCore.Qt.UserRole)
                 media_files = self.plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == item_id)
@@ -390,8 +389,8 @@ class SongMediaItem(MediaManagerItem):
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
-                self.plugin.formParent.incrementProgressBar()
-            self.plugin.formParent.finishedProgressBar()
+                self.main_window.incrementProgressBar()
+            self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
             self.onSearchTextButtonClicked()
 

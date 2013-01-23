@@ -92,12 +92,12 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.addSeparator()
         self.songUsageMenu.addAction(self.songUsageReport)
         self.songUsageMenu.addAction(self.songUsageDelete)
-        self.songUsageActiveButton = QtGui.QToolButton(self.formParent.statusBar)
+        self.songUsageActiveButton = QtGui.QToolButton(self.main_window.statusBar)
         self.songUsageActiveButton.setCheckable(True)
         self.songUsageActiveButton.setAutoRaise(True)
         self.songUsageActiveButton.setStatusTip(translate('SongUsagePlugin', 'Toggle the tracking of song usage.'))
         self.songUsageActiveButton.setObjectName(u'songUsageActiveButton')
-        self.formParent.statusBar.insertPermanentWidget(1, self.songUsageActiveButton)
+        self.main_window.statusBar.insertPermanentWidget(1, self.songUsageActiveButton)
         self.songUsageActiveButton.hide()
         # Signals and slots
         QtCore.QObject.connect(self.songUsageStatus, QtCore.SIGNAL(u'visibilityChanged(bool)'),
@@ -119,8 +119,8 @@ class SongUsagePlugin(Plugin):
         action_list.add_action(self.songUsageStatus, translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageDelete, translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageReport, translate('SongUsagePlugin', 'Song Usage'))
-        self.songUsageDeleteForm = SongUsageDeleteForm(self.manager, self.formParent)
-        self.songUsageDetailForm = SongUsageDetailForm(self, self.formParent)
+        self.songUsageDeleteForm = SongUsageDeleteForm(self.manager, self.main_window)
+        self.songUsageDetailForm = SongUsageDetailForm(self, self.main_window)
         self.songUsageMenu.menuAction().setVisible(True)
         self.songUsageActiveButton.show()
 

@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Settings
+from openlp.core.lib import Receiver, Settings, Registry
 from openlp.core.lib.ui import UiStrings
 from openlp.core.utils import get_application_version
 
@@ -168,10 +168,7 @@ class Plugin(QtCore.QObject):
         self.renderer = plugin_helpers[u'renderer']
         self.serviceManager = plugin_helpers[u'service']
         self.settingsForm = plugin_helpers[u'settings form']
-        self.mediaDock = plugin_helpers[u'toolbox']
         self.pluginManager = plugin_helpers[u'pluginmanager']
-        self.formParent = plugin_helpers[u'formparent']
-        self.mediaController = plugin_helpers[u'mediacontroller']
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_config_updated' % self.name),
@@ -217,7 +214,7 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into OpenLP.
         """
         if self.mediaItemClass:
-            self.mediaItem = self.mediaItemClass(self.mediaDock.media_dock, self, self.icon)
+            self.mediaItem = self.mediaItemClass(self.main_window.mediaDockManager.media_dock, self, self.icon)
 
     def addImportMenuItem(self, importMenu):
         """
@@ -287,14 +284,14 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-            self.mediaDock.insert_dock(self.mediaItem, self.icon, self.weight)
+            self.main_window.mediaDockManager.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
         if self.mediaItem:
-            self.mediaDock.remove_dock(self.mediaItem)
+            self.main_window.mediaDockManager.remove_dock(self.mediaItem)
 
     def appStartup(self):
         """
@@ -389,3 +386,13 @@ class Plugin(QtCore.QObject):
         The plugin's config has changed
         """
         pass
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

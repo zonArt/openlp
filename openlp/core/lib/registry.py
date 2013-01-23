@@ -47,12 +47,14 @@ class Registry(object):
         return cls.__instance__
 
     @classmethod
-    def create(self):
+    def create(cls):
         """
         The constructor for the component registry providing a single registry of objects.
         """
         log.info(u'Registry Initialising')
-        self.service_list = {}
+        registry = cls()
+        registry.service_list = {}
+        return registry
 
     def get(self, key):
         """

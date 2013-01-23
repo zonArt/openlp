@@ -40,7 +40,7 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus
+    PluginStatus, Registry
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.lib import SlideLimits, Settings
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
@@ -456,6 +456,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
+        Registry().register(u'main_window', self)
         self.application = application
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args

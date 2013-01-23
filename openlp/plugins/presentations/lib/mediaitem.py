@@ -154,13 +154,13 @@ class PresentationMediaItem(MediaManagerItem):
         Receiver.send_message(u'cursor_busy')
         if not initialLoad:
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(files))
+            self.main_window.displayProgressBar(len(files))
         # Sort the presentations by its filename considering language specific characters.
         files.sort(cmp=locale_compare,
             key=lambda filename: os.path.split(unicode(filename))[1])
         for file in files:
             if not initialLoad:
-                self.plugin.formParent.incrementProgressBar()
+                self.main_window.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -209,7 +209,7 @@ class PresentationMediaItem(MediaManagerItem):
                 self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
-            self.plugin.formParent.finishedProgressBar()
+            self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
 
     def onDeleteClick(self):
@@ -221,15 +221,15 @@ class PresentationMediaItem(MediaManagerItem):
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(row_list))
+            self.main_window.displayProgressBar(len(row_list))
             for item in items:
                 filepath = unicode(item.data(QtCore.Qt.UserRole))
                 for cidx in self.controllers:
                     doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
-                self.plugin.formParent.incrementProgressBar()
-            self.plugin.formParent.finishedProgressBar()
+                self.main_window.incrementProgressBar()
+            self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
             for row in row_list:
                 self.listView.takeItem(row)

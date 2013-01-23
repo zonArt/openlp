@@ -58,7 +58,7 @@ class CustomMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.edit_custom_form = EditCustomForm(self, self.plugin.formParent, self.plugin.manager)
+        self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
         self.hasSearch = True

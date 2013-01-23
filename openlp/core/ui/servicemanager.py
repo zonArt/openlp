@@ -105,6 +105,7 @@ class ServiceManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         self.active = build_icon(QtGui.QImage(u':/media/auto-start_active.png'))
         self.inactive = build_icon(QtGui.QImage(u':/media/auto-start_inactive.png'))
+        Registry().register(u'service_manager', self)
         self.mainwindow = mainwindow
         self.serviceItems = []
         self.suffixes = []

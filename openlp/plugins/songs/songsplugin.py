@@ -144,7 +144,7 @@ class SongsPlugin(Plugin):
         if maxSongs == 0:
             return
         progressDialog = QtGui.QProgressDialog(translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
-            0, maxSongs, self.formParent)
+            0, maxSongs, self.main_window)
         progressDialog.setWindowTitle(translate('SongsPlugin', 'Reindexing songs'))
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
@@ -248,7 +248,7 @@ class SongsPlugin(Plugin):
         if not song_dbs:
             return
         Receiver.send_message(u'openlp_process_events')
-        progress = QtGui.QProgressDialog(self.formParent)
+        progress = QtGui.QProgressDialog(self.main_window)
         progress.setWindowModality(QtCore.Qt.WindowModal)
         progress.setWindowTitle(translate('OpenLP.Ui', 'Importing Songs'))
         progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))

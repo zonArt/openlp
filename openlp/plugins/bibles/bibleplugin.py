@@ -81,7 +81,7 @@ class BiblePlugin(Plugin):
         Perform tasks on application startup
         """
         if self.manager.old_bible_databases:
-            if QtGui.QMessageBox.information(self.formParent,
+            if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),
                 translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your existing Bibles.\n'
                     'Should OpenLP upgrade now?'),
@@ -128,7 +128,7 @@ class BiblePlugin(Plugin):
         Upgrade older bible databases.
         """
         if not hasattr(self, u'upgrade_wizard'):
-            self.upgrade_wizard = BibleUpgradeForm(self.formParent, self.manager, self)
+            self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
             self.mediaItem.reloadBibles()

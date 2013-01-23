@@ -63,14 +63,14 @@ class MediaMediaItem(MediaManagerItem):
         self.mediaObject = None
         self.displayController = DisplayController(parent)
         self.displayController.controllerLayout = QtGui.QVBoxLayout()
-        self.plugin.mediaController.register_controller(self.displayController)
-        self.plugin.mediaController.set_controls_visible(self.displayController, False)
+        self.media_controller.register_controller(self.displayController)
+        self.media_controller.set_controls_visible(self.displayController, False)
         self.displayController.previewDisplay = Display(self.displayController, False, self.displayController)
         self.displayController.previewDisplay.hide()
         self.displayController.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
         self.displayController.previewDisplay.setup()
-        self.plugin.mediaController.setup_display(self.displayController.previewDisplay, False)
+        self.media_controller.setup_display(self.displayController.previewDisplay, False)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'video_background_replaced'),
             self.videobackgroundReplaced)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
@@ -130,7 +130,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the media selected,
         """
-        self.plugin.liveController.mediaController.media_reset(self.plugin.liveController)
+        self.live_controller.mediaController.media_reset(self.plugin.liveController)
         self.resetAction.setVisible(False)
 
     def videobackgroundReplaced(self):
@@ -153,7 +153,7 @@ class MediaMediaItem(MediaManagerItem):
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
-                if self.plugin.liveController.mediaController.video(DisplayControllerType.Live, service_item,
+                if self.live_controller.mediaController.video(DisplayControllerType.Live, service_item,
                         videoBehindText=True):
                     self.resetAction.setVisible(True)
                 else:
@@ -185,7 +185,7 @@ class MediaMediaItem(MediaManagerItem):
         # Only get start and end times if going to a service
         if context == ServiceItemContext.Service:
             # Start media and obtain the length
-            if not self.plugin.mediaController.media_length(service_item):
+            if not self.media_controller.media_length(service_item):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
@@ -211,11 +211,11 @@ class MediaMediaItem(MediaManagerItem):
         """
         self.populateDisplayTypes()
         self.onNewFileMasks = translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)') % (
-            u' '.join(self.plugin.mediaController.video_extensions_list),
-            u' '.join(self.plugin.mediaController.audio_extensions_list), UiStrings().AllFiles)
+            u' '.join(self.media_controller.video_extensions_list),
+            u' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
     def displaySetup(self):
-        self.plugin.mediaController.setup_display(self.displayController.previewDisplay, False)
+        self.media_controller.setup_display(self.displayController.previewDisplay, False)
 
     def populateDisplayTypes(self):
         """
@@ -227,7 +227,7 @@ class MediaMediaItem(MediaManagerItem):
         self.displayTypeComboBox.blockSignals(True)
         self.displayTypeComboBox.clear()
         usedPlayers, overridePlayer = get_media_players()
-        mediaPlayers = self.plugin.mediaController.mediaPlayers
+        mediaPlayers = self.media_controller.mediaPlayers
         currentIndex = 0
         for player in usedPlayers:
             # load the drop down selection
@@ -269,7 +269,7 @@ class MediaMediaItem(MediaManagerItem):
             elif track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                if u'*.%s' % (filename.split(u'.')[-1].lower()) in self.plugin.mediaController.audio_extensions_list:
+                if u'*.%s' % (filename.split(u'.')[-1].lower()) in self.media_controller.audio_extensions_list:
                     item_name.setIcon(AUDIO)
                 else:
                     item_name.setIcon(VIDEO)
@@ -287,9 +287,9 @@ class MediaMediaItem(MediaManagerItem):
         media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
-            ext = self.plugin.mediaController.audio_extensions_list
+            ext = self.media_controller.audio_extensions_list
         else:
-            ext = self.plugin.mediaController.video_extensions_list
+            ext = self.media_controller.video_extensions_list
         ext = map(lambda x: x[1:], ext)
         media = filter(lambda x: os.path.splitext(x)[1] in ext, media)
         return media
