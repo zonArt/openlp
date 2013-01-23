@@ -31,7 +31,9 @@ from PyQt4 import QtCore, QtGui, QtNetwork
 
 from openlp.core.lib import Settings, SettingsTab, translate, Receiver
 
+
 ZERO_URL = u'0.0.0.0'
+
 
 class RemoteTab(SettingsTab):
     """
@@ -135,16 +137,16 @@ class RemoteTab(SettingsTab):
         self.stageUrl.setText(u'<a href="%s">%s</a>' % (url, url))
 
     def load(self):
-        self.portSpinBox.setValue(Settings().value(self.settingsSection + u'/port', 4316))
-        self.addressEdit.setText(Settings().value(self.settingsSection + u'/ip address', ZERO_URL))
-        self.twelveHour = Settings().value(self.settingsSection + u'/twelve hour', True)
+        self.portSpinBox.setValue(Settings().value(self.settingsSection + u'/port'))
+        self.addressEdit.setText(Settings().value(self.settingsSection + u'/ip address'))
+        self.twelveHour = Settings().value(self.settingsSection + u'/twelve hour')
         self.twelveHourCheckBox.setChecked(self.twelveHour)
         self.setUrls()
 
     def save(self):
         changed = False
-        if Settings().value(self.settingsSection + u'/ip address', ZERO_URL != self.addressEdit.text() or
-                Settings().value(self.settingsSection + u'/port', 4316) != self.portSpinBox.value()):
+        if Settings().value(self.settingsSection + u'/ip address') != self.addressEdit.text() or \
+                Settings().value(self.settingsSection + u'/port') != self.portSpinBox.value():
             changed = True
         Settings().setValue(self.settingsSection + u'/port', self.portSpinBox.value())
         Settings().setValue(self.settingsSection + u'/ip address', self.addressEdit.text())

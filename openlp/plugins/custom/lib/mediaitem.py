@@ -33,8 +33,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
-    ServiceItemContext, Settings, PluginStatus
-from openlp.core.lib.ui import UiStrings
+    ServiceItemContext, Settings, PluginStatus, UiStrings
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -83,7 +82,7 @@ class CustomMediaItem(MediaManagerItem):
             self.create_from_service_item)
 
     def config_updated(self):
-        self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service', True)
+        self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service')
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -97,8 +96,7 @@ class CustomMediaItem(MediaManagerItem):
             (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection,
-            CustomSearch.Titles))
+        self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection))
         self.config_updated()
 
     def loadList(self, custom_slides):
@@ -208,7 +206,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide)
-        if Settings().value(self.settingsSection + u'/display footer', True) or credit:
+        if Settings().value(self.settingsSection + u'/display footer') or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))
         else:
             service_item.raw_footer.append(u'')

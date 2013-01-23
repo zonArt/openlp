@@ -253,7 +253,7 @@ VIDEO_EXT = [
         , u'*.mp4'
         , u'*.ogv'
         , u'*.webm'
-        , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
+        , u'*.mpg', u'*.wmv', u'*.mpeg', u'*.avi'
         , u'*.swf'
     ]
 
@@ -282,7 +282,7 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value(u'players/background color', u'#000000')).name()
+        background = QtGui.QColor(Settings().value(u'players/background color')).name()
         css = VIDEO_CSS % (background,background,background)
         return css + FLASH_CSS
 

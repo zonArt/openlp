@@ -32,8 +32,8 @@ import os
 import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings, UiStrings
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.utils import AppLocation
@@ -409,7 +409,7 @@ class MediaController(object):
         elif not hidden or controller.media_info.is_background or serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
-        elif Settings().value(u'general/auto unblank', False):
+        elif Settings().value(u'general/auto unblank'):
             autoplay = True
         if autoplay:
             if not self.media_play(controller):

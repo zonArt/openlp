@@ -80,36 +80,24 @@ class SongsTab(SettingsTab):
             'Import missing songs from service files'))
 
     def onSearchAsTypeCheckBoxChanged(self, check_state):
-        self.song_search = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.song_search = True
+        self.song_search = (check_state == QtCore.Qt.Checked)
 
     def onToolBarActiveCheckBoxChanged(self, check_state):
-        self.tool_bar = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.tool_bar = True
+        self.tool_bar = (check_state == QtCore.Qt.Checked)
 
     def onUpdateOnEditCheckBoxChanged(self, check_state):
-        self.update_edit = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.update_edit = True
+        self.update_edit = (check_state == QtCore.Qt.Checked)
 
     def onAddFromServiceCheckBoxChanged(self, check_state):
-        self.update_load = False
-        # we have a set value convert to True/False
-        if check_state == QtCore.Qt.Checked:
-            self.update_load = True
+        self.update_load = (check_state == QtCore.Qt.Checked)
 
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.song_search = settings.value(u'search as type', False)
-        self.tool_bar = settings.value(u'display songbar', True)
-        self.update_edit = settings.value(u'update service on edit', False)
-        self.update_load = settings.value(u'add song from service', True)
+        self.song_search = settings.value(u'search as type')
+        self.tool_bar = settings.value(u'display songbar')
+        self.update_edit = settings.value(u'update service on edit')
+        self.update_load = settings.value(u'add song from service')
         self.searchAsTypeCheckBox.setChecked(self.song_search)
         self.toolBarActiveCheckBox.setChecked(self.tool_bar)
         self.updateOnEditCheckBox.setChecked(self.update_edit)

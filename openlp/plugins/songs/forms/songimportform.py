@@ -35,8 +35,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsManager, translate
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import Receiver, Settings, SettingsManager, translate, UiStrings
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
 
@@ -250,10 +250,11 @@ class SongImportForm(OpenLPWizard):
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1), filters)
+            Settings().value(self.plugin.settingsSection + u'/last directory import'), filters)
         if filenames:
             listbox.addItems(filenames)
-            SettingsManager.set_last_dir(self.plugin.settingsSection, os.path.split(unicode(filenames[0]))[0], 1)
+            Settings().setValue(self.plugin.settingsSection + u'/last directory import',
+                os.path.split(unicode(filenames[0]))[0])
 
     def getListOfFiles(self, listbox):
         """
@@ -275,9 +276,9 @@ class SongImportForm(OpenLPWizard):
             u'name', u'filter')
         filepathEdit = self.formatWidgets[format][u'filepathEdit']
         if select_mode == SongFormatSelect.SingleFile:
-            self.getFileName(WizardStrings.OpenTypeFile % format_name, filepathEdit, filter)
+            self.getFileName(WizardStrings.OpenTypeFile % format_name, filepathEdit, u'last directory import', filter)
         elif select_mode == SongFormatSelect.SingleFolder:
-            self.getFolder(WizardStrings.OpenTypeFolder % format_name, filepathEdit)
+            self.getFolder(WizardStrings.OpenTypeFolder % format_name, filepathEdit, u'last directory import')
 
     def onAddButtonClicked(self):
         format = self.currentFormat
@@ -306,7 +307,7 @@ class SongImportForm(OpenLPWizard):
         self.restart()
         self.finishButton.setVisible(False)
         self.cancelButton.setVisible(True)
-        last_import_type = Settings().value(u'songs/last import type', SongFormat.OpenLyrics)
+        last_import_type = Settings().value(u'songs/last import type')
         if last_import_type < 0 or last_import_type >= self.formatComboBox.count():
             last_import_type = 0
         self.formatComboBox.setCurrentIndex(last_import_type)
@@ -360,7 +361,7 @@ class SongImportForm(OpenLPWizard):
         Save the error report to a file.
         """
         filename = QtGui.QFileDialog.getSaveFileName(self,
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+            Settings().value(self.plugin.settingsSection + u'last directory import'))
         if not filename:
             return
         report_file = codecs.open(filename, u'w', u'utf-8')

@@ -29,8 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button_box, create_button
+from openlp.core.lib import build_icon, translate, UiStrings
+from openlp.core.lib.ui import create_button_box, create_button
 from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_EditSongDialog(object):

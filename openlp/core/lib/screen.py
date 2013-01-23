@@ -35,9 +35,11 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate, Settings
+from openlp.core.lib import Receiver, translate
+
 
 log = logging.getLogger(__name__)
+
 
 class ScreenList(object):
     """
@@ -241,15 +243,27 @@ class ScreenList(object):
         """
         Loads the screen size and the monitor number from the settings.
         """
+        from openlp.core.lib import Settings
+        # Add the screen settings to the settings dict. This has to be done here due to crycle dependency.
+        # Do not do this anywhere else.
+        screen_settings = {
+            u'general/x position': self.current[u'size'].x(),
+            u'general/y position': self.current[u'size'].y(),
+            u'general/monitor': self.display_count - 1,
+            u'general/height': self.current[u'size'].height(),
+            u'general/width': self.current[u'size'].width()
+        }
+        Settings.extend_default_settings(screen_settings)
         settings = Settings()
         settings.beginGroup(u'general')
-        self.set_current_display(settings.value(u'monitor', self.display_count - 1))
-        self.display = settings.value(u'display on monitor', True)
-        override_display = settings.value(u'override position', False)
-        x = settings.value(u'x position', self.current[u'size'].x())
-        y = settings.value(u'y position', self.current[u'size'].y())
-        width = settings.value(u'width', self.current[u'size'].width())
-        height = settings.value(u'height', self.current[u'size'].height())
+        monitor = settings.value(u'monitor')
+        self.set_current_display(monitor)
+        self.display = settings.value(u'display on monitor')
+        override_display = settings.value(u'override position')
+        x = settings.value(u'x position')
+        y = settings.value(u'y position')
+        width = settings.value(u'width')
+        height = settings.value(u'height')
         self.override[u'size'] = QtCore.QRect(x, y, width, height)
         self.override[u'primary'] = False
         settings.endGroup()

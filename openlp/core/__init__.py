@@ -43,14 +43,13 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, check_directory_exists
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import Receiver, Settings, check_directory_exists, ScreenList, UiStrings
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
-from openlp.core.ui import SplashScreen, ScreenList
+from openlp.core.ui import SplashScreen
 from openlp.core.utils import AppLocation, LanguageManager, VersionThread, \
     get_application_version
 
@@ -118,7 +117,7 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
-        has_run_wizard = Settings().value(u'general/has run wizard', False)
+        has_run_wizard = Settings().value(u'general/has run wizard')
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
                 Settings().setValue(u'general/has run wizard', True)
@@ -129,7 +128,7 @@ class OpenLP(QtGui.QApplication):
                 u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += nt_repair_stylesheet
             self.setStyleSheet(application_stylesheet)
-        show_splash = Settings().value(u'general/show splash', True)
+        show_splash = Settings().value(u'general/show splash')
         if show_splash:
             self.splash = SplashScreen()
             self.splash.show()
@@ -148,7 +147,7 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         if not has_run_wizard:
             self.mainWindow.firstTime()
-        update_check = Settings().value(u'general/update check', True)
+        update_check = Settings().value(u'general/update check')
         if update_check:
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
@@ -276,7 +275,7 @@ def main(args=None):
         portable_settings_file = os.path.abspath(os.path.join(app_path, u'..', u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file
         log.info(u'INI file: %s', portable_settings_file)
-        Settings.setFilename(portable_settings_file)
+        Settings.set_filename(portable_settings_file)
         portable_settings = Settings()
         # Set our data path
         data_path = os.path.abspath(os.path.join(app_path,
@@ -295,7 +294,7 @@ def main(args=None):
         if app.isAlreadyRunning():
             sys.exit()
     # First time checks in settings
-    if not Settings().value(u'general/has run wizard', False):
+    if not Settings().value(u'general/has run wizard'):
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
             sys.exit()

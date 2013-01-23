@@ -32,8 +32,8 @@ import re
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import Receiver, translate, UiStrings
+from openlp.core.lib.ui import critical_error_message_box
 from editbibledialog import Ui_EditBibleDialog
 from openlp.plugins.bibles.lib import BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB

@@ -33,8 +33,9 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, Receiver, MediaType, ServiceItem, ServiceItemContext, Settings, check_directory_exists
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
+    check_item_selected, Receiver, MediaType, ServiceItem, ServiceItemContext, Settings, UiStrings, \
+    check_directory_exists
+from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
 from openlp.core.utils import AppLocation, locale_compare
@@ -190,7 +191,7 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
-        if Settings().value(self.settingsSection + u'/media auto start', QtCore.Qt.Unchecked) == QtCore.Qt.Checked:
+        if Settings().value(self.settingsSection + u'/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
@@ -201,7 +202,7 @@ class MediaMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
-        self.loadList(SettingsManager.load_list(self.settingsSection, u'media'))
+        self.loadList(Settings().value(self.settingsSection + u'/media files'))
         self.populateDisplayTypes()
 
     def rebuild_players(self):
@@ -253,7 +254,7 @@ class MediaMediaItem(MediaManagerItem):
             row_list.sort(reverse=True)
             for row in row_list:
                 self.listView.takeItem(row)
-            SettingsManager.set_list(self.settingsSection, u'media', self.getFileList())
+            Settings().setValue(self.settingsSection + u'/media files', self.getFileList())
 
     def loadList(self, media):
         # Sort the media by its filename considering language specific
@@ -283,7 +284,7 @@ class MediaMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
 
     def getList(self, type=MediaType.Audio):
-        media = SettingsManager.load_list(self.settingsSection, u'media')
+        media = Settings().value(self.settingsSection + u'/media files')
         media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
@@ -295,7 +296,7 @@ class MediaMediaItem(MediaManagerItem):
         return media
 
     def search(self, string, showError):
-        files = SettingsManager.load_list(self.settingsSection, u'media')
+        files = Settings().value(self.settingsSection + u'/media files')
         results = []
         string = string.lower()
         for file in files:
