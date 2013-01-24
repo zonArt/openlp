@@ -51,10 +51,9 @@ class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    def __init__(self, mainwindow, parent=None):
+    def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         Registry().register(u'theme_manager', self)
-        self.mainwindow = mainwindow
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
@@ -681,11 +680,11 @@ class ThemeManager(QtGui.QWidget):
         """
         Called to update the themes' preview images.
         """
-        self.mainwindow.displayProgressBar(len(self.themeList))
+        self.main_window.displayProgressBar(len(self.themeList))
         for theme in self.themeList:
-            self.mainwindow.incrementProgressBar()
+            self.main_window.incrementProgressBar()
             self.generateAndSaveImage(self.path, theme, self.getThemeData(theme))
-        self.mainwindow.finishedProgressBar()
+        self.main_window.finishedProgressBar()
         self.loadThemes()
 
     def generateImage(self, theme_data, forcePage=False):
@@ -835,3 +834,13 @@ class ThemeManager(QtGui.QWidget):
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

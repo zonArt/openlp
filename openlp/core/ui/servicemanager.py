@@ -48,9 +48,6 @@ from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, split_filename, format_time
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
-ACTIVE = build_icon(QtGui.QImage(u':/media/auto-start_active.png'))
-INACTIVE = build_icon(QtGui.QImage(u':/media/auto-start_inactive.png'))
-
 class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
@@ -106,6 +103,8 @@ class ServiceManager(QtGui.QWidget):
         Sets up the service manager, toolbars, list view, et al.
         """
         QtGui.QWidget.__init__(self, parent)
+        self.active = build_icon(QtGui.QImage(u':/media/auto-start_active.png'))
+        self.inactive = build_icon(QtGui.QImage(u':/media/auto-start_inactive.png'))
         Registry().register(u'service_manager', self)
         self.serviceItems = []
         self.suffixes = []
@@ -796,11 +795,11 @@ class ServiceManager(QtGui.QWidget):
             self.timeAction.setVisible(True)
         if serviceItem[u'service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
             self.autoStartAction.setVisible(True)
-            self.autoStartAction.setIcon(INACTIVE)
+            self.autoStartAction.setIcon(self.inactive)
             self.autoStartAction.setText(translate('OpenLP.ServiceManager','&Auto Start - inactive'))
             if serviceItem[u'service_item'].will_auto_start:
                 self.autoStartAction.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
-                self.autoStartAction.setIcon(ACTIVE)
+                self.autoStartAction.setIcon(self.active)
         if serviceItem[u'service_item'].is_text():
             for plugin in self.plugin_manager.plugins:
                 if plugin.name == u'custom' and plugin.status == PluginStatus.Active:

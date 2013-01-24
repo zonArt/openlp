@@ -18,15 +18,23 @@ class TestServiceItem(TestCase):
         # GIVEN: A new registry
         registry = Registry.create()
 
-        # WHEN:A service item is created (without a plugin)
+        # WHEN: I add a service it should save it
         mock_1 = MagicMock()
         Registry().register(u'test1', mock_1)
 
         # THEN: we should be able retrieve the saved object
-        assert Registry().get(u'test1') == mock_1, u'The saved object can be retrieved'
-        #assert service_item.missing_frames() is True, u'There should not be any frames in the service item'
+        assert Registry().get(u'test1') == mock_1, u'The saved service can be retrieved and matches'
 
-        # THEN: We should get back a valid service item
+        # WHEN: I add a service it should save it a second time
+        # THEN  I will get an exception
+        try:
+            Registry().register(u'test1', mock_1)
+        except Exception, e:
+            pass
+
+
+        # WHEN I try to get back a non existent service
+        # THEN I will get an exception
         try:
             assert Registry().get(u'test2') == mock_1, u'This should not be fired'
         except Exception, e:
