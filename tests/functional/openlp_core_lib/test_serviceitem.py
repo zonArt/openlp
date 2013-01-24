@@ -160,7 +160,7 @@ class TestServiceItem(TestCase):
         service_item.validate_item([u'jpg'])
 
         # THEN the service item should be valid
-        assert service_item.is_valid is True, u'The service item is valid'
+        assert service_item.is_valid is True, u'The service item should be valid'
 
         # WHEN validating a service item with a different suffix
         service_item.validate_item([u'png'])
@@ -176,13 +176,7 @@ class TestServiceItem(TestCase):
         service_item = ServiceItem(None)
         mocked_add_icon =  MagicMock()
         service_item.add_icon = mocked_add_icon
-        #mocked_image_manager = MagicMock()
-        #mocked_theme_contents = MagicMock()
-        #plugin_manager = PluginManager(TESTPATH)
-        #with patch(u'openlp.core.ui.maindisplay.QtGui') as mocked_QTGui, \
-        #    patch(u'openlp.core.ui.maindisplay.QtOpenGL.QGLWidget') as mocked_QTOpenGL,\
-        #    patch(u'openlp.core.ui.maindisplay.QtGui.QAbstractScrollArea') as mocked_QWidgetL:
-        #    mocked_renderer =  Renderer(mocked_image_manager, mocked_theme_contents)
+
         mocked_renderer =  MagicMock()
         service_item.renderer = mocked_renderer
 
@@ -195,7 +189,7 @@ class TestServiceItem(TestCase):
         assert len(service_item._display_frames) == 0, u'The service item has no display frames'
         assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
         service_item.render(True)
-        assert (service_item.get_display_title()) == u'Test Custom', u'The custom title is correct'
+        assert (service_item.get_display_title()) == u'Test Custom', u'The custom title should be correct'
 
     def serviceitem_load_image_from_service_test(self):
         """
@@ -209,15 +203,10 @@ class TestServiceItem(TestCase):
         service_item.renderer = mocked_renderer
 
         # WHEN: adding a custom from a saved Service
-        #with patch(u'openlp.core.lib.settings') as mocked_settings:
-        #    line = self.convert_file_service_item(u'serviceitem_image1.osd')
-        #    service_item.set_from_service(line)
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        #assert len(service_item._display_frames) == 0, u'The service item has no display frames'
-        #assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
-        #assert (service_item.get_display_title()) == u'Test Custom', u'The custom title is correct'
+
 
     def convert_file_service_item(self, name):
         service_file = os.path.join(TESTPATH, name)
