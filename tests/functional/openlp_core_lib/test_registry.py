@@ -9,7 +9,7 @@ from openlp.core.lib import Registry
 
 TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
-class TestServiceItem(TestCase):
+class TestRegistry(TestCase):
 
     def registry_basic_test(self):
         """
@@ -25,17 +25,14 @@ class TestServiceItem(TestCase):
         # THEN: we should be able retrieve the saved object
         assert Registry().get(u'test1') == mock_1, u'The saved service can be retrieved and matches'
 
-        # WHEN: I add a service it should save it a second time
+        # WHEN: I add a service for the second time I am mad.
         # THEN  I will get an exception
-        try:
+        with self.assertRaises(KeyError) as context:
             Registry().register(u'test1', mock_1)
-        except Exception, e:
-            pass
-
+        self.assertEqual(context.exception[0], u'Duplicate service exception test1')
 
         # WHEN I try to get back a non existent service
         # THEN I will get an exception
-        try:
-            assert Registry().get(u'test2') == mock_1, u'This should not be fired'
-        except Exception, e:
-            pass
+        with self.assertRaises(KeyError) as context:
+            temp = Registry().get(u'test2')
+        self.assertEqual(context.exception[0], u'Service test2 not found in list')

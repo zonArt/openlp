@@ -64,7 +64,7 @@ class Registry(object):
             return self.service_list[key]
         else:
             log.error(u'Service %s not found in list' % key)
-            return None
+            raise KeyError(u'Service %s not found in list' % key)
 
     def register(self, key, reference):
         """
@@ -72,6 +72,6 @@ class Registry(object):
         """
         if key in self.service_list:
             log.error(u'Duplicate service exception %s' % key)
-            raise Exception(u'Duplicate service exception %s' % key)
+            raise KeyError(u'Duplicate service exception %s' % key)
         else:
             self.service_list[key] = reference
