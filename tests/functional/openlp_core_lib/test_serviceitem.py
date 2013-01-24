@@ -177,9 +177,6 @@ class TestServiceItem(TestCase):
         mocked_add_icon =  MagicMock()
         service_item.add_icon = mocked_add_icon
 
-        mocked_renderer =  MagicMock()
-        service_item.renderer = mocked_renderer
-
         # WHEN: adding a custom from a saved Service
         line = self.convert_file_service_item(u'serviceitem_custom1.osd')
         service_item.set_from_service(line)
@@ -199,8 +196,6 @@ class TestServiceItem(TestCase):
         service_item = ServiceItem(None)
         mocked_add_icon =  MagicMock()
         service_item.add_icon = mocked_add_icon
-        mocked_renderer =  MagicMock()
-        service_item.renderer = mocked_renderer
 
         # WHEN: adding a custom from a saved Service
 
