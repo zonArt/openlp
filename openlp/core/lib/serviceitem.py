@@ -160,7 +160,7 @@ class ServiceItem(object):
         self.service_item_type = None
         self._raw_frames = []
         self._display_frames = []
-        self._uuid = 0
+        self.unique_identifier = 0
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
@@ -194,7 +194,7 @@ class ServiceItem(object):
         Method to set the internal id of the item. This is used to compare
         service items to see if they are the same.
         """
-        self._uuid = unicode(uuid.uuid1())
+        self.unique_identifier = unicode(uuid.uuid1())
         self.validate_item()
 
     def add_capability(self, capability):
@@ -453,14 +453,14 @@ class ServiceItem(object):
 
     def merge(self, other):
         """
-        Updates the _uuid with the value from the original one
-        The _uuid is unique for a given service item but this allows one to
+        Updates the unique_identifier with the value from the original one
+        The unique_identifier is unique for a given service item but this allows one to
         replace an original version.
 
         ``other``
             The service item to be merged with
         """
-        self._uuid = other._uuid
+        self.unique_identifier = other.unique_identifier
         self.notes = other.notes
         self.temporary_edit = other.temporary_edit
         # Copy theme over if present.
@@ -477,13 +477,13 @@ class ServiceItem(object):
         """
         if not other:
             return False
-        return self._uuid == other._uuid
+        return self.unique_identifier == other.unique_identifier
 
     def __ne__(self, other):
         """
         Confirms the service items are not for the same instance
         """
-        return self._uuid != other._uuid
+        return self.unique_identifier != other.unique_identifier
 
     def is_media(self):
         """
@@ -636,12 +636,12 @@ class ServiceItem(object):
             if self.is_image() and not os.path.exists((frame[u'path'])):
                 self.is_valid = False
             elif self.is_command():
-                file = os.path.join(frame[u'path'],frame[u'title'])
-                if not os.path.exists(file):
+                file_name = os.path.join(frame[u'path'], frame[u'title'])
+                if not os.path.exists(file_name):
                     self.is_valid = False
                 if suffix_list and not self.is_text():
-                    type = frame[u'title'].split(u'.')[-1]
-                    if type.lower() not in suffix_list:
+                    file_suffix = frame[u'title'].split(u'.')[-1]
+                    if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
 
     def _get_renderer(self):

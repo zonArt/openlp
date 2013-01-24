@@ -102,8 +102,7 @@ def set_media_players(players_list, overridden_player=u'auto'):
     """
     log.debug(u'set_media_players')
     players = u','.join(players_list)
-    if Settings().value(u'media/override player', QtCore.Qt.Unchecked) == QtCore.Qt.Checked and \
-        overridden_player != u'auto':
+    if Settings().value(u'media/override player') == QtCore.Qt.Checked and overridden_player != u'auto':
         players = players.replace(overridden_player, u'[%s]' % overridden_player)
     Settings().setValue(u'media/players', players)
 

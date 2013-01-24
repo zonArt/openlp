@@ -537,7 +537,7 @@ class SongMediaItem(MediaManagerItem):
             temporary = True
         # Update service with correct song id.
         if editId:
-            Receiver.send_message(u'service_item_update%s:%s:%s' % (editId, item._uuid, temporary))
+            Receiver.send_message(u'service_item_update%s:%s:%s' % (editId, item.unique_identifier, temporary))
 
     def search(self, string, showError):
         """
