@@ -99,9 +99,9 @@ class SlideController(DisplayController):
             u'audioTimeLabel'
         ]
         self.wideMenu = [
-            u'buttonBlankScreen',
-            u'buttonThemeScreen',
-            u'buttonDesktopScreen'
+            u'blankScreenButton',
+            u'themeScreenButton',
+            u'desktopScreenButton'
         ]
         self.hideMenuList = [
             u'hideMenu'
@@ -206,18 +206,18 @@ class SlideController(DisplayController):
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
             # Wide menu of display control buttons.
-            self.buttonBlankScreen = QtGui.QToolButton(self.toolbar)
-            self.buttonBlankScreen.setObjectName(u'buttonBlankScreen')
-            self.toolbar.addToolbarWidget(self.buttonBlankScreen)
-            self.buttonBlankScreen.setDefaultAction(self.blankScreen)
-            self.buttonThemeScreen = QtGui.QToolButton(self.toolbar)
-            self.buttonThemeScreen.setObjectName(u'buttonThemeScreen')
-            self.toolbar.addToolbarWidget(self.buttonThemeScreen)
-            self.buttonThemeScreen.setDefaultAction(self.themeScreen)
-            self.buttonDesktopScreen = QtGui.QToolButton(self.toolbar)
-            self.buttonDesktopScreen.setObjectName(u'buttonDesktopScreen')
-            self.toolbar.addToolbarWidget(self.buttonDesktopScreen)
-            self.buttonDesktopScreen.setDefaultAction(self.desktopScreen)
+            self.blankScreenButton = QtGui.QToolButton(self.toolbar)
+            self.blankScreenButton.setObjectName(u'blankScreenButton')
+            self.toolbar.addToolbarWidget(self.blankScreenButton)
+            self.blankScreenButton.setDefaultAction(self.blankScreen)
+            self.themeScreenButton = QtGui.QToolButton(self.toolbar)
+            self.themeScreenButton.setObjectName(u'themeScreenButton')
+            self.toolbar.addToolbarWidget(self.themeScreenButton)
+            self.themeScreenButton.setDefaultAction(self.themeScreen)
+            self.desktopScreenButton = QtGui.QToolButton(self.toolbar)
+            self.desktopScreenButton.setObjectName(u'desktopScreenButton')
+            self.toolbar.addToolbarWidget(self.desktopScreenButton)
+            self.desktopScreenButton.setDefaultAction(self.desktopScreen)
             self.toolbar.addToolbarAction(u'loopSeparator', separator=True)
             # Play Slides Menu
             self.playSlidesMenu = QtGui.QToolButton(self.toolbar)
