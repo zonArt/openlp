@@ -411,13 +411,13 @@ class WebkitPlayer(MediaPlayer):
         else:
             if display.frame.evaluateJavaScript(u'show_video("isEnded");') == 'true':
                 self.stop(display)
-            (currentTime, ok) = display.frame.evaluateJavaScript(u'show_video("currentTime");')
+            currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and currentTime != float('inf'):
+            if currentTime and currentTime != float('inf'):
                 currentTime = int(currentTime * 1000)
-            (length, ok) = display.frame.evaluateJavaScript(u'show_video("length");')
+            length = display.frame.evaluateJavaScript(u'show_video("length");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and length != float('inf'):
+            if length and length != float('inf'):
                 length = int(length * 1000)
         if currentTime > 0:
             controller.media_info.length = length

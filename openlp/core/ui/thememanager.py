@@ -474,8 +474,7 @@ class ThemeManager(QtGui.QWidget):
             Name of the theme to load from file
         """
         log.debug(u'getthemedata for theme %s', theme_name)
-        xml_file = os.path.join(self.path, unicode(theme_name),
-            unicode(theme_name) + u'.xml')
+        xml_file = os.path.join(self.path, unicode(theme_name), unicode(theme_name) + u'.xml')
         xml = get_text_file_string(xml_file)
         if not xml:
             log.debug(u'No theme data - using default theme')
