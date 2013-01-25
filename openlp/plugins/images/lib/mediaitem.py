@@ -399,11 +399,9 @@ class ImageMediaItem(MediaManagerItem):
                         'the image file "%s" no longer exists.') % filename)
 
     def search(self, string, showError):
-        files = Settings().value(self.settingsSection + u'/images files')
+        files = self.manager.get_all_objects(ImageFilenames, filter_clause=ImageFilenames.filename.contains(string), order_by_ref=ImageFilenames.filename)
         results = []
-        string = string.lower()
         for file in files:
-            filename = os.path.split(unicode(file))[1]
-            if filename.lower().find(string) > -1:
-                results.append([file, filename])
+            filename = os.path.split(unicode(file.filename))[1]
+            results.append([file.filename, filename])
         return results
