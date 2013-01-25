@@ -6,7 +6,7 @@ from unittest import TestCase
 
 from mock import MagicMock, patch
 from openlp.core.ui import starttimeform
-from PyQt4 import QtGui, QtTest
+from PyQt4 import QtCore, QtGui, QtTest
 
 class TestStartTimeDialog(TestCase):
 
@@ -51,15 +51,32 @@ class TestStartTimeDialog(TestCase):
         mocked_serviceitem = MagicMock()
         mocked_serviceitem.start_time = 61
         mocked_serviceitem.end_time = 3701
+        mocked_serviceitem.media_length = 3701
 
         # WHEN displaying the UI and pressing enter
-        self.form.item = mocked_serviceitem
-        with patch(u'openlp.core.lib.QtGui.QDialog') as MockedQtGuiQDialog:
-            MockedQtGuiQDialog.return_value = True
-            #does not work yet
-            #self.form.exec_()
+        self.form.item = {u'service_item': mocked_serviceitem}
+        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+            self.form.exec_()
+        okWidget = self.form.buttonBox.button(self.form.buttonBox.Ok)
+        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
-        # THEN the following values are returned
+        # THEN the following input values values are returned
         self.assertEqual(self.form.hourSpinBox.value(), 0)
-        self.assertEqual(self.form.minuteSpinBox.value(), 0)
-        self.assertEqual(self.form.secondSpinBox.value(), 0)
+        self.assertEqual(self.form.minuteSpinBox.value(), 1)
+        self.assertEqual(self.form.secondSpinBox.value(), 1)
+        self.assertEqual(self.form.item[u'service_item'].start_time, 61, u'The start time has not changed')
+
+        # WHEN displaying the UI, changing the time to 2min 3secs and pressing enter
+        self.form.item = {u'service_item': mocked_serviceitem}
+        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+            self.form.exec_()
+        self.form.minuteSpinBox.setValue(2)
+        self.form.secondSpinBox.setValue(3)
+        okWidget = self.form.buttonBox.button(self.form.buttonBox.Ok)
+        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+
+        # THEN the following values values are returned
+        self.assertEqual(self.form.hourSpinBox.value(), 0)
+        self.assertEqual(self.form.minuteSpinBox.value(), 2)
+        self.assertEqual(self.form.secondSpinBox.value(), 3)
+        self.assertEqual(self.form.item[u'service_item'].start_time, 123, u'The start time has changed')

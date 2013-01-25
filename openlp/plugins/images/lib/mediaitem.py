@@ -189,10 +189,10 @@ class ImageMediaItem(MediaManagerItem):
 
     def onResetClick(self):
         """
-        Called to reset the Live backgound with the image selected,
+        Called to reset the Live background with the image selected,
         """
         self.resetAction.setVisible(False)
-        self.plugin.liveController.display.resetImage()
+        self.live_controller.display.resetImage()
 
     def liveThemeChanged(self):
         """
@@ -211,7 +211,7 @@ class ImageMediaItem(MediaManagerItem):
             bitem = self.listView.item(item.row())
             filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
-                if self.plugin.liveController.display.directImage(filename, background):
+                if self.live_controller.display.directImage(filename, background):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

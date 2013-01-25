@@ -438,8 +438,8 @@ class ServiceManager(QtGui.QWidget):
         log.debug(temp_file_name)
         path_file_name = unicode(self.fileName())
         path, file_name = os.path.split(path_file_name)
-        basename = os.path.splitext(file_name)[0]
-        service_file_name = '%s.osd' % basename
+        base_name = os.path.splitext(file_name)[0]
+        service_file_name = '%s.osd' % base_name
         log.debug(u'ServiceManager.saveFile - %s', path_file_name)
         Settings().setValue(self.main_window.serviceManagerSettingsSection + u'/last directory', path)
         service = []
@@ -667,11 +667,11 @@ class ServiceManager(QtGui.QWidget):
         fileName = unicode(fileName)
         if not os.path.exists(fileName):
             return False
-        zip = None
+        zip_file = None
         fileTo = None
         try:
-            zip = zipfile.ZipFile(fileName)
-            for zipinfo in zip.infolist():
+            zip_file = zipfile.ZipFile(fileName)
+            for zipinfo in zip_file.infolist():
                 try:
                     ucsfile = zipinfo.filename.decode(u'utf-8')
                 except UnicodeDecodeError:
@@ -684,7 +684,7 @@ class ServiceManager(QtGui.QWidget):
                     osfile = os.path.split(osfile)[1]
                 log.debug(u'Extract file: %s', osfile)
                 zipinfo.filename = osfile
-                zip.extract(zipinfo, self.servicePath)
+                zip_file.extract(zipinfo, self.servicePath)
                 if osfile.endswith(u'osd'):
                     p_file = os.path.join(self.servicePath, osfile)
             if 'p_file' in locals():
@@ -737,8 +737,8 @@ class ServiceManager(QtGui.QWidget):
         finally:
             if fileTo:
                 fileTo.close()
-            if zip:
-                zip.close()
+            if zip_file:
+                zip_file.close()
         self.main_window.finishedProgressBar()
         Receiver.send_message(u'cursor_normal')
         self.repaintServiceList(-1, -1)
@@ -819,6 +819,9 @@ class ServiceManager(QtGui.QWidget):
         self.menu.exec_(self.serviceManagerList.mapToGlobal(point))
 
     def onServiceItemNoteForm(self):
+        """
+        Allow the service note to be edited
+        """
         item = self.findServiceItem()[0]
         self.serviceNoteForm.textEdit.setPlainText(
             self.serviceItems[item][u'service_item'].notes)

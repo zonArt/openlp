@@ -13,26 +13,28 @@ class TestRegistry(TestCase):
 
     def registry_basic_test(self):
         """
-        Test the Service Item basic test
+        Test the registry creation and its usage
         """
         # GIVEN: A new registry
         registry = Registry.create()
 
-        # WHEN: I add a service it should save it
+        # WHEN: I add a component it should save it
         mock_1 = MagicMock()
         Registry().register(u'test1', mock_1)
 
-        # THEN: we should be able retrieve the saved object
+        # THEN: we should be able retrieve the saved component
         assert Registry().get(u'test1') == mock_1, u'The saved service can be retrieved and matches'
 
-        # WHEN: I add a service for the second time I am mad.
-        # THEN  I will get an exception
+        # WHEN: I add a component for the second time I am mad.
+        # THEN  and I will get an exception
         with self.assertRaises(KeyError) as context:
             Registry().register(u'test1', mock_1)
-        self.assertEqual(context.exception[0], u'Duplicate service exception test1')
+        self.assertEqual(context.exception[0], u'Duplicate service exception test1',
+            u'The correct exception has been thrown')
 
-        # WHEN I try to get back a non existent service
+        # WHEN I try to get back a non existent component
         # THEN I will get an exception
         with self.assertRaises(KeyError) as context:
             temp = Registry().get(u'test2')
-        self.assertEqual(context.exception[0], u'Service test2 not found in list')
+        self.assertEqual(context.exception[0], u'Service test2 not found in list',
+            u'The correct exception has been thrown')
