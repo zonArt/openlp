@@ -208,6 +208,7 @@ class PresentationMediaItem(MediaManagerItem):
                 item_name.setIcon(0, icon)
                 item_name.setToolTip(0, file)
                 self.listView.addTopLevelItem(item_name)
+        Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
             self.main_window.finishedProgressBar()

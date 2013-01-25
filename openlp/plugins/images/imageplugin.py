@@ -32,11 +32,14 @@ from PyQt4 import QtCore, QtGui
 import logging
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings
+from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
+from openlp.plugins.images.lib.db import init_schema
 
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
+        u'images/db type': u'sqlite',
         u'images/background color': u'#000000',
         u'images/images files': []
     }
@@ -47,6 +50,7 @@ class ImagePlugin(Plugin):
 
     def __init__(self):
         Plugin.__init__(self, u'images', __default_settings__, ImageMediaItem, ImageTab)
+        self.manager = Manager(u'images', init_schema)
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)

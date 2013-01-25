@@ -37,6 +37,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, Sett
     UiStrings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
+from openlp.plugins.images.lib.db import ImageFilenames
 
 log = logging.getLogger(__name__)
 
@@ -51,6 +52,7 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.quickPreviewAllowed = True
         self.hasSearch = True
+        self.manager = plugin.manager
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
@@ -78,7 +80,19 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
-        self.loadList(Settings().value(self.settingsSection +  u'/images files'), True)
+        # Import old images list
+        images_old = Settings().value(self.settingsSection +  u'/images files')
+        if len(images_old) > 0:
+            for imageFile in images_old:
+                imagefilename = ImageFilenames()
+                imagefilename.group_id = 0
+                imagefilename.filename = imageFile
+                success = self.manager.save_object(imagefilename)
+            Settings().setValue(self.settingsSection + u'/images files', [])
+            Settings().remove(self.settingsSection + u'/images files')
+            Settings().remove(self.settingsSection + u'/images count')
+        # Load images from the database
+        self.loadList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -102,11 +116,12 @@ class ImageMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(row_list))
             for row in row_list:
-                text = self.listView.topLevelItem(row)
-                if text:
-                    delete_file(os.path.join(self.servicePath, text.text(0)))
+                row_item = self.listView.topLevelItem(row)
+                if row_item:
+                    delete_file(os.path.join(self.servicePath, row_item.text(0)))
                 self.listView.takeTopLevelItem(row)
                 self.main_window.incrementProgressBar()
+                self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
             SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
@@ -120,19 +135,26 @@ class ImageMediaItem(MediaManagerItem):
         # characters.
         images.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         for imageFile in images:
-            filename = os.path.split(unicode(imageFile))[1]
+            if type(imageFile) is str or type(imageFile) is unicode:
+                filename = imageFile
+                imageFile = ImageFilenames()
+                imageFile.group_id = 0
+                imageFile.filename = unicode(filename)
+                success = self.manager.save_object(imageFile)
+            filename = os.path.split(imageFile.filename)[1]
             thumb = os.path.join(self.servicePath, filename)
-            if not os.path.exists(unicode(imageFile)):
+            if not os.path.exists(imageFile.filename):
                 icon = build_icon(u':/general/general_delete.png')
             else:
-                if validate_thumb(unicode(imageFile), thumb):
+                if validate_thumb(imageFile.filename, thumb):
                     icon = build_icon(thumb)
                 else:
-                    icon = create_thumb(unicode(imageFile), thumb)
+                    icon = create_thumb(imageFile.filename, thumb)
+            log.debug(u'Loading image: %s', imageFile.filename)
             item_name = QtGui.QTreeWidgetItem(filename)
             item_name.setText(0, filename)
             item_name.setIcon(0, icon)
-            item_name.setToolTip(0, imageFile)
+            item_name.setToolTip(0, imageFile.filename)
             item_name.setData(0, QtCore.Qt.UserRole, imageFile)
             self.listView.addTopLevelItem(item_name)
             if not initialLoad:
@@ -160,7 +182,7 @@ class ImageMediaItem(MediaManagerItem):
         missing_items = []
         missing_items_filenames = []
         for bitem in items:
-            filename = bitem.data(0, QtCore.Qt.UserRole)
+            filename = bitem.data(0, QtCore.Qt.UserRole).filename
             if not os.path.exists(filename):
                 missing_items.append(bitem)
                 missing_items_filenames.append(filename)
@@ -183,7 +205,7 @@ class ImageMediaItem(MediaManagerItem):
             return False
         # Continue with the existing images.
         for bitem in items:
-            filename = bitem.data(0, QtCore.Qt.UserRole)
+            filename = bitem.data(0, QtCore.Qt.UserRole).filename
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
@@ -210,7 +232,7 @@ class ImageMediaItem(MediaManagerItem):
             background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.topLevelItem(item.row())
-            filename = bitem.data(QtCore.Qt.UserRole)
+            filename = bitem.data(QtCore.Qt.UserRole).filename
             if os.path.exists(filename):
                 if self.plugin.liveController.display.directImage(filename, background):
                     self.resetAction.setVisible(True)
