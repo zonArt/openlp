@@ -129,11 +129,12 @@ class ImageMediaItem(MediaManagerItem):
                     icon = build_icon(thumb)
                 else:
                     icon = create_thumb(unicode(imageFile), thumb)
-            item_name = QtGui.QListWidgetItem(filename)
-            item_name.setIcon(icon)
-            item_name.setToolTip(imageFile)
-            item_name.setData(QtCore.Qt.UserRole, imageFile)
-            self.listView.addItem(item_name)
+            item_name = QtGui.QTreeWidgetItem(filename)
+            item_name.setText(0, filename)
+            item_name.setIcon(0, icon)
+            item_name.setToolTip(0, imageFile)
+            item_name.setData(0, QtCore.Qt.UserRole, imageFile)
+            self.listView.addTopLevelItem(item_name)
             if not initialLoad:
                 self.main_window.incrementProgressBar()
         if not initialLoad:
@@ -159,7 +160,7 @@ class ImageMediaItem(MediaManagerItem):
         missing_items = []
         missing_items_filenames = []
         for bitem in items:
-            filename = bitem.data(QtCore.Qt.UserRole)
+            filename = bitem.data(0, QtCore.Qt.UserRole)
             if not os.path.exists(filename):
                 missing_items.append(bitem)
                 missing_items_filenames.append(filename)
@@ -182,7 +183,7 @@ class ImageMediaItem(MediaManagerItem):
             return False
         # Continue with the existing images.
         for bitem in items:
-            filename = bitem.data(QtCore.Qt.UserRole)
+            filename = bitem.data(0, QtCore.Qt.UserRole)
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True

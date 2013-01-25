@@ -264,24 +264,27 @@ class MediaMediaItem(MediaManagerItem):
             track_info = QtCore.QFileInfo(track)
             if not os.path.exists(track):
                 filename = os.path.split(unicode(track))[1]
-                item_name = QtGui.QListWidgetItem(filename)
-                item_name.setIcon(ERROR)
-                item_name.setData(QtCore.Qt.UserRole, track)
+                item_name = QtGui.QTreeWidgetItem(filename)
+                item_name.setText(0, filename)
+                item_name.setIcon(0, ERROR)
+                item_name.setData(0, QtCore.Qt.UserRole, track)
             elif track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
-                item_name = QtGui.QListWidgetItem(filename)
+                item_name = QtGui.QTreeWidgetItem(filename)
+                item_name.setText(0, filename)
                 if u'*.%s' % (filename.split(u'.')[-1].lower()) in self.media_controller.audio_extensions_list:
-                    item_name.setIcon(AUDIO)
+                    item_name.setIcon(0, AUDIO)
                 else:
-                    item_name.setIcon(VIDEO)
-                item_name.setData(QtCore.Qt.UserRole, track)
+                    item_name.setIcon(0, VIDEO)
+                item_name.setData(0, QtCore.Qt.UserRole, track)
             else:
                 filename = os.path.split(unicode(track))[1]
-                item_name = QtGui.QListWidgetItem(filename)
-                item_name.setIcon(build_icon(DVDICON))
-                item_name.setData(QtCore.Qt.UserRole, track)
-            item_name.setToolTip(track)
-            self.listView.addItem(item_name)
+                item_name = QtGui.QTreeWidgetItem(filename)
+                item_name.setText(0, filename)
+                item_name.setIcon(0, build_icon(DVDICON))
+                item_name.setData(0, QtCore.Qt.UserRole, track)
+            item_name.setToolTip(0, track)
+            self.listView.addTopLevelItem(item_name)
 
     def getList(self, type=MediaType.Audio):
         media = Settings().value(self.settingsSection + u'/media files')

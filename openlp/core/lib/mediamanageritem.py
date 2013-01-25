@@ -36,7 +36,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, Receiver, \
-    ListWidgetWithDnD, ServiceItemContext, Settings, Registry, UiStrings
+    TreeWidgetWithDnD, ServiceItemContext, Settings, Registry, UiStrings
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 
@@ -213,8 +213,7 @@ class MediaManagerItem(QtGui.QWidget):
         Creates the main widget for listing items the media item is tracking
         """
         # Add the List widget
-        self.listView = ListWidgetWithDnD(self, self.plugin.name)
-        self.listView.setSpacing(1)
+        self.listView = TreeWidgetWithDnD(self, self.plugin.name)
         self.listView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setAlternatingRowColors(True)
         self.listView.setObjectName(u'%sListView' % self.plugin.name)
@@ -404,7 +403,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         count = 0
         file_list = []
-        while count < self.listView.count():
+        while count < self.listView.topLevelItemCount():
             bitem = self.listView.item(count)
             filename = bitem.data(QtCore.Qt.UserRole)
             file_list.append(filename)
@@ -571,15 +570,16 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Checks if the listView is empty and adds a "No Search Results" item.
         """
-        if self.listView.count():
+        if self.listView.topLevelItemCount():
             return
         message = translate('OpenLP.MediaManagerItem', 'No Search Results')
-        item = QtGui.QListWidgetItem(message)
+        item = QtGui.QTreeWidgetItem(message)
+        item.setText(0, message)
         item.setFlags(QtCore.Qt.NoItemFlags)
         font = QtGui.QFont()
         font.setItalic(True)
-        item.setFont(font)
-        self.listView.addItem(item)
+        item.setFont(0, font)
+        self.listView.addTopLevelItem(item)
 
     def _getIdOfItemToGenerate(self, item, remoteItem):
         """
@@ -596,7 +596,7 @@ class MediaManagerItem(QtGui.QWidget):
                 item = self.listView.currentItem()
                 if item is None:
                     return False
-                item_id = item.data(QtCore.Qt.UserRole)
+                item_id = item.data(0, QtCore.Qt.UserRole)
             else:
                 item_id = remoteItem
         else:
@@ -611,7 +611,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.autoSelectId == -1:
             item = self.listView.currentItem()
             if item:
-                self.autoSelectId = item.data(QtCore.Qt.UserRole)
+                self.autoSelectId = item.data(0, QtCore.Qt.UserRole)
 
     def search(self, string, showError=True):
         """
