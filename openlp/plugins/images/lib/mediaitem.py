@@ -115,6 +115,19 @@ class ImageMediaItem(MediaManagerItem):
         self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
             icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
 
+    def recursivelyDeleteGroup(self, image_group):
+        """
+        Recursively deletes a group and all groups and images in it
+        """
+        images = self.manager.get_all_objects(ImageFilenames, ImageFilenames.group_id == image_group.id)
+        for image in images:
+            delete_file(os.path.join(self.servicePath, os.path.split(image.filename)[1]))
+            self.manager.delete_object(ImageFilenames, image.id)
+        image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == image_group.id)
+        for group in image_groups:
+            self.recursivelyDeleteGroup(group)
+            self.manager.delete_object(ImageGroups, group.id)
+
     def onDeleteClick(self):
         """
         Remove an image item from the list
@@ -129,11 +142,24 @@ class ImageMediaItem(MediaManagerItem):
             for row_item in item_list:
                 row_item = self.listView.topLevelItem(row)
                 if row_item:
-                    delete_file(os.path.join(self.servicePath, row_item.text(0)))
-                row_item.parent().removeChild(row_item)
+                    item_data = row_item.data(0, QtCore.Qt.UserRole)
+                    if isinstance(item_data, ImageFilenames):
+                        delete_file(os.path.join(self.servicePath, row_item.text(0)))
+                        row_item.parent().removeChild(row_item)
+                        self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
+                    elif isinstance(item_data, ImageGroups):
+                        if QtGui.QMessageBox.question(self.listView.parent(),
+                            translate('ImagePlugin.MediaItem', 'Remove group'),
+                            translate('ImagePlugin.MediaItem',
+                            'Are you sure you want to remove "%s" and everything in it?') % item_data.group_name,
+                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
+                            self.recursivelyDeleteGroup(item_data)
+                            self.manager.delete_object(ImageGroups, row_item.data(0, QtCore.Qt.UserRole).id)
+                            if item_data.parent_id is 0:
+                                self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
+                            else:
+                                row_item.parent().removeChild(row_item)
                 self.main_window.incrementProgressBar()
-                self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
-            SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
@@ -147,6 +173,7 @@ class ImageMediaItem(MediaManagerItem):
         for image_group in image_groups:
             group = QtGui.QTreeWidgetItem()
             group.setText(0, image_group.group_name)
+            group.setData(0, QtCore.Qt.UserRole, image_group)
             if parentGroupId is 0:
                 self.listView.addTopLevelItem(group)
             else:
@@ -224,8 +251,9 @@ class ImageMediaItem(MediaManagerItem):
                 self.choosegroupform.groupComboBox.currentIndex(), QtCore.Qt.UserRole)
             # Save the new images in the database
             for filename in images:
-                if filename is None:
+                if type(filename) is not str and type(filename) is not unicode:
                     continue
+                log.debug(u'Adding new image: %s', filename)
                 imageFile = ImageFilenames()
                 imageFile.group_id = group_id
                 imageFile.filename = unicode(filename)
@@ -323,7 +351,8 @@ class ImageMediaItem(MediaManagerItem):
                 group_name=self.addgroupform.nameEdit.text())
             if self.checkGroupName(new_group):
                 if self.manager.save_object(new_group):
-                    self.loadList([])
+                    self.loadFullList(self.manager.get_all_objects(ImageFilenames,
+                        order_by_ref=ImageFilenames.filename))
                     self.fillGroupsComboBox(self.addgroupform.parentGroupComboBox)
                 else:
                     critical_error_message_box(
