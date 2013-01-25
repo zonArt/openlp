@@ -137,10 +137,8 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem','You must select an image to delete.')):
             item_list = self.listView.selectedItems()
             Receiver.send_message(u'cursor_busy')
-            self.main_window.displayProgressBar(len(row_list))
-            self.plugin.formParent.displayProgressBar(len(item_list))
+            self.main_window.displayProgressBar(len(item_list))
             for row_item in item_list:
-                row_item = self.listView.topLevelItem(row)
                 if row_item:
                     item_data = row_item.data(0, QtCore.Qt.UserRole)
                     if isinstance(item_data, ImageFilenames):
