@@ -35,8 +35,8 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsManager, OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, \
-    Receiver, ListWidgetWithDnD, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, Receiver, \
+    ListWidgetWithDnD, ServiceItemContext, Settings, Registry, UiStrings
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 
@@ -99,6 +99,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
+        Registry().register(self.title, self)
         self.settingsSection = self.plugin.name
         self.icon = None
         if icon:
@@ -469,7 +470,7 @@ class MediaManagerItem(QtGui.QWidget):
             serviceItem = self.buildServiceItem()
             if serviceItem:
                 serviceItem.from_plugin = True
-                self.plugin.previewController.addServiceItem(serviceItem)
+                self.preview_controller.addServiceItem(serviceItem)
                 if keepFocus:
                     self.listView.setFocus()
 
@@ -495,7 +496,7 @@ class MediaManagerItem(QtGui.QWidget):
                 serviceItem.from_plugin = True
             if remote:
                 serviceItem.will_auto_start = True
-            self.plugin.liveController.addServiceItem(serviceItem)
+            self.live_controller.addServiceItem(serviceItem)
 
     def createItemFromId(self, item_id):
         item = QtGui.QListWidgetItem()
@@ -510,7 +511,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items to add.'))
         else:
-            # Is it posssible to process multiple list items to generate
+            # Is it possible to process multiple list items to generate
             # multiple service items?
             if self.singleServiceItem or self.remoteTriggered:
                 log.debug(u'%s Add requested', self.plugin.name)
@@ -524,7 +525,7 @@ class MediaManagerItem(QtGui.QWidget):
         serviceItem = self.buildServiceItem(item, True, remote=remote, context=ServiceItemContext.Service)
         if serviceItem:
             serviceItem.from_plugin = False
-            self.plugin.serviceManager.addServiceItem(serviceItem, replace=replace)
+            self.service_manager.addServiceItem(serviceItem, replace=replace)
 
     def onAddEditClick(self):
         """
@@ -541,7 +542,7 @@ class MediaManagerItem(QtGui.QWidget):
                     translate('OpenLP.MediaManagerItem', 'You must select an existing service item to add to.'))
             elif self.plugin.name == serviceItem.name:
                 self.generateSlideData(serviceItem)
-                self.plugin.serviceManager.addServiceItem(serviceItem, replace=True)
+                self.service_manager.addServiceItem(serviceItem, replace=True)
             else:
                 # Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self, translate('OpenLP.MediaManagerItem', 'Invalid Service Item'),
@@ -617,3 +618,73 @@ class MediaManagerItem(QtGui.QWidget):
         Performs a plugin specific search for items containing ``string``
         """
         raise NotImplementedError(u'Plugin.search needs to be defined by the plugin')
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
+
+    def _get_preview_controller(self):
+        """
+        Adds the preview controller to the class dynamically
+        """
+        if not hasattr(self, u'_preview_controller'):
+            self._preview_controller = Registry().get(u'preview_controller')
+        return self._preview_controller
+
+    preview_controller = property(_get_preview_controller)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
+
+    def _get_media_controller(self):
+        """
+        Adds the media controller to the class dynamically
+        """
+        if not hasattr(self, u'_media_controller'):
+            self._media_controller = Registry().get(u'media_controller')
+        return self._media_controller
+
+    media_controller = property(_get_media_controller)
+
+    def _get_service_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)

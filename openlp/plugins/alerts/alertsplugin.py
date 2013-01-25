@@ -128,8 +128,8 @@ __default_settings__ = {
 class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'alerts', __default_settings__, plugin_helpers, settings_tab_class=AlertsTab)
+    def __init__(self):
+        Plugin.__init__(self, u'alerts', __default_settings__, settings_tab_class=AlertsTab)
         self.weight = -3
         self.iconPath = u':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.iconPath)
@@ -151,7 +151,7 @@ class AlertsPlugin(Plugin):
             text=translate('AlertsPlugin', '&Alert'), icon=u':/plugins/plugin_alerts.png',
             statustip=translate('AlertsPlugin', 'Show an alert message.'),
             visible=False, shortcuts=[u'F7'], triggers=self.onAlertsTrigger)
-        self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
+        self.main_window.toolsMenu.addAction(self.toolsAlertItem)
 
     def initialise(self):
         log.info(u'Alerts Initialising')

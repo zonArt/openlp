@@ -68,8 +68,8 @@ __default_settings__ = {
 class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'bibles', __default_settings__, plugin_helpers, BibleMediaItem, BiblesTab)
+    def __init__(self):
+        Plugin.__init__(self, u'bibles', __default_settings__, BibleMediaItem, BiblesTab)
         self.weight = -9
         self.iconPath = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.iconPath)
@@ -108,7 +108,7 @@ class BiblePlugin(Plugin):
         """
         Plugin.appStartup(self)
         if self.manager.old_bible_databases:
-            if QtGui.QMessageBox.information(self.formParent,
+            if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),
                 translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your existing Bibles.\n'
                     'Should OpenLP upgrade now?'),
@@ -149,7 +149,7 @@ class BiblePlugin(Plugin):
         Upgrade older bible databases.
         """
         if not hasattr(self, u'upgrade_wizard'):
-            self.upgrade_wizard = BibleUpgradeForm(self.formParent, self.manager, self)
+            self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
             self.mediaItem.reloadBibles()

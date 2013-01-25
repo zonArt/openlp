@@ -59,13 +59,13 @@ class PresentationPlugin(Plugin):
     """
     log = logging.getLogger(u'PresentationPlugin')
 
-    def __init__(self, plugin_helpers):
+    def __init__(self):
         """
         PluginPresentation constructor.
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'presentations', __default_settings__, plugin_helpers, __default_settings__)
+        Plugin.__init__(self, u'presentations', __default_settings__, __default_settings__)
         self.weight = -8
         self.iconPath = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.iconPath)
@@ -111,7 +111,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         self.mediaItem = PresentationMediaItem(
-            self.mediaDock.media_dock, self, self.icon, self.controllers)
+            self.main_window.mediaDockManager.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """

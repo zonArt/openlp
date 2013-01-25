@@ -39,7 +39,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource, Settings
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource, Settings, Registry
 
 log = logging.getLogger(__name__)
 
@@ -148,7 +148,6 @@ class ServiceItem(object):
             The plugin that this service item belongs to.
         """
         if plugin:
-            self.renderer = plugin.renderer
             self.name = plugin.name
         self.title = u''
         self.shortname = u''
@@ -293,7 +292,7 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.addImage(path, ImageSource.ImagePlugin, self.image_border)
+        self.image_manager.addImage(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
     def add_from_text(self, raw_slide, verse_tag=None):
@@ -644,3 +643,23 @@ class ServiceItem(object):
                     file_suffix = frame[u'title'].split(u'.')[-1]
                     if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
