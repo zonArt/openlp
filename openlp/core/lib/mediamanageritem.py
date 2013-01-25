@@ -366,7 +366,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         names = []
         full_list = []
-        for count in range(self.listView.count()):
+        for count in range(self.listView.topLevelItemCount()):
             names.append(self.listView.item(count).text())
             full_list.append(self.listView.item(count).data(QtCore.Qt.UserRole))
         duplicates_found = False

@@ -634,7 +634,7 @@ class BibleMediaItem(MediaManagerItem):
             self.second_search_results = self.plugin.manager.get_verses(second_bible, versetext, book_ref_id)
         if not self.advancedLockButton.isChecked():
             self.listView.clear()
-        if self.listView.count() != 0:
+        if self.listView.topLevelItemCount() != 0:
             self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
