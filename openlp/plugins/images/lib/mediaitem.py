@@ -270,7 +270,11 @@ class ImageMediaItem(MediaManagerItem):
             items = self.listView.selectedItems()
             if not items:
                 return False
-        service_item.title = unicode(self.plugin.nameStrings[u'plural'])
+        # Determine service item title
+        if isinstance(items[0].data(0, QtCore.Qt.UserRole), ImageGroups):
+            service_item.title = items[0].text(0)
+        else:
+            service_item.title = unicode(self.plugin.nameStrings[u'plural'])
         service_item.add_capability(ItemCapabilities.CanMaintain)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
@@ -279,10 +283,15 @@ class ImageMediaItem(MediaManagerItem):
         service_item.theme = -1
         missing_items = []
         missing_items_filenames = []
+        # Expand groups to images
         for bitem in items:
-            if bitem.data(0, QtCore.Qt.UserRole) is None:
-                # Ignore double-clicked groups
-                continue
+            if isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageGroups) or bitem.data(0, QtCore.Qt.UserRole) is None:
+                for index in range(0, bitem.childCount()):
+                    if isinstance(bitem.child(index).data(0, QtCore.Qt.UserRole), ImageFilenames):
+                        items.append(bitem.child(index))
+                items.remove(bitem)
+        # Find missing files
+        for bitem in items:
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
             if not os.path.exists(filename):
                 missing_items.append(bitem)
@@ -306,9 +315,6 @@ class ImageMediaItem(MediaManagerItem):
             return False
         # Continue with the existing images.
         for bitem in items:
-            if bitem.data(0, QtCore.Qt.UserRole) is None:
-                # Ignore double-clicked groups
-                continue
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
