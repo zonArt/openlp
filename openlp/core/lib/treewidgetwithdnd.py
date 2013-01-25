@@ -46,6 +46,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         QtGui.QTreeWidget.__init__(self, parent)
         self.mimeDataText = name
         self.header().close()
+        self.defaultIndentation = self.indentation()
         self.setIndentation(0)
         assert(self.mimeDataText)
 

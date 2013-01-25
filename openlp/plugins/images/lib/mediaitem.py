@@ -37,7 +37,8 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, Sett
     UiStrings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
-from openlp.plugins.images.lib.db import ImageFilenames
+from openlp.plugins.images.forms import AddGroupForm
+from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 
 log = logging.getLogger(__name__)
 
@@ -53,6 +54,8 @@ class ImageMediaItem(MediaManagerItem):
         self.quickPreviewAllowed = True
         self.hasSearch = True
         self.manager = plugin.manager
+        self.addgroupform = AddGroupForm(self)
+        self.fillGroupsComboBox()
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
@@ -62,6 +65,8 @@ class ImageMediaItem(MediaManagerItem):
             'Select Image(s)')
         file_formats = get_images_filter()
         self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
+        self.addGroupAction.setText(UiStrings().AddGroup)
+        self.addGroupAction.setToolTip(UiStrings().AddGroup)
         self.replaceAction.setText(UiStrings().ReplaceBG)
         self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
         self.resetAction.setText(UiStrings().ResetBG)
@@ -78,6 +83,7 @@ class ImageMediaItem(MediaManagerItem):
         log.debug(u'initialise')
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
+        self.listView.setIndentation(self.listView.defaultIndentation)
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Import old images list
@@ -92,11 +98,15 @@ class ImageMediaItem(MediaManagerItem):
             Settings().remove(self.settingsSection + u'/images files')
             Settings().remove(self.settingsSection + u'/images count')
         # Load images from the database
-        self.loadList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
+        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
         self.listView.addAction(self.replaceAction)
+
+    def addStartHeaderBar(self):
+        self.addGroupAction = self.toolbar.addToolbarAction(u'addGroupAction',
+            icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
 
     def addEndHeaderBar(self):
         self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
@@ -111,15 +121,15 @@ class ImageMediaItem(MediaManagerItem):
         # Turn off auto preview triggers.
         self.listView.blockSignals(True)
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem','You must select an image to delete.')):
-            row_list = [item.row() for item in self.listView.selectedIndexes()]
-            row_list.sort(reverse=True)
+            item_list = self.listView.selectedItems()
             Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(row_list))
-            for row in row_list:
+            self.plugin.formParent.displayProgressBar(len(item_list))
+            for row_item in item_list:
                 row_item = self.listView.topLevelItem(row)
                 if row_item:
                     delete_file(os.path.join(self.servicePath, row_item.text(0)))
-                self.listView.takeTopLevelItem(row)
+                row_item.parent().removeChild(row_item)
                 self.main_window.incrementProgressBar()
                 self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
             SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
@@ -127,20 +137,51 @@ class ImageMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
 
-    def loadList(self, images, initialLoad=False):
+    def addSubGroups(self, groupList, parentGroupId):
+        """
+        Recursively add subgroups to the given parent group
+        """
+        image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parentGroupId)
+        image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
+        for image_group in image_groups:
+            group = QtGui.QTreeWidgetItem()
+            group.setText(0, image_group.group_name)
+            if parentGroupId is 0:
+                self.listView.addTopLevelItem(group)
+            else:
+                groupList[parentGroupId].addChild(group)
+            groupList[image_group.id] = group
+            self.addSubGroups(groupList, image_group.id)
+
+    def fillGroupsComboBox(self, parentGroupId=0, prefix=''):
+        """
+        Recursively add groups to the combobox in the 'Add group' dialog
+        """
+        if parentGroupId is 0:
+            self.addgroupform.parentGroupComboBox.clear()
+            self.addgroupform.parentGroupComboBox.addItem(translate('ImagePlugin.MediaItem', '-- Top-level group --'), 0)
+        image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parentGroupId)
+        image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
+        for image_group in image_groups:
+            self.addgroupform.parentGroupComboBox.addItem(prefix+image_group.group_name, image_group.id)
+            self.fillGroupsComboBox(image_group.id, prefix+'   ')
+
+    def loadFullList(self, images, initialLoad=False):
+        """
+        Replace the list of images and groups in the interface.
+        """
         if not initialLoad:
             Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(images))
+        self.listView.clear()
+        # Load the list of groups and add them to the treeView
+        group_items = {}
+        self.addSubGroups(group_items, 0)
         # Sort the images by its filename considering language specific
         # characters.
-        images.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
+        images.sort(cmp=locale_compare, key=lambda image_object: os.path.split(unicode(image_object.filename))[1])
         for imageFile in images:
-            if type(imageFile) is str or type(imageFile) is unicode:
-                filename = imageFile
-                imageFile = ImageFilenames()
-                imageFile.group_id = 0
-                imageFile.filename = unicode(filename)
-                success = self.manager.save_object(imageFile)
+            log.debug(u'Loading image: %s', imageFile.filename)
             filename = os.path.split(imageFile.filename)[1]
             thumb = os.path.join(self.servicePath, filename)
             if not os.path.exists(imageFile.filename):
@@ -150,18 +191,39 @@ class ImageMediaItem(MediaManagerItem):
                     icon = build_icon(thumb)
                 else:
                     icon = create_thumb(imageFile.filename, thumb)
-            log.debug(u'Loading image: %s', imageFile.filename)
             item_name = QtGui.QTreeWidgetItem(filename)
             item_name.setText(0, filename)
             item_name.setIcon(0, icon)
             item_name.setToolTip(0, imageFile.filename)
             item_name.setData(0, QtCore.Qt.UserRole, imageFile)
-            self.listView.addTopLevelItem(item_name)
+            if imageFile.group_id is 0:
+                if 0 not in group_items:
+                    # The 'Imported' group is only displayed when there are files that were imported from the
+                    # configuration file
+                    imported_group = QtGui.QTreeWidgetItem()
+                    imported_group.setText(0, translate('ImagePlugin.MediaItem', 'Imported'))
+                    self.listView.insertTopLevelItem(0, imported_group)
+                    group_items[0] = imported_group
+            group_items[imageFile.group_id].addChild(item_name)
             if not initialLoad:
                 self.main_window.incrementProgressBar()
         if not initialLoad:
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
+
+    def loadList(self, images, initialLoad=False):
+        """
+        Add new images to the database. This method is called when adding images using the Add button or DnD.
+        """
+        for filename in images:
+            if filename is None:
+                continue
+            imageFile = ImageFilenames()
+            imageFile.group_id = 0
+            imageFile.filename = unicode(filename)
+            success = self.manager.save_object(imageFile)
+        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
+            initialLoad)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
@@ -182,6 +244,9 @@ class ImageMediaItem(MediaManagerItem):
         missing_items = []
         missing_items_filenames = []
         for bitem in items:
+            if bitem.data(0, QtCore.Qt.UserRole) is None:
+                # Ignore double-clicked groups
+                continue
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
             if not os.path.exists(filename):
                 missing_items.append(bitem)
@@ -205,10 +270,59 @@ class ImageMediaItem(MediaManagerItem):
             return False
         # Continue with the existing images.
         for bitem in items:
+            if bitem.data(0, QtCore.Qt.UserRole) is None:
+                # Ignore double-clicked groups
+                continue
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
+
+    def __checkObject(self, objects, newObject, edit):
+        """
+        Utility method to check for an existing object.
+
+        ``edit``
+            If we edit an item, this should be *True*.
+        """
+        if objects:
+            # If we edit an existing object, we need to make sure that we do
+            # not return False when nothing has changed.
+            if edit:
+                for object in objects:
+                    if object.id != newObject.id:
+                        return False
+                return True
+            else:
+                return False
+        else:
+            return True
+
+    def checkGroupName(self, newGroup, edit=False):
+        """
+        Returns *False* if the given Group already exists, otherwise *True*.
+        """
+        groups = self.manager.get_all_objects(ImageGroups, ImageGroups.group_name == newGroup.group_name)
+        return self.__checkObject(groups, newGroup, edit)
+
+    def onAddGroupClick(self):
+        """
+        Called to add a new group
+        """
+        if self.addgroupform.exec_():
+            new_group = ImageGroups.populate(parent_id=self.addgroupform.parentGroupComboBox.itemData(
+                self.addgroupform.parentGroupComboBox.currentIndex(), QtCore.Qt.UserRole),
+                group_name=self.addgroupform.nameEdit.text())
+            if self.checkGroupName(new_group):
+                if self.manager.save_object(new_group):
+                    self.loadList([])
+                    self.fillGroupsComboBox()
+                else:
+                    critical_error_message_box(
+                        message=translate('ImagePlugin.AddGroupForm', 'Could not add the new group.'))
+            else:
+                critical_error_message_box(
+                    message=translate('ImagePlugin.AddGroupForm', 'This group already exists.'))
 
     def onResetClick(self):
         """
@@ -230,9 +344,8 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
                 translate('ImagePlugin.MediaItem', 'You must select an image to replace the background with.')):
             background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
-            item = self.listView.selectedIndexes()[0]
-            bitem = self.listView.topLevelItem(item.row())
-            filename = bitem.data(QtCore.Qt.UserRole).filename
+            bitem = self.listView.selectedItems()[0]
+            filename = bitem.data(0, QtCore.Qt.UserRole).filename
             if os.path.exists(filename):
                 if self.plugin.liveController.display.directImage(filename, background):
                     self.resetAction.setVisible(True)

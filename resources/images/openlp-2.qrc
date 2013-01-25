@@ -21,6 +21,9 @@
     <file>song_topic_edit.png</file>
     <file>song_book_edit.png</file>
   </qresource>
+  <qresource prefix="images">
+    <file>image_new_group.png</file>
+  </qresource>
   <qresource prefix="bibles">
     <file>bibles_search_text.png</file>
     <file>bibles_search_reference.png</file>
