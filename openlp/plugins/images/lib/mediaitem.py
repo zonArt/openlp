@@ -37,7 +37,7 @@ from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, Sett
     UiStrings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
-from openlp.plugins.images.forms import AddGroupForm
+from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 
 log = logging.getLogger(__name__)
@@ -54,8 +54,9 @@ class ImageMediaItem(MediaManagerItem):
         self.quickPreviewAllowed = True
         self.hasSearch = True
         self.manager = plugin.manager
+        self.choosegroupform = ChooseGroupForm(self)
         self.addgroupform = AddGroupForm(self)
-        self.fillGroupsComboBox()
+        self.fillGroupsComboBox(self.addgroupform.parentGroupComboBox)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
@@ -153,18 +154,19 @@ class ImageMediaItem(MediaManagerItem):
             groupList[image_group.id] = group
             self.addSubGroups(groupList, image_group.id)
 
-    def fillGroupsComboBox(self, parentGroupId=0, prefix=''):
+    def fillGroupsComboBox(self, comboBox, parentGroupId=0, prefix='', showTopLevelGroup=True):
         """
         Recursively add groups to the combobox in the 'Add group' dialog
         """
         if parentGroupId is 0:
-            self.addgroupform.parentGroupComboBox.clear()
-            self.addgroupform.parentGroupComboBox.addItem(translate('ImagePlugin.MediaItem', '-- Top-level group --'), 0)
+            comboBox.clear()
+            if showTopLevelGroup is True:
+                comboBox.addItem(translate('ImagePlugin.MediaItem', '-- Top-level group --'), 0)
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parentGroupId)
         image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
         for image_group in image_groups:
-            self.addgroupform.parentGroupComboBox.addItem(prefix+image_group.group_name, image_group.id)
-            self.fillGroupsComboBox(image_group.id, prefix+'   ')
+            comboBox.addItem(prefix+image_group.group_name, image_group.id)
+            self.fillGroupsComboBox(comboBox, image_group.id, prefix+'   ')
 
     def loadFullList(self, images, initialLoad=False):
         """
@@ -215,15 +217,21 @@ class ImageMediaItem(MediaManagerItem):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
         """
-        for filename in images:
-            if filename is None:
-                continue
-            imageFile = ImageFilenames()
-            imageFile.group_id = 0
-            imageFile.filename = unicode(filename)
-            success = self.manager.save_object(imageFile)
-        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
-            initialLoad)
+        # Ask which group the images should be saved in
+        self.fillGroupsComboBox(self.choosegroupform.groupComboBox, showTopLevelGroup=False)
+        if self.choosegroupform.exec_():
+            group_id = self.choosegroupform.groupComboBox.itemData(
+                self.choosegroupform.groupComboBox.currentIndex(), QtCore.Qt.UserRole)
+            # Save the new images in the database
+            for filename in images:
+                if filename is None:
+                    continue
+                imageFile = ImageFilenames()
+                imageFile.group_id = group_id
+                imageFile.filename = unicode(filename)
+                success = self.manager.save_object(imageFile)
+            self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
+                initialLoad)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
@@ -316,7 +324,7 @@ class ImageMediaItem(MediaManagerItem):
             if self.checkGroupName(new_group):
                 if self.manager.save_object(new_group):
                     self.loadList([])
-                    self.fillGroupsComboBox()
+                    self.fillGroupsComboBox(self.addgroupform.parentGroupComboBox)
                 else:
                     critical_error_message_box(
                         message=translate('ImagePlugin.AddGroupForm', 'Could not add the new group.'))

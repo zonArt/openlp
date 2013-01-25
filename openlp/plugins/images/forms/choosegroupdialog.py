@@ -26,33 +26,36 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-Forms in OpenLP are made up of two classes. One class holds all the graphical
-elements, like buttons and lists, and the other class holds all the functional
-code, like slots and loading and saving.
 
-The first class, commonly known as the **Dialog** class, is typically named
-``Ui_<name>Dialog``. It is a slightly modified version of the class that the
-``pyuic4`` command produces from Qt4's .ui file. Typical modifications will be
-converting most strings from "" to u'' and using OpenLP's ``translate()``
-function for translating strings.
+from PyQt4 import QtCore, QtGui
 
-The second class, commonly known as the **Form** class, is typically named
-``<name>Form``. This class is the one which is instantiated and used. It uses
-dual inheritance to inherit from (usually) QtGui.QDialog and the Ui class
-mentioned above, like so::
+from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
-    class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
+class Ui_ChooseGroupDialog(object):
+    def setupUi(self, chooseGroupDialog):
+        chooseGroupDialog.setObjectName(u'chooseGroupDialog')
+        chooseGroupDialog.resize(440, 119)
+        self.chooseGroupLayout = QtGui.QFormLayout(chooseGroupDialog)
+        self.chooseGroupLayout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
+        self.chooseGroupLayout.setMargin(8)
+        self.chooseGroupLayout.setSpacing(8)
+        self.chooseGroupLayout.setObjectName(u'chooseGroupLayout')
+        self.groupQuestionLabel = QtGui.QLabel(chooseGroupDialog)
+        self.groupQuestionLabel.setWordWrap(True)
+        self.groupQuestionLabel.setObjectName(u'groupQuestionLabel')
+        self.chooseGroupLayout.setWidget(1, QtGui.QFormLayout.SpanningRole, self.groupQuestionLabel)
+        self.groupComboBox = QtGui.QComboBox(chooseGroupDialog)
+        self.groupComboBox.setObjectName(u'groupComboBox')
+        self.chooseGroupLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.groupComboBox)
+        self.groupButtonBox = create_button_box(chooseGroupDialog, u'buttonBox', [u'ok'])
+        self.chooseGroupLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.groupButtonBox)
 
-        def __init__(self, parent=None):
-            QtGui.QDialog.__init__(self, parent)
-            self.setupUi(self)
+        self.retranslateUi(chooseGroupDialog)
+        QtCore.QMetaObject.connectSlotsByName(chooseGroupDialog)
 
-This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
-them separate from the functionality, so that it is easier to recreate the GUI
-from the .ui files later if necessary.
-"""
-
-from addgroupform import AddGroupForm
-from choosegroupform import ChooseGroupForm
+    def retranslateUi(self, chooseGroupDialog):
+        chooseGroupDialog.setWindowTitle(translate('ImagePlugin.ChooseGroupForm', 'Choose group'))
+        self.groupQuestionLabel.setText(translate('ImagePlugin.ChooseGroupForm',
+            'To which group do you want these images to be added?'))
 
