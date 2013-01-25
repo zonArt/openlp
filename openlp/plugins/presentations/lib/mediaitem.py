@@ -233,7 +233,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
             for row in row_list:
-                self.listView.takeItem(row)
+                self.listView.takeTopLevelItem(row)
             Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,

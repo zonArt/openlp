@@ -367,8 +367,8 @@ class MediaManagerItem(QtGui.QWidget):
         names = []
         full_list = []
         for count in range(self.listView.topLevelItemCount()):
-            names.append(self.listView.item(count).text())
-            full_list.append(self.listView.item(count).data(QtCore.Qt.UserRole))
+            names.append(self.listView.topLevelItem(count).text(0))
+            full_list.append(self.listView.topLevelItem(count).data(0, QtCore.Qt.UserRole))
         duplicates_found = False
         files_added = False
         for file in files:
@@ -404,8 +404,8 @@ class MediaManagerItem(QtGui.QWidget):
         count = 0
         file_list = []
         while count < self.listView.topLevelItemCount():
-            bitem = self.listView.item(count)
-            filename = bitem.data(QtCore.Qt.UserRole)
+            bitem = self.listView.topLevelItem(count)
+            filename = bitem.data(0, QtCore.Qt.UserRole)
             file_list.append(filename)
             count += 1
         return file_list
@@ -498,8 +498,8 @@ class MediaManagerItem(QtGui.QWidget):
             self.live_controller.addServiceItem(serviceItem)
 
     def createItemFromId(self, item_id):
-        item = QtGui.QListWidgetItem()
-        item.setData(QtCore.Qt.UserRole, item_id)
+        item = QtGui.QTreeWidgetItem()
+        item.setData(0, QtCore.Qt.UserRole, item_id)
         return item
 
     def onAddClick(self):

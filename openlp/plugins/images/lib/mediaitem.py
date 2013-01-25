@@ -102,10 +102,10 @@ class ImageMediaItem(MediaManagerItem):
             Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(row_list))
             for row in row_list:
-                text = self.listView.item(row)
+                text = self.listView.topLevelItem(row)
                 if text:
-                    delete_file(os.path.join(self.servicePath, text.text()))
-                self.listView.takeItem(row)
+                    delete_file(os.path.join(self.servicePath, text.text(0)))
+                self.listView.takeTopLevelItem(row)
                 self.main_window.incrementProgressBar()
             SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
@@ -209,7 +209,7 @@ class ImageMediaItem(MediaManagerItem):
                 translate('ImagePlugin.MediaItem', 'You must select an image to replace the background with.')):
             background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
             item = self.listView.selectedIndexes()[0]
-            bitem = self.listView.item(item.row())
+            bitem = self.listView.topLevelItem(item.row())
             filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 if self.plugin.liveController.display.directImage(filename, background):

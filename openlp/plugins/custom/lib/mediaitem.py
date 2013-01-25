@@ -155,7 +155,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
-            item_id = item.data(QtCore.Qt.UserRole)
+            item_id = item.data(0, QtCore.Qt.UserRole)
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
             self.autoSelectId = -1

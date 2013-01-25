@@ -403,7 +403,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onCloneClick')
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
-            item_id = self.editItem.data(QtCore.Qt.UserRole)
+            item_id = self.editItem.data(0, QtCore.Qt.UserRole)
             old_song = self.plugin.manager.get_object(Song, item_id)
             song_xml = self.openLyrics.song_to_xml(old_song)
             new_song = self.openLyrics.xml_to_song(song_xml)

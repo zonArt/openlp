@@ -76,7 +76,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         Check if the first item is a second bible item or not.
         """
-        bitem = self.listView.item(0)
+        bitem = self.listView.topLevelItem(0)
         if not bitem.flags() & QtCore.Qt.ItemIsSelectable:
             # The item is the "No Search Results" item.
             self.listView.clear()
@@ -972,7 +972,7 @@ class BibleMediaItem(MediaManagerItem):
         return []
 
     def createItemFromId(self, item_id):
-        item = QtGui.QListWidgetItem()
+        item = QtGui.QTreeWidgetItem()
         bible = self.quickVersionComboBox.currentText()
         search_results = self.plugin.manager.get_verses(bible, item_id, False)
         items = self.buildDisplayResults(bible, u'', search_results)
