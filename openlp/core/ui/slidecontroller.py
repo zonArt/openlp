@@ -1190,7 +1190,7 @@ class SlideController(DisplayController):
         From the preview display request the Item to be added to service
         """
         if self.serviceItem:
-            self.parent().serviceManagerContents.addServiceItem(self.serviceItem)
+            self.service_manager.addServiceItem(self.serviceItem)
 
     def onGoLiveClick(self):
         """
@@ -1215,7 +1215,7 @@ class SlideController(DisplayController):
                 Receiver.send_message('servicemanager_preview_live', u'%s:%s' %
                     (self.serviceItem.unique_identifier, row))
             else:
-                self.parent().liveController.addServiceManagerItem(self.serviceItem, row)
+                self.live_controller.addServiceManagerItem(self.serviceItem, row)
 
     def onMediaStart(self, item):
         """
@@ -1309,3 +1309,22 @@ class SlideController(DisplayController):
 
     media_controller = property(_get_media_controller)
 
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)

@@ -33,7 +33,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string, Receiver, Settings, UiStrings
+from openlp.core.lib import translate, get_text_file_string, Receiver, Settings, UiStrings, Registry
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -108,13 +108,11 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 
 class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
-    def __init__(self, mainWindow, serviceManager):
+    def __init__(self):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, mainWindow)
-        self.mainWindow = mainWindow
-        self.serviceManager = serviceManager
+        QtGui.QDialog.__init__(self, self.main_window)
         self.printer = QtGui.QPrinter()
         self.printDialog = QtGui.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
@@ -170,7 +168,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self._addElement(u'body', parent=html_data)
         self._addElement(u'h1', cgi.escape(self.titleLineEdit.text()),
             html_data.body, classId=u'serviceTitle')
-        for index, item in enumerate(self.serviceManager.serviceItems):
+        for index, item in enumerate(self.service_manager.serviceItems):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
@@ -319,14 +317,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # remove the icon from the text
         clipboard_text = clipboard_text.replace(u'\ufffc\xa0', u'')
         # and put it all on the clipboard
-        self.mainWindow.clipboard.setText(clipboard_text)
+        self.main_window.clipboard.setText(clipboard_text)
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
         self.update_song_usage()
-        self.mainWindow.clipboard.setText(self.document.toHtml())
+        self.main_window.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
         """
@@ -392,6 +390,26 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Only continue when we include the song's text.
         if not self.slideTextCheckBox.isChecked():
             return
-        for item in self.serviceManager.serviceItems:
+        for item in self.service_manager.serviceItems:
             # Trigger Audit requests
             Receiver.send_message(u'print_service_started', [item[u'service_item']])
+
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

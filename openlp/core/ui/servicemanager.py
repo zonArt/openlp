@@ -1545,7 +1545,7 @@ class ServiceManager(QtGui.QWidget):
         """
         Print a Service Order Sheet.
         """
-        settingDialog = PrintServiceForm(self.main_window, self)
+        settingDialog = PrintServiceForm()
         settingDialog.exec_()
 
     def _get_renderer(self):

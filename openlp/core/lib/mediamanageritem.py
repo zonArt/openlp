@@ -536,7 +536,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
-            serviceItem = self.plugin.serviceManager.getServiceItem()
+            serviceItem = self.service_manager.getServiceItem()
             if not serviceItem:
                 QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem', 'You must select an existing service item to add to.'))
@@ -681,10 +681,11 @@ class MediaManagerItem(QtGui.QWidget):
 
     def _get_service_manager(self):
         """
-        Adds the plugin manager to the class dynamically
+        Adds the service manager to the class dynamically
         """
         if not hasattr(self, u'_service_manager'):
             self._service_manager = Registry().get(u'service_manager')
         return self._service_manager
 
     service_manager = property(_get_service_manager)
+
