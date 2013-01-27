@@ -200,12 +200,6 @@ class EventReceiver(QtCore.QObject):
     ``{plugin}_unblank``
         Requests a plugin to handle an unblank screen event.
 
-    ``{plugin}_edit``
-        Requests a plugin edit a database item with the key as the payload.
-
-    ``{plugin}_edit_clear``
-        Editing has been completed.
-
     ``{plugin}_load_list``
         Tells the the plugin to reload the media manager list.
 

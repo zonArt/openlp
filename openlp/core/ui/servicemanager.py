@@ -1400,12 +1400,14 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def remote_edit(self):
         """
-        Posts a remote edit message to a plugin to allow item to be edited.
+        Triggers a remote edit to a plugin to allow item to be edited.
         """
-        item = self.find_service_item()[0]
+        item, child = self.find_service_item()
         if self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEdit):
-            Receiver.send_message(u'%s_edit' % self.service_items[item][u'service_item'].name.lower(),
-                u'L:%s' % self.service_items[item][u'service_item'].edit_id)
+            new_item = Registry().get(self.service_items[item][u'service_item'].name). \
+                onRemoteEdit(self.service_items[item][u'service_item'].edit_id)
+            if new_item:
+                self.addServiceItem(new_item, replace=True)
 
     def create_custom(self):
         """

@@ -99,7 +99,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.plugin = plugin
         visible_title = self.plugin.getString(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
-        Registry().register(self.title, self)
+        Registry().register(self.plugin.name, self)
         self.settingsSection = self.plugin.name
         self.icon = None
         if icon:
@@ -436,8 +436,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def generateSlideData(self, serviceItem, item=None, xmlVersion=False,
-        remote=False, context=ServiceItemContext.Live):
+    def generateSlideData(self, serviceItem, item=None, xmlVersion=False, remote=False,
+            context=ServiceItemContext.Live):
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs to be defined by the plugin')
 
     def onDoubleClicked(self):
@@ -507,13 +507,13 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Add a selected item to the current service
         """
-        if not self.listView.selectedIndexes() and not self.remoteTriggered:
+        if not self.listView.selectedIndexes():
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items to add.'))
         else:
             # Is it possible to process multiple list items to generate
             # multiple service items?
-            if self.singleServiceItem or self.remoteTriggered:
+            if self.singleServiceItem:
                 log.debug(u'%s Add requested', self.plugin.name)
                 self.addToService(replace=self.remoteTriggered)
             else:
@@ -554,8 +554,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         serviceItem = ServiceItem(self.plugin)
         serviceItem.add_icon(self.plugin.iconPath)
-        if self.generateSlideData(serviceItem, item, xmlVersion, remote,
-            context):
+        if self.generateSlideData(serviceItem, item, xmlVersion, remote, context):
             return serviceItem
         else:
             return None

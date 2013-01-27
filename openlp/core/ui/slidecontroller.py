@@ -1183,7 +1183,9 @@ class SlideController(DisplayController):
         From the preview display requires the service Item to be editied
         """
         self.songEdit = True
-        Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(), u'P:%s' % self.serviceItem.edit_id)
+        new_item = Registry().get(self.serviceItem.name).onRemoteEdit(self.serviceItem.edit_id, True)
+        if new_item:
+            self.addServiceItem(new_item)
 
     def onPreviewAddToService(self):
         """

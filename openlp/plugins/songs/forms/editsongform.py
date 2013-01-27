@@ -775,7 +775,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Exit Dialog and do not save
         """
         log.debug (u'SongEditForm.reject')
-        Receiver.send_message(u'songs_edit_clear')
         self.clearCaches()
         QtGui.QDialog.reject(self)
 
