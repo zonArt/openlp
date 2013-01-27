@@ -87,6 +87,7 @@ class Settings(QtCore.QSettings):
     """
     __default_settings__ = {
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
+        u'advanced/alternate rows': not sys.platform.startswith(u'win'),
         u'advanced/default service enabled': True,
         u'advanced/enable exit confirmation': True,
         u'advanced/save current plugin': False,

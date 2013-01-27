@@ -368,10 +368,9 @@ class AdvancedTab(SettingsTab):
         self.defaultColor = settings.value(u'default color')
         self.defaultFileEdit.setText(settings.value(u'default image'))
         self.slide_limits = settings.value(u'slide limits')
-        # Fix for bug #936281.
         # Prevent the dialog displayed by the alternateRowsCheckBox to display.
         self.alternateRowsCheckBox.blockSignals(True)
-        self.alternateRowsCheckBox.setChecked(settings.value(u'alternate rows', not sys.platform.startswith(u'win')))
+        self.alternateRowsCheckBox.setChecked(settings.value(u'alternate rows'))
         self.alternateRowsCheckBox.blockSignals(False)
         if self.slide_limits == SlideLimits.End:
             self.endSlideRadioButton.setChecked(True)
