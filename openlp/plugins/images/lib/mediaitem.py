@@ -33,8 +33,9 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, check_directory_exists, Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+    check_item_selected, check_directory_exists, Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings, \
+    UiStrings
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
 
 log = logging.getLogger(__name__)
@@ -77,7 +78,7 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
-        self.loadList(SettingsManager.load_list(self.settingsSection, u'images'), True)
+        self.loadList(Settings().value(self.settingsSection +  u'/images files'), True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -99,22 +100,22 @@ class ImageMediaItem(MediaManagerItem):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(row_list))
+            self.main_window.displayProgressBar(len(row_list))
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
                     delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
-                self.plugin.formParent.incrementProgressBar()
-            SettingsManager.set_list(self.settingsSection, u'images', self.getFileList())
-            self.plugin.formParent.finishedProgressBar()
+                self.main_window.incrementProgressBar()
+            SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
+            self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         if not initialLoad:
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(images))
+            self.main_window.displayProgressBar(len(images))
         # Sort the images by its filename considering language specific
         # characters.
         images.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
@@ -134,14 +135,14 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, imageFile)
             self.listView.addItem(item_name)
             if not initialLoad:
-                self.plugin.formParent.incrementProgressBar()
+                self.main_window.incrementProgressBar()
         if not initialLoad:
-            self.plugin.formParent.finishedProgressBar()
+            self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
-        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
+        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
         if item:
             items = [item]
         else:
@@ -205,7 +206,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView,
                 translate('ImagePlugin.MediaItem', 'You must select an image to replace the background with.')):
-            background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
+            background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
             item = self.listView.selectedIndexes()[0]
             bitem = self.listView.item(item.row())
             filename = bitem.data(QtCore.Qt.UserRole)
@@ -221,7 +222,7 @@ class ImageMediaItem(MediaManagerItem):
                         'the image file "%s" no longer exists.') % filename)
 
     def search(self, string, showError):
-        files = SettingsManager.load_list(self.settingsSection, u'images')
+        files = Settings().value(self.settingsSection + u'/images files')
         results = []
         string = string.lower()
         for file in files:

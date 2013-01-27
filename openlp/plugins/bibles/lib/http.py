@@ -526,7 +526,7 @@ class HTTPBible(BibleDB):
         books = handler.get_books_from_http(self.download_name)
         if not books:
             log.exception(u'Importing books from %s - download name: "%s" '\
-                'failed' % (self.download_source,  self.download_name))
+                'failed' % (self.download_source, self.download_name))
             return False
         self.wizard.progressBar.setMaximum(len(books)+2)
         self.wizard.incrementProgressBar(translate(
@@ -552,7 +552,7 @@ class HTTPBible(BibleDB):
                 language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s - download name: "%s" '\
-                    'failed' % (self.download_source,  self.download_name))
+                    'failed' % (self.download_source, self.download_name))
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
             log.debug(u'Book details: Name:%s; id:%s; testament_id:%s',

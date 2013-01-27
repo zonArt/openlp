@@ -28,7 +28,7 @@
 ###############################################################################
 import re
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.utils import CONTROL_CHARS, locale_direct_compare

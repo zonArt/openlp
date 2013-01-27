@@ -29,9 +29,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import translate, build_icon, UiStrings
 from openlp.core.lib.theme import HorizontalType, BackgroundType, BackgroundGradientType
-from openlp.core.lib.ui import UiStrings, add_welcome_page, create_valign_selection_widgets
+from openlp.core.lib.ui import add_welcome_page, create_valign_selection_widgets
 
 class Ui_ThemeWizard(object):
     def setupUi(self, themeWizard):

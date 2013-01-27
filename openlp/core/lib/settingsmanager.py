@@ -27,9 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Provide handling for persisting OpenLP settings.  OpenLP uses QSettings to
-manage settings persistence.  QSettings provides a single API for saving and
-retrieving settings from the application but writes to disk in an OS dependant
+Provide handling for persisting OpenLP settings.  OpenLP uses QSettings to manage settings persistence.  QSettings
+provides a single API for saving and retrieving settings from the application but writes to disk in an OS dependant
 format.
 """
 import os
@@ -39,100 +38,11 @@ from PyQt4 import QtCore
 from openlp.core.lib import Settings
 from openlp.core.utils import AppLocation
 
+
 class SettingsManager(object):
     """
-    Class to provide helper functions for the loading and saving of application
-    settings.
+    Class to provide helper functions for the loading and saving of application settings.
     """
-
-    @staticmethod
-    def get_last_dir(section, num=None):
-        """
-        Read the last directory used for plugin.
-
-        ``section``
-            The section of code calling the method. This is used in the
-            settings key.
-
-        ``num``
-            Defaults to *None*. A further qualifier.
-        """
-        if num:
-            name = u'last directory %d' % num
-        else:
-            name = u'last directory'
-        return Settings().value(section + u'/' + name, u'')
-
-    @staticmethod
-    def set_last_dir(section, directory, num=None):
-        """
-        Save the last directory used for plugin.
-
-        ``section``
-            The section of code calling the method. This is used in the
-            settings key.
-
-        ``directory``
-            The directory being stored in the settings.
-
-        ``num``
-            Defaults to *None*. A further qualifier.
-        """
-        if num:
-            name = u'last directory %d' % num
-        else:
-            name = u'last directory'
-        Settings().setValue(section + u'/' + name, directory)
-
-    @staticmethod
-    def set_list(section, name, list):
-        """
-        Save a list to application settings.
-
-        ``section``
-            The section of the settings to store this list.
-
-        ``name``
-            The name of the list to save.
-
-        ``list``
-            The list of values to save.
-        """
-        settings = Settings()
-        settings.beginGroup(section)
-        old_count = settings.value(u'%s count' % name, 0)
-        new_count = len(list)
-        settings.setValue(u'%s count' % name, new_count)
-        for counter in range(new_count):
-            settings.setValue(u'%s %d' % (name, counter), list[counter - 1])
-        if old_count > new_count:
-            # Tidy up any old list items
-            for counter in range(new_count, old_count):
-                settings.remove(u'%s %d' % (name, counter))
-        settings.endGroup()
-
-    @staticmethod
-    def load_list(section, name):
-        """
-        Load a list from the config file.
-
-        ``section``
-            The section of the settings to load the list from.
-
-        ``name``
-            The name of the list.
-        """
-        settings = Settings()
-        settings.beginGroup(section)
-        list_count = settings.value(u'%s count' % name, 0)
-        list = []
-        if list_count:
-            for counter in range(list_count):
-                item = settings.value(u'%s %d' % (name, counter), u'')
-                if item:
-                    list.append(item)
-        settings.endGroup()
-        return list
 
     @staticmethod
     def get_files(section=None, extension=None):
@@ -140,8 +50,7 @@ class SettingsManager(object):
         Get a list of files from the data files path.
 
         ``section``
-            Defaults to *None*. The section of code getting the files - used
-            to load from a section's data subdirectory.
+            Defaults to *None*. The section of code getting the files - used to load from a section's data subdirectory.
 
         ``extension``
             Defaults to *None*. The extension to search for.
@@ -154,8 +63,7 @@ class SettingsManager(object):
         except OSError:
             return []
         if extension:
-            return [filename for filename in files
-                if extension == os.path.splitext(filename)[1]]
+            return [filename for filename in files if extension == os.path.splitext(filename)[1]]
         else:
             # no filtering required
             return files

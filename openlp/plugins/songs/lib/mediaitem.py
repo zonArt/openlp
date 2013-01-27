@@ -37,8 +37,8 @@ from sqlalchemy.sql import or_
 
 from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
     translate, check_item_selected, PluginStatus, create_separated_list, \
-    check_directory_exists, ServiceItemContext, Settings
-from openlp.core.lib.ui import UiStrings, create_widget_action
+    check_directory_exists, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
     SongImportForm, SongExportForm
@@ -71,8 +71,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.editSongForm = EditSongForm(self, self.plugin.formParent,
-            self.plugin.manager)
+        self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False
         self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
@@ -122,9 +121,9 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def configUpdated(self):
-        self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type', False)
-        self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit', False)
-        self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service', True)
+        self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type')
+        self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit')
+        self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service',)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -151,8 +150,7 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.setCurrentSearchType(Settings().value(
-            u'%s/last search type' % self.settingsSection, SongSearch.Entire))
+        self.searchTextEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
         self.configUpdated()
 
     def onSearchTextButtonClicked(self):
@@ -374,7 +372,7 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(items))
+            self.main_window.displayProgressBar(len(items))
             for item in items:
                 item_id = item.data(QtCore.Qt.UserRole)
                 media_files = self.plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == item_id)
@@ -390,8 +388,8 @@ class SongMediaItem(MediaManagerItem):
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
-                self.plugin.formParent.incrementProgressBar()
-            self.plugin.formParent.finishedProgressBar()
+                self.main_window.incrementProgressBar()
+            self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
             self.onSearchTextButtonClicked()
 
@@ -470,9 +468,9 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if Settings().value(u'general/ccli number', u''):
+        if Settings().value(u'general/ccli number'):
             service_item.raw_footer.append(translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'general/ccli number', u''))
+                Settings().value(u'general/ccli number'))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]
@@ -539,7 +537,7 @@ class SongMediaItem(MediaManagerItem):
             temporary = True
         # Update service with correct song id.
         if editId:
-            Receiver.send_message(u'service_item_update%s:%s:%s' % (editId, item._uuid, temporary))
+            Receiver.send_message(u'service_item_update%s:%s:%s' % (editId, item.unique_identifier, temporary))
 
     def search(self, string, showError):
         """

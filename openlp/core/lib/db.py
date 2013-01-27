@@ -34,7 +34,6 @@ import logging
 import os
 from urllib import quote_plus as urlquote
 
-from PyQt4 import QtCore
 from sqlalchemy import Table, MetaData, Column, types, create_engine
 from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, OperationalError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
@@ -119,8 +118,7 @@ def upgrade_db(url, upgrade):
             session.commit()
             version += 1
     else:
-        version_meta = Metadata.populate(key=u'version',
-            value=int(upgrade.__version__))
+        version_meta = Metadata.populate(key=u'version', value=int(upgrade.__version__))
         session.commit()
     return int(version_meta.value), upgrade.__version__
 
@@ -186,7 +184,7 @@ class Manager(object):
         self.db_url = u''
         self.is_dirty = False
         self.session = None
-        db_type = settings.value(u'db type', u'sqlite')
+        db_type = settings.value(u'db type')
         if db_type == u'sqlite':
             if db_file_name:
                 self.db_url = u'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
@@ -194,12 +192,12 @@ class Manager(object):
                 self.db_url = u'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                urlquote(settings.value(u'db username', u'')),
-                urlquote(settings.value(u'db password', u'')),
-                urlquote(settings.value(u'db hostname', u'')),
-                urlquote(settings.value(u'db database', u'')))
+                urlquote(settings.value(u'db username')),
+                urlquote(settings.value(u'db password')),
+                urlquote(settings.value(u'db hostname')),
+                urlquote(settings.value(u'db database')))
             if db_type == u'mysql':
-                db_encoding = settings.value(u'db encoding', u'utf8')
+                db_encoding = settings.value(u'db encoding')
                 self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:

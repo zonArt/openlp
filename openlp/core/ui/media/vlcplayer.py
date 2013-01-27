@@ -33,7 +33,7 @@ import logging
 import os
 import sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import Receiver, translate, Settings
 from openlp.core.ui.media import MediaState
@@ -109,11 +109,12 @@ class VlcPlayer(MediaPlayer):
 
     def setup(self, display):
         display.vlcWidget = QtGui.QFrame(display)
+        display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse', True) and display.controller.isLive:
+        if Settings().value(u'advanced/hide mouse') and display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
         display.vlcInstance.set_log_verbosity(2)
@@ -188,6 +189,7 @@ class VlcPlayer(MediaPlayer):
         display.vlcMediaPlayer.play()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
+        self.volume(display, controller.media_info.volume)
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
@@ -234,7 +236,9 @@ class VlcPlayer(MediaPlayer):
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
+            controller.seekSlider.blockSignals(True)
             controller.seekSlider.setSliderPosition(display.vlcMediaPlayer.get_time())
+            controller.seekSlider.blockSignals(False)
 
     def get_info(self):
         return(translate('Media.player', 'VLC is an external player which '

@@ -34,7 +34,7 @@ import logging
 import re
 
 from openlp.core.lib import translate, Settings
-from openlp.plugins.bibles.lib.db import BiblesResourcesDB
+
 
 log = logging.getLogger(__name__)
 
@@ -187,10 +187,10 @@ def update_reference_separators():
     settings = Settings()
     settings.beginGroup(u'bibles')
     custom_separators = [
-        settings.value(u'verse separator', u''),
-        settings.value(u'range separator', u''),
-        settings.value(u'list separator', u''),
-        settings.value(u'end separator', u'')]
+        settings.value(u'verse separator'),
+        settings.value(u'range separator'),
+        settings.value(u'list separator'),
+        settings.value(u'end separator')]
     settings.endGroup()
     for index, role in enumerate([u'v', u'r', u'l', u'e']):
         if custom_separators[index].strip(u'|') == u'':

@@ -32,8 +32,7 @@ The :mod:`importer` modules provides the general song import functionality.
 import os
 import logging
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import translate, UiStrings
 from openlp.core.ui.wizard import WizardStrings
 from opensongimport import OpenSongImport
 from easyslidesimport import EasySlidesImport

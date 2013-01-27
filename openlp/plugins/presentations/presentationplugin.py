@@ -33,12 +33,23 @@ presentations from a variety of document formats.
 import os
 import logging
 
+from PyQt4 import QtCore
+
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, \
     PresentationMediaItem, PresentationTab
 
 log = logging.getLogger(__name__)
+
+__default_settings__ = {
+        u'presentations/override app': QtCore.Qt.Unchecked,
+        u'presentations/Impress': QtCore.Qt.Checked,
+        u'presentations/Powerpoint': QtCore.Qt.Checked,
+        u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
+        u'presentations/presentations files': []
+    }
+
 
 class PresentationPlugin(Plugin):
     """
@@ -48,13 +59,13 @@ class PresentationPlugin(Plugin):
     """
     log = logging.getLogger(u'PresentationPlugin')
 
-    def __init__(self, plugin_helpers):
+    def __init__(self):
         """
         PluginPresentation constructor.
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'presentations', plugin_helpers)
+        Plugin.__init__(self, u'presentations', __default_settings__, __default_settings__)
         self.weight = -8
         self.iconPath = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.iconPath)
@@ -100,7 +111,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         self.mediaItem = PresentationMediaItem(
-            self.mediaDock.media_dock, self, self.icon, self.controllers)
+            self.main_window.mediaDockManager.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """

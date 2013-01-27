@@ -29,8 +29,9 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button, create_button_box
+from openlp.core.lib import build_icon, translate, UiStrings
+from openlp.core.lib.ui import create_button, create_button_box
+
 
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):

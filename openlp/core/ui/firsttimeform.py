@@ -116,7 +116,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
-        self.hasRunWizard = Settings().value(u'general/has run wizard', False)
+        self.hasRunWizard = Settings().value(u'general/has run wizard')
         # Sort out internet access for downloads
         if self.webAccess:
             songs = self.config.get(u'songs', u'languages')
@@ -202,7 +202,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)
-                default_theme = Settings().value(u'themes/global theme', u'')
+                default_theme = Settings().value(u'themes/global theme')
                 # Pre-select the current default theme.
                 index = self.themeComboBox.findText(default_theme)
                 self.themeComboBox.setCurrentIndex(index)

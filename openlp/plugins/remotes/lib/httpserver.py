@@ -169,8 +169,8 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
-        port = Settings().value(self.plugin.settingsSection + u'/port', 4316)
-        address = Settings().value(self.plugin.settingsSection + u'/ip address', u'0.0.0.0')
+        port = Settings().value(self.plugin.settingsSection + u'/port')
+        address = Settings().value(self.plugin.settingsSection + u'/ip address')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'slidecontroller_live_changed'),
@@ -252,17 +252,17 @@ class HttpConnection(object):
         service_items = []
         service_manager = self.parent.plugin.serviceManager
         if self.parent.current_item:
-            cur_uuid = self.parent.current_item._uuid
+            current_unique_identifier = self.parent.current_item.unique_identifier
         else:
-            cur_uuid = None
+            current_unique_identifier = None
         for item in service_manager.serviceItems:
             service_item = item[u'service_item']
             service_items.append({
-                u'id': unicode(service_item._uuid),
+                u'id': unicode(service_item.unique_identifier),
                 u'title': unicode(service_item.get_display_title()),
                 u'plugin': unicode(service_item.name),
                 u'notes': unicode(service_item.notes),
-                u'selected': (service_item._uuid == cur_uuid)
+                u'selected': (service_item.unique_identifier == current_unique_identifier)
             })
         return service_items
 
@@ -386,10 +386,10 @@ class HttpConnection(object):
         Poll OpenLP to determine the current slide number and item name.
         """
         result = {
-            u'service': self.parent.plugin.serviceManager.serviceId,
+            u'service': self.parent.plugin.serviceManager.service_id,
             u'slide': self.parent.current_slide or 0,
-            u'item': self.parent.current_item._uuid if self.parent.current_item else u'',
-            u'twelve':Settings().value(u'remotes/twelve hour', True),
+            u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
+            u'twelve':Settings().value(u'remotes/twelve hour'),
             u'blank': self.parent.plugin.liveController.blankScreen.isChecked(),
             u'theme': self.parent.plugin.liveController.themeScreen.isChecked(),
             u'display': self.parent.plugin.liveController.desktopScreen.isChecked()
@@ -459,7 +459,7 @@ class HttpConnection(object):
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
             if current_item:
-                json_data[u'results'][u'item'] = self.parent.current_item._uuid
+                json_data[u'results'][u'item'] = self.parent.current_item.unique_identifier
         else:
             if self.url_params and self.url_params.get(u'data'):
                 try:

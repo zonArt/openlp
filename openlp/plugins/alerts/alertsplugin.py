@@ -29,12 +29,13 @@
 
 import logging
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.lib.theme import VerticalType
+from openlp.core.ui import AlertLocation
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -113,11 +114,22 @@ HTML = """
     <div id="alert" style="visibility:hidden"></div>
 """
 
+__default_settings__ = {
+        u'alerts/font face': QtGui.QFont().family(),
+        u'alerts/font size': 40,
+        u'alerts/db type': u'sqlite',
+        u'alerts/location': AlertLocation.Bottom,
+        u'alerts/background color': u'#660000',
+        u'alerts/font color': u'#ffffff',
+        u'alerts/timeout': 5
+    }
+
+
 class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'alerts', plugin_helpers, settings_tab_class=AlertsTab)
+    def __init__(self):
+        Plugin.__init__(self, u'alerts', __default_settings__, settings_tab_class=AlertsTab)
         self.weight = -3
         self.iconPath = u':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.iconPath)
@@ -139,7 +151,7 @@ class AlertsPlugin(Plugin):
             text=translate('AlertsPlugin', '&Alert'), icon=u':/plugins/plugin_alerts.png',
             statustip=translate('AlertsPlugin', 'Show an alert message.'),
             visible=False, shortcuts=[u'F7'], triggers=self.onAlertsTrigger)
-        self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
+        self.main_window.toolsMenu.addAction(self.toolsAlertItem)
 
     def initialise(self):
         log.info(u'Alerts Initialising')

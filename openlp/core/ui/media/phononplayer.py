@@ -31,7 +31,7 @@ import logging
 import mimetypes
 from datetime import datetime
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from PyQt4.phonon import Phonon
 
 from openlp.core.lib import Receiver, translate, Settings
@@ -215,14 +215,15 @@ class PhononPlayer(MediaPlayer):
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.setSliderPosition(
-                display.mediaObject.currentTime())
+            controller.seekSlider.blockSignals(True)
+            controller.seekSlider.setSliderPosition(display.mediaObject.currentTime())
+            controller.seekSlider.blockSignals(False)
 
     def get_media_display_css(self):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value(u'players/background color', u'#000000')).name()
+        background = QtGui.QColor(Settings().value(u'players/background color')).name()
         return VIDEO_CSS % (background,background,background)
 
     def get_info(self):

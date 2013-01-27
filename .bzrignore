@@ -23,3 +23,5 @@ resources/windows/warnOpenLP.txt
 openlp.cfg
 .idea
 openlp.pro
+.kdev4
+tests.kdev4
