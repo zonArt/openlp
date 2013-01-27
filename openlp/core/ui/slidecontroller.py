@@ -648,12 +648,12 @@ class SlideController(DisplayController):
             item.render()
             self._processItem(item, self.selectedRow)
 
-    def addServiceItem(self, item):
+    def add_service_item(self, item):
         """
         Method to install the service item into the controller
         Called by plugins
         """
-        log.debug(u'addServiceItem live = %s' % self.isLive)
+        log.debug(u'add_service_item live = %s' % self.isLive)
         item.render()
         slideno = 0
         if self.songEdit:
@@ -1184,14 +1184,14 @@ class SlideController(DisplayController):
         self.songEdit = True
         new_item = Registry().get(self.serviceItem.name).onRemoteEdit(self.serviceItem.edit_id, True)
         if new_item:
-            self.addServiceItem(new_item)
+            self.add_service_item(new_item)
 
     def onPreviewAddToService(self):
         """
         From the preview display request the Item to be added to service
         """
         if self.serviceItem:
-            self.service_manager.addServiceItem(self.serviceItem)
+            self.service_manager.add_service_item(self.serviceItem)
 
     def onGoLiveClick(self):
         """

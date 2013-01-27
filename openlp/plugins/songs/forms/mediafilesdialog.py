@@ -52,8 +52,8 @@ class Ui_MediaFilesDialog(object):
         self.fileListWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.fileListWidget.setObjectName(u'fileListWidget')
         self.filesVerticalLayout.addWidget(self.fileListWidget)
-        self.buttonBox = create_button_box(mediaFilesDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.filesVerticalLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(mediaFilesDialog, u'button_box', [u'cancel', u'ok'])
+        self.filesVerticalLayout.addWidget(self.button_box)
         self.retranslateUi(mediaFilesDialog)
 
     def retranslateUi(self, mediaFilesDialog):

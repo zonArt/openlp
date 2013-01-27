@@ -48,7 +48,7 @@ class TestStartTimeDialog(TestCase):
 
     def time_display_test(self):
         """
-        Test StartTimeDialog display initialisation
+        Test StartTimeDialog display functionality
         """
         # GIVEN: A service item with with time
         mocked_serviceitem = MagicMock()
@@ -63,7 +63,7 @@ class TestStartTimeDialog(TestCase):
         okWidget = self.form.buttonBox.button(self.form.buttonBox.Ok)
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
-        # THEN the following input values values are returned
+        # THEN the following input values are returned
         self.assertEqual(self.form.hourSpinBox.value(), 0)
         self.assertEqual(self.form.minuteSpinBox.value(), 1)
         self.assertEqual(self.form.secondSpinBox.value(), 1)
@@ -78,7 +78,7 @@ class TestStartTimeDialog(TestCase):
         okWidget = self.form.buttonBox.button(self.form.buttonBox.Ok)
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
-        # THEN the following values values are returned
+        # THEN the following values are returned
         self.assertEqual(self.form.hourSpinBox.value(), 0)
         self.assertEqual(self.form.minuteSpinBox.value(), 2)
         self.assertEqual(self.form.secondSpinBox.value(), 3)

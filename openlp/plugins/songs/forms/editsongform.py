@@ -101,8 +101,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(UiStrings().SaveAndPreview)
-        self.buttonBox.addButton(self.previewButton, QtGui.QDialogButtonBox.ActionRole)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
+        self.button_box.addButton(self.previewButton, QtGui.QDialogButtonBox.ActionRole)
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         # Create other objects and forms
         self.manager = manager
         self.verseForm = EditVerseForm(self)

@@ -45,20 +45,20 @@ class ServiceNoteForm(QtGui.QDialog):
         self.retranslateUi()
 
     def exec_(self):
-        self.textEdit.setFocus()
+        self.text_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def setupUi(self):
         self.setObjectName(u'serviceNoteEdit')
-        self.dialogLayout = QtGui.QVBoxLayout(self)
-        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
-        self.dialogLayout.setSpacing(8)
-        self.dialogLayout.setObjectName(u'verticalLayout')
-        self.textEdit = SpellTextEdit(self, False)
-        self.textEdit.setObjectName(u'textEdit')
-        self.dialogLayout.addWidget(self.textEdit)
-        self.buttonBox = create_button_box(self, u'buttonBox', [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.dialog_layout = QtGui.QVBoxLayout(self)
+        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
+        self.dialog_layout.setSpacing(8)
+        self.dialog_layout.setObjectName(u'verticalLayout')
+        self.text_edit = SpellTextEdit(self, False)
+        self.text_edit.setObjectName(u'textEdit')
+        self.dialog_layout.addWidget(self.text_edit)
+        self.button_box = create_button_box(self, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box)
 
     def retranslateUi(self):
         self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))

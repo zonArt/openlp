@@ -194,9 +194,11 @@ class ServiceManagerDialog(object):
             self.on_make_live)
         QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'),
             self.collapsed)
-        QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'), self.expanded)
+        QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'),
+            self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.update_theme_list)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_preview_live'), self.preview_live)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_preview_live'),
+            self.preview_live)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_next_item'), self.next_item)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_previous_item'),
             self.previous_item)
@@ -248,7 +250,7 @@ class ServiceManagerDialog(object):
             checked=False, triggers=self.on_timed_slide_interval)
         self.menu.addSeparator()
         self.preview_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', 'Show &Preview'),
-            icon=u':/general/general_preview.png', triggers=self.makePreview)
+            icon=u':/general/general_preview.png', triggers=self.make_preview)
         # Add already existing make live action to the menu.
         self.menu.addAction(self.service_manager_list.make_live)
         self.menu.addSeparator()
@@ -509,7 +511,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                         service_item[u'header'][u'background_audio'][i] = new_file
                 # Add the service item to the service.
                 service.append({u'serviceitem': service_item})
-        self.repaintServiceList(-1, -1)
+        self.repaint_service_list(-1, -1)
         for file_item in write_list:
             file_size = os.path.getsize(file_item)
             total_size += file_size
@@ -730,7 +732,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     if service_item.unique_identifier == self.load_item_unique_identifier:
                         service_item.edit_id = int(self.load_item_edit_id)
                         service_item.temporary_edit = self.load_item_temporary
-                    self.addServiceItem(service_item, repaint=False)
+                    self.add_service_item(service_item, repaint=False)
                 delete_file(p_file)
                 self.main_window.addRecentFile(file_name)
                 self.set_modified(False)
@@ -761,7 +763,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 zip_file.close()
         self.main_window.finishedProgressBar()
         Receiver.send_message(u'cursor_normal')
-        self.repaintServiceList(-1, -1)
+        self.repaint_service_list(-1, -1)
 
     def load_Last_file(self):
         """
@@ -843,11 +845,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Allow the service note to be edited
         """
         item = self.find_service_item()[0]
-        self.serviceNoteForm.textEdit.setPlainText(
-            self.service_items[item][u'service_item'].notes)
+        self.serviceNoteForm.text_edit.setPlainText(self.service_items[item][u'service_item'].notes)
         if self.serviceNoteForm.exec_():
-            self.service_items[item][u'service_item'].notes = self.serviceNoteForm.textEdit.toPlainText()
-            self.repaintServiceList(item, -1)
+            self.service_items[item][u'service_item'].notes = self.serviceNoteForm.text_edit.toPlainText()
+            self.repaint_service_list(item, -1)
             self.set_modified()
 
     def on_start_time_form(self):
@@ -857,7 +858,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         self.startTimeForm.item = self.service_items[item]
         if self.startTimeForm.exec_():
-            self.repaintServiceList(item, -1)
+            self.repaint_service_list(item, -1)
 
     def toggle_auto_play_slides_once(self):
         """
@@ -925,10 +926,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         display if changes are saved.
         """
         item = self.find_service_item()[0]
-        self.serviceItemEditForm.setServiceItem(
-            self.service_items[item][u'service_item'])
+        self.serviceItemEditForm.set_service_item(self.service_items[item][u'service_item'])
         if self.serviceItemEditForm.exec_():
-            self.addServiceItem(self.serviceItemEditForm.getServiceItem(),
+            self.add_service_item(self.serviceItemEditForm.get_service_item(),
                 replace=True, expand=self.service_items[item][u'expanded'])
 
     def preview_live(self, message):
@@ -1070,7 +1070,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             temp = self.service_items[item]
             self.service_items.remove(self.service_items[item])
             self.service_items.insert(0, temp)
-            self.repaintServiceList(0, child)
+            self.repaint_service_list(0, child)
             self.set_modified()
 
     def onServiceUp(self):
@@ -1082,7 +1082,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             temp = self.service_items[item]
             self.service_items.remove(self.service_items[item])
             self.service_items.insert(item - 1, temp)
-            self.repaintServiceList(item - 1, child)
+            self.repaint_service_list(item - 1, child)
             self.set_modified()
 
     def onServiceDown(self):
@@ -1094,7 +1094,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             temp = self.service_items[item]
             self.service_items.remove(self.service_items[item])
             self.service_items.insert(item + 1, temp)
-            self.repaintServiceList(item + 1, child)
+            self.repaint_service_list(item + 1, child)
             self.set_modified()
 
     def onServiceEnd(self):
@@ -1106,7 +1106,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             temp = self.service_items[item]
             self.service_items.remove(self.service_items[item])
             self.service_items.insert(len(self.service_items), temp)
-            self.repaintServiceList(len(self.service_items) - 1, child)
+            self.repaint_service_list(len(self.service_items) - 1, child)
             self.set_modified()
 
     def onDeleteFromService(self):
@@ -1116,10 +1116,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         if item != -1:
             self.service_items.remove(self.service_items[item])
-            self.repaintServiceList(item - 1, -1)
+            self.repaint_service_list(item - 1, -1)
             self.set_modified()
 
-    def repaintServiceList(self, serviceItem, serviceItemChild):
+    def repaint_service_list(self, serviceItem, serviceItemChild):
         """
         Clear the existing service list and prepaint all the items. This is
         used when moving items as the move takes place in a supporting list,
@@ -1257,14 +1257,14 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             self.service_items = []
             self.isNew = True
             for item in tempServiceItems:
-                self.addServiceItem(item[u'service_item'], False, expand=item[u'expanded'], repaint=False,
+                self.add_service_item(item[u'service_item'], False, expand=item[u'expanded'], repaint=False,
                     selected=item[u'selected'])
             # Set to False as items may have changed rendering
             # does not impact the saved song so True may also be valid
             if changed:
                 self.set_modified()
             # Repaint it once only at the end
-            self.repaintServiceList(-1, -1)
+            self.repaint_service_list(-1, -1)
         Receiver.send_message(u'cursor_normal')
 
     def serviceItemUpdate(self, message):
@@ -1276,7 +1276,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.load_item_edit_id = int(edit_id)
         self.load_item_temporary = str_to_bool(temporary)
 
-    def replaceServiceItem(self, newItem):
+    def replace_service_item(self, newItem):
         """
         Using the service item passed replace the one with the same edit id
         if found.
@@ -1286,11 +1286,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 newItem.render()
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
-                self.repaintServiceList(item_count + 1, 0)
+                self.repaint_service_list(item_count + 1, 0)
                 self.live_controller.replaceServiceManagerItem(newItem)
                 self.set_modified()
 
-    def addServiceItem(self, item, rebuild=False, expand=None, replace=False, repaint=True, selected=False):
+    def add_service_item(self, item, rebuild=False, expand=None, replace=False, repaint=True, selected=False):
         """
         Add a Service item to the list
 
@@ -1308,7 +1308,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             sitem, child = self.find_service_item()
             item.merge(self.service_items[sitem][u'service_item'])
             self.service_items[sitem][u'service_item'] = item
-            self.repaintServiceList(sitem, child)
+            self.repaint_service_list(sitem, child)
             self.live_controller.replaceServiceManagerItem(item)
         else:
             item.render()
@@ -1324,19 +1324,19 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                         u'order': len(self.service_items) + 1,
                         u'expanded': expand, u'selected': selected})
                 if repaint:
-                    self.repaintServiceList(len(self.service_items) - 1, -1)
+                    self.repaint_service_list(len(self.service_items) - 1, -1)
             else:
                 self.service_items.insert(self.drop_position,
                     {u'service_item': item, u'order': self.drop_position,
                     u'expanded': expand, u'selected': selected})
-                self.repaintServiceList(self.drop_position, -1)
+                self.repaint_service_list(self.drop_position, -1)
             # if rebuilding list make sure live is fixed.
             if rebuild:
                 self.live_controller.replaceServiceManagerItem(item)
         self.drop_position = 0
         self.set_modified()
 
-    def makePreview(self):
+    def make_preview(self):
         """
         Send the current item to the Preview slide controller
         """
@@ -1350,7 +1350,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     'Your item cannot be displayed as there is no handler to display it'))
         Receiver.send_message(u'cursor_normal')
 
-    def getServiceItem(self):
+    def get_service_item(self):
         """
         Send the current item to the Preview slide controller
         """
@@ -1407,7 +1407,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             new_item = Registry().get(self.service_items[item][u'service_item'].name). \
                 onRemoteEdit(self.service_items[item][u'service_item'].edit_id)
             if new_item:
-                self.addServiceItem(new_item, replace=True)
+                self.add_service_item(new_item, replace=True)
 
     def create_custom(self):
         """
@@ -1477,7 +1477,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 serviceItem = self.service_items[startpos]
                 self.service_items.remove(serviceItem)
                 self.service_items.insert(endpos, serviceItem)
-                self.repaintServiceList(endpos, child)
+                self.repaint_service_list(endpos, child)
                 self.set_modified()
             else:
                 # we are not over anything so drop

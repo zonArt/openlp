@@ -42,9 +42,9 @@ class Ui_CustomSlideEditDialog(object):
         self.dialogLayout.addWidget(self.slideTextEdit)
         self.splitButton = create_button(customSlideEditDialog, u'splitButton', icon=u':/general/general_add.png')
         self.insertButton = create_button(customSlideEditDialog, u'insertButton', icon=u':/general/general_add.png')
-        self.buttonBox = create_button_box(customSlideEditDialog, u'buttonBox', [u'cancel', u'save'],
+        self.button_box = create_button_box(customSlideEditDialog, u'button_box', [u'cancel', u'save'],
             [self.splitButton, self.insertButton])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.dialogLayout.addWidget(self.button_box)
         self.retranslateUi(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):

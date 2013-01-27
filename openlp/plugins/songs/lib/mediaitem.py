@@ -210,7 +210,7 @@ class SongMediaItem(MediaManagerItem):
         # Push edits to the service manager to update items
         if self.editItem and self.updateServiceOnEdit and not self.remoteTriggered:
             item = self.buildServiceItem(self.editItem)
-            self.service_manager.replaceServiceItem(item)
+            self.service_manager.replace_service_item(item)
         self.onSearchTextButtonClicked()
         log.debug(u'onSongListLoad - finished')
 
