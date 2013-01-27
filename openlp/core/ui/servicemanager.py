@@ -217,15 +217,15 @@ class ServiceManagerDialog(object):
         self.addToAction.setIcon(build_icon(u':/general/general_edit.png'))
         # build the context menu
         self.menu = QtGui.QMenu()
-        self.editAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
+        self.edit_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
             icon=u':/general/general_edit.png', triggers=self.remote_edit)
-        self.maintainAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
+        self.maintain_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
             icon=u':/general/general_edit.png', triggers=self.on_service_item_edit_form)
-        self.notesAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Notes'),
+        self.notes_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Notes'),
             icon=u':/services/service_notes.png', triggers=self.on_service_item_note_form)
-        self.timeAction = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Start Time'),
+        self.time_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Start Time'),
             icon=u':/media/media_time.png', triggers=self.on_start_time_form)
-        self.autoStartAction = create_widget_action(self.menu, text=u'',
+        self.auto_start_action = create_widget_action(self.menu, text=u'',
             icon=u':/media/auto-start_active.png', triggers=self.on_auto_start)
         # Add already existing delete action to the menu.
         self.menu.addAction(self.service_manager_list.delete)
@@ -785,18 +785,18 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         else:
             pos = item.data(0, QtCore.Qt.UserRole)
         service_item = self.service_items[pos - 1]
-        self.editAction.setVisible(False)
+        self.edit_action.setVisible(False)
         self.create_custom_action.setVisible(False)
-        self.maintainAction.setVisible(False)
-        self.notesAction.setVisible(False)
-        self.timeAction.setVisible(False)
-        self.autoStartAction.setVisible(False)
+        self.maintain_action.setVisible(False)
+        self.notes_action.setVisible(False)
+        self.time_action.setVisible(False)
+        self.auto_start_action.setVisible(False)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanEdit) and service_item[u'service_item'].edit_id:
-            self.editAction.setVisible(True)
+            self.edit_action.setVisible(True)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanMaintain):
-            self.maintainAction.setVisible(True)
+            self.maintain_action.setVisible(True)
         if item.parent() is None:
-            self.notesAction.setVisible(True)
+            self.notes_action.setVisible(True)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanLoop) and  \
                 len(service_item[u'service_item'].get_frames()) > 1:
             self.auto_play_slides_group.menuAction().setVisible(True)
@@ -812,14 +812,14 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         else:
             self.auto_play_slides_group.menuAction().setVisible(False)
         if service_item[u'service_item'].is_capable(ItemCapabilities.HasVariableStartTime):
-            self.timeAction.setVisible(True)
+            self.time_action.setVisible(True)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
-            self.autoStartAction.setVisible(True)
-            self.autoStartAction.setIcon(self.inactive)
-            self.autoStartAction.setText(translate('OpenLP.ServiceManager','&Auto Start - inactive'))
+            self.auto_start_action.setVisible(True)
+            self.auto_start_action.setIcon(self.inactive)
+            self.auto_start_action.setText(translate('OpenLP.ServiceManager','&Auto Start - inactive'))
             if service_item[u'service_item'].will_auto_start:
-                self.autoStartAction.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
-                self.autoStartAction.setIcon(self.active)
+                self.auto_start_action.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
+                self.auto_start_action.setIcon(self.active)
         if service_item[u'service_item'].is_text():
             for plugin in self.plugin_manager.plugins:
                 if plugin.name == u'custom' and plugin.status == PluginStatus.Active:
@@ -831,11 +831,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             self.theme_menu.menuAction().setVisible(True)
             # The service item does not have a theme, check the "Default".
             if service_item[u'service_item'].theme is None:
-                themeAction = self.theme_menu.defaultAction()
+                theme_action = self.theme_menu.defaultAction()
             else:
-                themeAction = self.theme_menu.findChild(QtGui.QAction, service_item[u'service_item'].theme)
-            if themeAction is not None:
-                themeAction.setChecked(True)
+                theme_action = self.theme_menu.findChild(QtGui.QAction, service_item[u'service_item'].theme)
+            if theme_action is not None:
+                theme_action.setChecked(True)
         self.menu.exec_(self.service_manager_list.mapToGlobal(point))
 
     def on_service_item_note_form(self):
