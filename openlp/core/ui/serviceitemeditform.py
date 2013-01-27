@@ -28,6 +28,7 @@
 ###############################################################################
 
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import Registry
 
 from serviceitemeditdialog import Ui_ServiceItemEditDialog
 
@@ -35,11 +36,11 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
     """
     This is the form that is used to edit the verses of the song.
     """
-    def __init__(self, parent=None):
+    def __init__(self):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
         self.itemList = []
         QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
@@ -143,3 +144,13 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             else:
                 self.upButton.setEnabled(True)
             self.deleteButton.setEnabled(True)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

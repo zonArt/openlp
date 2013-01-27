@@ -138,7 +138,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         QtCore.QObject.connect(self.zoomComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'), self.displaySizeChanged)
         QtCore.QObject.connect(self.plainCopy, QtCore.SIGNAL(u'triggered()'), self.copyText)
         QtCore.QObject.connect(self.htmlCopy, QtCore.SIGNAL(u'triggered()'), self.copyHtmlText)
-        QtCore.QObject.connect(self.slideTextCheckBox, QtCore.SIGNAL(u'stateChanged(int)'), self.onSlideTextCheckBoxChanged)
+        QtCore.QObject.connect(self.slideTextCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSlideTextCheckBoxChanged)
         self.updatePreviewText()
 
     def toggleOptions(self, checked):

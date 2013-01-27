@@ -140,7 +140,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         per save.
         """
         if self.resetSuffixes:
-            self.service_manager.resetSupportedSuffixes()
+            self.service_manager.reset_supported_suffixes()
             self.resetSuffixes = False
 
     def _get_main_window(self):

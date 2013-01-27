@@ -29,18 +29,18 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate, SpellTextEdit
+from openlp.core.lib import translate, SpellTextEdit, Registry
 from openlp.core.lib.ui import create_button_box
 
 class ServiceNoteForm(QtGui.QDialog):
     """
     This is the form that is used to edit the verses of the song.
     """
-    def __init__(self, parent=None):
+    def __init__(self):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi()
         self.retranslateUi()
 
@@ -62,3 +62,13 @@ class ServiceNoteForm(QtGui.QDialog):
 
     def retranslateUi(self):
         self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

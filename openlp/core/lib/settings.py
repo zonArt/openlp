@@ -165,7 +165,7 @@ class Settings(QtCore.QSettings):
         u'shortcuts/importBibleItem': [],
         u'shortcuts/modeDefaultItem': [],
         u'shortcuts/modeLiveItem': [],
-        u'shortcuts/makeLive': [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
+        u'shortcuts/make_live': [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
         u'shortcuts/moveUp': [QtCore.Qt.Key_PageUp],
         u'shortcuts/moveTop': [QtCore.Qt.Key_Home],
         u'shortcuts/modeSetupItem': [],
