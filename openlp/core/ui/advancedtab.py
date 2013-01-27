@@ -331,7 +331,7 @@ class AdvancedTab(SettingsTab):
                 'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.displayWorkaroundGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
-        self.alternateRowsCheckBox.setText(translate('OpenLP.AdvancedTab', 'Enable alternating row colors in lists'))
+        self.alternateRowsCheckBox.setText(translate('OpenLP.AdvancedTab', 'Use alternating row colours in lists'))
         # Slide Limits
         self.slideGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
         self.slideLabel.setText(translate('OpenLP.GeneralTab', 'Behavior of next/previous on the last/first slide:'))
