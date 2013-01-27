@@ -238,7 +238,8 @@ class Settings(QtCore.QSettings):
         (u'servicemanager/last directory', u'', []),
         (u'songs/last directory 1', u'songs/last directory import', []),
         (u'bibles/last directory 1', u'bibles/last directory import', []),
-        (u'songusage/last directory 1', u'songusage/last directory export', [])
+        (u'songusage/last directory 1', u'songusage/last directory export', []),
+        (u'shortcuts/makeLive', u'shortcuts/make_live', [])
     ]
 
     @staticmethod
