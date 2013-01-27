@@ -38,3 +38,11 @@ class TestRegistry(TestCase):
             temp = Registry().get(u'test2')
         self.assertEqual(context.exception[0], u'Service test2 not found in list',
             u'The correct exception has been thrown')
+
+        # WHEN I try to replace a component I should be allowed (testing only)
+        Registry().remove(u'test1')
+        # THEN I will get an exception
+        with self.assertRaises(KeyError) as context:
+            temp = Registry().get(u'test1')
+        self.assertEqual(context.exception[0], u'Service test1 not found in list',
+            u'The correct exception has been thrown as I deleted it!')

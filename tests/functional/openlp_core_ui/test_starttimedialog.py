@@ -60,7 +60,7 @@ class TestStartTimeDialog(TestCase):
         self.form.item = {u'service_item': mocked_serviceitem}
         with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
             self.form.exec_()
-        okWidget = self.form.buttonBox.button(self.form.buttonBox.Ok)
+        okWidget = self.form.button_box.button(self.form.button_box.Ok)
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
         # THEN the following input values are returned
@@ -75,7 +75,7 @@ class TestStartTimeDialog(TestCase):
             self.form.exec_()
         self.form.minuteSpinBox.setValue(2)
         self.form.secondSpinBox.setValue(3)
-        okWidget = self.form.buttonBox.button(self.form.buttonBox.Ok)
+        okWidget = self.form.button_box.button(self.form.button_box.Ok)
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
         # THEN the following values are returned
