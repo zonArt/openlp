@@ -164,6 +164,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             #search duplicate songs
             maxSongs = self.plugin.manager.get_object_count(Song)
             if maxSongs == 0 or maxSongs == 1:
+                self.duplicateSearchProgressBar.setMaximum(1)
+                self.duplicateSearchProgressBar.setValue(1)
+                self.notifyNoDuplicates()
                 return
             # with x songs we have x*(x-1)/2 comparisons
             maxProgressCount = maxSongs*(maxSongs-1)/2
@@ -173,26 +176,36 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 for innerSongCounter in range(outerSongCounter+1, maxSongs):
                     doubleFinder = DuplicateSongFinder()
                     if doubleFinder.songsProbablyEqual(songs[outerSongCounter], songs[innerSongCounter]):
-                        self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
-                        self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " +
+                        duplicateAdded = self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
+                        if duplicateAdded:
+                            self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " +
                                 songs[innerSongCounter].title)
                     self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
             self.reviewTotalCount = len(self.duplicateSongList)
             if self.reviewTotalCount == 0:
-                self.button(QtGui.QWizard.FinishButton).show()
-                self.button(QtGui.QWizard.FinishButton).setEnabled(True)
-                self.button(QtGui.QWizard.NextButton).hide()
-                QtGui.QMessageBox.information(self, translate(u'Wizard', u'Information'),
-                    translate(u'Wizard', u'No duplicate songs have been found in the database.'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                self.notifyNoDuplicates()
         elif pageId == self.reviewPageId:
             self.nextReviewButtonClicked()
+
+    def notifyNoDuplicates(self):
+        """
+        Notifies the user, that there were no duplicates found in the database.
+        """
+        self.button(QtGui.QWizard.FinishButton).show()
+        self.button(QtGui.QWizard.FinishButton).setEnabled(True)
+        self.button(QtGui.QWizard.NextButton).hide()
+        QtGui.QMessageBox.information(self, translate(u'Wizard', u'Information'),
+            translate(u'Wizard', u'No duplicate songs have been found in the database.'),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+
 
     def addDuplicatesToSongList(self, searchSong, duplicateSong):
         """
         Inserts a song duplicate (two simliar songs) to the duplicate song list.
         If one of the two songs is already part of the duplicate song list,
         don't add another duplicate group but add the other song to that group.
+        Retruns True if at least one of the songs was added, False if both were already
+        member of a group.
 
         ``searchSong``
             The song we searched the duplicate for.
@@ -201,21 +214,27 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             The duplicate song.
         """
         duplicateGroupFound = False
-        for duplicates in self.duplicateSongList:
+        duplicateAdded = False
+        for duplicateGroup in self.duplicateSongList:
             #skip the first song in the duplicate lists, since the first one has to be an earlier song
-            for duplicate in duplicates[1:]:
-                if duplicate == searchSong:
-                    duplicates.append(duplicateSong)
-                    duplicateGroupFound = True
-                    break
-                elif duplicate == duplicateSong:
-                    duplicates.append(searchSong)
-                    duplicateGroupFound = True
-                    break
-            if duplicateGroupFound:
+            if searchSong in duplicateGroup and not duplicateSong in duplicateGroup:
+                duplicateGroup.append(duplicateSong)
+                duplicateGroupFound = True
+                duplicateAdded = True
+                break
+            elif not searchSong in duplicateGroup and duplicateSong in duplicateGroup:
+                duplicateGroup.append(searchSong)
+                duplicateGroupFound = True
+                duplicateAdded = True
+                break
+            elif searchSong in duplicateGroup and duplicateSong in duplicateGroup:
+                duplicateGroupFound = True
+                duplicateAdded = False
                 break
         if not duplicateGroupFound:
             self.duplicateSongList.append([searchSong, duplicateSong])
+            duplicateGroupFound = True
+        return duplicateAdded
 
     def onWizardExit(self):
         """
