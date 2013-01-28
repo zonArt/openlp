@@ -104,11 +104,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.searchingPageId = self.addPage(self.searchingPage)
         self.reviewPage = QtGui.QWizardPage()
         self.reviewPage.setObjectName(u'reviewPage')
-        self.headerVerticalLayout = QtGui.QVBoxLayout(self.reviewPage)
-        self.headerVerticalLayout.setObjectName(u'headerVerticalLayout')
-        self.reviewCounterLabel = QtGui.QLabel(self.reviewPage)
-        self.reviewCounterLabel.setObjectName(u'reviewCounterLabel')
-        self.headerVerticalLayout.addWidget(self.reviewCounterLabel)
+        self.reviewLayout = QtGui.QVBoxLayout(self.reviewPage)
+        self.reviewLayout.setObjectName(u'reviewLayout')
         self.songsHorizontalScrollArea = QtGui.QScrollArea(self.reviewPage)
         self.songsHorizontalScrollArea.setObjectName(u'songsHorizontalScrollArea')
         self.songsHorizontalScrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
@@ -123,7 +120,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.songsHorizontalLayout.setObjectName(u'songsHorizontalLayout')
         self.songsHorizontalLayout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
         self.songsHorizontalScrollArea.setWidget(self.songsHorizontalSongsWidget)
-        self.headerVerticalLayout.addWidget(self.songsHorizontalScrollArea)
+        self.reviewLayout.addWidget(self.songsHorizontalScrollArea)
         self.reviewPageId = self.addPage(self.reviewPage)
         #add a dummy page to the end, to prevent the finish button to appear and the next button do disappear on the
         #review page
