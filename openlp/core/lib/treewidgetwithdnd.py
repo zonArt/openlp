@@ -37,11 +37,11 @@ from openlp.core.lib import Receiver
 
 class TreeWidgetWithDnD(QtGui.QTreeWidget):
     """
-    Provide a list widget to store objects and handle drag and drop events
+    Provide a tree widget to store objects and handle drag and drop events
     """
     def __init__(self, parent=None, name=u''):
         """
-        Initialise the list widget
+        Initialise the tree widget
         """
         QtGui.QTreeWidget.__init__(self, parent)
         self.mimeDataText = name
