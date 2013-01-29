@@ -99,7 +99,7 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection))
         self.config_updated()
 
-    def loadList(self, custom_slides):
+    def loadList(self, custom_slides, target_group=None):
         # Sort out what custom we want to select after loading the list.
         self.saveAutoSelectId()
         self.listView.clear()

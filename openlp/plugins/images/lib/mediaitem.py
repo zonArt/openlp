@@ -239,26 +239,35 @@ class ImageMediaItem(MediaManagerItem):
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
 
-    def loadList(self, images, initialLoad=False):
+    def loadList(self, images, target_group=None, initialLoad=False):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
         """
-        # Ask which group the images should be saved in
-        self.fillGroupsComboBox(self.choosegroupform.groupComboBox, showTopLevelGroup=False)
-        if self.choosegroupform.exec_():
-            group_id = self.choosegroupform.groupComboBox.itemData(
-                self.choosegroupform.groupComboBox.currentIndex(), QtCore.Qt.UserRole)
-            # Save the new images in the database
-            for filename in images:
-                if type(filename) is not str and type(filename) is not unicode:
-                    continue
-                log.debug(u'Adding new image: %s', filename)
-                imageFile = ImageFilenames()
-                imageFile.group_id = group_id
-                imageFile.filename = unicode(filename)
-                success = self.manager.save_object(imageFile)
-            self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
-                initialLoad)
+        if target_group is None:
+            # Ask which group the images should be saved in
+            self.fillGroupsComboBox(self.choosegroupform.groupComboBox, showTopLevelGroup=False)
+            if self.choosegroupform.exec_():
+                group_id = self.choosegroupform.groupComboBox.itemData(
+                    self.choosegroupform.groupComboBox.currentIndex(), QtCore.Qt.UserRole)
+            parent_group = self.manager.get_object_filtered(ImageGroups, ImageGroups.id == group_id)
+        else:
+            parent_group = target_group.data(0, QtCore.Qt.UserRole)
+            if isinstance(parent_group, ImageFilenames):
+                parent_group = target_group.parent().data(0, QtCore.Qt.UserRole)
+        # If no valid parent group is found, do nothing
+        if not isinstance(parent_group, ImageGroups):
+            return
+        # Save the new images in the database
+        for filename in images:
+            if type(filename) is not str and type(filename) is not unicode:
+                continue
+            log.debug(u'Adding new image: %s', filename)
+            imageFile = ImageFilenames()
+            imageFile.group_id = parent_group.id
+            imageFile.filename = unicode(filename)
+            success = self.manager.save_object(imageFile)
+        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
+            initialLoad)
 
     def dndMoveInternal(self, target):
         """

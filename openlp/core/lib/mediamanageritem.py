@@ -335,7 +335,7 @@ class MediaManagerItem(QtGui.QWidget):
             self.validateAndLoad(files)
         Receiver.send_message(u'cursor_normal')
 
-    def loadFile(self, files):
+    def loadFile(self, data):
         """
         Turn file from Drag and Drop into an array so the Validate code can run it.
 
@@ -344,7 +344,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         new_files = []
         error_shown = False
-        for file in files:
+        for file in data['files']:
             type = file.split(u'.')[-1]
             if type.lower() not in self.onNewFileMasks:
                 if not error_shown:
@@ -354,7 +354,7 @@ class MediaManagerItem(QtGui.QWidget):
             else:
                 new_files.append(file)
         if new_files:
-            self.validateAndLoad(new_files)
+            self.validateAndLoad(new_files, data['target'])
 
     def dndMoveInternal(self, target):
         """
@@ -362,7 +362,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def validateAndLoad(self, files):
+    def validateAndLoad(self, files, target_group=None):
         """
         Process a list for files either from the File Dialog or from Drag and
         Drop
@@ -385,8 +385,9 @@ class MediaManagerItem(QtGui.QWidget):
                 files_added = True
                 full_list.append(file)
         if full_list and files_added:
-            self.listView.clear()
-            self.loadList(full_list)
+            if target_group is None:
+                self.listView.clear()
+            self.loadList(full_list, target_group)
             last_dir = os.path.split(unicode(files[0]))[0]
             Settings().setValue(self.settingsSection + u'/last directory', last_dir)
         if duplicates_found:
@@ -415,7 +416,7 @@ class MediaManagerItem(QtGui.QWidget):
             count += 1
         return file_list
 
-    def loadList(self, list):
+    def loadList(self, list, target_group):
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be defined by the plugin')
 
     def onNewClick(self):
