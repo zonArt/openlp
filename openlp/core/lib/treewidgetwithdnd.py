@@ -45,6 +45,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         """
         QtGui.QTreeWidget.__init__(self, parent)
         self.mimeDataText = name
+        self.allowInternalDnD = False
         self.header().close()
         self.defaultIndentation = self.indentation()
         self.setIndentation(0)
@@ -58,6 +59,11 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
             self.parent().loadFile)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd_internal' % self.mimeDataText),
+            self.parent().dndMoveInternal)
+
+    def doInternalDnD(self, accept):
+        self.allowInternalDnD = accept
 
     def mouseMoveEvent(self, event):
         """
@@ -80,6 +86,8 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.accept()
+        elif self.allowInternalDnD:
+            event.accept()
         else:
             event.ignore()
 
@@ -87,12 +95,15 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
+        elif self.allowInternalDnD:
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
         else:
             event.ignore()
 
     def dropEvent(self, event):
         """
-        Receive drop event check if it is a file and process it if it is.
+        Receive drop event, check if it is a file or internal object and process it if it is.
 
         ``event``
             Handle of the event pint passed
@@ -110,5 +121,9 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
                     for file in listing:
                         files.append(os.path.join(localFile, file))
             Receiver.send_message(u'%s_dnd' % self.mimeDataText, files)
+        elif self.allowInternalDnD:
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+            Receiver.send_message(u'%s_dnd_internal' % self.mimeDataText, self.itemAt(event.pos()))
         else:
             event.ignore()

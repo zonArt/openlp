@@ -356,6 +356,12 @@ class MediaManagerItem(QtGui.QWidget):
         if new_files:
             self.validateAndLoad(new_files)
 
+    def dndMoveInternal(self, target):
+        """
+        Handle internal moving of media manager items
+        """
+        pass
+
     def validateAndLoad(self, files):
         """
         Process a list for files either from the File Dialog or from Drag and

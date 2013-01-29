@@ -85,6 +85,7 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.listView.setIndentation(self.listView.defaultIndentation)
+        self.listView.doInternalDnD(True)
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Import old images list
@@ -258,6 +259,31 @@ class ImageMediaItem(MediaManagerItem):
                 success = self.manager.save_object(imageFile)
             self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
                 initialLoad)
+
+    def dndMoveInternal(self, target):
+        """
+        Handle drag-and-drop moving of images within the media manager
+        """
+        items_to_move = self.listView.selectedItems()
+        # Determine group to move images to
+        target_group = target
+        if isinstance(target_group.data(0, QtCore.Qt.UserRole), ImageFilenames):
+            target_group = target.parent()
+        # Don't allow moving to the Imported group
+        if target_group.data(0, QtCore.Qt.UserRole) is None:
+            return
+        # Move images in the treeview
+        items_to_save = []
+        for item in items_to_move:
+            if isinstance(item.data(0, QtCore.Qt.UserRole), ImageFilenames):
+                item.parent().removeChild(item)
+                target_group.addChild(item)
+                item_data = item.data(0, QtCore.Qt.UserRole)
+                item_data.group_id = target_group.data(0, QtCore.Qt.UserRole).id
+                items_to_save.append(item_data)
+        target_group.sortChildren(0, QtCore.Qt.AscendingOrder)
+        # Update the group ID's of the images in the database
+        self.manager.save_objects(items_to_save)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
