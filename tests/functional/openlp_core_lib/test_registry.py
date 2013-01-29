@@ -45,4 +45,4 @@ class TestRegistry(TestCase):
         with self.assertRaises(KeyError) as context:
             temp = Registry().get(u'test1')
         self.assertEqual(context.exception[0], u'Service test1 not found in list',
-            u'KeyError exception been thrown for [duplicate service|missing service|deleted service]')
+            u'KeyError exception should have been thrown for [duplicate service|missing service|deleted service]0')
