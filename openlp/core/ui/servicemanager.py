@@ -391,7 +391,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Loads the service file and saves the existing one it there is one
         unchanged
 
-        ``load_File``
+        ``load_file``
             The service file to the loaded.  Will be None is from menu so
             selection will be required.
         """

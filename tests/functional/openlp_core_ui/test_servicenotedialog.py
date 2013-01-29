@@ -42,7 +42,7 @@ class TestStartNoteDialog(TestCase):
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
         # THEN the following input text is returned
-        self.assertEqual(self.form.text_edit.toPlainText(), u'', u'The returned text is empty')
+        self.assertEqual(self.form.text_edit.toPlainText(), u'', u'The returned text should be empty')
 
         # WHEN displaying the UI, having set the text and pressing enter
         text = u'OpenLP is the best worship software'
@@ -53,7 +53,7 @@ class TestStartNoteDialog(TestCase):
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
         # THEN the following text is returned
-        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The text is as originally entered')
+        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The text originally entered should still be there')
 
         # WHEN displaying the UI, having set the text and pressing enter
         self.form.text_edit.setPlainText(u'')
@@ -64,4 +64,4 @@ class TestStartNoteDialog(TestCase):
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
         # THEN the following text is returned
-        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The text is as changed text is returned')
+        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The text changed text should be returned')

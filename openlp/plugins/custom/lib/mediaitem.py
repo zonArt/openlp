@@ -137,7 +137,7 @@ class CustomMediaItem(MediaManagerItem):
                 self.onSearchTextButtonClicked()
                 item = self.buildServiceItem(remote=True)
                 self.remoteTriggered = None
-                self.remoteCustom =1
+                self.remoteCustom = 1
                 if item:
                     return item
         return None
