@@ -64,4 +64,4 @@ class TestStartNoteDialog(TestCase):
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
         # THEN the following text is returned
-        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The changed to text, should be returned')
+        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The new text should be returned')
