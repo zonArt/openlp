@@ -227,10 +227,7 @@ class Settings(QtCore.QSettings):
         u'user interface/live splitter geometry': QtCore.QByteArray(),
         u'user interface/main window state': QtCore.QByteArray(),
         u'media/players': u'webkit',
-        u'media/override player': QtCore.Qt.Unchecked,
-        # Old settings (not used anymore). Have to be here, so that old setting.config backups can be imported.
-        u'advanced/stylesheet fix': u'',
-        u'servicemanager/last directory': u''
+        u'media/override player': QtCore.Qt.Unchecked
     }
     __file_path__ = u''
     __obsolete_settings__ = [
@@ -243,7 +240,8 @@ class Settings(QtCore.QSettings):
         (u'bibles/last directory 1', u'bibles/last directory import', []),
         (u'songusage/last directory 1', u'songusage/last directory export', []),
         (u'advanced/stylesheet fix', u'', []),
-        (u'media/background color', u'players/background color', [])
+        (u'media/background color', u'players/background color', []),
+        (u'songs/ccli number', u'general/ccli number', [])
     ]
 
     @staticmethod
