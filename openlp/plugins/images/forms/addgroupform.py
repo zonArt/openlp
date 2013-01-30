@@ -44,10 +44,13 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-    def exec_(self, clear=True):
+    def exec_(self, clear=True, showTopLevelGroup=False):
         if clear:
             self.nameEdit.clear()
         self.nameEdit.setFocus()
+        if showTopLevelGroup and not self.parentGroupComboBox.topLevelGroupAdded:
+            self.parentGroupComboBox.insertItem(0, translate('ImagePlugin.MediaItem', '-- Top-level group --'), 0)
+            self.parentGroupComboBox.topLevelGroupAdded = True
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
