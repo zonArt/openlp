@@ -940,7 +940,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         temp_conf.close()
         export_conf.close()
         os.remove(temp_file)
-        return
 
     def onModeDefaultItemClicked(self):
         """
