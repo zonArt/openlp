@@ -98,6 +98,7 @@ class Settings(QtCore.QSettings):
         u'advanced/hide mouse': True,
         u'advanced/current media plugin': -1,
         u'advanced/double click live': False,
+        u'advanced/data path': u'',
         u'advanced/default service hour': 11,
         u'advanced/default color': u'#ffffff',
         u'advanced/default image': u':/graphics/openlp-splash-screen.png',
