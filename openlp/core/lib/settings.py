@@ -242,7 +242,8 @@ class Settings(QtCore.QSettings):
         (u'songs/last directory 1', u'songs/last directory import', []),
         (u'bibles/last directory 1', u'bibles/last directory import', []),
         (u'songusage/last directory 1', u'songusage/last directory export', []),
-        (u'advanced/stylesheet fix', u'', [])
+        (u'advanced/stylesheet fix', u'', []),
+        (u'media/background colour', u'players/background color', [])
     ]
 
     @staticmethod
