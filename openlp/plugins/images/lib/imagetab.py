@@ -31,6 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver, Settings, UiStrings
 
+
 class ImageTab(SettingsTab):
     """
     ImageTab is the images settings tab in the settings dialog.
@@ -92,4 +93,3 @@ class ImageTab(SettingsTab):
         settings.endGroup()
         if self.initial_color != self.bg_color:
             Receiver.send_message(u'image_updated')
-

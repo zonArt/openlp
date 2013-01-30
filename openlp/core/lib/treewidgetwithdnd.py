@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 
+
 class TreeWidgetWithDnD(QtGui.QTreeWidget):
     """
     Provide a tree widget to store objects and handle drag and drop events
@@ -60,7 +61,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
             self.parent().loadFile)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd_internal' % self.mimeDataText),
-            self.parent().dndMoveInternal)
+            self.parent().dnd_move_internal)
 
     def doInternalDnD(self, accept):
         self.allowInternalDnD = accept
@@ -118,9 +119,9 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
                     files.append(localFile)
                 elif os.path.isdir(localFile):
                     listing = os.listdir(localFile)
-                    for file in listing:
-                        files.append(os.path.join(localFile, file))
-            Receiver.send_message(u'%s_dnd' % self.mimeDataText, {'files':files, 'target':self.itemAt(event.pos())})
+                    for file_name in listing:
+                        files.append(os.path.join(localFile, file_name))
+            Receiver.send_message(u'%s_dnd' % self.mimeDataText, {'files': files, 'target': self.itemAt(event.pos())})
         elif self.allowInternalDnD:
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()

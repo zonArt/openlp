@@ -43,6 +43,7 @@ from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 
 log = logging.getLogger(__name__)
 
+
 class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
@@ -344,19 +345,19 @@ class MediaManagerItem(QtGui.QWidget):
         """
         new_files = []
         error_shown = False
-        for file in data['files']:
-            type = file.split(u'.')[-1]
+        for file_name in data['files']:
+            type = file_name.split(u'.')[-1]
             if type.lower() not in self.onNewFileMasks:
                 if not error_shown:
                     critical_error_message_box(translate('OpenLP.MediaManagerItem', 'Invalid File Type'),
-                        translate('OpenLP.MediaManagerItem', 'Invalid File %s.\nSuffix not supported') % file)
+                        translate('OpenLP.MediaManagerItem', 'Invalid File %s.\nSuffix not supported') % file_name)
                     error_shown = True
             else:
-                new_files.append(file)
+                new_files.append(file_name)
         if new_files:
             self.validateAndLoad(new_files, data['target'])
 
-    def dndMoveInternal(self, target):
+    def dnd_move_internal(self, target):
         """
         Handle internal moving of media manager items
         """
@@ -377,8 +378,8 @@ class MediaManagerItem(QtGui.QWidget):
             full_list.append(self.listView.topLevelItem(count).data(0, QtCore.Qt.UserRole))
         duplicates_found = False
         files_added = False
-        for file in files:
-            filename = os.path.split(unicode(file))[1]
+        for file_path in files:
+            filename = os.path.split(unicode(file_path))[1]
             if filename in names:
                 duplicates_found = True
             else:

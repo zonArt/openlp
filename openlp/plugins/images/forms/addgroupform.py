@@ -33,6 +33,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.images.forms.addgroupdialog import Ui_AddGroupDialog
 
+
 class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
     """
     Class documentation goes here.
@@ -44,20 +45,20 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-    def exec_(self, clear=True, showTopLevelGroup=False):
+    def exec_(self, clear=True, show_top_level_group=False):
         if clear:
-            self.nameEdit.clear()
-        self.nameEdit.setFocus()
-        if showTopLevelGroup and not self.parentGroupComboBox.topLevelGroupAdded:
-            self.parentGroupComboBox.insertItem(0, translate('ImagePlugin.MediaItem', '-- Top-level group --'), 0)
-            self.parentGroupComboBox.topLevelGroupAdded = True
+            self.name_edit.clear()
+        self.name_edit.setFocus()
+        if show_top_level_group and not self.parent_group_combobox.top_level_group_added:
+            self.parent_group_combobox.insertItem(0, translate('ImagePlugin.MediaItem', '-- Top-level group --'), 0)
+            self.parent_group_combobox.top_level_group_added = True
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
-        if not self.nameEdit.text():
+        if not self.name_edit.text():
             critical_error_message_box(message=translate('ImagePlugin.AddGroupForm',
                 'You need to type in a group name.'))
-            self.nameEdit.setFocus()
+            self.name_edit.setFocus()
             return False
         else:
             return QtGui.QDialog.accept(self)

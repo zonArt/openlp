@@ -42,11 +42,13 @@ class ImageGroups(BaseModel):
     """
     pass
 
+
 class ImageFilenames(BaseModel):
     """
     ImageFilenames model
     """
     pass
+
 
 def init_schema(url):
     """

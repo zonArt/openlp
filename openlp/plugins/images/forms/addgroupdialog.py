@@ -32,32 +32,33 @@ from PyQt4 import QtGui
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
-class Ui_AddGroupDialog(object):
-    def setupUi(self, addGroupDialog):
-        addGroupDialog.setObjectName(u'addGroupDialog')
-        addGroupDialog.resize(300, 10)
-        self.dialogLayout = QtGui.QVBoxLayout(addGroupDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
-        self.nameLayout = QtGui.QFormLayout()
-        self.nameLayout.setObjectName(u'nameLayout')
-        self.parentGroupLabel = QtGui.QLabel(addGroupDialog)
-        self.parentGroupLabel.setObjectName(u'parentGroupLabel')
-        self.parentGroupComboBox = QtGui.QComboBox(addGroupDialog)
-        self.parentGroupComboBox.setObjectName(u'parentGroupComboBox')
-        self.nameLayout.addRow(self.parentGroupLabel, self.parentGroupComboBox)
-        self.nameLabel = QtGui.QLabel(addGroupDialog)
-        self.nameLabel.setObjectName(u'nameLabel')
-        self.nameEdit = QtGui.QLineEdit(addGroupDialog)
-        self.nameEdit.setObjectName(u'nameEdit')
-        self.nameLabel.setBuddy(self.nameEdit)
-        self.nameLayout.addRow(self.nameLabel, self.nameEdit)
-        self.dialogLayout.addLayout(self.nameLayout)
-        self.buttonBox = create_button_box(addGroupDialog, u'buttonBox', [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.buttonBox)
-        self.retranslateUi(addGroupDialog)
-        addGroupDialog.setMaximumHeight(addGroupDialog.sizeHint().height())
 
-    def retranslateUi(self, addGroupDialog):
-        addGroupDialog.setWindowTitle(translate('ImagePlugin.AddGroupForm', 'Add group'))
-        self.parentGroupLabel.setText(translate('ImagePlugin.AddGroupForm', 'Parent group:'))
-        self.nameLabel.setText(translate('ImagePlugin.AddGroupForm', 'Group name:'))
+class Ui_AddGroupDialog(object):
+    def setupUi(self, add_group_dialog):
+        add_group_dialog.setObjectName(u'add_group_dialog')
+        add_group_dialog.resize(300, 10)
+        self.dialog_layout = QtGui.QVBoxLayout(add_group_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.name_layout = QtGui.QFormLayout()
+        self.name_layout.setObjectName(u'name_layout')
+        self.parent_group_label = QtGui.QLabel(add_group_dialog)
+        self.parent_group_label.setObjectName(u'parent_group_label')
+        self.parent_group_combobox = QtGui.QComboBox(add_group_dialog)
+        self.parent_group_combobox.setObjectName(u'parent_group_combobox')
+        self.name_layout.addRow(self.parent_group_label, self.parent_group_combobox)
+        self.name_label = QtGui.QLabel(add_group_dialog)
+        self.name_label.setObjectName(u'name_label')
+        self.name_edit = QtGui.QLineEdit(add_group_dialog)
+        self.name_edit.setObjectName(u'name_edit')
+        self.name_label.setBuddy(self.name_edit)
+        self.name_layout.addRow(self.name_label, self.name_edit)
+        self.dialog_layout.addLayout(self.name_layout)
+        self.button_box = create_button_box(add_group_dialog, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box)
+        self.retranslateUi(add_group_dialog)
+        add_group_dialog.setMaximumHeight(add_group_dialog.sizeHint().height())
+
+    def retranslateUi(self, add_group_dialog):
+        add_group_dialog.setWindowTitle(translate('ImagePlugin.AddGroupForm', 'Add group'))
+        self.parent_group_label.setText(translate('ImagePlugin.AddGroupForm', 'Parent group:'))
+        self.name_label.setText(translate('ImagePlugin.AddGroupForm', 'Group name:'))

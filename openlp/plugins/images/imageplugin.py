@@ -39,10 +39,10 @@ from openlp.plugins.images.lib.db import init_schema
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        u'images/db type': u'sqlite',
-        u'images/background color': u'#000000',
-        u'images/images files': []
-    }
+    u'images/db type': u'sqlite',
+    u'images/background color': u'#000000',
+    u'images/images files': []
+}
 
 
 class ImagePlugin(Plugin):
@@ -80,8 +80,7 @@ class ImagePlugin(Plugin):
             u'plural': translate('ImagePlugin', 'Images', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {u'title': translate('ImagePlugin', 'Images', 'container title')
-        }
+        self.textStrings[StringContent.VisibleName] = {u'title': translate('ImagePlugin', 'Images', 'container title')}
         # Middle Header Bar
         tooltips = {
             u'load': translate('ImagePlugin', 'Load a new image.'),

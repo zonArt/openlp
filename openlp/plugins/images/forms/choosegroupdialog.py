@@ -32,30 +32,30 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
+
 class Ui_ChooseGroupDialog(object):
-    def setupUi(self, chooseGroupDialog):
-        chooseGroupDialog.setObjectName(u'chooseGroupDialog')
-        chooseGroupDialog.resize(440, 119)
-        self.chooseGroupLayout = QtGui.QFormLayout(chooseGroupDialog)
-        self.chooseGroupLayout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
-        self.chooseGroupLayout.setMargin(8)
-        self.chooseGroupLayout.setSpacing(8)
-        self.chooseGroupLayout.setObjectName(u'chooseGroupLayout')
-        self.groupQuestionLabel = QtGui.QLabel(chooseGroupDialog)
-        self.groupQuestionLabel.setWordWrap(True)
-        self.groupQuestionLabel.setObjectName(u'groupQuestionLabel')
-        self.chooseGroupLayout.setWidget(1, QtGui.QFormLayout.SpanningRole, self.groupQuestionLabel)
-        self.groupComboBox = QtGui.QComboBox(chooseGroupDialog)
-        self.groupComboBox.setObjectName(u'groupComboBox')
-        self.chooseGroupLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.groupComboBox)
-        self.groupButtonBox = create_button_box(chooseGroupDialog, u'buttonBox', [u'ok'])
-        self.chooseGroupLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.groupButtonBox)
+    def setupUi(self, choose_group_dialog):
+        choose_group_dialog.setObjectName(u'choose_group_dialog')
+        choose_group_dialog.resize(440, 119)
+        self.choose_group_layout = QtGui.QFormLayout(choose_group_dialog)
+        self.choose_group_layout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
+        self.choose_group_layout.setMargin(8)
+        self.choose_group_layout.setSpacing(8)
+        self.choose_group_layout.setObjectName(u'choose_group_layout')
+        self.group_question_label = QtGui.QLabel(choose_group_dialog)
+        self.group_question_label.setWordWrap(True)
+        self.group_question_label.setObjectName(u'group_question_label')
+        self.choose_group_layout.setWidget(1, QtGui.QFormLayout.SpanningRole, self.group_question_label)
+        self.group_combobox = QtGui.QComboBox(choose_group_dialog)
+        self.group_combobox.setObjectName(u'group_combobox')
+        self.choose_group_layout.setWidget(2, QtGui.QFormLayout.FieldRole, self.group_combobox)
+        self.group_button_box = create_button_box(choose_group_dialog, u'buttonBox', [u'ok'])
+        self.choose_group_layout.setWidget(3, QtGui.QFormLayout.FieldRole, self.group_button_box)
 
-        self.retranslateUi(chooseGroupDialog)
-        QtCore.QMetaObject.connectSlotsByName(chooseGroupDialog)
+        self.retranslateUi(choose_group_dialog)
+        QtCore.QMetaObject.connectSlotsByName(choose_group_dialog)
 
-    def retranslateUi(self, chooseGroupDialog):
-        chooseGroupDialog.setWindowTitle(translate('ImagePlugin.ChooseGroupForm', 'Choose group'))
-        self.groupQuestionLabel.setText(translate('ImagePlugin.ChooseGroupForm',
+    def retranslateUi(self, choose_group_dialog):
+        choose_group_dialog.setWindowTitle(translate('ImagePlugin.ChooseGroupForm', 'Choose group'))
+        self.group_question_label.setText(translate('ImagePlugin.ChooseGroupForm',
             'To which group do you want these images to be added?'))
-

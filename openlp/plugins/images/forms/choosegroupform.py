@@ -33,6 +33,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.images.forms.choosegroupdialog import Ui_ChooseGroupDialog
 
+
 class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
     """
     Class documentation goes here.
@@ -43,4 +44,3 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-

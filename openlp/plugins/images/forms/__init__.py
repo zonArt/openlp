@@ -55,4 +55,3 @@ from the .ui files later if necessary.
 
 from addgroupform import AddGroupForm
 from choosegroupform import ChooseGroupForm
-

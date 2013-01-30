@@ -42,6 +42,7 @@ from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 
 log = logging.getLogger(__name__)
 
+
 class ImageMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for images.
@@ -56,8 +57,8 @@ class ImageMediaItem(MediaManagerItem):
         self.manager = plugin.manager
         self.choosegroupform = ChooseGroupForm(self)
         self.addgroupform = AddGroupForm(self)
-        self.fillGroupsComboBox(self.choosegroupform.groupComboBox)
-        self.fillGroupsComboBox(self.addgroupform.parentGroupComboBox)
+        self.fill_groups_combo_box(self.choosegroupform.group_combobox)
+        self.fill_groups_combo_box(self.addgroupform.parent_group_combobox)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
@@ -90,7 +91,7 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Import old images list
-        images_old = Settings().value(self.settingsSection +  u'/images files')
+        images_old = Settings().value(self.settingsSection + u'/images files')
         if len(images_old) > 0:
             for imageFile in images_old:
                 imagefilename = ImageFilenames()
@@ -136,7 +137,8 @@ class ImageMediaItem(MediaManagerItem):
         """
         # Turn off auto preview triggers.
         self.listView.blockSignals(True)
-        if check_item_selected(self.listView, translate('ImagePlugin.MediaItem','You must select an image to delete.')):
+        if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
+            'You must select an image to delete.')):
             item_list = self.listView.selectedItems()
             Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(item_list))
@@ -160,8 +162,8 @@ class ImageMediaItem(MediaManagerItem):
                                 self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
                             else:
                                 row_item.parent().removeChild(row_item)
-                            self.fillGroupsComboBox(self.choosegroupform.groupComboBox)
-                            self.fillGroupsComboBox(self.addgroupform.parentGroupComboBox)
+                            self.fill_groups_combo_box(self.choosegroupform.group_combobox)
+                            self.fill_groups_combo_box(self.addgroupform.parent_group_combobox)
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
@@ -184,18 +186,18 @@ class ImageMediaItem(MediaManagerItem):
             groupList[image_group.id] = group
             self.addSubGroups(groupList, image_group.id)
 
-    def fillGroupsComboBox(self, comboBox, parentGroupId=0, prefix=''):
+    def fill_groups_combo_box(self, comboBox, parentGroupId=0, prefix=''):
         """
         Recursively add groups to the combobox in the 'Add group' dialog
         """
         if parentGroupId is 0:
             comboBox.clear()
-            comboBox.topLevelGroupAdded = False
+            comboBox.top_level_group_added = False
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parentGroupId)
         image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
         for image_group in image_groups:
-            comboBox.addItem(prefix+image_group.group_name, image_group.id)
-            self.fillGroupsComboBox(comboBox, image_group.id, prefix+'   ')
+            comboBox.addItem(prefix + image_group.group_name, image_group.id)
+            self.fill_groups_combo_box(comboBox, image_group.id, prefix + '   ')
 
     def loadFullList(self, images, initialLoad=False):
         """
@@ -249,8 +251,8 @@ class ImageMediaItem(MediaManagerItem):
         if target_group is None:
             # Ask which group the images should be saved in
             if self.choosegroupform.exec_():
-                group_id = self.choosegroupform.groupComboBox.itemData(
-                    self.choosegroupform.groupComboBox.currentIndex(), QtCore.Qt.UserRole)
+                group_id = self.choosegroupform.group_combobox.itemData(
+                    self.choosegroupform.group_combobox.currentIndex(), QtCore.Qt.UserRole)
             parent_group = self.manager.get_object_filtered(ImageGroups, ImageGroups.id == group_id)
         else:
             parent_group = target_group.data(0, QtCore.Qt.UserRole)
@@ -271,7 +273,7 @@ class ImageMediaItem(MediaManagerItem):
         self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
             initialLoad)
 
-    def dndMoveInternal(self, target):
+    def dnd_move_internal(self, target):
         """
         Handle drag-and-drop moving of images within the media manager
         """
@@ -386,16 +388,16 @@ class ImageMediaItem(MediaManagerItem):
         """
         Called to add a new group
         """
-        if self.addgroupform.exec_(showTopLevelGroup=True):
-            new_group = ImageGroups.populate(parent_id=self.addgroupform.parentGroupComboBox.itemData(
-                self.addgroupform.parentGroupComboBox.currentIndex(), QtCore.Qt.UserRole),
-                group_name=self.addgroupform.nameEdit.text())
+        if self.addgroupform.exec_(show_top_level_group=True):
+            new_group = ImageGroups.populate(parent_id=self.addgroupform.parent_group_combobox.itemData(
+                self.addgroupform.parent_group_combobox.currentIndex(), QtCore.Qt.UserRole),
+                group_name=self.addgroupform.name_edit.text())
             if self.checkGroupName(new_group):
                 if self.manager.save_object(new_group):
                     self.loadFullList(self.manager.get_all_objects(ImageFilenames,
                         order_by_ref=ImageFilenames.filename))
-                    self.fillGroupsComboBox(self.choosegroupform.groupComboBox)
-                    self.fillGroupsComboBox(self.addgroupform.parentGroupComboBox)
+                    self.fill_groups_combo_box(self.choosegroupform.group_combobox)
+                    self.fill_groups_combo_box(self.addgroupform.parent_group_combobox)
                 else:
                     critical_error_message_box(
                         message=translate('ImagePlugin.AddGroupForm', 'Could not add the new group.'))
@@ -437,9 +439,10 @@ class ImageMediaItem(MediaManagerItem):
                         'the image file "%s" no longer exists.') % filename)
 
     def search(self, string, showError):
-        files = self.manager.get_all_objects(ImageFilenames, filter_clause=ImageFilenames.filename.contains(string), order_by_ref=ImageFilenames.filename)
+        files = self.manager.get_all_objects(ImageFilenames, filter_clause=ImageFilenames.filename.contains(string),
+            order_by_ref=ImageFilenames.filename)
         results = []
-        for file in files:
-            filename = os.path.split(unicode(file.filename))[1]
-            results.append([file.filename, filename])
+        for file_object in files:
+            filename = os.path.split(unicode(file_object.filename))[1]
+            results.append([file_object.filename, filename])
         return results
