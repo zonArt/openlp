@@ -99,6 +99,7 @@ class Settings(QtCore.QSettings):
         u'advanced/hide mouse': True,
         u'advanced/current media plugin': -1,
         u'advanced/double click live': False,
+        u'advanced/data path': u'',
         u'advanced/default service hour': 11,
         u'advanced/default color': u'#ffffff',
         u'advanced/default image': u':/graphics/openlp-splash-screen.png',
@@ -141,7 +142,6 @@ class Settings(QtCore.QSettings):
         u'general/blank warning': False,
         u'players/background color': u'#000000',
         u'servicemanager/service theme': u'',
-        u'servicemanager/last directory': u'',
         u'servicemanager/last file': u'',
         u'SettingsImport/Make_Changes': u'At_Own_RISK',
         u'SettingsImport/type': u'OpenLP_settings_export',
@@ -228,7 +228,10 @@ class Settings(QtCore.QSettings):
         u'user interface/live splitter geometry': QtCore.QByteArray(),
         u'user interface/main window state': QtCore.QByteArray(),
         u'media/players': u'webkit',
-        u'media/override player': QtCore.Qt.Unchecked
+        u'media/override player': QtCore.Qt.Unchecked,
+        # Old settings (not used anymore). Have to be here, so that old setting.config backups can be imported.
+        u'advanced/stylesheet fix': u'',
+        u'servicemanager/last directory': u''
     }
     __file_path__ = u''
     __obsolete_settings__ = [
@@ -239,7 +242,9 @@ class Settings(QtCore.QSettings):
         (u'servicemanager/last directory', u'', []),
         (u'songs/last directory 1', u'songs/last directory import', []),
         (u'bibles/last directory 1', u'bibles/last directory import', []),
-        (u'songusage/last directory 1', u'songusage/last directory export', [])
+        (u'songusage/last directory 1', u'songusage/last directory export', []),
+        (u'advanced/stylesheet fix', u'', []),
+        (u'media/background color', u'players/background color', [])
     ]
 
     @staticmethod
