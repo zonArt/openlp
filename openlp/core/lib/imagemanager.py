@@ -39,7 +39,7 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import resize_image, image_to_byte, Receiver, ScreenList
+from openlp.core.lib import resize_image, image_to_byte, Receiver, Registry, ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -182,6 +182,7 @@ class ImageManager(QtCore.QObject):
 
     def __init__(self):
         QtCore.QObject.__init__(self)
+        Registry().register(u'image_manager', self)
         currentScreen = ScreenList().current
         self.width = currentScreen[u'size'].width()
         self.height = currentScreen[u'size'].height()

@@ -45,8 +45,8 @@ __default_settings__ = {
 class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'images', __default_settings__, plugin_helpers, ImageMediaItem, ImageTab)
+    def __init__(self):
+        Plugin.__init__(self, u'images', __default_settings__, ImageMediaItem, ImageTab)
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)

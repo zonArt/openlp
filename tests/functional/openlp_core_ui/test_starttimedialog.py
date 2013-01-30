@@ -1,13 +1,12 @@
 """
-Package to test the openlp.core.ui package.
+    Package to test the openlp.core.ui package.
 """
 import sys
 from unittest import TestCase
 
-from mock import MagicMock
-
+from mock import MagicMock, patch
 from openlp.core.ui import starttimeform
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt4 import QtGui, QtTest
 
 class TestStartTimeDialog(TestCase):
 
@@ -48,10 +47,19 @@ class TestStartTimeDialog(TestCase):
         """
         Test StartTimeDialog display initialisation
         """
-        #GIVEN: A service item with with time
+        # GIVEN: A service item with with time
         mocked_serviceitem = MagicMock()
         mocked_serviceitem.start_time = 61
         mocked_serviceitem.end_time = 3701
 
+        # WHEN displaying the UI and pressing enter
         self.form.item = mocked_serviceitem
-        #self.form.exec_()
+        with patch(u'openlp.core.lib.QtGui.QDialog') as MockedQtGuiQDialog:
+            MockedQtGuiQDialog.return_value = True
+            #does not work yet
+            #self.form.exec_()
+
+        # THEN the following values are returned
+        self.assertEqual(self.form.hourSpinBox.value(), 0)
+        self.assertEqual(self.form.minuteSpinBox.value(), 0)
+        self.assertEqual(self.form.secondSpinBox.value(), 0)

@@ -40,9 +40,8 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus, ScreenList, UiStrings
-from openlp.core.lib.ui import create_action
-from openlp.core.lib import Settings
+    PluginStatus, Registry, Settings, ScreenList
+from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
@@ -159,12 +158,12 @@ class Ui_MainWindow(object):
         # Create the service manager
         self.serviceManagerDock = OpenLPDockWidget(mainWindow, u'serviceManagerDock',
             u':/system/system_servicemanager.png')
-        self.serviceManagerContents = ServiceManager(mainWindow, self.serviceManagerDock)
+        self.serviceManagerContents = ServiceManager(self.serviceManagerDock)
         self.serviceManagerDock.setWidget(self.serviceManagerContents)
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.serviceManagerDock)
         # Create the theme manager
         self.themeManagerDock = OpenLPDockWidget(mainWindow, u'themeManagerDock', u':/system/system_thememanager.png')
-        self.themeManagerContents = ThemeManager(mainWindow, self.themeManagerDock)
+        self.themeManagerContents = ThemeManager(self.themeManagerDock)
         self.themeManagerContents.setObjectName(u'themeManagerContents')
         self.themeManagerDock.setWidget(self.themeManagerContents)
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.themeManagerDock)
@@ -456,6 +455,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
+        Registry().register(u'main_window', self)
         self.application = application
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args
@@ -475,14 +475,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.mediaController = MediaController(self)
-        self.settingsForm = SettingsForm(self, self)
+        self.settingsForm = SettingsForm(self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = []
         # Set up the path with plugins
         plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(plugin_path)
-        self.pluginHelpers = {}
         self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
@@ -543,21 +542,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(self.imageManager, self.themeManagerContents)
+        self.renderer = Renderer()
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
-        # make the controllers available to the plugins
-        self.pluginHelpers[u'preview'] = self.previewController
-        self.pluginHelpers[u'live'] = self.liveController
-        self.pluginHelpers[u'renderer'] = self.renderer
-        self.pluginHelpers[u'service'] = self.serviceManagerContents
-        self.pluginHelpers[u'settings form'] = self.settingsForm
-        self.pluginHelpers[u'toolbox'] = self.mediaDockManager
-        self.pluginHelpers[u'pluginmanager'] = self.pluginManager
-        self.pluginHelpers[u'formparent'] = self
-        self.pluginHelpers[u'mediacontroller'] = self.mediaController
-        self.pluginManager.find_plugins(plugin_path, self.pluginHelpers)
+        self.pluginManager.find_plugins(plugin_path)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
@@ -1341,3 +1330,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Check if the new data path is our default.
         if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')
+

@@ -32,7 +32,7 @@ import logging
 from PyQt4 import QtGui, QtCore, QtWebKit
 
 from openlp.core.lib import ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags, ImageSource, ScreenList
+    ItemCapabilities, FormattingTags, ImageSource, Registry, ScreenList
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
@@ -57,7 +57,7 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, image_manager, theme_manager):
+    def __init__(self):
         """
         Initialise the renderer.
 
@@ -69,15 +69,14 @@ class Renderer(object):
             The theme_manager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
-        self.theme_manager = theme_manager
-        self.image_manager = image_manager
         self.screens = ScreenList()
+        Registry().register(u'renderer', self)
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = u''
         self.service_theme_name = u''
         self.item_theme_name = u''
         self.force_page = False
-        self.display = MainDisplay(None, self.image_manager, False, self)
+        self.display = MainDisplay(None, False, self)
         self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
@@ -94,7 +93,7 @@ class Renderer(object):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.image_manager, False, self)
+        self.display = MainDisplay(None, False, self)
         self.display.setup()
         self._theme_dimensions = {}
 
@@ -236,7 +235,6 @@ class Renderer(object):
             serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
             serviceItem.add_from_text(VERSE)
-        serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
@@ -644,3 +642,23 @@ class Renderer(object):
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
         return line.split(u' ')
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)

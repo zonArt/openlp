@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Settings, UiStrings
+from openlp.core.lib import Receiver, Settings, Registry, UiStrings
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -118,8 +118,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, default_settings, plugin_helpers=None, media_item_class=None,
-        settings_tab_class=None, version=None):
+    def __init__(self, name, default_settings, media_item_class=None, settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -134,9 +133,6 @@ class Plugin(QtCore.QObject):
 
         ``default_settings``
             A dict containing the plugin's settings. The value to each key is the default value to be used.
-
-        ``plugin_helpers``
-            Defaults to *None*. A list of helper objects.
 
         ``media_item_class``
             The class name of the plugin's media item.
@@ -165,15 +161,6 @@ class Plugin(QtCore.QObject):
         self.mediaItem = None
         self.weight = 0
         self.status = PluginStatus.Inactive
-        self.previewController = plugin_helpers[u'preview']
-        self.liveController = plugin_helpers[u'live']
-        self.renderer = plugin_helpers[u'renderer']
-        self.serviceManager = plugin_helpers[u'service']
-        self.settingsForm = plugin_helpers[u'settings form']
-        self.mediaDock = plugin_helpers[u'toolbox']
-        self.pluginManager = plugin_helpers[u'pluginmanager']
-        self.formParent = plugin_helpers[u'formparent']
-        self.mediaController = plugin_helpers[u'mediacontroller']
         # Add the default status to the default settings.
         default_settings[name + u'/status'] = PluginStatus.Inactive
         default_settings[name + u'/last directory'] = u''
@@ -228,7 +215,7 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into OpenLP.
         """
         if self.mediaItemClass:
-            self.mediaItem = self.mediaItemClass(self.mediaDock.media_dock, self, self.icon)
+            self.mediaItem = self.mediaItemClass(self.main_window.mediaDockManager.media_dock, self, self.icon)
 
     def addImportMenuItem(self, importMenu):
         """
@@ -298,14 +285,14 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-            self.mediaDock.insert_dock(self.mediaItem, self.icon, self.weight)
+            self.main_window.mediaDockManager.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
         if self.mediaItem:
-            self.mediaDock.remove_dock(self.mediaItem)
+            self.main_window.mediaDockManager.remove_dock(self.mediaItem)
 
     def appStartup(self):
         """
@@ -421,3 +408,14 @@ class Plugin(QtCore.QObject):
         The plugin's config has changed
         """
         pass
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
+

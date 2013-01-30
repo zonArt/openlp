@@ -479,7 +479,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.advancedTab.isVisible():
             bible = self.advancedVersionComboBox.currentText()
         if bible:
-            self.editBibleForm = EditBibleForm(self, self.plugin.formParent, self.plugin.manager)
+            self.editBibleForm = EditBibleForm(self, self.main_window, self.plugin.manager)
             self.editBibleForm.loadBible(bible)
             if self.editBibleForm.exec_():
                 self.reloadBibles()
