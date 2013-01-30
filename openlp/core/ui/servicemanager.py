@@ -872,8 +872,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             service_item.auto_play_slides_loop = False
             self.auto_play_slides_loop.setChecked(False)
         if service_item.auto_play_slides_once and service_item.timed_slide_interval == 0:
-            service_item.timed_slide_interval = Settings().value(u'loop delay')
+            service_item.timed_slide_interval = Settings().value(
+                self.main_window.generalSettingsSection + u'/loop delay')
         self.set_modified()
+
 
     def toggle_auto_play_slides_loop(self):
         """
@@ -886,8 +888,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             service_item.auto_play_slides_once = False
             self.auto_play_slides_once.setChecked(False)
         if service_item.auto_play_slides_loop and service_item.timed_slide_interval == 0:
-            service_item.timed_slide_interval = Settings().value(u'loop delay')
+            service_item.timed_slide_interval = Settings().value(
+                self.main_window.generalSettingsSection + u'/loop delay')
         self.set_modified()
+
 
     def on_timed_slide_interval(self):
         """
@@ -896,7 +900,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         service_item = self.service_items[item][u'service_item']
         if service_item.timed_slide_interval == 0:
-            timed_slide_interval = Settings().value(u'loop delay')
+            timed_slide_interval = Settings().value(self.mainwindow.generalSettingsSection + u'/loop delay')
         else:
             timed_slide_interval = service_item.timed_slide_interval
         timed_slide_interval, ok = QtGui.QInputDialog.getInteger(self, translate('OpenLP.ServiceManager',
