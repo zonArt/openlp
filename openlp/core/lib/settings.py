@@ -243,7 +243,7 @@ class Settings(QtCore.QSettings):
         (u'bibles/last directory 1', u'bibles/last directory import', []),
         (u'songusage/last directory 1', u'songusage/last directory export', []),
         (u'advanced/stylesheet fix', u'', []),
-        (u'media/background colour', u'players/background color', [])
+        (u'media/background color', u'players/background color', [])
     ]
 
     @staticmethod
