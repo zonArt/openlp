@@ -141,7 +141,6 @@ class Settings(QtCore.QSettings):
         u'general/blank warning': False,
         u'players/background color': u'#000000',
         u'servicemanager/service theme': u'',
-        u'servicemanager/last directory': u'',
         u'servicemanager/last file': u'',
         u'SettingsImport/Make_Changes': u'At_Own_RISK',
         u'SettingsImport/type': u'OpenLP_settings_export',
@@ -230,7 +229,8 @@ class Settings(QtCore.QSettings):
         u'media/players': u'webkit',
         u'media/override player': QtCore.Qt.Unchecked,
         # Old settings (not used anymore). Have to be here, so that old setting.config backups can be imported.
-        u'advanced/stylesheet fix': u''
+        u'advanced/stylesheet fix': u'',
+        u'servicemanager/last directory': u''
     }
     __file_path__ = u''
     __obsolete_settings__ = [
