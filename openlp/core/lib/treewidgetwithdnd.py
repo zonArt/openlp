@@ -46,7 +46,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         """
         QtGui.QTreeWidget.__init__(self, parent)
         self.mimeDataText = name
-        self.allowInternalDnD = False
+        self.allow_internal_dnd = False
         self.header().close()
         self.defaultIndentation = self.indentation()
         self.setIndentation(0)
@@ -62,9 +62,6 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
             self.parent().loadFile)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd_internal' % self.mimeDataText),
             self.parent().dnd_move_internal)
-
-    def doInternalDnD(self, accept):
-        self.allowInternalDnD = accept
 
     def mouseMoveEvent(self, event):
         """
@@ -87,16 +84,17 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.accept()
-        elif self.allowInternalDnD:
+        elif self.allow_internal_dnd:
             event.accept()
         else:
             event.ignore()
 
     def dragMoveEvent(self, event):
+        QtGui.QTreeWidget.dragMoveEvent(self, event)
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
-        elif self.allowInternalDnD:
+        elif self.allow_internal_dnd:
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
         else:
@@ -122,7 +120,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
                     for file_name in listing:
                         files.append(os.path.join(localFile, file_name))
             Receiver.send_message(u'%s_dnd' % self.mimeDataText, {'files': files, 'target': self.itemAt(event.pos())})
-        elif self.allowInternalDnD:
+        elif self.allow_internal_dnd:
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
             Receiver.send_message(u'%s_dnd_internal' % self.mimeDataText, self.itemAt(event.pos()))

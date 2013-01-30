@@ -285,7 +285,6 @@ class MediaMediaItem(MediaManagerItem):
                 item_name.setData(0, QtCore.Qt.UserRole, track)
             item_name.setToolTip(0, track)
             self.listView.addTopLevelItem(item_name)
-        Settings().setValue(self.settingsSection + u'/media files', self.getFileList())
 
     def getList(self, type=MediaType.Audio):
         media = Settings().value(self.settingsSection + u'/media files')

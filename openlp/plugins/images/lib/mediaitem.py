@@ -57,8 +57,8 @@ class ImageMediaItem(MediaManagerItem):
         self.manager = plugin.manager
         self.choosegroupform = ChooseGroupForm(self)
         self.addgroupform = AddGroupForm(self)
-        self.fill_groups_combo_box(self.choosegroupform.group_combobox)
-        self.fill_groups_combo_box(self.addgroupform.parent_group_combobox)
+        self.fill_groups_combobox(self.choosegroupform.group_combobox)
+        self.fill_groups_combobox(self.addgroupform.parent_group_combobox)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
@@ -87,7 +87,7 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.listView.setIndentation(self.listView.defaultIndentation)
-        self.listView.doInternalDnD(True)
+        self.listView.allow_internal_dnd = True
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Import old images list
@@ -102,7 +102,8 @@ class ImageMediaItem(MediaManagerItem):
             Settings().remove(self.settingsSection + u'/images files')
             Settings().remove(self.settingsSection + u'/images count')
         # Load images from the database
-        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename), True)
+        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
+            initial_load=True)
 
     def addListViewToToolBar(self):
         MediaManagerItem.addListViewToToolBar(self)
@@ -162,54 +163,70 @@ class ImageMediaItem(MediaManagerItem):
                                 self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
                             else:
                                 row_item.parent().removeChild(row_item)
-                            self.fill_groups_combo_box(self.choosegroupform.group_combobox)
-                            self.fill_groups_combo_box(self.addgroupform.parent_group_combobox)
+                            self.fill_groups_combobox(self.choosegroupform.group_combobox)
+                            self.fill_groups_combobox(self.addgroupform.parent_group_combobox)
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
         self.listView.blockSignals(False)
 
-    def addSubGroups(self, groupList, parentGroupId):
+    def add_sub_groups(self, group_list, parent_group_id):
         """
         Recursively add subgroups to the given parent group
         """
-        image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parentGroupId)
+        image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
         image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
         for image_group in image_groups:
             group = QtGui.QTreeWidgetItem()
             group.setText(0, image_group.group_name)
             group.setData(0, QtCore.Qt.UserRole, image_group)
-            if parentGroupId is 0:
+            if parent_group_id is 0:
                 self.listView.addTopLevelItem(group)
             else:
-                groupList[parentGroupId].addChild(group)
-            groupList[image_group.id] = group
-            self.addSubGroups(groupList, image_group.id)
+                group_list[parent_group_id].addChild(group)
+            group_list[image_group.id] = group
+            self.add_sub_groups(group_list, image_group.id)
 
-    def fill_groups_combo_box(self, comboBox, parentGroupId=0, prefix=''):
+    def fill_groups_combobox(self, combobox, parent_group_id=0, prefix=''):
         """
         Recursively add groups to the combobox in the 'Add group' dialog
         """
-        if parentGroupId is 0:
-            comboBox.clear()
-            comboBox.top_level_group_added = False
-        image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parentGroupId)
+        if parent_group_id is 0:
+            combobox.clear()
+            combobox.top_level_group_added = False
+        image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
         image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
         for image_group in image_groups:
-            comboBox.addItem(prefix + image_group.group_name, image_group.id)
-            self.fill_groups_combo_box(comboBox, image_group.id, prefix + '   ')
+            combobox.addItem(prefix + image_group.group_name, image_group.id)
+            self.fill_groups_combobox(combobox, image_group.id, prefix + '   ')
 
-    def loadFullList(self, images, initialLoad=False):
+    def expand_group(self, group_id, root_item=None):
+        return_value = False
+        if root_item is None:
+            root_item = self.listView.invisibleRootItem()
+        for i in range(root_item.childCount()):
+            child = root_item.child(i)
+            if self.expand_group(group_id, child):
+                child.setExpanded(True)
+                return_value = True
+        if isinstance(root_item.data(0, QtCore.Qt.UserRole), ImageGroups):
+            if root_item.data(0, QtCore.Qt.UserRole).id == group_id:
+                return True
+        return return_value
+
+    def loadFullList(self, images, initial_load=False, open_group=None):
         """
         Replace the list of images and groups in the interface.
         """
-        if not initialLoad:
+        if not initial_load:
             Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(images))
         self.listView.clear()
         # Load the list of groups and add them to the treeView
         group_items = {}
-        self.addSubGroups(group_items, 0)
+        self.add_sub_groups(group_items, parent_group_id=0)
+        if open_group is not None:
+            self.expand_group(open_group.id)
         # Sort the images by its filename considering language specific
         # characters.
         images.sort(cmp=locale_compare, key=lambda image_object: os.path.split(unicode(image_object.filename))[1])
@@ -238,13 +255,27 @@ class ImageMediaItem(MediaManagerItem):
                     self.listView.insertTopLevelItem(0, imported_group)
                     group_items[0] = imported_group
             group_items[imageFile.group_id].addChild(item_name)
-            if not initialLoad:
+            if not initial_load:
                 self.main_window.incrementProgressBar()
-        if not initialLoad:
+        if not initial_load:
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
 
-    def loadList(self, images, target_group=None, initialLoad=False):
+    def validateAndLoad(self, files, target_group=None):
+        """
+        Process a list for files either from the File Dialog or from Drag and
+        Drop. This method is overloaded from MediaManagerItem.
+
+        ``files``
+            The files to be loaded.
+        """
+        if target_group is None:
+            self.listView.clear()
+        self.loadList(files, target_group)
+        last_dir = os.path.split(unicode(files[0]))[0]
+        Settings().setValue(self.settingsSection + u'/last directory', last_dir)
+
+    def loadList(self, images, target_group=None, initial_load=False):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
         """
@@ -271,7 +302,7 @@ class ImageMediaItem(MediaManagerItem):
             imageFile.filename = unicode(filename)
             success = self.manager.save_object(imageFile)
         self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
-            initialLoad)
+            initial_load=initial_load, open_group=parent_group)
 
     def dnd_move_internal(self, target):
         """
@@ -291,9 +322,11 @@ class ImageMediaItem(MediaManagerItem):
             if isinstance(item.data(0, QtCore.Qt.UserRole), ImageFilenames):
                 item.parent().removeChild(item)
                 target_group.addChild(item)
+                item.setSelected(True)
                 item_data = item.data(0, QtCore.Qt.UserRole)
                 item_data.group_id = target_group.data(0, QtCore.Qt.UserRole).id
                 items_to_save.append(item_data)
+        target_group.setExpanded(True)
         target_group.sortChildren(0, QtCore.Qt.AscendingOrder)
         # Update the group ID's of the images in the database
         self.manager.save_objects(items_to_save)
@@ -396,8 +429,8 @@ class ImageMediaItem(MediaManagerItem):
                 if self.manager.save_object(new_group):
                     self.loadFullList(self.manager.get_all_objects(ImageFilenames,
                         order_by_ref=ImageFilenames.filename))
-                    self.fill_groups_combo_box(self.choosegroupform.group_combobox)
-                    self.fill_groups_combo_box(self.addgroupform.parent_group_combobox)
+                    self.fill_groups_combobox(self.choosegroupform.group_combobox)
+                    self.fill_groups_combobox(self.addgroupform.parent_group_combobox)
                 else:
                     critical_error_message_box(
                         message=translate('ImagePlugin.AddGroupForm', 'Could not add the new group.'))
