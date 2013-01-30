@@ -819,7 +819,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Add plugin sections.
         for plugin in self.pluginManager.plugins:
             setting_sections.extend([plugin.name])
-        # Copy the settings file to the tmp dir, because we do not want to overwrite the original one.
+        # Copy the settings file to the tmp dir, because we do not want to change the original one.
         temp_directory = os.path.join(unicode(gettempdir()), u'openlp')
         check_directory_exists(temp_directory)
         temp_config = os.path.join(temp_directory, os.path.basename(import_file_name))
