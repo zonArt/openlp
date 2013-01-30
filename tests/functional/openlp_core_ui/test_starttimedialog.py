@@ -33,28 +33,28 @@ class TestStartTimeDialog(TestCase):
         """
         Test StartTimeDialog are defaults correct
         """
-        self.assertEqual(self.form.hourSpinBox.minimum(), 0, u'The minimum hour should stay the same as the dialog')
-        self.assertEqual(self.form.hourSpinBox.maximum(), 4, u'The maximum hour should stay the same as the dialog')
+        self.assertEqual(self.form.hourSpinBox.minimum(), 0, u'The minimum hour should say the same as the dialog')
+        self.assertEqual(self.form.hourSpinBox.maximum(), 4, u'The maximum hour should say the same as the dialog')
         self.assertEqual(self.form.minuteSpinBox.minimum(), 0,
-            u'The minimum minute should stay the same as the dialog')
+            u'The minimum minute should say the same as the dialog')
         self.assertEqual(self.form.minuteSpinBox.maximum(), 59,
-            u'The maximum minute should stay the same as the dialog')
+            u'The maximum minute should say the same as the dialog')
         self.assertEqual(self.form.secondSpinBox.minimum(), 0,
-            u'The minimum second should stay the same as the dialog')
+            u'The minimum second should say the same as the dialog')
         self.assertEqual(self.form.secondSpinBox.maximum(), 59,
-            u'The maximum second should stay the same as the dialog')
+            u'The maximum second should say the same as the dialog')
         self.assertEqual(self.form.hourFinishSpinBox.minimum(), 0,
-            u'The minimum finish hour should stay the same as the dialog')
+            u'The minimum finish hour should say the same as the dialog')
         self.assertEqual(self.form.hourFinishSpinBox.maximum(), 4,
-            u'The maximum finish hour should stay the same as the dialog')
+            u'The maximum finish hour should say the same as the dialog')
         self.assertEqual(self.form.minuteFinishSpinBox.minimum(), 0,
-            u'The minimum finish minute should stay the same as the dialog')
+            u'The minimum finish minute should say the same as the dialog')
         self.assertEqual(self.form.minuteFinishSpinBox.maximum(), 59,
-            u'The maximum finish minute should stay the same as the dialog')
+            u'The maximum finish minute should say the same as the dialog')
         self.assertEqual(self.form.secondFinishSpinBox.minimum(), 0,
-            u'The minimum finish second should stay the same as the dialog')
+            u'The minimum finish second should say the same as the dialog')
         self.assertEqual(self.form.secondFinishSpinBox.maximum(), 59,
-            u'The maximum finish second should stay the same as the dialog')
+            u'The maximum finish second should say the same as the dialog')
 
     def time_display_test(self):
         """
@@ -77,7 +77,7 @@ class TestStartTimeDialog(TestCase):
         self.assertEqual(self.form.hourSpinBox.value(), 0)
         self.assertEqual(self.form.minuteSpinBox.value(), 1)
         self.assertEqual(self.form.secondSpinBox.value(), 1)
-        self.assertEqual(self.form.item[u'service_item'].start_time, 61, u'The start time should stay the same')
+        self.assertEqual(self.form.item[u'service_item'].start_time, 61, u'The start time should say the same')
 
         # WHEN displaying the UI, changing the time to 2min 3secs and pressing enter
         self.form.item = {u'service_item': mocked_serviceitem}
