@@ -921,7 +921,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Write all the sections and keys.
         for section_key in keys:
             # FIXME: We are conflicting with the standard "General" section.
-            section_key = section_key.lower()
+            if u'eneral' in section_key:
+                section_key = section_key.lower()
             key_value = settings.value(section_key)
             if key_value is not None:
                 export_settings.setValue(section_key, key_value)
@@ -939,7 +940,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         temp_conf.close()
         export_conf.close()
         os.remove(temp_file)
-        return
 
     def onModeDefaultItemClicked(self):
         """
