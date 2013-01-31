@@ -122,7 +122,6 @@ class Settings(QtCore.QSettings):
         u'general/auto unblank': False,
         u'general/blank warning': False,
         u'general/ccli number': u'',
-        #u'general/enable slide loop': True,
         u'general/has run wizard': False,
         u'general/language': u'[en]',
         # This defaults to yesterday in order to force the update check to run when you've never run it before.
