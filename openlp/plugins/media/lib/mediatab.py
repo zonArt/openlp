@@ -85,6 +85,6 @@ class MediaTab(SettingsTab):
         if Settings().value(setting_key) != self.autoStartCheckBox.checkState():
             Settings().setValue(setting_key, self.autoStartCheckBox.checkState())
         if override_changed:
-            self.parent.resetSupportedSuffixes()
+            self.parent.reset_supported_suffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'mediaitem_suffixes')

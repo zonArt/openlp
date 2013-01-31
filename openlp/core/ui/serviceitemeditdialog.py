@@ -35,29 +35,29 @@ from openlp.core.lib.ui import create_button_box, create_button
 class Ui_ServiceItemEditDialog(object):
     def setupUi(self, serviceItemEditDialog):
         serviceItemEditDialog.setObjectName(u'serviceItemEditDialog')
-        self.dialogLayout = QtGui.QGridLayout(serviceItemEditDialog)
-        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
-        self.dialogLayout.setSpacing(8)
-        self.dialogLayout.setObjectName(u'dialogLayout')
-        self.listWidget = QtGui.QListWidget(serviceItemEditDialog)
-        self.listWidget.setAlternatingRowColors(True)
-        self.listWidget.setObjectName(u'listWidget')
-        self.dialogLayout.addWidget(self.listWidget, 0, 0)
-        self.buttonLayout = QtGui.QVBoxLayout()
-        self.buttonLayout.setObjectName(u'buttonLayout')
-        self.deleteButton = create_button(serviceItemEditDialog, u'deleteButton', role=u'delete',
-            click=serviceItemEditDialog.onDeleteButtonClicked)
-        self.buttonLayout.addWidget(self.deleteButton)
-        self.buttonLayout.addStretch()
-        self.upButton = create_button(serviceItemEditDialog, u'upButton', role=u'up',
-            click=serviceItemEditDialog.onUpButtonClicked)
-        self.downButton = create_button(serviceItemEditDialog, u'downButton', role=u'down',
-            click=serviceItemEditDialog.onDownButtonClicked)
-        self.buttonLayout.addWidget(self.upButton)
-        self.buttonLayout.addWidget(self.downButton)
-        self.dialogLayout.addLayout(self.buttonLayout, 0, 1)
-        self.buttonBox = create_button_box(serviceItemEditDialog, u'buttonBox', [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
+        self.dialog_layout = QtGui.QGridLayout(serviceItemEditDialog)
+        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
+        self.dialog_layout.setSpacing(8)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.list_widget = QtGui.QListWidget(serviceItemEditDialog)
+        self.list_widget.setAlternatingRowColors(True)
+        self.list_widget.setObjectName(u'list_widget')
+        self.dialog_layout.addWidget(self.list_widget, 0, 0)
+        self.button_layout = QtGui.QVBoxLayout()
+        self.button_layout.setObjectName(u'button_layout')
+        self.delete_button = create_button(serviceItemEditDialog, u'deleteButton', role=u'delete',
+            click=serviceItemEditDialog.on_delete_button_clicked)
+        self.button_layout.addWidget(self.delete_button)
+        self.button_layout.addStretch()
+        self.up_button = create_button(serviceItemEditDialog, u'upButton', role=u'up',
+            click=serviceItemEditDialog.on_up_button_clicked)
+        self.down_button = create_button(serviceItemEditDialog, u'downButton', role=u'down',
+            click=serviceItemEditDialog.on_down_button_clicked)
+        self.button_layout.addWidget(self.up_button)
+        self.button_layout.addWidget(self.down_button)
+        self.dialog_layout.addLayout(self.button_layout, 0, 1)
+        self.button_box = create_button_box(serviceItemEditDialog, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box, 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
 
     def retranslateUi(self, serviceItemEditDialog):

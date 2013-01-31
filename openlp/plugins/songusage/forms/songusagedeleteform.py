@@ -44,11 +44,11 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         self.manager = manager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
             self.onButtonBoxClicked)
 
     def onButtonBoxClicked(self, button):
-        if self.buttonBox.standardButton(button) == QtGui.QDialogButtonBox.Ok:
+        if self.button_box.standardButton(button) == QtGui.QDialogButtonBox.Ok:
             ret = QtGui.QMessageBox.question(self,
                 translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Selected Song Usage Events?'),
                 translate('SongUsagePlugin.SongUsageDeleteForm',

@@ -35,15 +35,12 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, check_item_selected, PluginStatus, create_separated_list, \
-    check_directory_exists, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, check_item_selected, \
+    PluginStatus, create_separated_list, check_directory_exists, ServiceItemContext, Settings, UiStrings
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
-from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, \
-    SongImportForm, SongExportForm
-from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, \
-    clean_string, natcmp
+from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, SongImportForm, SongExportForm
+from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, clean_string, natcmp
 from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 
@@ -105,8 +102,6 @@ class SongMediaItem(MediaManagerItem):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_edit'), self.onRemoteEdit)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClicked)
@@ -212,15 +207,10 @@ class SongMediaItem(MediaManagerItem):
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
-        if self.remoteTriggered == u'L':
-            self.onAddClick()
-        if self.remoteTriggered == u'P':
-            self.onPreviewClick()
         # Push edits to the service manager to update items
         if self.editItem and self.updateServiceOnEdit and not self.remoteTriggered:
             item = self.buildServiceItem(self.editItem)
-            self.plugin.serviceManager.replaceServiceItem(item)
-        self.onRemoteEditClear()
+            self.service_manager.replace_service_item(item)
         self.onSearchTextButtonClicked()
         log.debug(u'onSongListLoad - finished')
 
@@ -321,28 +311,28 @@ class SongMediaItem(MediaManagerItem):
     def onSongMaintenanceClick(self):
         self.songMaintenanceForm.exec_()
 
-    def onRemoteEditClear(self):
-        log.debug(u'onRemoteEditClear')
-        self.remoteTriggered = None
-        self.remoteSong = -1
-
-    def onRemoteEdit(self, message):
+    def onRemoteEdit(self, song_id, preview=False):
         """
         Called by ServiceManager or SlideController by event passing
         the Song Id in the payload along with an indicator to say which
         type of display is required.
         """
-        log.debug(u'onRemoteEdit %s' % message)
-        remote_type, song_id = message.split(u':')
+        log.debug(u'onRemoteEdit for song %s' % song_id)
         song_id = int(song_id)
         valid = self.plugin.manager.get_object(Song, song_id)
         if valid:
-            self.remoteSong = song_id
-            self.remoteTriggered = remote_type
-            self.editSongForm.loadSong(song_id, remote_type == u'P')
-            self.editSongForm.exec_()
-            self.autoSelectId = -1
-            self.onSongListLoad()
+            self.editSongForm.loadSong(song_id, preview)
+            if self.editSongForm.exec_() == QtGui.QDialog.Accepted:
+                self.autoSelectId = -1
+                self.onSongListLoad()
+                self.remoteSong = song_id
+                self.remoteTriggered = True
+                item = self.buildServiceItem(remote=True)
+                self.remoteSong = -1
+                self.remoteTriggered = None
+                if item:
+                    return item
+        return None
 
     def onEditClick(self):
         """
@@ -410,7 +400,7 @@ class SongMediaItem(MediaManagerItem):
         self.onSongListLoad()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
-        remote=False, context=ServiceItemContext.Service):
+                remote=False, context=ServiceItemContext.Service):
         log.debug(u'generateSlideData: %s, %s, %s' % (service_item, item, self.remoteSong))
         item_id = self._getIdOfItemToGenerate(item, self.remoteSong)
         service_item.add_capability(ItemCapabilities.CanEdit)
@@ -426,8 +416,7 @@ class SongMediaItem(MediaManagerItem):
             verse_list = SongXML().get_verses(song.lyrics)
             # no verse list or only 1 space (in error)
             verse_tags_translated = False
-            if VerseType.from_translated_string(unicode(
-                verse_list[0][0][u'type'])) is not None:
+            if VerseType.from_translated_string(unicode(verse_list[0][0][u'type'])) is not None:
                 verse_tags_translated = True
             if not song.verse_order.strip():
                 for verse in verse_list:

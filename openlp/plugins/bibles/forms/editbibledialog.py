@@ -44,7 +44,7 @@ class Ui_EditBibleDialog(object):
         self.dialogLayout = QtGui.QVBoxLayout(editBibleDialog)
         self.dialogLayout.setSpacing(8)
         self.dialogLayout.setContentsMargins(8, 8, 8, 8)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.bibleTabWidget = QtGui.QTabWidget(editBibleDialog)
         self.bibleTabWidget.setObjectName(u'BibleTabWidget')
         # Meta tab
@@ -121,8 +121,8 @@ class Ui_EditBibleDialog(object):
         self.bibleTabWidget.addTab(self.bookNameTab, u'')
         # Last few bits
         self.dialogLayout.addWidget(self.bibleTabWidget)
-        self.buttonBox = create_button_box(editBibleDialog, u'buttonBox', [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(editBibleDialog, u'button_box', [u'cancel', u'save'])
+        self.dialogLayout.addWidget(self.button_box)
         self.retranslateUi(editBibleDialog)
         QtCore.QMetaObject.connectSlotsByName(editBibleDialog)
 

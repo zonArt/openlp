@@ -29,11 +29,10 @@ class TestServiceItem(TestCase):
         Set up the Registry
         """
         registry = Registry.create()
-        mocked_renderer =  MagicMock()
-        mocked_image_manager =  MagicMock()
+        mocked_renderer = MagicMock()
         mocked_renderer.format_slide.return_value = [VERSE]
         Registry().register(u'renderer', mocked_renderer)
-        Registry().register(u'image_manager', mocked_image_manager)
+        Registry().register(u'image_manager', MagicMock())
 
     def serviceitem_basic_test(self):
         """

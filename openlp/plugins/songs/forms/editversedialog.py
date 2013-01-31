@@ -39,7 +39,7 @@ class Ui_EditVerseDialog(object):
         editVerseDialog.resize(400, 400)
         editVerseDialog.setModal(True)
         self.dialogLayout = QtGui.QVBoxLayout(editVerseDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.verseTextEdit = SpellTextEdit(editVerseDialog)
         self.verseTextEdit.setObjectName(u'verseTextEdit')
         self.dialogLayout.addWidget(self.verseTextEdit)
@@ -67,8 +67,8 @@ class Ui_EditVerseDialog(object):
         self.verseTypeLayout.addWidget(self.insertButton)
         self.verseTypeLayout.addStretch()
         self.dialogLayout.addLayout(self.verseTypeLayout)
-        self.buttonBox = create_button_box(editVerseDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(editVerseDialog, u'button_box', [u'cancel', u'ok'])
+        self.dialogLayout.addWidget(self.button_box)
         self.retranslateUi(editVerseDialog)
 
     def retranslateUi(self, editVerseDialog):

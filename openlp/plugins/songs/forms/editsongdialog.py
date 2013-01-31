@@ -42,7 +42,7 @@ class Ui_EditSongDialog(object):
         self.dialogLayout = QtGui.QVBoxLayout(editSongDialog)
         self.dialogLayout.setSpacing(8)
         self.dialogLayout.setContentsMargins(8, 8, 8, 8)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.songTabWidget = QtGui.QTabWidget(editSongDialog)
         self.songTabWidget.setObjectName(u'songTabWidget')
         # lyrics tab
@@ -272,8 +272,8 @@ class Ui_EditSongDialog(object):
         self.warningLabel.setObjectName(u'warningLabel')
         self.warningLabel.setVisible(False)
         self.bottomLayout.addWidget(self.warningLabel)
-        self.buttonBox = create_button_box(editSongDialog, u'buttonBox', [u'cancel', u'save'])
-        self.bottomLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(editSongDialog, u'button_box', [u'cancel', u'save'])
+        self.bottomLayout.addWidget(self.button_box)
         self.dialogLayout.addLayout(self.bottomLayout)
         self.retranslateUi(editSongDialog)
 

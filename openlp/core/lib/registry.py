@@ -30,6 +30,7 @@
 Provide Registry Services
 """
 import logging
+import sys
 
 log = logging.getLogger(__name__)
 
@@ -54,7 +55,12 @@ class Registry(object):
         log.info(u'Registry Initialising')
         registry = cls()
         registry.service_list = {}
+        registry.running_under_test = False
+        # Allow the tests to remove Registry entries but not the live system
+        if u'nosetest' in sys.argv[0]:
+            registry.running_under_test = True
         return registry
+
 
     def get(self, key):
         """
@@ -75,3 +81,16 @@ class Registry(object):
             raise KeyError(u'Duplicate service exception %s' % key)
         else:
             self.service_list[key] = reference
+
+    def remove(self, key):
+        """
+        Removes the registry value from the list based on the key passed in
+        (Only valid and active for testing framework)
+        """
+        if self.running_under_test == False:
+            log.error(u'Invalid Method call for key %s' % key)
+            raise KeyError(u'Invalid Method call for key %s' % key)
+            return
+        if key in self.service_list:
+             del self.service_list[key]
+
