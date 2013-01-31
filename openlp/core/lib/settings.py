@@ -88,6 +88,7 @@ class Settings(QtCore.QSettings):
     """
     __default_settings__ = {
         u'advanced/add page break': False,
+        u'advanced/alternate rows': not sys.platform.startswith(u'win'),
         u'advanced/current media plugin': -1,
         u'advanced/data path': u'',
         u'advanced/default color': u'#ffffff',

@@ -121,11 +121,15 @@ class OpenLP(QtGui.QApplication):
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
                 Settings().setValue(u'general/has run wizard', True)
         # Correct stylesheet bugs
-        if os.name == u'nt':
+        application_stylesheet = u''
+        if not Settings().value(u'advanced/alternate rows'):
             base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
-            application_stylesheet = \
+            alternate_rows_repair_stylesheet = \
                 u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
+            application_stylesheet += alternate_rows_repair_stylesheet
+        if os.name == u'nt':
             application_stylesheet += nt_repair_stylesheet
+        if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
         show_splash = Settings().value(u'general/show splash')
         if show_splash:
