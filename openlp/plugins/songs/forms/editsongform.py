@@ -38,7 +38,8 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, create_separated_list, check_directory_exists
+from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, create_separated_list, \
+    check_directory_exists, Registry, UiStrings
 from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, critical_error_message_box, \
     find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -87,8 +88,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.onVerseListViewClicked)
         QtCore.QObject.connect(self.verseOrderEdit, QtCore.SIGNAL(u'textChanged(QString)'),
             self.onVerseOrderTextChanged)
-        QtCore.QObject.connect(self.themeAddButton, QtCore.SIGNAL(u'clicked()'),
-            self.mediaitem.plugin.renderer.theme_manager.onAddTheme)
+        QtCore.QObject.connect(self.themeAddButton, QtCore.SIGNAL(u'clicked()'), self.theme_manager.onAddTheme)
         QtCore.QObject.connect(self.maintenanceButton, QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
         QtCore.QObject.connect(self.audioAddFromFileButton, QtCore.SIGNAL(u'clicked()'),
             self.onAudioAddFromFileButtonClicked)
@@ -101,8 +101,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(UiStrings().SaveAndPreview)
-        self.buttonBox.addButton(self.previewButton, QtGui.QDialogButtonBox.ActionRole)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
+        self.button_box.addButton(self.previewButton, QtGui.QDialogButtonBox.ActionRole)
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
         # Create other objects and forms
         self.manager = manager
         self.verseForm = EditVerseForm(self)
@@ -775,7 +775,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Exit Dialog and do not save
         """
         log.debug (u'SongEditForm.reject')
-        Receiver.send_message(u'songs_edit_clear')
         self.clearCaches()
         QtGui.QDialog.reject(self)
 
@@ -908,3 +907,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         except:
             log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
 
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)

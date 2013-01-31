@@ -29,8 +29,9 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button, create_button_box
+from openlp.core.lib import build_icon, translate, UiStrings
+from openlp.core.lib.ui import create_button, create_button_box
+
 
 class Ui_AboutDialog(object):
     def setupUi(self, aboutDialog):
@@ -73,8 +74,8 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
         self.volunteerButton = create_button(None, u'volunteerButton', icon=u':/system/system_volunteer.png')
-        self.buttonBox = create_button_box(aboutDialog, u'buttonBox', [u'close'], [self.volunteerButton])
-        self.aboutDialogLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(aboutDialog, u'button_box', [u'close'], [self.volunteerButton])
+        self.aboutDialogLayout.addWidget(self.button_box)
         self.retranslateUi(aboutDialog)
         self.aboutNotebook.setCurrentIndex(0)
 

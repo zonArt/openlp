@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, build_icon, PluginStatus
+from openlp.core.lib import Receiver, build_icon, PluginStatus, Registry
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from settingsdialog import Ui_SettingsDialog
@@ -44,21 +44,21 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
     Provide the form to manipulate the settings for OpenLP
     """
-    def __init__(self, mainWindow, parent=None):
+    def __init__(self, parent=None):
         """
         Initialise the settings form
         """
-        self.mainWindow = mainWindow
+        Registry().register(u'settings_form', self)
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
         self.generalTab = GeneralTab(self)
         # Themes tab
-        self.themesTab = ThemesTab(self, mainWindow)
+        self.themesTab = ThemesTab(self, self.main_window)
         # Advanced tab
         self.advancedTab = AdvancedTab(self)
         # Advanced tab
-        self.playerTab = PlayerTab(self, mainWindow)
+        self.playerTab = PlayerTab(self, self.main_window)
 
     def exec_(self):
         # load all the settings
@@ -140,5 +140,25 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         per save.
         """
         if self.resetSuffixes:
-            self.mainWindow.serviceManagerContents.resetSupportedSuffixes()
+            self.service_manager.reset_supported_suffixes()
             self.resetSuffixes = False
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
+
+    def _get_service_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)

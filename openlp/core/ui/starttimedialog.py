@@ -29,15 +29,16 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import translate, UiStrings
+from openlp.core.lib.ui import create_button_box
+
 
 class Ui_StartTimeDialog(object):
     def setupUi(self, StartTimeDialog):
         StartTimeDialog.setObjectName(u'StartTimeDialog')
         StartTimeDialog.resize(350, 10)
         self.dialogLayout = QtGui.QGridLayout(StartTimeDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.startLabel = QtGui.QLabel(StartTimeDialog)
         self.startLabel.setObjectName(u'startLabel')
         self.startLabel.setAlignment(QtCore.Qt.AlignHCenter)
@@ -101,8 +102,8 @@ class Ui_StartTimeDialog(object):
         self.secondFinishLabel.setAlignment(QtCore.Qt.AlignRight)
         self.dialogLayout.addWidget(self.secondFinishLabel, 3, 3, 1, 1)
         self.dialogLayout.addWidget(self.secondSpinBox, 3, 1, 1, 1)
-        self.buttonBox = create_button_box(StartTimeDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.dialogLayout.addWidget(self.buttonBox, 5, 2, 1, 2)
+        self.button_box = create_button_box(StartTimeDialog, u'button_box', [u'cancel', u'ok'])
+        self.dialogLayout.addWidget(self.button_box, 5, 2, 1, 2)
         self.retranslateUi(StartTimeDialog)
         self.setMaximumHeight(self.sizeHint().height())
 

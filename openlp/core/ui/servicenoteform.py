@@ -29,36 +29,46 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate, SpellTextEdit
+from openlp.core.lib import translate, SpellTextEdit, Registry
 from openlp.core.lib.ui import create_button_box
 
 class ServiceNoteForm(QtGui.QDialog):
     """
     This is the form that is used to edit the verses of the song.
     """
-    def __init__(self, parent=None):
+    def __init__(self):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi()
         self.retranslateUi()
 
     def exec_(self):
-        self.textEdit.setFocus()
+        self.text_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def setupUi(self):
         self.setObjectName(u'serviceNoteEdit')
-        self.dialogLayout = QtGui.QVBoxLayout(self)
-        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
-        self.dialogLayout.setSpacing(8)
-        self.dialogLayout.setObjectName(u'verticalLayout')
-        self.textEdit = SpellTextEdit(self, False)
-        self.textEdit.setObjectName(u'textEdit')
-        self.dialogLayout.addWidget(self.textEdit)
-        self.buttonBox = create_button_box(self, u'buttonBox', [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.dialog_layout = QtGui.QVBoxLayout(self)
+        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
+        self.dialog_layout.setSpacing(8)
+        self.dialog_layout.setObjectName(u'verticalLayout')
+        self.text_edit = SpellTextEdit(self, False)
+        self.text_edit.setObjectName(u'textEdit')
+        self.dialog_layout.addWidget(self.text_edit)
+        self.button_box = create_button_box(self, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box)
 
     def retranslateUi(self):
         self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

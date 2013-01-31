@@ -29,8 +29,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import translate, UiStrings
+from openlp.core.lib.ui import create_button_box
+
 
 class Ui_PluginViewDialog(object):
     def setupUi(self, pluginViewDialog):
@@ -66,8 +67,8 @@ class Ui_PluginViewDialog(object):
         self.pluginInfoLayout.addRow(self.aboutLabel, self.aboutTextBrowser)
         self.listLayout.addWidget(self.pluginInfoGroupBox)
         self.pluginLayout.addLayout(self.listLayout)
-        self.buttonBox = create_button_box(pluginViewDialog, u'buttonBox', [u'ok'])
-        self.pluginLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(pluginViewDialog, u'button_box', [u'ok'])
+        self.pluginLayout.addWidget(self.button_box)
         self.retranslateUi(pluginViewDialog)
 
     def retranslateUi(self, pluginViewDialog):

@@ -34,8 +34,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, SettingsManager, translate
-from openlp.core.lib.ui import UiStrings, add_welcome_page
+from openlp.core.lib import build_icon, Receiver, Settings, translate, UiStrings
+from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)
 
@@ -254,7 +254,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.cancelButton.setVisible(False)
         Receiver.send_message(u'openlp_process_events')
 
-    def getFileName(self, title, editbox, filters=u''):
+    def getFileName(self, title, editbox, setting_name, filters=u''):
         """
         Opens a QFileDialog and saves the filename to the given editbox.
 
@@ -263,6 +263,9 @@ class OpenLPWizard(QtGui.QWizard):
 
         ``editbox``
             An editbox (QLineEdit).
+
+        ``setting_name``
+            The place where to save the last opened directory.
 
         ``filters``
             The file extension filters. It should contain the file description
@@ -273,15 +276,13 @@ class OpenLPWizard(QtGui.QWizard):
         if filters:
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
-        filename = unicode(QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(
-            self.plugin.settingsSection, 1)), filters))
+        filename = QtGui.QFileDialog.getOpenFileName(self, title,
+            os.path.dirname(Settings().value(self.plugin.settingsSection + u'/' + setting_name)), filters)
         if filename:
             editbox.setText(filename)
-            SettingsManager.set_last_dir(self.plugin.settingsSection,
-                filename, 1)
+        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, filename)
 
-    def getFolder(self, title, editbox):
+    def getFolder(self, title, editbox, setting_name):
         """
         Opens a QFileDialog and saves the selected folder to the given editbox.
 
@@ -290,10 +291,13 @@ class OpenLPWizard(QtGui.QWizard):
 
         ``editbox``
             An editbox (QLineEdit).
+
+        ``setting_name``
+            The place where to save the last opened directory.
         """
-        folder = unicode(QtGui.QFileDialog.getExistingDirectory(self, title,
-            os.path.dirname(SettingsManager.get_last_dir(self.plugin.settingsSection, 1)),
-                QtGui.QFileDialog.ShowDirsOnly))
+        folder = QtGui.QFileDialog.getExistingDirectory(self, title,
+            Settings().value(self.plugin.settingsSection + u'/' + setting_name),
+            QtGui.QFileDialog.ShowDirsOnly)
         if folder:
             editbox.setText(folder)
-            SettingsManager.set_last_dir(self.plugin.settingsSection, folder, 1)
+        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)

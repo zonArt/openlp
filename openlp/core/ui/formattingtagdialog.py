@@ -29,8 +29,9 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import translate, UiStrings
+from openlp.core.lib.ui import create_button_box
+
 
 class Ui_FormattingTagDialog(object):
 
@@ -109,8 +110,8 @@ class Ui_FormattingTagDialog(object):
         self.savePushButton.setObjectName(u'savePushButton')
         self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
-        self.buttonBox = create_button_box(formattingTagDialog, u'buttonBox', [u'close'])
-        self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
+        self.button_box = create_button_box(formattingTagDialog, u'button_box', [u'close'])
+        self.listdataGridLayout.addWidget(self.button_box, 3, 0, 1, 1)
 
         self.retranslateUi(formattingTagDialog)
 

@@ -34,16 +34,42 @@ from PyQt4 import QtGui
 from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.utils.actions import ActionList
-from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem
+from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem, LayoutStyle, DisplayStyle, \
+    LanguageSelection
+from openlp.plugins.bibles.lib.mediaitem import BibleSearch
 from openlp.plugins.bibles.forms import BibleUpgradeForm
 
 log = logging.getLogger(__name__)
 
+
+__default_settings__ = {
+        u'bibles/db type': u'sqlite',
+        u'bibles/last search type': BibleSearch.Reference,
+        u'bibles/verse layout style': LayoutStyle.VersePerSlide,
+        u'bibles/book name language': LanguageSelection.Bible,
+        u'bibles/display brackets': DisplayStyle.NoBrackets,
+        u'bibles/display new chapter': False,
+        u'bibles/second bibles': True,
+        u'bibles/advanced bible': u'',
+        u'bibles/quick bible': u'',
+        u'bibles/proxy name': u'',
+        u'bibles/proxy address': u'',
+        u'bibles/proxy username': u'',
+        u'bibles/proxy password': u'',
+        u'bibles/bible theme': u'',
+        u'bibles/verse separator': u'',
+        u'bibles/range separator': u'',
+        u'bibles/list separator': u'',
+        u'bibles/end separator': u'',
+        u'bibles/last directory import': u''
+    }
+
+
 class BiblePlugin(Plugin):
     log.info(u'Bible Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'bibles', plugin_helpers, BibleMediaItem, BiblesTab)
+    def __init__(self):
+        Plugin.__init__(self, u'bibles', __default_settings__, BibleMediaItem, BiblesTab)
         self.weight = -9
         self.iconPath = u':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.iconPath)
@@ -80,20 +106,15 @@ class BiblePlugin(Plugin):
         """
         Perform tasks on application startup
         """
+        Plugin.appStartup(self)
         if self.manager.old_bible_databases:
-            if QtGui.QMessageBox.information(self.formParent,
+            if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),
                 translate('OpenLP', 'Bible format has changed.\nYou have to upgrade your existing Bibles.\n'
                     'Should OpenLP upgrade now?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
                     QtGui.QMessageBox.Yes:
                 self.onToolsUpgradeItemTriggered()
-        settings = Settings()
-        settings.beginGroup(self.settingsSection)
-        if settings.contains(u'bookname language'):
-            settings.setValue(u'book name language', settings.value(u'bookname language', 0))
-            settings.remove(u'bookname language')
-        settings.endGroup()
 
     def addImportMenuItem(self, import_menu):
         self.importBibleItem = create_action(import_menu, u'importBibleItem',
@@ -128,7 +149,7 @@ class BiblePlugin(Plugin):
         Upgrade older bible databases.
         """
         if not hasattr(self, u'upgrade_wizard'):
-            self.upgrade_wizard = BibleUpgradeForm(self.formParent, self.manager, self)
+            self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
             self.mediaItem.reloadBibles()

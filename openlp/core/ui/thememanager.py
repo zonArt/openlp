@@ -37,9 +37,10 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, get_text_file_string, build_icon, Receiver, SettingsManager, translate, \
-    check_item_selected, check_directory_exists, create_thumb, validate_thumb, ImageSource, Settings
+    check_item_selected, check_directory_exists, create_thumb, validate_thumb, ImageSource, Settings, Registry, \
+    UiStrings
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, BackgroundGradientType
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_widget_action
+from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_filesystem_encoding
@@ -50,9 +51,9 @@ class ThemeManager(QtGui.QWidget):
     """
     Manages the orders of Theme.
     """
-    def __init__(self, mainwindow, parent=None):
+    def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self.mainwindow = mainwindow
+        Registry().register(u'theme_manager', self)
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm(self)
@@ -158,7 +159,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
-        self.global_theme = Settings().value(self.settingsSection + u'/global theme', u'')
+        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
 
     def checkListState(self, item):
         """
@@ -261,11 +262,10 @@ class ThemeManager(QtGui.QWidget):
                     old_theme_data = self.getThemeData(old_theme_name)
                     self.cloneThemeData(old_theme_data, new_theme_name)
                     self.deleteTheme(old_theme_name)
-                    for plugin in self.mainwindow.pluginManager.plugins:
+                    for plugin in self.plugin_manager.plugins:
                         if plugin.usesTheme(old_theme_name):
                             plugin.renameTheme(old_theme_name, new_theme_name)
-                    self.mainwindow.renderer.update_theme(
-                        new_theme_name, old_theme_name)
+                    self.renderer.update_theme(new_theme_name, old_theme_name)
                     self.loadThemes()
 
     def onCopyTheme(self):
@@ -312,7 +312,7 @@ class ThemeManager(QtGui.QWidget):
             self.themeForm.theme = theme
             self.themeForm.exec_(True)
             self.oldBackgroundImage = None
-            self.mainwindow.renderer.update_theme(theme.theme_name)
+            self.renderer.update_theme(theme.theme_name)
             self.loadThemes()
 
     def onDeleteTheme(self):
@@ -327,7 +327,7 @@ class ThemeManager(QtGui.QWidget):
             row = self.themeListWidget.row(item)
             self.themeListWidget.takeItem(row)
             self.deleteTheme(theme)
-            self.mainwindow.renderer.update_theme(theme, only_delete=True)
+            self.renderer.update_theme(theme, only_delete=True)
             # As we do not reload the themes, push out the change. Reload the
             # list as the internal lists and events need to be triggered.
             self._pushThemes()
@@ -360,12 +360,12 @@ class ThemeManager(QtGui.QWidget):
         theme = item.data(QtCore.Qt.UserRole)
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
-            SettingsManager.get_last_dir(self.settingsSection, 1))
-        path = unicode(path)
+            Settings().value(self.settingsSection + u'/last directory export'))
         Receiver.send_message(u'cursor_busy')
         if path:
-            SettingsManager.set_last_dir(self.settingsSection, path, 1)
+            Settings().setValue(self.settingsSection + u'/last directory export', path)
             theme_path = os.path.join(path, theme + u'.otz')
+            # FIXME: Do not overwrite build-in.
             zip = None
             try:
                 zip = zipfile.ZipFile(theme_path, u'w')
@@ -396,14 +396,14 @@ class ThemeManager(QtGui.QWidget):
         """
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
-            SettingsManager.get_last_dir(self.settingsSection),
+            Settings().value(self.settingsSection + u'/last directory import'),
             translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
         log.info(u'New Themes %s', unicode(files))
         if not files:
             return
         Receiver.send_message(u'cursor_busy')
         for file in files:
-            SettingsManager.set_last_dir(self.settingsSection, unicode(file))
+            Settings().setValue(self.settingsSection + u'/last directory import', unicode(file))
             self.unzipTheme(file, self.path)
         self.loadThemes()
         Receiver.send_message(u'cursor_normal')
@@ -429,7 +429,7 @@ class ThemeManager(QtGui.QWidget):
                 Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
                 self.configUpdated()
                 files = SettingsManager.get_files(self.settingsSection, u'.png')
-        # Sort the themes by its name considering language specific 
+        # Sort the themes by its name considering language specific
         files.sort(key=lambda file_name: unicode(file_name),
            cmp=locale_compare)
         # now process the file list of png files
@@ -474,8 +474,7 @@ class ThemeManager(QtGui.QWidget):
             Name of the theme to load from file
         """
         log.debug(u'getthemedata for theme %s', theme_name)
-        xml_file = os.path.join(self.path, unicode(theme_name),
-            unicode(theme_name) + u'.xml')
+        xml_file = os.path.join(self.path, unicode(theme_name), unicode(theme_name) + u'.xml')
         xml = get_text_file_string(xml_file)
         if not xml:
             log.debug(u'No theme data - using default theme')
@@ -631,9 +630,9 @@ class ThemeManager(QtGui.QWidget):
         """
         self._writeTheme(theme, image_from, image_to)
         if theme.background_type == BackgroundType.to_string(BackgroundType.Image):
-            self.mainwindow.imageManager.updateImageBorder(theme.background_filename,
+            self.image_manager.updateImageBorder(theme.background_filename,
                 ImageSource.Theme, QtGui.QColor(theme.background_border_color))
-            self.mainwindow.imageManager.processUpdates()
+            self.image_manager.processUpdates()
 
     def _writeTheme(self, theme, image_from, image_to):
         """
@@ -680,11 +679,11 @@ class ThemeManager(QtGui.QWidget):
         """
         Called to update the themes' preview images.
         """
-        self.mainwindow.displayProgressBar(len(self.themeList))
+        self.main_window.displayProgressBar(len(self.themeList))
         for theme in self.themeList:
-            self.mainwindow.incrementProgressBar()
+            self.main_window.incrementProgressBar()
             self.generateAndSaveImage(self.path, theme, self.getThemeData(theme))
-        self.mainwindow.finishedProgressBar()
+        self.main_window.finishedProgressBar()
         self.loadThemes()
 
     def generateImage(self, theme_data, forcePage=False):
@@ -698,7 +697,7 @@ class ThemeManager(QtGui.QWidget):
             Flag to tell message lines per page need to be generated.
         """
         log.debug(u'generateImage \n%s ', theme_data)
-        return self.mainwindow.renderer.generate_preview(theme_data, forcePage)
+        return self.renderer.generate_preview(theme_data, forcePage)
 
     def getPreviewImage(self, theme):
         """
@@ -729,8 +728,7 @@ class ThemeManager(QtGui.QWidget):
         Check to see if theme has been selected and the destructive action
         is allowed.
         """
-        self.global_theme = Settings().value(
-            self.settingsSection + u'/global theme', u'')
+        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
         if check_item_selected(self.themeListWidget, select_text):
             item = self.themeListWidget.currentItem()
             theme = item.text()
@@ -748,7 +746,7 @@ class ThemeManager(QtGui.QWidget):
                 return False
             # check for use in the system else where.
             if testPlugin:
-                for plugin in self.mainwindow.pluginManager.plugins:
+                for plugin in self.plugin_manager.plugins:
                     if plugin.usesTheme(theme):
                         critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
                             translate('OpenLP.ThemeManager', 'Theme %s is used in the %s plugin.') %
@@ -806,3 +804,42 @@ class ThemeManager(QtGui.QWidget):
         new_theme.display_vertical_align = vAlignCorrection
         return new_theme.extract_xml()
 
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

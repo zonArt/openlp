@@ -29,8 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button_box, create_button
+from openlp.core.lib import build_icon, translate, UiStrings
+from openlp.core.lib.ui import create_button_box, create_button
 
 class Ui_CustomEditDialog(object):
     def setupUi(self, customEditDialog):
@@ -38,7 +38,7 @@ class Ui_CustomEditDialog(object):
         customEditDialog.resize(450, 350)
         customEditDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         self.dialogLayout = QtGui.QVBoxLayout(customEditDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.titleLayout = QtGui.QHBoxLayout()
         self.titleLayout.setObjectName(u'titleLayout')
         self.titleLabel = QtGui.QLabel(customEditDialog)
@@ -97,8 +97,8 @@ class Ui_CustomEditDialog(object):
         self.bottomFormLayout.addRow(self.creditLabel, self.creditEdit)
         self.dialogLayout.addLayout(self.bottomFormLayout)
         self.previewButton = QtGui.QPushButton()
-        self.buttonBox = create_button_box(customEditDialog, u'buttonBox', [u'cancel', u'save'], [self.previewButton])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(customEditDialog, u'button_box', [u'cancel', u'save'], [self.previewButton])
+        self.dialogLayout.addWidget(self.button_box)
         self.retranslateUi(customEditDialog)
 
     def retranslateUi(self, customEditDialog):

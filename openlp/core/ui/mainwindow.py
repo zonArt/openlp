@@ -40,9 +40,8 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus
+    PluginStatus, Registry, Settings, ScreenList
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.lib import SlideLimits, Settings
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
@@ -50,7 +49,6 @@ from openlp.core.utils import AppLocation, add_actions, LanguageManager, get_app
     get_filesystem_encoding
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
-from openlp.core.ui import ScreenList
 
 log = logging.getLogger(__name__)
 
@@ -80,6 +78,7 @@ PROGRESSBAR_STYLE = """
     }
 """
 
+
 class Ui_MainWindow(object):
     def setupUi(self, mainWindow):
         """
@@ -103,10 +102,10 @@ class Ui_MainWindow(object):
         # Create slide controllers
         self.previewController = SlideController(self)
         self.liveController = SlideController(self, True)
-        previewVisible = Settings().value(u'user interface/preview panel', True)
+        previewVisible = Settings().value(u'user interface/preview panel')
         self.previewController.panel.setVisible(previewVisible)
-        liveVisible = Settings().value(u'user interface/live panel', True)
-        panelLocked = Settings().value(u'user interface/lock panel', False)
+        liveVisible = Settings().value(u'user interface/live panel')
+        panelLocked = Settings().value(u'user interface/lock panel')
         self.liveController.panel.setVisible(liveVisible)
         # Create menu
         self.menuBar = QtGui.QMenuBar(mainWindow)
@@ -159,12 +158,12 @@ class Ui_MainWindow(object):
         # Create the service manager
         self.serviceManagerDock = OpenLPDockWidget(mainWindow, u'serviceManagerDock',
             u':/system/system_servicemanager.png')
-        self.serviceManagerContents = ServiceManager(mainWindow, self.serviceManagerDock)
+        self.serviceManagerContents = ServiceManager(self.serviceManagerDock)
         self.serviceManagerDock.setWidget(self.serviceManagerContents)
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.serviceManagerDock)
         # Create the theme manager
         self.themeManagerDock = OpenLPDockWidget(mainWindow, u'themeManagerDock', u':/system/system_thememanager.png')
-        self.themeManagerContents = ThemeManager(mainWindow, self.themeManagerDock)
+        self.themeManagerContents = ThemeManager(self.themeManagerDock)
         self.themeManagerContents.setObjectName(u'themeManagerContents')
         self.themeManagerDock.setWidget(self.themeManagerContents)
         mainWindow.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.themeManagerDock)
@@ -175,25 +174,25 @@ class Ui_MainWindow(object):
             icon=u':/general/general_new.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+N')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.onNewServiceClicked)
+            triggers=self.serviceManagerContents.on_new_service_clicked)
         self.fileOpenItem = create_action(mainWindow, u'fileOpenItem',
             icon=u':/general/general_open.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+O')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.onLoadServiceClicked)
+            triggers=self.serviceManagerContents.on_load_service_clicked)
         self.fileSaveItem = create_action(mainWindow, u'fileSaveItem',
             icon=u':/general/general_save.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+S')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.saveFile)
+            triggers=self.serviceManagerContents.save_file)
         self.fileSaveAsItem = create_action(mainWindow, u'fileSaveAsItem',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+Shift+S')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.saveFileAs)
+            triggers=self.serviceManagerContents.save_file_as)
         self.printServiceOrderItem = create_action(mainWindow,
             u'printServiceItem', shortcuts=[QtGui.QKeySequence(u'Ctrl+P')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.printServiceOrder)
+            triggers=self.serviceManagerContents.print_service_order)
         self.fileExitItem = create_action(mainWindow, u'fileExitItem',
             icon=u':/system/system_exit.png',
             shortcuts=[QtGui.QKeySequence(u'Alt+F4')],
@@ -232,7 +231,7 @@ class Ui_MainWindow(object):
             checked=panelLocked, triggers=self.setLockPanel)
         action_list.add_category(UiStrings().ViewMode,
             CategoryOrder.standardMenu)
-        self.modeDefaultItem = create_action(mainWindow, u'modeDefaultItem',  checked=False,
+        self.modeDefaultItem = create_action(mainWindow, u'modeDefaultItem', checked=False,
             category=UiStrings().ViewMode)
         self.modeSetupItem = create_action(mainWindow, u'modeSetupItem', checked=False, category=UiStrings().ViewMode)
         self.modeLiveItem = create_action(mainWindow, u'modeLiveItem', checked=True, category=UiStrings().ViewMode)
@@ -456,11 +455,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
+        Registry().register(u'main_window', self)
         self.application = application
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args
-        # Set up settings sections for the main application
-        # (not for use by plugins)
+        # Set up settings sections for the main application (not for use by plugins).
         self.uiSettingsSection = u'user interface'
         self.generalSettingsSection = u'general'
         self.advancedSettingsSection = u'advanced'
@@ -471,17 +470,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.playersSettingsSection = u'players'
         self.displayTagsSection = u'displayTags'
         self.headerSection = u'SettingsImport'
+        Settings().set_up_default_values()
+        Settings().remove_obsolete_settings()
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.mediaController = MediaController(self)
-        self.settingsForm = SettingsForm(self, self)
+        self.settingsForm = SettingsForm(self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = []
         # Set up the path with plugins
         plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
         self.pluginManager = PluginManager(plugin_path)
-        self.pluginHelpers = {}
         self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
@@ -528,7 +528,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.cleanUp)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
         Receiver.send_message(u'cursor_busy')
@@ -542,21 +542,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # warning cyclic dependency
         # renderer needs to call ThemeManager and
         # ThemeManager needs to call Renderer
-        self.renderer = Renderer(self.imageManager, self.themeManagerContents)
+        self.renderer = Renderer()
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
-        # make the controllers available to the plugins
-        self.pluginHelpers[u'preview'] = self.previewController
-        self.pluginHelpers[u'live'] = self.liveController
-        self.pluginHelpers[u'renderer'] = self.renderer
-        self.pluginHelpers[u'service'] = self.serviceManagerContents
-        self.pluginHelpers[u'settings form'] = self.settingsForm
-        self.pluginHelpers[u'toolbox'] = self.mediaDockManager
-        self.pluginHelpers[u'pluginmanager'] = self.pluginManager
-        self.pluginHelpers[u'formparent'] = self
-        self.pluginHelpers[u'mediacontroller'] = self.mediaController
-        self.pluginManager.find_plugins(plugin_path, self.pluginHelpers)
+        self.pluginManager.find_plugins(plugin_path)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
@@ -579,8 +569,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         log.info(u'Load data from Settings')
-        if Settings().value(u'advanced/save current plugin', False):
-            savedPlugin = Settings().value(u'advanced/current media plugin', -1)
+        if Settings().value(u'advanced/save current plugin'):
+            savedPlugin = Settings().value(u'advanced/current media plugin')
             if savedPlugin != -1:
                 self.mediaToolBox.setCurrentIndex(savedPlugin)
         self.settingsForm.postSetUp()
@@ -628,11 +618,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             filename = args[0]
             if not isinstance(filename, unicode):
                 filename = unicode(filename, sys.getfilesystemencoding())
-            self.serviceManagerContents.loadFile(filename)
-        elif Settings().value(
-            self.generalSettingsSection + u'/auto open', False):
-            self.serviceManagerContents.loadLastFile()
-        view_mode = Settings().value(u'%s/view mode' % self.generalSettingsSection, u'default')
+            self.serviceManagerContents.load_file(filename)
+        elif Settings().value(self.generalSettingsSection + u'/auto open'):
+            self.serviceManagerContents.load_Last_file()
+        view_mode = Settings().value(u'%s/view mode' % self.generalSettingsSection)
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
         elif view_mode == u'setup':
@@ -710,10 +699,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         settings = Settings()
         self.liveController.mainDisplaySetBackground()
-        if settings.value(u'%s/screen blank' % self.generalSettingsSection,
-            False):
-            if settings.value(u'%s/blank warning' % self.generalSettingsSection,
-                False):
+        if settings.value(u'%s/screen blank' % self.generalSettingsSection):
+            if settings.value(u'%s/blank warning' % self.generalSettingsSection):
                 QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
 
@@ -837,7 +824,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Lets do a basic sanity check. If it contains this string we can
         # assume it was created by OpenLP and so we'll load what we can
         # from it, and just silently ignore anything we don't recognise
-        if import_settings.value(u'SettingsImport/type', u'') != u'OpenLP_settings_export':
+        if import_settings.value(u'SettingsImport/type') != u'OpenLP_settings_export':
             QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
                 translate('OpenLP.MainWindow', 'The file you have selected does not appear to be a valid OpenLP '
                     'settings file.\n\nProcessing has terminated and no changes have been made.'),
@@ -860,7 +847,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 continue
         # We have a good file, import it.
         for section_key in import_keys:
-            value = import_settings.value(section_key, None)
+            if u'eneral' in section_key:
+                section_key = section_key.lower()
+            value = import_settings.value(section_key)
             if value is not None:
                 settings.setValue(u'%s' % (section_key), value)
         now = datetime.now()
@@ -877,7 +866,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 'be applied the next time you start OpenLP.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
         self.settingsImported = True
-        self.cleanUp()
+        self.clean_up()
         QtCore.QCoreApplication.exit()
 
     def onSettingsExportItemClicked(self):
@@ -926,13 +915,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_settings.beginGroup(self.headerSection)
         export_settings.setValue(u'Make_Changes', u'At_Own_RISK')
         export_settings.setValue(u'type', u'OpenLP_settings_export')
-        export_settings.setValue(u'file_date_created',
-            now.strftime("%Y-%m-%d %H:%M"))
+        export_settings.setValue(u'file_date_created', now.strftime("%Y-%m-%d %H:%M"))
         export_settings.setValue(u'version', application_version[u'full'])
         export_settings.endGroup()
         # Write all the sections and keys.
         for section_key in keys:
-            key_value = settings.value(section_key, None)
+            # FIXME: We are conflicting with the standard "General" section.
+            if u'eneral' in section_key:
+                section_key = section_key.lower()
+            key_value = settings.value(section_key)
             if key_value is not None:
                 export_settings.setValue(section_key, key_value)
         export_settings.sync()
@@ -940,16 +931,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Read the  temp file and output the user's CONF file with blanks to
         # make it more readable.
         temp_conf = open(temp_file, u'r')
-        export_conf = open(export_file_name,  u'w')
+        export_conf = open(export_file_name, u'w')
         for file_record in temp_conf:
             # Get rid of any invalid entries.
             if file_record.find(u'@Invalid()') == -1:
-                file_record = file_record.replace(u'%20',  u' ')
+                file_record = file_record.replace(u'%20', u' ')
                 export_conf.write(file_record)
         temp_conf.close()
         export_conf.close()
         os.remove(temp_file)
-        return
 
     def onModeDefaultItemClicked(self):
         """
@@ -1009,37 +999,37 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         # If we just did a settings import, close without saving changes.
         if self.settingsImported:
-            self.cleanUp(False)
+            self.clean_up(False)
             event.accept()
-        if self.serviceManagerContents.isModified():
-            ret = self.serviceManagerContents.saveModifiedService()
+        if self.serviceManagerContents.is_modified():
+            ret = self.serviceManagerContents.save_modified_service()
             if ret == QtGui.QMessageBox.Save:
-                if self.serviceManagerContents.decideSaveMethod():
-                    self.cleanUp()
+                if self.serviceManagerContents.decide_save_method():
+                    self.clean_up()
                     event.accept()
                 else:
                     event.ignore()
             elif ret == QtGui.QMessageBox.Discard:
-                self.cleanUp()
+                self.clean_up()
                 event.accept()
             else:
                 event.ignore()
         else:
-            if Settings().value(u'advanced/enable exit confirmation', True):
+            if Settings().value(u'advanced/enable exit confirmation'):
                 ret = QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
                         translate('OpenLP.MainWindow', 'Are you sure you want to close OpenLP?'),
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.Yes)
                 if ret == QtGui.QMessageBox.Yes:
-                    self.cleanUp()
+                    self.clean_up()
                     event.accept()
                 else:
                     event.ignore()
             else:
-                self.cleanUp()
+                self.clean_up()
                 event.accept()
 
-    def cleanUp(self, save_settings=True):
+    def clean_up(self, save_settings=True):
         """
         Runs all the cleanup code before OpenLP shuts down.
 
@@ -1052,7 +1042,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Clean temporary files used by services
         self.serviceManagerContents.cleanUp()
         if save_settings:
-            if Settings().value(u'advanced/save current plugin', False):
+            if Settings().value(u'advanced/save current plugin'):
                 Settings().setValue(u'advanced/current media plugin', self.mediaToolBox.currentIndex())
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
@@ -1181,28 +1171,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Load the main window settings.
         """
         log.debug(u'Loading QSettings')
-       # Migrate Wrap Settings to Slide Limits Settings
-        if Settings().contains(self.generalSettingsSection + u'/enable slide loop'):
-            if Settings().value(self.generalSettingsSection + u'/enable slide loop', True):
-                Settings().setValue(self.advancedSettingsSection + u'/slide limits', SlideLimits.Wrap)
-            else:
-                Settings().setValue(self.advancedSettingsSection + u'/slide limits', SlideLimits.End)
-            Settings().remove(self.generalSettingsSection + u'/enable slide loop')
-            Receiver.send_message(u'slidecontroller_update_slide_limits')
         settings = Settings()
         # Remove obsolete entries.
         settings.remove(u'custom slide')
         settings.remove(u'service')
         settings.beginGroup(self.generalSettingsSection)
-        self.recentFiles = settings.value(u'recent files', self.recentFiles)
+        self.recentFiles = settings.value(u'recent files')
         settings.endGroup()
         settings.beginGroup(self.uiSettingsSection)
-        self.move(settings.value(u'main window position', QtCore.QPoint(0, 0)))
-        self.restoreGeometry(settings.value(u'main window geometry', QtCore.QByteArray()))
-        self.restoreState(settings.value(u'main window state', QtCore.QByteArray()))
-        self.liveController.splitter.restoreState(settings.value(u'live splitter geometry', QtCore.QByteArray()))
-        self.previewController.splitter.restoreState(settings.value(u'preview splitter geometry', QtCore.QByteArray()))
-        self.controlSplitter.restoreState(settings.value(u'mainwindow splitter geometry', QtCore.QByteArray()))
+        self.move(settings.value(u'main window position'))
+        self.restoreGeometry(settings.value(u'main window geometry'))
+        self.restoreState(settings.value(u'main window state'))
+        self.liveController.splitter.restoreState(settings.value(u'live splitter geometry'))
+        self.previewController.splitter.restoreState(settings.value(u'preview splitter geometry'))
+        self.controlSplitter.restoreState(settings.value(u'mainwindow splitter geometry'))
         settings.endGroup()
 
     def saveSettings(self):
@@ -1231,7 +1213,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Updates the recent file menu with the latest list of service files
         accessed.
         """
-        recentFileCount = Settings().value(u'advanced/recent file count', 4)
+        recentFileCount = Settings().value(u'advanced/recent file count')
         existingRecentFiles = [recentFile for recentFile in self.recentFiles
             if os.path.isfile(unicode(recentFile))]
         recentFilesToDisplay = existingRecentFiles[0:recentFileCount]
@@ -1241,7 +1223,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             action = create_action(self, u'',
                 text=u'&%d %s' % (fileId + 1, os.path.splitext(os.path.basename(
                 unicode(filename)))[0]), data=filename,
-                triggers=self.serviceManagerContents.onRecentServiceClicked)
+                triggers=self.serviceManagerContents.on_recent_service_clicked)
             self.recentFilesMenu.addAction(action)
         clearRecentFilesAction = create_action(self, u'',
             text=translate('OpenLP.MainWindow', 'Clear List', 'Clear List of recent files'),
@@ -1261,7 +1243,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # The maxRecentFiles value does not have an interface and so never gets
         # actually stored in the settings therefore the default value of 20 will
         # always be used.
-        maxRecentFiles = Settings().value(u'advanced/max recent files', 20)
+        maxRecentFiles = Settings().value(u'advanced/max recent files')
         if filename:
             # Add some cleanup to reduce duplication in the recent file list
             filename = os.path.abspath(filename)
@@ -1332,7 +1314,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     '- Please wait for copy to finish').replace('%s', self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
-            except (IOError, os.error, DistutilsFileError),  why:
+            except (IOError, os.error, DistutilsFileError), why:
                 Receiver.send_message(u'cursor_normal')
                 log.exception(u'Data copy failed %s' % unicode(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
@@ -1348,3 +1330,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Check if the new data path is our default.
         if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')
+

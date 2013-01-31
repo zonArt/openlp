@@ -26,79 +26,71 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+Provide Registry Services
+"""
 import logging
-
-from openlp.core.lib import Plugin, StringContent, translate, build_icon
-from openlp.plugins.remotes.lib import RemoteTab, HttpServer
+import sys
 
 log = logging.getLogger(__name__)
 
-__default_settings__ = {
-        u'remotes/twelve hour': True,
-        u'remotes/port': 4316,
-        u'remotes/ip address': u'0.0.0.0'
-    }
+class Registry(object):
+    """
+    This is the Component Registry.  It is a singleton object and is used to provide a
+    look up service for common objects.
+    """
+    log.info(u'Registry loaded')
+    __instance__ = None
+
+    def __new__(cls):
+        if not cls.__instance__:
+            cls.__instance__ = object.__new__(cls)
+        return cls.__instance__
+
+    @classmethod
+    def create(cls):
+        """
+        The constructor for the component registry providing a single registry of objects.
+        """
+        log.info(u'Registry Initialising')
+        registry = cls()
+        registry.service_list = {}
+        registry.running_under_test = False
+        # Allow the tests to remove Registry entries but not the live system
+        if u'nosetest' in sys.argv[0]:
+            registry.running_under_test = True
+        return registry
 
 
-class RemotesPlugin(Plugin):
-    log.info(u'Remote Plugin loaded')
+    def get(self, key):
+        """
+        Extracts the registry value from the list based on the key passed in
+        """
+        if key in self.service_list:
+            return self.service_list[key]
+        else:
+            log.error(u'Service %s not found in list' % key)
+            raise KeyError(u'Service %s not found in list' % key)
 
-    def __init__(self):
+    def register(self, key, reference):
         """
-        remotes constructor
+        Registers a component against a key.
         """
-        Plugin.__init__(self, u'remotes', __default_settings__, settings_tab_class=RemoteTab)
-        self.iconPath = u':/plugins/plugin_remote.png'
-        self.icon = build_icon(self.iconPath)
-        self.weight = -1
-        self.server = None
+        if key in self.service_list:
+            log.error(u'Duplicate service exception %s' % key)
+            raise KeyError(u'Duplicate service exception %s' % key)
+        else:
+            self.service_list[key] = reference
 
-    def initialise(self):
+    def remove(self, key):
         """
-        Initialise the remotes plugin, and start the http server
+        Removes the registry value from the list based on the key passed in
+        (Only valid and active for testing framework)
         """
-        log.debug(u'initialise')
-        Plugin.initialise(self)
-        self.server = HttpServer(self)
+        if self.running_under_test == False:
+            log.error(u'Invalid Method call for key %s' % key)
+            raise KeyError(u'Invalid Method call for key %s' % key)
+            return
+        if key in self.service_list:
+             del self.service_list[key]
 
-    def finalise(self):
-        """
-        Tidy up and close down the http server
-        """
-        log.debug(u'finalise')
-        Plugin.finalise(self)
-        if self.server:
-            self.server.close()
-
-    def about(self):
-        """
-        Information about this plugin
-        """
-        about_text = translate('RemotePlugin', '<strong>Remote Plugin</strong>'
-            '<br />The remote plugin provides the ability to send messages to '
-            'a running version of OpenLP on a different computer via a web '
-            'browser or through the remote API.')
-        return about_text
-
-    def setPluginTextStrings(self):
-        """
-        Called to define all translatable texts of the plugin
-        """
-        ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
-            u'singular': translate('RemotePlugin', 'Remote', 'name singular'),
-            u'plural': translate('RemotePlugin', 'Remotes', 'name plural')
-        }
-        ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('RemotePlugin', 'Remote', 'container title')
-        }
-
-    def configUpdated(self):
-        """
-        Called when Config is changed to restart the server on new address or
-        port
-        """
-        self.finalise()
-        self.initialise()

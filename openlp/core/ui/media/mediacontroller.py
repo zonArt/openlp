@@ -32,8 +32,8 @@ import os
 import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings, Registry, UiStrings
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.utils import AppLocation
@@ -88,6 +88,7 @@ class MediaController(object):
     """
     def __init__(self, parent):
         self.mainWindow = parent
+        Registry().register(u'media_controller', self)
         self.mediaPlayers = {}
         self.displayControllers = {}
         self.currentMediaPlayer = {}
@@ -130,14 +131,14 @@ class MediaController(object):
                 for item in player.audio_extensions_list:
                     if not item in self.audio_extensions_list:
                         self.audio_extensions_list.append(item)
-                        self.mainWindow.serviceManagerContents.supportedSuffixes(item[2:])
+                        self.service_manager.supported_suffixes(item[2:])
         self.video_extensions_list = []
         for player in self.mediaPlayers.values():
             if player.isActive:
                 for item in player.video_extensions_list:
                     if item not in self.video_extensions_list:
                         self.video_extensions_list.extend(item)
-                        self.mainWindow.serviceManagerContents.supportedSuffixes(item[2:])
+                        self.service_manager.supported_suffixes(item[2:])
 
     def register_players(self, player):
         """
@@ -409,7 +410,7 @@ class MediaController(object):
         elif not hidden or controller.media_info.is_background or serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
-        elif Settings().value(u'general/auto unblank', False):
+        elif Settings().value(u'general/auto unblank'):
             autoplay = True
         if autoplay:
             if not self.media_play(controller):
@@ -729,3 +730,13 @@ class MediaController(object):
         if controller.isLive:
             return controller.display
         return controller.previewDisplay
+
+    def _get_service_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)

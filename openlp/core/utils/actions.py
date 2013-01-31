@@ -233,7 +233,7 @@ class ActionList(object):
         # Load the shortcut from the config.
         settings = Settings()
         settings.beginGroup(u'shortcuts')
-        shortcuts = settings.value(action.objectName(), action.shortcuts())
+        shortcuts = settings.value(action.objectName())
         settings.endGroup()
         if not shortcuts:
             action.setShortcuts([])

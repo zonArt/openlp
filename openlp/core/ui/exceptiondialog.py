@@ -70,9 +70,9 @@ class Ui_ExceptionDialog(object):
             icon=u':/general/general_save.png', click=self.onSaveReportButtonClicked)
         self.attachFileButton = create_button(exceptionDialog, u'attachFileButton',
             icon=u':/general/general_open.png', click=self.onAttachFileButtonClicked)
-        self.buttonBox = create_button_box(exceptionDialog, u'buttonBox',
+        self.button_box = create_button_box(exceptionDialog, u'button_box',
             [u'close'], [self.sendReportButton, self.saveReportButton, self.attachFileButton])
-        self.exceptionLayout.addWidget(self.buttonBox)
+        self.exceptionLayout.addWidget(self.button_box)
 
         self.retranslateUi(exceptionDialog)
         QtCore.QObject.connect(self.descriptionTextEdit,

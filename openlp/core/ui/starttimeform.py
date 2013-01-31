@@ -31,15 +31,15 @@ from PyQt4 import QtGui
 
 from starttimedialog import Ui_StartTimeDialog
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import translate, UiStrings, Registry
+from openlp.core.lib.ui import critical_error_message_box
 
 class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
     """
     The exception dialog
     """
-    def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+    def __init__(self):
+        QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
 
     def exec_(self):
@@ -84,3 +84,13 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         minutes = seconds / 60
         seconds -= 60 * minutes
         return hours, minutes, seconds
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

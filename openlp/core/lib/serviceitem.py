@@ -39,7 +39,7 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource, Settings
+from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, ImageSource, Settings, Registry
 
 log = logging.getLogger(__name__)
 
@@ -148,7 +148,6 @@ class ServiceItem(object):
             The plugin that this service item belongs to.
         """
         if plugin:
-            self.renderer = plugin.renderer
             self.name = plugin.name
         self.title = u''
         self.shortname = u''
@@ -161,7 +160,7 @@ class ServiceItem(object):
         self.service_item_type = None
         self._raw_frames = []
         self._display_frames = []
-        self._uuid = 0
+        self.unique_identifier = 0
         self.notes = u''
         self.from_plugin = False
         self.capabilities = []
@@ -195,7 +194,7 @@ class ServiceItem(object):
         Method to set the internal id of the item. This is used to compare
         service items to see if they are the same.
         """
-        self._uuid = unicode(uuid.uuid1())
+        self.unique_identifier = unicode(uuid.uuid1())
         self.validate_item()
 
     def add_capability(self, capability):
@@ -293,7 +292,7 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.renderer.image_manager.addImage(path, ImageSource.ImagePlugin, self.image_border)
+        self.image_manager.addImage(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
     def add_from_text(self, raw_slide, verse_tag=None):
@@ -420,7 +419,7 @@ class ServiceItem(object):
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
             settingsSection = serviceitem[u'serviceitem'][u'header'][u'name']
-            background = QtGui.QColor(Settings().value(settingsSection + u'/background color', u'#000000'))
+            background = QtGui.QColor(Settings().value(settingsSection + u'/background color'))
             if path:
                 self.has_original_files = False
                 for text_image in serviceitem[u'serviceitem'][u'data']:
@@ -454,14 +453,14 @@ class ServiceItem(object):
 
     def merge(self, other):
         """
-        Updates the _uuid with the value from the original one
-        The _uuid is unique for a given service item but this allows one to
+        Updates the unique_identifier with the value from the original one
+        The unique_identifier is unique for a given service item but this allows one to
         replace an original version.
 
         ``other``
             The service item to be merged with
         """
-        self._uuid = other._uuid
+        self.unique_identifier = other.unique_identifier
         self.notes = other.notes
         self.temporary_edit = other.temporary_edit
         # Copy theme over if present.
@@ -478,13 +477,13 @@ class ServiceItem(object):
         """
         if not other:
             return False
-        return self._uuid == other._uuid
+        return self.unique_identifier == other.unique_identifier
 
     def __ne__(self, other):
         """
         Confirms the service items are not for the same instance
         """
-        return self._uuid != other._uuid
+        return self.unique_identifier != other.unique_identifier
 
     def is_media(self):
         """
@@ -637,10 +636,30 @@ class ServiceItem(object):
             if self.is_image() and not os.path.exists((frame[u'path'])):
                 self.is_valid = False
             elif self.is_command():
-                file = os.path.join(frame[u'path'],frame[u'title'])
-                if not os.path.exists(file):
+                file_name = os.path.join(frame[u'path'], frame[u'title'])
+                if not os.path.exists(file_name):
                     self.is_valid = False
                 if suffix_list and not self.is_text():
-                    type = frame[u'title'].split(u'.')[-1]
-                    if type.lower() not in suffix_list:
+                    file_suffix = frame[u'title'].split(u'.')[-1]
+                    if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)

@@ -80,8 +80,8 @@ class Ui_BookNameDialog(object):
         self.apocryphaCheckBox.setCheckState(QtCore.Qt.Checked)
         self.optionsLayout.addWidget(self.apocryphaCheckBox)
         self.bookNameLayout.addWidget(self.optionsGroupBox)
-        self.buttonBox = create_button_box(bookNameDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.bookNameLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(bookNameDialog, u'button_box', [u'cancel', u'ok'])
+        self.bookNameLayout.addWidget(self.button_box)
 
         self.retranslateUi(bookNameDialog)
 

@@ -41,6 +41,7 @@ REMOVE_AMPERSAND = re.compile(r'&{1}')
 
 log = logging.getLogger(__name__)
 
+
 class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
     The shortcut list dialog
@@ -63,7 +64,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onClearPrimaryButtonClicked)
         QtCore.QObject.connect(self.clearAlternateButton, QtCore.SIGNAL(u'clicked(bool)'),
             self.onClearAlternateButtonClicked)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
             self.onRestoreDefaultsClicked)
         QtCore.QObject.connect(self.defaultRadioButton, QtCore.SIGNAL(u'clicked(bool)'),
             self.onDefaultRadioButtonClicked)
@@ -273,7 +274,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Restores all default shortcuts.
         """
-        if self.buttonBox.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
+        if self.button_box.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
             return
         if QtGui.QMessageBox.question(self, translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
             translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '

@@ -253,7 +253,7 @@ VIDEO_EXT = [
         , u'*.mp4'
         , u'*.ogv'
         , u'*.webm'
-        , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
+        , u'*.mpg', u'*.wmv', u'*.mpeg', u'*.avi'
         , u'*.swf'
     ]
 
@@ -282,7 +282,7 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value(u'players/background color', u'#000000')).name()
+        background = QtGui.QColor(Settings().value(u'players/background color')).name()
         css = VIDEO_CSS % (background,background,background)
         return css + FLASH_CSS
 
@@ -411,13 +411,13 @@ class WebkitPlayer(MediaPlayer):
         else:
             if display.frame.evaluateJavaScript(u'show_video("isEnded");') == 'true':
                 self.stop(display)
-            (currentTime, ok) = display.frame.evaluateJavaScript(u'show_video("currentTime");')
+            currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and currentTime != float('inf'):
+            if currentTime and currentTime != float('inf'):
                 currentTime = int(currentTime * 1000)
-            (length, ok) = display.frame.evaluateJavaScript(u'show_video("length");')
+            length = display.frame.evaluateJavaScript(u'show_video("length");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and length != float('inf'):
+            if length and length != float('inf'):
                 length = int(length * 1000)
         if currentTime > 0:
             controller.media_info.length = length

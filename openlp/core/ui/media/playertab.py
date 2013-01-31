@@ -29,8 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver, Settings
-from openlp.core.lib.ui import UiStrings, create_button
+from openlp.core.lib import SettingsTab, translate, Receiver, Settings, UiStrings
+from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
 class MediaQCheckBox(QtGui.QCheckBox):
@@ -177,7 +177,7 @@ class PlayerTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.updatePlayerList()
-        self.bg_color = settings.value(u'background color', u'#000000')
+        self.bg_color = settings.value(u'background color')
         self.initial_color = self.bg_color
         settings.endGroup()
         self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
@@ -194,7 +194,7 @@ class PlayerTab(SettingsTab):
             set_media_players(self.usedPlayers, override_player)
             player_string_changed = True
         if player_string_changed:
-            self.parent.resetSupportedSuffixes()
+            self.parent.reset_supported_suffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')
 
