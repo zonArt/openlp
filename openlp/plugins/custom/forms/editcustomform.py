@@ -41,35 +41,42 @@ from editcustomslideform import EditCustomSlideForm
 
 log = logging.getLogger(__name__)
 
+
 class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     """
     Class documentation goes here.
     """
     log.info(u'Custom Editor loaded')
+
     def __init__(self, mediaitem, parent, manager):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(EditCustomForm, self).__init__(parent)
         self.manager = manager
         self.mediaitem = mediaitem
         self.setupUi(self)
         # Create other objects and forms.
         self.editSlideForm = EditCustomSlideForm(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.previewButton, QtCore.SIGNAL(u'clicked()'), self.onPreviewButtonClicked)
-        QtCore.QObject.connect(self.addButton, QtCore.SIGNAL(u'clicked()'), self.onAddButtonClicked)
-        QtCore.QObject.connect(self.editButton, QtCore.SIGNAL(u'clicked()'), self.onEditButtonClicked)
-        QtCore.QObject.connect(self.editAllButton, QtCore.SIGNAL(u'clicked()'), self.onEditAllButtonClicked)
+        self.previewButton.clicked.connect(self.on_preview_button_clicked)
+        self.addButton.clicked.connect(self.on_add_button_clicked)
+        self.editButton.clicked.connect(self.on_edit_button_clicked)
+        self.editAllButton.clicked.connect(self.on_edit_all_button_clicked)
+        self.slideListView.currentRowChanged.connect(self.on_current_row_changed)
+        self.slideListView.doubleClicked.connect(self.on_edit_button_clicked)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
-        QtCore.QObject.connect(self.slideListView, QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
-        QtCore.QObject.connect(self.slideListView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onEditButtonClicked)
 
-    def loadThemes(self, themelist):
+    def loadThemes(self, theme_list):
+        """
+        Load a list of themes into the themes combo box.
+
+        ``theme_list``
+            The list of themes to load.
+        """
         self.themeComboBox.clear()
         self.themeComboBox.addItem(u'')
-        self.themeComboBox.addItems(themelist)
+        self.themeComboBox.addItems(theme_list)
 
     def loadCustom(self, id, preview=False):
         """
@@ -103,6 +110,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.previewButton.setVisible(preview)
 
     def accept(self):
+        """
+        Override the QDialog method to check if the custom slide has been saved before closing the dialog.
+        """
         log.debug(u'accept')
         if self.saveCustom():
             QtGui.QDialog.accept(self)
@@ -125,6 +135,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         return success
 
     def onUpButtonClicked(self):
+        """
+        Move a slide up in the list when the "Up" button is clicked.
+        """
         selectedRow = self.slideListView.currentRow()
         if selectedRow != 0:
             qw = self.slideListView.takeItem(selectedRow)
@@ -132,6 +145,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.slideListView.setCurrentRow(selectedRow - 1)
 
     def onDownButtonClicked(self):
+        """
+        Move a slide down in the list when the "Down" button is clicked.
+        """
         selectedRow = self.slideListView.currentRow()
         # zero base arrays
         if selectedRow != self.slideListView.count() - 1:
@@ -139,17 +155,23 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.slideListView.insertItem(selectedRow + 1, qw)
             self.slideListView.setCurrentRow(selectedRow + 1)
 
-    def onAddButtonClicked(self):
+    def on_add_button_clicked(self):
+        """
+        Add a new blank slide.
+        """
         self.editSlideForm.setText(u'')
         if self.editSlideForm.exec_():
             self.slideListView.addItems(self.editSlideForm.getText())
 
-    def onEditButtonClicked(self):
+    def on_edit_button_clicked(self):
+        """
+        Edit the currently selected slide.
+        """
         self.editSlideForm.setText(self.slideListView.currentItem().text())
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText())
 
-    def onEditAllButtonClicked(self):
+    def on_edit_all_button_clicked(self):
         """
         Edits all slides.
         """
@@ -163,7 +185,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         if self.editSlideForm.exec_():
             self.updateSlideList(self.editSlideForm.getText(), True)
 
-    def onPreviewButtonClicked(self):
+    def on_preview_button_clicked(self):
         """
         Save the custom item and preview it.
         """
@@ -203,9 +225,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Removes the current row from the list.
         """
         self.slideListView.takeItem(self.slideListView.currentRow())
-        self.onCurrentRowChanged(self.slideListView.currentRow())
+        self.on_current_row_changed(self.slideListView.currentRow())
 
-    def onCurrentRowChanged(self, row):
+    def on_current_row_changed(self, row):
         """
         Called when the *slideListView*'s current row has been changed. This
         enables or disables buttons which require an slide to act on.
