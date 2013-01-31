@@ -1191,7 +1191,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreState(settings.value(u'main window state'))
         self.liveController.splitter.restoreState(settings.value(u'live splitter geometry'))
         self.previewController.splitter.restoreState(settings.value(u'preview splitter geometry'))
-        self.controlSplitter.restoreState(settings.value(u'mainwindow splitter geometry'))
+        self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
     def saveSettings(self):
@@ -1212,7 +1212,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry', self.liveController.splitter.saveState())
         settings.setValue(u'preview splitter geometry', self.previewController.splitter.saveState())
-        settings.setValue(u'mainwindow splitter geometry', self.controlSplitter.saveState())
+        settings.setValue(u'main window splitter geometry', self.controlSplitter.saveState())
         settings.endGroup()
 
     def updateRecentFilesMenu(self):
