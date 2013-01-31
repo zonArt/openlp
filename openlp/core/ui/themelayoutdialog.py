@@ -58,8 +58,8 @@ class Ui_ThemeLayoutDialog(object):
         self.footerColourLabel = QtGui.QLabel(self.previewArea)
         self.footerColourLabel.setObjectName(u'footerColourLabel')
         self.previewLayout.addWidget(self.footerColourLabel)
-        self.buttonBox = create_button_box(themeLayoutDialog, u'buttonBox', [u'ok'])
-        self.previewLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(themeLayoutDialog, u'button_box', [u'ok'])
+        self.previewLayout.addWidget(self.button_box)
         self.retranslateUi(themeLayoutDialog)
 
     def retranslateUi(self, themeLayoutDialog):

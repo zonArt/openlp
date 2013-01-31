@@ -53,7 +53,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         QtCore.QObject.connect(self.newPushButton, QtCore.SIGNAL(u'clicked()'), self.onNewClicked)
         QtCore.QObject.connect(self.savePushButton, QtCore.SIGNAL(u'clicked()'), self.onSavedClicked)
         QtCore.QObject.connect(self.deletePushButton, QtCore.SIGNAL(u'clicked()'), self.onDeleteClicked)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'), self.close)
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'rejected()'), self.close)
         QtCore.QObject.connect(self.descriptionLineEdit, QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
         QtCore.QObject.connect(self.tagLineEdit, QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
         QtCore.QObject.connect(self.startTagLineEdit, QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)

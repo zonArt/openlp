@@ -131,14 +131,14 @@ class MediaController(object):
                 for item in player.audio_extensions_list:
                     if not item in self.audio_extensions_list:
                         self.audio_extensions_list.append(item)
-                        self.service_manager.supportedSuffixes(item[2:])
+                        self.service_manager.supported_suffixes(item[2:])
         self.video_extensions_list = []
         for player in self.mediaPlayers.values():
             if player.isActive:
                 for item in player.video_extensions_list:
                     if item not in self.video_extensions_list:
                         self.video_extensions_list.extend(item)
-                        self.service_manager.supportedSuffixes(item[2:])
+                        self.service_manager.supported_suffixes(item[2:])
 
     def register_players(self, player):
         """

@@ -140,7 +140,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         per save.
         """
         if self.resetSuffixes:
-            self.mainWindow.serviceManagerContents.resetSupportedSuffixes()
+            self.service_manager.reset_supported_suffixes()
             self.resetSuffixes = False
 
     def _get_main_window(self):
@@ -152,3 +152,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         return self._main_window
 
     main_window = property(_get_main_window)
+
+    def _get_service_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)

@@ -129,7 +129,7 @@ class PresentationTab(SettingsTab):
             Settings().setValue(setting_key, self.OverrideAppCheckBox.checkState())
             changed = True
         if changed:
-            self.parent.resetSupportedSuffixes()
+            self.parent.reset_supported_suffixes()
             Receiver.send_message(u'mediaitem_presentation_rebuild')
             Receiver.send_message(u'mediaitem_suffixes')
 

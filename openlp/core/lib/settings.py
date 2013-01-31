@@ -167,7 +167,7 @@ class Settings(QtCore.QSettings):
         u'shortcuts/importBibleItem': [],
         u'shortcuts/modeDefaultItem': [],
         u'shortcuts/modeLiveItem': [],
-        u'shortcuts/makeLive': [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
+        u'shortcuts/make_live': [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
         u'shortcuts/moveUp': [QtCore.Qt.Key_PageUp],
         u'shortcuts/moveTop': [QtCore.Qt.Key_Home],
         u'shortcuts/modeSetupItem': [],
@@ -244,7 +244,8 @@ class Settings(QtCore.QSettings):
         (u'servicemanager/last directory', u'', []),
         (u'songs/last directory 1', u'songs/last directory import', []),
         (u'songusage/last directory 1', u'songusage/last directory export', []),
-        (u'user interface/mainwindow splitter geometry', u'user interface/main window splitter geometry', [])
+        (u'user interface/mainwindow splitter geometry', u'user interface/main window splitter geometry', []),
+        (u'shortcuts/makeLive', u'shortcuts/make_live', [])
     ]
 
     @staticmethod

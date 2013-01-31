@@ -102,10 +102,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         # If not preview hide the preview button.
         self.previewButton.setVisible(preview)
 
-    def reject(self):
-        Receiver.send_message(u'custom_edit_clear')
-        QtGui.QDialog.reject(self)
-
     def accept(self):
         log.debug(u'accept')
         if self.saveCustom():
