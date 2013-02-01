@@ -43,12 +43,19 @@ from openlp.core.lib import resize_image, image_to_byte, Receiver, Registry, Scr
 
 log = logging.getLogger(__name__)
 
+
 class ImageThread(QtCore.QThread):
     """
     A special Qt thread class to speed up the display of images. This is
     threaded so it loads the frames and generates byte stream in background.
     """
     def __init__(self, manager):
+        """
+        Constructor for the thread class.
+
+        ``manager``
+            The image manager.
+        """
         QtCore.QThread.__init__(self, None)
         self.imageManager = manager
 
@@ -181,6 +188,9 @@ class ImageManager(QtCore.QObject):
     log.info(u'Image Manager loaded')
 
     def __init__(self):
+        """
+        Consutructor for the image manager.
+        """
         QtCore.QObject.__init__(self)
         Registry().register(u'image_manager', self)
         currentScreen = ScreenList().current

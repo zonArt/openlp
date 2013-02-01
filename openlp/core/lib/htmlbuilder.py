@@ -207,6 +207,7 @@ sup {
 </html>
 """
 
+
 def build_html(item, screen, islive, background, image=None,
     plugins=None):
     """
@@ -264,6 +265,7 @@ def build_html(item, screen, islive, background, image=None,
         build_lyrics_html(item, webkitvers))
     return html
 
+
 def webkit_version():
     """
     Return the Webkit version in use.
@@ -275,6 +277,7 @@ def webkit_version():
     except AttributeError:
         webkitvers = 0
     return webkitvers
+
 
 def build_background_css(item, width, height):
     """
@@ -309,6 +312,7 @@ def build_background_css(item, width, height):
                 background = u'background: -webkit-gradient(radial, %s 50%%, 100, %s 50%%, %s, from(%s), to(%s)) fixed'\
                     % (width, width, width, theme.background_start_color, theme.background_end_color)
     return background
+
 
 def build_lyrics_css(item, webkitvers):
     """
@@ -384,6 +388,7 @@ def build_lyrics_css(item, webkitvers):
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
 
+
 def build_lyrics_outline_css(theme, is_shadow=False):
     """
     Build the css which controls the theme outline
@@ -406,6 +411,7 @@ def build_lyrics_outline_css(theme, is_shadow=False):
         return u' -webkit-text-stroke: %sem %s; -webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
     else:
         return u''
+
 
 def build_lyrics_format_css(theme, width, height):
     """
@@ -451,6 +457,7 @@ def build_lyrics_format_css(theme, width, height):
         lyrics += u' font-weight:bold; '
     return lyrics
 
+
 def build_lyrics_html(item, webkitvers):
     """
     Build the HTML required to show the lyrics
@@ -479,6 +486,7 @@ def build_lyrics_html(item, webkitvers):
         u'<div id="lyricsmain" style="opacity:1" ' \
         u'class="lyricscell lyricsmain"></div></div>'
     return lyrics
+
 
 def build_footer_css(item, height):
     """

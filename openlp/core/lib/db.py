@@ -45,6 +45,7 @@ from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
 
+
 def init_db(url, auto_flush=True, auto_commit=False):
     """
     Initialise and return the session and metadata for a database
@@ -109,7 +110,7 @@ def upgrade_db(url, upgrade):
         while hasattr(upgrade, u'upgrade_%d' % version):
             log.debug(u'Running upgrade_%d', version)
             try:
-                getattr(upgrade, u'upgrade_%d' % version) (session, metadata, tables)
+                getattr(upgrade, u'upgrade_%d' % version)(session, metadata, tables)
             except (SQLAlchemyError, DBAPIError):
                 log.exception(u'Could not run database upgrade script '
                     '"upgrade_%s", upgrade process has been halted.', version)
@@ -155,6 +156,7 @@ class BaseModel(object):
         for key, value in kwargs.iteritems():
             instance.__setattr__(key, value)
         return instance
+
 
 class Manager(object):
     """
@@ -205,12 +207,9 @@ class Manager(object):
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
-                    translate('OpenLP.Manager', 'The database being '
-                        'loaded was created in a more recent version of '
-                        'OpenLP. The database is version %d, while OpenLP '
-                        'expects version %d. The database will not be loaded.'
-                        '\n\nDatabase: %s') % \
-                        (db_ver, up_ver, self.db_url)
+                    translate('OpenLP.Manager', 'The database being loaded was created in a more recent version of '
+                        'OpenLP. The database is version %d, while OpenLP expects version %d. The database will not '
+                        'be loaded.\n\nDatabase: %s') % (db_ver, up_ver, self.db_url)
                 )
                 return
         try:

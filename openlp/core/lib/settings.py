@@ -127,8 +127,8 @@ class Settings(QtCore.QSettings):
         u'general/enable slide loop': True,
         u'general/show splash': True,
         u'general/screen blank': False,
-        # The oder display settings (display position and dimensions) are defined in the ScreenList class due to crycle
-        # dependency.
+        # The other display settings (display position and dimensions) are defined in the ScreenList class due to a
+        # circular dependency.
         u'general/override position': False,
         u'general/loop delay': 5,
         u'general/songselect username': u'',
@@ -276,6 +276,9 @@ class Settings(QtCore.QSettings):
         Settings.__default_settings__[u'advanced/default service name'] = UiStrings().DefaultServiceName
 
     def __init__(self, *args):
+        """
+        Constructor which checks if this should be a native settings object, or an INI file.
+        """
         if not args and Settings.__file_path__ and Settings.defaultFormat() == Settings.IniFormat:
             QtCore.QSettings.__init__(self, Settings.__file_path__, Settings.IniFormat)
         else:
@@ -340,4 +343,3 @@ class Settings(QtCore.QSettings):
         if isinstance(default_value, int):
             return int(setting)
         return setting
-

@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver, Settings, UiStrings
+from openlp.core.lib import SettingsTab, Receiver, Settings, UiStrings, translate, build_icon
 from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
@@ -137,7 +137,7 @@ class AdvancedTab(SettingsTab):
         self.dataDirectoryLayout = QtGui.QFormLayout(self.dataDirectoryGroupBox)
         self.dataDirectoryLayout.setObjectName(u'dataDirectoryLayout')
         self.dataDirectoryCurrentLabel = QtGui.QLabel(self.dataDirectoryGroupBox)
-        self.dataDirectoryCurrentLabel.setObjectName(            u'dataDirectoryCurrentLabel')
+        self.dataDirectoryCurrentLabel.setObjectName(u'dataDirectoryCurrentLabel')
         self.dataDirectoryLabel = QtGui.QLabel(self.dataDirectoryGroupBox)
         self.dataDirectoryLabel.setObjectName(u'dataDirectoryLabel')
         self.dataDirectoryNewLabel = QtGui.QLabel(self.dataDirectoryGroupBox)
@@ -299,7 +299,8 @@ class AdvancedTab(SettingsTab):
         self.serviceNameLabel.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.serviceNameEdit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.serviceNameRevertButton.setToolTip(
-            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') % UiStrings().DefaultServiceName)
+            translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') %
+                UiStrings().DefaultServiceName)
         self.serviceNameExampleLabel.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hideMouseGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hideMouseCheckBox.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
@@ -324,7 +325,7 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab', '<strong>WARNING:</strong> New data directory location contains '
                 'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab', 'X11'))
-        self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
+        self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab', 'Bypass X11 Window Manager'))
         # Slide Limits
         self.slideGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
         self.slideLabel.setText(translate('OpenLP.GeneralTab', 'Behavior of next/previous on the last/first slide:'))
@@ -440,11 +441,16 @@ class AdvancedTab(SettingsTab):
         Receiver.send_message(u'slidecontroller_update_slide_limits')
 
     def cancel(self):
-        # Dialogue was cancelled, remove any pending data path change.
+        """
+        Dialogue was cancelled, remove any pending data path change.
+        """
         self.onDataDirectoryCancelButtonClicked()
         SettingsTab.cancel(self)
 
     def serviceNameCheckBoxToggled(self, default_service_enabled):
+        """
+        Toggle the service name check box.
+        """
         self.serviceNameDay.setEnabled(default_service_enabled)
         time_enabled = default_service_enabled and self.serviceNameDay.currentIndex() is not 7
         self.serviceNameTime.setEnabled(time_enabled)
@@ -452,6 +458,9 @@ class AdvancedTab(SettingsTab):
         self.serviceNameRevertButton.setEnabled(default_service_enabled)
 
     def generateServiceNameExample(self):
+        """
+        Generate an example service name.
+        """
         preset_is_valid = True
         if self.serviceNameDay.currentIndex() == 7:
             local_time = datetime.now()
@@ -461,8 +470,10 @@ class AdvancedTab(SettingsTab):
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            local_time = time.replace(hour = self.serviceNameTime.time().hour(),
-                minute = self.serviceNameTime.time().minute())
+            local_time = time.replace(
+                hour=self.serviceNameTime.time().hour(),
+                minute=self.serviceNameTime.time().minute()
+            )
         try:
             service_name_example = format_time(unicode(self.serviceNameEdit.text()), local_time)
         except ValueError:
@@ -471,20 +482,32 @@ class AdvancedTab(SettingsTab):
         return preset_is_valid, service_name_example
 
     def updateServiceNameExample(self, returned_value):
+        """
+        Update the example service name.
+        """
         if not self.shouldUpdateServiceNameExample:
             return
         name_example = self.generateServiceNameExample()[1]
         self.serviceNameExample.setText(name_example)
 
     def onServiceNameDayChanged(self, service_day):
+        """
+        React to the day of the service name changing.
+        """
         self.serviceNameTime.setEnabled(service_day is not 7)
         self.updateServiceNameExample(None)
 
     def onServiceNameRevertButtonClicked(self):
+        """
+        Revert to the default service name.
+        """
         self.serviceNameEdit.setText(UiStrings().DefaultServiceName)
         self.serviceNameEdit.setFocus()
 
     def onDefaultColorButtonClicked(self):
+        """
+        Select the background colour of the default display screen.
+        """
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.defaultColor), self)
         if new_color.isValid():
@@ -492,6 +515,9 @@ class AdvancedTab(SettingsTab):
             self.defaultColorButton.setStyleSheet(u'background-color: %s' % self.defaultColor)
 
     def onDefaultBrowseButtonClicked(self):
+        """
+        Select an image for the default display screen.
+        """
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(),
             UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
@@ -506,9 +532,9 @@ class AdvancedTab(SettingsTab):
         """
         old_root_path = unicode(self.dataDirectoryLabel.text())
         # Get the new directory location.
-        new_data_path = QtGui.QFileDialog.getExistingDirectory(self,
-            translate('OpenLP.AdvancedTab', 'Select Data Directory Location'), old_root_path,
-            options = QtGui.QFileDialog.ShowDirsOnly)
+        new_data_path = QtGui.QFileDialog.getExistingDirectory(
+            self, translate('OpenLP.AdvancedTab', 'Select Data Directory Location'), old_root_path,
+            options=QtGui.QFileDialog.ShowDirsOnly)
         # Set the new data path.
         if new_data_path:
             new_data_path = os.path.normpath(new_data_path)
@@ -558,6 +584,9 @@ class AdvancedTab(SettingsTab):
             self.onDataDirectoryCancelButtonClicked()
 
     def onDataDirectoryCopyCheckBoxToggled(self):
+        """
+        Copy existing data when you change your data directory.
+        """
         Receiver.send_message(u'set_copy_data',
             self.dataDirectoryCopyCheckBox.isChecked())
         if self.dataExists:
@@ -566,7 +595,10 @@ class AdvancedTab(SettingsTab):
             else:
                 self.newDataDirectoryHasFilesLabel.hide()
 
-    def checkDataOverwrite(self, data_path ):
+    def checkDataOverwrite(self, data_path):
+        """
+        Check if there's already data in the target directory.
+        """
         test_path = os.path.join(data_path, u'songs')
         self.dataDirectoryCopyCheckBox.show()
         if os.path.exists(test_path):
@@ -602,6 +634,9 @@ class AdvancedTab(SettingsTab):
         self.newDataDirectoryHasFilesLabel.hide()
 
     def onDefaultRevertButtonClicked(self):
+        """
+        Revert the default screen back to the default settings.
+        """
         self.defaultFileEdit.setText(u':/graphics/openlp-splash-screen.png')
         self.defaultFileEdit.setFocus()
 
@@ -615,10 +650,19 @@ class AdvancedTab(SettingsTab):
         self.displayChanged = True
 
     def onEndSlideButtonClicked(self):
+        """
+        Set the slide wrap option.
+        """
         self.slide_limits = SlideLimits.End
 
     def onWrapSlideButtonClicked(self):
+        """
+        Set the slide wrap option.
+        """
         self.slide_limits = SlideLimits.Wrap
 
     def onnextItemButtonClicked(self):
+        """
+        Set the slide wrap option.
+        """
         self.slide_limits = SlideLimits.Next

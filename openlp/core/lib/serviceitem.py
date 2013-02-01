@@ -43,6 +43,7 @@ from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, Imag
 
 log = logging.getLogger(__name__)
 
+
 class ServiceItemType(object):
     """
     Defines the type of service item
@@ -607,7 +608,7 @@ class ServiceItem(object):
         ``theme``
             The new theme to be replaced in the service item
         """
-        self.theme_overwritten = (theme == None)
+        self.theme_overwritten = (theme is None)
         self.theme = theme
         self._new_item()
         self.render()

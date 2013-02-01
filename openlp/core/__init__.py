@@ -172,6 +172,19 @@ class OpenLP(QtGui.QApplication):
             return False
 
     def hookException(self, exctype, value, traceback):
+        """
+        Add an exception hook so that any uncaught exceptions are displayed in this window rather than somewhere where
+        users cannot see it and cannot report when we encounter these problems.
+
+        ``exctype``
+            The class of exception.
+
+        ``value``
+            The actual exception object.
+
+        ``traceback``
+            A traceback object with the details of where the exception occurred.
+        """
         if not hasattr(self, u'mainWindow'):
             log.exception(''.join(format_exception(exctype, value, traceback)))
             return
@@ -283,7 +296,7 @@ def main(args=None):
     else:
         app.setApplicationName(u'OpenLP')
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
-    registry = Registry.create()
+    Registry.create()
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:

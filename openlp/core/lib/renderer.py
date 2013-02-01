@@ -315,7 +315,7 @@ class Renderer(object):
                             if  text_contains_split:
                                 text = slides[-1] + u'\n[---]\n' + text
                             else:
-                                text = slides[-1] + u'\n'+ text
+                                text = slides[-1] + u'\n' + text
                             text = text.replace(u'<br>', u'\n')
                         else:
                             pages.extend(slides)
@@ -543,7 +543,7 @@ class Renderer(object):
         end_tags.reverse()
         # Remove the indexes.
         html_tags = [tag[1] for tag in html_tags]
-        return raw_text + u''.join(end_tags),  u''.join(start_tags), u''.join(html_tags)
+        return raw_text + u''.join(end_tags), u''.join(start_tags), u''.join(html_tags)
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list, raw_list, separator, line_end):
         """

@@ -38,6 +38,7 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+
 class PluginStatus(object):
     """
     Defines the status of the plugin
@@ -320,7 +321,6 @@ class Plugin(QtCore.QObject):
                 Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
             settings.endGroup()
 
-
     def usesTheme(self, theme):
         """
         Called to find out if a plugin is currently using a theme.
@@ -418,4 +418,3 @@ class Plugin(QtCore.QObject):
         return self._main_window
 
     main_window = property(_get_main_window)
-
