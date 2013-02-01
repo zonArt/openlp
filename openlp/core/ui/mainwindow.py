@@ -496,9 +496,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.copyData = False
         # Set up signals and slots
         QtCore.QObject.connect(self.importThemeItem, QtCore.SIGNAL(u'triggered()'),
-            self.themeManagerContents.onImportTheme)
+            self.themeManagerContents.on_import_theme)
         QtCore.QObject.connect(self.exportThemeItem, QtCore.SIGNAL(u'triggered()'),
-            self.themeManagerContents.onExportTheme)
+            self.themeManagerContents.on_export_theme)
         QtCore.QObject.connect(self.mediaManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
             self.viewMediaManagerItem.setChecked)
         QtCore.QObject.connect(self.serviceManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
@@ -576,7 +576,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm.postSetUp()
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
-        self.themeManagerContents.loadThemes(True)
+        self.themeManagerContents.load_themes(True)
         # Hide/show the theme combobox on the service manager
         self.serviceManagerContents.theme_change()
         # Reset the cursor
@@ -687,7 +687,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 else:
                     self.activePlugin.toggleStatus(PluginStatus.Inactive)
         self.themeManagerContents.configUpdated()
-        self.themeManagerContents.loadThemes(True)
+        self.themeManagerContents.load_themes(True)
         Receiver.send_message(u'theme_update_global', self.themeManagerContents.global_theme)
         # Check if any Bibles downloaded.  If there are, they will be
         # processed.
@@ -760,7 +760,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Updates the new theme preview images.
         """
-        self.themeManagerContents.updatePreviewImages()
+        self.themeManagerContents.update_preview_images()
 
     def onFormattingTagItemClicked(self):
         """

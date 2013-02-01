@@ -198,7 +198,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     self.themeComboBox.addItem(item.text())
             if self.hasRunWizard:
                 # Add any existing themes to list.
-                for theme in self.parent().themeManagerContents.getThemes():
+                for theme in self.parent().themeManagerContents.get_themes():
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)

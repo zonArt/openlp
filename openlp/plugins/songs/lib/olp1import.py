@@ -62,7 +62,7 @@ class OpenLP1SongImport(SongImport):
         """
         SongImport.__init__(self, manager, **kwargs)
         self.availableThemes = \
-            kwargs[u'plugin'].formParent.themeManagerContents.getThemes()
+            kwargs[u'plugin'].formParent.themeManagerContents.get_themes()
 
     def doImport(self):
         """
