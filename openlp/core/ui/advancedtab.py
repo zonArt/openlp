@@ -229,14 +229,15 @@ class AdvancedTab(SettingsTab):
         self.next_item_radio_button.setObjectName(u'next_item_radio_button')
         self.slideLayout.addWidget(self.next_item_radio_button)
         self.rightLayout.addWidget(self.slide_group_box)
-        self.x11_group_box = QtGui.QGroupBox(self.leftColumn)
-        self.x11_group_box.setObjectName(u'x11_group_box')
-        self.x11Layout = QtGui.QVBoxLayout(self.x11_group_box)
-        self.x11Layout.setObjectName(u'x11Layout')
-        self.x11_bypass_check_box = QtGui.QCheckBox(self.x11_group_box)
-        self.x11_bypass_check_box.setObjectName(u'x11_bypass_check_box')
-        self.x11Layout.addWidget(self.x11_bypass_check_box)
-        self.rightLayout.addWidget(self.x11_group_box)
+        # Display Workarounds
+        self.display_workaround_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.display_workaround_group_box.setObjectName(u'display_workaround_group_box')
+        self.display_workaround_layout = QtGui.QVBoxLayout(self.display_workaround_group_box)
+        self.display_workaround_layout.setObjectName(u'display_workaround_layout')
+        self.alternate_rows_check_box = QtGui.QCheckBox(self.display_workaround_group_box)
+        self.alternate_rows_check_box.setObjectName(u'alternate_rows_check_box')
+        self.display_workaround_layout.addWidget(self.alternate_rows_check_box)
+        self.rightLayout.addWidget(self.display_workaround_group_box)
         self.rightLayout.addStretch()
         self.should_update_service_name_example = False
         QtCore.QObject.connect(self.service_name_check_box, QtCore.SIGNAL(u'toggled(bool)'),
@@ -255,8 +256,8 @@ class AdvancedTab(SettingsTab):
             self.on_default_browse_button_clicked)
         QtCore.QObject.connect(self.default_revert_button, QtCore.SIGNAL(u'clicked()'), 
             self.on_default_revert_button_clicked)
-        QtCore.QObject.connect(self.x11_bypass_check_box, QtCore.SIGNAL(u'toggled(bool)'), 
-            self.on_X11_bypass_check_box_toggled)
+        QtCore.QObject.connect(self.alternate_rows_check_box,QtCore.SIGNAL(u'toggled(bool)'),
+            self.on_alternate_rows_check_box_toggled)        
         QtCore.QObject.connect(self.data_directory_browse_button, QtCore.SIGNAL(u'clicked()'),
             self.on_data_directory_browse_button_clicked)
         QtCore.QObject.connect(self.data_directory_default_button, QtCore.SIGNAL(u'clicked()'),
@@ -264,13 +265,14 @@ class AdvancedTab(SettingsTab):
         QtCore.QObject.connect(self.data_directory_cancel_button, QtCore.SIGNAL(u'clicked()'),
             self.on_data_directory_cancel_button_clicked)
         QtCore.QObject.connect(self.data_directory_copy_check_box, QtCore.SIGNAL(u'toggled(bool)'),
-                self.on_data_directory_copy_check_box_toggled)
+            self.on_data_directory_copy_check_box_toggled)
         QtCore.QObject.connect(self.end_slide_radio_button, QtCore.SIGNAL(u'clicked()'), 
             self.on_end_slide_button_clicked)
         QtCore.QObject.connect(self.wrap_slide_radio_button, QtCore.SIGNAL(u'clicked()'), 
             self.on_wrap_slide_button_clicked)
         QtCore.QObject.connect(self.next_item_radio_button, QtCore.SIGNAL(u'clicked()'), 
             self.on_next_item_button_clicked)
+
 
     def retranslateUi(self):
         """
@@ -332,8 +334,8 @@ class AdvancedTab(SettingsTab):
         self.new_data_directory_has_files_label.setText(
             translate('OpenLP.AdvancedTab', '<strong>WARNING:</strong> New data directory location contains '
                 'OpenLP data files.  These files WILL be replaced during a copy.'))
-        self.x11_group_box.setTitle(translate('OpenLP.AdvancedTab', 'X11'))
-        self.x11_bypass_check_box.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
+        self.display_workaround_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
+        self.alternate_rows_check_box.setText(translate('OpenLP.AdvancedTab', 'Use alternating row colours in lists'))
         # Slide Limits
         self.slide_group_box.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
         self.slide_label.setText(translate('OpenLP.GeneralTab', 'Behavior of next/previous on the last/first slide:'))
@@ -366,10 +368,13 @@ class AdvancedTab(SettingsTab):
         default_service_enabled = settings.value(u'default service enabled')
         self.service_name_check_box.setChecked(default_service_enabled)
         self.service_name_check_box_toggled(default_service_enabled)
-        self.x11_bypass_check_box.setChecked(settings.value(u'x11 bypass wm'))
         self.default_color = settings.value(u'default color')
         self.default_file_edit.setText(settings.value(u'default image'))
         self.slide_limits = settings.value(u'slide limits')
+        # Prevent the dialog displayed by the alternate_rows_check_box to display.
+        self.alternate_rows_check_box.blockSignals(True)
+        self.alternate_rows_check_box.setChecked(settings.value(u'alternate rows'))
+        self.alternate_rows_check_box.blockSignals(False)
         if self.slide_limits == SlideLimits.End:
             self.end_slide_radio_button.setChecked(True)
         elif self.slide_limits == SlideLimits.Wrap:
@@ -437,6 +442,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue(u'hide mouse', self.hide_mouse_check_box.isChecked())
         settings.setValue(u'x11 bypass wm', self.x11_bypass_check_box.isChecked())
+        settings.setValue(u'alternate rows', self.alternate_rows_check_box.isChecked())        
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.default_file_edit.text())
         settings.setValue(u'slide limits', self.slide_limits)
@@ -652,6 +658,17 @@ class AdvancedTab(SettingsTab):
             The state of the check box (boolean).
         """
         self.display_changed = True
+        
+    def on_alternate_rows_check_box_toggled(self, checked):
+        """
+        Notify user about required restart.
+
+        ``checked``
+            The state of the check box (boolean).
+        """
+        QtGui.QMessageBox.information(self,
+            translate('OpenLP.AdvancedTab', 'Restart Required'),
+            translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP has been restarted.'))
 
     def on_end_slide_button_clicked(self):
         """
