@@ -107,9 +107,9 @@ class Ui_ShortcutListDialog(object):
         self.alternateLabel.setObjectName(u'alternateLabel')
         self.detailsLayout.addWidget(self.alternateLabel, 0, 2, 1, 1)
         self.shortcutListLayout.addLayout(self.detailsLayout)
-        self.buttonBox = create_button_box(shortcutListDialog, u'buttonBox', [u'cancel', u'ok', u'defaults'])
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.shortcutListLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(shortcutListDialog, u'button_box', [u'cancel', u'ok', u'defaults'])
+        self.button_box.setOrientation(QtCore.Qt.Horizontal)
+        self.shortcutListLayout.addWidget(self.button_box)
         self.retranslateUi(shortcutListDialog)
 
     def retranslateUi(self, shortcutListDialog):

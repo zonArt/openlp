@@ -77,9 +77,9 @@ class Ui_AlertDialog(object):
         displayIcon = build_icon(u':/general/general_live.png')
         self.displayButton = create_button(alertDialog, u'displayButton', icon=displayIcon, enabled=False)
         self.displayCloseButton = create_button(alertDialog, u'displayCloseButton', icon=displayIcon, enabled=False)
-        self.buttonBox = create_button_box(alertDialog, u'buttonBox', [u'close'],
+        self.button_box = create_button_box(alertDialog, u'button_box', [u'close'],
             [self.displayButton, self.displayCloseButton])
-        self.alertDialogLayout.addWidget(self.buttonBox, 2, 0, 1, 2)
+        self.alertDialogLayout.addWidget(self.button_box, 2, 0, 1, 2)
         self.retranslateUi(alertDialog)
 
     def retranslateUi(self, alertDialog):

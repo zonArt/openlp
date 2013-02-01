@@ -174,25 +174,25 @@ class Ui_MainWindow(object):
             icon=u':/general/general_new.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+N')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.onNewServiceClicked)
+            triggers=self.serviceManagerContents.on_new_service_clicked)
         self.fileOpenItem = create_action(mainWindow, u'fileOpenItem',
             icon=u':/general/general_open.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+O')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.onLoadServiceClicked)
+            triggers=self.serviceManagerContents.on_load_service_clicked)
         self.fileSaveItem = create_action(mainWindow, u'fileSaveItem',
             icon=u':/general/general_save.png',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+S')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.saveFile)
+            triggers=self.serviceManagerContents.save_file)
         self.fileSaveAsItem = create_action(mainWindow, u'fileSaveAsItem',
             shortcuts=[QtGui.QKeySequence(u'Ctrl+Shift+S')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.saveFileAs)
+            triggers=self.serviceManagerContents.save_file_as)
         self.printServiceOrderItem = create_action(mainWindow,
             u'printServiceItem', shortcuts=[QtGui.QKeySequence(u'Ctrl+P')],
             category=UiStrings().File,
-            triggers=self.serviceManagerContents.printServiceOrder)
+            triggers=self.serviceManagerContents.print_service_order)
         self.fileExitItem = create_action(mainWindow, u'fileExitItem',
             icon=u':/system/system_exit.png',
             shortcuts=[QtGui.QKeySequence(u'Alt+F4')],
@@ -528,7 +528,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.cleanUp)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
         Receiver.send_message(u'cursor_busy')
@@ -618,9 +618,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             filename = args[0]
             if not isinstance(filename, unicode):
                 filename = unicode(filename, sys.getfilesystemencoding())
-            self.serviceManagerContents.loadFile(filename)
+            self.serviceManagerContents.load_file(filename)
         elif Settings().value(self.generalSettingsSection + u'/auto open'):
-            self.serviceManagerContents.loadLastFile()
+            self.serviceManagerContents.load_Last_file()
         view_mode = Settings().value(u'%s/view mode' % self.generalSettingsSection)
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
@@ -866,7 +866,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 'be applied the next time you start OpenLP.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
         self.settingsImported = True
-        self.cleanUp()
+        self.clean_up()
         QtCore.QCoreApplication.exit()
 
     def onSettingsExportItemClicked(self):
@@ -921,7 +921,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Write all the sections and keys.
         for section_key in keys:
             # FIXME: We are conflicting with the standard "General" section.
-            section_key = section_key.lower()
+            if u'eneral' in section_key:
+                section_key = section_key.lower()
             key_value = settings.value(section_key)
             if key_value is not None:
                 export_settings.setValue(section_key, key_value)
@@ -939,7 +940,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         temp_conf.close()
         export_conf.close()
         os.remove(temp_file)
-        return
 
     def onModeDefaultItemClicked(self):
         """
@@ -999,18 +999,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         # If we just did a settings import, close without saving changes.
         if self.settingsImported:
-            self.cleanUp(False)
+            self.clean_up(False)
             event.accept()
-        if self.serviceManagerContents.isModified():
-            ret = self.serviceManagerContents.saveModifiedService()
+        if self.serviceManagerContents.is_modified():
+            ret = self.serviceManagerContents.save_modified_service()
             if ret == QtGui.QMessageBox.Save:
-                if self.serviceManagerContents.decideSaveMethod():
-                    self.cleanUp()
+                if self.serviceManagerContents.decide_save_method():
+                    self.clean_up()
                     event.accept()
                 else:
                     event.ignore()
             elif ret == QtGui.QMessageBox.Discard:
-                self.cleanUp()
+                self.clean_up()
                 event.accept()
             else:
                 event.ignore()
@@ -1021,15 +1021,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                     QtGui.QMessageBox.Yes)
                 if ret == QtGui.QMessageBox.Yes:
-                    self.cleanUp()
+                    self.clean_up()
                     event.accept()
                 else:
                     event.ignore()
             else:
-                self.cleanUp()
+                self.clean_up()
                 event.accept()
 
-    def cleanUp(self, save_settings=True):
+    def clean_up(self, save_settings=True):
         """
         Runs all the cleanup code before OpenLP shuts down.
 
@@ -1223,7 +1223,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             action = create_action(self, u'',
                 text=u'&%d %s' % (fileId + 1, os.path.splitext(os.path.basename(
                 unicode(filename)))[0]), data=filename,
-                triggers=self.serviceManagerContents.onRecentServiceClicked)
+                triggers=self.serviceManagerContents.on_recent_service_clicked)
             self.recentFilesMenu.addAction(action)
         clearRecentFilesAction = create_action(self, u'',
             text=translate('OpenLP.MainWindow', 'Clear List', 'Clear List of recent files'),

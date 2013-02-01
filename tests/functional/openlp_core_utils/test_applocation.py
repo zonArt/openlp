@@ -48,7 +48,7 @@ class TestAppLocation(TestCase):
             data_path = AppLocation.get_data_path()
             # THEN: the mocked Settings methods were called and the value returned was our set up value
             mocked_settings.contains.assert_called_with(u'advanced/data path')
-            mocked_settings.value.assert_called_with(u'advanced/data path', u'')
+            mocked_settings.value.assert_called_with(u'advanced/data path')
             assert data_path == u'custom/dir', u'Result should be "custom/dir"'
 
     def get_section_data_path_test(self):
@@ -76,7 +76,7 @@ class TestAppLocation(TestCase):
             directory = AppLocation.get_directory(AppLocation.AppDir)
             # THEN:
             assert directory == u'app/dir', u'Directory should be "app/dir"'
-            
+
     def get_directory_for_plugins_dir_test(self):
         """
         Test the AppLocation.get_directory() method for AppLocation.PluginsDir
@@ -94,4 +94,4 @@ class TestAppLocation(TestCase):
             directory = AppLocation.get_directory(AppLocation.PluginsDir)
             # THEN:
             assert directory == u'plugins/dir', u'Directory should be "plugins/dir"'
-            
+

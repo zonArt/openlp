@@ -92,6 +92,14 @@ class SlideController(DisplayController):
             u'audioPauseItem',
             u'audioTimeLabel'
         ]
+        self.wideMenu = [
+            u'blankScreenButton',
+            u'themeScreenButton',
+            u'desktopScreenButton'
+        ]
+        self.hideMenuList = [
+            u'hideMenu'
+        ]
         self.timer_id = 0
         self.songEdit = False
         self.selectedRow = 0
@@ -193,6 +201,19 @@ class SlideController(DisplayController):
             self.hideMenu.menu().addAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
+            # Wide menu of display control buttons.
+            self.blankScreenButton = QtGui.QToolButton(self.toolbar)
+            self.blankScreenButton.setObjectName(u'blankScreenButton')
+            self.toolbar.addToolbarWidget(self.blankScreenButton)
+            self.blankScreenButton.setDefaultAction(self.blankScreen)
+            self.themeScreenButton = QtGui.QToolButton(self.toolbar)
+            self.themeScreenButton.setObjectName(u'themeScreenButton')
+            self.toolbar.addToolbarWidget(self.themeScreenButton)
+            self.themeScreenButton.setDefaultAction(self.themeScreen)
+            self.desktopScreenButton = QtGui.QToolButton(self.toolbar)
+            self.desktopScreenButton.setObjectName(u'desktopScreenButton')
+            self.toolbar.addToolbarWidget(self.desktopScreenButton)
+            self.desktopScreenButton.setDefaultAction(self.desktopScreen)
             self.toolbar.addToolbarAction(u'loopSeparator', separator=True)
             # Play Slides Menu
             self.playSlidesMenu = QtGui.QToolButton(self.toolbar)
@@ -297,8 +318,7 @@ class SlideController(DisplayController):
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.slidePreview.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(self.slidePreview.sizePolicy().hasHeightForWidth())
         self.slidePreview.setSizePolicy(sizePolicy)
         self.slidePreview.setFrameShape(QtGui.QFrame.Box)
         self.slidePreview.setFrameShadow(QtGui.QFrame.Plain)
@@ -345,6 +365,7 @@ class SlideController(DisplayController):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_toggle_display'), self.toggleDisplay)
             self.toolbar.setWidgetVisible(self.loopList, False)
+            self.toolbar.setWidgetVisible(self.wideMenu, False)
         else:
             QtCore.QObject.connect(self.previewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
@@ -563,7 +584,20 @@ class SlideController(DisplayController):
                 width = self.parent().controlSplitter.sizes()[self.split]
                 for framenumber in range(len(self.serviceItem.get_frames())):
                     self.previewListWidget.setRowHeight(framenumber, width / self.ratio)
+        self.onControllerSizeChanged(self.controller.width(), self.controller.height())
 
+    def onControllerSizeChanged(self, width, height):
+        """
+        Change layout of display control buttons on controller size change
+        """
+        if self.isLive:
+            if width > 300 and self.hideMenu.isVisible():
+                self.toolbar.setWidgetVisible(self.hideMenuList, False)
+                self.toolbar.setWidgetVisible(self.wideMenu)
+            elif width < 300 and not self.hideMenu.isVisible():
+                self.toolbar.setWidgetVisible(self.wideMenu, False)
+                self.toolbar.setWidgetVisible(self.hideMenuList)
+                
     def onSongBarHandler(self):
         request = self.sender().text()
         slide_no = self.slideList[request]
@@ -649,12 +683,12 @@ class SlideController(DisplayController):
             item.render()
             self._processItem(item, self.selectedRow)
 
-    def addServiceItem(self, item):
+    def add_service_item(self, item):
         """
         Method to install the service item into the controller
         Called by plugins
         """
-        log.debug(u'addServiceItem live = %s' % self.isLive)
+        log.debug(u'add_service_item live = %s' % self.isLive)
         item.render()
         slideno = 0
         if self.songEdit:
@@ -1183,14 +1217,16 @@ class SlideController(DisplayController):
         From the preview display requires the service Item to be editied
         """
         self.songEdit = True
-        Receiver.send_message(u'%s_edit' % self.serviceItem.name.lower(), u'P:%s' % self.serviceItem.edit_id)
+        new_item = Registry().get(self.serviceItem.name).onRemoteEdit(self.serviceItem.edit_id, True)
+        if new_item:
+            self.add_service_item(new_item)
 
     def onPreviewAddToService(self):
         """
         From the preview display request the Item to be added to service
         """
         if self.serviceItem:
-            self.parent().serviceManagerContents.addServiceItem(self.serviceItem)
+            self.service_manager.add_service_item(self.serviceItem)
 
     def onGoLiveClick(self):
         """
@@ -1215,7 +1251,7 @@ class SlideController(DisplayController):
                 Receiver.send_message('servicemanager_preview_live', u'%s:%s' %
                     (self.serviceItem.unique_identifier, row))
             else:
-                self.parent().liveController.addServiceManagerItem(self.serviceItem, row)
+                self.live_controller.addServiceManagerItem(self.serviceItem, row)
 
     def onMediaStart(self, item):
         """
@@ -1309,3 +1345,22 @@ class SlideController(DisplayController):
 
     media_controller = property(_get_media_controller)
 
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)

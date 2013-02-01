@@ -67,8 +67,8 @@ class Ui_PluginViewDialog(object):
         self.pluginInfoLayout.addRow(self.aboutLabel, self.aboutTextBrowser)
         self.listLayout.addWidget(self.pluginInfoGroupBox)
         self.pluginLayout.addLayout(self.listLayout)
-        self.buttonBox = create_button_box(pluginViewDialog, u'buttonBox', [u'ok'])
-        self.pluginLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(pluginViewDialog, u'button_box', [u'ok'])
+        self.pluginLayout.addWidget(self.button_box)
         self.retranslateUi(pluginViewDialog)
 
     def retranslateUi(self, pluginViewDialog):

@@ -74,8 +74,8 @@ class Ui_SongUsageDetailDialog(object):
         self.saveFilePushButton.setObjectName(u'saveFilePushButton')
         self.fileHorizontalLayout.addWidget(self.saveFilePushButton)
         self.verticalLayout.addWidget(self.fileGroupBox)
-        self.buttonBox = create_button_box(songUsageDetailDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.verticalLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(songUsageDetailDialog, u'button_box', [u'cancel', u'ok'])
+        self.verticalLayout.addWidget(self.button_box)
         self.retranslateUi(songUsageDetailDialog)
         QtCore.QObject.connect(self.saveFilePushButton, QtCore.SIGNAL(u'clicked()'),
             songUsageDetailDialog.defineOutputLocation)

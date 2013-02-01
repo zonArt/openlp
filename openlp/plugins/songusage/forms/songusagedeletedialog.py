@@ -49,8 +49,8 @@ class Ui_SongUsageDeleteDialog(object):
         self.deleteCalendar.setVerticalHeaderFormat(QtGui.QCalendarWidget.NoVerticalHeader)
         self.deleteCalendar.setObjectName(u'deleteCalendar')
         self.verticalLayout.addWidget(self.deleteCalendar)
-        self.buttonBox = create_button_box(songUsageDeleteDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.verticalLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(songUsageDeleteDialog, u'button_box', [u'cancel', u'ok'])
+        self.verticalLayout.addWidget(self.button_box)
         self.retranslateUi(songUsageDeleteDialog)
 
     def retranslateUi(self, songUsageDeleteDialog):

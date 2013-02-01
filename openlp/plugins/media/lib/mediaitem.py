@@ -131,7 +131,7 @@ class MediaMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the media selected,
         """
-        self.live_controller.mediaController.media_reset(self.plugin.liveController)
+        self.media_controller.media_reset(self.live_controller)
         self.resetAction.setVisible(False)
 
     def videobackgroundReplaced(self):
@@ -154,7 +154,7 @@ class MediaMediaItem(MediaManagerItem):
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
-                if self.live_controller.mediaController.video(DisplayControllerType.Live, service_item,
+                if self.media_controller.video(DisplayControllerType.Live, service_item,
                         videoBehindText=True):
                     self.resetAction.setVisible(True)
                 else:

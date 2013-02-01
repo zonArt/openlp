@@ -73,8 +73,6 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_load_list'), self.loadList)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
@@ -116,11 +114,6 @@ class CustomMediaItem(MediaManagerItem):
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
-        if self.remoteTriggered == u'L':
-            self.onAddClick()
-        if self.remoteTriggered == u'P':
-            self.onPreviewClick()
-        self.onRemoteEditClear()
 
     def onNewClick(self):
         self.edit_custom_form.loadCustom(0)
@@ -128,26 +121,27 @@ class CustomMediaItem(MediaManagerItem):
         self.onClearTextButtonClick()
         self.onSelectionChange()
 
-    def onRemoteEditClear(self):
-        self.remoteTriggered = None
-        self.remoteCustom = -1
-
-    def onRemoteEdit(self, message):
+    def onRemoteEdit(self, custom_id, preview=False):
         """
         Called by ServiceManager or SlideController by event passing
         the custom Id in the payload along with an indicator to say which
         type of display is required.
         """
-        remote_type, custom_id = message.split(u':')
         custom_id = int(custom_id)
         valid = self.manager.get_object(CustomSlide, custom_id)
         if valid:
-            self.remoteCustom = custom_id
-            self.remoteTriggered = remote_type
-            self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
-            self.edit_custom_form.exec_()
-            self.autoSelectId = -1
-            self.onSearchTextButtonClicked()
+            self.edit_custom_form.loadCustom(custom_id, preview)
+            if self.edit_custom_form.exec_() == QtGui.QDialog.Accepted:
+                self.remoteTriggered = True
+                self.remoteCustom = custom_id
+                self.autoSelectId = -1
+                self.onSearchTextButtonClicked()
+                item = self.buildServiceItem(remote=True)
+                self.remoteTriggered = None
+                self.remoteCustom = 1
+                if item:
+                    return item
+        return None
 
     def onEditClick(self):
         """
