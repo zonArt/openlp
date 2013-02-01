@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The Theme wizard
+"""
 import logging
 import os
 
@@ -40,6 +42,7 @@ from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
+
 
 class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     """
@@ -72,14 +75,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.onGradientStartButtonClicked)
         QtCore.QObject.connect(self.gradientEndButton, QtCore.SIGNAL(u'clicked()'), self.onGradientEndButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton, QtCore.SIGNAL(u'clicked()'), self.onImageBrowseButtonClicked)
-        QtCore.QObject.connect(self.mainColorButton,  QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
+        QtCore.QObject.connect(self.mainColorButton, QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
         QtCore.QObject.connect(self.outlineColorButton, QtCore.SIGNAL(u'clicked()'), self.onOutlineColorButtonClicked)
         QtCore.QObject.connect(self.shadowColorButton, QtCore.SIGNAL(u'clicked()'), self.onShadowColorButtonClicked)
         QtCore.QObject.connect(self.outlineCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onOutlineCheckCheckBoxStateChanged)
         QtCore.QObject.connect(self.shadowCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onShadowCheckCheckBoxStateChanged)
-        QtCore.QObject.connect(self.footerColorButton,QtCore.SIGNAL(u'clicked()'), self.onFooterColorButtonClicked)
+        QtCore.QObject.connect(self.footerColorButton, QtCore.SIGNAL(u'clicked()'), self.onFooterColorButtonClicked)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'customButtonClicked(int)'), self.onCustom1ButtonClicked)
         QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onMainPositionCheckBoxStateChanged)
@@ -178,6 +181,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 pixmapHeight + 2 * frameWidth)
 
     def validateCurrentPage(self):
+        """
+        Validate the current page
+        """
         background_image = BackgroundType.to_string(BackgroundType.Image)
         if self.page(self.currentId()) == self.backgroundPage and \
                 self.theme.background_type == background_image and not self.imageFileEdit.text():
@@ -444,18 +450,30 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setBackgroundPageValues()
 
     def onMainColorButtonClicked(self):
+        """
+        Set the main colour value
+        """
         self.theme.font_main_color = self._colorButton(self.theme.font_main_color)
         self.setMainAreaPageValues()
 
     def onOutlineColorButtonClicked(self):
+        """
+        Set the outline colour value
+        """
         self.theme.font_main_outline_color = self._colorButton(self.theme.font_main_outline_color)
         self.setMainAreaPageValues()
 
     def onShadowColorButtonClicked(self):
+        """
+        Set the shadow colour value
+        """
         self.theme.font_main_shadow_color = self._colorButton(self.theme.font_main_shadow_color)
         self.setMainAreaPageValues()
 
     def onFooterColorButtonClicked(self):
+        """
+        Set the footer colour value
+        """
         self.theme.font_footer_color = self._colorButton(self.theme.font_footer_color)
         self.setFooterAreaPageValues()
 

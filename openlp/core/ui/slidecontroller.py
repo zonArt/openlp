@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`slidecontroller` module contains argubly the most important part of OpenLP - the slide controller
+"""
 import os
 import logging
 import copy
@@ -257,7 +259,7 @@ class SlideController(DisplayController):
             self.audioMenu.addAction(self.nextTrackItem)
             self.trackMenu = self.audioMenu.addMenu(translate('OpenLP.SlideController', 'Tracks'))
             self.audioTimeLabel = QtGui.QLabel(u' 00:00 ', self.toolbar)
-            self.audioTimeLabel.setAlignment(QtCore.Qt.AlignCenter|QtCore.Qt.AlignHCenter)
+            self.audioTimeLabel.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignHCenter)
             self.audioTimeLabel.setStyleSheet(
                 u'background-color: palette(background); '
                 u'border-top-color: palette(shadow); '
@@ -288,7 +290,7 @@ class SlideController(DisplayController):
         self.slideLayout.setObjectName(u'SlideLayout')
         self.previewDisplay = Display(self, self.isLive, self)
         self.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.previewDisplay.screen = {u'size':self.previewDisplay.geometry()}
+        self.previewDisplay.screen = {u'size': self.previewDisplay.geometry()}
         self.previewDisplay.setup()
         self.slideLayout.insertWidget(0, self.previewDisplay)
         self.previewDisplay.hide()
@@ -432,6 +434,9 @@ class SlideController(DisplayController):
             self.current_shortcut = u''
 
     def setLiveHotkeys(self, parent=None):
+        """
+        Set the live hotkeys
+        """
         self.previousService = create_action(parent, u'previousService',
             text=translate('OpenLP.SlideController', 'Previous Service'),
             shortcuts=[QtCore.Qt.Key_Left], context=QtCore.Qt.WidgetWithChildrenShortcut, category=self.category,
@@ -442,10 +447,13 @@ class SlideController(DisplayController):
             triggers=self.serviceNext)
         self.escapeItem = create_action(parent, 'escapeItem',
             text=translate('OpenLP.SlideController', 'Escape Item'),
-            shortcuts=[QtCore.Qt.Key_Escape],context=QtCore.Qt.WidgetWithChildrenShortcut, category=self.category,
+            shortcuts=[QtCore.Qt.Key_Escape], context=QtCore.Qt.WidgetWithChildrenShortcut, category=self.category,
             triggers=self.liveEscape)
 
     def liveEscape(self):
+        """
+        If you press ESC on the live screen it should close the display temporarily.
+        """
         self.display.setVisible(False)
         self.media_controller.media_stop(self)
 
@@ -520,11 +528,14 @@ class SlideController(DisplayController):
         serviceItem = ServiceItem()
         self.previewDisplay.webView.setHtml(build_html(serviceItem, self.previewDisplay.screen, None, self.isLive,
             plugins=self.plugin_manager.plugins))
-        self.media_controller.setup_display(self.previewDisplay,True)
+        self.media_controller.setup_display(self.previewDisplay, True)
         if self.serviceItem:
             self.refreshServiceItem()
 
     def __addActionsToWidget(self, widget):
+        """
+        Add actions to the widget specified by `widget`
+        """
         widget.addActions([
             self.previousItem, self.nextItem,
             self.previousService, self.nextService,
@@ -564,6 +575,9 @@ class SlideController(DisplayController):
                     self.previewListWidget.setRowHeight(framenumber, width / self.ratio)
 
     def onSongBarHandler(self):
+        """
+        Some song handler
+        """
         request = self.sender().text()
         slide_no = self.slideList[request]
         self.__updatePreviewSelection(slide_no)
@@ -690,7 +704,7 @@ class SlideController(DisplayController):
                 self.playSlidesLoop.setChecked(item.auto_play_slides_loop)
                 self.delaySpinBox.setValue(int(item.timed_slide_interval))
                 self.onPlaySlidesLoop()
-            elif self.isLive and  item.auto_play_slides_once and item.timed_slide_interval > 0:
+            elif self.isLive and item.auto_play_slides_once and item.timed_slide_interval > 0:
                 self.playSlidesOnce.setChecked(item.auto_play_slides_once)
                 self.delaySpinBox.setValue(int(item.timed_slide_interval))
                 self.onPlaySlidesOnce()
@@ -1088,6 +1102,9 @@ class SlideController(DisplayController):
             self.slideSelected()
 
     def __checkUpdateSelectedSlide(self, row):
+        """
+        Check if this slide has been updated
+        """
         if row + 1 < self.previewListWidget.rowCount():
             self.previewListWidget.scrollToItem(self.previewListWidget.item(row + 1, 0))
         self.previewListWidget.selectRow(row)
@@ -1160,9 +1177,15 @@ class SlideController(DisplayController):
         self.onToggleLoop()
 
     def setAudioItemsVisibility(self, visible):
+        """
+        Set the visibility of the audio stuff
+        """
         self.toolbar.setWidgetVisible(self.audioList, visible)
 
     def onAudioPauseClicked(self, checked):
+        """
+        Pause the audio player
+        """
         if not self.audioPauseItem.isVisible():
             return
         if checked:
@@ -1268,15 +1291,24 @@ class SlideController(DisplayController):
             return None
 
     def onNextTrackClicked(self):
+        """
+        Go to the next track when next is clicked
+        """
         self.display.audioPlayer.next()
 
     def onAudioTimeRemaining(self, time):
+        """
+        Update how much time is remaining
+        """
         seconds = self.display.audioPlayer.mediaObject.remainingTime() // 1000
         minutes = seconds // 60
         seconds %= 60
         self.audioTimeLabel.setText(u' %02d:%02d ' % (minutes, seconds))
 
     def onTrackTriggered(self):
+        """
+        Start playing a track
+        """
         action = self.sender()
         self.display.audioPlayer.goTo(action.data())
 

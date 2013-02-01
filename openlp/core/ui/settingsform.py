@@ -40,6 +40,7 @@ from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
 
+
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
     Provide the form to manipulate the settings for OpenLP
@@ -61,6 +62,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.playerTab = PlayerTab(self, self.main_window)
 
     def exec_(self):
+        """
+        Execute the form
+        """
         # load all the settings
         self.settingListWidget.clear()
         while self.stackedLayout.count():

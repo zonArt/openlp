@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The service manager sets up, loads, saves and manages services.
+"""
 import cgi
 import cPickle
 import logging
@@ -48,11 +51,15 @@ from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, split_filename, format_time
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
+
 class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
     """
     def __init__(self, serviceManager, parent=None):
+        """
+        Constructor
+        """
         QtGui.QTreeWidget.__init__(self, parent)
         self.serviceManager = serviceManager
 
@@ -93,16 +100,22 @@ class ServiceManagerList(QtGui.QTreeWidget):
         mime_data.setText(u'ServiceManager')
         drag.start(QtCore.Qt.CopyAction)
 
+
 class ServiceManagerDialog(object):
     """
+    The UI for the service manager.
     """
-    def setup_ui(self,widget):
+    def setup_ui(self, widget):
+        """
+        Set up the UI for the service manager
+        """
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.addToolbarAction(u'newService', text=UiStrings().NewService, icon=u':/general/general_new.png',
             tooltip=UiStrings().CreateService, triggers=self.on_new_service_clicked)
         self.toolbar.addToolbarAction(u'openService', text=UiStrings().OpenService, icon=u':/general/general_open.png',
-            tooltip=translate('OpenLP.ServiceManager', 'Load an existing service.'), triggers=self.on_load_service_clicked)
+            tooltip=translate('OpenLP.ServiceManager', 'Load an existing service.'),
+            triggers=self.on_load_service_clicked)
         self.toolbar.addToolbarAction(u'saveService', text=UiStrings().SaveService, icon=u':/general/general_save.png',
             tooltip=translate('OpenLP.ServiceManager', 'Save this service.'), triggers=self.decide_save_method)
         self.toolbar.addSeparator()
@@ -185,7 +198,8 @@ class ServiceManagerDialog(object):
         self.service_manager_list.make_live = self.order_toolbar.addToolbarAction(u'make_live',
             text=translate('OpenLP.ServiceManager', 'Go Live'), icon=u':/general/general_live.png',
             tooltip=translate('OpenLP.ServiceManager', 'Send the selected item to Live.'),
-            shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return], category=UiStrings().Service, triggers=self.make_live)
+            shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return], category=UiStrings().Service,
+            triggers=self.make_live)
         self.layout.addWidget(self.order_toolbar)
         # Connect up our signals and slots
         QtCore.QObject.connect(self.theme_combo_box, QtCore.SIGNAL(u'activated(int)'),
@@ -697,7 +711,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 try:
                     ucsfile = zip_info.filename.decode(u'utf-8')
                 except UnicodeDecodeError:
-                    log.exception(u'file_name "%s" is not valid UTF-8' % zip_info.file_name.decode(u'utf-8', u'replace'))
+                    log.exception(u'file_name "%s" is not valid UTF-8', zip_info.file_name.decode(u'utf-8', u'replace'))
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n The content encoding is not UTF-8.'))
                     continue
@@ -809,7 +823,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 delay_suffix = u' %s s' % unicode(service_item[u'service_item'].timed_slide_interval)
             else:
                 delay_suffix = u' ...'
-            self.timed_slide_interval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
+            self.timed_slide_interval.setText(
+                translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
             # TODO for future: make group explains itself more visually
         else:
             self.auto_play_slides_group.menuAction().setVisible(False)
@@ -818,7 +833,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
             self.auto_start_action.setVisible(True)
             self.auto_start_action.setIcon(self.inactive)
-            self.auto_start_action.setText(translate('OpenLP.ServiceManager','&Auto Start - inactive'))
+            self.auto_start_action.setText(translate('OpenLP.ServiceManager', '&Auto Start - inactive'))
             if service_item[u'service_item'].will_auto_start:
                 self.auto_start_action.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
                 self.auto_start_action.setIcon(self.active)
@@ -876,7 +891,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 self.main_window.generalSettingsSection + u'/loop delay')
         self.set_modified()
 
-
     def toggle_auto_play_slides_loop(self):
         """
         Toggle Auto play slide loop.
@@ -891,7 +905,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             service_item.timed_slide_interval = Settings().value(
                 self.main_window.generalSettingsSection + u'/loop delay')
         self.set_modified()
-
 
     def on_timed_slide_interval(self):
         """
