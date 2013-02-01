@@ -139,7 +139,7 @@ class ImageMediaItem(MediaManagerItem):
         # Turn off auto preview triggers.
         self.listView.blockSignals(True)
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
-            'You must select an image to delete.')):
+            'You must select an image or group to delete.')):
             item_list = self.listView.selectedItems()
             Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(item_list))
@@ -165,6 +165,11 @@ class ImageMediaItem(MediaManagerItem):
                                 row_item.parent().removeChild(row_item)
                             self.fill_groups_combobox(self.choosegroupform.group_combobox)
                             self.fill_groups_combobox(self.addgroupform.parent_group_combobox)
+                    elif item_data == u'Imported':
+                        QtGui.QMessageBox.information(self, translate('ImagePlugin.MediaItem', 'Can\'t delete group'),
+                            translate('ImagePlugin.MediaItem', 'The Imported group is a special group and can not be '
+                            'deleted. It will disappear when it doesn\'t contain any images anymore.'),
+                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
@@ -252,6 +257,7 @@ class ImageMediaItem(MediaManagerItem):
                     # configuration file
                     imported_group = QtGui.QTreeWidgetItem()
                     imported_group.setText(0, translate('ImagePlugin.MediaItem', 'Imported'))
+                    imported_group.setData(0, QtCore.Qt.UserRole, u'Imported')
                     self.listView.insertTopLevelItem(0, imported_group)
                     group_items[0] = imported_group
             group_items[imageFile.group_id].addChild(item_name)
@@ -279,6 +285,13 @@ class ImageMediaItem(MediaManagerItem):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
         """
+        if self.manager.get_object_count(ImageGroups) == 0:
+            QtGui.QMessageBox.warning(self, translate('ImagePlugin.MediaItem', 'No image groups'),
+                translate('ImagePlugin.MediaItem', 'No image groups exist yet. Please create one before adding images.'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+            self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
+                initial_load=initial_load)
+            return
         if target_group is None:
             # Ask which group the images should be saved in
             if self.choosegroupform.exec_():
@@ -416,6 +429,18 @@ class ImageMediaItem(MediaManagerItem):
         """
         groups = self.manager.get_all_objects(ImageGroups, ImageGroups.group_name == newGroup.group_name)
         return self.__checkObject(groups, newGroup, edit)
+
+    def onFileClick(self):
+        """
+        Called when the user clicks the 'Load images' button. This method is overloaded from MediaManagerItem.
+        """
+        if self.manager.get_object_count(ImageGroups) == 0:
+            QtGui.QMessageBox.warning(self, translate('ImagePlugin.MediaItem', 'No image groups'),
+                translate('ImagePlugin.MediaItem', 'No image groups exist yet. Please create one before adding images.'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+        else:
+            # At least one group exists, so we run the regular file adding code
+            MediaManagerItem.onFileClick(self)
 
     def onAddGroupClick(self):
         """
