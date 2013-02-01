@@ -560,7 +560,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
-            except:
+            except :
                 return self.save_file_as()
             self.main_window.addRecentFile(path_file_name)
             self.set_modified(False)
@@ -697,7 +697,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 try:
                     ucsfile = zip_info.filename.decode(u'utf-8')
                 except UnicodeDecodeError:
-                    log.exception(u'file_name "%s" is not valid UTF-8' % zip_info.file_name.decode(u'utf-8', u'replace'))
+                    log.exception(u'file_name "%s" is not valid UTF-8' %
+                        zip_info.file_name.decode(u'utf-8', u'replace'))
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n The content encoding is not UTF-8.'))
                     continue
@@ -809,7 +810,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 delay_suffix = u' %s s' % unicode(service_item[u'service_item'].timed_slide_interval)
             else:
                 delay_suffix = u' ...'
-            self.timed_slide_interval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
+            self.timed_slide_interval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') +
+                delay_suffix)
             # TODO for future: make group explains itself more visually
         else:
             self.auto_play_slides_group.menuAction().setVisible(False)

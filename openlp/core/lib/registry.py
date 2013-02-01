@@ -92,5 +92,5 @@ class Registry(object):
             raise KeyError(u'Invalid Method call for key %s' % key)
             return
         if key in self.service_list:
-             del self.service_list[key]
+            del self.service_list[key]
 

@@ -164,6 +164,7 @@ class Theme(object):
             * ``0`` - normal
             * ``1`` - lyrics
     """
+
     def __init__(self, xml):
         """
         Initialise a theme with data from xml

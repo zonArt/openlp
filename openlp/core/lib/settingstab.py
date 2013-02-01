@@ -29,6 +29,8 @@
 
 from PyQt4 import QtGui
 
+from openlp.core.lib import Registry
+
 class SettingsTab(QtGui.QWidget):
     """
     SettingsTab is a helper widget for plugins to define Tabs for the settings
@@ -131,3 +133,45 @@ class SettingsTab(QtGui.QWidget):
         Tab has just been made visible to the user
         """
         pass
+
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)
+
+
