@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+This is the main window, where all the action happens.
+"""
 import logging
 import os
 import sys
@@ -80,6 +82,9 @@ PROGRESSBAR_STYLE = """
 
 
 class Ui_MainWindow(object):
+    """
+    This is the UI part of the main window.
+    """
     def setupUi(self, mainWindow):
         """
         Set up the user interface
@@ -148,7 +153,7 @@ class Ui_MainWindow(object):
         self.defaultThemeLabel.setObjectName(u'defaultThemeLabel')
         self.statusBar.addPermanentWidget(self.defaultThemeLabel)
         # Create the MediaManager
-        self.mediaManagerDock = OpenLPDockWidget(mainWindow,u'mediaManagerDock', u':/system/system_mediamanager.png')
+        self.mediaManagerDock = OpenLPDockWidget(mainWindow, u'mediaManagerDock', u':/system/system_mediamanager.png')
         self.mediaManagerDock.setStyleSheet(MEDIA_MANAGER_STYLE)
         # Create the media toolbox
         self.mediaToolBox = QtGui.QToolBox(self.mediaManagerDock)
@@ -406,7 +411,8 @@ class Ui_MainWindow(object):
             'Toggle the visibility of the service manager.'))
         self.viewPreviewPanel.setText(translate('OpenLP.MainWindow', '&Preview Panel'))
         self.viewPreviewPanel.setToolTip(translate('OpenLP.MainWindow', 'Toggle Preview Panel'))
-        self.viewPreviewPanel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the preview panel.'))
+        self.viewPreviewPanel.setStatusTip(
+            translate('OpenLP.MainWindow', 'Toggle the visibility of the preview panel.'))
         self.viewLivePanel.setText(translate('OpenLP.MainWindow', '&Live Panel'))
         self.viewLivePanel.setToolTip(translate('OpenLP.MainWindow', 'Toggle Live Panel'))
         self.lockPanel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
@@ -517,7 +523,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.onSettingsShortcutsItemClicked)
         QtCore.QObject.connect(self.settingsImportItem, QtCore.SIGNAL(u'triggered()'),
             self.onSettingsImportItemClicked)
-        QtCore.QObject.connect(self.settingsExportItem,QtCore.SIGNAL(u'triggered()'), self.onSettingsExportItemClicked)
+        QtCore.QObject.connect(self.settingsExportItem, QtCore.SIGNAL(u'triggered()'), self.onSettingsExportItemClicked)
         # i18n set signals for languages
         self.languageGroup.triggered.connect(LanguageManager.set_language)
         QtCore.QObject.connect(self.modeDefaultItem, QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
@@ -527,7 +533,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mainwindow_status_text'), self.showStatusMessage)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mainwindow_status_text'),
+            self.showStatusMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -583,11 +590,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Receiver.send_message(u'cursor_normal')
 
     def setAutoLanguage(self, value):
+        """
+        Set the language to automatic.
+        """
         self.languageGroup.setDisabled(value)
         LanguageManager.auto_language = value
         LanguageManager.set_language(self.languageGroup.checkedAction())
 
     def onMediaToolBoxChanged(self, index):
+        """
+        Focus a widget when the media toolbox changes.
+        """
         widget = self.mediaToolBox.widget(index)
         if widget:
             widget.onFocus()
@@ -642,7 +655,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 Receiver.send_message(u'openlp_process_events')
 
     def firstTime(self):
-        # Import themes if first time
+        """
+        Import themes if first time
+        """
         Receiver.send_message(u'openlp_process_events')
         for plugin in self.pluginManager.plugins:
             if hasattr(plugin, u'firstTime'):
@@ -705,14 +720,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
 
     def onErrorMessage(self, data):
+        """
+        Display an error message
+        """
         Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
     def onWarningMessage(self, data):
+        """
+        Display a warning message
+        """
         Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
 
     def onInformationMessage(self, data):
+        """
+        Display an informational message
+        """
         Receiver.send_message(u'close_splash')
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
@@ -800,8 +824,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        import_file_name = QtGui.QFileDialog.getOpenFileName(self,translate('OpenLP.MainWindow', 'Open File'), '',
-                translate('OpenLP.MainWindow', 'OpenLP Export Settings Files (*.conf)'))
+        import_file_name = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.MainWindow', 'Open File'), '',
+            translate('OpenLP.MainWindow', 'OpenLP Export Settings Files (*.conf)'))
         if not import_file_name:
             return
         setting_sections = []
@@ -1100,18 +1124,33 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setWindowTitle(title)
 
     def showStatusMessage(self, message):
+        """
+        Show a message in the status bar
+        """
         self.statusBar.showMessage(message)
 
     def defaultThemeChanged(self, theme):
+        """
+        Update the default theme indicator in the status bar
+        """
         self.defaultThemeLabel.setText(translate('OpenLP.MainWindow', 'Default Theme: %s') % theme)
 
     def toggleMediaManager(self):
+        """
+        Toggle the visibility of the media manager
+        """
         self.mediaManagerDock.setVisible(not self.mediaManagerDock.isVisible())
 
     def toggleServiceManager(self):
+        """
+        Toggle the visibility of the service manager
+        """
         self.serviceManagerDock.setVisible(not self.serviceManagerDock.isVisible())
 
     def toggleThemeManager(self):
+        """
+        Toggle the visibility of the theme manager
+        """
         self.themeManagerDock.setVisible(not self.themeManagerDock.isVisible())
 
     def setPreviewPanelVisibility(self, visible):
@@ -1295,13 +1334,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             Receiver.send_message(u'openlp_process_events')
 
     def setNewDataPath(self, new_data_path):
+        """
+        Set the new data path
+        """
         self.newDataPath = new_data_path
 
     def setCopyData(self, copy_data):
+        """
+        Set the flag to copy the data
+        """
         self.copyData = copy_data
 
     def changeDataDirectory(self):
-        log.info(u'Changing data path to %s' % self.newDataPath )
+        """
+        Change the data directory.
+        """
+        log.info(u'Changing data path to %s' % self.newDataPath)
         old_data_path = unicode(AppLocation.get_data_path())
         # Copy OpenLP data to new location if requested.
         if self.copyData:
@@ -1330,4 +1378,3 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Check if the new data path is our default.
         if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')
-
