@@ -578,7 +578,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Load Themes')
         self.themeManagerContents.loadThemes(True)
         # Hide/show the theme combobox on the service manager
-        self.serviceManagerContents.themeChange()
+        self.serviceManagerContents.theme_change()
         # Reset the cursor
         Receiver.send_message(u'cursor_normal')
 
@@ -1040,7 +1040,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         while self.imageManager.imageThread.isRunning():
             time.sleep(0.1)
         # Clean temporary files used by services
-        self.serviceManagerContents.cleanUp()
+        self.serviceManagerContents.clean_up()
         if save_settings:
             if Settings().value(u'advanced/save current plugin'):
                 Settings().setValue(u'advanced/current media plugin', self.mediaToolBox.currentIndex())

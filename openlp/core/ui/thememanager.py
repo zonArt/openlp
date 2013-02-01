@@ -346,7 +346,7 @@ class ThemeManager(QtGui.QWidget):
         try:
             encoding = get_filesystem_encoding()
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
-        except OSError:
+        except OSError, shutil.Error:
             log.exception(u'Error deleting theme %s', theme)
 
     def onExportTheme(self):
@@ -660,7 +660,7 @@ class ThemeManager(QtGui.QWidget):
             try:
                 encoding = get_filesystem_encoding()
                 shutil.copyfile(unicode(image_from).encode(encoding), unicode(image_to).encode(encoding))
-            except IOError:
+            except IOError, shutil.Error:
                 log.exception(u'Failed to save theme image')
         self.generateAndSaveImage(self.path, name, theme)
 
