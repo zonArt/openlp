@@ -128,7 +128,7 @@ class Renderer(object):
             The theme name.
         """
         if theme_name not in self._theme_dimensions:
-            theme_data = self.theme_manager.getThemeData(theme_name)
+            theme_data = self.theme_manager.get_theme_data(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
             footer_rect = self.get_footer_rectangle(theme_data)
             self._theme_dimensions[theme_name] = [theme_data, main_rect, footer_rect]
@@ -662,3 +662,4 @@ class Renderer(object):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+

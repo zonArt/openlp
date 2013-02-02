@@ -40,11 +40,10 @@ class ThemesTab(SettingsTab):
     """
     ThemesTab is the theme settings tab in the settings dialog.
     """
-    def __init__(self, parent, mainwindow):
+    def __init__(self, parent):
         """
         Constructor
         """
-        self.mainwindow = mainwindow
         generalTranslated = translate('OpenLP.ThemesTab', 'Themes')
         SettingsTab.__init__(self, parent, u'Themes', generalTranslated)
         self.iconPath = u':/themes/theme_new.png'
@@ -152,8 +151,8 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'theme level', self.theme_level)
         settings.setValue(u'global theme', self.global_theme)
         settings.endGroup()
-        self.mainwindow.renderer.set_global_theme(self.global_theme)
-        self.mainwindow.renderer.set_theme_level(self.theme_level)
+        self.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_theme_level(self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
@@ -185,7 +184,7 @@ class ThemesTab(SettingsTab):
         Set the global default theme
         """
         self.global_theme = self.DefaultComboBox.currentText()
-        self.mainwindow.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_global_theme(self.global_theme)
         self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
@@ -202,8 +201,8 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.mainwindow.renderer.set_global_theme(self.global_theme)
-        self.mainwindow.renderer.set_theme_level(self.theme_level)
+        self.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_theme_level(self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()
 
@@ -211,7 +210,7 @@ class ThemesTab(SettingsTab):
         """
         Utility method to update the global theme preview image.
         """
-        image = self.mainwindow.themeManagerContents.getPreviewImage(self.global_theme)
+        image = self.theme_manager.get_preview_image(self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
         if not preview.isNull():
             preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)

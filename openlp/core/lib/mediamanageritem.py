@@ -708,3 +708,13 @@ class MediaManagerItem(QtGui.QWidget):
         return self._service_manager
 
     service_manager = property(_get_service_manager)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)

@@ -41,7 +41,7 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, check_directory_exists, Settings
+from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, check_directory_exists, Settings, Registry
 from openlp.core.utils import get_web_page, AppLocation, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -204,7 +204,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     self.themeComboBox.addItem(item.text())
             if self.hasRunWizard:
                 # Add any existing themes to list.
-                for theme in self.parent().themeManagerContents.getThemes():
+                for theme in self.theme_manager.get_themes():
                     index = self.themeComboBox.findText(theme)
                     if index == -1:
                         self.themeComboBox.addItem(theme)
@@ -479,3 +479,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         status = PluginStatus.Active if field.checkState() == QtCore.Qt.Checked else PluginStatus.Inactive
         Settings().setValue(tag, status)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)
