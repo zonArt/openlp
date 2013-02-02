@@ -229,14 +229,18 @@ class AdvancedTab(SettingsTab):
         self.nextItemRadioButton.setObjectName(u'nextItemRadioButton')
         self.slideLayout.addWidget(self.nextItemRadioButton)
         self.rightLayout.addWidget(self.slideGroupBox)
-        self.x11GroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.x11GroupBox.setObjectName(u'x11GroupBox')
-        self.x11Layout = QtGui.QVBoxLayout(self.x11GroupBox)
-        self.x11Layout.setObjectName(u'x11Layout')
-        self.x11BypassCheckBox = QtGui.QCheckBox(self.x11GroupBox)
+        # Display Workarounds
+        self.displayWorkaroundGroupBox = QtGui.QGroupBox(self.leftColumn)
+        self.displayWorkaroundGroupBox.setObjectName(u'displayWorkaroundGroupBox')
+        self.displayWorkaroundLayout = QtGui.QVBoxLayout(self.displayWorkaroundGroupBox)
+        self.displayWorkaroundLayout.setObjectName(u'displayWorkaroundLayout')
+        self.x11BypassCheckBox = QtGui.QCheckBox(self.displayWorkaroundGroupBox)
         self.x11BypassCheckBox.setObjectName(u'x11BypassCheckBox')
-        self.x11Layout.addWidget(self.x11BypassCheckBox)
-        self.rightLayout.addWidget(self.x11GroupBox)
+        self.displayWorkaroundLayout.addWidget(self.x11BypassCheckBox)
+        self.alternateRowsCheckBox = QtGui.QCheckBox(self.displayWorkaroundGroupBox)
+        self.alternateRowsCheckBox.setObjectName(u'alternateRowsCheckBox')
+        self.displayWorkaroundLayout.addWidget(self.alternateRowsCheckBox)
+        self.rightLayout.addWidget(self.displayWorkaroundGroupBox)
         self.rightLayout.addStretch()
         self.shouldUpdateServiceNameExample = False
         QtCore.QObject.connect(self.serviceNameCheckBox, QtCore.SIGNAL(u'toggled(bool)'),
@@ -253,6 +257,8 @@ class AdvancedTab(SettingsTab):
         QtCore.QObject.connect(self.defaultBrowseButton, QtCore.SIGNAL(u'clicked()'), self.onDefaultBrowseButtonClicked)
         QtCore.QObject.connect(self.defaultRevertButton, QtCore.SIGNAL(u'clicked()'), self.onDefaultRevertButtonClicked)
         QtCore.QObject.connect(self.x11BypassCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.onX11BypassCheckBoxToggled)
+        QtCore.QObject.connect(self.alternateRowsCheckBox,
+            QtCore.SIGNAL(u'toggled(bool)'), self.onAlternateRowsCheckBoxToggled)
         QtCore.QObject.connect(self.dataDirectoryBrowseButton, QtCore.SIGNAL(u'clicked()'),
             self.onDataDirectoryBrowseButtonClicked)
         QtCore.QObject.connect(self.dataDirectoryDefaultButton, QtCore.SIGNAL(u'clicked()'),
@@ -260,7 +266,7 @@ class AdvancedTab(SettingsTab):
         QtCore.QObject.connect(self.dataDirectoryCancelButton, QtCore.SIGNAL(u'clicked()'),
             self.onDataDirectoryCancelButtonClicked)
         QtCore.QObject.connect(self.dataDirectoryCopyCheckBox, QtCore.SIGNAL(u'toggled(bool)'),
-                self.onDataDirectoryCopyCheckBoxToggled)
+            self.onDataDirectoryCopyCheckBoxToggled)
         QtCore.QObject.connect(self.endSlideRadioButton, QtCore.SIGNAL(u'clicked()'), self.onEndSlideButtonClicked)
         QtCore.QObject.connect(self.wrapSlideRadioButton, QtCore.SIGNAL(u'clicked()'), self.onWrapSlideButtonClicked)
         QtCore.QObject.connect(self.nextItemRadioButton, QtCore.SIGNAL(u'clicked()'), self.onnextItemButtonClicked)
@@ -324,8 +330,9 @@ class AdvancedTab(SettingsTab):
         self.newDataDirectoryHasFilesLabel.setText(
             translate('OpenLP.AdvancedTab', '<strong>WARNING:</strong> New data directory location contains '
                 'OpenLP data files.  These files WILL be replaced during a copy.'))
-        self.x11GroupBox.setTitle(translate('OpenLP.AdvancedTab', 'X11'))
+        self.displayWorkaroundGroupBox.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
         self.x11BypassCheckBox.setText(translate('OpenLP.AdvancedTab', 'Bypass X11 Window Manager'))
+        self.alternateRowsCheckBox.setText(translate('OpenLP.AdvancedTab', 'Use alternating row colours in lists'))
         # Slide Limits
         self.slideGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
         self.slideLabel.setText(translate('OpenLP.GeneralTab', 'Behavior of next/previous on the last/first slide:'))
@@ -362,6 +369,10 @@ class AdvancedTab(SettingsTab):
         self.defaultColor = settings.value(u'default color')
         self.defaultFileEdit.setText(settings.value(u'default image'))
         self.slide_limits = settings.value(u'slide limits')
+        # Prevent the dialog displayed by the alternateRowsCheckBox to display.
+        self.alternateRowsCheckBox.blockSignals(True)
+        self.alternateRowsCheckBox.setChecked(settings.value(u'alternate rows'))
+        self.alternateRowsCheckBox.blockSignals(False)
         if self.slide_limits == SlideLimits.End:
             self.endSlideRadioButton.setChecked(True)
         elif self.slide_limits == SlideLimits.Wrap:
@@ -431,6 +442,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'enable exit confirmation', self.enableAutoCloseCheckBox.isChecked())
         settings.setValue(u'hide mouse', self.hideMouseCheckBox.isChecked())
         settings.setValue(u'x11 bypass wm', self.x11BypassCheckBox.isChecked())
+        settings.setValue(u'alternate rows', self.alternateRowsCheckBox.isChecked())
         settings.setValue(u'default color', self.defaultColor)
         settings.setValue(u'default image', self.defaultFileEdit.text())
         settings.setValue(u'slide limits', self.slide_limits)
@@ -648,6 +660,17 @@ class AdvancedTab(SettingsTab):
             The state of the check box (boolean).
         """
         self.displayChanged = True
+        
+    def onAlternateRowsCheckBoxToggled(self, checked):
+        """
+        Notify user about required restart.
+
+        ``checked``
+            The state of the check box (boolean).
+        """
+        QtGui.QMessageBox.information(self,
+            translate('OpenLP.AdvancedTab', 'Restart Required'),
+            translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP has been restarted.'))
 
     def onEndSlideButtonClicked(self):
         """

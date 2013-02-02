@@ -94,6 +94,14 @@ class SlideController(DisplayController):
             u'audioPauseItem',
             u'audioTimeLabel'
         ]
+        self.wideMenu = [
+            u'blankScreenButton',
+            u'themeScreenButton',
+            u'desktopScreenButton'
+        ]
+        self.hideMenuList = [
+            u'hideMenu'
+        ]
         self.timer_id = 0
         self.songEdit = False
         self.selectedRow = 0
@@ -195,6 +203,19 @@ class SlideController(DisplayController):
             self.hideMenu.menu().addAction(self.blankScreen)
             self.hideMenu.menu().addAction(self.themeScreen)
             self.hideMenu.menu().addAction(self.desktopScreen)
+            # Wide menu of display control buttons.
+            self.blankScreenButton = QtGui.QToolButton(self.toolbar)
+            self.blankScreenButton.setObjectName(u'blankScreenButton')
+            self.toolbar.addToolbarWidget(self.blankScreenButton)
+            self.blankScreenButton.setDefaultAction(self.blankScreen)
+            self.themeScreenButton = QtGui.QToolButton(self.toolbar)
+            self.themeScreenButton.setObjectName(u'themeScreenButton')
+            self.toolbar.addToolbarWidget(self.themeScreenButton)
+            self.themeScreenButton.setDefaultAction(self.themeScreen)
+            self.desktopScreenButton = QtGui.QToolButton(self.toolbar)
+            self.desktopScreenButton.setObjectName(u'desktopScreenButton')
+            self.toolbar.addToolbarWidget(self.desktopScreenButton)
+            self.desktopScreenButton.setDefaultAction(self.desktopScreen)
             self.toolbar.addToolbarAction(u'loopSeparator', separator=True)
             # Play Slides Menu
             self.playSlidesMenu = QtGui.QToolButton(self.toolbar)
@@ -346,6 +367,7 @@ class SlideController(DisplayController):
             QtCore.QObject.connect(Receiver.get_receiver(),
                 QtCore.SIGNAL(u'slidecontroller_toggle_display'), self.toggleDisplay)
             self.toolbar.setWidgetVisible(self.loopList, False)
+            self.toolbar.setWidgetVisible(self.wideMenu, False)
         else:
             QtCore.QObject.connect(self.previewListWidget,
                 QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
@@ -573,7 +595,20 @@ class SlideController(DisplayController):
                 width = self.parent().controlSplitter.sizes()[self.split]
                 for framenumber in range(len(self.serviceItem.get_frames())):
                     self.previewListWidget.setRowHeight(framenumber, width / self.ratio)
+        self.onControllerSizeChanged(self.controller.width(), self.controller.height())
 
+    def onControllerSizeChanged(self, width, height):
+        """
+        Change layout of display control buttons on controller size change
+        """
+        if self.isLive:
+            if width > 300 and self.hideMenu.isVisible():
+                self.toolbar.setWidgetVisible(self.hideMenuList, False)
+                self.toolbar.setWidgetVisible(self.wideMenu)
+            elif width < 300 and not self.hideMenu.isVisible():
+                self.toolbar.setWidgetVisible(self.wideMenu, False)
+                self.toolbar.setWidgetVisible(self.hideMenuList)
+                
     def onSongBarHandler(self):
         """
         Some song handler
