@@ -82,9 +82,9 @@ class AdvancedTab(SettingsTab):
         self.double_click_live_check_box = QtGui.QCheckBox(self.ui_group_box)
         self.double_click_live_check_box.setObjectName(u'double_click_live_check_box')
         self.ui_layout.addRow(self.double_click_live_check_box)
-        self.singleclick_preview_check_box = QtGui.QCheckBox(self.ui_group_box)
-        self.singleclick_preview_check_box.setObjectName(u'singleclick_preview_check_box')
-        self.ui_layout.addRow(self.singleclick_preview_check_box)
+        self.single_click_preview_check_box = QtGui.QCheckBox(self.ui_group_box)
+        self.single_click_preview_check_box.setObjectName(u'single_click_preview_check_box')
+        self.ui_layout.addRow(self.single_click_preview_check_box)
         self.expand_service_item_check_box = QtGui.QCheckBox(self.ui_group_box)
         self.expand_service_item_check_box.setObjectName(u'expand_service_item_check_box')
         self.ui_layout.addRow(self.expand_service_item_check_box)
@@ -234,6 +234,9 @@ class AdvancedTab(SettingsTab):
         self.display_workaround_group_box.setObjectName(u'display_workaround_group_box')
         self.display_workaround_layout = QtGui.QVBoxLayout(self.display_workaround_group_box)
         self.display_workaround_layout.setObjectName(u'display_workaround_layout')
+        self.x11_bypass_check_box = QtGui.QCheckBox(self.display_workaround_group_box)
+        self.x11_bypass_check_box.setObjectName(u'x11_bypass_check_box')
+        self.display_workaround_layout.addWidget(self.x11_bypass_check_box)
         self.alternate_rows_check_box = QtGui.QCheckBox(self.display_workaround_group_box)
         self.alternate_rows_check_box.setObjectName(u'alternate_rows_check_box')
         self.display_workaround_layout.addWidget(self.alternate_rows_check_box)
@@ -250,14 +253,16 @@ class AdvancedTab(SettingsTab):
             self.update_service_name_example)
         QtCore.QObject.connect(self.service_name_revert_button, QtCore.SIGNAL(u'clicked()'),
             self.on_service_name_revert_button_clicked)
-        QtCore.QObject.connect(self.default_color_button, QtCore.SIGNAL(u'clicked()'), 
+        QtCore.QObject.connect(self.default_color_button, QtCore.SIGNAL(u'clicked()'),
             self.on_default_color_button_clicked)
-        QtCore.QObject.connect(self.default_browse_button, QtCore.SIGNAL(u'clicked()'), 
+        QtCore.QObject.connect(self.default_browse_button, QtCore.SIGNAL(u'clicked()'),
             self.on_default_browse_button_clicked)
-        QtCore.QObject.connect(self.default_revert_button, QtCore.SIGNAL(u'clicked()'), 
+        QtCore.QObject.connect(self.default_revert_button, QtCore.SIGNAL(u'clicked()'),
             self.on_default_revert_button_clicked)
+        QtCore.QObject.connect(self.x11_bypass_check_box, QtCore.SIGNAL(u'toggled(bool)'),
+            self.on_X11_bypass_check_box_toggled)
         QtCore.QObject.connect(self.alternate_rows_check_box,QtCore.SIGNAL(u'toggled(bool)'),
-            self.on_alternate_rows_check_box_toggled)        
+            self.on_alternate_rows_check_box_toggled)
         QtCore.QObject.connect(self.data_directory_browse_button, QtCore.SIGNAL(u'clicked()'),
             self.on_data_directory_browse_button_clicked)
         QtCore.QObject.connect(self.data_directory_default_button, QtCore.SIGNAL(u'clicked()'),
@@ -266,11 +271,11 @@ class AdvancedTab(SettingsTab):
             self.on_data_directory_cancel_button_clicked)
         QtCore.QObject.connect(self.data_directory_copy_check_box, QtCore.SIGNAL(u'toggled(bool)'),
             self.on_data_directory_copy_check_box_toggled)
-        QtCore.QObject.connect(self.end_slide_radio_button, QtCore.SIGNAL(u'clicked()'), 
+        QtCore.QObject.connect(self.end_slide_radio_button, QtCore.SIGNAL(u'clicked()'),
             self.on_end_slide_button_clicked)
-        QtCore.QObject.connect(self.wrap_slide_radio_button, QtCore.SIGNAL(u'clicked()'), 
+        QtCore.QObject.connect(self.wrap_slide_radio_button, QtCore.SIGNAL(u'clicked()'),
             self.on_wrap_slide_button_clicked)
-        QtCore.QObject.connect(self.next_item_radio_button, QtCore.SIGNAL(u'clicked()'), 
+        QtCore.QObject.connect(self.next_item_radio_button, QtCore.SIGNAL(u'clicked()'),
             self.on_next_item_button_clicked)
 
 
@@ -286,7 +291,7 @@ class AdvancedTab(SettingsTab):
             'Remember active media manager tab on startup'))
         self.double_click_live_check_box.setText(translate('OpenLP.AdvancedTab',
             'Double-click to send items straight to live'))
-        self.singleclick_preview_check_box.setText(translate('OpenLP.AdvancedTab',
+        self.single_click_preview_check_box.setText(translate('OpenLP.AdvancedTab',
             'Preview items when clicked in Media Manager'))
         self.expand_service_item_check_box.setText(translate('OpenLP.AdvancedTab',
             'Expand new service items on creation'))
@@ -335,6 +340,7 @@ class AdvancedTab(SettingsTab):
             translate('OpenLP.AdvancedTab', '<strong>WARNING:</strong> New data directory location contains '
                 'OpenLP data files.  These files WILL be replaced during a copy.'))
         self.display_workaround_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Display Workarounds'))
+        self.x11_bypass_check_box.setText(translate('OpenLP.AdvancedTab','Bypass X11 Window Manager'))
         self.alternate_rows_check_box.setText(translate('OpenLP.AdvancedTab', 'Use alternating row colours in lists'))
         # Slide Limits
         self.slide_group_box.setTitle(translate('OpenLP.GeneralTab', 'Service Item Slide Limits'))
@@ -356,7 +362,7 @@ class AdvancedTab(SettingsTab):
         self.recent_spin_box.setValue(settings.value(u'recent file count'))
         self.media_plugin_check_box.setChecked(settings.value(u'save current plugin'))
         self.double_click_live_check_box.setChecked(settings.value(u'double click live'))
-        self.singleclick_preview_check_box.setChecked(settings.value(u'single click preview'))
+        self.single_click_preview_check_box.setChecked(settings.value(u'single click preview'))
         self.expand_service_item_check_box.setChecked(settings.value(u'expand service item'))
         self.enable_auto_close_check_box.setChecked(settings.value(u'enable exit confirmation'))
         self.hide_mouse_check_box.setChecked(settings.value(u'hide mouse'))
@@ -368,6 +374,7 @@ class AdvancedTab(SettingsTab):
         default_service_enabled = settings.value(u'default service enabled')
         self.service_name_check_box.setChecked(default_service_enabled)
         self.service_name_check_box_toggled(default_service_enabled)
+        self.x11_bypass_check_box.setChecked(settings.value(u'x11 bypass wm'))
         self.default_color = settings.value(u'default color')
         self.default_file_edit.setText(settings.value(u'default image'))
         self.slide_limits = settings.value(u'slide limits')
@@ -437,7 +444,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'recent file count', self.recent_spin_box.value())
         settings.setValue(u'save current plugin', self.media_plugin_check_box.isChecked())
         settings.setValue(u'double click live', self.double_click_live_check_box.isChecked())
-        settings.setValue(u'single click preview', self.singleclick_preview_check_box.isChecked())
+        settings.setValue(u'single click preview', self.single_click_preview_check_box.isChecked())
         settings.setValue(u'expand service item', self.expand_service_item_check_box.isChecked())
         settings.setValue(u'enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue(u'hide mouse', self.hide_mouse_check_box.isChecked())
