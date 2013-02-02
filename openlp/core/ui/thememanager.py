@@ -638,9 +638,9 @@ class ThemeManager(QtGui.QWidget):
         """
         self._writeTheme(theme, image_from, image_to)
         if theme.background_type == BackgroundType.to_string(BackgroundType.Image):
-            self.image_manager.updateImageBorder(theme.background_filename,
+            self.image_manager.update_image_border(theme.background_filename,
                 ImageSource.Theme, QtGui.QColor(theme.background_border_color))
-            self.image_manager.processUpdates()
+            self.image_manager.process_updates()
 
     def _writeTheme(self, theme, image_from, image_to):
         """

@@ -208,8 +208,7 @@ sup {
 """
 
 
-def build_html(item, screen, islive, background, image=None,
-    plugins=None):
+def build_html(item, screen, is_live, background, image=None, plugins=None):
     """
     Build the full web paged structure for display
 
@@ -234,7 +233,7 @@ def build_html(item, screen, islive, background, image=None,
     width = screen[u'size'].width()
     height = screen[u'size'].height()
     theme = item.themedata
-    webkitvers = webkit_version()
+    webkit_ver = webkit_version()
     # Image generated and poked in
     if background:
         bgimage_src = u'src="data:image/png;base64,%s"' % background
@@ -254,15 +253,17 @@ def build_html(item, screen, islive, background, image=None,
             css_additions += plugin.getDisplayCss()
             js_additions += plugin.getDisplayJavaScript()
             html_additions += plugin.getDisplayHtml()
-    html = HTMLSRC % (build_background_css(item, width, height),
+    html = HTMLSRC % (
+        build_background_css(item, width, height),
         css_additions,
         build_footer_css(item, height),
-        build_lyrics_css(item, webkitvers),
-        u'true' if theme and theme.display_slide_transition and islive else u'false',
+        build_lyrics_css(item, webkit_ver),
+        u'true' if theme and theme.display_slide_transition and is_live else u'false',
         js_additions,
         bgimage_src, image_src,
         html_additions,
-        build_lyrics_html(item, webkitvers))
+        build_lyrics_html(item, webkit_ver)
+    )
     return html
 
 
@@ -272,11 +273,11 @@ def webkit_version():
     Note method added relatively recently, so return 0 if prior to this
     """
     try:
-        webkitvers = float(QtWebKit.qWebKitVersion())
-        log.debug(u'Webkit version = %s' % webkitvers)
+        webkit_ver = float(QtWebKit.qWebKitVersion())
+        log.debug(u'Webkit version = %s' % webkit_ver)
     except AttributeError:
-        webkitvers = 0
-    return webkitvers
+        webkit_ver = 0
+    return webkit_ver
 
 
 def build_background_css(item, width, height):
@@ -314,7 +315,7 @@ def build_background_css(item, width, height):
     return background
 
 
-def build_lyrics_css(item, webkitvers):
+def build_lyrics_css(item, webkit_ver):
     """
     Build the lyrics display css
 
@@ -371,12 +372,12 @@ def build_lyrics_css(item, webkitvers):
         # Up to 534.3 the text-shadow didn't get displayed when
         # webkit-text-stroke was used. So use an offset text layer underneath.
         # https://bugs.webkit.org/show_bug.cgi?id=19728
-        if webkitvers >= 533.3:
+        if webkit_ver >= 533.3:
             lyricsmain += build_lyrics_outline_css(theme)
         else:
             outline = build_lyrics_outline_css(theme)
         if theme.font_main_shadow:
-            if theme.font_main_outline and webkitvers <= 534.3:
+            if theme.font_main_outline and webkit_ver <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.font_main_shadow_size) + (int(theme.font_main_outline_size) * 2),
                      theme.font_main_shadow_size)

@@ -292,7 +292,7 @@ class MainDisplay(Display):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.image_manager.addImage(path, ImageSource.ImagePlugin, background)
+        self.image_manager.add_image(path, ImageSource.ImagePlugin, background)
         if not hasattr(self, u'serviceItem'):
             return False
         self.override[u'image'] = path
@@ -314,7 +314,7 @@ class MainDisplay(Display):
             re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.image_manager.getImageBytes(path, ImageSource.ImagePlugin)
+        image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
         self.controller.media_controller.media_reset(self.controller)
         self.displayImage(image)
 
@@ -395,16 +395,16 @@ class MainDisplay(Display):
                 self.override = {}
             else:
                 # replace the background
-                background = self.image_manager.getImageBytes(self.override[u'image'], ImageSource.ImagePlugin)
+                background = self.image_manager.get_image_bytes(self.override[u'image'], ImageSource.ImagePlugin)
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.image_manager.getImageBytes(
+            self.serviceItem.bg_image_bytes = self.image_manager.get_image_bytes(
                 self.serviceItem.themedata.background_filename,
                 ImageSource.Theme
             )
         if image_path:
-            image_bytes = self.image_manager.getImageBytes(image_path, ImageSource.ImagePlugin)
+            image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes,

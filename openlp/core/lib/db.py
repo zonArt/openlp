@@ -110,14 +110,17 @@ def upgrade_db(url, upgrade):
         while hasattr(upgrade, u'upgrade_%d' % version):
             log.debug(u'Running upgrade_%d', version)
             try:
-                getattr(upgrade, u'upgrade_%d' % version)(session, metadata, tables)
+                upgrade_func = getattr(upgrade, u'upgrade_%d' % version)
+                upgrade_func(session, metadata, tables)
+                session.commit()
+                # Update the version number AFTER a commit so that we are sure the previous transaction happened
+                version_meta.value = unicode(version)
+                session.commit()
+                version += 1
             except (SQLAlchemyError, DBAPIError):
                 log.exception(u'Could not run database upgrade script '
                     '"upgrade_%s", upgrade process has been halted.', version)
                 break
-            version_meta.value = unicode(version)
-            session.commit()
-            version += 1
     else:
         version_meta = Metadata.populate(key=u'version', value=int(upgrade.__version__))
         session.commit()
@@ -216,7 +219,8 @@ class Manager(object):
             self.session = init_schema(self.db_url)
         except (SQLAlchemyError, DBAPIError):
             log.exception(u'Error loading database: %s', self.db_url)
-            critical_error_message_box(translate('OpenLP.Manager', 'Database Error'),
+            critical_error_message_box(
+                translate('OpenLP.Manager', 'Database Error'),
                 translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s') % self.db_url
             )
 

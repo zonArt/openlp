@@ -644,17 +644,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.setViewMode(False, True, False, False, True)
             self.modeLiveItem.setChecked(True)
 
-    def appStartup(self):
+    def app_startup(self):
         """
         Give all the plugins a chance to perform some tasks at startup
         """
         Receiver.send_message(u'openlp_process_events')
         for plugin in self.pluginManager.plugins:
             if plugin.isActive():
-                plugin.appStartup()
+                plugin.app_startup()
                 Receiver.send_message(u'openlp_process_events')
 
-    def firstTime(self):
+    def first_time(self):
         """
         Import themes if first time
         """
@@ -662,7 +662,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for plugin in self.pluginManager.plugins:
             if hasattr(plugin, u'firstTime'):
                 Receiver.send_message(u'openlp_process_events')
-                plugin.firstTime()
+                plugin.first_time()
         Receiver.send_message(u'openlp_process_events')
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
         shutil.rmtree(temp_dir, True)
@@ -690,7 +690,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         firstTime.exec_()
         if firstTime.downloadCancelled:
             return
-        self.firstTime()
+        self.first_time()
         for plugin in self.pluginManager.plugins:
             self.activePlugin = plugin
             oldStatus = self.activePlugin.status
@@ -698,7 +698,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             if oldStatus != self.activePlugin.status:
                 if self.activePlugin.status == PluginStatus.Active:
                     self.activePlugin.toggleStatus(PluginStatus.Active)
-                    self.activePlugin.appStartup()
+                    self.activePlugin.app_startup()
                 else:
                     self.activePlugin.toggleStatus(PluginStatus.Inactive)
         self.themeManagerContents.configUpdated()
@@ -1004,7 +1004,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'screenChanged')
         Receiver.send_message(u'cursor_busy')
-        self.imageManager.updateDisplay()
+        self.imageManager.update_display()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
@@ -1060,8 +1060,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``save_settings``
             Switch to prevent saving settings. Defaults to **True**.
         """
-        self.imageManager.stopManager = True
-        while self.imageManager.imageThread.isRunning():
+        self.imageManager.stop_manager = True
+        while self.imageManager.image_thread.isRunning():
             time.sleep(0.1)
         # Clean temporary files used by services
         self.serviceManagerContents.cleanUp()
