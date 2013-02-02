@@ -121,7 +121,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_revert_button.setObjectName(u'service_name_revert_button')
         self.service_name_revert_button.setIcon(build_icon(u':/general/general_revert.png'))
         self.service_name_button_layout = QtGui.QHBoxLayout()
-        self.service_name_button_layout.setObjectName(u'service_name_layout_2')
+        self.service_name_button_layout.setObjectName(u'service_name_button_layout')
         self.service_name_button_layout.addWidget(self.service_name_edit)
         self.service_name_button_layout.addWidget(self.service_name_revert_button)
         self.service_name_layout.addRow(self.service_name_label, self.service_name_button_layout)
