@@ -61,8 +61,7 @@ class OpenLP1SongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.availableThemes = \
-            kwargs[u'plugin'].formParent.themeManagerContents.getThemes()
+        self.availableThemes = kwargs[u'plugin'].theme_manager.get_themes()
 
     def doImport(self):
         """

@@ -213,6 +213,7 @@ class ThemeXML(object):
     """
     FIRST_CAMEL_REGEX = re.compile(u'(.)([A-Z][a-z]+)')
     SECOND_CAMEL_REGEX = re.compile(u'([a-z0-9])([A-Z])')
+
     def __init__(self):
         """
         Initialise the theme object.

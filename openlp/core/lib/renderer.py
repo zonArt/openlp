@@ -128,7 +128,7 @@ class Renderer(object):
             The theme name.
         """
         if theme_name not in self._theme_dimensions:
-            theme_data = self.theme_manager.getThemeData(theme_name)
+            theme_data = self.theme_manager.get_theme_data(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
             footer_rect = self.get_footer_rectangle(theme_data)
             self._theme_dimensions[theme_name] = [theme_data, main_rect, footer_rect]
@@ -315,7 +315,7 @@ class Renderer(object):
                             if  text_contains_split:
                                 text = slides[-1] + u'\n[---]\n' + text
                             else:
-                                text = slides[-1] + u'\n'+ text
+                                text = slides[-1] + u'\n' + text
                             text = text.replace(u'<br>', u'\n')
                         else:
                             pages.extend(slides)
@@ -543,7 +543,7 @@ class Renderer(object):
         end_tags.reverse()
         # Remove the indexes.
         html_tags = [tag[1] for tag in html_tags]
-        return raw_text + u''.join(end_tags),  u''.join(start_tags), u''.join(html_tags)
+        return raw_text + u''.join(end_tags), u''.join(start_tags), u''.join(html_tags)
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list, raw_list, separator, line_end):
         """
@@ -662,3 +662,4 @@ class Renderer(object):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+

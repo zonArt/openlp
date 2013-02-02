@@ -103,4 +103,4 @@ from thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
     'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', 'FirstTimeForm']
+    'ServiceItemEditForm', 'FirstTimeForm' ]

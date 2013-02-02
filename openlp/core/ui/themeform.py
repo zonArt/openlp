@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, UiStrings
+from openlp.core.lib import Receiver, translate, UiStrings, Registry
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
@@ -56,7 +56,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             The QWidget-derived parent of the wizard.
         """
         QtGui.QWizard.__init__(self, parent)
-        self.thememanager = parent
         self.setupUi(self)
         self.registerFields()
         self.updateThemeAllowed = True
@@ -149,7 +148,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Do not trigger on start up
         if self.currentPage != self.welcomePage:
             self.updateTheme()
-            self.thememanager.generateImage(self.theme, True)
+            self.theme_manager.generate_image(self.theme, True)
 
     def updateLinesText(self, lines):
         """
@@ -196,7 +195,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setOption(QtGui.QWizard.HaveCustomButton1, enabled)
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme)
+            frame = self.theme_manager.generate_image(self.theme)
             self.previewBoxLabel.setPixmap(frame)
             self.displayAspectRatio = float(frame.width()) / frame.height()
             self.resizeEvent()
@@ -206,15 +205,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Generate layout preview and display the form.
         """
         self.updateTheme()
-        width = self.thememanager.mainwindow.renderer.width
-        height = self.thememanager.mainwindow.renderer.height
+        width = self.renderer.width
+        height = self.renderer.height
         pixmap = QtGui.QPixmap(width, height)
         pixmap.fill(QtCore.Qt.white)
         paint = QtGui.QPainter(pixmap)
         paint.setPen(QtGui.QPen(QtCore.Qt.blue, 2))
-        paint.drawRect(self.thememanager.mainwindow.renderer.get_main_rectangle(self.theme))
+        paint.drawRect(self.renderer.get_main_rectangle(self.theme))
         paint.setPen(QtGui.QPen(QtCore.Qt.red, 2))
-        paint.drawRect(self.thememanager.mainwindow.renderer.get_footer_rectangle(self.theme))
+        paint.drawRect(self.renderer.get_footer_rectangle(self.theme))
         paint.end()
         self.themeLayoutForm.exec_(pixmap)
 
@@ -514,9 +513,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             filename = os.path.split(unicode(self.theme.background_filename))[1]
             saveTo = os.path.join(self.path, self.theme.theme_name, filename)
             saveFrom = self.theme.background_filename
-        if not self.edit_mode and not self.thememanager.checkIfThemeExists(self.theme.theme_name):
+        if not self.edit_mode and not self.theme_manager.check_if_theme_exists(self.theme.theme_name):
             return
-        self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
+        self.theme_manager.save_theme(self.theme, saveFrom, saveTo)
         return QtGui.QDialog.accept(self)
 
     def _colorButton(self, field):
@@ -527,3 +526,23 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if new_color.isValid():
             field = new_color.name()
         return field
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)
