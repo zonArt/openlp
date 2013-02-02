@@ -698,4 +698,3 @@ class MediaManagerItem(QtGui.QWidget):
 
     theme_manager = property(_get_theme_manager)
 
-

@@ -174,4 +174,13 @@ class SettingsTab(QtGui.QWidget):
 
     theme_manager = property(_get_theme_manager)
 
+    def _get_media_controller(self):
+        """
+        Adds the media controller to the class dynamically
+        """
+        if not hasattr(self, u'_media_controller'):
+            self._media_controller = Registry().get(u'media_controller')
+        return self._media_controller
+
+    media_controller = property(_get_media_controller)
 

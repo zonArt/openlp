@@ -546,4 +546,3 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
-    

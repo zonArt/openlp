@@ -662,3 +662,4 @@ class Renderer(object):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+
