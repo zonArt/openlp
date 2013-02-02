@@ -98,10 +98,9 @@ from settingsform import SettingsForm
 from formattingtagform import FormattingTagForm
 from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
-from servicemanagerdialog import ServiceManagerDialog
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManagerDialog', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
+    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
     'ServiceItemEditForm', 'FirstTimeForm' ]
