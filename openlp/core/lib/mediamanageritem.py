@@ -332,9 +332,9 @@ class MediaManagerItem(QtGui.QWidget):
             Settings().value(self.settingsSection + u'/last directory'), self.onNewFileMasks)
         log.info(u'New files(s) %s', files)
         if files:
-            Receiver.send_message(u'cursor_busy')
+            self.openlp_core.set_busy_cursor()
             self.validateAndLoad(files)
-        Receiver.send_message(u'cursor_normal')
+        self.openlp_core.set_normal_cursor()
 
     def loadFile(self, files):
         """
@@ -697,4 +697,14 @@ class MediaManagerItem(QtGui.QWidget):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+
+    def _get_openlp_core(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_openlp_core'):
+            self._openlp_core = Registry().get(u'openlp_core')
+        return self._openlp_core
+
+    openlp_core = property(_get_openlp_core)
 

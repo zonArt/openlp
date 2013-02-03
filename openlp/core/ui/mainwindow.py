@@ -531,7 +531,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
-        Receiver.send_message(u'cursor_busy')
+        self.openlp_core.set_busy_cursor()
         # Simple message boxes
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_warning_message'), self.onWarningMessage)
@@ -580,7 +580,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Hide/show the theme combobox on the service manager
         self.serviceManagerContents.theme_change()
         # Reset the cursor
-        Receiver.send_message(u'cursor_normal')
+        self.openlp_core.set_busy_cursor()
 
     def setAutoLanguage(self, value):
         self.languageGroup.setDisabled(value)
@@ -635,20 +635,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Give all the plugins a chance to perform some tasks at startup
         """
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
         for plugin in self.pluginManager.plugins:
             if plugin.isActive():
                 plugin.appStartup()
-                Receiver.send_message(u'openlp_process_events')
+                self.openlp_core.process_events()
 
     def firstTime(self):
         # Import themes if first time
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
         for plugin in self.pluginManager.plugins:
             if hasattr(plugin, u'firstTime'):
-                Receiver.send_message(u'openlp_process_events')
+                self.openlp_core.process_events()
                 plugin.firstTime()
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
         shutil.rmtree(temp_dir, True)
 
@@ -669,7 +669,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        Receiver.send_message(u'cursor_busy')
+        self.openlp_core.set_busy_cursor()
         screens = ScreenList()
         firstTime = FirstTimeForm(screens, self)
         firstTime.exec_()
@@ -979,14 +979,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         renderer.
         """
         log.debug(u'screenChanged')
-        Receiver.send_message(u'cursor_busy')
+        self.openlp_core.set_busy_cursor()
         self.imageManager.updateDisplay()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
-        Receiver.send_message(u'cursor_normal')
+        self.openlp_core.set_busy_cursor()
 
     def closeEvent(self, event):
         """
@@ -1270,14 +1270,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadProgressBar.show()
         self.loadProgressBar.setMaximum(size)
         self.loadProgressBar.setValue(0)
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
 
     def incrementProgressBar(self):
         """
         Increase the Progress Bar value by 1
         """
         self.loadProgressBar.setValue(self.loadProgressBar.value() + 1)
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
 
     def finishedProgressBar(self):
         """
@@ -1292,7 +1292,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if event.timerId() == self.timer_id:
             self.timer_id = 0
             self.loadProgressBar.hide()
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
 
     def setNewDataPath(self, new_data_path):
         self.newDataPath = new_data_path
@@ -1307,20 +1307,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.copyData:
             log.info(u'Copying data to new path')
             try:
-                Receiver.send_message(u'openlp_process_events')
-                Receiver.send_message(u'cursor_busy')
+                self.openlp_core.set_busy_cursor()
                 self.showStatusMessage(
                     translate('OpenLP.MainWindow', 'Copying OpenLP data to new data directory location - %s '
                     '- Please wait for copy to finish').replace('%s', self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError), why:
-                Receiver.send_message(u'cursor_normal')
+                self.openlp_core.set_normal_cursor()
                 log.exception(u'Data copy failed %s' % unicode(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
                         'OpenLP Data directory copy failed\n\n%s').replace('%s', unicode(why)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 return False
         else:
             log.info(u'No data copy requested')
@@ -1331,3 +1330,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')
 
+    def _get_openlp_core(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_openlp_core'):
+            self._openlp_core = Registry().get(u'openlp_core')
+        return self._openlp_core
+
+    openlp_core = property(_get_openlp_core)

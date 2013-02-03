@@ -146,13 +146,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             # Download the theme screenshots.
             self.themeScreenshotThread = ThemeScreenshotThread(self)
             self.themeScreenshotThread.start()
-        Receiver.send_message(u'cursor_normal')
+        self.openlp_core.set_normal_cursor()
 
     def nextId(self):
         """
         Determine the next page in the Wizard to go to.
         """
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
         if self.currentId() == FirstTimePage.Plugins:
             if not self.webAccess:
                 return FirstTimePage.NoInternet
@@ -163,14 +163,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         elif self.currentId() == FirstTimePage.NoInternet:
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
-            Receiver.send_message(u'cursor_busy')
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.set_busy_cursor()
             while not self.themeScreenshotThread.isFinished():
                 time.sleep(0.1)
-                Receiver.send_message(u'openlp_process_events')
+                self.openlp_core.process_events()
             # Build the screenshot icons, as this can not be done in the thread.
             self._buildThemeScreenshots()
-            Receiver.send_message(u'cursor_normal')
+            self.openlp_core.set_normal_cursor()
             return FirstTimePage.Defaults
         else:
             return self.currentId() + 1
@@ -181,7 +180,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         # Keep track of the page we are at.  Triggering "Cancel" causes pageId
         # to be a -1.
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
         if pageId != -1:
             self.lastId = pageId
         if pageId == FirstTimePage.Plugins:
@@ -213,16 +212,15 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             if self.hasRunWizard:
                 self.cancelButton.setVisible(False)
         elif pageId == FirstTimePage.Progress:
-            Receiver.send_message(u'cursor_busy')
+            self.openlp_core.set_busy_cursor()
             self.repaint()
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
             # Try to give the wizard a chance to redraw itself
             time.sleep(0.2)
             self._preWizard()
             self._performWizard()
             self._postWizard()
-            Receiver.send_message(u'cursor_normal')
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.set_normal_cursor()
 
     def updateScreenListCombo(self):
         """
@@ -244,16 +242,15 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.downloadCancelled = True
         while self.themeScreenshotThread.isRunning():
             time.sleep(0.1)
-        Receiver.send_message(u'cursor_normal')
+        self.openlp_core.set_normal_cursor()
 
     def onNoInternetFinishButtonClicked(self):
         """
         Process the triggering of the "Finish" button on the No Internet page.
         """
-        Receiver.send_message(u'cursor_busy')
+        self.openlp_core.set_busy_cursor()
         self._performWizard()
-        Receiver.send_message(u'cursor_normal')
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.set_normal_cursor()
         Settings().setValue(u'general/has run wizard', True)
         self.close()
 
@@ -320,7 +317,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressLabel.setText(status_text)
         if increment > 0:
             self.progressBar.setValue(self.progressBar.value() + increment)
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
 
     def _preWizard(self):
         """
@@ -328,10 +325,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         self.max_progress = 0
         self.finishButton.setVisible(False)
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
         # Loop through the songs list and increase for each selected item
         for i in xrange(self.songsListWidget.count()):
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
             item = self.songsListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
@@ -340,7 +337,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # Loop through the Bibles list and increase for each selected item
         iterator = QtGui.QTreeWidgetItemIterator(self.biblesTreeWidget)
         while iterator.value():
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
             item = iterator.value()
             if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                 filename = item.data(0, QtCore.Qt.UserRole)
@@ -349,7 +346,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             iterator += 1
         # Loop through the themes list and increase for each selected item
         for i in xrange(self.themesListWidget.count()):
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
             item = self.themesListWidget.item(i)
             if item.checkState() == QtCore.Qt.Checked:
                 filename = item.data(QtCore.Qt.UserRole)
@@ -369,7 +366,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Setting Up'))
             self.progressPage.setSubTitle(u'Setup complete.')
         self.repaint()
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
         # Try to give the wizard a chance to repaint itself
         time.sleep(0.1)
 
@@ -396,7 +393,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.finishButton.setEnabled(True)
         self.cancelButton.setVisible(False)
         self.nextButton.setVisible(False)
-        Receiver.send_message(u'openlp_process_events')
+        self.openlp_core.process_events()
 
     def _performWizard(self):
         """
@@ -471,3 +468,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+
+    def _get_openlp_core(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_openlp_core'):
+            self._openlp_core = Registry().get(u'openlp_core')
+        return self._openlp_core
+
+    openlp_core = property(_get_openlp_core)

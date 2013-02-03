@@ -118,7 +118,7 @@ class CSVBible(BibleDB):
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(unicode(line[2], details['encoding']), book_ref_id, book_details[u'testament_id'])
                 book_list[int(line[0])] = unicode(line[2], details['encoding'])
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
         except (IOError, IndexError):
             log.exception(u'Loading books from file failed')
             success = False
@@ -157,7 +157,7 @@ class CSVBible(BibleDB):
                     verse_text = unicode(line[3], u'cp1252')
                 self.create_verse(book.id, line[1], line[2], verse_text)
             self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible', 'Importing verses... done.'))
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
             self.session.commit()
         except IOError:
             log.exception(u'Loading verses from file failed')

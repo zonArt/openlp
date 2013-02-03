@@ -27,6 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+from openlp.core.lib import Registry
 from openlp.core.ui.media import MediaState
 
 class MediaPlayer(object):
@@ -143,3 +144,13 @@ class MediaPlayer(object):
         Returns Information about the player
         """
         return u''
+
+    def _get_openlp_core(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_openlp_core'):
+            self._openlp_core = Registry().get(u'openlp_core')
+        return self._openlp_core
+
+    openlp_core = property(_get_openlp_core)

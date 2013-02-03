@@ -35,7 +35,7 @@ import os
 
 from lxml import etree
 
-from openlp.core.lib import check_directory_exists, Receiver, translate
+from openlp.core.lib import Registry, check_directory_exists, translate
 from openlp.core.utils import clean_filename
 from openlp.plugins.songs.lib import OpenLyrics
 
@@ -64,7 +64,7 @@ class OpenLyricsExport(object):
         openLyrics = OpenLyrics(self.manager)
         self.parent.progressBar.setMaximum(len(self.songs))
         for song in self.songs:
-            Receiver.send_message(u'openlp_process_events')
+            self.openlp_core.process_events()
             if self.parent.stop_export_flag:
                 return False
             self.parent.incrementProgressBar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
@@ -80,3 +80,13 @@ class OpenLyricsExport(object):
             tree.write(open(os.path.join(self.save_path, filename), u'w'),
                 encoding=u'utf-8', xml_declaration=True, pretty_print=True)
         return True
+
+    def _get_openlp_core(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_openlp_core'):
+            self._openlp_core = Registry().get(u'openlp_core')
+        return self._openlp_core
+
+    openlp_core = property(_get_openlp_core)

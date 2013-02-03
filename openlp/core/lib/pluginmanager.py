@@ -211,3 +211,13 @@ class PluginManager(object):
             if plugin.name == name:
                 return plugin
         return None
+
+    def new_service_created(self):
+        """
+        Loop through all the plugins and give them an opportunity to handle a new service
+        """
+        log.info(u'plugins - new service created')
+        for plugin in self.plugins:
+            if plugin.isActive():
+                plugin.new_service_created()
+

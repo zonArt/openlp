@@ -109,10 +109,6 @@ class OpenLP(QtGui.QApplication):
         if 'OpenLP' in args:
             args.remove('OpenLP')
         self.args.extend(args)
-        # provide a listener for widgets to reqest a screen update.
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
@@ -182,21 +178,28 @@ class OpenLP(QtGui.QApplication):
         if not hasattr(self, u'exceptionForm'):
             self.exceptionForm = ExceptionForm(self.mainWindow)
         self.exceptionForm.exceptionTextEdit.setPlainText(''.join(format_exception(exctype, value, traceback)))
-        self.setNormalCursor()
+        self.set_normal_cursor()
         self.exceptionForm.exec_()
 
-    def setBusyCursor(self):
+    def process_events(self):
+        """
+        Wrapper to make ProcessEvents visible and named correctly
+        """
+        self.processEvents()
+
+    def set_busy_cursor(self):
         """
         Sets the Busy Cursor for the Application
         """
         self.setOverrideCursor(QtCore.Qt.BusyCursor)
         self.processEvents()
 
-    def setNormalCursor(self):
+    def set_normal_cursor(self):
         """
         Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
+        self.processEvents()
 
     def event(self, event):
         """
@@ -288,6 +291,7 @@ def main(args=None):
         app.setApplicationName(u'OpenLP')
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     registry = Registry.create()
+    Registry().register(u'openlp_core', app)
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:

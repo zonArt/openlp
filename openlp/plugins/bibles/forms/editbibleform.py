@@ -32,7 +32,7 @@ import re
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, translate, UiStrings
+from openlp.core.lib import Registry, translate, UiStrings
 from openlp.core.lib.ui import critical_error_message_box
 from editbibledialog import Ui_EditBibleDialog
 from openlp.plugins.bibles.lib import BibleStrings
@@ -122,8 +122,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     if book.name != custom_names[abbr]:
                         if not self.validateBook(custom_names[abbr], abbr):
                             return
-        Receiver.send_message(u'openlp_process_events')
-        Receiver.send_message(u'cursor_busy')
+        self.openlp_core.set_busy_cursor()
         self.manager.save_meta_data(self.bible, version, copyright, permissions, book_name_language)
         if not self.webbible:
             for abbr, book in self.books.iteritems():
@@ -132,7 +131,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                         book.name = custom_names[abbr]
                         self.manager.update_book(self.bible, book)
         self.bible = None
-        Receiver.send_message(u'cursor_normal')
+        self.openlp_core.set_normal_cursor()
         QtGui.QDialog.accept(self)
 
     def validateMeta(self, name, copyright):
@@ -189,3 +188,13 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                             % new_book_name)
                     return False
         return True
+
+    def _get_openlp_core(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_openlp_core'):
+            self._openlp_core = Registry().get(u'openlp_core')
+        return self._openlp_core
+
+    openlp_core = property(_get_openlp_core)
