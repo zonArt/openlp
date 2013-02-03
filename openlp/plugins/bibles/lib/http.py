@@ -611,7 +611,7 @@ class HTTPBible(BibleDB):
                     self.create_chapter(db_book.id, search_results.chapter,
                         search_results.verselist)
                     self.openlp_core.process_events()
-                    self.openlp_core.set_normal_cursor()
+                self.openlp_core.set_normal_cursor()
             self.openlp_core.process_events()
         return BibleDB.get_verses(self, reference_list, show_error)
 
@@ -707,10 +707,10 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
             soup = BeautifulSoup(page_source)
     except HTMLParseError:
         log.exception(u'BeautifulSoup could not parse the bible page.')
-    Registry().get(u'openlp_core').process_events()
     if not soup:
         send_error_message(u'parse')
         return None
+    Registry().get(u'openlp_core').process_events()
     return soup
 
 def send_error_message(error_type):

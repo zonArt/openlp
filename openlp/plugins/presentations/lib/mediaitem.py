@@ -207,7 +207,7 @@ class PresentationMediaItem(MediaManagerItem):
                 self.listView.addItem(item_name)
         if not initialLoad:
             self.main_window.finishedProgressBar()
-        self.openlp_core.set_busy_cursor()
+        self.openlp_core.set_normal_cursor()
 
     def onDeleteClick(self):
         """

@@ -401,9 +401,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             elif result == QtGui.QMessageBox.Save:
                 self.decide_save_method()
         if not load_file:
-            file_name = QtGui.QFileDialog.getOpenfile_name(self.main_window,
+            file_name = QtGui.QFileDialog.getOpenFileName(self.main_window,
                 translate('OpenLP.ServiceManager', 'Open File'),
-                    SettingsManager.get_last_dir(self.main_window.serviceManagerSettingsSection),
+                Settings().value(self.main_window.serviceManagerSettingsSection + u'/last directory'),
                     translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)'))
             if not file_name:
                 return False
@@ -494,7 +494,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             if answer == QtGui.QMessageBox.Cancel:
                 self.main_window.finishedProgressBar()
                 return False
-            self.openlp_core.set_busy_cursor()
         # Check if item contains a missing file.
         for item in list(self.service_items):
             self.main_window.incrementProgressBar()
@@ -690,6 +689,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             return False
         zip_file = None
         file_to = None
+        self.openlp_core.set_busy_cursor()
         try:
             zip_file = zipfile.ZipFile(file_name)
             for zip_info in zip_file.infolist():
@@ -710,7 +710,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 if osfile.endswith(u'osd'):
                     p_file = os.path.join(self.servicePath, osfile)
             if 'p_file' in locals():
-                self.openlp_core.set_busy_cursor()
                 file_to = open(p_file, u'r')
                 items = cPickle.load(file_to)
                 file_to.close()
@@ -940,7 +939,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
     def preview_live(self, unique_identifier, row):
         """
         Called by the SlideController to request a preview item be made live
-        and allows the next preview to be updated if relevant
+        and allows the next preview to be updated if relevant.
 
 
         ``unique_identifier``

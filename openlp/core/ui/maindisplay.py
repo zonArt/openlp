@@ -486,7 +486,7 @@ class MainDisplay(Display):
         return self._image_manager
 
     image_manager = property(_get_image_manager)
-    
+
     def _get_openlp_core(self):
         """
         Adds the openlp to the class dynamically

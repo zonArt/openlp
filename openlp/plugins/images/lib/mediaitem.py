@@ -138,7 +138,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.main_window.incrementProgressBar()
         if not initialLoad:
             self.main_window.finishedProgressBar()
-        self.openlp_core.set_busy_cursor()
+        self.openlp_core.set_normal_cursor()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):

@@ -96,7 +96,7 @@ class OpenLP(QtGui.QApplication):
         QtGui.QApplication.exec_()
         self.sharedMemory.detach()
 
-    def run(self, args, testing=False):
+    def run(self, args):
         """
         Run the OpenLP application.
         """
@@ -150,10 +150,8 @@ class OpenLP(QtGui.QApplication):
         if update_check:
             VersionThread(self.mainWindow).start()
         Receiver.send_message(u'live_display_blank_check')
-        self.mainWindow.appStartup()
-        # Skip exec_() for gui tests
-        if not testing:
-            return self.exec_()
+        self.mainWindow.app_startup()
+        return self.exec_()
 
     def isAlreadyRunning(self):
         """
@@ -244,7 +242,6 @@ def main(args=None):
     parser.add_option('-d', '--dev-version', dest='dev_version', action='store_true',
         help='Ignore the version file and pull the version directly from Bazaar')
     parser.add_option('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
-    parser.add_option('--testing', dest='testing', action='store_true', help='Run by testing framework')
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
@@ -294,10 +291,8 @@ def main(args=None):
     Registry().register(u'openlp_core', app)
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
-    if not options.testing:
-        # Instance check
-        if app.isAlreadyRunning():
-            sys.exit()
+    if app.isAlreadyRunning():
+        sys.exit()
     # First time checks in settings
     if not Settings().value(u'general/has run wizard'):
         if not FirstTimeLanguageForm().exec_():
@@ -314,10 +309,4 @@ def main(args=None):
         log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = app.hookException
-    # Do not run method app.exec_() when running gui tests
-    if options.testing:
-        app.run(qt_args, testing=True)
-        # For gui tests we need access to window instances and their components
-        return app
-    else:
-        sys.exit(app.run(qt_args))
+    sys.exit(app.run(qt_args))
