@@ -305,7 +305,7 @@ def main(args=None):
     Registry().register(u'openlp_core', app)
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
-    if app.isAlreadyRunning():
+    if app.is_already_running():
         sys.exit()
     # First time checks in settings
     if not Settings().value(u'general/has run wizard'):
@@ -322,6 +322,6 @@ def main(args=None):
     else:
         log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
-        sys.excepthook = app.hookException
+        sys.excepthook = app.hook_exception
     sys.exit(app.run(qt_args))
 
