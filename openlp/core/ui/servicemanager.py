@@ -417,10 +417,12 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             elif result == QtGui.QMessageBox.Save:
                 self.decide_save_method()
         if not load_file:
-            file_name = QtGui.QFileDialog.getOpenfile_name(self.main_window,
+            file_name = QtGui.QFileDialog.getOpenFileName(
+                self.main_window,
                 translate('OpenLP.ServiceManager', 'Open File'),
-                    SettingsManager.get_last_dir(self.main_window.serviceManagerSettingsSection),
-                    translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)'))
+                Settings().value(self.main_window.serviceManagerSettingsSection + u'/last directory'),
+                translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)')
+            )
             if not file_name:
                 return False
         else:

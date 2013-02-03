@@ -295,7 +295,7 @@ class Plugin(QtCore.QObject):
         if self.mediaItem:
             self.main_window.mediaDockManager.remove_dock(self.mediaItem)
 
-    def appStartup(self):
+    def app_startup(self):
         """
         Perform tasks on application startup
         """

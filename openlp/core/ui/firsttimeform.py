@@ -96,7 +96,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
-        self.downloadCancelled = False
+        self.was_download_cancelled = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
             self.onCancelButtonClicked)
@@ -247,7 +247,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
-        self.downloadCancelled = True
+        self.was_download_cancelled = True
         while self.themeScreenshotThread.isRunning():
             time.sleep(0.1)
         Receiver.send_message(u'cursor_normal')
@@ -273,7 +273,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         urlfile = urllib2.urlopen(url)
         filename = open(fpath, "wb")
         # Download until finished or canceled.
-        while not self.downloadCancelled:
+        while not self.was_download_cancelled:
             data = urlfile.read(block_size)
             if not data:
                 break
@@ -282,7 +282,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self._downloadProgress(block_count, block_size)
         filename.close()
         # Delete file if cancelled, it may be a partial file.
-        if self.downloadCancelled:
+        if self.was_download_cancelled:
             os.remove(fpath)
 
     def _buildThemeScreenshots(self):

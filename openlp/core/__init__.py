@@ -92,8 +92,8 @@ class OpenLP(QtGui.QApplication):
         """
         Override exec method to allow the shared memory to be released on exit
         """
-        self.event_loop_is_active = True
-        result = QtGui.QApplication.exec_(self)
+        self.is_event_loop_active = True
+        result = QtGui.QApplication.exec_()
         self.shared_memory.detach()
         return result
 
@@ -101,7 +101,7 @@ class OpenLP(QtGui.QApplication):
         """
         Run the OpenLP application.
         """
-        self.event_loop_is_active = False
+        self.is_event_loop_active = False
         # On Windows, the args passed into the constructor are ignored. Not
         # very handy, so set the ones we want to use. On Linux and FreeBSD, in
         # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
