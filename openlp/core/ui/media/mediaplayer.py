@@ -26,8 +26,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.media.mediaplayer` module contains the MediaPlayer class.
+"""
 from openlp.core.ui.media import MediaState
+
 
 class MediaPlayer(object):
     """
@@ -36,6 +39,9 @@ class MediaPlayer(object):
     """
 
     def __init__(self, parent, name=u'media_player'):
+        """
+        Constructor
+        """
         self.parent = parent
         self.name = name
         self.available = self.check_available()

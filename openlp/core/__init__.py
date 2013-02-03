@@ -43,7 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, check_directory_exists, ScreenList, UiStrings, Registry
+from openlp.core.lib import Receiver, Settings, ScreenList, UiStrings, Registry, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -92,15 +92,16 @@ class OpenLP(QtGui.QApplication):
         """
         Override exec method to allow the shared memory to be released on exit
         """
-        self.eventLoopIsActive = True
-        QtGui.QApplication.exec_()
-        self.sharedMemory.detach()
+        self.is_event_loop_active = True
+        result = QtGui.QApplication.exec_()
+        self.shared_memory.detach()
+        return result
 
     def run(self, args, testing=False):
         """
         Run the OpenLP application.
         """
-        self.eventLoopIsActive = False
+        self.is_event_loop_active = False
         # On Windows, the args passed into the constructor are ignored. Not
         # very handy, so set the ones we want to use. On Linux and FreeBSD, in
         # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
@@ -111,8 +112,8 @@ class OpenLP(QtGui.QApplication):
         self.args.extend(args)
         # provide a listener for widgets to reqest a screen update.
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_busy'), self.setBusyCursor)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_normal'), self.setNormalCursor)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_busy'), self.set_busy_cursor)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_normal'), self.set_normal_cursor)
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
@@ -138,61 +139,74 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.mainWindow = MainWindow(self)
-        self.mainWindow.show()
+        self.main_window = MainWindow(self)
+        self.main_window.show()
         if show_splash:
             # now kill the splashscreen
-            self.splash.finish(self.mainWindow)
+            self.splash.finish(self.main_window)
             log.debug(u'Splashscreen closed')
         # make sure Qt really display the splash screen
         self.processEvents()
-        self.mainWindow.repaint()
+        self.main_window.repaint()
         self.processEvents()
         if not has_run_wizard:
-            self.mainWindow.firstTime()
+            self.main_window.first_time()
         update_check = Settings().value(u'general/update check')
         if update_check:
-            VersionThread(self.mainWindow).start()
+            VersionThread(self.main_window).start()
         Receiver.send_message(u'live_display_blank_check')
-        self.mainWindow.appStartup()
+        self.main_window.app_startup()
         # Skip exec_() for gui tests
         if not testing:
             return self.exec_()
 
-    def isAlreadyRunning(self):
+    def is_already_running(self):
         """
         Look to see if OpenLP is already running and ask if a 2nd copy
         is to be started.
         """
-        self.sharedMemory = QtCore.QSharedMemory('OpenLP')
-        if self.sharedMemory.attach():
+        self.shared_memory = QtCore.QSharedMemory('OpenLP')
+        if self.shared_memory.attach():
             status = QtGui.QMessageBox.critical(None, UiStrings().Error, UiStrings().OpenLPStart,
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
             if status == QtGui.QMessageBox.No:
                 return True
             return False
         else:
-            self.sharedMemory.create(1)
+            self.shared_memory.create(1)
             return False
 
-    def hookException(self, exctype, value, traceback):
+    def hook_exception(self, exctype, value, traceback):
+        """
+        Add an exception hook so that any uncaught exceptions are displayed in this window rather than somewhere where
+        users cannot see it and cannot report when we encounter these problems.
+
+        ``exctype``
+            The class of exception.
+
+        ``value``
+            The actual exception object.
+
+        ``traceback``
+            A traceback object with the details of where the exception occurred.
+        """
         if not hasattr(self, u'mainWindow'):
             log.exception(''.join(format_exception(exctype, value, traceback)))
             return
         if not hasattr(self, u'exceptionForm'):
-            self.exceptionForm = ExceptionForm(self.mainWindow)
-        self.exceptionForm.exceptionTextEdit.setPlainText(''.join(format_exception(exctype, value, traceback)))
-        self.setNormalCursor()
-        self.exceptionForm.exec_()
+            self.exception_form = ExceptionForm(self.main_window)
+        self.exception_form.exceptionTextEdit.setPlainText(''.join(format_exception(exctype, value, traceback)))
+        self.set_normal_cursor()
+        self.exception_form.exec_()
 
-    def setBusyCursor(self):
+    def set_busy_cursor(self):
         """
         Sets the Busy Cursor for the Application
         """
         self.setOverrideCursor(QtCore.Qt.BusyCursor)
         self.processEvents()
 
-    def setNormalCursor(self):
+    def set_normal_cursor(self):
         """
         Sets the Normal Cursor for the Application
         """
@@ -287,12 +301,12 @@ def main(args=None):
     else:
         app.setApplicationName(u'OpenLP')
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
-    registry = Registry.create()
+    Registry.create()
     app.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if not options.testing:
         # Instance check
-        if app.isAlreadyRunning():
+        if app.is_already_running():
             sys.exit()
     # First time checks in settings
     if not Settings().value(u'general/has run wizard'):
@@ -309,7 +323,7 @@ def main(args=None):
     else:
         log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
-        sys.excepthook = app.hookException
+        sys.excepthook = app.hook_exception
     # Do not run method app.exec_() when running gui tests
     if options.testing:
         app.run(qt_args, testing=True)

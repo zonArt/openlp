@@ -35,11 +35,10 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, Receiver, \
-    TreeWidgetWithDnD, ServiceItemContext, Settings, Registry, UiStrings
+from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, Receiver, TreeWidgetWithDnD, \
+    ServiceItemContext, Settings, Registry, UiStrings, build_icon, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
-
 
 log = logging.getLogger(__name__)
 
@@ -346,8 +345,8 @@ class MediaManagerItem(QtGui.QWidget):
         new_files = []
         error_shown = False
         for file_name in data['files']:
-            type = file_name.split(u'.')[-1]
-            if type.lower() not in self.onNewFileMasks:
+            file_type = file_name.split(u'.')[-1]
+            if file_type.lower() not in self.onNewFileMasks:
                 if not error_shown:
                     critical_error_message_box(translate('OpenLP.MediaManagerItem', 'Invalid File Type'),
                         translate('OpenLP.MediaManagerItem', 'Invalid File %s.\nSuffix not supported') % file_name)
@@ -397,6 +396,9 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem', 'Duplicate files were found on import and were ignored.'))
 
     def contextMenu(self, point):
+        """
+        Display a context menu
+        """
         item = self.listView.itemAt(point)
         # Decide if we have to show the context menu or not.
         if item is None:
@@ -419,6 +421,9 @@ class MediaManagerItem(QtGui.QWidget):
         return file_list
 
     def loadList(self, list, target_group):
+        """
+        Load a list. Needs to be implemented by the plugin.
+        """
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be defined by the plugin')
 
     def onNewClick(self):
@@ -434,6 +439,9 @@ class MediaManagerItem(QtGui.QWidget):
         pass
 
     def onDeleteClick(self):
+        """
+        Delete an item. Needs to be implemented by the plugin.
+        """
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to be defined by the plugin')
 
     def onFocus(self):
@@ -445,6 +453,9 @@ class MediaManagerItem(QtGui.QWidget):
 
     def generateSlideData(self, serviceItem, item=None, xmlVersion=False, remote=False,
             context=ServiceItemContext.Live):
+        """
+        Generate the slide data. Needs to be implemented by the plugin.
+        """
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs to be defined by the plugin')
 
     def onDoubleClicked(self):
@@ -493,6 +504,9 @@ class MediaManagerItem(QtGui.QWidget):
             self.goLive()
 
     def goLive(self, item_id=None, remote=False):
+        """
+        Make the currently selected item go live.
+        """
         log.debug(u'%s Live requested', self.plugin.name)
         item = None
         if item_id:
@@ -506,6 +520,9 @@ class MediaManagerItem(QtGui.QWidget):
             self.live_controller.add_service_item(serviceItem)
 
     def createItemFromId(self, item_id):
+        """
+        Create a media item from an item id.
+        """
         item = QtGui.QTreeWidgetItem()
         item.setData(0, QtCore.Qt.UserRole, item_id)
         return item
@@ -529,6 +546,9 @@ class MediaManagerItem(QtGui.QWidget):
                     self.addToService(item)
 
     def addToService(self, item=None, replace=None, remote=False):
+        """
+        Add this item to the current service.
+        """
         serviceItem = self.buildServiceItem(item, True, remote=remote, context=ServiceItemContext.Service)
         if serviceItem:
             serviceItem.from_plugin = False
@@ -695,3 +715,13 @@ class MediaManagerItem(QtGui.QWidget):
         return self._service_manager
 
     service_manager = property(_get_service_manager)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)

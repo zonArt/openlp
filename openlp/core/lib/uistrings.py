@@ -112,8 +112,8 @@ class UiStrings(object):
         self.OLPV2x = translate('OpenLP.Ui', 'OpenLP 2.1')
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you wish to continue?')
         self.OpenService = translate('OpenLP.Ui', 'Open service.')
-        self.PlaySlidesInLoop = translate('OpenLP.Ui','Play Slides in Loop')
-        self.PlaySlidesToEnd = translate('OpenLP.Ui','Play Slides to End')
+        self.PlaySlidesInLoop = translate('OpenLP.Ui', 'Play Slides in Loop')
+        self.PlaySlidesToEnd = translate('OpenLP.Ui', 'Play Slides to End')
         self.Preview = translate('OpenLP.Ui', 'Preview')
         self.PrintService = translate('OpenLP.Ui', 'Print Service')
         self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
@@ -145,4 +145,3 @@ class UiStrings(object):
         self.Version = translate('OpenLP.Ui', 'Version')
         self.View = translate('OpenLP.Ui', 'View')
         self.ViewMode = translate('OpenLP.Ui', 'View Mode')
-

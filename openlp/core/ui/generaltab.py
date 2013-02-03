@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The general tab of the configuration dialog.
+"""
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -33,6 +36,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Receiver, Settings, SettingsTab, translate, ScreenList, UiStrings
 
 log = logging.getLogger(__name__)
+
 
 class GeneralTab(SettingsTab):
     """

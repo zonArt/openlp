@@ -43,6 +43,7 @@ from openlp.core.lib import build_icon, clean_tags, expand_tags, translate, Imag
 
 log = logging.getLogger(__name__)
 
+
 class ServiceItemType(object):
     """
     Defines the type of service item
@@ -292,7 +293,7 @@ class ServiceItem(object):
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
         self._raw_frames.append({u'title': title, u'path': path})
-        self.image_manager.addImage(path, ImageSource.ImagePlugin, self.image_border)
+        self.image_manager.add_image(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
     def add_from_text(self, raw_slide, verse_tag=None):
@@ -607,7 +608,7 @@ class ServiceItem(object):
         ``theme``
             The new theme to be replaced in the service item
         """
-        self.theme_overwritten = (theme == None)
+        self.theme_overwritten = (theme is None)
         self.theme = theme
         self._new_item()
         self.render()

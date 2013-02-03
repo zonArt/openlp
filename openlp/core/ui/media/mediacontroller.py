@@ -26,7 +26,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.media.mediacontroller` module contains a base class for media components and other widgets
+related to playing media, such as sliders.
+"""
 import logging
 import os
 import datetime
@@ -41,11 +44,15 @@ from openlp.core.ui import DisplayControllerType
 
 log = logging.getLogger(__name__)
 
+
 class MediaSlider(QtGui.QSlider):
     """
     Allows the mouse events of a slider to be overridden and extra functionality added
     """
     def __init__(self, direction, manager, controller, parent=None):
+        """
+        Constructor
+        """
         QtGui.QSlider.__init__(self, direction)
         self.manager = manager
         self.controller = controller
@@ -55,7 +62,7 @@ class MediaSlider(QtGui.QSlider):
         Override event to allow hover time to be displayed.
         """
         timevalue = QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
-        self.setToolTip(u'%s' % datetime.timedelta(seconds=int(timevalue/1000)))
+        self.setToolTip(u'%s' % datetime.timedelta(seconds=int(timevalue / 1000)))
         QtGui.QSlider.mouseMoveEvent(self, event)
 
     def mousePressEvent(self, event):
@@ -87,6 +94,9 @@ class MediaController(object):
 
     """
     def __init__(self, parent):
+        """
+        Constructor
+        """
         self.mainWindow = parent
         Registry().register(u'media_controller', self)
         self.mediaPlayers = {}
@@ -96,7 +106,7 @@ class MediaController(object):
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
         # Signals
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.media_state)
+        self.timer.timeout.connect(self.media_state)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackPlay'), self.media_play_msg)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackPause'), self.media_pause_msg)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackStop'), self.media_stop_msg)
@@ -298,7 +308,6 @@ class MediaController(object):
         QtCore.QObject.connect(controller.seekSlider, QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
         QtCore.QObject.connect(controller.volumeSlider, QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
 
-
     def setup_display(self, display, preview):
         """
         After a new display is configured, all media related widget will be
@@ -428,7 +437,7 @@ class MediaController(object):
         ``serviceItem``
             The ServiceItem containing the details to be played.
         """
-        controller =  self.displayControllers[DisplayControllerType.Plugin]
+        controller = self.displayControllers[DisplayControllerType.Plugin]
         log.debug(u'media_length')
         # stop running videos
         self.media_reset(controller)
@@ -500,8 +509,7 @@ class MediaController(object):
             First element is the controller which should be used
         """
         log.debug(u'media_play_msg')
-        self.media_play(msg[0],status)
-
+        self.media_play(msg[0], status)
 
     def media_play(self, controller, status=True):
         """
@@ -551,7 +559,7 @@ class MediaController(object):
             First element is the controller which should be used
         """
         log.debug(u'media_pause_msg')
-        self.media_pause( msg[0])
+        self.media_pause(msg[0])
 
     def media_pause(self, controller):
         """
@@ -716,6 +724,9 @@ class MediaController(object):
                     self.timer.start()
 
     def finalise(self):
+        """
+        Reset all the media controllers when OpenLP shuts down
+        """
         self.timer.stop()
         for controller in self.displayControllers:
             self.media_reset(self.displayControllers[controller])

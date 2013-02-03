@@ -101,4 +101,4 @@ class ImagePlugin(Plugin):
         last part of saving the config.
         """
         background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
-        self.liveController.imageManager.updateImagesBorder(ImageSource.ImagePlugin, background)
+        self.liveController.imageManager.update_images_border(ImageSource.ImagePlugin, background)

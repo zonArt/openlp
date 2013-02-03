@@ -41,6 +41,9 @@ class ActionCategory(object):
     category for the :class:`~openlp.core.utils.CategoryList` class.
     """
     def __init__(self, name, weight=0):
+        """
+        Constructor
+        """
         self.name = name
         self.weight = weight
         self.actions = CategoryActionList()
@@ -52,22 +55,37 @@ class CategoryActionList(object):
     list of actions within a category.
     """
     def __init__(self):
+        """
+        Constructor
+        """
         self.index = 0
         self.actions = []
 
     def __getitem__(self, key):
+        """
+        Implement the __getitem__() method to make this class a dictionary type
+        """
         for weight, action in self.actions:
             if action.text() == key:
                 return action
         raise KeyError(u'Action "%s" does not exist.' % key)
 
     def __contains__(self, item):
+        """
+        Implement the __contains__() method to make this class a dictionary type
+        """
         return self.has_key(item)
 
     def __len__(self):
+        """
+        Implement the __len__() method to make this class a dictionary type
+        """
         return len(self.actions)
 
     def __iter__(self):
+        """
+        Implement the __getitem__() method to make this class iterable
+        """
         return self
 
     def __next__(self):
@@ -88,22 +106,34 @@ class CategoryActionList(object):
         return self.__next__()
 
     def has_key(self, key):
+        """
+        Implement the has_key() method to make this class a dictionary type
+        """
         for weight, action in self.actions:
             if action.text() == key:
                 return True
         return False
 
     def append(self, name):
+        """
+        Append an action
+        """
         weight = 0
         if self.actions:
             weight = self.actions[-1][0] + 1
         self.add(name, weight)
 
     def add(self, action, weight=0):
+        """
+        Add an action.
+        """
         self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
 
     def remove(self, remove_action):
+        """
+        Remove an action
+        """
         for action in self.actions:
             if action[1] == remove_action:
                 self.actions.remove(action)
@@ -118,22 +148,37 @@ class CategoryList(object):
     """
 
     def __init__(self):
+        """
+        Constructor
+        """
         self.index = 0
         self.categories = []
 
     def __getitem__(self, key):
+        """
+        Implement the __getitem__() method to make this class like a dictionary
+        """
         for category in self.categories:
             if category.name == key:
                 return category
         raise KeyError(u'Category "%s" does not exist.' % key)
 
     def __contains__(self, item):
+        """
+        Implement the __contains__() method to make this class like a dictionary
+        """
         return self.has_key(item)
 
     def __len__(self):
+        """
+        Implement the __len__() method to make this class like a dictionary
+        """
         return len(self.categories)
 
     def __iter__(self):
+        """
+        Implement the __iter__() method to make this class like a dictionary
+        """
         return self
 
     def __next__(self):
@@ -154,12 +199,18 @@ class CategoryList(object):
         return self.__next__()
 
     def has_key(self, key):
+        """
+        Implement the has_key() method to make this class like a dictionary
+        """
         for category in self.categories:
             if category.name == key:
                 return True
         return False
 
     def append(self, name, actions=None):
+        """
+        Append a category
+        """
         weight = 0
         if self.categories:
             weight = self.categories[-1].weight + 1
@@ -169,6 +220,9 @@ class CategoryList(object):
             self.add(name, weight)
 
     def add(self, name, weight=0, actions=None):
+        """
+        Add a category
+        """
         category = ActionCategory(name, weight)
         if actions:
             for action in actions:
@@ -180,6 +234,9 @@ class CategoryList(object):
         self.categories.sort(key=lambda cat: cat.weight)
 
     def remove(self, name):
+        """
+        Remove a category
+        """
         for category in self.categories:
             if category.name == name:
                 self.categories.remove(category)
@@ -196,10 +253,16 @@ class ActionList(object):
     shortcut_map = {}
 
     def __init__(self):
+        """
+        Constructor
+        """
         self.categories = CategoryList()
 
     @staticmethod
     def get_instance():
+        """
+        Get the instance of this class.
+        """
         if ActionList.instance is None:
             ActionList.instance = ActionList()
         return ActionList.instance

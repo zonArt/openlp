@@ -26,8 +26,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.core.lib.settingstab` module contains the base SettingsTab class which plugins use for adding their
+own tab to the settings dialog.
+"""
 
 from PyQt4 import QtGui
+
+
+from openlp.core.lib import Registry
 
 class SettingsTab(QtGui.QWidget):
     """
@@ -131,3 +138,54 @@ class SettingsTab(QtGui.QWidget):
         Tab has just been made visible to the user
         """
         pass
+
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)
+
+    def _get_media_controller(self):
+        """
+        Adds the media controller to the class dynamically
+        """
+        if not hasattr(self, u'_media_controller'):
+            self._media_controller = Registry().get(u'media_controller')
+        return self._media_controller
+
+    media_controller = property(_get_media_controller)
+

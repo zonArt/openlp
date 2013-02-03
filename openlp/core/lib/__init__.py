@@ -90,9 +90,8 @@ class ServiceItemAction(object):
     Next = 3
 
 
-def translate(context, text, comment=None,
-    encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
-    translate=QtCore.QCoreApplication.translate):
+def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
+              translate=QtCore.QCoreApplication.translate):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a

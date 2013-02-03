@@ -26,14 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets for the service item edit dialog
+"""
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box, create_button
 
+
 class Ui_ServiceItemEditDialog(object):
+    """
+    The UI widgets for the service item edit dialog
+    """
     def setupUi(self, serviceItemEditDialog):
+        """
+        Set up the UI
+        """
         serviceItemEditDialog.setObjectName(u'serviceItemEditDialog')
         self.dialog_layout = QtGui.QGridLayout(serviceItemEditDialog)
         self.dialog_layout.setContentsMargins(8, 8, 8, 8)
@@ -61,4 +70,7 @@ class Ui_ServiceItemEditDialog(object):
         self.retranslateUi(serviceItemEditDialog)
 
     def retranslateUi(self, serviceItemEditDialog):
+        """
+        Translate the UI on the fly
+        """
         serviceItemEditDialog.setWindowTitle(translate('OpenLP.ServiceItemEditForm', 'Reorder Service Item'))
