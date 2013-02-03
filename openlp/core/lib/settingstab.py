@@ -26,8 +26,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.core.lib.settingstab` module contains the base SettingsTab class which plugins use for adding their
+own tab to the settings dialog.
+"""
 
 from PyQt4 import QtGui
+
 
 from openlp.core.lib import Registry
 

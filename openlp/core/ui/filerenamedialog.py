@@ -26,14 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets for the rename dialog
+"""
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
+
 class Ui_FileRenameDialog(object):
+    """
+    The UI widgets for the rename dialog
+    """
     def setupUi(self, fileRenameDialog):
+        """
+        Set up the UI
+        """
         fileRenameDialog.setObjectName(u'fileRenameDialog')
         fileRenameDialog.resize(300, 10)
         self.dialogLayout = QtGui.QGridLayout(fileRenameDialog)
@@ -51,4 +60,7 @@ class Ui_FileRenameDialog(object):
         self.setMaximumHeight(self.sizeHint().height())
 
     def retranslateUi(self, fileRenameDialog):
+        """
+        Translate the UI on the fly.
+        """
         self.fileNameLabel.setText(translate('OpenLP.FileRenameForm', 'New File Name:'))

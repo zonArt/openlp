@@ -36,6 +36,7 @@ from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
 
+
 class SearchEdit(QtGui.QLineEdit):
     """
     This is a specialised QLineEdit with a "clear" button inside for searches.

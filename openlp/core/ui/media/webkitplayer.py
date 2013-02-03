@@ -26,8 +26,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
-from PyQt4 import QtCore, QtGui
+"""
+The :mod:`~openlp.core.ui.media.webkit` module contains our WebKit video player
+"""
+from PyQt4 import QtGui
 
 import logging
 
@@ -40,14 +42,14 @@ log = logging.getLogger(__name__)
 VIDEO_CSS = u"""
 #videobackboard {
     z-index:3;
-    background-color: %s;
+    background-color: %(bgcolor)s;
 }
 #video1 {
-    background-color: %s;
+    background-color: %(bgcolor)s;
     z-index:4;
 }
 #video2 {
-    background-color: %s;
+    background-color: %(bgcolor)s;
     z-index:4;
 }
 """
@@ -234,33 +236,33 @@ FLASH_HTML = u"""
 """
 
 VIDEO_EXT = [
-        u'*.3gp'
-        , u'*.3gpp'
-        , u'*.3g2'
-        , u'*.3gpp2'
-        , u'*.aac'
-        , u'*.flv'
-        , u'*.f4a'
-        , u'*.f4b'
-        , u'*.f4p'
-        , u'*.f4v'
-        , u'*.mov'
-        , u'*.m4a'
-        , u'*.m4b'
-        , u'*.m4p'
-        , u'*.m4v'
-        , u'*.mkv'
-        , u'*.mp4'
-        , u'*.ogv'
-        , u'*.webm'
-        , u'*.mpg', u'*.wmv', u'*.mpeg', u'*.avi'
-        , u'*.swf'
-    ]
+    u'*.3gp',
+    u'*.3gpp',
+    u'*.3g2',
+    u'*.3gpp2',
+    u'*.aac',
+    u'*.flv',
+    u'*.f4a',
+    u'*.f4b',
+    u'*.f4p',
+    u'*.f4v',
+    u'*.mov',
+    u'*.m4a',
+    u'*.m4b',
+    u'*.m4p',
+    u'*.m4v',
+    u'*.mkv',
+    u'*.mp4',
+    u'*.ogv',
+    u'*.webm',
+    u'*.mpg', u'*.wmv', u'*.mpeg', u'*.avi',
+    u'*.swf'
+]
 
 AUDIO_EXT = [
-        u'*.mp3'
-        , u'*.ogg'
-    ]
+    u'*.mp3',
+    u'*.ogg'
+]
 
 
 class WebkitPlayer(MediaPlayer):
@@ -270,6 +272,9 @@ class WebkitPlayer(MediaPlayer):
     """
 
     def __init__(self, parent):
+        """
+        Constructor
+        """
         MediaPlayer.__init__(self, parent, u'webkit')
         self.original_name = u'WebKit'
         self.display_name = u'&WebKit'
@@ -283,7 +288,7 @@ class WebkitPlayer(MediaPlayer):
         Add css style sheets to htmlbuilder
         """
         background = QtGui.QColor(Settings().value(u'players/background color')).name()
-        css = VIDEO_CSS % (background,background,background)
+        css = VIDEO_CSS % {u'bgcolor': background}
         return css + FLASH_CSS
 
     def get_media_display_javascript(self):
@@ -299,14 +304,23 @@ class WebkitPlayer(MediaPlayer):
         return VIDEO_HTML + FLASH_HTML
 
     def setup(self, display):
+        """
+        Set up the player
+        """
         display.webView.resize(display.size())
         display.webView.raise_()
         self.hasOwnWidget = False
 
     def check_available(self):
+        """
+        Check the availability of the media player
+        """
         return True
 
     def load(self, display):
+        """
+        Load a video
+        """
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
         if display.hasAudio and not controller.media_info.is_background:
@@ -329,9 +343,15 @@ class WebkitPlayer(MediaPlayer):
         return True
 
     def resize(self, display):
+        """
+        Resize the player
+        """
         display.webView.resize(display.size())
 
     def play(self, display):
+        """
+        Play a video
+        """
         controller = display.controller
         display.webLoaded = True
         length = 0
@@ -352,6 +372,9 @@ class WebkitPlayer(MediaPlayer):
         return True
 
     def pause(self, display):
+        """
+        Pause a video
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("pause");')
@@ -360,6 +383,9 @@ class WebkitPlayer(MediaPlayer):
         self.state = MediaState.Paused
 
     def stop(self, display):
+        """
+        Stop a video
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("stop");')
@@ -368,6 +394,9 @@ class WebkitPlayer(MediaPlayer):
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
+        """
+        Set the volume
+        """
         controller = display.controller
         # 1.0 is the highest value
         if display.hasAudio:
@@ -376,6 +405,9 @@ class WebkitPlayer(MediaPlayer):
                 display.frame.evaluateJavaScript(u'show_video(null, null, %s);' % str(vol))
 
     def seek(self, display, seekVal):
+        """
+        Go to a position in the video
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             seek = seekVal
@@ -385,6 +417,9 @@ class WebkitPlayer(MediaPlayer):
             display.frame.evaluateJavaScript(u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
+        """
+        Reset the player
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("close");')
@@ -393,6 +428,9 @@ class WebkitPlayer(MediaPlayer):
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
+        """
+        Set the visibility
+        """
         controller = display.controller
         if status:
             is_visible = "visible"
@@ -404,6 +442,9 @@ class WebkitPlayer(MediaPlayer):
             display.frame.evaluateJavaScript(u'show_video("setVisible", null, null, null, "%s");' % (is_visible))
 
     def update_ui(self, display):
+        """
+        Update the UI
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");')
@@ -428,6 +469,9 @@ class WebkitPlayer(MediaPlayer):
                 controller.seekSlider.blockSignals(False)
 
     def get_info(self):
+        """
+        Return some information about this player
+        """
         return(translate('Media.player', 'Webkit is a media player which runs '
             'inside a web browser. This player allows text over video to be '
             'rendered.') +

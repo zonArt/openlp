@@ -39,6 +39,7 @@ from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)
 
+
 class WizardStrings(object):
     """
     Provide standard strings for wizards to use.
@@ -80,6 +81,9 @@ class OpenLPWizard(QtGui.QWizard):
     and feel.
     """
     def __init__(self, parent, plugin, name, image):
+        """
+        Constructor
+        """
         QtGui.QWizard.__init__(self, parent)
         self.plugin = plugin
         self.setObjectName(name)

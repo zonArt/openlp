@@ -37,6 +37,7 @@ from openlp.core.lib import Plugin, PluginStatus, Registry
 
 log = logging.getLogger(__name__)
 
+
 class PluginManager(object):
     """
     This is the Plugin manager, which loads all the plugins,

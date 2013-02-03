@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, build_icon,  Receiver, Settings, UiStrings
+from openlp.core.lib import SettingsTab, Receiver, Settings, UiStrings, translate, build_icon
 from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
@@ -137,7 +137,7 @@ class AdvancedTab(SettingsTab):
         self.data_directory_layout = QtGui.QFormLayout(self.data_directory_group_box)
         self.data_directory_layout.setObjectName(u'data_directory_layout')
         self.data_directory_current_label = QtGui.QLabel(self.data_directory_group_box)
-        self.data_directory_current_label.setObjectName(            u'data_directory_current_label')
+        self.data_directory_current_label.setObjectName(u'data_directory_current_label')
         self.data_directory_label = QtGui.QLabel(self.data_directory_group_box)
         self.data_directory_label.setObjectName(u'data_directory_label')
         self.data_directory_new_label = QtGui.QLabel(self.data_directory_group_box)
@@ -314,7 +314,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
             translate('OpenLP.AdvancedTab', 'Revert to the default service name "%s".') %
-            UiStrings().DefaultServiceName)
+                UiStrings().DefaultServiceName)
         self.service_name_example_label.setText(translate('OpenLP.AdvancedTab', 'Example:'))
         self.hide_mouse_group_box.setTitle(translate('OpenLP.AdvancedTab', 'Mouse Cursor'))
         self.hide_mouse_check_box.setText(translate('OpenLP.AdvancedTab', 'Hide mouse cursor when over display window'))
@@ -461,9 +461,8 @@ class AdvancedTab(SettingsTab):
 
     def cancel(self):
         """
-        Cancel Pressed.
+        Dialogue was cancelled, remove any pending data path change.
         """
-        # Dialogue was cancelled, remove any pending data path change.
         self.on_data_directory_cancel_button_clicked()
         SettingsTab.cancel(self)
 
@@ -490,8 +489,10 @@ class AdvancedTab(SettingsTab):
             if day_delta < 0:
                 day_delta += 7
             time = now + timedelta(days=day_delta)
-            local_time = time.replace(hour = self.service_name_time.time().hour(),
-                minute = self.service_name_time.time().minute())
+            local_time = time.replace(
+                hour=self.service_name_time.time().hour(),
+                minute=self.service_name_time.time().minute()
+            )
         try:
             service_name_example = format_time(unicode(self.service_name_edit.text()), local_time)
         except ValueError:
@@ -501,7 +502,7 @@ class AdvancedTab(SettingsTab):
 
     def update_service_name_example(self, returned_value):
         """
-        Example Updated
+        Update the example service name.
         """
         if not self.should_update_service_name_example:
             return
@@ -510,21 +511,21 @@ class AdvancedTab(SettingsTab):
 
     def on_service_name_day_changed(self, service_day):
         """
-        Service Name day changed
+        React to the day of the service name changing.
         """
         self.service_name_time.setEnabled(service_day is not 7)
         self.update_service_name_example(None)
 
     def on_service_name_revert_button_clicked(self):
         """
-        Service Name reverted
+        Revert to the default service name.
         """
         self.service_name_edit.setText(UiStrings().DefaultServiceName)
         self.service_name_edit.setFocus()
 
     def on_default_color_button_clicked(self):
         """
-        Changed the default color
+        Select the background colour of the default display screen.
         """
         new_color = QtGui.QColorDialog.getColor(
             QtGui.QColor(self.default_color), self)
@@ -534,7 +535,7 @@ class AdvancedTab(SettingsTab):
 
     def on_default_browse_button_clicked(self):
         """
-        Service Name options changed
+        Select an image for the default display screen.
         """
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(), UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
@@ -549,9 +550,9 @@ class AdvancedTab(SettingsTab):
         """
         old_root_path = unicode(self.data_directory_label.text())
         # Get the new directory location.
-        new_data_path = QtGui.QFileDialog.getExistingDirectory(self,
-            translate('OpenLP.AdvancedTab', 'Select Data Directory Location'), old_root_path,
-            options = QtGui.QFileDialog.ShowDirsOnly)
+        new_data_path = QtGui.QFileDialog.getExistingDirectory(
+            self, translate('OpenLP.AdvancedTab', 'Select Data Directory Location'), old_root_path,
+            options=QtGui.QFileDialog.ShowDirsOnly)
         # Set the new data path.
         if new_data_path:
             new_data_path = os.path.normpath(new_data_path)
@@ -602,8 +603,8 @@ class AdvancedTab(SettingsTab):
 
     def on_data_directory_copy_check_box_toggled(self):
         """
-        Service Name options changed
-        """        
+        Copy existing data when you change your data directory.
+        """
         Receiver.send_message(u'set_copy_data',
             self.data_directory_copy_check_box.isChecked())
         if self.data_exists:
@@ -614,8 +615,8 @@ class AdvancedTab(SettingsTab):
 
     def check_data_overwrite(self, data_path ):
         """
-        Service Name options changed
-        """        
+        Check if there's already data in the target directory.
+        """
         test_path = os.path.join(data_path, u'songs')
         self.data_directory_copy_check_box.show()
         if os.path.exists(test_path):
@@ -652,8 +653,8 @@ class AdvancedTab(SettingsTab):
 
     def on_default_revert_button_clicked(self):
         """
-        Service Name options changed
-        """        
+        Revert the default screen back to the default settings.
+        """
         self.default_file_edit.setText(u':/graphics/openlp-splash-screen.png')
         self.default_file_edit.setFocus()
 

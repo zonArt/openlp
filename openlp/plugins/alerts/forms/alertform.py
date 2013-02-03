@@ -34,6 +34,7 @@ from openlp.plugins.alerts.lib.db import AlertItem
 
 from alertdialog import Ui_AlertDialog
 
+
 class AlertForm(QtGui.QDialog, Ui_AlertDialog):
     """
     Provide UI for the alert system
@@ -45,7 +46,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.manager = plugin.manager
         self.plugin = plugin
         self.item_id = None
-        QtGui.QDialog.__init__(self, self.plugin.main_window)
+        super(AlertForm, self).__init__(self.plugin.main_window)
         self.setupUi(self)
         QtCore.QObject.connect(self.displayButton, QtCore.SIGNAL(u'clicked()'), self.onDisplayClicked)
         QtCore.QObject.connect(self.displayCloseButton, QtCore.SIGNAL(u'clicked()'), self.onDisplayCloseClicked)
@@ -57,6 +58,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         QtCore.QObject.connect(self.alertListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
 
     def exec_(self):
+        """
+        Execute the dialog and return the exit code.
+        """
         self.displayButton.setEnabled(False)
         self.displayCloseButton.setEnabled(False)
         self.alertTextEdit.setText(u'')
@@ -77,9 +81,15 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                 self.alertListWidget.setCurrentRow(self.alertListWidget.row(item_name))
 
     def onDisplayClicked(self):
+        """
+        Display the current alert text.
+        """
         self.triggerAlert(self.alertTextEdit.text())
 
     def onDisplayCloseClicked(self):
+        """
+        Close the alert preview.
+        """
         if self.triggerAlert(self.alertTextEdit.text()):
             self.close()
 
@@ -97,6 +107,9 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.alertTextEdit.setText(u'')
 
     def onNewClick(self):
+        """
+        Create a new alert.
+        """
         if not self.alertTextEdit.text():
             QtGui.QMessageBox.information(self,
                 translate('AlertsPlugin.AlertForm', 'New Alert'),

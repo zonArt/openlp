@@ -38,6 +38,7 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+
 class PluginStatus(object):
     """
     Defines the status of the plugin
@@ -294,7 +295,7 @@ class Plugin(QtCore.QObject):
         if self.mediaItem:
             self.main_window.mediaDockManager.remove_dock(self.mediaItem)
 
-    def appStartup(self):
+    def app_startup(self):
         """
         Perform tasks on application startup
         """
@@ -319,7 +320,6 @@ class Plugin(QtCore.QObject):
                 # Now save the list to the config using our Settings class.
                 Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
             settings.endGroup()
-
 
     def usesTheme(self, theme):
         """
@@ -434,5 +434,3 @@ class Plugin(QtCore.QObject):
         return self._openlp_core
 
     openlp_core = property(_get_openlp_core)
-
-

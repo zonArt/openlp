@@ -35,6 +35,7 @@ from PyQt4 import QtCore
 
 log = logging.getLogger(__name__)
 
+
 class EventReceiver(QtCore.QObject):
     """
     Class to allow events to be passed from different parts of the system. This

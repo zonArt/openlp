@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The actual exception dialog form.
+"""
 import logging
 import re
 import os
@@ -92,22 +95,32 @@ from exceptiondialog import Ui_ExceptionDialog
 
 log = logging.getLogger(__name__)
 
+
 class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     """
     The exception dialog
     """
     def __init__(self, parent):
+        """
+        Constructor.
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.settingsSection = u'crashreport'
 
     def exec_(self):
+        """
+        Show the dialog.
+        """
         self.descriptionTextEdit.setPlainText(u'')
         self.onDescriptionUpdated()
         self.fileAttachment = None
         return QtGui.QDialog.exec_(self)
 
     def _createReport(self):
+        """
+        Create an exception report.
+        """
         openlp_version = get_application_version()
         description = self.descriptionTextEdit.toPlainText()
         traceback = self.exceptionTextEdit.toPlainText()
@@ -199,6 +212,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         QtGui.QDesktopServices.openUrl(mailto_url)
 
     def onDescriptionUpdated(self):
+        """
+        Update the minimum number of characters needed in the description.
+        """
         count = int(20 - len(self.descriptionTextEdit.toPlainText()))
         if count < 0:
             count = 0
@@ -209,6 +225,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             translate('OpenLP.ExceptionDialog', 'Description characters to enter : %s') % count)
 
     def onAttachFileButtonClicked(self):
+        """
+        Attache files to the bug report e-mail.
+        """
         files = QtGui.QFileDialog.getOpenFileName(
             self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
                 Settings().value(self.settingsSection + u'/last directory'), u'%s (*.*) (*)' % UiStrings().AllFiles)
@@ -217,6 +236,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             self.fileAttachment = unicode(files)
 
     def __buttonState(self, state):
+        """
+        Toggle the button state.
+        """
         self.saveReportButton.setEnabled(state)
         self.sendReportButton.setEnabled(state)
-
