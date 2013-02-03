@@ -25,3 +25,5 @@ openlp.cfg
 openlp.pro
 .kdev4
 tests.kdev4
+*.nja
+*.orig
