@@ -219,7 +219,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressLabel.setText(status_text)
         if increment > 0:
             self.progressBar.setValue(self.progressBar.value() + increment)
-        self.openlp_core.process_events()
+        self.application.process_events()
 
     def preWizard(self):
         """
@@ -237,7 +237,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressBar.setValue(self.progressBar.maximum())
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
-        self.openlp_core.process_events()
+        self.application.process_events()
 
     def getFileName(self, title, editbox, setting_name, filters=u''):
         """
@@ -287,12 +287,12 @@ class OpenLPWizard(QtGui.QWizard):
             editbox.setText(folder)
         Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)

@@ -108,7 +108,7 @@ class OpenLP1Bible(BibleDB):
                 verse_number = int(verse[1])
                 text = unicode(verse[2], u'cp1252')
                 self.create_verse(db_book.id, chapter, verse_number, text)
-                self.openlp_core.process_events()
+                self.application.process_events()
             self.session.commit()
         connection.close()
         return True

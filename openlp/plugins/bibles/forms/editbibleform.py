@@ -122,7 +122,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     if book.name != custom_names[abbr]:
                         if not self.validateBook(custom_names[abbr], abbr):
                             return
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         self.manager.save_meta_data(self.bible, version, copyright, permissions, book_name_language)
         if not self.webbible:
             for abbr, book in self.books.iteritems():
@@ -131,7 +131,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                         book.name = custom_names[abbr]
                         self.manager.update_book(self.bible, book)
         self.bible = None
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
         QtGui.QDialog.accept(self)
 
     def validateMeta(self, name, copyright):
@@ -189,12 +189,12 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     return False
         return True
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)

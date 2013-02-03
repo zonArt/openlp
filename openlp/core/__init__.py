@@ -135,7 +135,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.main_window = MainWindow(self)
+        self.main_window = MainWindow()
         self.main_window.show()
         if show_splash:
             # now kill the splashscreen
@@ -308,7 +308,7 @@ def main(args=None):
         application.setApplicationName(u'OpenLP')
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     Registry.create()
-    Registry().register(u'openlp_core', application)
+    Registry().register(u'application', application)
     application.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
     if application.is_already_running():

@@ -424,7 +424,7 @@ def get_web_page(url, header=None, update_openlp=False):
     if not page:
         return None
     if update_openlp:
-        Registry().get(u'openlp_core').process_events()
+        Registry().get(u'application').process_events()
     log.debug(page)
     return page
 

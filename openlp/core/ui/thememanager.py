@@ -153,13 +153,13 @@ class ThemeManager(QtGui.QWidget):
         """
         Import new themes downloaded by the first time wizard
         """
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         files = SettingsManager.get_files(self.settingsSection, u'.otz')
         for theme_file in files:
             theme_file = os.path.join(self.path, theme_file)
             self.unzipTheme(theme_file, self.path)
             delete_file(theme_file)
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
 
     def config_updated(self):
@@ -368,7 +368,7 @@ class ThemeManager(QtGui.QWidget):
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
             Settings().value(self.settingsSection + u'/last directory export'))
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         if path:
             Settings().setValue(self.settingsSection + u'/last directory export', path)
             theme_path = os.path.join(path, theme + u'.otz')
@@ -392,7 +392,7 @@ class ThemeManager(QtGui.QWidget):
             finally:
                 if theme_zip:
                     theme_zip.close()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
 
     def on_import_theme(self):
@@ -408,12 +408,12 @@ class ThemeManager(QtGui.QWidget):
         log.info(u'New Themes %s', unicode(files))
         if not files:
             return
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         for file_name in files:
             Settings().setValue(self.settingsSection + u'/last directory import', unicode(file_name))
             self.unzip_theme(file_name, self.path)
         self.load_themes()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def load_themes(self, first_time=False):
         """
@@ -851,12 +851,12 @@ class ThemeManager(QtGui.QWidget):
 
     main_window = property(_get_main_window)
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)

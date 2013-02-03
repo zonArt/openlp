@@ -168,7 +168,7 @@ class PhononPlayer(MediaPlayer):
             current_state = display.mediaObject.state()
             if current_state == Phonon.ErrorState:
                 return False
-            self.openlp_core.process_events()
+            self.application.process_events()
             if (datetime.now() - start).seconds > 5:
                 return False
         return True

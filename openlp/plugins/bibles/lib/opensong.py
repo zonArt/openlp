@@ -129,7 +129,7 @@ class OpenSongBible(BibleDB):
                     self.wizard.incrementProgressBar(translate('BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) % (db_book.name, chapter_number)
                 self.session.commit()
-            self.openlp_core.process_events()
+            self.application.process_events()
         except etree.XMLSyntaxError as inst:
             critical_error_message_box(message=translate('BiblesPlugin.OpenSongImport',
                 'Incorrect Bible file type supplied. OpenSong Bibles may be '

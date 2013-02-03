@@ -335,7 +335,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         OpenLPWizard.preWizard(self)
         self.progressLabel.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Starting upgrade...'))
-        self.openlp_core.process_events()
+        self.application.process_events()
 
     def performWizard(self):
         """
@@ -465,7 +465,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             self.newbibles[number].create_verse(db_book.id,
                                 int(verse[u'chapter']),
                                 int(verse[u'verse']), unicode(verse[u'text']))
-                            self.openlp_core.process_events()
+                            self.application.process_events()
                         self.newbibles[number].session.commit()
             else:
                 language_id = self.newbibles[number].get_object(BibleMeta, u'language_id')
@@ -511,7 +511,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         self.newbibles[number].create_verse(db_book.id,
                             int(verse[u'chapter']),
                             int(verse[u'verse']), unicode(verse[u'text']))
-                        self.openlp_core.process_events()
+                        self.application.process_events()
                     self.newbibles[number].session.commit()
             if not self.success.get(number, True):
                 self.incrementProgressBar(translate('BiblesPlugin.UpgradeWizardForm',

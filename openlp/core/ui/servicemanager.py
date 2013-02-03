@@ -478,7 +478,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         missing_list = []
         audio_files = []
         total_size = 0
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         # Number of items + 1 to zip it
         self.main_window.displayProgressBar(len(self.service_items) + 1)
         # Get list of missing files, and list of files to write
@@ -494,7 +494,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 else:
                     write_list.append(path_from)
         if missing_list:
-            self.openlp_core.set_normal_cursor()
+            self.application.set_normal_cursor()
             title = translate('OpenLP.ServiceManager', 'Service File(s) Missing')
             message = translate('OpenLP.ServiceManager',
                 'The following file(s) in the service are missing:\n\t%s\n\n'
@@ -564,7 +564,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             if zip_file:
                 zip_file.close()
         self.main_window.finishedProgressBar()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
@@ -593,7 +593,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         log.debug(u'ServiceManager.save_file - %s', path_file_name)
         Settings().setValue(self.main_window.serviceManagerSettingsSection + u'/last directory', path)
         service = []
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         # Number of items + 1 to zip it
         self.main_window.displayProgressBar(len(self.service_items) + 1)
         for item in self.service_items:
@@ -622,7 +622,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             if zip_file:
                 zip_file.close()
         self.main_window.finishedProgressBar()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
         if success:
             try:
                 shutil.copy(temp_file_name, path_file_name)
@@ -699,7 +699,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             return False
         zip_file = None
         file_to = None
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         try:
             zip_file = zipfile.ZipFile(file_name)
             for zip_info in zip_file.infolist():
@@ -764,7 +764,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 QtGui.QMessageBox.information(self, translate('OpenLP.ServiceManager', 'Corrupt File'),
                     translate('OpenLP.ServiceManager',
                         'This file is either corrupt or it is not an OpenLP 2 service file.'))
-            self.openlp_core.set_normal_cursor()
+            self.application.set_normal_cursor()
             return
         finally:
             if file_to:
@@ -772,7 +772,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             if zip_file:
                 zip_file.close()
         self.main_window.finishedProgressBar()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
         self.repaint_service_list(-1, -1)
 
     def load_Last_file(self):
@@ -1258,7 +1258,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Rebuild the service list as things have changed and a
         repaint is the easiest way to do this.
         """
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         log.debug(u'regenerate_service_Items')
         # force reset of renderer as theme data has changed
         self.service_has_all_original_files = True
@@ -1290,7 +1290,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 self.set_modified()
             # Repaint it once only at the end
             self.repaint_service_list(-1, -1)
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def service_item_update(self, edit_id, unique_identifier, temporary=False):
         """
@@ -1365,7 +1365,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Send the current item to the Preview slide controller
         """
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         item, child = self.find_service_item()
         if self.service_items[item][u'service_item'].is_valid:
             self.preview_controller.addServiceManagerItem(self.service_items[item][u'service_item'], child)
@@ -1373,7 +1373,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
                     'Your item cannot be displayed as there is no handler to display it'))
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def get_service_item(self):
         """
@@ -1406,7 +1406,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             return
         if row != -1:
             child = row
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         if self.service_items[item][u'service_item'].is_valid:
             self.live_controller.addServiceManagerItem(self.service_items[item][u'service_item'], child)
             if Settings().value(self.main_window.generalSettingsSection + u'/auto preview'):
@@ -1421,7 +1421,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
                     'Your item cannot be displayed as the plugin required to display it is missing or inactive'))
-            self.openlp_core.set_normal_cursor()
+            self.application.set_normal_cursor()
 
     def remote_edit(self):
         """
@@ -1635,12 +1635,12 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     main_window = property(_get_main_window)
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)

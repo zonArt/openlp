@@ -178,7 +178,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self._addElement(u'body', parent=html_data)
         self._addElement(u'h1', cgi.escape(self.titleLineEdit.text()),
             html_data.body, classId=u'serviceTitle')
-        for index, item in enumerate(self.service_manager.serviceItems):
+        for index, item in enumerate(self.service_manager.service_items):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():

@@ -150,7 +150,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         currlist = self.getFileList()
         titles = [os.path.split(file)[1] for file in currlist]
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         if not initialLoad:
             self.main_window.displayProgressBar(len(files))
         # Sort the presentations by its filename considering language specific characters.
@@ -207,7 +207,7 @@ class PresentationMediaItem(MediaManagerItem):
                 self.listView.addItem(item_name)
         if not initialLoad:
             self.main_window.finishedProgressBar()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def onDeleteClick(self):
         """
@@ -217,7 +217,7 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
-            self.openlp_core.set_busy_cursor()
+            self.application.set_busy_cursor()
             self.main_window.displayProgressBar(len(row_list))
             for item in items:
                 filepath = unicode(item.data(QtCore.Qt.UserRole))
@@ -227,7 +227,7 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.close_presentation()
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
-            self.openlp_core.set_busy_cursor()
+            self.application.set_busy_cursor()
             for row in row_list:
                 self.listView.takeItem(row)
             Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())

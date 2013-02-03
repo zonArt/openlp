@@ -578,7 +578,7 @@ class BibleImportForm(OpenLPWizard):
             self.progressLabel.setText(translate('BiblesPlugin.ImportWizardForm', 'Registering Bible...'))
         else:
             self.progressLabel.setText(WizardStrings.StartingImport)
-        self.openlp_core.process_events()
+        self.application.process_events()
 
     def performWizard(self):
         """

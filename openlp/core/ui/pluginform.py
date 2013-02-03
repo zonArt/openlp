@@ -140,9 +140,9 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.programaticChange or status == PluginStatus.Disabled:
             return
         if status == PluginStatus.Inactive:
-            self.openlp_core.set_busy_cursor()
+            self.application.set_busy_cursor()
             self.activePlugin.toggleStatus(PluginStatus.Active)
-            self.openlp_core.set_normal_cursor()
+            self.application.set_normal_cursor()
             self.activePlugin.app_startup()
         else:
             self.activePlugin.toggleStatus(PluginStatus.Inactive)
@@ -166,12 +166,12 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
 
     plugin_manager = property(_get_plugin_manager)
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)

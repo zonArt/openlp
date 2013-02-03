@@ -243,7 +243,7 @@ class MainDisplay(Display):
         log.debug(u'text to display')
         # Wait for the webview to update before displaying text.
         while not self.webLoaded:
-            self.openlp_core.process_events()
+            self.application.process_events()
         self.setGeometry(self.screen[u'size'])
         if animate:
             self.frame.evaluateJavaScript(u'show_text("%s")' % slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
@@ -347,18 +347,18 @@ class MainDisplay(Display):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
-        self.openlp_core.process_events()
+        self.application.process_events()
         # We must have a service item to preview.
         if self.isLive and hasattr(self, u'serviceItem'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
             if self.serviceItem.themedata and self.serviceItem.themedata.display_slide_transition:
                 while self.frame.evaluateJavaScript(u'show_text_complete()') == u'false':
-                    self.openlp_core.process_events()
+                    self.application.process_events()
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
         while not self.webLoaded:
-            self.openlp_core.process_events()
+            self.application.process_events()
         # if was hidden keep it hidden
         if self.isLive:
             if self.hideMode:
@@ -503,15 +503,15 @@ class MainDisplay(Display):
 
     image_manager = property(_get_image_manager)
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)
 
 
 class AudioPlayer(QtCore.QObject):

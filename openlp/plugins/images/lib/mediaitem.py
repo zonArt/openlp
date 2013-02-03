@@ -99,7 +99,7 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem','You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
-            self.openlp_core.set_busy_cursor()
+            self.application.set_busy_cursor()
             self.main_window.displayProgressBar(len(row_list))
             for row in row_list:
                 text = self.listView.item(row)
@@ -109,11 +109,11 @@ class ImageMediaItem(MediaManagerItem):
                 self.main_window.incrementProgressBar()
             SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
-            self.openlp_core.set_normal_cursor()
+            self.application.set_normal_cursor()
         self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         if not initialLoad:
             self.main_window.displayProgressBar(len(images))
         # Sort the images by its filename considering language specific
@@ -138,7 +138,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.main_window.incrementProgressBar()
         if not initialLoad:
             self.main_window.finishedProgressBar()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):

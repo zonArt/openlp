@@ -455,14 +455,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, application):
+    def __init__(self):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         Registry().register(u'main_window', self)
-        self.application = application
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args
         # Set up settings sections for the main application (not for use by plugins).
@@ -538,7 +537,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         # Simple message boxes
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_information_message'),
@@ -586,7 +585,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Hide/show the theme combobox on the service manager
         self.serviceManagerContents.theme_change()
         # Reset the cursor
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def setAutoLanguage(self, value):
         """
@@ -647,22 +646,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Give all the plugins a chance to perform some tasks at startup
         """
-        self.openlp_core.process_events()
+        self.application.process_events()
         for plugin in self.plugin_manager.plugins:
             if plugin.isActive():
                 plugin.app_startup()
-                self.openlp_core.process_events()
+                self.application.process_events()
 
     def first_time(self):
         """
         Import themes if first time
         """
-        self.openlp_core.process_events()
+        self.application.process_events()
         for plugin in self.plugin_manager.plugins:
             if hasattr(plugin, u'first_time'):
-                self.openlp_core.process_events()
+                self.application.process_events()
                 plugin.first_time()
-        self.openlp_core.process_events()
+        self.application.process_events()
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
         shutil.rmtree(temp_dir, True)
 
@@ -688,7 +687,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         first_run_wizard.exec_()
         if first_run_wizard.was_download_cancelled:
             return
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         self.first_time()
         for plugin in self.plugin_manager.plugins:
             self.activePlugin = plugin
@@ -706,7 +705,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Check if any Bibles downloaded.  If there are, they will be
         # processed.
         Receiver.send_message(u'bibles_load_list', True)
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def blankCheck(self):
         """
@@ -723,21 +722,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Display an error message
         """
-        self.openlp_core.close_splash_screen()
+        self.application.close_splash_screen()
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
     def warning_message(self, message):
         """
         Display a warning message
         """
-        self.openlp_core.close_splash_screen()
+        self.application.close_splash_screen()
         QtGui.QMessageBox.warning(self, message[u'title'], message[u'message'])
 
     def onInformationMessage(self, data):
         """
         Display an informational message
         """
-        self.openlp_core.close_splash_screen()
+        self.application.close_splash_screen()
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
@@ -1003,14 +1002,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         renderer.
         """
         log.debug(u'screenChanged')
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         self.imageManager.update_display()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def closeEvent(self, event):
         """
@@ -1309,14 +1308,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadProgressBar.show()
         self.loadProgressBar.setMaximum(size)
         self.loadProgressBar.setValue(0)
-        self.openlp_core.process_events()
+        self.application.process_events()
 
     def incrementProgressBar(self):
         """
         Increase the Progress Bar value by 1
         """
         self.loadProgressBar.setValue(self.loadProgressBar.value() + 1)
-        self.openlp_core.process_events()
+        self.application.process_events()
 
     def finishedProgressBar(self):
         """
@@ -1331,7 +1330,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if event.timerId() == self.timer_id:
             self.timer_id = 0
             self.loadProgressBar.hide()
-            self.openlp_core.process_events()
+            self.application.process_events()
 
     def setNewDataPath(self, new_data_path):
         """
@@ -1352,7 +1351,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Changing data path to %s' % self.newDataPath)
         old_data_path = unicode(AppLocation.get_data_path())
         # Copy OpenLP data to new location if requested.
-        self.openlp_core.set_busy_cursor()
+        self.application.set_busy_cursor()
         if self.copyData:
             log.info(u'Copying data to new path')
             try:
@@ -1362,7 +1361,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError), why:
-                self.openlp_core.set_normal_cursor()
+                self.application.set_normal_cursor()
                 log.exception(u'Data copy failed %s' % unicode(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
@@ -1377,14 +1376,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Check if the new data path is our default.
         if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')
-        self.openlp_core.set_normal_cursor()
+        self.application.set_normal_cursor()
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)

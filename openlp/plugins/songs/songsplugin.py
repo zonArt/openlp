@@ -241,9 +241,9 @@ class SongsPlugin(Plugin):
         If the first time wizard has run, this function is run to import all the
         new songs into the database.
         """
-        self.openlp_core.process_events()
+        self.application.process_events()
         self.onToolsReindexItemTriggered()
-        self.openlp_core.process_events()
+        self.application.process_events()
         db_dir = unicode(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         if not os.path.exists(db_dir):
             return
@@ -251,12 +251,12 @@ class SongsPlugin(Plugin):
         song_count = 0
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
-                self.openlp_core.process_events()
+                self.application.process_events()
                 song_dbs.append(os.path.join(db_dir, sfile))
                 song_count += self._countSongs(os.path.join(db_dir, sfile))
         if not song_dbs:
             return
-        self.openlp_core.process_events()
+        self.application.process_events()
         progress = QtGui.QProgressDialog(self.main_window)
         progress.setWindowModality(QtCore.Qt.WindowModal)
         progress.setWindowTitle(translate('OpenLP.Ui', 'Importing Songs'))
@@ -265,11 +265,11 @@ class SongsPlugin(Plugin):
         progress.setRange(0, song_count)
         progress.setMinimumDuration(0)
         progress.forceShow()
-        self.openlp_core.process_events()
+        self.application.process_events()
         for db in song_dbs:
             importer = OpenLPSongImport(self.manager, filename=db)
             importer.doImport(progress)
-            self.openlp_core.process_events()
+            self.application.process_events()
         progress.setValue(song_count)
         self.mediaItem.onSearchTextButtonClicked()
 

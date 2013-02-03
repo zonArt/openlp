@@ -182,7 +182,7 @@ class OSISBible(BibleDB):
                         .replace(u'</div>', u'').replace(u'</w>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
-                    self.openlp_core.process_events()
+                    self.application.process_events()
             self.session.commit()
             if match_count == 0:
                 success = False

@@ -361,7 +361,7 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
-            self.openlp_core.set_busy_cursor()
+            self.application.set_busy_cursor()
             self.main_window.displayProgressBar(len(items))
             for item in items:
                 item_id = item.data(QtCore.Qt.UserRole)
@@ -380,7 +380,7 @@ class SongMediaItem(MediaManagerItem):
                 self.plugin.manager.delete_object(Song, item_id)
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
-            self.openlp_core.set_normal_cursor()
+            self.application.set_normal_cursor()
             self.onSearchTextButtonClicked()
 
     def onCloneClick(self):

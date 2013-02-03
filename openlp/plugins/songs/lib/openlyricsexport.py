@@ -64,7 +64,7 @@ class OpenLyricsExport(object):
         openLyrics = OpenLyrics(self.manager)
         self.parent.progressBar.setMaximum(len(self.songs))
         for song in self.songs:
-            self.openlp_core.process_events()
+            self.application.process_events()
             if self.parent.stop_export_flag:
                 return False
             self.parent.incrementProgressBar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
@@ -81,12 +81,12 @@ class OpenLyricsExport(object):
                 encoding=u'utf-8', xml_declaration=True, pretty_print=True)
         return True
 
-    def _get_openlp_core(self):
+    def _get_application(self):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_openlp_core'):
-            self._openlp_core = Registry().get(u'openlp_core')
-        return self._openlp_core
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
 
-    openlp_core = property(_get_openlp_core)
+    application = property(_get_application)
