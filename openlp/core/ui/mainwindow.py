@@ -541,7 +541,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.openlp_core.set_busy_cursor()
         # Simple message boxes
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_warning_message'), self.onWarningMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_information_message'),
             self.onInformationMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
@@ -724,21 +723,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Display an error message
         """
-        Receiver.send_message(u'close_splash')
+        self.openlp_core.close_splash_screen()
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
-    def onWarningMessage(self, data):
+    def warning_message(self, message):
         """
         Display a warning message
         """
-        Receiver.send_message(u'close_splash')
-        QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
+        self.openlp_core.close_splash_screen()
+        QtGui.QMessageBox.warning(self, message[u'title'], message[u'message'])
 
     def onInformationMessage(self, data):
         """
         Display an informational message
         """
-        Receiver.send_message(u'close_splash')
+        self.openlp_core.close_splash_screen()
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):

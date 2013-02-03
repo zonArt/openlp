@@ -47,9 +47,6 @@ class EventReceiver(QtCore.QObject):
     ``mainwindow_status_text``
         Changes the bottom status bar text on the mainwindow.
 
-    ``openlp_warning_message``
-        Displays a standalone Warning Message.
-
     ``openlp_error_message``
         Displays a standalone Error Message.
 

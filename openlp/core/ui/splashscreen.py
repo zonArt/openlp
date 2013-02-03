@@ -44,7 +44,6 @@ class SplashScreen(QtGui.QSplashScreen):
         """
         QtGui.QSplashScreen.__init__(self)
         self.setupUi()
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'close_splash'), self.close)
 
     def setupUi(self):
         """

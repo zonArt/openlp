@@ -154,6 +154,12 @@ class OpenLP(QtGui.QApplication):
         self.main_window.app_startup()
         return self.exec_()
 
+    def close_splash_screen(self):
+        """
+        Close the splash screen when requested.
+        """
+        self.splash.close()
+
     def is_already_running(self):
         """
         Look to see if OpenLP is already running and ask if a 2nd copy
@@ -276,36 +282,36 @@ def main(args=None):
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
-    app = OpenLP(qt_args)
-    app.setOrganizationName(u'OpenLP')
-    app.setOrganizationDomain(u'openlp.org')
+    application = OpenLP(qt_args)
+    application.setOrganizationName(u'OpenLP')
+    application.setOrganizationDomain(u'openlp.org')
     if options.portable:
-        app.setApplicationName(u'OpenLPPortable')
+        application.setApplicationName(u'OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
-        app_path = AppLocation.get_directory(AppLocation.AppDir)
-        set_up_logging(os.path.abspath(os.path.join(app_path, u'..', u'..', u'Other')))
+        application_path = AppLocation.get_directory(AppLocation.AppDir)
+        set_up_logging(os.path.abspath(os.path.join(application_path, u'..', u'..', u'Other')))
         log.info(u'Running portable')
-        portable_settings_file = os.path.abspath(os.path.join(app_path, u'..', u'..', u'Data', u'OpenLP.ini'))
+        portable_settings_file = os.path.abspath(os.path.join(application_path, u'..', u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file
         log.info(u'INI file: %s', portable_settings_file)
         Settings.set_filename(portable_settings_file)
         portable_settings = Settings()
         # Set our data path
-        data_path = os.path.abspath(os.path.join(app_path, u'..', u'..', u'Data',))
+        data_path = os.path.abspath(os.path.join(application_path, u'..', u'..', u'Data',))
         log.info(u'Data path: %s', data_path)
         # Point to our data path
         portable_settings.setValue(u'advanced/data path', data_path)
         portable_settings.setValue(u'advanced/is portable', True)
         portable_settings.sync()
     else:
-        app.setApplicationName(u'OpenLP')
+        application.setApplicationName(u'OpenLP')
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     Registry.create()
-    Registry().register(u'openlp_core', app)
-    app.setApplicationVersion(get_application_version()[u'version'])
+    Registry().register(u'openlp_core', application)
+    application.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
-    if app.is_already_running():
+    if application.is_already_running():
         sys.exit()
     # First time checks in settings
     if not Settings().value(u'general/has run wizard'):
@@ -314,14 +320,14 @@ def main(args=None):
             sys.exit()
     # i18n Set Language
     language = LanguageManager.get_language()
-    app_translator, default_translator = LanguageManager.get_translator(language)
-    if not app_translator.isEmpty():
-        app.installTranslator(app_translator)
+    application_translator, default_translator = LanguageManager.get_translator(language)
+    if not application_translator.isEmpty():
+        application.installTranslator(application_translator)
     if not default_translator.isEmpty():
-        app.installTranslator(default_translator)
+        application.installTranslator(default_translator)
     else:
         log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
-        sys.excepthook = app.hook_exception
-    sys.exit(app.run(qt_args))
+        sys.excepthook = application.hook_exception
+    sys.exit(application.run(qt_args))
 
