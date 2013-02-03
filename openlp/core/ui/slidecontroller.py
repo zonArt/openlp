@@ -518,12 +518,12 @@ class SlideController(DisplayController):
                 self.keypress_loop = True
                 keypressCommand = self.keypress_queue.popleft()
                 if keypressCommand == ServiceItemAction.Previous:
-                    Receiver.send_message('servicemanager_previous_item')
+                    self.service_manager.previous_item()
                 elif keypressCommand == ServiceItemAction.PreviousLastSlide:
                     # Go to the last slide of the previous item
-                    Receiver.send_message('servicemanager_previous_item', u'last slide')
+                    self.service_manager.previous_item(last_slide=True)
                 else:
-                    Receiver.send_message('servicemanager_next_item')
+                    self.service_manager.next_item()
             self.keypress_loop = False
 
     def screenSizeChanged(self):
@@ -1271,8 +1271,7 @@ class SlideController(DisplayController):
         row = self.previewListWidget.currentRow()
         if -1 < row < self.previewListWidget.rowCount():
             if self.serviceItem.from_service:
-                Receiver.send_message('servicemanager_preview_live', u'%s:%s' %
-                    (self.serviceItem.unique_identifier, row))
+                self.service_manager.preview_live(self.serviceItem.unique_identifier, row)
             else:
                 self.live_controller.addServiceManagerItem(self.serviceItem, row)
 

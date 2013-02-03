@@ -250,7 +250,7 @@ class CustomMediaItem(MediaManagerItem):
             and_(CustomSlide.title == item.title, CustomSlide.theme_name == item.theme,
                 CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
         if custom:
-            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
+            self.service_manager.service_item_update(custom.id, item.unique_identifier)
         else:
             if self.add_custom_from_service:
                 self.create_from_service_item(item)

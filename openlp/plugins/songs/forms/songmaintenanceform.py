@@ -374,12 +374,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Utility method to merge two objects to leave one in the database.
         """
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         merge(dbObject)
         reset()
         if not self.fromSongEdit:
             Receiver.send_message(u'songs_load_list')
-        Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def mergeAuthors(self, oldAuthor):
         """
@@ -509,3 +509,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             deleteButton.setEnabled(True)
             editButton.setEnabled(True)
 
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

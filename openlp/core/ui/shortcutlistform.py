@@ -33,7 +33,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings
+from openlp.core.lib import Registry, Settings
 from openlp.core.utils import translate
 from openlp.core.utils.actions import ActionList
 from shortcutlistdialog import Ui_ShortcutListDialog
@@ -438,7 +438,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 if changing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
         if not is_valid:
-            Receiver.send_message(u'openlp_warning_message', {
+            self.main_window.warning_message( {
                 u'title': translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
                 u'message': translate('OpenLP.ShortcutListDialog',
                     'The shortcut "%s" is already assigned to another action, '
@@ -478,3 +478,13 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             button.setChecked(checked)
         if enabled is not None:
             button.setEnabled(enabled)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

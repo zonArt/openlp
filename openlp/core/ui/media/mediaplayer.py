@@ -29,6 +29,7 @@
 """
 The :mod:`~openlp.core.ui.media.mediaplayer` module contains the MediaPlayer class.
 """
+from openlp.core.lib import Registry
 from openlp.core.ui.media import MediaState
 
 
@@ -149,3 +150,13 @@ class MediaPlayer(object):
         Returns Information about the player
         """
         return u''
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
