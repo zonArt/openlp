@@ -59,6 +59,7 @@ class Registry(object):
         log.info(u'Registry Initialising')
         registry = cls()
         registry.service_list = {}
+        registry.functions_list = {}
         registry.running_under_test = False
         # Allow the tests to remove Registry entries but not the live system
         if u'nosetest' in sys.argv[0]:
@@ -96,3 +97,33 @@ class Registry(object):
             return
         if key in self.service_list:
             del self.service_list[key]
+
+    def register_function(self, occasion, function):
+        """
+        Register a function and a handler to be called later
+        """
+        if self.functions_list.has_key(occasion) == 0:
+            self.functions_list[occasion] = [function]
+        else:
+            self.functions_list[occasion].append(function)
+
+    def remove_function(self, occasion, function):
+        """
+        Register a function and a handler to be called later
+        """
+        if self.running_under_test is False:
+            log.error(u'Invalid Method call for key %s' % occasion)
+            raise KeyError(u'Invalid Method call for key %s' % occasion)
+            return
+        if self.functions_list.has_key(occasion):
+            self.functions_list[occasion].remove(function)
+
+    def execute(self, occasion, data):
+        """
+        Execute all the handlers registered passing the data to the handler
+        """
+        print self.functions_list, self.functions_list.has_key(occasion)
+
+        if self.functions_list.has_key(occasion):
+            for function in self.functions_list[occasion]:
+                function(data)

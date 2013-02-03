@@ -238,6 +238,7 @@ class ThemeManager(QtGui.QWidget):
                 self.theme_list_widget.item(count).setText(name)
                 Settings().setValue(self.settingsSection + u'/global theme', self.global_theme)
                 Receiver.send_message(u'theme_update_global', self.global_theme)
+                Registry().execute(u'theme_update_global', self.global_theme)
                 self._push_themes()
 
     def onAddTheme(self):
@@ -465,6 +466,7 @@ class ThemeManager(QtGui.QWidget):
         Notify listeners that the theme list has been updated
         """
         Receiver.send_message(u'theme_update_list', self.get_themes())
+        Registry().execute(u'theme_update_list', self.get_themes())
 
     def get_themes(self):
         """

@@ -35,7 +35,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Registry, Receiver, translate
 
 log = logging.getLogger(__name__)
 
@@ -72,10 +72,10 @@ class AlertsManager(QtCore.QObject):
         if text:
             self.alertList.append(text)
             if self.timer_id != 0:
-                Receiver.send_message(u'mainwindow_status_text',
+                self.main_window.show_status_message(
                     translate('AlertsPlugin.AlertsManager', 'Alert message created and displayed.'))
                 return
-            Receiver.send_message(u'mainwindow_status_text', u'')
+            self.main_window.show_status_message(u'')
             self.generateAlert()
 
     def generateAlert(self):
@@ -107,3 +107,13 @@ class AlertsManager(QtCore.QObject):
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

@@ -532,8 +532,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mainwindow_status_text'),
-            self.showStatusMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -722,21 +720,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Display an error message
         """
-        self.application.close_splash_screen()
+        self.application.splash.close()
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
     def warning_message(self, message):
         """
         Display a warning message
         """
-        self.application.close_splash_screen()
+        self.application.splash.close()
         QtGui.QMessageBox.warning(self, message[u'title'], message[u'message'])
 
     def onInformationMessage(self, data):
         """
         Display an informational message
         """
-        self.application.close_splash_screen()
+        self.application.splash.close()
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
@@ -1122,7 +1120,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             title = u'%s - %s' % (self.mainTitle, fileName)
         self.setWindowTitle(title)
 
-    def showStatusMessage(self, message):
+    def show_status_message(self, message):
         """
         Show a message in the status bar
         """

@@ -154,12 +154,6 @@ class OpenLP(QtGui.QApplication):
         self.main_window.app_startup()
         return self.exec_()
 
-    def close_splash_screen(self):
-        """
-        Close the splash screen when requested.
-        """
-        self.splash.close()
-
     def is_already_running(self):
         """
         Look to see if OpenLP is already running and ask if a 2nd copy
