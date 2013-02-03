@@ -1363,7 +1363,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError), why:
-                print "A5"
                 self.openlp_core.set_normal_cursor()
                 log.exception(u'Data copy failed %s' % unicode(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
