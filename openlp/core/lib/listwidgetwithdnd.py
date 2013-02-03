@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver
 
+
 class ListWidgetWithDnD(QtGui.QListWidget):
     """
     Provide a list widget to store objects and handle drag and drop events
@@ -58,9 +59,8 @@ class ListWidgetWithDnD(QtGui.QListWidget):
 
     def mouseMoveEvent(self, event):
         """
-        Drag and drop event does not care what data is selected
-        as the recipient will use events to request the data move
-        just tell it what plugin to call
+        Drag and drop event does not care what data is selected as the recipient will use events to request the data
+        move just tell it what plugin to call
         """
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
@@ -75,12 +75,18 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         drag.start(QtCore.Qt.CopyAction)
 
     def dragEnterEvent(self, event):
+        """
+        When something is dragged into this object, check if you should be able to drop it in here.
+        """
         if event.mimeData().hasUrls():
             event.accept()
         else:
             event.ignore()
 
     def dragMoveEvent(self, event):
+        """
+        Make an object droppable, and set it to copy the contents of the object, not move it.
+        """
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()

@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The Themes configuration tab
+"""
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
@@ -39,11 +41,17 @@ class ThemesTab(SettingsTab):
     ThemesTab is the theme settings tab in the settings dialog.
     """
     def __init__(self, parent):
+        """
+        Constructor
+        """
         generalTranslated = translate('OpenLP.ThemesTab', 'Themes')
         SettingsTab.__init__(self, parent, u'Themes', generalTranslated)
         self.iconPath = u':/themes/theme_new.png'
 
     def setupUi(self):
+        """
+        Set up the UI
+        """
         self.setObjectName(u'ThemesTab')
         SettingsTab.setupUi(self)
         self.GlobalGroupBox = QtGui.QGroupBox(self.leftColumn)
@@ -99,6 +107,9 @@ class ThemesTab(SettingsTab):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
+        """
+        Translate the UI on the fly
+        """
         self.tabTitleVisible = UiStrings().Themes
         self.GlobalGroupBox.setTitle(translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(translate('OpenLP.ThemesTab', 'Theme Level'))
@@ -116,6 +127,9 @@ class ThemesTab(SettingsTab):
             'any themes associated with either the service or the songs.'))
 
     def load(self):
+        """
+        Load the theme settings into the tab
+        """
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.theme_level = settings.value(u'theme level')
@@ -129,6 +143,9 @@ class ThemesTab(SettingsTab):
             self.SongLevelRadioButton.setChecked(True)
 
     def save(self):
+        """
+        Save the settings
+        """
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'theme level', self.theme_level)
@@ -139,18 +156,33 @@ class ThemesTab(SettingsTab):
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
+        """
+        After setting things up...
+        """
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def onSongLevelButtonClicked(self):
+        """
+        Set the theme level
+        """
         self.theme_level = ThemeLevel.Song
 
     def onServiceLevelButtonClicked(self):
+        """
+        Set the theme level
+        """
         self.theme_level = ThemeLevel.Service
 
     def onGlobalLevelButtonClicked(self):
+        """
+        Set the theme level
+        """
         self.theme_level = ThemeLevel.Global
 
     def onDefaultComboBoxChanged(self, value):
+        """
+        Set the global default theme
+        """
         self.global_theme = self.DefaultComboBox.currentText()
         self.renderer.set_global_theme(self.global_theme)
         self.__previewGlobalTheme()

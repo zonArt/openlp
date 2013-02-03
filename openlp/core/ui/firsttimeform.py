@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+This module contains the first time wizard.
+"""
 import io
 import logging
 import os
@@ -45,14 +47,15 @@ from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
 
+
 class ThemeScreenshotThread(QtCore.QThread):
     """
     This thread downloads the theme screenshots.
     """
-    def __init__(self, parent):
-        QtCore.QThread.__init__(self, parent)
-
     def run(self):
+        """
+        Overridden method to run the thread.
+        """
         themes = self.parent().config.get(u'themes', u'files')
         themes = themes.split(u',')
         config = self.parent().config
@@ -79,7 +82,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     log.info(u'ThemeWizardForm loaded')
 
     def __init__(self, screens, parent=None):
-        QtGui.QWizard.__init__(self, parent)
+        """
+        Create and set up the first time wizard.
+        """
+        super(FirstTimeForm, self).__init__(parent)
         self.setupUi(self)
         self.screens = screens
         # check to see if we have web access
@@ -90,7 +96,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
-        self.downloadCancelled = False
+        self.was_download_cancelled = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
             self.onCancelButtonClicked)
@@ -241,7 +247,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
-        self.downloadCancelled = True
+        self.was_download_cancelled = True
         while self.themeScreenshotThread.isRunning():
             time.sleep(0.1)
         Receiver.send_message(u'cursor_normal')
@@ -267,7 +273,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         urlfile = urllib2.urlopen(url)
         filename = open(fpath, "wb")
         # Download until finished or canceled.
-        while not self.downloadCancelled:
+        while not self.was_download_cancelled:
             data = urlfile.read(block_size)
             if not data:
                 break
@@ -276,7 +282,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self._downloadProgress(block_count, block_size)
         filename.close()
         # Delete file if cancelled, it may be a partial file.
-        if self.downloadCancelled:
+        if self.was_download_cancelled:
             os.remove(fpath)
 
     def _buildThemeScreenshots(self):
@@ -297,11 +303,20 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 screenshot)))
 
     def _getFileSize(self, url):
+        """
+        Get the size of a file.
+
+        ``url``
+            The URL of the file we want to download.
+        """
         site = urllib.urlopen(url)
         meta = site.info()
         return int(meta.getheaders("Content-Length")[0])
 
     def _downloadProgress(self, count, block_size):
+        """
+        Calculate and display the download progress.
+        """
         increment = (count * block_size) - self.previous_size
         self._incrementProgressBar(None, increment)
         self.previous_size = count * block_size
@@ -459,6 +474,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             Settings().setValue(u'themes/global theme', self.themeComboBox.currentText())
 
     def _setPluginStatus(self, field, tag):
+        """
+        Set the status of a plugin.
+        """
         status = PluginStatus.Active if field.checkState() == QtCore.Qt.Checked else PluginStatus.Inactive
         Settings().setValue(tag, status)
 

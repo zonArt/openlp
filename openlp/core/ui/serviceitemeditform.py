@@ -26,11 +26,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The service item edit dialog
+"""
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Registry
 
 from serviceitemeditdialog import Ui_ServiceItemEditDialog
+
 
 class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
     """
@@ -47,6 +50,9 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             self.on_current_row_changed)
 
     def set_service_item(self, item):
+        """
+        Set the service item to be edited.
+        """
         self.item = item
         self.item_list = []
         if self.item.is_image():
@@ -57,6 +63,9 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         self.list_widget.setCurrentItem(self.list_widget.currentItem())
 
     def get_service_item(self):
+        """
+        Get the modified service item.
+        """
         if self.data:
             self.item._raw_frames = []
             if self.item.is_image():

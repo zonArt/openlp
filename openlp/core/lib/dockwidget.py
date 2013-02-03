@@ -39,6 +39,7 @@ from openlp.core.lib import build_icon, ScreenList
 
 log = logging.getLogger(__name__)
 
+
 class OpenLPDockWidget(QtGui.QDockWidget):
     """
     Custom DockWidget class to handle events

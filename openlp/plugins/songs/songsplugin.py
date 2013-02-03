@@ -239,7 +239,7 @@ class SongsPlugin(Plugin):
         }
         self.setPluginUiTextStrings(tooltips)
 
-    def firstTime(self):
+    def first_time(self):
         """
         If the first time wizard has run, this function is run to import all the
         new songs into the database.

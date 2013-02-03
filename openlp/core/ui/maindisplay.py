@@ -27,12 +27,16 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`maindisplay` module provides the functionality to display screens
-and play multimedia within OpenLP.
+The :mod:`maindisplay` module provides the functionality to display screens and play multimedia within OpenLP.
+
+Some of the code for this form is based on the examples at:
+
+* `http://www.steveheffernan.com/html5-video-player/demo-video-player.html`_
+* `http://html5demos.com/two-videos`_
+
 """
 import cgi
 import logging
-import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
@@ -47,8 +51,6 @@ from openlp.core.ui import HideMode, AlertLocation
 
 log = logging.getLogger(__name__)
 
-#http://www.steveheffernan.com/html5-video-player/demo-video-player.html
-#http://html5demos.com/two-videos
 
 class Display(QtGui.QGraphicsView):
     """
@@ -57,6 +59,9 @@ class Display(QtGui.QGraphicsView):
     Preview display.
     """
     def __init__(self, parent, live, controller):
+        """
+        Constructor
+        """
         if live:
             QtGui.QGraphicsView.__init__(self)
             # Overwrite the parent() method.
@@ -101,6 +106,9 @@ class Display(QtGui.QGraphicsView):
             QtCore.Qt.ScrollBarAlwaysOff)
 
     def resizeEvent(self, event):
+        """
+        React to resizing of this display
+        """
         self.webView.setGeometry(0, 0, self.width(), self.height())
 
     def isWebLoaded(self):
@@ -116,6 +124,9 @@ class MainDisplay(Display):
     This is the display screen as a specialized class from the Display class
     """
     def __init__(self, parent, live, controller):
+        """
+        Constructor
+        """
         Display.__init__(self, parent, live, controller)
         self.screens = ScreenList()
         self.rebuildCSS = False
@@ -153,6 +164,9 @@ class MainDisplay(Display):
             QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configChanged)
 
     def setTransparency(self, enabled):
+        """
+        Set the transparency of the window
+        """
         if enabled:
             self.setAutoFillBackground(False)
         else:
@@ -278,7 +292,7 @@ class MainDisplay(Display):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.image_manager.addImage(path, ImageSource.ImagePlugin, background)
+        self.image_manager.add_image(path, ImageSource.ImagePlugin, background)
         if not hasattr(self, u'serviceItem'):
             return False
         self.override[u'image'] = path
@@ -300,7 +314,7 @@ class MainDisplay(Display):
             re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.image_manager.getImageBytes(path, ImageSource.ImagePlugin)
+        image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
         self.controller.media_controller.media_reset(self.controller)
         self.displayImage(image)
 
@@ -381,14 +395,16 @@ class MainDisplay(Display):
                 self.override = {}
             else:
                 # replace the background
-                background = self.image_manager.getImageBytes(self.override[u'image'], ImageSource.ImagePlugin)
+                background = self.image_manager.get_image_bytes(self.override[u'image'], ImageSource.ImagePlugin)
         self.setTransparency(self.serviceItem.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.image_manager.getImageBytes(
-                self.serviceItem.themedata.background_filename,ImageSource.Theme)
+            self.serviceItem.bg_image_bytes = self.image_manager.get_image_bytes(
+                self.serviceItem.themedata.background_filename,
+                ImageSource.Theme
+            )
         if image_path:
-            image_bytes = self.image_manager.getImageBytes(image_path, ImageSource.ImagePlugin)
+            image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes,
@@ -532,6 +548,9 @@ class AudioPlayer(QtCore.QObject):
             self.mediaObject.enqueue(self.playlist[self.currentIndex])
 
     def onFinished(self):
+        """
+        When the audio track finishes.
+        """
         if self.repeat:
             log.debug(u'Repeat is enabled... here we go again!')
             self.mediaObject.clearQueue()
@@ -540,6 +559,9 @@ class AudioPlayer(QtCore.QObject):
             self.play()
 
     def connectVolumeSlider(self, slider):
+        """
+        Connect the volume slider to the output channel.
+        """
         slider.setAudioOutput(self.audioObject)
 
     def reset(self):
@@ -586,6 +608,9 @@ class AudioPlayer(QtCore.QObject):
         self.playlist.extend(map(Phonon.MediaSource, filenames))
 
     def next(self):
+        """
+        Skip forward to the next track in the list
+        """
         if not self.repeat and self.currentIndex + 1 >= len(self.playlist):
             return
         isPlaying = self.mediaObject.state() == Phonon.PlayingState
@@ -599,6 +624,9 @@ class AudioPlayer(QtCore.QObject):
             self.mediaObject.play()
 
     def goTo(self, index):
+        """
+        Go to a particular track in the list
+        """
         isPlaying = self.mediaObject.state() == Phonon.PlayingState
         self.mediaObject.clearQueue()
         self.mediaObject.clear()
@@ -609,5 +637,7 @@ class AudioPlayer(QtCore.QObject):
 
     #@todo is this used?
     def connectSlot(self, signal, slot):
+        """
+        Connect a slot to a signal on the media object
+        """
         QtCore.QObject.connect(self.mediaObject, signal, slot)
-

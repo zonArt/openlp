@@ -32,3 +32,5 @@ OpenLP when displaying a song or a scripture.
 """
 
 from openlp.core.theme.theme import Theme
+
+__all__ = ['Theme']

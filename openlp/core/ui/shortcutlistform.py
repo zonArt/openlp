@@ -26,7 +26,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.shortcutlistform` module contains the form class"""
 import logging
 import re
 
@@ -48,6 +49,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
 
     def __init__(self, parent=None):
+        """
+        Constructor
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.changedActions = {}
@@ -72,6 +76,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onCustomRadioButtonClicked)
 
     def keyPressEvent(self, event):
+        """
+        Respond to certain key presses
+        """
         if event.key() == QtCore.Qt.Key_Space:
             self.keyReleaseEvent(event)
         elif self.primaryPushButton.isChecked() or self.alternatePushButton.isChecked():
@@ -81,6 +88,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.close()
 
     def keyReleaseEvent(self, event):
+        """
+        Respond to certain key presses
+        """
         if not self.primaryPushButton.isChecked() and not self.alternatePushButton.isChecked():
             return
         key = event.key()
@@ -106,6 +116,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                     False, text=key_sequence.toString())
 
     def exec_(self):
+        """
+        Execute the dialog
+        """
         self.changedActions = {}
         self.reloadShortcutList()
         self._adjustButton(self.primaryPushButton, False, False, u'')
@@ -422,7 +435,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 if action.shortcutContext() in [QtCore.Qt.WindowShortcut,
                     QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
-                if changing_action.shortcutContext() in  [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
+                if changing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
         if not is_valid:
             Receiver.send_message(u'openlp_warning_message', {

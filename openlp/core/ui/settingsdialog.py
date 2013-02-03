@@ -26,14 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets of the settings dialog.
+"""
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
 
+
 class Ui_SettingsDialog(object):
+    """
+    The UI widgets of the settings dialog.
+    """
     def setupUi(self, settingsDialog):
+        """
+        Set up the UI
+        """
         settingsDialog.setObjectName(u'settingsDialog')
         settingsDialog.resize(800, 500)
         settingsDialog.setWindowIcon(build_icon(u':/system/system_settings.png'))
@@ -55,4 +64,7 @@ class Ui_SettingsDialog(object):
         QtCore.QObject.connect(self.settingListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.tabChanged)
 
     def retranslateUi(self, settingsDialog):
+        """
+        Translate the UI on the fly
+        """
         settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm', 'Configure OpenLP'))

@@ -118,13 +118,13 @@ class MediaPlugin(Plugin):
         """
         return self.media_controller.get_media_display_html()
 
-    def appStartup(self):
+    def app_startup(self):
         """
         Do a couple of things when the app starts up. In this particular case
         we want to check if we have the old "Use Phonon" setting, and convert
         it to "enable Phonon" and "make it the first one in the list".
         """
-        Plugin.appStartup(self)
+        Plugin.app_startup(self)
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         if settings.contains(u'use phonon'):

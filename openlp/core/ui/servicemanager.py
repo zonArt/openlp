@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The service manager sets up, loads, saves and manages services.
+"""
 import cgi
 import cPickle
 import logging
@@ -48,11 +51,15 @@ from openlp.core.ui.printserviceform import PrintServiceForm
 from openlp.core.utils import AppLocation, delete_file, split_filename, format_time
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
+
 class ServiceManagerList(QtGui.QTreeWidget):
     """
     Set up key bindings and mouse behaviour for the service list
     """
     def __init__(self, serviceManager, parent=None):
+        """
+        Constructor
+        """
         QtGui.QTreeWidget.__init__(self, parent)
         self.serviceManager = serviceManager
 
@@ -92,6 +99,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         drag.setMimeData(mime_data)
         mime_data.setText(u'ServiceManager')
         drag.start(QtCore.Qt.CopyAction)
+
 
 class ServiceManagerDialog(object):
     """
@@ -409,10 +417,12 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             elif result == QtGui.QMessageBox.Save:
                 self.decide_save_method()
         if not load_file:
-            file_name = QtGui.QFileDialog.getOpenfile_name(self.main_window,
+            file_name = QtGui.QFileDialog.getOpenFileName(
+                self.main_window,
                 translate('OpenLP.ServiceManager', 'Open File'),
-                    SettingsManager.get_last_dir(self.main_window.serviceManagerSettingsSection),
-                    translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)'))
+                Settings().value(self.main_window.serviceManagerSettingsSection + u'/last directory'),
+                translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz *.oszl)')
+            )
             if not file_name:
                 return False
         else:
@@ -817,8 +827,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 delay_suffix = u' %s s' % unicode(service_item[u'service_item'].timed_slide_interval)
             else:
                 delay_suffix = u' ...'
-            self.timed_slide_interval.setText(translate('OpenLP.ServiceManager', '&Delay between slides') +
-                delay_suffix)
+            self.timed_slide_interval.setText(
+                translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
             # TODO for future: make group explains itself more visually
         else:
             self.auto_play_slides_group.menuAction().setVisible(False)
@@ -827,7 +837,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
             self.auto_start_action.setVisible(True)
             self.auto_start_action.setIcon(self.inactive)
-            self.auto_start_action.setText(translate('OpenLP.ServiceManager','&Auto Start - inactive'))
+            self.auto_start_action.setText(translate('OpenLP.ServiceManager', '&Auto Start - inactive'))
             if service_item[u'service_item'].will_auto_start:
                 self.auto_start_action.setText(translate('OpenLP.ServiceManager', '&Auto Start - active'))
                 self.auto_start_action.setIcon(self.active)
@@ -885,7 +895,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 self.main_window.generalSettingsSection + u'/loop delay')
         self.set_modified()
 
-
     def toggle_auto_play_slides_loop(self):
         """
         Toggle Auto play slide loop.
@@ -900,7 +909,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             service_item.timed_slide_interval = Settings().value(
                 self.main_window.generalSettingsSection + u'/loop delay')
         self.set_modified()
-
 
     def on_timed_slide_interval(self):
         """

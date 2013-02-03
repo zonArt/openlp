@@ -26,18 +26,24 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The language selection dialog.
+"""
 from PyQt4 import QtGui
 
 from openlp.core.lib.ui import create_action
 from openlp.core.utils import LanguageManager
 from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
+
 class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
     """
-    The exception dialog
+    The language selection dialog.
     """
     def __init__(self, parent=None):
+        """
+        Constructor
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qmList = LanguageManager.get_qm_list()
@@ -52,6 +58,9 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
+        """
+        Run when the dialog is OKed.
+        """
         # It's the first row so must be Automatic
         if self.languageComboBox.currentIndex() == 0:
             LanguageManager.auto_language = True
@@ -63,6 +72,9 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         return QtGui.QDialog.accept(self)
 
     def reject(self):
+        """
+        Run when the dialog is canceled.
+        """
         LanguageManager.auto_language = True
         LanguageManager.set_language(False, False)
         return QtGui.QDialog.reject(self)
