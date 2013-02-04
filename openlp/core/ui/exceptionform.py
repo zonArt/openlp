@@ -141,9 +141,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'pyUNO bridge: %s\n' % UNO_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
-                system = system + u'Desktop: KDE SC\n'
+                system += u'Desktop: KDE SC\n'
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
-                system = system + u'Desktop: GNOME\n'
+                system += u'Desktop: GNOME\n'
         return (openlp_version, description, traceback, system, libraries)
 
     def onSaveReportButtonClicked(self):

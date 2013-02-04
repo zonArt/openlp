@@ -419,18 +419,18 @@ class CWExtract(object):
             for part in verse.contents:
                 self.application.process_events()
                 if isinstance(part, NavigableString):
-                    verse_text = verse_text + part
+                    verse_text += part
                 elif part and part.attrMap and \
                         (part.attrMap[u'class'] == u'WordsOfChrist' or part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
                         self.application.process_events()
                         if isinstance(subpart, NavigableString):
-                            verse_text = verse_text + subpart
+                            verse_text += subpart
                         elif subpart and subpart.attrMap and subpart.attrMap[u'class'] == u'strongs':
                             for subsub in subpart.contents:
                                 self.application.process_events()
                                 if isinstance(subsub, NavigableString):
-                                    verse_text = verse_text + subsub
+                                    verse_text += subsub
             self.application.process_events()
             # Fix up leading and trailing spaces, multiple spaces, and spaces
             # between text and , and .

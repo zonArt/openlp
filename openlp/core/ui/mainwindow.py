@@ -903,7 +903,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
-            export_file_name = export_file_name + u'.conf'
+            export_file_name += u'.conf'
         temp_file = os.path.join(unicode(gettempdir(),
             get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
         self.saveSettings()

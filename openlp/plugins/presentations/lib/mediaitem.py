@@ -269,7 +269,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if img:
                     while img:
                         service_item.add_from_command(path, name, img)
-                        i = i + 1
+                        i += 1
                         img = doc.get_thumbnail_path(i, True)
                     doc.close_presentation()
                     return True

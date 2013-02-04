@@ -369,7 +369,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 self.max_progress += size
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.
-            self.max_progress = self.max_progress + 2
+            self.max_progress += 2
             self.progressBar.setValue(0)
             self.progressBar.setMinimum(0)
             self.progressBar.setMaximum(self.max_progress)
