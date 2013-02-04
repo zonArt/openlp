@@ -67,7 +67,7 @@ def add_welcome_page(parent, image):
     parent.addPage(parent.welcomePage)
 
 
-def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
+def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     """
     Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and
     ``rejected()`` signals of the button box are connected with the dialogs
@@ -88,6 +88,8 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
         QtGui.QAbstractButton it is added with QDialogButtonBox.ActionRole.
         Otherwhise the item has to be a tuple of a button and a ButtonRole.
     """
+    if custom_buttons is None:
+        custom_buttons = []
     buttons = QtGui.QDialogButtonBox.NoButton
     if u'ok' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Ok
