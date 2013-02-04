@@ -38,7 +38,7 @@ from HTMLParser import HTMLParseError
 
 from BeautifulSoup import BeautifulSoup, NavigableString, Tag
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, Registry,translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
@@ -164,7 +164,7 @@ class BGExtract(object):
                     if len(verse_parts) > 1:
                         verse = int(verse_parts[0])
                 except TypeError:
-                    log.warn(u'Illegal verse number: %s', unicode(raw_verse_num))
+                    log.warn(u'Illegal verse number: %s', unicode(verse))
                 verses.append((verse, text))
         verse_list = {}
         for verse, text in verses[::-1]:
@@ -235,9 +235,10 @@ class BGExtract(object):
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
             pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='', cleaner=cleaner)
+        self.application.process_events()
         if not soup:
             return None
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         div = soup.find('div', 'result-text-style-normal')
         self._clean_soup(div)
         span_list = div.findAll('span', 'text')
@@ -281,7 +282,7 @@ class BGExtract(object):
         if not soup:
             send_error_message(u'parse')
             return None
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         content = soup.find(u'table', u'infotable')
         if content:
             content = content.findAll(u'tr')
@@ -329,7 +330,7 @@ class BSExtract(object):
         soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
             return None
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         content = soup.find(u'div', u'content')
         if not content:
             log.error(u'No verses found in the Bibleserver response.')
@@ -339,7 +340,7 @@ class BSExtract(object):
         verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
         verses = {}
         for verse in content:
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             versenumber = int(verse_number.sub(r'\3', verse[u'class']))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
         return SearchResults(book_name, chapter, verses)
@@ -402,7 +403,7 @@ class CWExtract(object):
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         html_verses = soup.findAll(u'span', u'versetext')
         if not html_verses:
             log.error(u'No verses found in the CrossWalk response.')
@@ -412,27 +413,25 @@ class CWExtract(object):
         reduce_spaces = re.compile(r'[ ]{2,}')
         fix_punctuation = re.compile(r'[ ]+([.,;])')
         for verse in html_verses:
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             verse_number = int(verse.contents[0].contents[0])
             verse_text = u''
             for part in verse.contents:
-                Receiver.send_message(u'openlp_process_events')
+                self.application.process_events()
                 if isinstance(part, NavigableString):
                     verse_text = verse_text + part
                 elif part and part.attrMap and \
-                    (part.attrMap[u'class'] == u'WordsOfChrist' or \
-                    part.attrMap[u'class'] == u'strongs'):
+                        (part.attrMap[u'class'] == u'WordsOfChrist' or part.attrMap[u'class'] == u'strongs'):
                     for subpart in part.contents:
-                        Receiver.send_message(u'openlp_process_events')
+                        self.application.process_events()
                         if isinstance(subpart, NavigableString):
                             verse_text = verse_text + subpart
-                        elif subpart and subpart.attrMap and \
-                            subpart.attrMap[u'class'] == u'strongs':
+                        elif subpart and subpart.attrMap and subpart.attrMap[u'class'] == u'strongs':
                             for subsub in subpart.contents:
-                                Receiver.send_message(u'openlp_process_events')
+                                self.application.process_events()
                                 if isinstance(subsub, NavigableString):
                                     verse_text = verse_text + subsub
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             # Fix up leading and trailing spaces, multiple spaces, and spaces
             # between text and , and .
             verse_text = verse_text.strip(u'\n\r\t ')
@@ -598,7 +597,7 @@ class HTTPBible(BibleDB):
                 return []
             book = db_book.name
             if BibleDB.get_verse_count(self, book_id, reference[1]) == 0:
-                Receiver.send_message(u'cursor_busy')
+                self.application.set_busy_cursor()
                 search_results = self.get_chapter(book, reference[1])
                 if search_results and search_results.has_verselist():
                     ## We have found a book of the bible lets check to see
@@ -606,14 +605,14 @@ class HTTPBible(BibleDB):
                     ## we get a correct book. For example it is possible
                     ## to request ac and get Acts back.
                     book_name = search_results.book
-                    Receiver.send_message(u'openlp_process_events')
+                    self.application.process_events()
                     # Check to see if book/chapter exists.
                     db_book = self.get_book(book_name)
                     self.create_chapter(db_book.id, search_results.chapter,
                         search_results.verselist)
-                    Receiver.send_message(u'openlp_process_events')
-                Receiver.send_message(u'cursor_normal')
-            Receiver.send_message(u'openlp_process_events')
+                    self.application.process_events()
+                self.application.set_normal_cursor()
+            self.application.process_events()
         return BibleDB.get_verses(self, reference_list, show_error)
 
     def get_chapter(self, book, chapter):
@@ -660,6 +659,16 @@ class HTTPBible(BibleDB):
         log.debug(u'HTTPBible.get_verse_count("%s", %s)', book_id, chapter)
         return BiblesResourcesDB.get_verse_count(book_id, chapter)
 
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
+
 def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
     pre_parse_substitute=None, cleaner=None):
     """
@@ -701,7 +710,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
     if not soup:
         send_error_message(u'parse')
         return None
-    Receiver.send_message(u'openlp_process_events')
+    Registry().get(u'application').process_events()
     return soup
 
 def send_error_message(error_type):

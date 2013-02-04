@@ -26,16 +26,22 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The form layout
+"""
 from PyQt4 import QtGui, QtCore
 
 from themelayoutdialog import Ui_ThemeLayoutDialog
+
 
 class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
     """
     The exception dialog
     """
     def __init__(self, parent):
+        """
+        Constructor
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 
@@ -44,11 +50,7 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         Run the Dialog with correct heading.
         """
         pixmap = image.scaledToHeight(400, QtCore.Qt.SmoothTransformation)
-        self.themeDisplayLabel.setPixmap(image)
+        self.themeDisplayLabel.setPixmap(pixmap)
         displayAspectRatio = float(image.width()) / image.height()
-        self.themeDisplayLabel.setFixedSize(400, 400 / displayAspectRatio )
+        self.themeDisplayLabel.setFixedSize(400, 400 / displayAspectRatio)
         return QtGui.QDialog.exec_(self)
-
-    def accept(self):
-        return QtGui.QDialog.accept(self)
-

@@ -226,7 +226,7 @@ class SongExportForm(OpenLPWizard):
         self.directoryLineEdit.clear()
         self.searchLineEdit.clear()
         # Load the list of songs.
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         songs = self.plugin.manager.get_all_objects(Song)
         songs.sort(cmp=natcmp, key=lambda song: song.sort_key)
         for song in songs:
@@ -240,7 +240,7 @@ class SongExportForm(OpenLPWizard):
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setCheckState(QtCore.Qt.Unchecked)
             self.availableListWidget.addItem(item)
-        Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def preWizard(self):
         """
@@ -248,7 +248,7 @@ class SongExportForm(OpenLPWizard):
         """
         OpenLPWizard.preWizard(self)
         self.progressLabel.setText(translate('SongsPlugin.ExportWizardForm', 'Starting export...'))
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
 
     def performWizard(self):
         """

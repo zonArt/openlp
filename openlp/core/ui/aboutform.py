@@ -26,12 +26,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The About dialog.
+"""
 
 from PyQt4 import QtCore, QtGui
 
 from aboutdialog import Ui_AboutDialog
 from openlp.core.lib import translate
 from openlp.core.utils import get_application_version
+
 
 class AboutForm(QtGui.QDialog, Ui_AboutDialog):
     """

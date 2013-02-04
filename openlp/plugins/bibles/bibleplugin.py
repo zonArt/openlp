@@ -102,11 +102,11 @@ class BiblePlugin(Plugin):
         #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
 
-    def appStartup(self):
+    def app_startup(self):
         """
         Perform tasks on application startup
         """
-        Plugin.appStartup(self)
+        Plugin.app_startup(self)
         if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),

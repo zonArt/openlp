@@ -136,8 +136,8 @@ class Settings(QtCore.QSettings):
         u'general/songselect username': u'',
         u'general/update check': True,
         u'general/view mode': u'default',
-        # The oder display settings (display position and dimensions) are defined in the ScreenList class due to crycle
-        # dependency.
+        # The other display settings (display position and dimensions) are defined in the ScreenList class due to a
+        # circular dependency.
         u'general/display on monitor': True,
         u'general/override position': False,
         u'media/players': u'webkit',
@@ -279,10 +279,7 @@ class Settings(QtCore.QSettings):
 
     def __init__(self, *args):
         """
-        Constructor
-
-        ``args``
-            Passed to Qt. But not passed in all cases.
+        Constructor which checks if this should be a native settings object, or an INI file.
         """
         if not args and Settings.__file_path__ and Settings.defaultFormat() == Settings.IniFormat:
             QtCore.QSettings.__init__(self, Settings.__file_path__, Settings.IniFormat)

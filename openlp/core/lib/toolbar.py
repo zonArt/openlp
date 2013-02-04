@@ -37,6 +37,7 @@ from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
 
+
 class OpenLPToolbar(QtGui.QToolBar):
     """
     Lots of toolbars around the place, so it makes sense to have a common way
@@ -85,4 +86,3 @@ class OpenLPToolbar(QtGui.QToolBar):
                 self.actions[handle].setVisible(visible)
             else:
                 log.warn(u'No handle "%s" in actions list.', unicode(handle))
-

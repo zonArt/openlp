@@ -33,6 +33,7 @@ import cPickle
 
 from openlp.core.lib import translate, Settings
 
+
 class FormattingTags(object):
     """
     Static Class to HTML Tags to be access around the code the list is managed

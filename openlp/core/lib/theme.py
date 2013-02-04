@@ -86,6 +86,7 @@ BLANK_THEME_XML = \
  </theme>
 '''
 
+
 class ThemeLevel(object):
     """
     Provides an enumeration for the level a theme applies to
@@ -213,6 +214,7 @@ class ThemeXML(object):
     """
     FIRST_CAMEL_REGEX = re.compile(u'(.)([A-Z][a-z]+)')
     SECOND_CAMEL_REGEX = re.compile(u'([a-z0-9])([A-Z])')
+
     def __init__(self):
         """
         Initialise the theme object.
@@ -608,13 +610,15 @@ class ThemeXML(object):
             self.add_background_gradient(
                 self.background_start_color,
                 self.background_end_color,
-                self.background_direction)
+                self.background_direction
+            )
         elif self.background_type == BackgroundType.to_string(BackgroundType.Image):
             filename = os.path.split(self.background_filename)[1]
             self.add_background_image(filename, self.background_border_color)
         elif self.background_type == BackgroundType.to_string(BackgroundType.Transparent):
             self.add_background_transparent()
-        self.add_font(self.font_main_name,
+        self.add_font(
+            self.font_main_name,
             self.font_main_color,
             self.font_main_size,
             self.font_main_override, u'main',
@@ -630,14 +634,16 @@ class ThemeXML(object):
             self.font_main_outline_size,
             self.font_main_shadow,
             self.font_main_shadow_color,
-            self.font_main_shadow_size)
-        self.add_font(self.font_footer_name,
+            self.font_main_shadow_size
+        )
+        self.add_font(
+            self.font_footer_name,
             self.font_footer_color,
             self.font_footer_size,
             self.font_footer_override, u'footer',
             self.font_footer_bold,
             self.font_footer_italics,
-            0, # line adjustment
+            0,  # line adjustment
             self.font_footer_x,
             self.font_footer_y,
             self.font_footer_width,
@@ -647,7 +653,10 @@ class ThemeXML(object):
             self.font_footer_outline_size,
             self.font_footer_shadow,
             self.font_footer_shadow_color,
-            self.font_footer_shadow_size)
-        self.add_display(self.display_horizontal_align,
+            self.font_footer_shadow_size
+        )
+        self.add_display(
+            self.display_horizontal_align,
             self.display_vertical_align,
-            self.display_slide_transition)
+            self.display_slide_transition
+        )

@@ -26,18 +26,24 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.media.playertab` module holds the configuration tab for the media stuff.
+"""
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, translate, Receiver, Settings, UiStrings
 from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
+
 class MediaQCheckBox(QtGui.QCheckBox):
     """
     MediaQCheckBox adds an extra property, playerName to the QCheckBox class.
     """
     def setPlayerName(self, name):
+        """
+        Set the player name
+        """
         self.playerName = name
 
 
@@ -45,16 +51,20 @@ class PlayerTab(SettingsTab):
     """
     MediaTab is the Media settings tab in the settings dialog.
     """
-    def __init__(self, parent, mainWindow):
-        self.parent = parent
-        self.mainWindow = mainWindow
-        self.mediaPlayers = mainWindow.mediaController.mediaPlayers
+    def __init__(self, parent):
+        """
+        Constructor
+        """
+        self.mediaPlayers = self.media_controller.mediaPlayers
         self.savedUsedPlayers = None
         self.iconPath = u':/media/multimedia-player.png'
         player_translated = translate('OpenLP.PlayerTab', 'Players')
         SettingsTab.__init__(self, parent, u'Players', player_translated)
 
     def setupUi(self):
+        """
+        Set up the UI
+        """
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
         self.bgColorGroupBox = QtGui.QGroupBox(self.leftColumn)
@@ -116,6 +126,9 @@ class PlayerTab(SettingsTab):
             self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
+        """
+        Translate the UI on the fly
+        """
         self.mediaPlayerGroupBox.setTitle(translate('OpenLP.PlayerTab', 'Available Media Players'))
         self.playerOrderGroupBox.setTitle(translate('OpenLP.PlayerTab', 'Player Search Order'))
         self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
@@ -125,12 +138,18 @@ class PlayerTab(SettingsTab):
         self.retranslatePlayers()
 
     def onbackgroundColorButtonClicked(self):
+        """
+        Set the background color
+        """
         new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.bg_color), self)
         if new_color.isValid():
             self.bg_color = new_color.name()
             self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def onPlayerCheckBoxChanged(self, check_state):
+        """
+        Add or remove players depending on their status
+        """
         player = self.sender().playerName
         if check_state == QtCore.Qt.Checked:
             if player not in self.usedPlayers:
@@ -141,6 +160,9 @@ class PlayerTab(SettingsTab):
         self.updatePlayerList()
 
     def updatePlayerList(self):
+        """
+        Update the list of media players
+        """
         self.playerOrderlistWidget.clear()
         for player in self.usedPlayers:
             if player in self.playerCheckBoxes.keys():
@@ -152,6 +174,9 @@ class PlayerTab(SettingsTab):
                 self.playerOrderlistWidget.addItem(self.mediaPlayers[unicode(player)].original_name)
 
     def onUpButtonClicked(self):
+        """
+        Move a media player up in the order
+        """
         row = self.playerOrderlistWidget.currentRow()
         if row <= 0:
             return
@@ -161,6 +186,9 @@ class PlayerTab(SettingsTab):
         self.usedPlayers.insert(row - 1, self.usedPlayers.pop(row))
 
     def onDownButtonClicked(self):
+        """
+        Move a media player down in the order
+        """
         row = self.playerOrderlistWidget.currentRow()
         if row == -1 or row > self.playerOrderlistWidget.count() - 1:
             return
@@ -170,6 +198,9 @@ class PlayerTab(SettingsTab):
         self.usedPlayers.insert(row + 1, self.usedPlayers.pop(row))
 
     def load(self):
+        """
+        Load the settings
+        """
         if self.savedUsedPlayers:
             self.usedPlayers = self.savedUsedPlayers
         self.usedPlayers = get_media_players()[0]
@@ -183,6 +214,9 @@ class PlayerTab(SettingsTab):
         self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def save(self):
+        """
+        Save the settings
+        """
         player_string_changed = False
         settings = Settings()
         settings.beginGroup(self.settingsSection)
@@ -194,7 +228,7 @@ class PlayerTab(SettingsTab):
             set_media_players(self.usedPlayers, override_player)
             player_string_changed = True
         if player_string_changed:
-            self.parent.reset_supported_suffixes()
+            self.service_manager.reset_supported_suffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'config_screen_changed')
 
@@ -211,7 +245,7 @@ class PlayerTab(SettingsTab):
             checkbox.setToolTip(player.get_info())
             checkbox.setPlayerName(player.name)
             self.playerCheckBoxes[player.name] = checkbox
-            QtCore.QObject.connect(checkbox,QtCore.SIGNAL(u'stateChanged(int)'), self.onPlayerCheckBoxChanged)
+            QtCore.QObject.connect(checkbox, QtCore.SIGNAL(u'stateChanged(int)'), self.onPlayerCheckBoxChanged)
             self.mediaPlayerLayout.addWidget(checkbox)
             if player.available and player.name in self.usedPlayers:
                 checkbox.setChecked(True)

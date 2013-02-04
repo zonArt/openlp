@@ -26,6 +26,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.core.lib.spelltextedit` module contains a classes to add spell checking to an edit widget.
+"""
+
 import logging
 import re
 
@@ -47,11 +51,15 @@ from openlp.core.lib.ui import create_action
 
 log = logging.getLogger(__name__)
 
+
 class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
     def __init__(self, parent=None, formattingTagsAllowed=True):
+        """
+        Constructor.
+        """
         global ENCHANT_AVAILABLE
         QtGui.QPlainTextEdit.__init__(self, parent)
         self.formattingTagsAllowed = formattingTagsAllowed
@@ -171,6 +179,9 @@ class Highlighter(QtGui.QSyntaxHighlighter):
     WORDS = u'(?iu)[\w\']+'
 
     def __init__(self, *args):
+        """
+        Constructor
+        """
         QtGui.QSyntaxHighlighter.__init__(self, *args)
         self.spellingDictionary = None
 
@@ -197,5 +208,8 @@ class SpellAction(QtGui.QAction):
     correct = QtCore.pyqtSignal(unicode)
 
     def __init__(self, *args):
+        """
+        Constructor
+        """
         QtGui.QAction.__init__(self, *args)
         self.triggered.connect(lambda x: self.correct.emit(self.text()))

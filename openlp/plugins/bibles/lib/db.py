@@ -38,7 +38,7 @@ from sqlalchemy import Column, ForeignKey, or_, Table, types, func
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, Registry, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, clean_filename
@@ -548,6 +548,16 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug(u'...............................Verses ')
         verses = self.session.query(Verse).all()
         log.debug(verses)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
 
 
 class BiblesResourcesDB(QtCore.QObject, Manager):

@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.media.phononplayer` contains the Phonon player component.
+"""
 import logging
 import mimetypes
 from datetime import datetime
@@ -34,7 +36,7 @@ from datetime import datetime
 from PyQt4 import QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, translate, Settings
+from openlp.core.lib import translate, Settings
 
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -56,23 +58,24 @@ ADDITIONAL_EXT = {
         u'video/x-matroska': [u'.mpv', u'.mkv'],
         u'video/x-wmv': [u'.wmv'],
         u'video/x-mpg': [u'.mpg'],
-        u'video/mpeg' : [u'.mp4', u'.mts', u'.mov'],
+        u'video/mpeg': [u'.mp4', u'.mts', u'.mov'],
         u'video/x-ms-wmv': [u'.wmv']}
 
 VIDEO_CSS = u"""
 #videobackboard {
     z-index:3;
-    background-color: %s;
+    background-color: %(bgcolor)s;
 }
 #video1 {
-    background-color: %s;
+    background-color: %(bgcolor)s;
     z-index:4;
 }
 #video2 {
-    background-color: %s;
+    background-color: %(bgcolor)s;
     z-index:4;
 }
 """
+
 
 class PhononPlayer(MediaPlayer):
     """
@@ -81,6 +84,9 @@ class PhononPlayer(MediaPlayer):
     """
 
     def __init__(self, parent):
+        """
+        Constructor
+        """
         MediaPlayer.__init__(self, parent, u'phonon')
         self.original_name = u'Phonon'
         self.display_name = u'&Phonon'
@@ -94,13 +100,16 @@ class PhononPlayer(MediaPlayer):
             elif mimetype.startswith(u'video/'):
                 self._addToList(self.video_extensions_list, mimetype)
 
-    def _addToList(self, list, mimetype):
+    def _addToList(self, mimetype_list, mimetype):
+        """
+        Add mimetypes to the provided list
+        """
         # Add all extensions which mimetypes provides us for supported types.
         extensions = mimetypes.guess_all_extensions(unicode(mimetype))
         for extension in extensions:
             ext = u'*%s' % extension
-            if ext not in list:
-                list.append(ext)
+            if ext not in mimetype_list:
+                mimetype_list.append(ext)
         log.info(u'MediaPlugin: %s extensions: %s' % (mimetype, u' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
         # This hack clears mimetypes' and operating system's shortcomings
@@ -108,12 +117,15 @@ class PhononPlayer(MediaPlayer):
         if mimetype in self.additional_extensions.keys():
             for extension in self.additional_extensions[mimetype]:
                 ext = u'*%s' % extension
-                if ext not in list:
-                    list.append(ext)
+                if ext not in mimetype_list:
+                    mimetype_list.append(ext)
             log.info(u'MediaPlugin: %s additional extensions: %s' %
                 (mimetype, u' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
+        """
+        Set up the player widgets
+        """
         display.phononWidget = Phonon.VideoWidget(display)
         display.phononWidget.resize(display.size())
         display.mediaObject = Phonon.MediaObject(display)
@@ -126,9 +138,15 @@ class PhononPlayer(MediaPlayer):
         self.hasOwnWidget = True
 
     def check_available(self):
+        """
+        Check if the player is available
+        """
         return True
 
     def load(self, display):
+        """
+        Load a video into the display
+        """
         log.debug(u'load vid in Phonon Controller')
         controller = display.controller
         volume = controller.media_info.volume
@@ -150,15 +168,21 @@ class PhononPlayer(MediaPlayer):
             current_state = display.mediaObject.state()
             if current_state == Phonon.ErrorState:
                 return False
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             if (datetime.now() - start).seconds > 5:
                 return False
         return True
 
     def resize(self, display):
+        """
+        Resize the display
+        """
         display.phononWidget.resize(display.size())
 
     def play(self, display):
+        """
+        Play the current media item
+        """
         controller = display.controller
         start_time = 0
         if display.mediaObject.state() != Phonon.PausedState and \
@@ -177,25 +201,40 @@ class PhononPlayer(MediaPlayer):
         return True
 
     def pause(self, display):
+        """
+        Pause the current media item
+        """
         display.mediaObject.pause()
         if self.media_state_wait(display, Phonon.PausedState):
             self.state = MediaState.Paused
 
     def stop(self, display):
+        """
+        Stop the current media item
+        """
         display.mediaObject.stop()
         self.set_visible(display, False)
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
+        """
+        Set the volume
+        """
         # 1.0 is the highest value
         if display.hasAudio:
             vol = float(vol) / float(100)
             display.audio.setVolume(vol)
 
     def seek(self, display, seekVal):
+        """
+        Go to a particular point in the current media item
+        """
         display.mediaObject.seek(seekVal)
 
     def reset(self, display):
+        """
+        Reset the media player
+        """
         display.mediaObject.stop()
         display.mediaObject.clearQueue()
         self.set_visible(display, False)
@@ -203,10 +242,16 @@ class PhononPlayer(MediaPlayer):
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
+        """
+        Set the visibility of the widget
+        """
         if self.hasOwnWidget:
             display.phononWidget.setVisible(status)
 
     def update_ui(self, display):
+        """
+        Update the UI
+        """
         if display.mediaObject.state() == Phonon.PausedState and self.state != MediaState.Paused:
             self.stop(display)
         controller = display.controller
@@ -224,9 +269,12 @@ class PhononPlayer(MediaPlayer):
         Add css style sheets to htmlbuilder
         """
         background = QtGui.QColor(Settings().value(u'players/background color')).name()
-        return VIDEO_CSS % (background,background,background)
+        return VIDEO_CSS % {u'bgcolor': background}
 
     def get_info(self):
+        """
+        Return some info about this player
+        """
         return(translate('Media.player', 'Phonon is a media player which '
             'interacts with the operating system to provide media capabilities.') +
             u'<br/> <strong>' + translate('Media.player', 'Audio') +

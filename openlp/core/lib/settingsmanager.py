@@ -33,9 +33,6 @@ format.
 """
 import os
 
-from PyQt4 import QtCore
-
-from openlp.core.lib import Settings
 from openlp.core.utils import AppLocation
 
 

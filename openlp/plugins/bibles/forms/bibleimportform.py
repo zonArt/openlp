@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, Settings, UiStrings
+from openlp.core.lib import translate, Settings, UiStrings
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
@@ -578,7 +578,7 @@ class BibleImportForm(OpenLPWizard):
             self.progressLabel.setText(translate('BiblesPlugin.ImportWizardForm', 'Registering Bible...'))
         else:
             self.progressLabel.setText(WizardStrings.StartingImport)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
 
     def performWizard(self):
         """
