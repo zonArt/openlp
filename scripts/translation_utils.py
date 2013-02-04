@@ -159,7 +159,7 @@ def print_verbose(text):
     """
     global verbose_mode, quiet_mode
     if not quiet_mode and verbose_mode:
-        print u'    %s' % text
+        print(u'    %s' % text)
 
 def run(command):
     """
@@ -266,8 +266,7 @@ def prepare_project():
 def update_translations():
     print_quiet(u'Update the translation files')
     if not os.path.exists(os.path.join(os.path.abspath(u'..'), u'openlp.pro')):
-        print u'You have not generated a project file yet, please run this ' + \
-            u'script with the -p option.'
+        print(u'You have not generated a project file yet, please run this script with the -p option.')
         return
     else:
         os.chdir(os.path.abspath(u'..'))
@@ -277,10 +276,8 @@ def update_translations():
 def generate_binaries():
     print_quiet(u'Generate the related *.qm files')
     if not os.path.exists(os.path.join(os.path.abspath(u'..'), u'openlp.pro')):
-        print u'You have not generated a project file yet, please run this ' + \
-            u'script with the -p option. It is also recommended that you ' + \
-            u'this script with the -u option to update the translation ' + \
-            u'files as well.'
+        print(u'You have not generated a project file yet, please run this script with the -p option. It is also ' +
+            u'recommended that you this script with the -u option to update the translation files as well.')
         return
     else:
         os.chdir(os.path.abspath(u'..'))
@@ -380,6 +377,6 @@ def main():
 
 if __name__ == u'__main__':
     if os.path.split(os.path.abspath(u'.'))[1] != u'scripts':
-        print u'You need to run this script from the scripts directory.'
+        print(u'You need to run this script from the scripts directory.')
     else:
         main()
