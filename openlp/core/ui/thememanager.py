@@ -134,8 +134,7 @@ class ThemeManager(QtGui.QWidget):
             QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.changeGlobalFromScreen)
         QtCore.QObject.connect(self.theme_list_widget,
             QtCore.SIGNAL(u'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'), self.check_list_state)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'theme_update_global'), self.change_global_from_tab)
+        Registry().register_function(u'theme_update_global', self.change_global_from_tab)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
         # Variables
         self.theme_list = []
@@ -237,7 +236,6 @@ class ThemeManager(QtGui.QWidget):
                 name = translate('OpenLP.ThemeManager', '%s (default)') % self.global_theme
                 self.theme_list_widget.item(count).setText(name)
                 Settings().setValue(self.settingsSection + u'/global theme', self.global_theme)
-                Receiver.send_message(u'theme_update_global', self.global_theme)
                 Registry().execute(u'theme_update_global', self.global_theme)
                 self._push_themes()
 

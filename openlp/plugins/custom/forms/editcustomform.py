@@ -64,7 +64,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editAllButton.clicked.connect(self.on_edit_all_button_clicked)
         self.slideListView.currentRowChanged.connect(self.on_current_row_changed)
         self.slideListView.doubleClicked.connect(self.on_edit_button_clicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         Registry().register_function(u'theme_update_list', self.loadThemes)
 
     def loadThemes(self, theme_list):

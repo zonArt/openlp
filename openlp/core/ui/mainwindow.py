@@ -528,7 +528,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.modeDefaultItem, QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
         QtCore.QObject.connect(self.modeSetupItem, QtCore.SIGNAL(u'triggered()'), self.onModeSetupItemClicked)
         QtCore.QObject.connect(self.modeLiveItem, QtCore.SIGNAL(u'triggered()'), self.onModeLiveItemClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.defaultThemeChanged)
+        Registry().register_function(u'theme_update_global', self.defaultThemeChanged)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
@@ -699,7 +699,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.activePlugin.toggleStatus(PluginStatus.Inactive)
         self.themeManagerContents.configUpdated()
         self.themeManagerContents.load_themes(True)
-        Receiver.send_message(u'theme_update_global', self.themeManagerContents.global_theme)
+        #Receiver.send_message(u'theme_update_global', self.themeManagerContents.global_theme)
+        Registry().execute(u'theme_update_global', self.themeManagerContents.global_theme)
         # Check if any Bibles downloaded.  If there are, they will be
         # processed.
         Receiver.send_message(u'bibles_load_list', True)

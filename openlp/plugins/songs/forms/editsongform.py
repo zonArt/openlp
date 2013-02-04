@@ -39,8 +39,8 @@ import shutil
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, create_separated_list, \
-    check_directory_exists, Registry, UiStrings, Registry
-from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, critical_error_message_box, \
+    check_directory_exists, Registry, UiStrings
+from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, \
     find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
@@ -97,7 +97,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.audioRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onAudioRemoveButtonClicked)
         QtCore.QObject.connect(self.audioRemoveAllButton, QtCore.SIGNAL(u'clicked()'),
             self.onAudioRemoveAllButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
         Registry().register_function(u'theme_update_list', self.loadThemes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')

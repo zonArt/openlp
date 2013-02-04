@@ -80,7 +80,7 @@ class Renderer(object):
         self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
+        Registry().register_function(u'theme_update_global', self.set_global_theme)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web_frame = self.web.page().mainFrame()

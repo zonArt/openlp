@@ -98,32 +98,36 @@ class Registry(object):
         if key in self.service_list:
             del self.service_list[key]
 
-    def register_function(self, occasion, function):
+    def register_function(self, event, function):
         """
         Register a function and a handler to be called later
         """
-        if self.functions_list.has_key(occasion) == 0:
-            self.functions_list[occasion] = [function]
+        if not self.functions_list.has_key(event):
+            self.functions_list[event] = [function]
         else:
-            self.functions_list[occasion].append(function)
+            self.functions_list[event].append(function)
 
-    def remove_function(self, occasion, function):
+    def remove_function(self, event, function):
         """
         Register a function and a handler to be called later
         """
         if self.running_under_test is False:
-            log.error(u'Invalid Method call for key %s' % occasion)
-            raise KeyError(u'Invalid Method call for key %s' % occasion)
+            log.error(u'Invalid Method call for key %s' % event)
+            raise KeyError(u'Invalid Method call for key %s' % event)
             return
-        if self.functions_list.has_key(occasion):
-            self.functions_list[occasion].remove(function)
+        if event in self.functions_list:
+            self.functions_list[event].remove(function)
 
-    def execute(self, occasion, data):
+    def execute(self, event, *args, **kwargs):
         """
-        Execute all the handlers registered passing the data to the handler
+        Execute all the handlers registered passing the data to the handler and returning results
         """
-        print self.functions_list, self.functions_list.has_key(occasion)
+        results = []
+        if event in self.functions_list:
+            for function in self.functions_list[event]:
+                print event, function,
+                result = function(*args, **kwargs)
+                if result:
+                    results.append(result)
+        return results
 
-        if self.functions_list.has_key(occasion):
-            for function in self.functions_list[occasion]:
-                function(data)

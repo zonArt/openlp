@@ -214,7 +214,7 @@ class ServiceManagerDialog(object):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
             self.regenerate_service_Items)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.theme_change)
+        Registry().register_function(u'theme_update_global', self.theme_change)
         # Last little bits of setting up
         self.service_theme = Settings().value(self.main_window.serviceManagerSettingsSection + u'/service theme')
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
@@ -1243,7 +1243,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Settings().setValue(self.main_window.serviceManagerSettingsSection + u'/service theme', self.service_theme)
         self.regenerate_service_Items(True)
 
-    def theme_change(self):
+    def theme_change(self, args, **Kwargs):
         """
         The theme may have changed in the settings dialog so make
         sure the theme combo box is in the correct state.
