@@ -203,8 +203,7 @@ class BGExtract(object):
             if clean_verse_num:
                 verse_text = raw_verse_num.next
                 part = raw_verse_num.next.next
-                while not (isinstance(part, Tag) and
-                           part.get(u'class') == u'versenum'):
+                while not (isinstance(part, Tag) and part.get(u'class') == u'versenum'):
                     # While we are still in the same verse grab all the text.
                     if isinstance(part, NavigableString):
                         verse_text += part
@@ -320,12 +319,10 @@ class BSExtract(object):
         ``chapter``
             Chapter number
         """
-        log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version,
-            book_name, chapter)
+        log.debug(u'BSExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_version = urllib.quote(version.encode("utf-8"))
         url_book_name = urllib.quote(book_name.encode("utf-8"))
-        chapter_url = u'http://m.bibleserver.com/text/%s/%s%d' % \
-            (url_version, url_book_name, chapter)
+        chapter_url = u'http://m.bibleserver.com/text/%s/%s%d' % (url_version, url_book_name, chapter)
         header = (u'Accept-Language', u'en')
         soup = get_soup_for_bible_ref(chapter_url, header)
         if not soup:
@@ -355,8 +352,7 @@ class BSExtract(object):
         """
         log.debug(u'BSExtract.get_books_from_http("%s")', version)
         urlversion = urllib.quote(version.encode("utf-8"))
-        chapter_url = u'http://m.bibleserver.com/overlay/selectBook?'\
-            'translation=%s' % (urlversion)
+        chapter_url = u'http://m.bibleserver.com/overlay/selectBook?translation=%s' % (urlversion)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -366,9 +362,7 @@ class BSExtract(object):
             send_error_message(u'parse')
             return None
         content = content.findAll(u'li')
-        return [
-            book.contents[0].contents[0] for book in content
-        ]
+        return [book.contents[0].contents[0] for book in content]
 
 
 class CWExtract(object):
@@ -393,13 +387,11 @@ class CWExtract(object):
         ``chapter``
             Chapter number
         """
-        log.debug(u'CWExtract.get_bible_chapter("%s", "%s", "%s")', version,
-            book_name, chapter)
+        log.debug(u'CWExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_book_name = book_name.replace(u' ', u'-')
         url_book_name = url_book_name.lower()
         url_book_name = urllib.quote(url_book_name.encode("utf-8"))
-        chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % \
-            (version, url_book_name, chapter)
+        chapter_url = u'http://www.biblestudytools.com/%s/%s/%s.html' % (version, url_book_name, chapter)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -448,8 +440,7 @@ class CWExtract(object):
             The version of the bible like NIV for New International Version
         """
         log.debug(u'CWExtract.get_books_from_http("%s")', version)
-        chapter_url = u'http://www.biblestudytools.com/%s/'\
-             % (version)
+        chapter_url = u'http://www.biblestudytools.com/%s/' % (version)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -503,9 +494,7 @@ class HTTPBible(BibleDB):
         ``True`` on success, ``False`` on failure.
         """
         self.wizard.progressBar.setMaximum(68)
-        self.wizard.incrementProgressBar(translate(
-            'BiblesPlugin.HTTPBible',
-            'Registering Bible and loading books...'))
+        self.wizard.incrementProgressBar(translate('BiblesPlugin.HTTPBible', 'Registering Bible and loading books...'))
         self.save_meta(u'download_source', self.download_source)
         self.save_meta(u'download_name', self.download_name)
         if self.proxy_server:
@@ -527,19 +516,16 @@ class HTTPBible(BibleDB):
             log.exception(u'Importing books from %s - download name: "%s" '\
                 'failed' % (self.download_source, self.download_name))
             return False
-        self.wizard.progressBar.setMaximum(len(books)+2)
-        self.wizard.incrementProgressBar(translate(
-            'BiblesPlugin.HTTPBible', 'Registering Language...'))
-        bible = BiblesResourcesDB.get_webbible(self.download_name,
-                self.download_source.lower())
+        self.wizard.progressBar.setMaximum(len(books) + 2)
+        self.wizard.incrementProgressBar(translate( 'BiblesPlugin.HTTPBible', 'Registering Language...'))
+        bible = BiblesResourcesDB.get_webbible(self.download_name, self.download_source.lower())
         if bible[u'language_id']:
             language_id = bible[u'language_id']
             self.save_meta(u'language_id', language_id)
         else:
             language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception(u'Importing books from %s   " '\
-                'failed' % self.filename)
+            log.exception(u'Importing books from %s failed' % self.filename)
             return False
         for book in books:
             if self.stop_import_flag:
@@ -547,8 +533,7 @@ class HTTPBible(BibleDB):
             self.wizard.incrementProgressBar(translate(
                 'BiblesPlugin.HTTPBible', 'Importing %s...',
                 'Importing <book name>...') % book)
-            book_ref_id = self.get_book_ref_id_by_name(book, len(books),
-                language_id)
+            book_ref_id = self.get_book_ref_id_by_name(book, len(books), language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s - download name: "%s" '\
                     'failed' % (self.download_source, self.download_name))
@@ -608,8 +593,7 @@ class HTTPBible(BibleDB):
                     self.application.process_events()
                     # Check to see if book/chapter exists.
                     db_book = self.get_book(book_name)
-                    self.create_chapter(db_book.id, search_results.chapter,
-                        search_results.verselist)
+                    self.create_chapter(db_book.id, search_results.chapter, search_results.verselist)
                     self.application.process_events()
                 self.application.set_normal_cursor()
             self.application.process_events()
