@@ -32,8 +32,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.ui import critical_error_message_box
-from openlp.plugins.songs.lib import VerseType, translate
+from openlp.plugins.songs.lib import VerseType
 
 from editversedialog import Ui_EditVerseDialog
 

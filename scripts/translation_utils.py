@@ -53,8 +53,6 @@ This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 """
 import os
 import urllib2
-import re
-from shutil import copy
 from getpass import getpass
 import base64
 import json
@@ -62,7 +60,6 @@ import webbrowser
 
 from optparse import OptionParser
 from PyQt4 import QtCore
-from BeautifulSoup import BeautifulSoup
 
 SERVER_URL = u'http://www.transifex.net/api/2/project/openlp/'
 IGNORED_PATHS = [u'scripts']

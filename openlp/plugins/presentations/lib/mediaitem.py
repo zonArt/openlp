@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, translate, check_item_selected, Receiver, \
+from openlp.core.lib import MediaManagerItem, build_icon, translate, check_item_selected, Receiver, \
     ItemCapabilities, create_thumb, validate_thumb, ServiceItemContext, Settings, UiStrings
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare

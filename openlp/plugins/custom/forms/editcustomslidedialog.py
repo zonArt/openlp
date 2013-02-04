@@ -29,7 +29,7 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate, SpellTextEdit, build_icon, UiStrings
+from openlp.core.lib import translate, SpellTextEdit, UiStrings
 from openlp.core.lib.ui import create_button, create_button_box
 
 class Ui_CustomSlideEditDialog(object):
