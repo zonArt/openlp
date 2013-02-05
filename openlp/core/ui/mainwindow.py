@@ -537,9 +537,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
         self.application.set_busy_cursor()
         # Simple message boxes
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_information_message'),
-            self.onInformationMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_copy_data'), self.setCopyData)
         # warning cyclic dependency
@@ -580,8 +577,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.themeManagerContents.load_themes(True)
-        # Hide/show the theme combobox on the service manager
-        self.serviceManagerContents.theme_change()
         # Reset the cursor
         self.application.set_normal_cursor()
 
@@ -697,9 +692,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.activePlugin.app_startup()
                 else:
                     self.activePlugin.toggleStatus(PluginStatus.Inactive)
-        self.themeManagerContents.configUpdated()
+        self.themeManagerContents.config_updated()
         self.themeManagerContents.load_themes(True)
-        #Receiver.send_message(u'theme_update_global', self.themeManagerContents.global_theme)
         Registry().execute(u'theme_update_global', self.themeManagerContents.global_theme)
         # Check if any Bibles downloaded.  If there are, they will be
         # processed.
@@ -717,26 +711,44 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
 
-    def onErrorMessage(self, data):
+    def error_message(self, title, message):
         """
         Display an error message
+
+        ``title``
+            The title of the warning box.
+
+        ``message``
+            The message to be displayed.
         """
         self.application.splash.close()
-        QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
+        QtGui.QMessageBox.critical(self, title, message)
 
-    def warning_message(self, message):
+    def warning_message(self, title, message):
         """
         Display a warning message
+
+        ``title``
+            The title of the warning box.
+
+        ``message``
+            The message to be displayed.
         """
         self.application.splash.close()
-        QtGui.QMessageBox.warning(self, message[u'title'], message[u'message'])
+        QtGui.QMessageBox.warning(self, title, message)
 
-    def onInformationMessage(self, data):
+    def information_message(self, title, message):
         """
         Display an informational message
+
+        ``title``
+            The title of the warning box.
+
+        ``message``
+            The message to be displayed.
         """
         self.application.splash.close()
-        QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
+        QtGui.QMessageBox.information(self, title, message)
 
     def onHelpWebSiteClicked(self):
         """
@@ -1079,8 +1091,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.liveController.display:
             self.liveController.display.close()
             self.liveController.display = None
-        # Allow the main process to exit
-        self.application = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """

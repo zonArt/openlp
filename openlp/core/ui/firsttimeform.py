@@ -296,8 +296,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(index)
                 if item.data(QtCore.Qt.UserRole) == filename:
                     break
-            item.setIcon(build_icon(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp',
-                screenshot)))
+            item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
+                    get_filesystem_encoding()), u'openlp', screenshot)))
 
     def _getFileSize(self, url):
         """

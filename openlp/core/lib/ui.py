@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, Receiver, UiStrings
+from openlp.core.lib import Registry, build_icon, translate, Receiver, UiStrings
 from openlp.core.utils.actions import ActionList
 
 
@@ -133,8 +133,7 @@ def critical_error_message_box(title=None, message=None, parent=None, question=F
         return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
     data = {u'message': message}
-    data[u'title'] = title if title else UiStrings().Error
-    return Receiver.send_message(u'openlp_error_message', data)
+    return Registry().get(u'main_window').error_message(title if title else UiStrings().Error, message)
 
 
 def create_horizontal_adjusting_combo_box(parent, name):

@@ -125,13 +125,13 @@ class ThemeManager(QtGui.QWidget):
         self.global_action = create_widget_action(self.menu,
             text=translate('OpenLP.ThemeManager', 'Set As &Global Default'),
             icon=u':/general/general_export.png',
-            triggers=self.changeGlobalFromScreen)
+            triggers=self.change_global_from_screen)
         self.exportAction = create_widget_action(self.menu,
             text=translate('OpenLP.ThemeManager', '&Export Theme'),
             icon=u':/general/general_export.png', triggers=self.on_export_theme)
         # Signals
         QtCore.QObject.connect(self.theme_list_widget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.changeGlobalFromScreen)
+            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.change_global_from_screen)
         QtCore.QObject.connect(self.theme_list_widget,
             QtCore.SIGNAL(u'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'), self.check_list_state)
         Registry().register_function(u'theme_update_global', self.change_global_from_tab)
@@ -165,6 +165,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Triggered when Config dialog is updated.
         """
+        log.debug(u'config_updated')
         self.global_theme = Settings().value(self.settingsSection + u'/global theme')
 
     def check_list_state(self, item):
@@ -214,15 +215,14 @@ class ThemeManager(QtGui.QWidget):
             if theme_name == new_name:
                 name = translate('OpenLP.ThemeManager', '%s (default)') % new_name
                 self.theme_list_widget.item(count).setText(name)
-                self.deleteToolbarAction.setVisible(
-                    item not in self.theme_list_widget.selectedItems())
+                self.deleteToolbarAction.setVisible(item not in self.theme_list_widget.selectedItems())
 
-    def changeGlobalFromScreen(self, index=-1):
+    def change_global_from_screen(self, index=-1):
         """
         Change the global theme when a theme is double clicked upon in the
         Theme Manager list
         """
-        log.debug(u'changeGlobalFromScreen %s', index)
+        log.debug(u'change_global_from_screen %s', index)
         selected_row = self.theme_list_widget.currentRow()
         for count in range(0, self.theme_list_widget.count()):
             item = self.theme_list_widget.item(count)
@@ -463,13 +463,13 @@ class ThemeManager(QtGui.QWidget):
         """
         Notify listeners that the theme list has been updated
         """
-        Receiver.send_message(u'theme_update_list', self.get_themes())
         Registry().execute(u'theme_update_list', self.get_themes())
 
     def get_themes(self):
         """
         Return the list of loaded themes
         """
+        log.debug(u'get themes')
         return self.theme_list
 
     def get_theme_data(self, theme_name):
@@ -479,7 +479,7 @@ class ThemeManager(QtGui.QWidget):
         ``theme_name``
             Name of the theme to load from file
         """
-        log.debug(u'getthemedata for theme %s', theme_name)
+        log.debug(u'get theme data for theme %s', theme_name)
         xml_file = os.path.join(self.path, unicode(theme_name), unicode(theme_name) + u'.xml')
         xml = get_text_file_string(xml_file)
         if not xml:
@@ -687,6 +687,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Called to update the themes' preview images.
         """
+        log.debug('update_preview_images')
         self.main_window.displayProgressBar(len(self.theme_list))
         for theme in self.theme_list:
             self.main_window.incrementProgressBar()

@@ -125,9 +125,10 @@ class Registry(object):
         results = []
         if event in self.functions_list:
             for function in self.functions_list[event]:
-                print event, function,
-                result = function(*args, **kwargs)
-                if result:
-                    results.append(result)
+                try:
+                    result = function(*args, **kwargs)
+                    if result:
+                        results.append(result)
+                except TypeError:
+                    log.exception(u'Exception for function %s', function)
         return results
-

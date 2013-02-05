@@ -555,10 +555,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 zip_file.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate(u'OpenLP.ServiceManager', u'Error Saving File'),
-                u'message': translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
-            })
+            self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
+                translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
+            )
             success = False
         finally:
             if zip_file:
@@ -613,10 +612,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             zip_file.writestr(service_file_name.encode(u'utf-8'), service_content)
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate(u'OpenLP.ServiceManager', u'Error Saving File'),
-                u'message': translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
-            })
+            self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
+                translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
+            )
             success = False
         finally:
             if zip_file:
@@ -1237,13 +1235,13 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Set the theme for the current service.
         """
-        log.debug(u'ontheme_combo_box_selected')
+        log.debug(u'on_theme_combo_box_selected')
         self.service_theme = self.theme_combo_box.currentText()
         self.renderer.set_service_theme(self.service_theme)
         Settings().setValue(self.main_window.serviceManagerSettingsSection + u'/service theme', self.service_theme)
         self.regenerate_service_Items(True)
 
-    def theme_change(self, args, **Kwargs):
+    def theme_change(self, global_theme):
         """
         The theme may have changed in the settings dialog so make
         sure the theme combo box is in the correct state.

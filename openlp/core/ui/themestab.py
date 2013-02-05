@@ -153,14 +153,12 @@ class ThemesTab(SettingsTab):
         settings.endGroup()
         self.renderer.set_global_theme(self.global_theme)
         self.renderer.set_theme_level(self.theme_level)
-        #Receiver.send_message(u'theme_update_global', self.global_theme)
         Registry().execute(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
         """
         After setting things up...
         """
-        #Receiver.send_message(u'theme_update_global', self.global_theme)
         Registry().execute(u'theme_update_global', self.global_theme)
 
     def onSongLevelButtonClicked(self):
@@ -199,7 +197,6 @@ class ThemesTab(SettingsTab):
                 [u'Bible Theme', u'Song Theme']
         """
         # Reload as may have been triggered by the ThemeManager.
-        print theme_list
         self.global_theme = Settings().value(self.settingsSection + u'/global theme')
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)

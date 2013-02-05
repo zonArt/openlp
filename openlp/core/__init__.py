@@ -197,6 +197,7 @@ class OpenLP(QtGui.QApplication):
         """
         Wrapper to make ProcessEvents visible and named correctly
         """
+        log.debug(u'processing event flush')
         self.processEvents()
 
     def set_busy_cursor(self):

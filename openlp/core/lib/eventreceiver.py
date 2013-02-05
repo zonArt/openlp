@@ -44,12 +44,6 @@ class EventReceiver(QtCore.QObject):
 
     **Mainwindow related and generic signals**
 
-    ``openlp_error_message``
-        Displays a standalone Error Message.
-
-    ``openlp_information_message``
-        Displays a standalone Information Message.
-
     ``openlp_version_check``
         Version has changed so pop up window.
 
@@ -124,14 +118,6 @@ class EventReceiver(QtCore.QObject):
 
     ``live_display_blank_check``
         Check to see if the blank display message is required.
-
-    **Theme related singlas**
-
-    ``theme_update_list``
-        send out message with new themes.
-
-    ``theme_update_global``
-        Tell the components we have a new global theme.
 
     **Plugin specific signals**
 
