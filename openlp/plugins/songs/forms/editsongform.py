@@ -184,7 +184,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Load the media files into a combobox.
         """
         self.audioAddFromMediaButton.setVisible(False)
-        for plugin in self.parent().plugin_manager.plugins:
+        for plugin in self.plugin_manager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(plugin.mediaItem.getList(MediaType.Audio))
@@ -906,6 +906,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.song.verse_order)
         except:
             log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
 
     def _get_theme_manager(self):
         """
