@@ -74,7 +74,8 @@ class Settings(QtCore.QSettings):
 
         The first entry is the *old key*; it will be removed.
 
-        The second entry is the *new key*; we will add it to the config.
+        The second entry is the *new key*; we will add it to the config. If this is just an empty string, we just remove
+        the old key.
 
         The last entry is a list containing two-pair tuples. If the list is empty, no conversion is made. Otherwise each
         pair describes how to convert the old setting's value::
@@ -86,66 +87,67 @@ class Settings(QtCore.QSettings):
         So, if the type of the old value is bool, then there must be two rules.
     """
     __default_settings__ = {
-        u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
+        u'advanced/add page break': False,
         u'advanced/alternate rows': not sys.platform.startswith(u'win'),
-        u'advanced/default service enabled': True,
-        u'advanced/enable exit confirmation': True,
-        u'advanced/save current plugin': False,
-        u'advanced/single click preview': False,
-        # 7 stands for now, 0 to 6 is Monday to Sunday.
-        u'advanced/default service day': 7,
-        u'advanced/max recent files': 20,
-        u'advanced/is portable': False,
-        u'advanced/hide mouse': True,
         u'advanced/current media plugin': -1,
-        u'advanced/double click live': False,
         u'advanced/data path': u'',
-        u'advanced/default service hour': 11,
         u'advanced/default color': u'#ffffff',
         u'advanced/default image': u':/graphics/openlp-splash-screen.png',
-        u'advanced/expand service item': False,
-        u'advanced/recent file count': 4,
-        u'advanced/default service name': UiStrings().DefaultServiceName,
+        # 7 stands for now, 0 to 6 is Monday to Sunday.
+        u'advanced/default service day': 7,
+        u'advanced/default service enabled': True,
+        u'advanced/default service hour': 11,
         u'advanced/default service minute': 0,
-        u'advanced/slide limits': SlideLimits.End,
-        u'advanced/print slide text': False,
-        u'advanced/add page break': False,
+        u'advanced/default service name': UiStrings().DefaultServiceName,
+        u'advanced/display size': 0,
+        u'advanced/double click live': False,
+        u'advanced/enable exit confirmation': True,
+        u'advanced/expand service item': False,
+        u'advanced/hide mouse': True,
+        u'advanced/is portable': False,
+        u'advanced/max recent files': 20,
         u'advanced/print file meta data': False,
         u'advanced/print notes': False,
-        u'advanced/display size': 0,
+        u'advanced/print slide text': False,
+        u'advanced/recent file count': 4,
+        u'advanced/save current plugin': False,
+        u'advanced/slide limits': SlideLimits.End,
+        u'advanced/single click preview': False,
+        u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
         u'crashreport/last directory': u'',
         u'displayTags/html_tags': u'',
+        u'general/audio repeat list': False,
+        u'general/auto open': False,
+        u'general/auto preview': False,
+        u'general/audio start paused': True,
+        u'general/auto unblank': False,
+        u'general/blank warning': False,
         u'general/ccli number': u'',
         u'general/has run wizard': False,
-        u'general/update check': True,
         u'general/language': u'[en]',
-        u'general/songselect password': u'',
-        u'general/recent files': [],
-        u'general/save prompt': False,
-        u'general/auto preview': False,
-        u'general/view mode': u'default',
-        u'general/auto open': False,
-        u'general/enable slide loop': True,
-        u'general/show splash': True,
-        u'general/screen blank': False,
-        # The other display settings (display position and dimensions) are defined in the ScreenList class due to a
-        # circular dependency.
-        u'general/override position': False,
-        u'general/loop delay': 5,
-        u'general/songselect username': u'',
-        u'general/audio repeat list': False,
-        u'general/auto unblank': False,
-        u'general/display on monitor': True,
-        u'general/audio start paused': True,
         # This defaults to yesterday in order to force the update check to run when you've never run it before.
         u'general/last version test': datetime.datetime.now().date() - datetime.timedelta(days=1),
-        u'general/blank warning': False,
+        u'general/loop delay': 5,
+        u'general/recent files': [],
+        u'general/save prompt': False,
+        u'general/screen blank': False,
+        u'general/show splash': True,
+        u'general/songselect password': u'',
+        u'general/songselect username': u'',
+        u'general/update check': True,
+        u'general/view mode': u'default',
+        # The other display settings (display position and dimensions) are defined in the ScreenList class due to a
+        # circular dependency.
+        u'general/display on monitor': True,
+        u'general/override position': False,
+        u'media/players': u'webkit',
+        u'media/override player': QtCore.Qt.Unchecked,
         u'players/background color': u'#000000',
-        u'servicemanager/service theme': u'',
         u'servicemanager/last file': u'',
+        u'servicemanager/service theme': u'',
+        u'SettingsImport/file_date_created': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
         u'SettingsImport/Make_Changes': u'At_Own_RISK',
         u'SettingsImport/type': u'OpenLP_settings_export',
-        u'SettingsImport/file_date_created': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
         u'SettingsImport/version': u'',
         u'shortcuts/aboutItem': [QtGui.QKeySequence(u'Ctrl+F1')],
         u'shortcuts/audioPauseItem': [],
@@ -213,39 +215,38 @@ class Settings(QtCore.QSettings):
         u'shortcuts/viewLivePanel': [QtGui.QKeySequence(u'F12')],
         u'shortcuts/viewServiceManagerItem': [QtGui.QKeySequence(u'F9')],
         u'shortcuts/webSiteItem': [],
-        u'themes/theme level': ThemeLevel.Song,
         u'themes/global theme': u'',
         u'themes/last directory': u'',
         u'themes/last directory export': u'',
         u'themes/last directory import': u'',
-        u'user interface/main window position': QtCore.QPoint(0, 0),
-        u'user interface/preview panel': True,
+        u'themes/theme level': ThemeLevel.Song,
         u'user interface/live panel': True,
-        u'user interface/main window geometry': QtCore.QByteArray(),
-        u'user interface/preview splitter geometry': QtCore.QByteArray(),
-        u'user interface/lock panel': False,
-        u'user interface/mainwindow splitter geometry': QtCore.QByteArray(),
         u'user interface/live splitter geometry': QtCore.QByteArray(),
+        u'user interface/lock panel': False,
+        u'user interface/main window geometry': QtCore.QByteArray(),
+        u'user interface/main window position': QtCore.QPoint(0, 0),
+        u'user interface/main window splitter geometry': QtCore.QByteArray(),
         u'user interface/main window state': QtCore.QByteArray(),
-        u'media/players': u'webkit',
-        u'media/override player': QtCore.Qt.Unchecked,
-        # Old settings (not used anymore). Have to be here, so that old setting.config backups can be imported.
-        u'advanced/stylesheet fix': u'',
-        u'servicemanager/last directory': u''
+        u'user interface/preview panel': True,
+        u'user interface/preview splitter geometry': QtCore.QByteArray()
     }
     __file_path__ = u''
     __obsolete_settings__ = [
+        # Changed during 1.9.x development.
         (u'bibles/bookname language', u'bibles/book name language', []),
         (u'general/enable slide loop', u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)]),
+        (u'songs/ccli number', u'general/ccli number', []),
+        # Changed during 2.1.x development.
+        (u'advanced/stylesheet fix', u'', []),
+        (u'bibles/last directory 1', u'bibles/last directory import', []),
+        (u'media/background color', u'players/background color', []),
         (u'themes/last directory', u'themes/last directory import', []),
         (u'themes/last directory 1', u'themes/last directory export', []),
         (u'servicemanager/last directory', u'', []),
         (u'songs/last directory 1', u'songs/last directory import', []),
-        (u'bibles/last directory 1', u'bibles/last directory import', []),
         (u'songusage/last directory 1', u'songusage/last directory export', []),
-        (u'shortcuts/makeLive', u'shortcuts/make_live', []),
-        (u'advanced/stylesheet fix', u'', []),
-        (u'media/background color', u'players/background color', [])
+        (u'user interface/mainwindow splitter geometry', u'user interface/main window splitter geometry', []),
+        (u'shortcuts/makeLive', u'shortcuts/make_live', [])
     ]
 
     @staticmethod
@@ -296,6 +297,11 @@ class Settings(QtCore.QSettings):
                 if new_key:
                     # Get the value of the old_key.
                     old_value = super(Settings, self).value(old_key)
+                    # When we want to convert the value, we have to figure out the default value (because we cannot get
+                    # the default value from the central settings dict.
+                    if rules:
+                        default_value = rules[0][1]
+                        old_value = self._convert_value(old_value, default_value)
                     # Iterate over our rules and check what the old_value should be "converted" to.
                     for new, old in rules:
                         # If the value matches with the condition (rule), then use the provided value. This is used to
@@ -311,8 +317,6 @@ class Settings(QtCore.QSettings):
         Returns the value for the given ``key``. The returned ``value`` is of the same type as the default value in the
         *Settings.__default_settings__* dict.
 
-        **Note**, this method only converts a few types and might need to be extended if a certain type is missing!
-
         ``key``
             The key to return the value from.
         """
@@ -322,6 +326,21 @@ class Settings(QtCore.QSettings):
         else:
             default_value = Settings.__default_settings__[key]
         setting = super(Settings, self).value(key, default_value)
+        return self._convert_value(setting, default_value)
+
+    def _convert_value(self, setting, default_value):
+        """
+        This converts the given ``setting`` to the type of the given ``default_value``.
+
+        ``setting``
+            The setting to convert. This could be ``true`` for example.Settings()
+
+        ``default_value``
+            Indication the type the setting should be converted to. For example ``True`` (type is boolean), meaning that
+            we convert the string ``true`` to a python boolean.
+
+        **Note**, this method only converts a few types and might need to be extended if a certain type is missing!
+        """
         # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
         # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
         if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
