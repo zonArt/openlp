@@ -36,8 +36,8 @@ from collections import deque
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, translate, build_icon, build_html, \
-    ServiceItem, ImageSource, SlideLimits, ServiceItemAction, Settings, Registry, UiStrings, ScreenList
+from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, ServiceItem, ImageSource, SlideLimits, \
+    ServiceItemAction, Settings, Registry, UiStrings, ScreenList, build_icon, build_html, translate
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -608,7 +608,7 @@ class SlideController(DisplayController):
             elif width < 300 and not self.hideMenu.isVisible():
                 self.toolbar.setWidgetVisible(self.wideMenu, False)
                 self.toolbar.setWidgetVisible(self.hideMenuList)
-                
+
     def onSongBarHandler(self):
         """
         Some song handler

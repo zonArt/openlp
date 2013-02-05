@@ -34,7 +34,7 @@ import re
 import sqlite3
 
 from PyQt4 import QtCore
-from sqlalchemy import Column, ForeignKey, or_, Table, types, func
+from sqlalchemy import Column, ForeignKey, Table, or_, types, func
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
@@ -360,7 +360,7 @@ class BibleDB(QtCore.QObject, Manager):
 
         ``book``
             The name of the book, according to the selected language.
-        
+
         ``language_selection``
             The language selection the user has chosen in the settings
             section of the Bible.

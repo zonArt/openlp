@@ -29,7 +29,7 @@
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import Settings, SettingsTab, translate, Receiver
+from openlp.core.lib import Settings, SettingsTab, Receiver, translate
 
 
 ZERO_URL = u'0.0.0.0'

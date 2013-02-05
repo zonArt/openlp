@@ -33,7 +33,7 @@ cannot be changed.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, FormattingTags
+from openlp.core.lib import FormattingTags, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 

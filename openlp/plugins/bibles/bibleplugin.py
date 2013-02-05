@@ -32,7 +32,7 @@ import logging
 from PyQt4 import QtGui
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.lib.ui import create_action, UiStrings
+from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem, LayoutStyle, DisplayStyle, \
     LanguageSelection

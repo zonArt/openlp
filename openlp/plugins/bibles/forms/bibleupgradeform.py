@@ -36,7 +36,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, check_directory_exists, Settings, UiStrings
+from openlp.core.lib import Receiver, Settings, UiStrings, translate, check_directory_exists
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding

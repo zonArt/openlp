@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, Receiver, UiStrings
+from openlp.core.lib import Receiver, UiStrings, build_icon, translate
 from openlp.core.utils.actions import ActionList
 
 

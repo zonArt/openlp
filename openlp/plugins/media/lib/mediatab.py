@@ -29,7 +29,7 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
+from openlp.core.lib import Receiver, Settings, SettingsTab, UiStrings, translate
 
 class MediaQCheckBox(QtGui.QCheckBox):
     """

@@ -88,7 +88,7 @@ except AttributeError:
     WEBKIT_VERSION = u'-'
 
 
-from openlp.core.lib import translate, UiStrings, Settings
+from openlp.core.lib import UiStrings, Settings, translate
 from openlp.core.utils import get_application_version
 
 from exceptiondialog import Ui_ExceptionDialog
