@@ -42,7 +42,7 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus, Registry, Settings, ScreenList
+    PluginStatus, Registry, Settings, ScreenList, check_directory_exists
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
@@ -842,8 +842,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Add plugin sections.
         for plugin in self.plugin_manager.plugins:
             setting_sections.extend([plugin.name])
+        # Copy the settings file to the tmp dir, because we do not want to change the original one.
+        temp_directory = os.path.join(unicode(gettempdir()), u'openlp')
+        check_directory_exists(temp_directory)
+        temp_config = os.path.join(temp_directory, os.path.basename(import_file_name))
+        shutil.copyfile(import_file_name, temp_config)
         settings = Settings()
-        import_settings = Settings(import_file_name, Settings.IniFormat)
+        import_settings = Settings(temp_config, Settings.IniFormat)
+        # Remove/rename old settings to prepare the import.
+        import_settings.remove_obsolete_settings()
         # Lets do a basic sanity check. If it contains this string we can
         # assume it was created by OpenLP and so we'll load what we can
         # from it, and just silently ignore anything we don't recognise
@@ -1222,7 +1229,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreState(settings.value(u'main window state'))
         self.liveController.splitter.restoreState(settings.value(u'live splitter geometry'))
         self.previewController.splitter.restoreState(settings.value(u'preview splitter geometry'))
-        self.controlSplitter.restoreState(settings.value(u'mainwindow splitter geometry'))
+        self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
     def saveSettings(self):
@@ -1243,7 +1250,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry', self.liveController.splitter.saveState())
         settings.setValue(u'preview splitter geometry', self.previewController.splitter.saveState())
-        settings.setValue(u'mainwindow splitter geometry', self.controlSplitter.saveState())
+        settings.setValue(u'main window splitter geometry', self.controlSplitter.saveState())
         settings.endGroup()
 
     def updateRecentFilesMenu(self):
