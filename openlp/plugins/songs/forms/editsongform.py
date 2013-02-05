@@ -184,7 +184,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Load the media files into a combobox.
         """
         self.audioAddFromMediaButton.setVisible(False)
-        for plugin in self.parent().pluginManager.plugins:
+        for plugin in self.parent().plugin_manager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(plugin.mediaItem.getList(MediaType.Audio))
@@ -916,3 +916,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+
