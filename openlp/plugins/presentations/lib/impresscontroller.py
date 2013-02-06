@@ -58,6 +58,7 @@ else:
 
 from PyQt4 import QtCore
 
+from openlp.core.lib import ScreenList
 from openlp.core.utils import delete_file, get_uno_command, get_uno_instance
 from presentationcontroller import PresentationController, PresentationDocument
 
@@ -254,7 +255,7 @@ class ImpressDocument(PresentationDocument):
             window = self.document.getCurrentController().getFrame().getContainerWindow()
             window.setVisible(False)
         self.presentation = self.document.getPresentation()
-        self.presentation.Display = self.controller.plugin.renderer.screens.current[u'number'] + 1
+        self.presentation.Display = ScreenList().current[u'number'] + 1
         self.control = None
         self.create_thumbnails()
         return True
