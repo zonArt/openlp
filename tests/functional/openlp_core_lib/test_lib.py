@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
-    image_to_byte, check_item_selected, validate_thumb
+    image_to_byte, check_item_selected, validate_thumb, create_separated_list
 
 class TestLib(TestCase):
 
@@ -308,14 +308,14 @@ class TestLib(TestCase):
             file_path = u'path/to/file'
             thumb_path = u'path/to/thumb'
             mocked_os.path.exists.return_value = False
-            
+
             # WHEN: we run the validate_thumb() function
             result = validate_thumb(file_path, thumb_path)
-            
+
             # THEN: we should have called a few functions, and the result should be False
             mocked_os.path.exists.assert_called_with(thumb_path)
             assert result is False, u'The result should be False'
-            
+
     def validate_thumb_file_exists_and_newer_test(self):
         """
         Test the validate_thumb() function when the thumbnail exists and has a newer timestamp than the file
@@ -350,7 +350,7 @@ class TestLib(TestCase):
             thumb_mocked_stat.st_mtime = datetime.now() - timedelta(seconds=10)
             mocked_os.path.exists.return_value = True
             mocked_os.stat.side_effect = lambda fname: file_mocked_stat if fname == file_path else thumb_mocked_stat
-                
+
             # WHEN: we run the validate_thumb() function
             result = validate_thumb(file_path, thumb_path)
 
@@ -359,3 +359,91 @@ class TestLib(TestCase):
             mocked_os.stat.assert_any_call(file_path)
             mocked_os.stat.assert_any_call(thumb_path)
             assert result is False, u'The result should be False'
+
+    def create_separated_list_qlocate_test(self):
+        """
+        """
+        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
+                patch(u'openlp.core.lib.Qt.qVersion') as qt_version:
+            pyqt_version.return_value = u'4.9'
+            qt_version.return_value = u'4.8'
+            # GIVEN: A list of strings.
+            string_list = [u'Author 1', u'Author 2', u'Author 3']
+
+            # WHEN: We get a string build from the entries it the list and a seperator.
+            string_result = create_separated_list(string_list)
+
+            # THEN:
+            assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
+                'Author 2, and Author 3\'.'
+
+    def create_separated_list_empty_list_test(self):
+        """
+        """
+        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
+                patch(u'openlp.core.lib.Qt.qVersion') as qt_version:
+            pyqt_version.return_value = u'3.0'
+            qt_version.return_value = u'3.0'
+            # GIVEN: A list of strings.
+            string_list = []
+
+            # WHEN: We get a string build from the entries it the list and a seperator.
+            string_result = create_separated_list(string_list)
+
+            # THEN:
+            assert string_result == u'', u'The string sould be empty.'
+
+    def create_separated_list_with_one_item_test(self):
+        """
+        """
+        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
+                patch(u'openlp.core.lib.Qt.qVersion') as qt_version:
+            pyqt_version.return_value = u'3.0'
+            qt_version.return_value = u'3.0'
+            # GIVEN: A list of strings.
+            string_list = [u'Author 1']
+
+            # WHEN: We get a string build from the entries it the list and a seperator.
+            string_result = create_separated_list(string_list)
+
+            # THEN:
+            assert string_result == u'Author 1', u'The string should be u\'Author 1\'.'
+
+    def create_separated_list_with_two_items_test(self):
+        """
+        """
+        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
+                patch(u'openlp.core.lib.Qt.qVersion') as qt_version, \
+                patch(u'openlp.core.lib.translate') as mocked_translate:
+            pyqt_version.return_value = u'3.0'
+            qt_version.return_value = u'3.0'
+            mocked_translate.return_value = u'%s and %s'
+            # GIVEN: A list of strings.
+            string_list = [u'Author 1', u'Author 2']
+
+            # WHEN: We get a string build from the entries it the list and a seperator.
+            string_result = create_separated_list(string_list)
+
+            # THEN:
+            assert string_result == u'Author 1 and Author 2', u'The string should be u\'Author 1 and Author 2\'.'
+
+    def create_separated_list_with_three_items_test(self):
+        """
+        """
+        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
+                patch(u'openlp.core.lib.Qt.qVersion') as qt_version, \
+                patch(u'openlp.core.lib.translate') as mocked_translate:
+            # I need two translate functions returning two different things!
+            mocked_translate.return_value = u''
+            pyqt_version.return_value = u'3.0'
+            qt_version.return_value = u'3.0'
+            # GIVEN: A list of strings.
+            string_list = [u'Author 1', u'Author 2', u'Author 3']
+
+            # WHEN: We get a string build from the entries it the list and a seperator.
+            string_result = create_separated_list(string_list)
+
+            # THEN:
+            assert string_result == u'Author 1, Author 2 and Author 3', u'The string should be u\'Author 1, ' \
+                'Author 2 and Author 3\'.'
+
