@@ -363,15 +363,19 @@ class TestLib(TestCase):
     def create_separated_list_qlocate_test(self):
         """
         """
-        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
-                patch(u'openlp.core.lib.Qt.qVersion') as qt_version:
-            pyqt_version.return_value = u'4.9'
-            qt_version.return_value = u'4.8'
+        with patch(u'openlp.core.lib.Qt') as mocked_QT, \
+                patch(u'openlp.core.lib.QtCore.QLocale.createSeparatedList') as mocked_createSeparatedList:
+            mocked_QT.PYQT_VERSION_STR = u'4.9'
+            mocked_QT.qVersion.return_value = u'4.8'
+            mocked_createSeparatedList.return_value = u'Author 1, Author 2, and Author 3'
+
             # GIVEN: A list of strings.
             string_list = [u'Author 1', u'Author 2', u'Author 3']
 
             # WHEN: We get a string build from the entries it the list and a seperator.
             string_result = create_separated_list(string_list)
+
+            print string_result
 
             # THEN:
             assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
@@ -380,10 +384,10 @@ class TestLib(TestCase):
     def create_separated_list_empty_list_test(self):
         """
         """
-        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
-                patch(u'openlp.core.lib.Qt.qVersion') as qt_version:
-            pyqt_version.return_value = u'3.0'
-            qt_version.return_value = u'3.0'
+        with patch(u'openlp.core.lib.Qt') as mocked_QT:
+            mocked_QT.PYQT_VERSION_STR = u'4.8'
+            mocked_QT.qVersion.return_value = u'4.7'
+
             # GIVEN: A list of strings.
             string_list = []
 
@@ -396,10 +400,10 @@ class TestLib(TestCase):
     def create_separated_list_with_one_item_test(self):
         """
         """
-        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
-                patch(u'openlp.core.lib.Qt.qVersion') as qt_version:
-            pyqt_version.return_value = u'3.0'
-            qt_version.return_value = u'3.0'
+        with patch(u'openlp.core.lib.Qt') as mocked_QT:
+            mocked_QT.PYQT_VERSION_STR = u'4.8'
+            mocked_QT.qVersion.return_value = u'4.7'
+
             # GIVEN: A list of strings.
             string_list = [u'Author 1']
 
@@ -412,12 +416,11 @@ class TestLib(TestCase):
     def create_separated_list_with_two_items_test(self):
         """
         """
-        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
-                patch(u'openlp.core.lib.Qt.qVersion') as qt_version, \
-                patch(u'openlp.core.lib.translate') as mocked_translate:
-            pyqt_version.return_value = u'3.0'
-            qt_version.return_value = u'3.0'
+        with patch(u'openlp.core.lib.Qt') as mocked_QT, patch(u'openlp.core.lib.translate') as mocked_translate:
+            mocked_QT.PYQT_VERSION_STR = u'4.8'
+            mocked_QT.qVersion.return_value = u'4.7'
             mocked_translate.return_value = u'%s and %s'
+
             # GIVEN: A list of strings.
             string_list = [u'Author 1', u'Author 2']
 
@@ -430,13 +433,11 @@ class TestLib(TestCase):
     def create_separated_list_with_three_items_test(self):
         """
         """
-        with patch(u'openlp.core.lib.Qt.PYQT_VERSION_STR') as pyqt_version, \
-                patch(u'openlp.core.lib.Qt.qVersion') as qt_version, \
-                patch(u'openlp.core.lib.translate') as mocked_translate:
-            # I need two translate functions returning two different things!
-            mocked_translate.return_value = u''
-            pyqt_version.return_value = u'3.0'
-            qt_version.return_value = u'3.0'
+        with patch(u'openlp.core.lib.Qt') as mocked_QT, patch(u'openlp.core.lib.translate') as mocked_translate:
+            mocked_translate.side_effect = lambda module, string_to_translate, comment: string_to_translate
+            mocked_QT.PYQT_VERSION_STR = u'4.8'
+            mocked_QT.qVersion.return_value = u'4.7'
+
             # GIVEN: A list of strings.
             string_list = [u'Author 1', u'Author 2', u'Author 3']
 
@@ -444,6 +445,5 @@ class TestLib(TestCase):
             string_result = create_separated_list(string_list)
 
             # THEN:
-            assert string_result == u'Author 1, Author 2 and Author 3', u'The string should be u\'Author 1, ' \
-                'Author 2 and Author 3\'.'
-
+            assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
+                'Author 2, and Author 3\'.'
