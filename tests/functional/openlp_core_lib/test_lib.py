@@ -364,10 +364,10 @@ class TestLib(TestCase):
         """
         Test the create_separated_list function using the Qt provided method.
         """
-        with patch(u'openlp.core.lib.Qt') as mocked_QT, \
+        with patch(u'openlp.core.lib.Qt') as mocked_qt, \
                 patch(u'openlp.core.lib.QtCore.QLocale.createSeparatedList') as mocked_createSeparatedList:
-            mocked_QT.PYQT_VERSION_STR = u'4.9'
-            mocked_QT.qVersion.return_value = u'4.8'
+            mocked_qt.PYQT_VERSION_STR = u'4.9'
+            mocked_qt.qVersion.return_value = u'4.8'
             mocked_createSeparatedList.return_value = u'Author 1, Author 2, and Author 3'
 
             # GIVEN: A list of strings.
@@ -386,9 +386,9 @@ class TestLib(TestCase):
         """
         Test the create_separated_list function with an empty list.
         """
-        with patch(u'openlp.core.lib.Qt') as mocked_QT:
-            mocked_QT.PYQT_VERSION_STR = u'4.8'
-            mocked_QT.qVersion.return_value = u'4.7'
+        with patch(u'openlp.core.lib.Qt') as mocked_qt:
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
 
             # GIVEN: A list of strings.
             string_list = []
@@ -403,9 +403,9 @@ class TestLib(TestCase):
         """
         Test the create_separated_list function with a list consisting of only one entry.
         """
-        with patch(u'openlp.core.lib.Qt') as mocked_QT:
-            mocked_QT.PYQT_VERSION_STR = u'4.8'
-            mocked_QT.qVersion.return_value = u'4.7'
+        with patch(u'openlp.core.lib.Qt') as mocked_qt:
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
 
             # GIVEN: A list of strings.
             string_list = [u'Author 1']
@@ -420,9 +420,9 @@ class TestLib(TestCase):
         """
         Test the create_separated_list function with a list of two entries.
         """
-        with patch(u'openlp.core.lib.Qt') as mocked_QT, patch(u'openlp.core.lib.translate') as mocked_translate:
-            mocked_QT.PYQT_VERSION_STR = u'4.8'
-            mocked_QT.qVersion.return_value = u'4.7'
+        with patch(u'openlp.core.lib.Qt') as mocked_qt, patch(u'openlp.core.lib.translate') as mocked_translate:
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
             mocked_translate.return_value = u'%s and %s'
 
             # GIVEN: A list of strings.
@@ -438,10 +438,10 @@ class TestLib(TestCase):
         """
         Test the create_separated_list function with a list of three items.
         """
-        with patch(u'openlp.core.lib.Qt') as mocked_QT, patch(u'openlp.core.lib.translate') as mocked_translate:
+        with patch(u'openlp.core.lib.Qt') as mocked_qt, patch(u'openlp.core.lib.translate') as mocked_translate:
             mocked_translate.side_effect = lambda module, string_to_translate, comment: string_to_translate
-            mocked_QT.PYQT_VERSION_STR = u'4.8'
-            mocked_QT.qVersion.return_value = u'4.7'
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
 
             # GIVEN: A list of strings.
             string_list = [u'Author 1', u'Author 2', u'Author 3']
