@@ -362,6 +362,7 @@ class TestLib(TestCase):
 
     def create_separated_list_qlocate_test(self):
         """
+        Test the create_separated_list function using the Qt provided method.
         """
         with patch(u'openlp.core.lib.Qt') as mocked_QT, \
                 patch(u'openlp.core.lib.QtCore.QLocale.createSeparatedList') as mocked_createSeparatedList:
@@ -383,6 +384,7 @@ class TestLib(TestCase):
 
     def create_separated_list_empty_list_test(self):
         """
+        Test the create_separated_list function with an empty list.
         """
         with patch(u'openlp.core.lib.Qt') as mocked_QT:
             mocked_QT.PYQT_VERSION_STR = u'4.8'
@@ -399,6 +401,7 @@ class TestLib(TestCase):
 
     def create_separated_list_with_one_item_test(self):
         """
+        Test the create_separated_list function with a list consisting of only one entry.
         """
         with patch(u'openlp.core.lib.Qt') as mocked_QT:
             mocked_QT.PYQT_VERSION_STR = u'4.8'
@@ -415,6 +418,7 @@ class TestLib(TestCase):
 
     def create_separated_list_with_two_items_test(self):
         """
+        Test the create_separated_list function with a list of two entries.
         """
         with patch(u'openlp.core.lib.Qt') as mocked_QT, patch(u'openlp.core.lib.translate') as mocked_translate:
             mocked_QT.PYQT_VERSION_STR = u'4.8'
@@ -432,6 +436,7 @@ class TestLib(TestCase):
 
     def create_separated_list_with_three_items_test(self):
         """
+        Test the create_separated_list function with a list of three items.
         """
         with patch(u'openlp.core.lib.Qt') as mocked_QT, patch(u'openlp.core.lib.translate') as mocked_translate:
             mocked_translate.side_effect = lambda module, string_to_translate, comment: string_to_translate
