@@ -378,7 +378,7 @@ class TestLib(TestCase):
 
             print string_result
 
-            # THEN:
+            # THEN: We should have "Author 1, Author 2, and Author 3"
             assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
                 'Author 2, and Author 3\'.'
 
@@ -396,7 +396,7 @@ class TestLib(TestCase):
             # WHEN: We get a string build from the entries it the list and a seperator.
             string_result = create_separated_list(string_list)
 
-            # THEN:
+            # THEN: We shoud have an emptry string.
             assert string_result == u'', u'The string sould be empty.'
 
     def create_separated_list_with_one_item_test(self):
@@ -413,7 +413,7 @@ class TestLib(TestCase):
             # WHEN: We get a string build from the entries it the list and a seperator.
             string_result = create_separated_list(string_list)
 
-            # THEN:
+            # THEN: We should have "Author 1"
             assert string_result == u'Author 1', u'The string should be u\'Author 1\'.'
 
     def create_separated_list_with_two_items_test(self):
@@ -431,7 +431,7 @@ class TestLib(TestCase):
             # WHEN: We get a string build from the entries it the list and a seperator.
             string_result = create_separated_list(string_list)
 
-            # THEN:
+            # THEN: We should have "Author 1 and Author 2"
             assert string_result == u'Author 1 and Author 2', u'The string should be u\'Author 1 and Author 2\'.'
 
     def create_separated_list_with_three_items_test(self):
@@ -449,6 +449,6 @@ class TestLib(TestCase):
             # WHEN: We get a string build from the entries it the list and a seperator.
             string_result = create_separated_list(string_list)
 
-            # THEN:
+            # THEN: We should have "Author 1, Author 2, and Author 3"
             assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
                 'Author 2, and Author 3\'.'
