@@ -162,7 +162,7 @@ class EasySlidesImport(SongImport):
                 region = self._extractRegion(line)
                 regionlines[region] = 1 + regionlines.get(region, 0)
             elif line[0] == u'[':
-                separatorlines = separatorlines + 1
+                separatorlines += 1
         # if the song has separators
         separators = (separatorlines > 0)
         # the number of different regions in song - 1
@@ -200,7 +200,7 @@ class EasySlidesImport(SongImport):
                     # separators are used, so empty line means slide break
                     # inside verse
                     if self._listHas(verses, [reg, vt, vn, inst]):
-                        inst = inst + 1
+                        inst += 1
                 else:
                     # separators are not used, so empty line starts a new verse
                     vt = u'V'

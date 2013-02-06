@@ -30,7 +30,7 @@
 import logging
 import os
 
-from openlp.core.lib import Receiver, SettingsManager, translate, Settings
+from openlp.core.lib import Receiver, SettingsManager, Settings, translate
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta

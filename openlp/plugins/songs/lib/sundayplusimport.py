@@ -121,7 +121,7 @@ class SundayPlusImport(SongImport):
                         end = data.find(')', i) + 1
                     value = data[i:end]
                 # If we are in the main group.
-                if cell == False:
+                if not cell:
                     if name == 'title':
                         self.title = self.decode(self.unescape(value))
                     elif name == 'Author':

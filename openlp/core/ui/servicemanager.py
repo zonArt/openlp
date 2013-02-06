@@ -42,8 +42,8 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, \
-    translate, str_to_bool, check_directory_exists, Settings, PluginStatus, Registry, UiStrings
+from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, ItemCapabilities, Settings, PluginStatus, Registry, \
+    UiStrings, build_icon, translate, str_to_bool, check_directory_exists
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
