@@ -40,6 +40,12 @@ import os
 import sys
 from distutils.version import LooseVersion
 
+# If we import uno before nose this will greate a warning. Just try to import nose first to supress the warning.
+try:
+    import nose
+except ImportError:
+    pass
+
 is_win = sys.platform.startswith('win')
 
 VERS = {
@@ -85,6 +91,7 @@ OPTIONAL_MODULES = [
     ('MySQLdb', ' (MySQL support)'),
     ('psycopg2', ' (PostgreSQL support)'),
     ('pytest', ' (testing framework)'),
+    ('nose', ' (testing framework)'),
 ]
 
 w = sys.stdout.write
