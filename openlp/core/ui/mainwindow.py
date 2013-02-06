@@ -529,9 +529,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.modeSetupItem, QtCore.SIGNAL(u'triggered()'), self.onModeSetupItemClicked)
         QtCore.QObject.connect(self.modeLiveItem, QtCore.SIGNAL(u'triggered()'), self.onModeLiveItemClicked)
         Registry().register_function(u'theme_update_global', self.defaultThemeChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
+        Registry().register_function(u'openlp_version_check', self.versionNotice)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
+        Registry().register_function(u'config_screen_changed', self.screenChanged)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
@@ -539,9 +539,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Simple message boxes
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_copy_data'), self.setCopyData)
-        # warning cyclic dependency
-        # renderer needs to call ThemeManager and
-        # ThemeManager needs to call Renderer
+        Registry().register_function(u'theme_update_global', self.defaultThemeChanged)
+        Registry().register_function(u'openlp_version_check', self.versionNotice)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         self.renderer = Renderer()
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)

@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, Settings, UiStrings, translate, build_icon
+from openlp.core.lib import Registry, SettingsTab, Receiver, Settings, UiStrings, translate, build_icon
 from openlp.core.utils import get_images_filter, AppLocation, format_time
 from openlp.core.lib import SlideLimits
 
@@ -455,7 +455,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'slide limits', self.slide_limits)
         settings.endGroup()
         if self.display_changed:
-            Receiver.send_message(u'config_screen_changed')
+            Registry().execute(u'config_screen_changed')
             self.display_changed = False
         Receiver.send_message(u'slidecontroller_update_slide_limits')
 

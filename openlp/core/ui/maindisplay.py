@@ -161,7 +161,7 @@ class MainDisplay(Display):
             QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_show'), self.showDisplay)
             QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configChanged)
+            Registry().register_function(u'config_updated', self.configChanged)
 
     def setTransparency(self, enabled):
         """

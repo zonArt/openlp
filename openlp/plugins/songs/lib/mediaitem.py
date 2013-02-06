@@ -35,7 +35,7 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, check_item_selected, \
+from openlp.core.lib import Registry, MediaManagerItem, Receiver, ItemCapabilities, translate, check_item_selected, \
     PluginStatus, create_separated_list, check_directory_exists, ServiceItemContext, Settings, UiStrings
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
@@ -100,7 +100,7 @@ class SongMediaItem(MediaManagerItem):
         self.addSearchToToolBar()
         # Signals and slots
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+        Registry().register_function(u'config_updated', self.configUpdated)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),

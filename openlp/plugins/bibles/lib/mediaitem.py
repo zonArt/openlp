@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, create_separated_list, \
+from openlp.core.lib import Registry, MediaManagerItem, Receiver, ItemCapabilities, translate, create_separated_list, \
     ServiceItemContext, Settings, UiStrings
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
@@ -246,7 +246,7 @@ class BibleMediaItem(MediaManagerItem):
         # Buttons
         QtCore.QObject.connect(self.advancedSearchButton, QtCore.SIGNAL(u'clicked()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.quickSearchButton, QtCore.SIGNAL(u'clicked()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configUpdated)
+        Registry().register_function(u'config_updated', self.configUpdated)
         # Other stuff
         QtCore.QObject.connect(self.quickSearchEdit, QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(self.searchTabBar, QtCore.SIGNAL(u'currentChanged(int)'),

@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate, ScreenList, UiStrings
+from openlp.core.lib import Registry, Receiver, Settings, SettingsTab, translate, ScreenList, UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -199,7 +199,7 @@ class GeneralTab(SettingsTab):
         QtCore.QObject.connect(self.customXValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
         QtCore.QObject.connect(self.monitorComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'), self.onDisplayChanged)
         # Reload the tab, as the screen resolution/count may have changed.
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.load)
+        Registry().register_function(u'config_screen_changed', self.load)
         # Remove for now
         self.usernameLabel.setVisible(False)
         self.usernameEdit.setVisible(False)
@@ -331,7 +331,7 @@ class GeneralTab(SettingsTab):
         else:
             self.screens.reset_current_display()
         if self.display_changed:
-            Receiver.send_message(u'config_screen_changed')
+            Registry().execute(u'config_screen_changed')
         self.display_changed = False
 
     def onOverrideRadioButtonPressed(self, checked):

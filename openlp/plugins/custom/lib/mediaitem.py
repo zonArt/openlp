@@ -32,7 +32,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
+from openlp.core.lib import Registry, MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
     ServiceItemContext, Settings, PluginStatus, UiStrings
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
@@ -75,7 +75,7 @@ class CustomMediaItem(MediaManagerItem):
             self.onSearchTextButtonClicked)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_load_list'), self.loadList)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
+        Registry().register_function(u'config_updated', self.config_updated)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_create_from_service'),
             self.create_from_service_item)
 

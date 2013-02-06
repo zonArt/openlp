@@ -103,8 +103,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         QtCore.QObject.connect(self.noInternetFinishButton, QtCore.SIGNAL('clicked()'),
             self.onNoInternetFinishButtonClicked)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
-            self.updateScreenListCombo)
+        Registry().register_function(u'config_screen_changed', self.updateScreenListCombo)
 
     def exec_(self):
         """

@@ -211,9 +211,8 @@ class ServiceManagerDialog(object):
         QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'),
             self.expanded)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.update_theme_list)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
-            self.regenerate_service_Items)
+        Registry().register_function(u'config_updated', self.config_updated)
+        Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
         Registry().register_function(u'theme_update_global', self.theme_change)
         # Last little bits of setting up
         self.service_theme = Settings().value(self.main_window.serviceManagerSettingsSection + u'/service theme')

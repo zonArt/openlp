@@ -135,7 +135,7 @@ class ThemeManager(QtGui.QWidget):
         QtCore.QObject.connect(self.theme_list_widget,
             QtCore.SIGNAL(u'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'), self.check_list_state)
         Registry().register_function(u'theme_update_global', self.change_global_from_tab)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
+        Registry().register_function(u'config_updated', self.config_updated)
         # Variables
         self.theme_list = []
         self.path = AppLocation.get_section_data_path(self.settingsSection)

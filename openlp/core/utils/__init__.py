@@ -51,7 +51,7 @@ if sys.platform != u'win32' and sys.platform != u'darwin':
         XDG_BASE_AVAILABLE = False
 
 import openlp
-from openlp.core.lib import Receiver, translate, check_directory_exists
+from openlp.core.lib import translate, check_directory_exists
 
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}
@@ -75,7 +75,7 @@ class VersionThread(QtCore.QThread):
         app_version = get_application_version()
         version = check_latest_version(app_version)
         if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):
-            Receiver.send_message(u'openlp_version_check', u'%s' % version)
+            Registry().execute(u'openlp_version_check', u'%s' % version)
 
 
 class AppLocation(object):

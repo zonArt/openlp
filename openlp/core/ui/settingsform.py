@@ -107,7 +107,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
-        Receiver.send_message(u'config_updated')
+        Registry().execute(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def reject(self):

@@ -44,19 +44,10 @@ class EventReceiver(QtCore.QObject):
 
     **Mainwindow related and generic signals**
 
-    ``openlp_version_check``
-        Version has changed so pop up window.
-
     ``openlp_stop_wizard``
         Stops a wizard before completion.
 
     **Setting related signals**
-
-    ``config_updated``
-        Informs components that the config has changed.
-
-    ``config_screen_changed``
-        The display monitor has been changed.
 
     **Slidecontroller signals**
 

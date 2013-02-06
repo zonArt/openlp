@@ -35,7 +35,7 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Registry, translate
 
 log = logging.getLogger(__name__)
 
@@ -100,7 +100,7 @@ class ScreenList(object):
                 if screen == self.override:
                     self.override = copy.deepcopy(newScreen)
                     self.set_override_display()
-                Receiver.send_message(u'config_screen_changed')
+                Registry().execute(u'config_screen_changed')
                 break
 
     def screen_count_changed(self, changed_screen=-1):
@@ -128,7 +128,7 @@ class ScreenList(object):
         # We do not want to send this message at start up.
         if changed_screen != -1:
             # Reload setting tabs to apply possible changes.
-            Receiver.send_message(u'config_screen_changed')
+            Registry().execute(u'config_screen_changed')
 
     def get_screen_list(self):
         """

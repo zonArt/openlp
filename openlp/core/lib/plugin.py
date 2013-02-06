@@ -173,8 +173,7 @@ class Plugin(QtCore.QObject):
         Settings.extend_default_settings(default_settings)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_config_updated' % self.name),
-            self.configUpdated)
+        Registry().register_function(u'%s_config_updated' % self.name, self.configUpdated)
 
     def checkPreConditions(self):
         """
