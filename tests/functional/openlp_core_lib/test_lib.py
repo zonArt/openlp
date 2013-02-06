@@ -376,8 +376,6 @@ class TestLib(TestCase):
             # WHEN: We get a string build from the entries it the list and a seperator.
             string_result = create_separated_list(string_list)
 
-            print string_result
-
             # THEN: We should have "Author 1, Author 2, and Author 3"
             assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
                 'Author 2, and Author 3\'.'
