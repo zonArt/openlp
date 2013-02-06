@@ -49,7 +49,7 @@ class TestRegistry(TestCase):
 
     def registry_function_test(self):
         """
-        Test the registry creation and its usage
+        Test the registry function creation and their usages
         """
         # GIVEN: An existing registry register a function
         Registry.create()

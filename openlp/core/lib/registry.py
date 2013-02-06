@@ -60,10 +60,10 @@ class Registry(object):
         registry = cls()
         registry.service_list = {}
         registry.functions_list = {}
-        registry.running_under_test = False
+        registry.running_under_test = True
         # Allow the tests to remove Registry entries but not the live system
-        if u'nosetest' in sys.argv[0]:
-            registry.running_under_test = True
+        if u'openlp.py' in sys.argv[0]:
+            registry.running_under_test = False
         return registry
 
     def get(self, key):
@@ -127,8 +127,20 @@ class Registry(object):
             for function in self.functions_list[event]:
                 try:
                     result = function(*args, **kwargs)
+                    # allow the result to be viewed in tests only.
+                    if self.running_under_test is True:
+                        self.inspect_result(result,*args, **kwargs)
                     if result:
                         results.append(result)
                 except TypeError:
+                    # Who has called me can help
+                    import inspect
+                    log.debug(inspect.currentframe().f_back.f_locals)
                     log.exception(u'Exception for function %s', function)
         return results
+
+    def inspect_result(self, results,*args, **kwargs):
+        """
+        Dummy method for tests to inspect the results of a call.
+        """
+        pass
