@@ -46,7 +46,7 @@ try:
 except ImportError:
     pass
 
-is_win = sys.platform.startswith('win')
+IS_WIN = sys.platform.startswith('win')
 
 VERS = {
     'Python': '2.6',
@@ -54,7 +54,7 @@ VERS = {
     'Qt4': '4.6',
     'sqlalchemy': '0.5',
     # pyenchant 1.6 required on Windows
-    'enchant': '1.6' if is_win else '1.3'
+    'enchant': '1.6' if IS_WIN else '1.3'
 }
 
 # pywin32
@@ -183,7 +183,7 @@ def main():
     for m in OPTIONAL_MODULES:
         check_module(m[0], text=m[1])
 
-    if is_win:
+    if IS_WIN:
         print('Checking for Windows specific modules...')
         for m in WIN32_MODULES:
             check_module(m)
