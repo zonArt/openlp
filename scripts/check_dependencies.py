@@ -40,7 +40,7 @@ import os
 import sys
 from distutils.version import LooseVersion
 
-# If we import uno before nose this will greate a warning. Just try to import nose first to supress the warning.
+# If we try to import uno before nose this will greate a warning. Just try to import nose first to supress the warning.
 try:
     import nose
 except ImportError:
