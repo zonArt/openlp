@@ -30,6 +30,7 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
+from distutils.version import LooseVersion
 import logging
 import os
 
@@ -366,7 +367,8 @@ def create_separated_list(stringlist):
     ``stringlist``
         List of unicode strings
     """
-    if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
+    if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion(u'4.9') and \
+            LooseVersion(Qt.qVersion()) >= LooseVersion(u'4.8'):
         return QtCore.QLocale().createSeparatedList(stringlist)
     if not stringlist:
         return u''
