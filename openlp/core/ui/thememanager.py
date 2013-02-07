@@ -62,7 +62,7 @@ class ThemeManager(QtGui.QWidget):
         Registry().register(u'theme_manager', self)
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
-        self.fileRenameForm = FileRenameForm(self)
+        self.fileRenameForm = FileRenameForm()
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
