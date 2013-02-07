@@ -100,7 +100,7 @@ class SongMediaItem(MediaManagerItem):
         self.addSearchToToolBar()
         # Signals and slots
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
-        Registry().register_function(u'config_updated', self.configUpdated)
+        Registry().register_function(u'config_updated', self.config_update)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
@@ -115,7 +115,7 @@ class SongMediaItem(MediaManagerItem):
     def onFocus(self):
         self.searchTextEdit.setFocus()
 
-    def configUpdated(self):
+    def config_update(self):
         self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type')
         self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit')
         self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service',)
@@ -146,7 +146,7 @@ class SongMediaItem(MediaManagerItem):
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.searchTextEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
-        self.configUpdated()
+        self.config_update()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.

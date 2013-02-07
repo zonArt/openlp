@@ -246,7 +246,7 @@ class BibleMediaItem(MediaManagerItem):
         # Buttons
         QtCore.QObject.connect(self.advancedSearchButton, QtCore.SIGNAL(u'clicked()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.quickSearchButton, QtCore.SIGNAL(u'clicked()'), self.onQuickSearchButton)
-        Registry().register_function(u'config_updated', self.configUpdated)
+        Registry().register_function(u'config_updated', self.config_update)
         # Other stuff
         QtCore.QObject.connect(self.quickSearchEdit, QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(self.searchTabBar, QtCore.SIGNAL(u'currentChanged(int)'),
@@ -258,8 +258,8 @@ class BibleMediaItem(MediaManagerItem):
         else:
             self.advancedBookComboBox.setFocus()
 
-    def configUpdated(self):
-        log.debug(u'configUpdated')
+    def config_update(self):
+        log.debug(u'config_update')
         if Settings().value(self.settingsSection + u'/second bibles'):
             self.advancedSecondLabel.setVisible(True)
             self.advancedSecondComboBox.setVisible(True)
@@ -313,7 +313,7 @@ class BibleMediaItem(MediaManagerItem):
                 translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
         self.quickSearchEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
-        self.configUpdated()
+        self.config_update()
         log.debug(u'bible manager initialise complete')
 
     def loadBibles(self):

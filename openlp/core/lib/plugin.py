@@ -173,7 +173,7 @@ class Plugin(QtCore.QObject):
         Settings.extend_default_settings(default_settings)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
             self.processAddServiceEvent)
-        Registry().register_function(u'%s_config_updated' % self.name, self.configUpdated)
+        Registry().register_function(u'%s_config_updated' % self.name, self.config_update)
 
     def checkPreConditions(self):
         """
@@ -402,7 +402,7 @@ class Plugin(QtCore.QObject):
         """
         return u''
 
-    def configUpdated(self):
+    def config_update(self):
         """
         The plugin's config has changed
         """

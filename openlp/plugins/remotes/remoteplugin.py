@@ -95,7 +95,7 @@ class RemotesPlugin(Plugin):
             u'title': translate('RemotePlugin', 'Remote', 'container title')
         }
 
-    def configUpdated(self):
+    def config_update(self):
         """
         Called when Config is changed to restart the server on new address or
         port
