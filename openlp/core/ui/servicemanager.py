@@ -658,11 +658,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.
         if self._file_name.endswith(u'oszl') or self.service_has_all_original_files:
-            file_name = QtGui.QFileDialog.getSavefile_name(self.main_window, UiStrings().SaveService, path,
+            file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
                     'OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)'))
         else:
-            file_name = QtGui.QFileDialog.getSavefile_name(self.main_window, UiStrings().SaveService, path,
+            file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz);;'))
         if not file_name:
             return False
