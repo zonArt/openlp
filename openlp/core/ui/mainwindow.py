@@ -41,13 +41,13 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus, Registry, Settings, ScreenList
+from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, Receiver, ImageManager, PluginStatus, Registry, \
+    Settings, ScreenList, build_icon, check_directory_exists, translate
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
-from openlp.core.utils import AppLocation, add_actions, LanguageManager, get_application_version, \
+from openlp.core.utils import AppLocation, LanguageManager, add_actions, get_application_version, \
     get_filesystem_encoding
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
@@ -854,8 +854,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Add plugin sections.
         for plugin in self.plugin_manager.plugins:
             setting_sections.extend([plugin.name])
+        # Copy the settings file to the tmp dir, because we do not want to change the original one.
+        temp_directory = os.path.join(unicode(gettempdir()), u'openlp')
+        check_directory_exists(temp_directory)
+        temp_config = os.path.join(temp_directory, os.path.basename(import_file_name))
+        shutil.copyfile(import_file_name, temp_config)
         settings = Settings()
-        import_settings = Settings(import_file_name, Settings.IniFormat)
+        import_settings = Settings(temp_config, Settings.IniFormat)
+        # Remove/rename old settings to prepare the import.
+        import_settings.remove_obsolete_settings()
         # Lets do a basic sanity check. If it contains this string we can
         # assume it was created by OpenLP and so we'll load what we can
         # from it, and just silently ignore anything we don't recognise
@@ -915,7 +922,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
-            export_file_name = export_file_name + u'.conf'
+            export_file_name += u'.conf'
         temp_file = os.path.join(unicode(gettempdir(),
             get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
         self.saveSettings()
@@ -1232,7 +1239,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreState(settings.value(u'main window state'))
         self.liveController.splitter.restoreState(settings.value(u'live splitter geometry'))
         self.previewController.splitter.restoreState(settings.value(u'preview splitter geometry'))
-        self.controlSplitter.restoreState(settings.value(u'mainwindow splitter geometry'))
+        self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
     def saveSettings(self):
@@ -1253,7 +1260,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry', self.liveController.splitter.saveState())
         settings.setValue(u'preview splitter geometry', self.previewController.splitter.saveState())
-        settings.setValue(u'mainwindow splitter geometry', self.controlSplitter.saveState())
+        settings.setValue(u'main window splitter geometry', self.controlSplitter.saveState())
         settings.endGroup()
 
     def updateRecentFilesMenu(self):

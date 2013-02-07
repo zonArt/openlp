@@ -31,7 +31,6 @@ import logging
 import sqlite
 import sys
 
-from openlp.core.lib import Receiver
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 

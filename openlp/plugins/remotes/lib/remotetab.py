@@ -29,7 +29,7 @@
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import Registry, Settings, SettingsTab, translate
+from openlp.core.lib import Registry, Settings, SettingsTab, Receiver, translate
 
 
 ZERO_URL = u'0.0.0.0'
@@ -133,7 +133,7 @@ class RemoteTab(SettingsTab):
             ipAddress = self.addressEdit.text()
         url = u'http://%s:%s/' % (ipAddress, self.portSpinBox.value())
         self.remoteUrl.setText(u'<a href="%s">%s</a>' % (url, url))
-        url = url + u'stage'
+        url += u'stage'
         self.stageUrl.setText(u'<a href="%s">%s</a>' % (url, url))
 
     def load(self):

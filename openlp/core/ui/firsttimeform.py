@@ -41,8 +41,8 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, PluginStatus, Receiver, build_icon, check_directory_exists, Settings, Registry
-from openlp.core.utils import get_web_page, AppLocation, get_filesystem_encoding
+from openlp.core.lib import PluginStatus, Receiver, Settings, Registry, build_icon, check_directory_exists, translate
+from openlp.core.utils import AppLocation, get_web_page, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
@@ -368,7 +368,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 self.max_progress += size
         if self.max_progress:
             # Add on 2 for plugins status setting plus a "finished" point.
-            self.max_progress = self.max_progress + 2
+            self.max_progress += 2
             self.progressBar.setValue(0)
             self.progressBar.setMinimum(0)
             self.progressBar.setMaximum(self.max_progress)

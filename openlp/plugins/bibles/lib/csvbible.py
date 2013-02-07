@@ -62,7 +62,7 @@ import logging
 import chardet
 import csv
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)

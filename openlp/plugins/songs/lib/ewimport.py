@@ -174,7 +174,10 @@ class EasyWorshipSongImport(SongImport):
                         self.addAuthor(author_name.strip())
                 if words:
                     # Format the lyrics
-                    words, self.encoding = strip_rtf(words, self.encoding)
+                    result = strip_rtf(words, self.encoding)
+                    if result is None:
+                        return
+                    words, self.encoding = result
                     verse_type = VerseType.Tags[VerseType.Verse]
                     for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()

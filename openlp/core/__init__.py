@@ -237,7 +237,7 @@ def set_up_logging(log_path):
     logfile.setFormatter(logging.Formatter(u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
-        print 'Logging to:', filename
+        print('Logging to: %s' % filename)
 
 
 def main(args=None):

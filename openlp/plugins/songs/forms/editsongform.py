@@ -38,8 +38,8 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, create_separated_list, \
-    check_directory_exists, Registry, UiStrings
+from openlp.core.lib import Registry, PluginStatus, Receiver, MediaType, translate, create_separated_list, \
+    check_directory_exists, UiStrings
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, \
     find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -184,7 +184,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Load the media files into a combobox.
         """
         self.audioAddFromMediaButton.setVisible(False)
-        for plugin in self.parent().pluginManager.plugins:
+        for plugin in self.plugin_manager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(plugin.mediaItem.getList(MediaType.Audio))
@@ -907,6 +907,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         except:
             log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
 
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
+
     def _get_theme_manager(self):
         """
         Adds the theme manager to the class dynamically
@@ -916,3 +926,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+

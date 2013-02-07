@@ -37,7 +37,7 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Registry, SettingsTab, Receiver, Settings, UiStrings, translate, build_icon
-from openlp.core.utils import get_images_filter, AppLocation, format_time
+from openlp.core.utils import AppLocation, format_time, get_images_filter
 from openlp.core.lib import SlideLimits
 
 log = logging.getLogger(__name__)
@@ -449,7 +449,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue(u'hide mouse', self.hide_mouse_check_box.isChecked())
         settings.setValue(u'x11 bypass wm', self.x11_bypass_check_box.isChecked())
-        settings.setValue(u'alternate rows', self.alternate_rows_check_box.isChecked())        
+        settings.setValue(u'alternate rows', self.alternate_rows_check_box.isChecked())
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.default_file_edit.text())
         settings.setValue(u'slide limits', self.slide_limits)
@@ -666,7 +666,7 @@ class AdvancedTab(SettingsTab):
             The state of the check box (boolean).
         """
         self.display_changed = True
-        
+
     def on_alternate_rows_check_box_toggled(self, checked):
         """
         Notify user about required restart.
@@ -681,17 +681,17 @@ class AdvancedTab(SettingsTab):
     def on_end_slide_button_clicked(self):
         """
         Stop at the end either top ot bottom
-        """        
+        """
         self.slide_limits = SlideLimits.End
 
     def on_wrap_slide_button_clicked(self):
         """
-        Wrap round the service item 
-        """        
+        Wrap round the service item
+        """
         self.slide_limits = SlideLimits.Wrap
 
     def on_next_item_button_clicked(self):
         """
         Advance to the next service item
-        """        
+        """
         self.slide_limits = SlideLimits.Next
