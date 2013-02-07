@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import Receiver, translate, UiStrings
+from openlp.core.lib import Receiver, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song

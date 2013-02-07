@@ -32,8 +32,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, translate, check_item_selected, Receiver, \
-    ItemCapabilities, create_thumb, validate_thumb, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
+    build_icon, check_item_selected, create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare
 from openlp.plugins.presentations.lib import MessageListener
@@ -269,7 +269,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if img:
                     while img:
                         service_item.add_from_command(path, name, img)
-                        i = i + 1
+                        i += 1
                         img = doc.get_thumbnail_path(i, True)
                     doc.close_presentation()
                     return True

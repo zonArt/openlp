@@ -31,7 +31,7 @@ The UI widgets of the plugin view dialog
 #"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, UiStrings
+from openlp.core.lib import UiStrings, translate
 from openlp.core.lib.ui import create_button_box
 
 

@@ -41,13 +41,13 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus, Registry, Settings, ScreenList, check_directory_exists
+from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, Receiver, ImageManager, PluginStatus, Registry, \
+    Settings, ScreenList, build_icon, check_directory_exists, translate
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
-from openlp.core.utils import AppLocation, add_actions, LanguageManager, get_application_version, \
+from openlp.core.utils import AppLocation, LanguageManager, add_actions, get_application_version, \
     get_filesystem_encoding
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
@@ -910,7 +910,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
-            export_file_name = export_file_name + u'.conf'
+            export_file_name += u'.conf'
         temp_file = os.path.join(unicode(gettempdir(),
             get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
         self.saveSettings()

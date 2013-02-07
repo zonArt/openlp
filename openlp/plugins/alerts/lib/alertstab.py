@@ -29,8 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver, Settings, UiStrings
-from openlp.core.ui import AlertLocation
+from openlp.core.lib import SettingsTab, Receiver, Settings, UiStrings, translate
 from openlp.core.lib.ui import create_valign_selection_widgets
 
 class AlertsTab(SettingsTab):

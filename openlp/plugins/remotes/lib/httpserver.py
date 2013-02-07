@@ -138,7 +138,9 @@ class HttpResponse(object):
         'Content-Type': 'text/html; charset="utf-8"\r\n'
     }
 
-    def __init__(self, content='', headers={}, code=None):
+    def __init__(self, content='', headers=None, code=None):
+        if headers is None:
+            headers = {}
         self.content = content
         for key, value in headers.iteritems():
             self.headers[key] = value
