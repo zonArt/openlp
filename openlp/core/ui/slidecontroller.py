@@ -107,7 +107,7 @@ class SlideController(DisplayController):
         self.selectedRow = 0
         self.serviceItem = None
         self.slide_limits = None
-        self.updateSlideLimits()
+        self.update_slide_limits()
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
         # Layout for holding panel
@@ -169,13 +169,13 @@ class SlideController(DisplayController):
             text=translate('OpenLP.SlideController', 'Previous Slide'), icon=u':/slides/slide_previous.png',
             tooltip=translate('OpenLP.SlideController', 'Move to previous.'),
             shortcuts=[QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp], context=QtCore.Qt.WidgetWithChildrenShortcut,
-            category=self.category, triggers=self.onSlideSelectedPrevious)
+            category=self.category, triggers=self.on_slide_selected_previous)
         self.toolbar.addAction(self.previousItem)
         self.nextItem = create_action(self, u'nextItem_' + self.typePrefix,
             text=translate('OpenLP.SlideController', 'Next Slide'), icon=u':/slides/slide_next.png',
             tooltip=translate('OpenLP.SlideController', 'Move to next.'),
             shortcuts=[QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown], context=QtCore.Qt.WidgetWithChildrenShortcut,
-            category=self.category, triggers=self.onSlideSelectedNextAction)
+            category=self.category, triggers=self.on_slide_selected_next_action)
         self.toolbar.addAction(self.nextItem)
         self.toolbar.addSeparator()
         self.controllerType = DisplayControllerType.Preview
@@ -362,8 +362,8 @@ class SlideController(DisplayController):
         # Signals
         QtCore.QObject.connect(self.previewListWidget, QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if self.isLive:
-            Registry().register_function(u'slidecontroller_live_spin_delay', self.receiveSpinDelay)
-            Registry().register_function(u'slidecontroller_toggle_display', self.toggleDisplay)
+            Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
+            Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)
             self.toolbar.setWidgetVisible(self.loopList, False)
             self.toolbar.setWidgetVisible(self.wideMenu, False)
         else:
@@ -375,14 +375,14 @@ class SlideController(DisplayController):
             self.__addActionsToWidget(self.previewListWidget)
         else:
             self.previewListWidget.addActions([self.nextItem, self.previousItem])
-        Registry().register_function(u'slidecontroller_%s_stop_loop' % self.typePrefix, self.onStopLoop)
-        Registry().register_function(u'slidecontroller_%s_next' % self.typePrefix, self.onSlideSelectedNext)
-        Registry().register_function(u'slidecontroller_%s_previous' % self.typePrefix, self.onSlideSelectedPrevious)
-        Registry().register_function(u'slidecontroller_%s_change' % self.typePrefix, self.onSlideChange)
-        Registry().register_function(u'slidecontroller_%s_set' % self.typePrefix, self.onSlideSelectedIndex)
-        Registry().register_function(u'slidecontroller_%s_blank' % self.typePrefix, self.onSlideBlank)
-        Registry().register_function(u'slidecontroller_%s_unblank' % self.typePrefix, self.onSlideUnblank)
-        Registry().register_function(u'slidecontroller_update_slide_limits', self.updateSlideLimits)
+        Registry().register_function(u'slidecontroller_%s_stop_loop' % self.typePrefix, self.on_stop_loop)
+        Registry().register_function(u'slidecontroller_%s_next' % self.typePrefix, self.on_slide_selected_next)
+        Registry().register_function(u'slidecontroller_%s_previous' % self.typePrefix, self.on_slide_selected_previous)
+        Registry().register_function(u'slidecontroller_%s_change' % self.typePrefix, self.on_slide_change)
+        Registry().register_function(u'slidecontroller_%s_set' % self.typePrefix, self.on_slide_selected_index)
+        Registry().register_function(u'slidecontroller_%s_blank' % self.typePrefix, self.on_slide_blank)
+        Registry().register_function(u'slidecontroller_%s_unblank' % self.typePrefix, self.on_slide_unblank)
+        Registry().register_function(u'slidecontroller_update_slide_limits', self.update_slide_limits)
 
     def _slideShortcutActivated(self):
         """
@@ -469,7 +469,7 @@ class SlideController(DisplayController):
         self.display.setVisible(False)
         self.media_controller.media_stop(self)
 
-    def toggleDisplay(self, action):
+    def toggle_display(self, action):
         """
         Toggle the display settings triggered from remote messages.
         """
@@ -608,13 +608,13 @@ class SlideController(DisplayController):
         self.__updatePreviewSelection(slide_no)
         self.slideSelected()
 
-    def receiveSpinDelay(self, value):
+    def receive_spin_delay(self, value):
         """
         Adjusts the value of the ``delaySpinBox`` to the given one.
         """
         self.delaySpinBox.setValue(int(value))
 
-    def updateSlideLimits(self):
+    def update_slide_limits(self):
         """
         Updates the Slide Limits variable from the settings.
         """
@@ -740,7 +740,7 @@ class SlideController(DisplayController):
         Display the slide number passed
         """
         log.debug(u'processManagerItem live = %s' % self.isLive)
-        self.onStopLoop()
+        self.on_stop_loop()
         old_item = self.serviceItem
         # take a copy not a link to the servicemanager copy.
         self.serviceItem = copy.copy(serviceItem)
@@ -858,7 +858,7 @@ class SlideController(DisplayController):
             self.__checkUpdateSelectedSlide(slideno)
 
     # Screen event methods
-    def onSlideSelectedIndex(self, message):
+    def on_slide_selected_index(self, message):
         """
         Go to the requested slide
         """
@@ -891,13 +891,13 @@ class SlideController(DisplayController):
         else:
             self.liveEscape()
 
-    def onSlideBlank(self):
+    def on_slide_blank(self):
         """
         Handle the slidecontroller blank event
         """
         self.onBlankDisplay(True)
 
-    def onSlideUnblank(self):
+    def on_slide_unblank(self):
         """
         Handle the slidecontroller unblank event
         """
@@ -1036,7 +1036,7 @@ class SlideController(DisplayController):
         Registry().execute(u'slidecontroller_%s_changed' % self.typePrefix, row)
         self.display.setFocus()
 
-    def onSlideChange(self, row):
+    def on_slide_change(self, row):
         """
         The slide has been changed. Update the slidecontroller accordingly
         """
@@ -1068,14 +1068,14 @@ class SlideController(DisplayController):
         winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
         self.slidePreview.setPixmap(winimg)
 
-    def onSlideSelectedNextAction(self, checked):
+    def on_slide_selected_next_action(self, checked):
         """
         Wrapper function from create_action so we can throw away the
         incorrect parameter
         """
-        self.onSlideSelectedNext()
+        self.on_slide_selected_next()
 
-    def onSlideSelectedNext(self, wrap=None):
+    def on_slide_selected_next(self, wrap=None):
         """
         Go to the next slide.
         """
@@ -1102,7 +1102,7 @@ class SlideController(DisplayController):
             self.__checkUpdateSelectedSlide(row)
             self.slideSelected()
 
-    def onSlideSelectedPrevious(self):
+    def on_slide_selected_previous(self):
         """
         Go to the previous slide.
         """
@@ -1141,7 +1141,7 @@ class SlideController(DisplayController):
         if hide_mode is None and (self.playSlidesLoop.isChecked() or self.playSlidesOnce.isChecked()):
             self.onStartLoop()
         else:
-            self.onStopLoop()
+            self.on_stop_loop()
 
     def onStartLoop(self):
         """
@@ -1150,7 +1150,7 @@ class SlideController(DisplayController):
         if self.previewListWidget.rowCount() > 1:
             self.timer_id = self.startTimer(int(self.delaySpinBox.value()) * 1000)
 
-    def onStopLoop(self):
+    def on_stop_loop(self):
         """
         Stop the timer loop running
         """
@@ -1222,7 +1222,7 @@ class SlideController(DisplayController):
         If the timer event is for this window select next slide
         """
         if event.timerId() == self.timer_id:
-            self.onSlideSelectedNext(self.playSlidesLoop.isChecked())
+            self.on_slide_selected_next(self.playSlidesLoop.isChecked())
 
     def onEditSong(self):
         """

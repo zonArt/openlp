@@ -95,7 +95,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.webAccess:
             files = self.webAccess.read()
             self.config.readfp(io.BytesIO(files))
-        self.updateScreenListCombo()
+        self.update_screen_list_combo()
         self.was_download_cancelled = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
@@ -103,7 +103,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         QtCore.QObject.connect(self.noInternetFinishButton, QtCore.SIGNAL('clicked()'),
             self.onNoInternetFinishButtonClicked)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        Registry().register_function(u'config_screen_changed', self.updateScreenListCombo)
+        Registry().register_function(u'config_screen_changed', self.update_screen_list_combo)
 
     def exec_(self):
         """
@@ -227,7 +227,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self._postWizard()
             self.application.set_normal_cursor()
 
-    def updateScreenListCombo(self):
+    def update_screen_list_combo(self):
         """
         The user changed screen resolution or enabled/disabled more screens, so
         we need to update the combo box.

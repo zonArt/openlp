@@ -51,7 +51,7 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.quickPreviewAllowed = True
         self.hasSearch = True
-        Registry().register_function(u'live_theme_changed', self.liveThemeChanged)
+        Registry().register_function(u'live_theme_changed', self.live_theme_changed)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -194,7 +194,7 @@ class ImageMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
         self.live_controller.display.resetImage()
 
-    def liveThemeChanged(self):
+    def live_theme_changed(self):
         """
         Triggered by the change of theme in the slide controller
         """

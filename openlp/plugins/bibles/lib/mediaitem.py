@@ -70,7 +70,7 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = {}
         self.second_search_results = {}
         self.checkSearchResult()
-        Registry().register_function(u'bibles_load_list', self.reloadBibles)
+        Registry().register_function(u'bibles_load_list', self.reload_bibles)
         Registry().register_function(u'config_updated', self.config_update)
 
     def __checkSecondBible(self, bible, second_bible):
@@ -343,7 +343,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = Settings().value(self.settingsSection + u'/quick bible')
         find_and_set_in_combo_box(self.quickVersionComboBox, bible)
 
-    def reloadBibles(self, process=False):
+    def reload_bibles(self, process=False):
         log.debug(u'Reloading Bibles')
         self.plugin.manager.reload_bibles()
         self.loadBibles()
@@ -471,7 +471,7 @@ class BibleMediaItem(MediaManagerItem):
             self.import_wizard = BibleImportForm(self, self.plugin.manager, self.plugin)
         # If the import was not cancelled then reload.
         if self.import_wizard.exec_():
-            self.reloadBibles()
+            self.reload_bibles()
 
     def onEditClick(self):
         if self.quickTab.isVisible():
@@ -482,7 +482,7 @@ class BibleMediaItem(MediaManagerItem):
             self.editBibleForm = EditBibleForm(self, self.main_window, self.plugin.manager)
             self.editBibleForm.loadBible(bible)
             if self.editBibleForm.exec_():
-                self.reloadBibles()
+                self.reload_bibles()
 
     def onDeleteClick(self):
         if self.quickTab.isVisible():
@@ -497,7 +497,7 @@ class BibleMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             self.plugin.manager.delete_bible(bible)
-            self.reloadBibles()
+            self.reload_bibles()
 
     def onSearchTabBarCurrentChanged(self, index):
         if index == 0:

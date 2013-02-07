@@ -64,9 +64,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editAllButton.clicked.connect(self.on_edit_all_button_clicked)
         self.slideListView.currentRowChanged.connect(self.on_current_row_changed)
         self.slideListView.doubleClicked.connect(self.on_edit_button_clicked)
-        Registry().register_function(u'theme_update_list', self.loadThemes)
+        Registry().register_function(u'theme_update_list', self.load_themes)
 
-    def loadThemes(self, theme_list):
+    def load_themes(self, theme_list):
         """
         Load a list of themes into the themes combo box.
 

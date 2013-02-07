@@ -100,7 +100,7 @@ class SongMediaItem(MediaManagerItem):
             triggers=self.onSongMaintenanceClick)
         self.addSearchToToolBar()
         # Signals and slots
-        Registry().register_function(u'songs_load_list', self.onSongListLoad)
+        Registry().register_function(u'songs_load_list', self.on_song_list_load)
         Registry().register_function(u'config_updated', self.config_update)
         Registry().register_function(u'songs_preview', self.onPreviewClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
@@ -199,12 +199,12 @@ class SongMediaItem(MediaManagerItem):
                 Song.search_lyrics.like(u'%' + clean_string(search_keywords) + u'%'),
                 Song.comments.like(u'%' + search_keywords.lower() + u'%')))
 
-    def onSongListLoad(self):
+    def on_song_list_load(self):
         """
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
-        log.debug(u'onSongListLoad - start')
+        log.debug(u'on_song_list_load - start')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
@@ -213,7 +213,7 @@ class SongMediaItem(MediaManagerItem):
             item = self.buildServiceItem(self.editItem)
             self.service_manager.replace_service_item(item)
         self.onSearchTextButtonClicked()
-        log.debug(u'onSongListLoad - finished')
+        log.debug(u'on_song_list_load - finished')
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
@@ -325,7 +325,7 @@ class SongMediaItem(MediaManagerItem):
             self.editSongForm.loadSong(song_id, preview)
             if self.editSongForm.exec_() == QtGui.QDialog.Accepted:
                 self.autoSelectId = -1
-                self.onSongListLoad()
+                self.on_song_list_load()
                 self.remoteSong = song_id
                 self.remoteTriggered = True
                 item = self.buildServiceItem(remote=True)
@@ -346,7 +346,7 @@ class SongMediaItem(MediaManagerItem):
             self.editSongForm.loadSong(item_id, False)
             self.editSongForm.exec_()
             self.autoSelectId = -1
-            self.onSongListLoad()
+            self.on_song_list_load()
         self.editItem = None
 
     def onDeleteClick(self):
@@ -398,7 +398,7 @@ class SongMediaItem(MediaManagerItem):
             new_song.title = u'%s <%s>' % (new_song.title,
                 translate('SongsPlugin.MediaItem', 'copy', 'For song cloning'))
             self.plugin.manager.save_object(new_song)
-        self.onSongListLoad()
+        self.on_song_list_load()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
                 remote=False, context=ServiceItemContext.Service):

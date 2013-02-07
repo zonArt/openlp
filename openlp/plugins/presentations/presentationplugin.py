@@ -90,7 +90,7 @@ class PresentationPlugin(Plugin):
                 except Exception:
                     log.warn(u'Failed to start controller process')
                     self.controllers[controller].available = False
-        self.mediaItem.buildFileMaskString()
+        self.mediaItem.build_file_mask_string()
 
     def finalise(self):
         """

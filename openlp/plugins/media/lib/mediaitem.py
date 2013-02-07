@@ -71,9 +71,9 @@ class MediaMediaItem(MediaManagerItem):
         self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
         self.displayController.previewDisplay.setup()
         self.media_controller.setup_display(self.displayController.previewDisplay, False)
-        Registry().register_function(u'video_background_replaced', self.videobackgroundReplaced)
+        Registry().register_function(u'video_background_replaced', self.video_background_replaced)
         Registry().register_function(u'mediaitem_media_rebuild', self.rebuild_players)
-        Registry().register_function(u'config_screen_changed', self.displaySetup)
+        Registry().register_function(u'config_screen_changed', self.display_setup)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -132,7 +132,7 @@ class MediaMediaItem(MediaManagerItem):
         self.media_controller.media_reset(self.live_controller)
         self.resetAction.setVisible(False)
 
-    def videobackgroundReplaced(self):
+    def video_background_replaced(self):
         """
         Triggered by main display on change of serviceitem.
         """
@@ -213,7 +213,7 @@ class MediaMediaItem(MediaManagerItem):
             u' '.join(self.media_controller.video_extensions_list),
             u' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
-    def displaySetup(self):
+    def display_setup(self):
         self.media_controller.setup_display(self.displayController.previewDisplay, False)
 
     def populateDisplayTypes(self):

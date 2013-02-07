@@ -124,7 +124,7 @@ class FoilPresenterImport(SongImport):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self.importWizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))

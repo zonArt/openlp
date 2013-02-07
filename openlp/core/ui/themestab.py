@@ -104,7 +104,7 @@ class ThemesTab(SettingsTab):
         QtCore.QObject.connect(self.GlobalLevelRadioButton, QtCore.SIGNAL(u'clicked()'),
             self.onGlobalLevelButtonClicked)
         QtCore.QObject.connect(self.DefaultComboBox, QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
-        Registry().register_function(u'theme_update_list', self.updateThemeList)
+        Registry().register_function(u'theme_update_list', self.update_theme_list)
 
     def retranslateUi(self):
         """
@@ -187,7 +187,7 @@ class ThemesTab(SettingsTab):
         self.renderer.set_global_theme(self.global_theme)
         self.__previewGlobalTheme()
 
-    def updateThemeList(self, theme_list):
+    def update_theme_list(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed.
 

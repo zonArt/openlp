@@ -58,7 +58,7 @@ class EasySlidesImport(SongImport):
         song_xml = objectify.fromstring(xml)
         self.importWizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self._parseSong(song)
 

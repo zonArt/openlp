@@ -66,7 +66,7 @@ class SundayPlusImport(SongImport):
     def doImport(self):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for filename in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             song_file = open(filename)
             self.doImportFile(song_file)

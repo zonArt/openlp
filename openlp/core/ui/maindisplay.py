@@ -158,10 +158,10 @@ class MainDisplay(Display):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(False)
         if self.isLive:
-            Registry().register_function(u'live_display_hide', self.hideDisplay)
-            Registry().register_function(u'live_display_show', self.showDisplay)
-            Registry().register_function(u'update_display_css', self.cssChanged)
-            Registry().register_function(u'config_updated', self.configChanged)
+            Registry().register_function(u'live_display_hide', self.hide_display)
+            Registry().register_function(u'live_display_show', self.show_display)
+            Registry().register_function(u'update_display_css', self.css_changed)
+            Registry().register_function(u'config_updated', self.config_changed)
 
     def setTransparency(self, enabled):
         """
@@ -174,13 +174,13 @@ class MainDisplay(Display):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
         self.repaint()
 
-    def cssChanged(self):
+    def css_changed(self):
         """
         We may need to rebuild the CSS on the live display.
         """
         self.rebuildCSS = True
 
-    def configChanged(self):
+    def config_changed(self):
         """
         Call the plugins to rebuild the Live display CSS as the screen has
         not been rebuild on exit of config.
@@ -362,7 +362,7 @@ class MainDisplay(Display):
         # if was hidden keep it hidden
         if self.isLive:
             if self.hideMode:
-                self.hideDisplay(self.hideMode)
+                self.hide_display(self.hideMode)
             else:
                 # Single screen active
                 if self.screens.display_count == 1:
@@ -419,7 +419,7 @@ class MainDisplay(Display):
             if Settings().value(u'general/auto unblank'):
                 Registry().execute(u'slidecontroller_live_unblank')
             else:
-                self.hideDisplay(self.hideMode)
+                self.hide_display(self.hideMode)
         self.__hideMouse()
 
     def footer(self, text):
@@ -430,12 +430,12 @@ class MainDisplay(Display):
         js = u'show_footer(\'' + text.replace(u'\\', u'\\\\').replace(u'\'', u'\\\'') + u'\')'
         self.frame.evaluateJavaScript(js)
 
-    def hideDisplay(self, mode=HideMode.Screen):
+    def hide_display(self, mode=HideMode.Screen):
         """
         Hide the display by making all layers transparent
         Store the images so they can be replaced when required
         """
-        log.debug(u'hideDisplay mode = %d', mode)
+        log.debug(u'hide_display mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
             if not Settings().value(u'general/display on monitor'):
@@ -453,13 +453,13 @@ class MainDisplay(Display):
                 self.webView.setVisible(True)
         self.hideMode = mode
 
-    def showDisplay(self):
+    def show_display(self):
         """
         Show the stored layers so the screen reappears as it was
         originally.
         Make the stored images None to release memory.
         """
-        log.debug(u'showDisplay')
+        log.debug(u'show_display')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
             if not Settings().value(u'general/display on monitor'):

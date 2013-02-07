@@ -81,9 +81,9 @@ class SongImport(QtCore.QObject):
         log.debug(self.importSource)
         self.importWizard = None
         self.song = None
-        self.stopImportFlag = False
+        self.stop_import_flag = False
         self.setDefaults()
-        Registry().register_function(u'openlp_stop_wizard', self.stopImport)
+        Registry().register_function(u'openlp_stop_wizard', self.stop_import)
 
     def setDefaults(self):
         """
@@ -133,12 +133,12 @@ class SongImport(QtCore.QObject):
             self.importWizard.errorSaveToButton.setVisible(True)
         self.importWizard.errorReportTextEdit.append(u'- %s (%s)' % (filepath, reason))
 
-    def stopImport(self):
+    def stop_import(self):
         """
         Sets the flag for importers to stop their import
         """
         log.debug(u'Stopping songs import')
-        self.stopImportFlag = True
+        self.stop_import_flag = True
 
     def register(self, import_wizard):
         self.importWizard = import_wizard

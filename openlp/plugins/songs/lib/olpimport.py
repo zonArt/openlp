@@ -225,6 +225,6 @@ class OpenLPSongImport(SongImport):
                 progressDialog.setLabelText(WizardStrings.ImportingType % new_song.title)
             else:
                 self.importWizard.incrementProgressBar(WizardStrings.ImportingType % new_song.title)
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
         engine.dispose()

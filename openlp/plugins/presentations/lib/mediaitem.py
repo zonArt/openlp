@@ -60,8 +60,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
         self.hasSearch = True
         self.singleServiceItem = False
-        Registry().register_function(u'mediaitem_presentation_rebuild', self.populateDisplayTypes)
-        Registry().register_function(u'mediaitem_suffixes', self.buildFileMaskString)
+        Registry().register_function(u'mediaitem_presentation_rebuild', self.populate_display_types)
+        Registry().register_function(u'mediaitem_suffixes', self.build_file_mask_string)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -73,7 +73,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.Automatic = translate('PresentationPlugin.MediaItem', 'Automatic')
         self.displayTypeLabel.setText(translate('PresentationPlugin.MediaItem', 'Present using:'))
 
-    def buildFileMaskString(self):
+    def build_file_mask_string(self):
         """
         Build the list of file extensions to be used in the Open file dialog
         """
@@ -121,9 +121,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         files = Settings().value(self.settingsSection + u'/presentations files')
         self.loadList(files, True)
-        self.populateDisplayTypes()
+        self.populate_display_types()
 
-    def populateDisplayTypes(self):
+    def populate_display_types(self):
         """
         Load the combobox with the enabled presentation controllers,
         allowing user to select a specific app if settings allow

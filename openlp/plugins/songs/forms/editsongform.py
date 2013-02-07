@@ -97,7 +97,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.audioRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onAudioRemoveButtonClicked)
         QtCore.QObject.connect(self.audioRemoveAllButton, QtCore.SIGNAL(u'clicked()'),
             self.onAudioRemoveAllButtonClicked)
-        Registry().register_function(u'theme_update_list', self.loadThemes)
+        Registry().register_function(u'theme_update_list', self.load_themes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(UiStrings().SaveAndPreview)
@@ -169,7 +169,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             combo.setItemData(row, object.id)
         set_case_insensitive_completer(cache, combo)
 
-    def loadThemes(self, theme_list):
+    def load_themes(self, theme_list):
         """
         Load the themes into a combobox.
         """
