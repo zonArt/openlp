@@ -228,7 +228,8 @@ class Settings(QtCore.QSettings):
         u'user interface/main window splitter geometry': QtCore.QByteArray(),
         u'user interface/main window state': QtCore.QByteArray(),
         u'user interface/preview panel': True,
-        u'user interface/preview splitter geometry': QtCore.QByteArray()
+        u'user interface/preview splitter geometry': QtCore.QByteArray(),
+        u'servicemanager/last directory': u''
     }
     __file_path__ = u''
     __obsolete_settings__ = [

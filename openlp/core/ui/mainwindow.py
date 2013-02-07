@@ -484,6 +484,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = []
+        self.timer_id = 0
+        self.timer_version_id = 0
         # Set up the path with plugins
         plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
         self.plugin_manager = PluginManager(plugin_path)
@@ -592,13 +594,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def version_notice(self, version):
         """
         Notifies the user that a newer version of OpenLP is available.
-        Triggered by delay thread.
+        Triggered by delay thread and cannot display popup.
         """
+        log.debug(u'version_notice')
         version_text = translate('OpenLP.MainWindow', 'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest version from http://openlp.org/.')
-        QtGui.QMessageBox.question(self,
-            translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-                version_text % (version, get_application_version()[u'full']))
+        self.version_text = version_text % (version, get_application_version()[u'full'])
 
     def show(self):
         """
@@ -618,6 +619,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.serviceManagerContents.load_file(filename)
         elif Settings().value(self.generalSettingsSection + u'/auto open'):
             self.serviceManagerContents.load_Last_file()
+        self.timer_version_id = self.startTimer(1000)
         view_mode = Settings().value(u'%s/view mode' % self.generalSettingsSection)
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
@@ -1339,6 +1341,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if event.timerId() == self.timer_id:
             self.timer_id = 0
             self.loadProgressBar.hide()
+            self.application.process_events()
+        if event.timerId() == self.timer_version_id:
+            self.timer_version_id = 0
+            # Has the thread passed some data to be displayed so display it and stop all waiting
+            if hasattr(self, u'version_text'):
+                QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
+                    self.version_text)
+            else:
+                # the thread has not confirmed it is running or it has not yet sent any data so lets keep waiting
+                if not hasattr(self,u'version_update_running') or self.version_update_running:
+                    self.timer_version_id = self.startTimer(1000)
             self.application.process_events()
 
     def set_new_data_path(self, new_data_path):

@@ -72,11 +72,11 @@ class VersionThread(QtCore.QThread):
         Run the thread.
         """
         self.sleep(1)
+        log.debug(u'Version thread - run')
         app_version = get_application_version()
         version = check_latest_version(app_version)
         if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):
             Registry().execute(u'openlp_version_check', u'%s' % version)
-
 
 class AppLocation(object):
     """
@@ -288,6 +288,8 @@ def check_latest_version(current_version):
     this_test = datetime.now().date()
     settings.setValue(u'last version test', this_test)
     settings.endGroup()
+    # Tell the main window whether there will ever be data to display
+    Registry().get(u'main_window').version_update_running = last_test != this_test
     if last_test != this_test:
         if current_version[u'build']:
             req = urllib2.Request(u'http://www.openlp.org/files/nightly_version.txt')
