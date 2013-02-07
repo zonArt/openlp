@@ -31,7 +31,7 @@ The :mod:`~openlp.core.ui.media.playertab` module holds the configuration tab fo
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, SettingsTab, Receiver, Settings, UiStrings, translate
+from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate
 from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
@@ -229,7 +229,7 @@ class PlayerTab(SettingsTab):
             player_string_changed = True
         if player_string_changed:
             self.service_manager.reset_supported_suffixes()
-            Receiver.send_message(u'mediaitem_media_rebuild')
+            Registry().execute(u'mediaitem_media_rebuild')
             Registry().execute(u'config_screen_changed')
 
     def postSetUp(self, postUpdate=False):

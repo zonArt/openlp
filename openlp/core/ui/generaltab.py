@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, Receiver, Settings, SettingsTab, translate, ScreenList, UiStrings
+from openlp.core.lib import Registry, Settings, SettingsTab, translate, ScreenList, UiStrings
 
 log = logging.getLogger(__name__)
 
@@ -315,7 +315,7 @@ class GeneralTab(SettingsTab):
         Apply settings after settings tab has loaded and most of the
         system so must be delayed
         """
-        Receiver.send_message(u'slidecontroller_live_spin_delay', self.timeoutSpinBox.value())
+        Registry().execute(u'slidecontroller_live_spin_delay', self.timeoutSpinBox.value())
         # Do not continue on start up.
         if not postUpdate:
             return

@@ -43,7 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, ScreenList, UiStrings, Registry, check_directory_exists
+from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -150,7 +150,7 @@ class OpenLP(QtGui.QApplication):
         update_check = Settings().value(u'general/update check')
         if update_check:
             VersionThread(self.main_window).start()
-        Receiver.send_message(u'live_display_blank_check')
+        self.main_window.blank_check()
         self.main_window.app_startup()
         return self.exec_()
 

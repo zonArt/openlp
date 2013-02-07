@@ -41,7 +41,7 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, Settings, Registry, build_icon, check_directory_exists, translate
+from openlp.core.lib import PluginStatus, Settings, Registry, build_icon, check_directory_exists, translate
 from openlp.core.utils import AppLocation, get_web_page, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 

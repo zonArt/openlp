@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, Receiver, ServiceItem, ServiceItemContext, \
+from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, Registry, ServiceItem, ServiceItemContext, \
     Settings, UiStrings, build_icon, check_item_selected, check_directory_exists, translate
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
@@ -71,9 +71,8 @@ class MediaMediaItem(MediaManagerItem):
         self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
         self.displayController.previewDisplay.setup()
         self.media_controller.setup_display(self.displayController.previewDisplay, False)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'video_background_replaced'),
-            self.videobackgroundReplaced)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
+        Registry().register_function(u'video_background_replaced', self.videobackgroundReplaced)
+        Registry().register_function(u'mediaitem_media_rebuild', self.rebuild_players)
         Registry().register_function(u'config_screen_changed', self.displaySetup)
         # Allow DnD from the desktop
         self.listView.activateDnD()

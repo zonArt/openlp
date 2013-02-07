@@ -38,7 +38,7 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, PluginStatus, Receiver, MediaType, translate, create_separated_list, \
+from openlp.core.lib import Registry, PluginStatus, MediaType, translate, create_separated_list, \
     check_directory_exists, UiStrings
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, \
     find_and_set_in_combo_box
@@ -699,7 +699,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.objectName() == u'previewButton':
             self.saveSong(True)
-            Receiver.send_message(u'songs_preview')
+            Registry().execute(u'songs_preview')
 
     def onAudioAddFromFileButtonClicked(self):
         """

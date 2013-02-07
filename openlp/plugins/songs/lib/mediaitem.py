@@ -36,8 +36,7 @@ from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
 
-from openlp.core.lib import Registry, MediaManagerItem, Receiver, ItemCapabilities, PluginStatus, ServiceItemContext, \
-    Settings, \
+from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
     UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
@@ -101,9 +100,9 @@ class SongMediaItem(MediaManagerItem):
             triggers=self.onSongMaintenanceClick)
         self.addSearchToToolBar()
         # Signals and slots
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
+        Registry().register_function(u'songs_load_list', self.onSongListLoad)
         Registry().register_function(u'config_updated', self.config_update)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
+        Registry().register_function(u'songs_preview', self.onPreviewClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClicked)
@@ -295,7 +294,7 @@ class SongMediaItem(MediaManagerItem):
             self.importWizard = SongImportForm(self, self.plugin)
         self.importWizard.exec_()
         # Run song load as list may have been cancelled but some songs loaded
-        Receiver.send_message(u'songs_load_list')
+        Registry().execute(u'songs_load_list')
 
     def onExportClick(self):
         if not hasattr(self, u'exportWizard'):

@@ -42,7 +42,7 @@ import sys
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, ServiceItem, Settings, ImageSource, Registry, build_html, expand_tags, \
+from openlp.core.lib import ServiceItem, Settings, ImageSource, Registry, build_html, expand_tags, \
     image_to_byte, translate
 from openlp.core.lib.theme import BackgroundType
 
@@ -158,9 +158,9 @@ class MainDisplay(Display):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(False)
         if self.isLive:
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_show'), self.showDisplay)
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
+            Registry().register_function(u'live_display_hide', self.hideDisplay)
+            Registry().register_function(u'live_display_show', self.showDisplay)
+            Registry().register_function(u'update_display_css', self.cssChanged)
             Registry().register_function(u'config_updated', self.configChanged)
 
     def setTransparency(self, enabled):
@@ -387,11 +387,11 @@ class MainDisplay(Display):
         if self.override:
             # We have an video override so allow it to be stopped.
             if u'video' in self.override:
-                Receiver.send_message(u'video_background_replaced')
+                Registry().execute(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
             elif self.override[u'theme'] != serviceItem.themedata.background_filename:
-                Receiver.send_message(u'live_theme_changed')
+                Registry().execute(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
@@ -417,7 +417,7 @@ class MainDisplay(Display):
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
             if Settings().value(u'general/auto unblank'):
-                Receiver.send_message(u'slidecontroller_live_unblank')
+                Registry().execute(u'slidecontroller_live_unblank')
             else:
                 self.hideDisplay(self.hideMode)
         self.__hideMouse()
@@ -470,7 +470,7 @@ class MainDisplay(Display):
         self.hideMode = None
         # Trigger actions when display is active again.
         if self.isLive:
-            Receiver.send_message(u'live_display_active')
+            Registry().execute(u'live_display_active')
 
     def __hideMouse(self):
         """

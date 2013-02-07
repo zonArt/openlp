@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, Receiver, SettingsManager, ServiceItemContext, \
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, Registry, SettingsManager, ServiceItemContext, \
     Settings, UiStrings, build_icon, check_item_selected, check_directory_exists, create_thumb, translate, \
     validate_thumb
 from openlp.core.lib.ui import critical_error_message_box
@@ -51,7 +51,7 @@ class ImageMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin, icon)
         self.quickPreviewAllowed = True
         self.hasSearch = True
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
+        Registry().register_function(u'live_theme_changed', self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 

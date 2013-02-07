@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Registry, translate
+from openlp.core.lib import Registry, translate
 from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -190,7 +190,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         log.debug(u'onPreview')
         if self.saveCustom():
-            Receiver.send_message(u'custom_preview')
+            Registry().execute(u'custom_preview')
 
     def updateSlideList(self, slides, edit_all=False):
         """

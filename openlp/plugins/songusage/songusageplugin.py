@@ -32,7 +32,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, Receiver, Settings, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, Registry, Settings, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
@@ -123,10 +123,8 @@ class SongUsagePlugin(Plugin):
     def initialise(self):
         log.info(u'SongUsage Initialising')
         Plugin.initialise(self)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'slidecontroller_live_started'),
-            self.displaySongUsage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'print_service_started'),
-            self.printSongUsage)
+        Registry().register_function(u'slidecontroller_live_started', self.displaySongUsage)
+        Registry().register_function(u'print_service_started', self.printSongUsage)
         self.songUsageActive = Settings().value(self.settingsSection + u'/active')
         # Set the button and checkbox state
         self.setButtonState()

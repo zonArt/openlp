@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
+from openlp.core.lib import MediaManagerItem, Registry, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
     build_icon, check_item_selected, create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare
@@ -60,9 +60,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
         self.hasSearch = True
         self.singleServiceItem = False
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
-            self.populateDisplayTypes)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_suffixes'), self.buildFileMaskString)
+        Registry().register_function(u'mediaitem_presentation_rebuild', self.populateDisplayTypes)
+        Registry().register_function(u'mediaitem_suffixes', self.buildFileMaskString)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 

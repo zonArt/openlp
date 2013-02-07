@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, MediaManagerItem, Receiver, ItemCapabilities, ServiceItemContext, Settings, \
-    UiStrings, create_separated_list, translate
+from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
+    create_separated_list, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
@@ -70,7 +70,8 @@ class BibleMediaItem(MediaManagerItem):
         self.search_results = {}
         self.second_search_results = {}
         self.checkSearchResult()
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'bibles_load_list'), self.reloadBibles)
+        Registry().register_function(u'bibles_load_list', self.reloadBibles)
+        Registry().register_function(u'config_updated', self.config_update)
 
     def __checkSecondBible(self, bible, second_bible):
         """
@@ -246,7 +247,6 @@ class BibleMediaItem(MediaManagerItem):
         # Buttons
         QtCore.QObject.connect(self.advancedSearchButton, QtCore.SIGNAL(u'clicked()'), self.onAdvancedSearchButton)
         QtCore.QObject.connect(self.quickSearchButton, QtCore.SIGNAL(u'clicked()'), self.onQuickSearchButton)
-        Registry().register_function(u'config_updated', self.config_update)
         # Other stuff
         QtCore.QObject.connect(self.quickSearchEdit, QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
         QtCore.QObject.connect(self.searchTabBar, QtCore.SIGNAL(u'currentChanged(int)'),

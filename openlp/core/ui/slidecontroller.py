@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`slidecontroller` module contains argubly the most important part of OpenLP - the slide controller
+The :mod:`slidecontroller` module contains the most important part of OpenLP - the slide controller
 """
 import os
 import logging
@@ -36,7 +36,7 @@ from collections import deque
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, ServiceItem, ImageSource, SlideLimits, \
+from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, SlideLimits, \
     ServiceItemAction, Settings, Registry, UiStrings, ScreenList, build_icon, build_html, translate
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
@@ -66,7 +66,7 @@ class DisplayController(QtGui.QWidget):
         """
         sender = self.sender().objectName() if self.sender().objectName() else self.sender().text()
         controller = self
-        Receiver.send_message('%s' % sender, [controller, args])
+        Registry().execute('%s' % sender, [controller, args])
 
 
 class SlideController(DisplayController):
@@ -362,10 +362,8 @@ class SlideController(DisplayController):
         # Signals
         QtCore.QObject.connect(self.previewListWidget, QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if self.isLive:
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'slidecontroller_live_spin_delay'), self.receiveSpinDelay)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'slidecontroller_toggle_display'), self.toggleDisplay)
+            Registry().register_function(u'slidecontroller_live_spin_delay', self.receiveSpinDelay)
+            Registry().register_function(u'slidecontroller_toggle_display', self.toggleDisplay)
             self.toolbar.setWidgetVisible(self.loopList, False)
             self.toolbar.setWidgetVisible(self.wideMenu, False)
         else:
@@ -377,22 +375,14 @@ class SlideController(DisplayController):
             self.__addActionsToWidget(self.previewListWidget)
         else:
             self.previewListWidget.addActions([self.nextItem, self.previousItem])
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_stop_loop' % self.typePrefix), self.onStopLoop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_next' % self.typePrefix), self.onSlideSelectedNext)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.typePrefix), self.onSlideSelectedPrevious)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_change' % self.typePrefix), self.onSlideChange)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_set' % self.typePrefix), self.onSlideSelectedIndex)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_blank' % self.typePrefix), self.onSlideBlank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_%s_unblank' % self.typePrefix), self.onSlideUnblank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'slidecontroller_update_slide_limits'), self.updateSlideLimits)
+        Registry().register_function(u'slidecontroller_%s_stop_loop' % self.typePrefix, self.onStopLoop)
+        Registry().register_function(u'slidecontroller_%s_next' % self.typePrefix, self.onSlideSelectedNext)
+        Registry().register_function(u'slidecontroller_%s_previous' % self.typePrefix, self.onSlideSelectedPrevious)
+        Registry().register_function(u'slidecontroller_%s_change' % self.typePrefix, self.onSlideChange)
+        Registry().register_function(u'slidecontroller_%s_set' % self.typePrefix, self.onSlideSelectedIndex)
+        Registry().register_function(u'slidecontroller_%s_blank' % self.typePrefix, self.onSlideBlank)
+        Registry().register_function(u'slidecontroller_%s_unblank' % self.typePrefix, self.onSlideUnblank)
+        Registry().register_function(u'slidecontroller_update_slide_limits', self.updateSlideLimits)
 
     def _slideShortcutActivated(self):
         """
@@ -756,8 +746,7 @@ class SlideController(DisplayController):
         self.serviceItem = copy.copy(serviceItem)
         if old_item and self.isLive and old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             self._resetBlank()
-        Receiver.send_message(u'%s_start' % serviceItem.name.lower(),
-            [serviceItem, self.isLive, self.hideMode(), slideno])
+        Registry().execute(u'%s_start' % serviceItem.name.lower(), [serviceItem, self.isLive, self.hideMode(), slideno])
         self.slideList = {}
         width = self.parent().controlSplitter.sizes()[self.split]
         self.previewListWidget.clear()
@@ -853,10 +842,10 @@ class SlideController(DisplayController):
             # However opening a new item of the same type will automatically
             # close the previous, so make sure we don't close the new one.
             if old_item.is_command() and not serviceItem.is_command():
-                Receiver.send_message(u'%s_stop' % old_item.name.lower(), [old_item, self.isLive])
+                Registry().execute(u'%s_stop' % old_item.name.lower(), [old_item, self.isLive])
             if old_item.is_media() and not serviceItem.is_media():
                 self.onMediaClose()
-        Receiver.send_message(u'slidecontroller_%s_started' % self.typePrefix, [serviceItem])
+        Registry().execute(u'slidecontroller_%s_started' % self.typePrefix, [serviceItem])
 
     def __updatePreviewSelection(self, slideno):
         """
@@ -877,7 +866,7 @@ class SlideController(DisplayController):
         if not self.serviceItem:
             return
         if self.serviceItem.is_command():
-            Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive, index])
+            Registry().execute(u'%s_slide' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive, index])
             self.updatePreview()
         else:
             self.__checkUpdateSelectedSlide(index)
@@ -898,7 +887,7 @@ class SlideController(DisplayController):
             elif display_type == u'blanked':
                 self.onBlankDisplay(True)
             else:
-                Receiver.send_message(u'live_display_show')
+                Registry().execute(u'live_display_show')
         else:
             self.liveEscape()
 
@@ -980,18 +969,18 @@ class SlideController(DisplayController):
         if self.serviceItem is not None:
             if hide_mode:
                 if not self.serviceItem.is_command():
-                    Receiver.send_message(u'live_display_hide', hide_mode)
-                Receiver.send_message(u'%s_blank' % self.serviceItem.name.lower(),
+                    Registry().execute(u'live_display_hide', hide_mode)
+                Registry().execute(u'%s_blank' % self.serviceItem.name.lower(),
                     [self.serviceItem, self.isLive, hide_mode])
             else:
                 if not self.serviceItem.is_command():
-                    Receiver.send_message(u'live_display_show')
-                Receiver.send_message(u'%s_unblank' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
+                    Registry().execute(u'live_display_show')
+                Registry().execute(u'%s_unblank' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
         else:
             if hide_mode:
-                Receiver.send_message(u'live_display_hide', hide_mode)
+                Registry().execute(u'live_display_hide', hide_mode)
             else:
-                Receiver.send_message(u'live_display_show')
+                Registry().execute(u'live_display_show')
 
     def hidePlugin(self, hide):
         """
@@ -1000,17 +989,17 @@ class SlideController(DisplayController):
         log.debug(u'hidePlugin %s ', hide)
         if self.serviceItem is not None:
             if hide:
-                Receiver.send_message(u'live_display_hide', HideMode.Screen)
-                Receiver.send_message(u'%s_hide' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
+                Registry().execute(u'live_display_hide', HideMode.Screen)
+                Registry().execute(u'%s_hide' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
             else:
                 if not self.serviceItem.is_command():
-                    Receiver.send_message(u'live_display_show')
-                Receiver.send_message(u'%s_unblank' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
+                    Registry().execute(u'live_display_show')
+                Registry().execute(u'%s_unblank' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
         else:
             if hide:
-                Receiver.send_message(u'live_display_hide', HideMode.Screen)
+                Registry().execute(u'live_display_hide', HideMode.Screen)
             else:
-                Receiver.send_message(u'live_display_show')
+                Registry().execute(u'live_display_show')
 
     def onSlideSelected(self):
         """
@@ -1028,7 +1017,7 @@ class SlideController(DisplayController):
         if -1 < row < self.previewListWidget.rowCount():
             if self.serviceItem.is_command():
                 if self.isLive and not start:
-                    Receiver.send_message(u'%s_slide' % self.serviceItem.name.lower(),
+                    Registry().execute(u'%s_slide' % self.serviceItem.name.lower(),
                         [self.serviceItem, self.isLive, row])
             else:
                 to_display = self.serviceItem.get_rendered_frame(row)
@@ -1044,7 +1033,7 @@ class SlideController(DisplayController):
             self.updatePreview()
             self.selectedRow = row
             self.__checkUpdateSelectedSlide(row)
-        Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix, row)
+        Registry().execute(u'slidecontroller_%s_changed' % self.typePrefix, row)
         self.display.setFocus()
 
     def onSlideChange(self, row):
@@ -1053,7 +1042,7 @@ class SlideController(DisplayController):
         """
         self.__checkUpdateSelectedSlide(row)
         self.updatePreview()
-        Receiver.send_message(u'slidecontroller_%s_changed' % self.typePrefix, row)
+        Registry().execute(u'slidecontroller_%s_changed' % self.typePrefix, row)
 
     def updatePreview(self):
         """
@@ -1092,7 +1081,7 @@ class SlideController(DisplayController):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_next' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
+        Registry().execute(u'%s_next' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
         if self.serviceItem.is_command() and self.isLive:
             self.updatePreview()
         else:
@@ -1119,7 +1108,7 @@ class SlideController(DisplayController):
         """
         if not self.serviceItem:
             return
-        Receiver.send_message(u'%s_previous' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
+        Registry().execute(u'%s_previous' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
         if self.serviceItem.is_command() and self.isLive:
             self.updatePreview()
         else:
@@ -1259,7 +1248,7 @@ class SlideController(DisplayController):
             # Live and Preview have issues if we have video or presentations
             # playing in both at the same time.
             if self.serviceItem.is_command():
-                Receiver.send_message(u'%s_stop' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
+                Registry().execute(u'%s_stop' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive])
             if self.serviceItem.is_media():
                 self.onMediaClose()
             self.onGoLive()

@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate, check_directory_exists
+from openlp.core.lib import Registry, translate, check_directory_exists
 from openlp.core.ui.wizard import WizardStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib import clean_song, VerseType
@@ -83,7 +83,7 @@ class SongImport(QtCore.QObject):
         self.song = None
         self.stopImportFlag = False
         self.setDefaults()
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_stop_wizard'), self.stopImport)
+        Registry().register_function(u'openlp_stop_wizard', self.stopImport)
 
     def setDefaults(self):
         """
