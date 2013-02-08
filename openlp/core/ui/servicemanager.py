@@ -838,8 +838,8 @@ class ServiceManager(QtGui.QWidget):
         """
         item = self.findServiceItem()[0]
         if not self.serviceItems[item][u'service_item'].is_text()\
-            and ItemCapabilities.HasDetailedTitleDisplay in self.serviceItems[item][u'service_item'].capabilities\
-            or len(self.serviceItems[item][u'service_item']._raw_frames) == 1:
+            and (ItemCapabilities.HasDetailedTitleDisplay in self.serviceItems[item][u'service_item'].capabilities\
+            or len(self.serviceItems[item][u'service_item']._raw_frames) == 1):
             get_main_title = False
             Title = self.serviceItems[item][u'service_item']._raw_frames[0][u'title']
         else:
