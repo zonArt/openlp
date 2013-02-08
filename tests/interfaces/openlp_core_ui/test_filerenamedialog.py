@@ -35,7 +35,7 @@ class TestStartFileRenameForm(TestCase):
         # GIVEN: FileRenameForm with no ARGS
 
         # WHEN displaying the UI
-        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
             self.form.exec_()
 
         # THEN the window title is set as
@@ -45,7 +45,7 @@ class TestStartFileRenameForm(TestCase):
         false_arg = False
 
         # WHEN displaying the UI
-        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
             self.form.exec_(false_arg)
 
         # THEN the window title is set as
@@ -55,7 +55,7 @@ class TestStartFileRenameForm(TestCase):
         true_arg = True
 
         # WHEN displaying the UI and pressing enter
-        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
             self.form.exec_(true_arg)
 
         # THEN the window title is set as
@@ -64,7 +64,7 @@ class TestStartFileRenameForm(TestCase):
         # GIVEN: FileRenameForm with defaults
 
         # WHEN displaying the UI
-        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
             self.form.exec_()
 
         # THEN the lineEdit should have focus
