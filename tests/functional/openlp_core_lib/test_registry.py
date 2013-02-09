@@ -16,7 +16,7 @@ class TestRegistry(TestCase):
         Test the registry creation and its usage
         """
         # GIVEN: A new registry
-        registry = Registry.create()
+        Registry.create()
 
         # WHEN: I add a component it should save it
         mock_1 = MagicMock()
