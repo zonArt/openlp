@@ -35,7 +35,7 @@ import os
 import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate, Settings, Registry, UiStrings
+from openlp.core.lib import OpenLPToolbar, Receiver, Settings, Registry, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer

@@ -41,13 +41,13 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Renderer, build_icon, OpenLPDockWidget, PluginManager, Receiver, translate, ImageManager, \
-    PluginStatus, Registry, Settings, ScreenList
+from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, Receiver, ImageManager, PluginStatus, Registry, \
+    Settings, ScreenList, build_icon, check_directory_exists, translate
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
-from openlp.core.utils import AppLocation, add_actions, LanguageManager, get_application_version, \
+from openlp.core.utils import AppLocation, LanguageManager, add_actions, get_application_version, \
     get_filesystem_encoding
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
@@ -455,14 +455,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     """
     log.info(u'MainWindow loaded')
 
-    def __init__(self, application):
+    def __init__(self):
         """
         This constructor sets up the interface, the various managers, and the
         plugins.
         """
         QtGui.QMainWindow.__init__(self)
         Registry().register(u'main_window', self)
-        self.application = application
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args
         # Set up settings sections for the main application (not for use by plugins).
@@ -487,7 +486,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.recentFiles = []
         # Set up the path with plugins
         plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
-        self.pluginManager = PluginManager(plugin_path)
+        self.plugin_manager = PluginManager(plugin_path)
         self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
@@ -538,10 +537,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         # Simple message boxes
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_warning_message'), self.onWarningMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_information_message'),
             self.onInformationMessage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
@@ -553,25 +551,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
-        self.pluginManager.find_plugins(plugin_path)
+        self.plugin_manager.find_plugins(plugin_path)
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
         log.info(u'hook settings')
-        self.pluginManager.hook_settings_tabs(self.settingsForm)
+        self.plugin_manager.hook_settings_tabs(self.settingsForm)
         # Find and insert media manager items
         log.info(u'hook media')
-        self.pluginManager.hook_media_manager()
+        self.plugin_manager.hook_media_manager()
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
-        self.pluginManager.hook_import_menu(self.fileImportMenu)
+        self.plugin_manager.hook_import_menu(self.fileImportMenu)
         # Call the hook method to pull in export menus.
-        self.pluginManager.hook_export_menu(self.fileExportMenu)
+        self.plugin_manager.hook_export_menu(self.fileExportMenu)
         # Call the hook method to pull in tools menus.
-        self.pluginManager.hook_tools_menu(self.toolsMenu)
+        self.plugin_manager.hook_tools_menu(self.toolsMenu)
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
-        self.pluginManager.initialise_plugins()
+        self.plugin_manager.initialise_plugins()
         # Create the displays as all necessary components are loaded.
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
@@ -587,7 +585,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Hide/show the theme combobox on the service manager
         self.serviceManagerContents.theme_change()
         # Reset the cursor
-        Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def setAutoLanguage(self, value):
         """
@@ -648,22 +646,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Give all the plugins a chance to perform some tasks at startup
         """
-        Receiver.send_message(u'openlp_process_events')
-        for plugin in self.pluginManager.plugins:
+        self.application.process_events()
+        for plugin in self.plugin_manager.plugins:
             if plugin.isActive():
                 plugin.app_startup()
-                Receiver.send_message(u'openlp_process_events')
+                self.application.process_events()
 
     def first_time(self):
         """
         Import themes if first time
         """
-        Receiver.send_message(u'openlp_process_events')
-        for plugin in self.pluginManager.plugins:
+        self.application.process_events()
+        for plugin in self.plugin_manager.plugins:
             if hasattr(plugin, u'first_time'):
-                Receiver.send_message(u'openlp_process_events')
+                self.application.process_events()
                 plugin.first_time()
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
         shutil.rmtree(temp_dir, True)
 
@@ -684,14 +682,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
-        Receiver.send_message(u'cursor_busy')
         screens = ScreenList()
         first_run_wizard = FirstTimeForm(screens, self)
         first_run_wizard.exec_()
         if first_run_wizard.was_download_cancelled:
             return
+        self.application.set_busy_cursor()
         self.first_time()
-        for plugin in self.pluginManager.plugins:
+        for plugin in self.plugin_manager.plugins:
             self.activePlugin = plugin
             oldStatus = self.activePlugin.status
             self.activePlugin.setStatus()
@@ -707,6 +705,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Check if any Bibles downloaded.  If there are, they will be
         # processed.
         Receiver.send_message(u'bibles_load_list', True)
+        self.application.set_normal_cursor()
 
     def blankCheck(self):
         """
@@ -723,21 +722,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Display an error message
         """
-        Receiver.send_message(u'close_splash')
+        self.application.close_splash_screen()
         QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
-    def onWarningMessage(self, data):
+    def warning_message(self, message):
         """
         Display a warning message
         """
-        Receiver.send_message(u'close_splash')
-        QtGui.QMessageBox.warning(self, data[u'title'], data[u'message'])
+        self.application.close_splash_screen()
+        QtGui.QMessageBox.warning(self, message[u'title'], message[u'message'])
 
     def onInformationMessage(self, data):
         """
         Display an informational message
         """
-        Receiver.send_message(u'close_splash')
+        self.application.close_splash_screen()
         QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
 
     def onHelpWebSiteClicked(self):
@@ -841,10 +840,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections.extend([self.headerSection])
         setting_sections.extend([u'crashreport'])
         # Add plugin sections.
-        for plugin in self.pluginManager.plugins:
+        for plugin in self.plugin_manager.plugins:
             setting_sections.extend([plugin.name])
+        # Copy the settings file to the tmp dir, because we do not want to change the original one.
+        temp_directory = os.path.join(unicode(gettempdir()), u'openlp')
+        check_directory_exists(temp_directory)
+        temp_config = os.path.join(temp_directory, os.path.basename(import_file_name))
+        shutil.copyfile(import_file_name, temp_config)
         settings = Settings()
-        import_settings = Settings(import_file_name, Settings.IniFormat)
+        import_settings = Settings(temp_config, Settings.IniFormat)
+        # Remove/rename old settings to prepare the import.
+        import_settings.remove_obsolete_settings()
         # Lets do a basic sanity check. If it contains this string we can
         # assume it was created by OpenLP and so we'll load what we can
         # from it, and just silently ignore anything we don't recognise
@@ -904,7 +910,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
-            export_file_name = export_file_name + u'.conf'
+            export_file_name += u'.conf'
         temp_file = os.path.join(unicode(gettempdir(),
             get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
         self.saveSettings()
@@ -918,7 +924,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections.extend([self.themesSettingsSection])
         setting_sections.extend([self.displayTagsSection])
         # Add plugin sections.
-        for plugin in self.pluginManager.plugins:
+        for plugin in self.plugin_manager.plugins:
             setting_sections.extend([plugin.name])
         # Delete old files if found.
         if os.path.exists(temp_file):
@@ -1003,14 +1009,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         renderer.
         """
         log.debug(u'screenChanged')
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         self.imageManager.update_display()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
-        Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def closeEvent(self, event):
         """
@@ -1070,7 +1076,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 Settings().setValue(u'advanced/current media plugin', self.mediaToolBox.currentIndex())
         # Call the cleanup method to shutdown plugins.
         log.info(u'cleanup plugins')
-        self.pluginManager.finalise_plugins()
+        self.plugin_manager.finalise_plugins()
         if save_settings:
             # Save settings
             self.saveSettings()
@@ -1223,7 +1229,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreState(settings.value(u'main window state'))
         self.liveController.splitter.restoreState(settings.value(u'live splitter geometry'))
         self.previewController.splitter.restoreState(settings.value(u'preview splitter geometry'))
-        self.controlSplitter.restoreState(settings.value(u'mainwindow splitter geometry'))
+        self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
     def saveSettings(self):
@@ -1244,7 +1250,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry', self.liveController.splitter.saveState())
         settings.setValue(u'preview splitter geometry', self.previewController.splitter.saveState())
-        settings.setValue(u'mainwindow splitter geometry', self.controlSplitter.saveState())
+        settings.setValue(u'main window splitter geometry', self.controlSplitter.saveState())
         settings.endGroup()
 
     def updateRecentFilesMenu(self):
@@ -1309,14 +1315,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadProgressBar.show()
         self.loadProgressBar.setMaximum(size)
         self.loadProgressBar.setValue(0)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
 
     def incrementProgressBar(self):
         """
         Increase the Progress Bar value by 1
         """
         self.loadProgressBar.setValue(self.loadProgressBar.value() + 1)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
 
     def finishedProgressBar(self):
         """
@@ -1331,7 +1337,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if event.timerId() == self.timer_id:
             self.timer_id = 0
             self.loadProgressBar.hide()
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
 
     def setNewDataPath(self, new_data_path):
         """
@@ -1352,23 +1358,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'Changing data path to %s' % self.newDataPath)
         old_data_path = unicode(AppLocation.get_data_path())
         # Copy OpenLP data to new location if requested.
+        self.application.set_busy_cursor()
         if self.copyData:
             log.info(u'Copying data to new path')
             try:
-                Receiver.send_message(u'openlp_process_events')
-                Receiver.send_message(u'cursor_busy')
                 self.showStatusMessage(
                     translate('OpenLP.MainWindow', 'Copying OpenLP data to new data directory location - %s '
                     '- Please wait for copy to finish').replace('%s', self.newDataPath))
                 dir_util.copy_tree(old_data_path, self.newDataPath)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError), why:
-                Receiver.send_message(u'cursor_normal')
+                self.application.set_normal_cursor()
                 log.exception(u'Data copy failed %s' % unicode(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
                     translate('OpenLP.MainWindow',
                         'OpenLP Data directory copy failed\n\n%s').replace('%s', unicode(why)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 return False
         else:
             log.info(u'No data copy requested')
@@ -1378,3 +1383,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Check if the new data path is our default.
         if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')
+        self.application.set_normal_cursor()
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

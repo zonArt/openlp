@@ -61,8 +61,7 @@ def init_db(url, auto_flush=True, auto_commit=False):
     """
     engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
-    session = scoped_session(sessionmaker(autoflush=auto_flush,
-        autocommit=auto_commit, bind=engine))
+    session = scoped_session(sessionmaker(autoflush=auto_flush, autocommit=auto_commit, bind=engine))
     return session, metadata
 
 

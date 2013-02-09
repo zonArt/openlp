@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, create_separated_list, \
-    ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
+    create_separated_list, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
@@ -614,7 +614,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'Advanced Search Button clicked')
         self.advancedSearchButton.setEnabled(False)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         bible = self.advancedVersionComboBox.currentText()
         second_bible = self.advancedSecondComboBox.currentText()
         book = self.advancedBookComboBox.currentText()
@@ -628,7 +628,7 @@ class BibleMediaItem(MediaManagerItem):
         verse_range = chapter_from + verse_separator + verse_from + range_separator + chapter_to + \
             verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         self.search_results = self.plugin.manager.get_verses(bible, versetext, book_ref_id)
         if second_bible:
             self.second_search_results = self.plugin.manager.get_verses(second_bible, versetext, book_ref_id)
@@ -640,8 +640,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
         self.checkSearchResult()
-        Receiver.send_message(u'cursor_normal')
-        Receiver.send_message(u'openlp_process_events')
+        self.application.set_normal_cursor()
 
     def onQuickSearchButton(self):
         """
@@ -650,7 +649,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'Quick Search Button clicked')
         self.quickSearchButton.setEnabled(False)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quickSearchEdit.text()
@@ -662,7 +661,7 @@ class BibleMediaItem(MediaManagerItem):
                     self.search_results[0].book.book_reference_id)
         else:
             # We are doing a 'Text Search'.
-            Receiver.send_message(u'cursor_busy')
+            self.application.set_busy_cursor()
             bibles = self.plugin.manager.get_bibles()
             self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
             if second_bible and self.search_results:
@@ -697,8 +696,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
         self.checkSearchResult()
-        Receiver.send_message(u'cursor_normal')
-        Receiver.send_message(u'openlp_process_events')
+        self.application.set_normal_cursor()
 
     def displayResults(self, bible, second_bible=u''):
         """

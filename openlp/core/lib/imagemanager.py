@@ -39,7 +39,7 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import resize_image, image_to_byte, Receiver, Registry, ScreenList
+from openlp.core.lib import Receiver, Registry, ScreenList, resize_image, image_to_byte
 
 log = logging.getLogger(__name__)
 

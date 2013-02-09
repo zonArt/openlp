@@ -36,7 +36,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, check_directory_exists, Settings, UiStrings
+from openlp.core.lib import Receiver, Settings, UiStrings, translate, check_directory_exists
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
@@ -335,7 +335,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         OpenLPWizard.preWizard(self)
         self.progressLabel.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Starting upgrade...'))
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
 
     def performWizard(self):
         """
@@ -465,7 +465,7 @@ class BibleUpgradeForm(OpenLPWizard):
                             self.newbibles[number].create_verse(db_book.id,
                                 int(verse[u'chapter']),
                                 int(verse[u'verse']), unicode(verse[u'text']))
-                            Receiver.send_message(u'openlp_process_events')
+                            self.application.process_events()
                         self.newbibles[number].session.commit()
             else:
                 language_id = self.newbibles[number].get_object(BibleMeta, u'language_id')
@@ -511,7 +511,7 @@ class BibleUpgradeForm(OpenLPWizard):
                         self.newbibles[number].create_verse(db_book.id,
                             int(verse[u'chapter']),
                             int(verse[u'verse']), unicode(verse[u'text']))
-                        Receiver.send_message(u'openlp_process_events')
+                        self.application.process_events()
                     self.newbibles[number].session.commit()
             if not self.success.get(number, True):
                 self.incrementProgressBar(translate('BiblesPlugin.UpgradeWizardForm',

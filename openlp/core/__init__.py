@@ -97,7 +97,7 @@ class OpenLP(QtGui.QApplication):
         self.shared_memory.detach()
         return result
 
-    def run(self, args, testing=False):
+    def run(self, args):
         """
         Run the OpenLP application.
         """
@@ -110,10 +110,6 @@ class OpenLP(QtGui.QApplication):
         if 'OpenLP' in args:
             args.remove('OpenLP')
         self.args.extend(args)
-        # provide a listener for widgets to reqest a screen update.
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_process_events'), self.processEvents)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_busy'), self.set_busy_cursor)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cursor_normal'), self.set_normal_cursor)
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
@@ -139,7 +135,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
-        self.main_window = MainWindow(self)
+        self.main_window = MainWindow()
         self.main_window.show()
         if show_splash:
             # now kill the splashscreen
@@ -156,9 +152,13 @@ class OpenLP(QtGui.QApplication):
             VersionThread(self.main_window).start()
         Receiver.send_message(u'live_display_blank_check')
         self.main_window.app_startup()
-        # Skip exec_() for gui tests
-        if not testing:
-            return self.exec_()
+        return self.exec_()
+
+    def close_splash_screen(self):
+        """
+        Close the splash screen when requested.
+        """
+        self.splash.close()
 
     def is_already_running(self):
         """
@@ -199,6 +199,12 @@ class OpenLP(QtGui.QApplication):
         self.set_normal_cursor()
         self.exception_form.exec_()
 
+    def process_events(self):
+        """
+        Wrapper to make ProcessEvents visible and named correctly
+        """
+        self.processEvents()
+
     def set_busy_cursor(self):
         """
         Sets the Busy Cursor for the Application
@@ -211,6 +217,7 @@ class OpenLP(QtGui.QApplication):
         Sets the Normal Cursor for the Application
         """
         self.restoreOverrideCursor()
+        self.processEvents()
 
     def event(self, event):
         """
@@ -235,7 +242,7 @@ def set_up_logging(log_path):
     logfile.setFormatter(logging.Formatter(u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
-        print 'Logging to:', filename
+        print('Logging to: %s' % filename)
 
 
 def main(args=None):
@@ -255,7 +262,6 @@ def main(args=None):
     parser.add_option('-d', '--dev-version', dest='dev_version', action='store_true',
         help='Ignore the version file and pull the version directly from Bazaar')
     parser.add_option('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
-    parser.add_option('--testing', dest='testing', action='store_true', help='Run by testing framework')
     # Parse command line options and deal with them.
     # Use args supplied programatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
@@ -276,38 +282,37 @@ def main(args=None):
     # Initialise the resources
     qInitResources()
     # Now create and actually run the application.
-    app = OpenLP(qt_args)
-    app.setOrganizationName(u'OpenLP')
-    app.setOrganizationDomain(u'openlp.org')
+    application = OpenLP(qt_args)
+    application.setOrganizationName(u'OpenLP')
+    application.setOrganizationDomain(u'openlp.org')
     if options.portable:
-        app.setApplicationName(u'OpenLPPortable')
+        application.setApplicationName(u'OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
-        app_path = AppLocation.get_directory(AppLocation.AppDir)
-        set_up_logging(os.path.abspath(os.path.join(app_path, u'..', u'..', u'Other')))
+        application_path = AppLocation.get_directory(AppLocation.AppDir)
+        set_up_logging(os.path.abspath(os.path.join(application_path, u'..', u'..', u'Other')))
         log.info(u'Running portable')
-        portable_settings_file = os.path.abspath(os.path.join(app_path, u'..', u'..', u'Data', u'OpenLP.ini'))
+        portable_settings_file = os.path.abspath(os.path.join(application_path, u'..', u'..', u'Data', u'OpenLP.ini'))
         # Make this our settings file
         log.info(u'INI file: %s', portable_settings_file)
         Settings.set_filename(portable_settings_file)
         portable_settings = Settings()
         # Set our data path
-        data_path = os.path.abspath(os.path.join(app_path, u'..', u'..', u'Data',))
+        data_path = os.path.abspath(os.path.join(application_path, u'..', u'..', u'Data',))
         log.info(u'Data path: %s', data_path)
         # Point to our data path
         portable_settings.setValue(u'advanced/data path', data_path)
         portable_settings.setValue(u'advanced/is portable', True)
         portable_settings.sync()
     else:
-        app.setApplicationName(u'OpenLP')
+        application.setApplicationName(u'OpenLP')
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     Registry.create()
-    app.setApplicationVersion(get_application_version()[u'version'])
+    Registry().register(u'application', application)
+    application.setApplicationVersion(get_application_version()[u'version'])
     # Instance check
-    if not options.testing:
-        # Instance check
-        if app.is_already_running():
-            sys.exit()
+    if application.is_already_running():
+        sys.exit()
     # First time checks in settings
     if not Settings().value(u'general/has run wizard'):
         if not FirstTimeLanguageForm().exec_():
@@ -315,19 +320,14 @@ def main(args=None):
             sys.exit()
     # i18n Set Language
     language = LanguageManager.get_language()
-    app_translator, default_translator = LanguageManager.get_translator(language)
-    if not app_translator.isEmpty():
-        app.installTranslator(app_translator)
+    application_translator, default_translator = LanguageManager.get_translator(language)
+    if not application_translator.isEmpty():
+        application.installTranslator(application_translator)
     if not default_translator.isEmpty():
-        app.installTranslator(default_translator)
+        application.installTranslator(default_translator)
     else:
         log.debug(u'Could not find default_translator.')
     if not options.no_error_form:
-        sys.excepthook = app.hook_exception
-    # Do not run method app.exec_() when running gui tests
-    if options.testing:
-        app.run(qt_args, testing=True)
-        # For gui tests we need access to window instances and their components
-        return app
-    else:
-        sys.exit(app.run(qt_args))
+        sys.excepthook = application.hook_exception
+    sys.exit(application.run(qt_args))
+

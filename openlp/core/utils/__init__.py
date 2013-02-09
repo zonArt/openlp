@@ -39,7 +39,7 @@ from subprocess import Popen, PIPE
 import sys
 import urllib2
 
-from openlp.core.lib import Settings
+from openlp.core.lib import Registry, Settings
 
 from PyQt4 import QtGui, QtCore
 
@@ -424,7 +424,7 @@ def get_web_page(url, header=None, update_openlp=False):
     if not page:
         return None
     if update_openlp:
-        Receiver.send_message(u'openlp_process_events')
+        Registry().get(u'application').process_events()
     log.debug(page)
     return page
 

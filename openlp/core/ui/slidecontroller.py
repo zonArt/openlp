@@ -36,8 +36,8 @@ from collections import deque
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, translate, build_icon, build_html, \
-    ServiceItem, ImageSource, SlideLimits, ServiceItemAction, Settings, Registry, UiStrings, ScreenList
+from openlp.core.lib import OpenLPToolbar, Receiver, ItemCapabilities, ServiceItem, ImageSource, SlideLimits, \
+    ServiceItemAction, Settings, Registry, UiStrings, ScreenList, build_icon, build_html, translate
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -230,7 +230,7 @@ class SlideController(DisplayController):
             self.playSlidesOnce = create_action(self, u'playSlidesOnce', text=UiStrings().PlaySlidesToEnd,
                 icon=u':/media/media_time.png', checked=False, shortcuts=[],
                 category=self.category, triggers=self.onPlaySlidesOnce)
-            if Settings().value(self.parent().generalSettingsSection + u'/enable slide loop'):
+            if Settings().value(self.parent().advancedSettingsSection + u'/slide limits') == SlideLimits.Wrap:
                 self.playSlidesMenu.setDefaultAction(self.playSlidesLoop)
             else:
                 self.playSlidesMenu.setDefaultAction(self.playSlidesOnce)
@@ -518,12 +518,12 @@ class SlideController(DisplayController):
                 self.keypress_loop = True
                 keypressCommand = self.keypress_queue.popleft()
                 if keypressCommand == ServiceItemAction.Previous:
-                    Receiver.send_message('servicemanager_previous_item')
+                    self.service_manager.previous_item()
                 elif keypressCommand == ServiceItemAction.PreviousLastSlide:
                     # Go to the last slide of the previous item
-                    Receiver.send_message('servicemanager_previous_item', u'last slide')
+                    self.service_manager.previous_item(last_slide=True)
                 else:
-                    Receiver.send_message('servicemanager_next_item')
+                    self.service_manager.next_item()
             self.keypress_loop = False
 
     def screenSizeChanged(self):
@@ -608,7 +608,7 @@ class SlideController(DisplayController):
             elif width < 300 and not self.hideMenu.isVisible():
                 self.toolbar.setWidgetVisible(self.wideMenu, False)
                 self.toolbar.setWidgetVisible(self.hideMenuList)
-                
+
     def onSongBarHandler(self):
         """
         Some song handler
@@ -1271,8 +1271,7 @@ class SlideController(DisplayController):
         row = self.previewListWidget.currentRow()
         if -1 < row < self.previewListWidget.rowCount():
             if self.serviceItem.from_service:
-                Receiver.send_message('servicemanager_preview_live', u'%s:%s' %
-                    (self.serviceItem.unique_identifier, row))
+                self.service_manager.preview_live(self.serviceItem.unique_identifier, row)
             else:
                 self.live_controller.addServiceManagerItem(self.serviceItem, row)
 

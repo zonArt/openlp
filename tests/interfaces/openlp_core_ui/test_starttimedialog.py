@@ -1,7 +1,6 @@
 """
     Package to test the openlp.core.ui package.
 """
-import sys
 from unittest import TestCase
 
 from mock import MagicMock, patch

@@ -32,9 +32,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, check_directory_exists, Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings, \
-    UiStrings
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, Receiver, SettingsManager, ServiceItemContext, \
+    Settings, UiStrings, build_icon, check_item_selected, check_directory_exists, create_thumb, translate, \
+    validate_thumb
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
 
@@ -99,7 +99,7 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem','You must select an image to delete.')):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
-            Receiver.send_message(u'cursor_busy')
+            self.application.set_busy_cursor()
             self.main_window.displayProgressBar(len(row_list))
             for row in row_list:
                 text = self.listView.item(row)
@@ -109,12 +109,12 @@ class ImageMediaItem(MediaManagerItem):
                 self.main_window.incrementProgressBar()
             SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
-            Receiver.send_message(u'cursor_normal')
+            self.application.set_normal_cursor()
         self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
+        self.application.set_busy_cursor()
         if not initialLoad:
-            Receiver.send_message(u'cursor_busy')
             self.main_window.displayProgressBar(len(images))
         # Sort the images by its filename considering language specific
         # characters.
@@ -138,7 +138,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.main_window.incrementProgressBar()
         if not initialLoad:
             self.main_window.finishedProgressBar()
-            Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
