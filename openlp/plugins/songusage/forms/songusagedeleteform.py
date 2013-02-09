@@ -29,7 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, Receiver
+from openlp.core.lib import Receiver, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
 

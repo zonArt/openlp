@@ -36,7 +36,7 @@ import logging
 LOG_FILENAME = 'test_import_file.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-from test_opensongimport import wizard_stub, progbar_stub
+from test_opensongimport import wizard_stub
 
 def test(filenames):
     manager = Manager(u'songs', init_schema)

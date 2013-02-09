@@ -31,7 +31,7 @@ The UI widgets of the print service dialog.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, SpellTextEdit, UiStrings
+from openlp.core.lib import SpellTextEdit, UiStrings, build_icon, translate
 
 
 class ZoomSize(object):

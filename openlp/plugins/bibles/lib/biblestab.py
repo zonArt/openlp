@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsTab, translate, Settings, UiStrings
+from openlp.core.lib import Receiver, SettingsTab, Settings, UiStrings, translate
 from openlp.core.lib.ui import find_and_set_in_combo_box
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, update_reference_separators, \
     get_reference_separator, LanguageSelection

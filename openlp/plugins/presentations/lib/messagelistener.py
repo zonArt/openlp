@@ -177,7 +177,7 @@ class Controller(object):
             if not self.doc.is_active():
                 return
             if self.doc.slidenumber < self.doc.get_slide_count():
-                self.doc.slidenumber = self.doc.slidenumber + 1
+                self.doc.slidenumber += 1
                 self.poll()
             return
         if not self.activate():
@@ -203,7 +203,7 @@ class Controller(object):
             if not self.doc.is_active():
                 return
             if self.doc.slidenumber > 1:
-                self.doc.slidenumber = self.doc.slidenumber - 1
+                self.doc.slidenumber -= 1
                 self.poll()
             return
         if not self.activate():

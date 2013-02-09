@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, Registry, Settings, translate, UiStrings
+from openlp.core.lib import Receiver, Registry, Settings, UiStrings, build_icon, translate
 from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)

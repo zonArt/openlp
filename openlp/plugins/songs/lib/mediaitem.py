@@ -35,8 +35,8 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, check_item_selected, \
-    PluginStatus, create_separated_list, check_directory_exists, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
+    UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, SongImportForm, SongExportForm

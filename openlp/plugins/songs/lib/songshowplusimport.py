@@ -203,7 +203,7 @@ class SongShowPlusImport(SongImport):
             if verse_name not in self.otherList:
                 if ignore_unique:
                     return None
-                self.otherCount = self.otherCount + 1
+                self.otherCount += 1
                 self.otherList[verse_name] = str(self.otherCount)
             verse_tag = VerseType.Tags[VerseType.Other]
             verse_number = self.otherList[verse_name]

@@ -42,8 +42,8 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, build_icon, ItemCapabilities, \
-    translate, str_to_bool, check_directory_exists, Settings, PluginStatus, Registry, UiStrings
+from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, ItemCapabilities, Settings, PluginStatus, Registry, \
+    UiStrings, build_icon, translate, str_to_bool, check_directory_exists
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
 from openlp.core.ui import ServiceNoteForm, ServiceItemEditForm, StartTimeForm
@@ -661,11 +661,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         # SaveAs from osz to oszl is not valid as the files will be deleted
         # on exit which is not sensible or usable in the long term.
         if self._file_name.endswith(u'oszl') or self.service_has_all_original_files:
-            file_name = QtGui.QFileDialog.getSavefile_name(self.main_window, UiStrings().SaveService, path,
+            file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
                     'OpenLP Service Files (*.osz);; OpenLP Service Files - lite (*.oszl)'))
         else:
-            file_name = QtGui.QFileDialog.getSavefile_name(self.main_window, UiStrings().SaveService, path,
+            file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager', 'OpenLP Service Files (*.osz);;'))
         if not file_name:
             return False
