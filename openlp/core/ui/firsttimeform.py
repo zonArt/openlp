@@ -168,7 +168,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         elif self.currentId() == FirstTimePage.NoInternet:
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
-            self.application.process_events()
             self.application.set_busy_cursor()
             while not self.themeScreenshotThread.isFinished():
                 time.sleep(0.1)
