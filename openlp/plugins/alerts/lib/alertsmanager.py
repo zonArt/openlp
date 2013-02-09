@@ -35,7 +35,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, translate, Registry
 
 log = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ class AlertsManager(QtCore.QObject):
             return
         text = self.alertList.pop(0)
         alertTab = self.parent().settingsTab
-        self.parent().liveController.display.alert(text, alertTab.location)
+        self.live_controller.display.alert(text, alertTab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
@@ -103,7 +103,18 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
             alertTab = self.parent().settingsTab
-            self.parent().liveController.display.alert(u'', alertTab.location)
+            self.live_controller.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generateAlert()
+
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
