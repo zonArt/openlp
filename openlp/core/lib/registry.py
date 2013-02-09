@@ -84,7 +84,7 @@ class Registry(object):
         Registers a component against a key.
 
         ``key``
-            The service to be created.
+            The service to be created this is usually a major class like "renderer" or "main_window" .
 
         ``reference``
             The service address to be saved.
@@ -115,7 +115,9 @@ class Registry(object):
         Register a function and a handler to be called later
 
         ``event``
-            The function description..
+            The function description like "config_updated" or "live_display_hide" where a number of places in the
+            code will/may need to respond to a single action and the caller does not need to understand or know about
+            the recipients.
 
         ``function``
             The function to be called when the event happens.
