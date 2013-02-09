@@ -28,56 +28,42 @@ class TestStartFileRenameForm(TestCase):
         del self.main_window
         del self.app
 
-    def basic_display_test(self):
+    def window_title_test(self):
         """
-        Test FileRenameForm functionality
+        Test the windowTitle of the FileRenameDialog
         """
-        # GIVEN: FileRenameForm with no ARGS
-
-        # WHEN displaying the UI
+        # GIVEN: A mocked QDialog.exec_() method
         with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+
+            # WHEN: The form is executed with no args
             self.form.exec_()
 
-        # THEN the window title is set as
-        self.assertEqual(self.form.windowTitle(), u'File Rename', u'The window title should be "File Rename"')
+            # THEN: the window title is set correctly
+            self.assertEqual(self.form.windowTitle(), u'File Rename', u'The window title should be "File Rename"')
 
-        # GIVEN: FileRenameForm with False ARG
-        false_arg = False
+            # WHEN: The form is executed with False arg
+            self.form.exec_(False)
 
-        # WHEN displaying the UI
-        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            self.form.exec_(false_arg)
+            # THEN: the window title is set correctly
+            self.assertEqual(self.form.windowTitle(), u'File Rename', u'The window title should be "File Rename"')
 
-        # THEN the window title is set as
-        self.assertEqual(self.form.windowTitle(), u'File Rename', u'The window title should be "File Rename"')
+            # WHEN: The form is executed with True arg
+            self.form.exec_(True)
 
-        # GIVEN: FileRenameForm with False ARG
-        true_arg = True
+            # THEN: the window title is set correctly
+            self.assertEqual(self.form.windowTitle(), u'File Copy', u'The window title should be "File Copy"')
 
-        # WHEN displaying the UI and pressing enter
-        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            self.form.exec_(true_arg)
+    def line_edit_focus_test(self):
+        """
+        Regression test for bug1067251
+        Test that the fileNameEdit setFocus has called with True when executed
+        """
+        # GIVEN: A mocked QLineEdit class
+        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec, \
+            patch(u'PyQt4.QtGui.QLineEdit') as mocked_line_edit:
 
-        # THEN the window title is set as
-        self.assertEqual(self.form.windowTitle(), u'File Copy', u'The window title should be "File Copy"')
-
-        # GIVEN: FileRenameForm with defaults
-
-        # WHEN displaying the UI
-        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+            # WHEN: The form is executed with no args
             self.form.exec_()
 
-        # THEN the lineEdit should have focus
-        self.assertEqual(self.form.fileNameEdit.hasFocus(), True, u'fileNameEdit should have focus.')
-
-
-
-        # Regression test for bug1067251
-        # GIVEN: FileRenameForm with defaults
-
-        # WHEN displaying the UI
-       # with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
-        #    self.form.exec_()
-
-        # THEN the lineEdit should have focus
-        #self.assertEqual(self.form.fileNameEdit.hasFocus(), u'File Rename', u'The window title should be "File Rename"')
+            # THEN: the setFocus method of the fileNameEdit has been called with True
+            mocked_line_edit.setFocus.assert_called_with()
