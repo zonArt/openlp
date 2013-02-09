@@ -61,7 +61,7 @@ class ThemeScreenshotThread(QtCore.QThread):
         config = self.parent().config
         for theme in themes:
             # Stop if the wizard has been cancelled.
-            if self.parent().downloadCancelled:
+            if self.parent().was_download_cancelled:
                 return
             title = config.get(u'theme_%s' % theme, u'title')
             filename = config.get(u'theme_%s' % theme, u'filename')
@@ -91,9 +91,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = SafeConfigParser()
-        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
-        if self.webAccess:
-            files = self.webAccess.read()
+        self.web_access = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
+        if self.web_access:
+            files = self.web_access.read()
             self.config.readfp(io.BytesIO(files))
         self.updateScreenListCombo()
         self.was_download_cancelled = False
@@ -118,13 +118,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
-        check_directory_exists(os.path.join(
-            unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
+        check_directory_exists(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.hasRunWizard = Settings().value(u'general/has run wizard')
         # Sort out internet access for downloads
-        if self.webAccess:
+        if self.web_access:
             songs = self.config.get(u'songs', u'languages')
             songs = songs.split(u',')
             for song in songs:
@@ -160,7 +159,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         self.application.process_events()
         if self.currentId() == FirstTimePage.Plugins:
-            if not self.webAccess:
+            if not self.web_access:
                 return FirstTimePage.NoInternet
             else:
                 return FirstTimePage.Songs
@@ -169,6 +168,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         elif self.currentId() == FirstTimePage.NoInternet:
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
+            self.application.process_events()
             self.application.set_busy_cursor()
             while not self.themeScreenshotThread.isFinished():
                 time.sleep(0.1)
@@ -241,8 +241,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Process the triggering of the cancel button.
         """
-        if self.lastId == FirstTimePage.NoInternet or \
-                (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
+        if self.lastId == FirstTimePage.NoInternet or (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
         self.was_download_cancelled = True
@@ -428,7 +427,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._setPluginStatus(self.customCheckBox, u'custom/status')
         self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
-        if self.webAccess:
+        if self.web_access:
             # Build directories for downloads
             songs_destination = os.path.join(
                 unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
