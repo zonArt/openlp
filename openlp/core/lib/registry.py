@@ -69,6 +69,9 @@ class Registry(object):
     def get(self, key):
         """
         Extracts the registry value from the list based on the key passed in
+
+        ``key``
+            The service to be retrieved.
         """
         if key in self.service_list:
             return self.service_list[key]
@@ -79,6 +82,12 @@ class Registry(object):
     def register(self, key, reference):
         """
         Registers a component against a key.
+
+        ``key``
+            The service to be created.
+
+        ``reference``
+            The service address to be saved.
         """
         if key in self.service_list:
             log.error(u'Duplicate service exception %s' % key)
@@ -89,7 +98,10 @@ class Registry(object):
     def remove(self, key):
         """
         Removes the registry value from the list based on the key passed in
-        (Only valid and active for testing framework)
+        (Only valid and active for testing framework).
+
+        ``key``
+            The service to be deleted.
         """
         if self.running_under_test is False:
             log.error(u'Invalid Method call for key %s' % key)
@@ -101,6 +113,12 @@ class Registry(object):
     def register_function(self, event, function):
         """
         Register a function and a handler to be called later
+
+        ``event``
+            The function description..
+
+        ``function``
+            The function to be called when the event happens.
         """
         if not self.functions_list.has_key(event):
             self.functions_list[event] = [function]
@@ -110,6 +128,12 @@ class Registry(object):
     def remove_function(self, event, function):
         """
         Register a function and a handler to be called later
+
+        ``event``
+            The function description..
+
+        ``function``
+            The function to be called when the event happens.
         """
         if self.running_under_test is False:
             log.error(u'Invalid Method call for key %s' % event)
@@ -121,6 +145,15 @@ class Registry(object):
     def execute(self, event, *args, **kwargs):
         """
         Execute all the handlers registered passing the data to the handler and returning results
+
+        ``event``
+            The function to be processed
+
+        ``*args``
+            Parameters to be passed to the function.
+
+        ``*kwargs``
+            Parameters to be passed to the function.
         """
         results = []
         if event in self.functions_list:
