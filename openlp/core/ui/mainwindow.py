@@ -695,7 +695,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Registry().execute(u'bibles_load_list', True)
         self.application.set_normal_cursor()
 
-    def blank_check(self):
+    def is_display_blank(self):
         """
         Check and display message if screen blank on setup.
         """

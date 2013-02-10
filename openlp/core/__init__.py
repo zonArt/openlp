@@ -150,7 +150,7 @@ class OpenLP(QtGui.QApplication):
         update_check = Settings().value(u'general/update check')
         if update_check:
             VersionThread(self.main_window).start()
-        self.main_window.blank_check()
+        self.main_window.is_display_blank()
         self.main_window.app_startup()
         return self.exec_()
 

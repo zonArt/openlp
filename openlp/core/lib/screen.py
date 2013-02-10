@@ -244,7 +244,7 @@ class ScreenList(object):
         Loads the screen size and the monitor number from the settings.
         """
         from openlp.core.lib import Settings
-        # Add the screen settings to the settings dict. This has to be done here due to crycle dependency.
+        # Add the screen settings to the settings dict. This has to be done here due to cyclic dependency.
         # Do not do this anywhere else.
         screen_settings = {
             u'general/x position': self.current[u'size'].x(),

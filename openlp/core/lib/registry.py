@@ -60,10 +60,10 @@ class Registry(object):
         registry = cls()
         registry.service_list = {}
         registry.functions_list = {}
-        registry.running_under_test = True
+        registry.running_under_test = False
         # Allow the tests to remove Registry entries but not the live system
-        if u'openlp.py' in sys.argv[0]:
-            registry.running_under_test = False
+        if u'nose' in sys.argv[0]:
+            registry.running_under_test = True
         return registry
 
     def get(self, key):
@@ -106,13 +106,12 @@ class Registry(object):
         if self.running_under_test is False:
             log.error(u'Invalid Method call for key %s' % key)
             raise KeyError(u'Invalid Method call for key %s' % key)
-            return
         if key in self.service_list:
             del self.service_list[key]
 
     def register_function(self, event, function):
         """
-        Register a function and a handler to be called later
+        Register an event and associated function to be called
 
         ``event``
             The function description like "config_updated" or "live_display_hide" where a number of places in the
@@ -122,14 +121,14 @@ class Registry(object):
         ``function``
             The function to be called when the event happens.
         """
-        if not self.functions_list.has_key(event):
-            self.functions_list[event] = [function]
-        else:
+        if event in self.functions_list:
             self.functions_list[event].append(function)
+        else:
+            self.functions_list[event] = [function]
 
     def remove_function(self, event, function):
         """
-        Register a function and a handler to be called later
+        Remove an event and associated handler
 
         ``event``
             The function description..
@@ -140,13 +139,12 @@ class Registry(object):
         if self.running_under_test is False:
             log.error(u'Invalid Method call for key %s' % event)
             raise KeyError(u'Invalid Method call for key %s' % event)
-            return
         if event in self.functions_list:
             self.functions_list[event].remove(function)
 
     def execute(self, event, *args, **kwargs):
         """
-        Execute all the handlers registered passing the data to the handler and returning results
+        Execute all the handlers associated with the event and return an array of results.
 
         ``event``
             The function to be processed
@@ -170,4 +168,3 @@ class Registry(object):
                     log.debug(inspect.currentframe().f_back.f_locals)
                     log.exception(u'Exception for function %s', function)
         return results
-
