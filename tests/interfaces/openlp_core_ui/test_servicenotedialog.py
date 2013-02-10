@@ -1,5 +1,5 @@
 """
-    Package to test the openlp.core.ui package.
+Package to test the openlp.core.ui package.
 """
 from unittest import TestCase
 
@@ -7,6 +7,7 @@ from mock import patch
 from openlp.core.lib import Registry
 from openlp.core.ui import servicenoteform
 from PyQt4 import QtCore, QtGui, QtTest
+
 
 class TestStartNoteDialog(TestCase):
 

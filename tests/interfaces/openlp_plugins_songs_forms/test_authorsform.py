@@ -1,15 +1,6 @@
 """
 Package to test the openlp.core.ui package.
 """
-import sip
-sip.setapi(u'QDate', 2)
-sip.setapi(u'QDateTime', 2)
-sip.setapi(u'QString', 2)
-sip.setapi(u'QTextStream', 2)
-sip.setapi(u'QTime', 2)
-sip.setapi(u'QUrl', 2)
-sip.setapi(u'QVariant', 2)
-
 from unittest import TestCase
 
 from PyQt4 import QtGui
