@@ -156,7 +156,7 @@ class ThemeManager(QtGui.QWidget):
         files = SettingsManager.get_files(self.settingsSection, u'.otz')
         for theme_file in files:
             theme_file = os.path.join(self.path, theme_file)
-            self.unzipTheme(theme_file, self.path)
+            self.unzip_theme(theme_file, self.path)
             delete_file(theme_file)
         self.application.set_normal_cursor()
 
