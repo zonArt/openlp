@@ -1,5 +1,5 @@
 """
-    Package to test the openlp.core.ui package.
+Package to test the openlp.core.ui package.
 """
 from unittest import TestCase
 

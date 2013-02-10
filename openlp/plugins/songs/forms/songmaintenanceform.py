@@ -212,9 +212,10 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.authorform.auto_display_name = True
         if self.authorform.exec_():
             author = Author.populate(
-                first_name=self.authorform.first_name_edit.text(),
-                last_name=self.authorform.last_name_edit.text(),
-                display_name=self.authorform.display_edit.text())
+                first_name=self.authorform.first_name,
+                last_name=self.authorform.last_name,
+                display_name=self.authorform.display_name
+            )
             if self.checkAuthor(author):
                 if self.manager.save_object(author):
                     self.resetAuthors()

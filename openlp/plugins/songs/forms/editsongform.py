@@ -70,16 +70,13 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.setupUi(self)
         # Connecting signals and slots
         self.author_add_button.clicked.connect(self.on_author_add_button_clicked)
-        QtCore.QObject.connect(self.author_remove_button, QtCore.SIGNAL(u'clicked()'), self.onAuthorRemoveButtonClicked)
-        QtCore.QObject.connect(self.authors_list_view, QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
-            self.onAuthorsListViewClicked)
-        QtCore.QObject.connect(self.topic_add_button, QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
-        QtCore.QObject.connect(self.topic_remove_button, QtCore.SIGNAL(u'clicked()'), self.onTopicRemoveButtonClicked)
-        QtCore.QObject.connect(self.topics_list_view, QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
-            self.onTopicListViewClicked)
-        QtCore.QObject.connect(self.copyright_insert_button, QtCore.SIGNAL(u'clicked()'),
-            self.onCopyrightInsertButtonTriggered)
-        QtCore.QObject.connect(self.verse_add_button, QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
+        self.author_remove_button.clicked.connect(self.onAuthorRemoveButtonClicked)
+        self.authors_list_view.itemClicked.connect(self.onAuthorsListViewClicked)
+        self.topic_add_button.clicked.connect(self.onTopicAddButtonClicked)
+        self.topic_remove_button.clicked.connect(self.onTopicRemoveButtonClicked)
+        self.topics_list_view.itemClicked.connect(self.onTopicListViewClicked)
+        self.copyright_insert_button.clicked.connect(self.onCopyrightInsertButtonTriggered)
+        self.verse_add_button.clicked.connect(self.onVerseAddButtonClicked)
         QtCore.QObject.connect(self.verse_list_widget, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
             self.onVerseEditButtonClicked)
         QtCore.QObject.connect(self.verse_edit_button, QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)

@@ -73,9 +73,9 @@ class Ui_CustomEditDialog(object):
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
         self.upButton = create_button(customEditDialog, u'up_button', role=u'up', enabled=False,
-            click=customEditDialog.on_up_button_clicked)
+            click=customEditDialog.onUpButtonClicked)
         self.downButton = create_button(customEditDialog, u'down_button', role=u'down', enabled=False,
-            click=customEditDialog.on_down_button_clicked)
+            click=customEditDialog.onDownButtonClicked)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.centralLayout.addLayout(self.buttonLayout)

@@ -120,3 +120,39 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 return False
         else:
             return QtGui.QDialog.accept(self)
+
+    def _get_first_name(self):
+        """
+        Get the value of the first name from the UI widget.
+        """
+        return self.first_name_edit.text()
+
+    def _set_first_name(self, value):
+        """
+        Set the value of the first name in the UI widget.
+        """
+        self.first_name_edit.setText(value)
+
+    first_name = property(_get_first_name, _set_first_name)
+
+    def _get_last_name(self):
+        """
+        Get the value of the last name from the UI widget.
+        """
+        return self.last_name_edit.text()
+
+    def _set_last_name(self, value):
+        """
+        Set the value of the last name in the UI widget.
+        """
+        self.last_name_edit.setText(value)
+
+    last_name = property(_get_last_name, _set_last_name)
+
+    def _get_display_name(self):
+        return self.display_edit.text()
+
+    def _set_display_name(self, value):
+        self.display_edit.setText(value)
+
+    display_name = property(_get_display_name, _set_display_name)
