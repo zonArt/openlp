@@ -34,28 +34,61 @@ from openlp.core.lib.ui import create_button_box
 
 
 class Ui_ChooseGroupDialog(object):
+    """
+    The UI for the "Choose Image Group" form.
+    """
     def setupUi(self, choose_group_dialog):
+        """
+        Set up the UI.
+
+        ``choose_group_dialog``
+            The form object (not the class).
+        """
         choose_group_dialog.setObjectName(u'choose_group_dialog')
-        choose_group_dialog.resize(440, 119)
+        choose_group_dialog.resize(399, 119)
         self.choose_group_layout = QtGui.QFormLayout(choose_group_dialog)
         self.choose_group_layout.setFieldGrowthPolicy(QtGui.QFormLayout.ExpandingFieldsGrow)
         self.choose_group_layout.setMargin(8)
         self.choose_group_layout.setSpacing(8)
+        self.choose_group_layout.setLabelAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.choose_group_layout.setObjectName(u'choose_group_layout')
         self.group_question_label = QtGui.QLabel(choose_group_dialog)
         self.group_question_label.setWordWrap(True)
         self.group_question_label.setObjectName(u'group_question_label')
         self.choose_group_layout.setWidget(1, QtGui.QFormLayout.SpanningRole, self.group_question_label)
+        self.nogroup_radio_button = QtGui.QRadioButton(choose_group_dialog)
+        self.nogroup_radio_button.setChecked(True)
+        self.nogroup_radio_button.setObjectName(u'nogroup_radio_button')
+        self.choose_group_layout.setWidget(2, QtGui.QFormLayout.LabelRole, self.nogroup_radio_button)
+        self.existing_radio_button = QtGui.QRadioButton(choose_group_dialog)
+        self.existing_radio_button.setChecked(False)
+        self.existing_radio_button.setObjectName(u'existing_radio_button')
+        self.choose_group_layout.setWidget(3, QtGui.QFormLayout.LabelRole, self.existing_radio_button)
         self.group_combobox = QtGui.QComboBox(choose_group_dialog)
         self.group_combobox.setObjectName(u'group_combobox')
-        self.choose_group_layout.setWidget(2, QtGui.QFormLayout.FieldRole, self.group_combobox)
+        self.choose_group_layout.setWidget(3, QtGui.QFormLayout.FieldRole, self.group_combobox)
+        self.new_radio_button = QtGui.QRadioButton(choose_group_dialog)
+        self.new_radio_button.setChecked(False)
+        self.new_radio_button.setObjectName(u'new_radio_button')
+        self.choose_group_layout.setWidget(4, QtGui.QFormLayout.LabelRole, self.new_radio_button)
+        self.new_group_edit = QtGui.QLineEdit(choose_group_dialog)
+        self.new_group_edit.setObjectName(u'new_group_edit')
+        self.choose_group_layout.setWidget(4, QtGui.QFormLayout.FieldRole, self.new_group_edit)
         self.group_button_box = create_button_box(choose_group_dialog, u'buttonBox', [u'ok'])
-        self.choose_group_layout.setWidget(3, QtGui.QFormLayout.FieldRole, self.group_button_box)
+        self.choose_group_layout.setWidget(5, QtGui.QFormLayout.FieldRole, self.group_button_box)
 
         self.retranslateUi(choose_group_dialog)
         QtCore.QMetaObject.connectSlotsByName(choose_group_dialog)
 
     def retranslateUi(self, choose_group_dialog):
-        choose_group_dialog.setWindowTitle(translate('ImagePlugin.ChooseGroupForm', 'Choose group'))
-        self.group_question_label.setText(translate('ImagePlugin.ChooseGroupForm',
-            'To which group do you want these images to be added?'))
+        """
+        Translate the UI on the fly.
+
+        ``choose_group_dialog``
+            The form object (not the class).
+        """
+        choose_group_dialog.setWindowTitle(translate('ImagePlugin.ChooseGroupForm', 'Select Image Group'))
+        self.group_question_label.setText(translate('ImagePlugin.ChooseGroupForm', 'Add images to group:'))
+        self.nogroup_radio_button.setText(translate('ImagePlugin.ChooseGroupForm', 'No group'))
+        self.existing_radio_button.setText(translate('ImagePlugin.ChooseGroupForm', 'Existing group'))
+        self.new_radio_button.setText(translate('ImagePlugin.ChooseGroupForm', 'New group'))

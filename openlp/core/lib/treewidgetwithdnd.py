@@ -50,6 +50,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         self.header().close()
         self.defaultIndentation = self.indentation()
         self.setIndentation(0)
+        self.setAnimated(True)
         assert(self.mimeDataText)
 
     def activateDnD(self):
@@ -126,3 +127,13 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
             Receiver.send_message(u'%s_dnd_internal' % self.mimeDataText, self.itemAt(event.pos()))
         else:
             event.ignore()
+
+    # Convenience methods for emulating a QListWidget. This helps keeping MediaManagerItem simple.
+    def addItem(self, item):
+        self.addTopLevelItem(item)
+
+    def count(self):
+        return self.topLevelItemCount()
+
+    def item(self, index):
+        return self.topLevelItem(index)

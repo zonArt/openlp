@@ -164,12 +164,11 @@ class PresentationMediaItem(MediaManagerItem):
                 continue
             filename = os.path.split(unicode(file))[1]
             if not os.path.exists(file):
-                item_name = QtGui.QTreeWidgetItem(filename)
-                item_name.setText(0, filename)
-                item_name.setIcon(0, build_icon(ERROR))
-                item_name.setData(0, QtCore.Qt.UserRole, file)
-                item_name.setToolTip(0, file)
-                self.listView.addTopLevelItem(item_name)
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(build_icon(ERROR))
+                item_name.setData(QtCore.Qt.UserRole, file)
+                item_name.setToolTip(file)
+                self.listView.addItem(item_name)
             else:
                 if titles.count(filename) > 0:
                     if not initialLoad:
@@ -202,12 +201,11 @@ class PresentationMediaItem(MediaManagerItem):
                         critical_error_message_box(UiStrings().UnsupportedFile,
                             translate('PresentationPlugin.MediaItem', 'This type of presentation is not supported.'))
                         continue
-                item_name = QtGui.QTreeWidgetItem(filename)
-                item_name.setText(0, filename)
-                item_name.setData(0, QtCore.Qt.UserRole, file)
-                item_name.setIcon(0, icon)
-                item_name.setToolTip(0, file)
-                self.listView.addTopLevelItem(item_name)
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setData(QtCore.Qt.UserRole, file)
+                item_name.setIcon(icon)
+                item_name.setToolTip(file)
+                self.listView.addItem(item_name)
         Receiver.send_message(u'cursor_normal')
         if not initialLoad:
             self.main_window.finishedProgressBar()
@@ -233,7 +231,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
             for row in row_list:
-                self.listView.takeTopLevelItem(row)
+                self.listView.takeItem(row)
             Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,

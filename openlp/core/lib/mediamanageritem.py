@@ -35,7 +35,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, Receiver, TreeWidgetWithDnD, \
+from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, Receiver, ListWidgetWithDnD, \
     ServiceItemContext, Settings, Registry, UiStrings, build_icon, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
@@ -213,7 +213,8 @@ class MediaManagerItem(QtGui.QWidget):
         Creates the main widget for listing items the media item is tracking
         """
         # Add the List widget
-        self.listView = TreeWidgetWithDnD(self, self.plugin.name)
+        self.listView = ListWidgetWithDnD(self, self.plugin.name)
+        self.listView.setSpacing(1)
         self.listView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.listView.setAlternatingRowColors(True)
         self.listView.setObjectName(u'%sListView' % self.plugin.name)
@@ -372,9 +373,9 @@ class MediaManagerItem(QtGui.QWidget):
         """
         names = []
         full_list = []
-        for count in range(self.listView.topLevelItemCount()):
-            names.append(self.listView.topLevelItem(count).text(0))
-            full_list.append(self.listView.topLevelItem(count).data(0, QtCore.Qt.UserRole))
+        for count in range(self.listView.count()):
+            names.append(self.listView.item(count).text())
+            full_list.append(self.listView.item(count).data(QtCore.Qt.UserRole))
         duplicates_found = False
         files_added = False
         for file_path in files:
@@ -413,9 +414,9 @@ class MediaManagerItem(QtGui.QWidget):
         """
         count = 0
         file_list = []
-        while count < self.listView.topLevelItemCount():
-            bitem = self.listView.topLevelItem(count)
-            filename = bitem.data(0, QtCore.Qt.UserRole)
+        while count < self.listView.count():
+            bitem = self.listView.item(count)
+            filename = bitem.data(QtCore.Qt.UserRole)
             file_list.append(filename)
             count += 1
         return file_list
@@ -523,8 +524,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Create a media item from an item id.
         """
-        item = QtGui.QTreeWidgetItem()
-        item.setData(0, QtCore.Qt.UserRole, item_id)
+        item = QtGui.QListWidgetItem()
+        item.setData(QtCore.Qt.UserRole, item_id)
         return item
 
     def onAddClick(self):
@@ -597,16 +598,15 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Checks if the listView is empty and adds a "No Search Results" item.
         """
-        if self.listView.topLevelItemCount():
+        if self.listView.count():
             return
         message = translate('OpenLP.MediaManagerItem', 'No Search Results')
-        item = QtGui.QTreeWidgetItem(message)
-        item.setText(0, message)
+        item = QtGui.QListWidgetItem(message)
         item.setFlags(QtCore.Qt.NoItemFlags)
         font = QtGui.QFont()
         font.setItalic(True)
-        item.setFont(0, font)
-        self.listView.addTopLevelItem(item)
+        item.setFont(font)
+        self.listView.addItem(item)
 
     def _getIdOfItemToGenerate(self, item, remoteItem):
         """
@@ -623,7 +623,7 @@ class MediaManagerItem(QtGui.QWidget):
                 item = self.listView.currentItem()
                 if item is None:
                     return False
-                item_id = item.data(0, QtCore.Qt.UserRole)
+                item_id = item.data(QtCore.Qt.UserRole)
             else:
                 item_id = remoteItem
         else:
@@ -638,7 +638,7 @@ class MediaManagerItem(QtGui.QWidget):
         if self.autoSelectId == -1:
             item = self.listView.currentItem()
             if item:
-                self.autoSelectId = item.data(0, QtCore.Qt.UserRole)
+                self.autoSelectId = item.data(QtCore.Qt.UserRole)
 
     def search(self, string, showError=True):
         """

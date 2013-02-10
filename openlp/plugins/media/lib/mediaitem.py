@@ -147,7 +147,7 @@ class MediaMediaItem(MediaManagerItem):
         if check_item_selected(self.listView,
                 translate('MediaPlugin.MediaItem', 'You must select a media file to replace the background with.')):
             item = self.listView.currentItem()
-            filename = item.data(0, QtCore.Qt.UserRole)
+            filename = item.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 service_item = ServiceItem()
                 service_item.title = u'webkit'
@@ -171,7 +171,7 @@ class MediaMediaItem(MediaManagerItem):
             item = self.listView.currentItem()
             if item is None:
                 return False
-        filename = item.data(0, QtCore.Qt.UserRole)
+        filename = item.data(QtCore.Qt.UserRole)
         if not os.path.exists(filename):
             if not remote:
                 # File is no longer present
@@ -253,7 +253,7 @@ class MediaMediaItem(MediaManagerItem):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
-                self.listView.takeTopLevelItem(row)
+                self.listView.takeItem(row)
             Settings().setValue(self.settingsSection + u'/media files', self.getFileList())
 
     def loadList(self, media, target_group=None):
@@ -264,27 +264,24 @@ class MediaMediaItem(MediaManagerItem):
             track_info = QtCore.QFileInfo(track)
             if not os.path.exists(track):
                 filename = os.path.split(unicode(track))[1]
-                item_name = QtGui.QTreeWidgetItem(filename)
-                item_name.setText(0, filename)
-                item_name.setIcon(0, ERROR)
-                item_name.setData(0, QtCore.Qt.UserRole, track)
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(ERROR)
+                item_name.setData(QtCore.Qt.UserRole, track)
             elif track_info.isFile():
                 filename = os.path.split(unicode(track))[1]
-                item_name = QtGui.QTreeWidgetItem(filename)
-                item_name.setText(0, filename)
+                item_name = QtGui.QListWidgetItem(filename)
                 if u'*.%s' % (filename.split(u'.')[-1].lower()) in self.media_controller.audio_extensions_list:
-                    item_name.setIcon(0, AUDIO)
+                    item_name.setIcon(AUDIO)
                 else:
-                    item_name.setIcon(0, VIDEO)
-                item_name.setData(0, QtCore.Qt.UserRole, track)
+                    item_name.setIcon(VIDEO)
+                item_name.setData(QtCore.Qt.UserRole, track)
             else:
                 filename = os.path.split(unicode(track))[1]
-                item_name = QtGui.QTreeWidgetItem(filename)
-                item_name.setText(0, filename)
-                item_name.setIcon(0, build_icon(DVDICON))
-                item_name.setData(0, QtCore.Qt.UserRole, track)
-            item_name.setToolTip(0, track)
-            self.listView.addTopLevelItem(item_name)
+                item_name = QtGui.QListWidgetItem(filename)
+                item_name.setIcon(build_icon(DVDICON))
+                item_name.setData(QtCore.Qt.UserRole, track)
+            item_name.setToolTip(track)
+            self.listView.addItem(item_name)
 
     def getList(self, type=MediaType.Audio):
         media = Settings().value(self.settingsSection + u'/media files')

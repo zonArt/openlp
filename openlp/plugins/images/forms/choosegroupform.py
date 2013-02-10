@@ -29,8 +29,6 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.images.forms.choosegroupdialog import Ui_ChooseGroupDialog
 
 

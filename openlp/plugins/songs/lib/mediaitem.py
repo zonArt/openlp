@@ -226,10 +226,9 @@ class SongMediaItem(MediaManagerItem):
             author_list = [author.display_name for author in song.authors]
             song_title = unicode(song.title)
             song_detail = u'%s (%s)' % (song_title, create_separated_list(author_list))
-            song_name = QtGui.QTreeWidgetItem(song_detail)
-            song_name.setText(0, song_detail)
-            song_name.setData(0, QtCore.Qt.UserRole, song.id)
-            self.listView.addTopLevelItem(song_name)
+            song_name = QtGui.QListWidgetItem(song_detail)
+            song_name.setData(QtCore.Qt.UserRole, song.id)
+            self.listView.addItem(song_name)
             # Auto-select the item if name has been set
             if song.id == self.autoSelectId:
                 self.listView.setCurrentItem(song_name)
@@ -244,10 +243,9 @@ class SongMediaItem(MediaManagerItem):
                 if song.temporary:
                     continue
                 song_detail = u'%s (%s)' % (author.display_name, song.title)
-                song_name = QtGui.QTreeWidgetItem(song_detail)
-                song_name.setText(0, song_detail)
-                song_name.setData(0, QtCore.Qt.UserRole, song.id)
-                self.listView.addTopLevelItem(song_name)
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, song.id)
+                self.listView.addItem(song_name)
 
     def displayResultsBook(self, searchresults, song_number=False):
         log.debug(u'display results Book')
@@ -262,10 +260,9 @@ class SongMediaItem(MediaManagerItem):
                 if song_number and not song_number in song.song_number:
                     continue
                 song_detail = u'%s - %s (%s)' % (book.name, song.song_number, song.title)
-                song_name = QtGui.QTreeWidgetItem(song_detail)
-                song_name.setText(0, song_detail)
-                song_name.setData(0, QtCore.Qt.UserRole, song.id)
-                self.listView.addTopLevelItem(song_name)
+                song_name = QtGui.QListWidgetItem(song_detail)
+                song_name.setData(QtCore.Qt.UserRole, song.id)
+                self.listView.addItem(song_name)
 
     def onClearTextButtonClick(self):
         """
@@ -344,7 +341,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onEditClick')
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
-            item_id = self.editItem.data(0, QtCore.Qt.UserRole)
+            item_id = self.editItem.data(QtCore.Qt.UserRole)
             self.editSongForm.loadSong(item_id, False)
             self.editSongForm.exec_()
             self.autoSelectId = -1
@@ -393,7 +390,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'onCloneClick')
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
-            item_id = self.editItem.data(0, QtCore.Qt.UserRole)
+            item_id = self.editItem.data(QtCore.Qt.UserRole)
             old_song = self.plugin.manager.get_object(Song, item_id)
             song_xml = self.openLyrics.song_to_xml(old_song)
             new_song = self.openLyrics.xml_to_song(song_xml)

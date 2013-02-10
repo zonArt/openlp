@@ -22,6 +22,7 @@
     <file>song_book_edit.png</file>
   </qresource>
   <qresource prefix="images">
+    <file>image_group.png</file>
     <file>image_new_group.png</file>
   </qresource>
   <qresource prefix="bibles">

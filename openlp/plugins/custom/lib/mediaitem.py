@@ -103,10 +103,9 @@ class CustomMediaItem(MediaManagerItem):
         self.listView.clear()
         custom_slides.sort()
         for custom_slide in custom_slides:
-            custom_name = QtGui.QTreeWidgetItem(custom_slide.title)
-            custom_name.setText(0, custom_slide.title)
-            custom_name.setData(0, QtCore.Qt.UserRole, custom_slide.id)
-            self.listView.addTopLevelItem(custom_name)
+            custom_name = QtGui.QListWidgetItem(custom_slide.title)
+            custom_name.setData(QtCore.Qt.UserRole, custom_slide.id)
+            self.listView.addItem(custom_name)
             # Auto-select the custom.
             if custom_slide.id == self.autoSelectId:
                 self.listView.setCurrentItem(custom_name)
@@ -149,7 +148,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
-            item_id = item.data(0, QtCore.Qt.UserRole)
+            item_id = item.data(QtCore.Qt.UserRole)
             self.edit_custom_form.loadCustom(item_id, False)
             self.edit_custom_form.exec_()
             self.autoSelectId = -1

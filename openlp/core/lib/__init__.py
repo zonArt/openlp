@@ -390,6 +390,7 @@ from uistrings import UiStrings
 from eventreceiver import Receiver
 from screen import ScreenList
 from settings import Settings
+from listwidgetwithdnd import ListWidgetWithDnD
 from treewidgetwithdnd import TreeWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit

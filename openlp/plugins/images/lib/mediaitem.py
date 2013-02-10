@@ -34,8 +34,8 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
     check_item_selected, check_directory_exists, Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings, \
-    UiStrings
-from openlp.core.lib.ui import critical_error_message_box
+    StringContent, TreeWidgetWithDnD, UiStrings
+from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
@@ -55,10 +55,10 @@ class ImageMediaItem(MediaManagerItem):
         self.quickPreviewAllowed = True
         self.hasSearch = True
         self.manager = plugin.manager
-        self.choosegroupform = ChooseGroupForm(self)
-        self.addgroupform = AddGroupForm(self)
-        self.fill_groups_combobox(self.choosegroupform.group_combobox)
-        self.fill_groups_combobox(self.addgroupform.parent_group_combobox)
+        self.choose_group_form = ChooseGroupForm(self)
+        self.add_group_form = AddGroupForm(self)
+        self.fill_groups_combobox(self.choose_group_form.group_combobox)
+        self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
         # Allow DnD from the desktop
         self.listView.activateDnD()
@@ -106,7 +106,63 @@ class ImageMediaItem(MediaManagerItem):
             initial_load=True)
 
     def addListViewToToolBar(self):
-        MediaManagerItem.addListViewToToolBar(self)
+        """
+        Creates the main widget for listing items the media item is tracking.
+        This method overloads MediaManagerItem.addListViewToToolBar
+        """
+        # Add the List widget
+        self.listView = TreeWidgetWithDnD(self, self.plugin.name)
+        self.listView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.listView.setAlternatingRowColors(True)
+        self.listView.setObjectName(u'%sTreeView' % self.plugin.name)
+        # Add to pageLayout
+        self.pageLayout.addWidget(self.listView)
+        # define and add the context menu
+        self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        if self.hasEditIcon:
+            create_widget_action(self.listView,
+                text=self.plugin.getString(StringContent.Edit)[u'title'],
+                icon=u':/general/general_edit.png',
+                triggers=self.onEditClick)
+            create_widget_action(self.listView, separator=True)
+        if self.hasDeleteIcon:
+            create_widget_action(self.listView,
+                text=self.plugin.getString(StringContent.Delete)[u'title'],
+                icon=u':/general/general_delete.png',
+                shortcuts=[QtCore.Qt.Key_Delete], triggers=self.onDeleteClick)
+            create_widget_action(self.listView, separator=True)
+        create_widget_action(self.listView,
+            text=self.plugin.getString(StringContent.Preview)[u'title'],
+            icon=u':/general/general_preview.png',
+            shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
+            triggers=self.onPreviewClick)
+        create_widget_action(self.listView,
+            text=self.plugin.getString(StringContent.Live)[u'title'],
+            icon=u':/general/general_live.png',
+            shortcuts=[QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter,
+            QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return],
+            triggers=self.onLiveClick)
+        create_widget_action(self.listView,
+            text=self.plugin.getString(StringContent.Service)[u'title'],
+            icon=u':/general/general_add.png',
+            shortcuts=[QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
+            triggers=self.onAddClick)
+        if self.addToServiceItem:
+            create_widget_action(self.listView, separator=True)
+            create_widget_action(self.listView,
+                text=translate('OpenLP.MediaManagerItem', '&Add to selected Service Item'),
+                icon=u':/general/general_add.png',
+                triggers=self.onAddEditClick)
+        self.addCustomContextActions()
+        # Create the context menu and add all actions from the listView.
+        self.menu = QtGui.QMenu()
+        self.menu.addActions(self.listView.actions())
+        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
+            self.onDoubleClicked)
+        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'itemSelectionChanged()'),
+            self.onSelectionChange)
+        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'customContextMenuRequested(QPoint)'),
+            self.contextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addStartHeaderBar(self):
@@ -148,7 +204,10 @@ class ImageMediaItem(MediaManagerItem):
                     item_data = row_item.data(0, QtCore.Qt.UserRole)
                     if isinstance(item_data, ImageFilenames):
                         delete_file(os.path.join(self.servicePath, row_item.text(0)))
-                        row_item.parent().removeChild(row_item)
+                        if item_data.group_id == 0:
+                            self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
+                        else:
+                            row_item.parent().removeChild(row_item)
                         self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
                     elif isinstance(item_data, ImageGroups):
                         if QtGui.QMessageBox.question(self.listView.parent(),
@@ -163,13 +222,8 @@ class ImageMediaItem(MediaManagerItem):
                                 self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
                             else:
                                 row_item.parent().removeChild(row_item)
-                            self.fill_groups_combobox(self.choosegroupform.group_combobox)
-                            self.fill_groups_combobox(self.addgroupform.parent_group_combobox)
-                    elif item_data == u'Imported':
-                        QtGui.QMessageBox.information(self, translate('ImagePlugin.MediaItem', 'Can\'t delete group'),
-                            translate('ImagePlugin.MediaItem', 'The Imported group is a special group and can not be '
-                            'deleted. It will disappear when it doesn\'t contain any images anymore.'),
-                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                            self.fill_groups_combobox(self.choose_group_form.group_combobox)
+                            self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
             Receiver.send_message(u'cursor_normal')
@@ -177,14 +231,16 @@ class ImageMediaItem(MediaManagerItem):
 
     def add_sub_groups(self, group_list, parent_group_id):
         """
-        Recursively add subgroups to the given parent group
+        Recursively add subgroups to the given parent group in a QTreeWidget
         """
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
         image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
+        folder_icon = build_icon(u':/images/image_group.png')
         for image_group in image_groups:
             group = QtGui.QTreeWidgetItem()
             group.setText(0, image_group.group_name)
             group.setData(0, QtCore.Qt.UserRole, image_group)
+            group.setIcon(0, folder_icon)
             if parent_group_id is 0:
                 self.listView.addTopLevelItem(group)
             else:
@@ -252,15 +308,9 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setToolTip(0, imageFile.filename)
             item_name.setData(0, QtCore.Qt.UserRole, imageFile)
             if imageFile.group_id is 0:
-                if 0 not in group_items:
-                    # The 'Imported' group is only displayed when there are files that were imported from the
-                    # configuration file
-                    imported_group = QtGui.QTreeWidgetItem()
-                    imported_group.setText(0, translate('ImagePlugin.MediaItem', 'Imported'))
-                    imported_group.setData(0, QtCore.Qt.UserRole, u'Imported')
-                    self.listView.insertTopLevelItem(0, imported_group)
-                    group_items[0] = imported_group
-            group_items[imageFile.group_id].addChild(item_name)
+                self.listView.addTopLevelItem(item_name)
+            else:
+                group_items[imageFile.group_id].addChild(item_name)
             if not initial_load:
                 self.main_window.incrementProgressBar()
         if not initial_load:
@@ -285,19 +335,36 @@ class ImageMediaItem(MediaManagerItem):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
         """
-        if self.manager.get_object_count(ImageGroups) == 0:
-            QtGui.QMessageBox.warning(self, translate('ImagePlugin.MediaItem', 'No image groups'),
-                translate('ImagePlugin.MediaItem', 'No image groups exist yet. Please create one before adding images.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-            self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
-                initial_load=initial_load)
-            return
         if target_group is None:
             # Ask which group the images should be saved in
-            if self.choosegroupform.exec_():
-                group_id = self.choosegroupform.group_combobox.itemData(
-                    self.choosegroupform.group_combobox.currentIndex(), QtCore.Qt.UserRole)
-            parent_group = self.manager.get_object_filtered(ImageGroups, ImageGroups.id == group_id)
+            if self.manager.get_object_count(ImageGroups) == 0:
+                self.choose_group_form.nogroup_radio_button.setChecked(True)
+                self.choose_group_form.existing_radio_button.setChecked(False)
+                self.choose_group_form.new_radio_button.setChecked(False)
+                self.choose_group_form.existing_radio_button.setDisabled(True)
+                self.choose_group_form.group_combobox.setDisabled(True)
+            else:
+                self.choose_group_form.nogroup_radio_button.setChecked(True)
+                self.choose_group_form.existing_radio_button.setChecked(False)
+                self.choose_group_form.new_radio_button.setChecked(False)
+                self.choose_group_form.existing_radio_button.setDisabled(False)
+                self.choose_group_form.group_combobox.setDisabled(False)
+            if self.choose_group_form.exec_():
+                if self.choose_group_form.nogroup_radio_button.isChecked():
+                    # User chose 'No group'
+                    parent_group = ImageGroups()
+                    parent_group.id = 0
+                elif self.choose_group_form.existing_radio_button.isChecked():
+                    # User chose 'Existing group'
+                    group_id = self.choose_group_form.group_combobox.itemData(
+                        self.choose_group_form.group_combobox.currentIndex(), QtCore.Qt.UserRole)
+                    parent_group = self.manager.get_object_filtered(ImageGroups, ImageGroups.id == group_id)
+                elif self.choose_group_form.new_radio_button.isChecked():
+                    # User chose 'New group'
+                    parent_group = ImageGroups()
+                    parent_group.parent_id = 0
+                    parent_group.group_name = self.choose_group_form.new_group_edit.text()
+                    self.manager.save_object(parent_group)
         else:
             parent_group = target_group.data(0, QtCore.Qt.UserRole)
             if isinstance(parent_group, ImageFilenames):
@@ -313,7 +380,7 @@ class ImageMediaItem(MediaManagerItem):
             imageFile = ImageFilenames()
             imageFile.group_id = parent_group.id
             imageFile.filename = unicode(filename)
-            success = self.manager.save_object(imageFile)
+            self.manager.save_object(imageFile)
         self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
             initial_load=initial_load, open_group=parent_group)
 
@@ -430,32 +497,20 @@ class ImageMediaItem(MediaManagerItem):
         groups = self.manager.get_all_objects(ImageGroups, ImageGroups.group_name == newGroup.group_name)
         return self.__checkObject(groups, newGroup, edit)
 
-    def onFileClick(self):
-        """
-        Called when the user clicks the 'Load images' button. This method is overloaded from MediaManagerItem.
-        """
-        if self.manager.get_object_count(ImageGroups) == 0:
-            QtGui.QMessageBox.warning(self, translate('ImagePlugin.MediaItem', 'No image groups'),
-                translate('ImagePlugin.MediaItem', 'No image groups exist yet. Please create one before adding images.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-        else:
-            # At least one group exists, so we run the regular file adding code
-            MediaManagerItem.onFileClick(self)
-
     def onAddGroupClick(self):
         """
         Called to add a new group
         """
-        if self.addgroupform.exec_(show_top_level_group=True):
-            new_group = ImageGroups.populate(parent_id=self.addgroupform.parent_group_combobox.itemData(
-                self.addgroupform.parent_group_combobox.currentIndex(), QtCore.Qt.UserRole),
-                group_name=self.addgroupform.name_edit.text())
+        if self.add_group_form.exec_(show_top_level_group=True):
+            new_group = ImageGroups.populate(parent_id=self.add_group_form.parent_group_combobox.itemData(
+                self.add_group_form.parent_group_combobox.currentIndex(), QtCore.Qt.UserRole),
+                group_name=self.add_group_form.name_edit.text())
             if self.checkGroupName(new_group):
                 if self.manager.save_object(new_group):
                     self.loadFullList(self.manager.get_all_objects(ImageFilenames,
                         order_by_ref=ImageFilenames.filename))
-                    self.fill_groups_combobox(self.choosegroupform.group_combobox)
-                    self.fill_groups_combobox(self.addgroupform.parent_group_combobox)
+                    self.fill_groups_combobox(self.choose_group_form.group_combobox)
+                    self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
                 else:
                     critical_error_message_box(
                         message=translate('ImagePlugin.AddGroupForm', 'Could not add the new group.'))

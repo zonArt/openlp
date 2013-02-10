@@ -76,7 +76,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         Check if the first item is a second bible item or not.
         """
-        bitem = self.listView.topLevelItem(0)
+        bitem = self.listView.item(0)
         if not bitem.flags() & QtCore.Qt.ItemIsSelectable:
             # The item is the "No Search Results" item.
             self.listView.clear()
@@ -95,7 +95,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
 
     def _decodeQtObject(self, bitem, key):
-        reference = bitem.data(0, QtCore.Qt.UserRole)
+        reference = bitem.data(QtCore.Qt.UserRole)
         obj = reference[unicode(key)]
         return unicode(obj).strip()
 
@@ -634,7 +634,7 @@ class BibleMediaItem(MediaManagerItem):
             self.second_search_results = self.plugin.manager.get_verses(second_bible, versetext, book_ref_id)
         if not self.advancedLockButton.isChecked():
             self.listView.clear()
-        if self.listView.topLevelItemCount() != 0:
+        if self.listView.count() != 0:
             self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
@@ -691,7 +691,7 @@ class BibleMediaItem(MediaManagerItem):
                 self.second_search_results = bibles[second_bible].get_verses(text)
         if not self.quickLockButton.isChecked():
             self.listView.clear()
-        if self.listView.topLevelItemCount() != 0 and self.search_results:
+        if self.listView.count() != 0 and self.search_results:
             self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
@@ -707,7 +707,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         items = self.buildDisplayResults(bible, second_bible, self.search_results)
         for bible_verse in items:
-            self.listView.addTopLevelItem(bible_verse)
+            self.listView.addItem(bible_verse)
         self.listView.selectAll()
         self.search_results = {}
         self.second_search_results = {}
@@ -766,9 +766,8 @@ class BibleMediaItem(MediaManagerItem):
                     second_version)
             else:
                 bible_text = u'%s %d%s%d (%s)' % (book, verse.chapter, verse_separator, verse.verse, version)
-            bible_verse = QtGui.QTreeWidgetItem(bible_text)
-            bible_verse.setText(0, bible_text)
-            bible_verse.setData(0, QtCore.Qt.UserRole, data)
+            bible_verse = QtGui.QListWidgetItem(bible_text)
+            bible_verse.setData(QtCore.Qt.UserRole, data)
             items.append(bible_verse)
         return items
 
@@ -972,7 +971,7 @@ class BibleMediaItem(MediaManagerItem):
         return []
 
     def createItemFromId(self, item_id):
-        item = QtGui.QTreeWidgetItem()
+        item = QtGui.QListWidgetItem()
         bible = self.quickVersionComboBox.currentText()
         search_results = self.plugin.manager.get_verses(bible, item_id, False)
         items = self.buildDisplayResults(bible, u'', search_results)
