@@ -602,10 +602,14 @@ class SlideController(DisplayController):
         Change layout of display control buttons on controller size change
         """
         if self.isLive:
-            if width > 300 and self.hideMenu.isVisible():
+            # Space used by the toolbar.
+            used_space = self.toolbar.size().width() + self.hideMenu.size().width()
+            # The + 40 is needed to prevent flickering. This can be considered a "buffer".
+            if width > used_space + 40 and self.hideMenu.isVisible():
                 self.toolbar.setWidgetVisible(self.hideMenuList, False)
                 self.toolbar.setWidgetVisible(self.wideMenu)
-            elif width < 300 and not self.hideMenu.isVisible():
+            # The - 40 is needed to prevent flickering. This can be considered a "buffer".
+            elif width < used_space - 40 and not self.hideMenu.isVisible():
                 self.toolbar.setWidgetVisible(self.wideMenu, False)
                 self.toolbar.setWidgetVisible(self.hideMenuList)
 
