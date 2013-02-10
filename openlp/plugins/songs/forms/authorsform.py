@@ -33,6 +33,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
 
+
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     """
     Class to control the Maintenance of Authors Dialog
@@ -43,60 +44,79 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self._autoDisplayName = False
-        QtCore.QObject.connect(self.firstNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onFirstNameEditTextEdited)
-        QtCore.QObject.connect(self.lastNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onLastNameEditTextEdited)
+        self.auto_display_name = False
+        self.first_name_edit.textEdited.connect(self.on_first_name_edited)
+        self.last_name_edit.textEdited.connect(self.on_last_name_edited)
 
     def exec_(self, clear=True):
+        """
+        Execute the dialog.
+
+        ``clear``
+            Clear the form fields before displaying the dialog.
+        """
         if clear:
-            self.firstNameEdit.clear()
-            self.lastNameEdit.clear()
-            self.displayEdit.clear()
-        self.firstNameEdit.setFocus()
+            self.first_name_edit.clear()
+            self.last_name_edit.clear()
+            self.display_edit.clear()
+        self.first_name_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
-    def onFirstNameEditTextEdited(self, display_name):
-        if not self._autoDisplayName:
+    def on_first_name_edited(self, display_name):
+        """
+        Slot for when the first name is edited.
+
+        When the first name is edited and the setting to automatically create a display name is True, then try to create
+        a display name from the first and last names.
+
+        ``display_name``
+            The text from the first_name_edit widget.
+        """
+        if not self.auto_display_name:
             return
-        if self.lastNameEdit.text():
-            display_name = display_name + u' ' + self.lastNameEdit.text()
-        self.displayEdit.setText(display_name)
+        if self.last_name_edit.text():
+            display_name = display_name + u' ' + self.last_name_edit.text()
+        self.display_edit.setText(display_name)
 
-    def onLastNameEditTextEdited(self, display_name):
-        if not self._autoDisplayName:
+    def on_last_name_edited(self, display_name):
+        """
+        Slot for when the last name is edited.
+
+        When the last name is edited and the setting to automatically create a display name is True, then try to create
+        a display name from the first and last names.
+
+        ``display_name``
+            The text from the last_name_edit widget.
+        """
+        if not self.auto_display_name:
             return
-        if self.firstNameEdit.text():
-            display_name = self.firstNameEdit.text() + u' ' + display_name
-        self.displayEdit.setText(display_name)
-
-    def autoDisplayName(self):
-        return self._autoDisplayName
-
-    def setAutoDisplayName(self, on):
-        self._autoDisplayName = on
+        if self.first_name_edit.text():
+            display_name = self.first_name_edit.text() + u' ' + display_name
+        self.display_edit.setText(display_name)
 
     def accept(self):
-        if not self.firstNameEdit.text():
+        """
+        Override the QDialog's accept() method to do some validation before the dialog can be closed.
+        """
+        if not self.first_name_edit.text():
             critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm', 'You need to type in the first name of the author.'))
-            self.firstNameEdit.setFocus()
+            self.first_name_edit.setFocus()
             return False
-        elif not self.lastNameEdit.text():
+        elif not self.last_name_edit.text():
             critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm', 'You need to type in the last name of the author.'))
-            self.lastNameEdit.setFocus()
+            self.last_name_edit.setFocus()
             return False
-        elif not self.displayEdit.text():
+        elif not self.display_edit.text():
             if critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm',
                     'You have not set a display name for the author, combine the first and last names?'),
                 parent=self, question=True) == QtGui.QMessageBox.Yes:
-                self.displayEdit.setText(self.firstNameEdit.text() + u' ' + self.lastNameEdit.text())
+                self.display_edit.setText(self.first_name_edit.text() + u' ' + self.last_name_edit.text())
                 return QtGui.QDialog.accept(self)
             else:
-                self.displayEdit.setFocus()
+                self.display_edit.setFocus()
                 return False
         else:
             return QtGui.QDialog.accept(self)

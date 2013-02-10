@@ -174,7 +174,7 @@ class Ui_FirstTimeWizard(object):
         self.defaultsLayout.setContentsMargins(50, 20, 50, 20)
         self.defaultsLayout.setObjectName(u'defaultsLayout')
         self.displayLabel = QtGui.QLabel(self.defaultsPage)
-        self.displayLabel.setObjectName(u'displayLabel')
+        self.displayLabel.setObjectName(u'display_label')
         self.displayComboBox = QtGui.QComboBox(self.defaultsPage)
         self.displayComboBox.setEditable(False)
         self.displayComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
@@ -186,7 +186,7 @@ class Ui_FirstTimeWizard(object):
         self.themeComboBox.setEditable(False)
         self.themeComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
         self.themeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.themeComboBox.setObjectName(u'themeComboBox')
+        self.themeComboBox.setObjectName(u'theme_combo_box')
         self.defaultsLayout.addRow(self.themeLabel, self.themeComboBox)
         FirstTimeWizard.setPage(FirstTimePage.Defaults, self.defaultsPage)
         # Progress page

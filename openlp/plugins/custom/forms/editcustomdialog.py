@@ -42,11 +42,11 @@ class Ui_CustomEditDialog(object):
         self.titleLayout = QtGui.QHBoxLayout()
         self.titleLayout.setObjectName(u'titleLayout')
         self.titleLabel = QtGui.QLabel(customEditDialog)
-        self.titleLabel.setObjectName(u'titleLabel')
+        self.titleLabel.setObjectName(u'title_label')
         self.titleLayout.addWidget(self.titleLabel)
         self.titleEdit = QtGui.QLineEdit(customEditDialog)
         self.titleLabel.setBuddy(self.titleEdit)
-        self.titleEdit.setObjectName(u'titleEdit')
+        self.titleEdit.setObjectName(u'title_edit')
         self.titleLayout.addWidget(self.titleEdit)
         self.dialogLayout.addLayout(self.titleLayout)
         self.centralLayout = QtGui.QHBoxLayout()
@@ -72,10 +72,10 @@ class Ui_CustomEditDialog(object):
         self.deleteButton.setEnabled(False)
         self.buttonLayout.addWidget(self.deleteButton)
         self.buttonLayout.addStretch()
-        self.upButton = create_button(customEditDialog, u'upButton', role=u'up', enabled=False,
-            click=customEditDialog.onUpButtonClicked)
-        self.downButton = create_button(customEditDialog, u'downButton', role=u'down', enabled=False,
-            click=customEditDialog.onDownButtonClicked)
+        self.upButton = create_button(customEditDialog, u'up_button', role=u'up', enabled=False,
+            click=customEditDialog.on_up_button_clicked)
+        self.downButton = create_button(customEditDialog, u'down_button', role=u'down', enabled=False,
+            click=customEditDialog.on_down_button_clicked)
         self.buttonLayout.addWidget(self.upButton)
         self.buttonLayout.addWidget(self.downButton)
         self.centralLayout.addLayout(self.buttonLayout)
@@ -86,7 +86,7 @@ class Ui_CustomEditDialog(object):
         self.themeLabel.setObjectName(u'themeLabel')
         self.themeComboBox = QtGui.QComboBox(customEditDialog)
         self.themeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.themeComboBox.setObjectName(u'themeComboBox')
+        self.themeComboBox.setObjectName(u'theme_combo_box')
         self.themeLabel.setBuddy(self.themeComboBox)
         self.bottomFormLayout.addRow(self.themeLabel, self.themeComboBox)
         self.creditLabel = QtGui.QLabel(customEditDialog)
