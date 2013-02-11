@@ -40,6 +40,7 @@ log = logging.getLogger(__name__)
 
 VERSE_REGEX = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
 
+
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
     This is the form that is used to edit the verses of the song.

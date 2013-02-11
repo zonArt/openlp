@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box

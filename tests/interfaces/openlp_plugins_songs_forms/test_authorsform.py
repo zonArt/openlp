@@ -97,7 +97,7 @@ class TestAuthorsForm(TestCase):
         display_name = u'John'
 
         # WHEN: The display_name_edit's text is set
-        self.form.display_name_edit.setText(display_name)
+        self.form.display_edit.setText(display_name)
 
         # THEN: The display_name property should have the correct value
         self.assertEqual(self.form.display_name, display_name, u'The display name property should be correct')
@@ -113,5 +113,5 @@ class TestAuthorsForm(TestCase):
         self.form.display_name = display_name
 
         # THEN: The display_name_edit should have the correct value
-        self.assertEqual(self.form.display_name_edit.text(), display_name, u'The display name should be set correctly')
+        self.assertEqual(self.form.display_edit.text(), display_name, u'The display name should be set correctly')
 

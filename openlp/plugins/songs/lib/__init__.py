@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.songs.lib` module contains a number of library functions and classes used in the Songs plugin.
+"""
 import re
 
 from PyQt4 import QtGui
@@ -37,8 +40,7 @@ from ui import SongStrings
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile(u'[\'`’ʻ′]', re.UNICODE)
-PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'"
-    r"([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
+PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
 # RTF control words which specify a "destination" to be ignored.
 DESTINATIONS = frozenset((
     u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor',
@@ -622,6 +624,6 @@ def natcmp(a, b):
                 return result
         return 1
 
-from xml import OpenLyrics, SongXML
-from songstab import SongsTab
-from mediaitem import SongMediaItem
+from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
+from openlp.plugins.songs.lib.songstab import SongsTab
+from openlp.plugins.songs.lib.mediaitem import SongMediaItem
