@@ -3,10 +3,10 @@
 """
 from unittest import TestCase
 
-from mock import patch
+from mock import MagicMock, patch
 from openlp.core.lib import Registry
 from openlp.core.ui import filerenameform
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt4 import QtGui, QtTest
 
 class TestStartFileRenameForm(TestCase):
 
@@ -58,12 +58,26 @@ class TestStartFileRenameForm(TestCase):
         Regression test for bug1067251
         Test that the fileNameEdit setFocus has called with True when executed
         """
-        # GIVEN: A mocked QLineEdit class
-        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec, \
-            patch(u'PyQt4.QtGui.QLineEdit') as mocked_line_edit:
+        # GIVEN: A mocked QDialog.exec_() method and mocked fileNameEdit.setFocus() method.
+        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+            mocked_set_focus = MagicMock()
+            self.form.fileNameEdit.setFocus = mocked_set_focus
 
-            # WHEN: The form is executed with no args
+            # WHEN: The form is executed
             self.form.exec_()
 
             # THEN: the setFocus method of the fileNameEdit has been called with True
-            mocked_line_edit.setFocus.assert_called_with()
+            mocked_set_focus.assert_called_with()
+
+    def file_name_validation_test(self):
+        """
+        Test the fileNameEdit validation
+        """
+        # GIVEN: QLineEdit with a validator set with illegal file name characters.
+
+        # WHEN: 'Typing' a string containing invalid file characters.
+        QtTest.QTest.keyClicks(self.form.fileNameEdit, u'I/n\\v?a*l|i<d> \F[i\l]e" :N+a%me')
+
+        # THEN: The text in the QLineEdit should be the same as the input string with the invalid chatacters filtered
+        #       out.
+        self.assertEqual(self.form.fileNameEdit.text(), u'Invalid File Name')
