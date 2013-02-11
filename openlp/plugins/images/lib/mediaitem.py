@@ -325,8 +325,6 @@ class ImageMediaItem(MediaManagerItem):
         ``files``
             The files to be loaded.
         """
-        if target_group is None:
-            self.listView.clear()
         self.loadList(files, target_group)
         last_dir = os.path.split(unicode(files[0]))[0]
         Settings().setValue(self.settingsSection + u'/last directory', last_dir)
@@ -336,20 +334,33 @@ class ImageMediaItem(MediaManagerItem):
         Add new images to the database. This method is called when adding images using the Add button or DnD.
         """
         if target_group is None:
-            # Ask which group the images should be saved in
-            if self.manager.get_object_count(ImageGroups) == 0:
+            # Find out if a group must be pre-selected
+            preselect_group = None
+            selected_items = self.listView.selectedItems()
+            if len(selected_items) > 0:
+                selected_item = selected_items[0]
+                if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
+                    selected_item = selected_item.parent()
+                if isinstance(selected_item, QtGui.QTreeWidgetItem):
+                    if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageGroups):
+                        preselect_group = selected_item.data(0, QtCore.Qt.UserRole).id
+            # Enable and disable parts of the 'choose group' form
+            if preselect_group is None:
                 self.choose_group_form.nogroup_radio_button.setChecked(True)
                 self.choose_group_form.existing_radio_button.setChecked(False)
                 self.choose_group_form.new_radio_button.setChecked(False)
+            else:
+                self.choose_group_form.nogroup_radio_button.setChecked(False)
+                self.choose_group_form.existing_radio_button.setChecked(True)
+                self.choose_group_form.new_radio_button.setChecked(False)
+            if self.manager.get_object_count(ImageGroups) == 0:
                 self.choose_group_form.existing_radio_button.setDisabled(True)
                 self.choose_group_form.group_combobox.setDisabled(True)
             else:
-                self.choose_group_form.nogroup_radio_button.setChecked(True)
-                self.choose_group_form.existing_radio_button.setChecked(False)
-                self.choose_group_form.new_radio_button.setChecked(False)
                 self.choose_group_form.existing_radio_button.setDisabled(False)
                 self.choose_group_form.group_combobox.setDisabled(False)
-            if self.choose_group_form.exec_():
+            # Ask which group the images should be saved in
+            if self.choose_group_form.exec_(selected_group=preselect_group):
                 if self.choose_group_form.nogroup_radio_button.isChecked():
                     # User chose 'No group'
                     parent_group = ImageGroups()
@@ -368,7 +379,11 @@ class ImageMediaItem(MediaManagerItem):
         else:
             parent_group = target_group.data(0, QtCore.Qt.UserRole)
             if isinstance(parent_group, ImageFilenames):
-                parent_group = target_group.parent().data(0, QtCore.Qt.UserRole)
+                if parent_group.group_id == 0:
+                    parent_group = ImageGroups()
+                    parent_group.id = 0
+                else:
+                    parent_group = target_group.parent().data(0, QtCore.Qt.UserRole)
         # If no valid parent group is found, do nothing
         if not isinstance(parent_group, ImageGroups):
             return
@@ -501,7 +516,18 @@ class ImageMediaItem(MediaManagerItem):
         """
         Called to add a new group
         """
-        if self.add_group_form.exec_(show_top_level_group=True):
+        # Find out if a group must be pre-selected
+        preselect_group = 0
+        selected_items = self.listView.selectedItems()
+        if len(selected_items) > 0:
+            selected_item = selected_items[0]
+            if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
+                selected_item = selected_item.parent()
+            if isinstance(selected_item, QtGui.QTreeWidgetItem):
+                if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageGroups):
+                    preselect_group = selected_item.data(0, QtCore.Qt.UserRole).id
+        # Show 'add group' dialog
+        if self.add_group_form.exec_(show_top_level_group=True, selected_group=preselect_group):
             new_group = ImageGroups.populate(parent_id=self.add_group_form.parent_group_combobox.itemData(
                 self.add_group_form.parent_group_combobox.currentIndex(), QtCore.Qt.UserRole),
                 group_name=self.add_group_form.name_edit.text())

@@ -42,3 +42,10 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
+
+    def exec_(self, selected_group=None):
+        if selected_group is not None:
+            for i in range(self.group_combobox.count()):
+                if self.group_combobox.itemData(i) == selected_group:
+                    self.group_combobox.setCurrentIndex(i)
+        return QtGui.QDialog.exec_(self)
