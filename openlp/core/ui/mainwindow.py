@@ -551,7 +551,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
-        self.plugin_manager.find_plugins(plugin_path)
+        self.plugin_manager.find_plugins()
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs

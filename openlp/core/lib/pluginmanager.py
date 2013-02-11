@@ -61,21 +61,16 @@ class PluginManager(object):
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, plugin_dir):
+    def find_plugins(self):
         """
-        Scan the directory ``plugin_dir`` for objects inheriting from the
-        ``Plugin`` class.
-
-        ``plugin_dir``
-            The directory to scan.
-
+        Scan a directory for objects inheriting from the ``Plugin`` class.
         """
         log.info(u'Finding plugins')
-        start_depth = len(os.path.abspath(plugin_dir).split(os.sep))
-        present_plugin_dir = os.path.join(plugin_dir, 'presentations')
-        log.debug(u'finding plugins in %s at depth %d', unicode(plugin_dir), start_depth)
-        for root, dirs, files in os.walk(plugin_dir):
-            if sys.platform == 'darwin'and root.startswith(present_plugin_dir):
+        start_depth = len(os.path.abspath(self.base_path).split(os.sep))
+        present_plugin_dir = os.path.join(self.base_path, 'presentations')
+        log.debug(u'finding plugins in %s at depth %d', unicode(self.base_path), start_depth)
+        for root, dirs, files in os.walk(self.base_path):
+            if sys.platform == 'darwin' and root.startswith(present_plugin_dir):
                 # TODO Presentation plugin is not yet working on Mac OS X.
                 # For now just ignore it. The following code will ignore files from the presentation plugin directory
                 # and thereby never import the plugin.
