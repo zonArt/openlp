@@ -140,7 +140,8 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.createSettingsTab(settings_form)
-        settings_form.plugins = self.plugins
+        if settings_form:
+            settings_form.plugins = self.plugins
 
     def hook_import_menu(self, import_menu):
         """
