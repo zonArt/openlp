@@ -322,7 +322,8 @@ class Settings(QtCore.QSettings):
         """
         # if group() is not empty the group has not been specified together with the key.
         if self.group():
-            default_value = Settings.__default_settings__[self.group() + u'/' + key]
+            qq = self.group() + u'/' + key
+            default_value = Settings.__default_settings__[unicode(self.group() + u'/' + key)]
         else:
             default_value = Settings.__default_settings__[key]
         setting = super(Settings, self).value(key, default_value)

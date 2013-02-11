@@ -47,3 +47,48 @@ class TestSettings(TestCase):
         # THEN the new value is returned when re-read
         assert Settings().value(u'general/has run wizard') is True, u'The saved value is returned'
 
+    def settings_override_test(self):
+        """
+        Test the Settings creation and its override usage
+        """
+        # GIVEN: an override for the settings
+        screen_settings = {
+            u'test/extend': u'very wide',
+        }
+        Settings().extend_default_settings(screen_settings)
+
+        # WHEN reading a setting for the first time
+        extend = Settings().value(u'test/extend')
+
+        # THEN the default value is returned
+        assert extend == u'very wide', u'The default value defined is returned'
+
+        # WHEN a new value is saved into config
+        Settings().setValue(u'test/extend', u'very short')
+
+        # THEN the new value is returned when re-read
+        assert Settings().value(u'test/extend') == u'very short', u'The saved value is returned'
+
+    def settings_override_with_group_test(self):
+        """
+        Test the Settings creation and its override usage - with groups
+        """
+        # GIVEN: an override for the settings
+        screen_settings = {
+            u'test/extend': u'very wide',
+            }
+        Settings.extend_default_settings(screen_settings)
+
+        # WHEN reading a setting for the first time
+        settings = Settings()
+        settings.beginGroup(u'test')
+        extend = settings.value(u'extend')
+
+        # THEN the default value is returned
+        assert extend == u'very wide', u'The default value defined is returned'
+
+        # WHEN a new value is saved into config
+        Settings().setValue(u'test/extend', u'very short')
+
+        # THEN the new value is returned when re-read
+        assert Settings().value(u'test/extend') == u'very short', u'The saved value is returned'
