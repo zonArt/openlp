@@ -343,7 +343,7 @@ class Settings(QtCore.QSettings):
         """
         # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
         # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
-        if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
+        if setting.isNull() and isinstance(setting, QtCore.QPyNullVariant):
             setting = None
         # Handle 'None' type (empty value) properly.
         if setting is None:
