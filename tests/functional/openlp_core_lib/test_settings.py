@@ -27,7 +27,10 @@ class TestSettings(TestCase):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         del self.application
-        os.remove(Settings().fileName())
+        try:
+            os.remove(Settings().fileName())
+        except:
+            pass
 
     def settings_basic_test(self):
         """
