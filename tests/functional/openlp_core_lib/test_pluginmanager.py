@@ -89,7 +89,7 @@ class TestPluginManager(TestCase):
         assert mocked_plugin.createSettingsTab.call_count == 0, \
             u'The createMediaManagerItem() method should not have been called.'
         self.assertEqual(mocked_settings_form.plugins, plugin_manager.plugins,
-                         u'The plugins on the settings form should be the same as the plugins in the plugin manager')
+            u'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_no_form_test(self):
         """
