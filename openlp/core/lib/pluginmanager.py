@@ -32,6 +32,7 @@ Provide plugin management
 import os
 import sys
 import logging
+import imp
 
 from openlp.core.lib import Plugin, PluginStatus, Registry
 
@@ -55,11 +56,8 @@ class PluginManager(object):
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
-        if not plugin_dir in sys.path:
-            log.debug(u'Inserting %s into sys.path', plugin_dir)
-            sys.path.insert(0, plugin_dir)
-        self.basepath = os.path.abspath(plugin_dir)
-        log.debug(u'Base path %s ', self.basepath)
+        self.base_path = os.path.abspath(plugin_dir)
+        log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
@@ -73,9 +71,8 @@ class PluginManager(object):
 
         """
         log.info(u'Finding plugins')
-        startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
-        log.debug(u'finding plugins in %s at depth %d',
-            unicode(plugin_dir), startdepth)
+        start_depth = len(os.path.abspath(plugin_dir).split(os.sep))
+        log.debug(u'finding plugins in %s at depth %d', unicode(plugin_dir), start_depth)
         for root, dirs, files in os.walk(plugin_dir):
             # TODO Presentation plugin is not yet working on Mac OS X.
             # For now just ignore it. The following code will hide it
@@ -88,22 +85,20 @@ class PluginManager(object):
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
-                    thisdepth = len(path.split(os.sep))
-                    if thisdepth - startdepth > 2:
+                    this_depth = len(path.split(os.sep))
+                    if this_depth - start_depth > 2:
                         # skip anything lower down
                         break
-                    modulename = os.path.splitext(path)[0]
-                    prefix = os.path.commonprefix([self.basepath, path])
-                    # hack off the plugin base path
-                    modulename = modulename[len(prefix) + 1:]
-                    modulename = modulename.replace(os.path.sep, '.')
+                    module_name = name[:-3]
                     # import the modules
-                    log.debug(u'Importing %s from %s. Depth %d', modulename, path, thisdepth)
+                    log.debug(u'Importing %s from %s. Depth %d', module_name, root, this_depth)
                     try:
-                        __import__(modulename, globals(), locals(), [])
+                        fp, path_name, description = imp.find_module(module_name, [root])
+                        imp.load_module(module_name, fp, path_name, description)
+                        #__import__(module_name, globals(), locals(), [])
                     except ImportError, e:
                         log.exception(u'Failed to import module %s on path %s for reason %s',
-                            modulename, path, e.args[0])
+                                      module_name, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
