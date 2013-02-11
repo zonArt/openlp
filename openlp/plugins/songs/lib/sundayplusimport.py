@@ -121,7 +121,7 @@ class SundayPlusImport(SongImport):
                         end = data.find(')', i) + 1
                     value = data[i:end]
                 # If we are in the main group.
-                if cell == False:
+                if not cell:
                     if name == 'title':
                         self.title = self.decode(self.unescape(value))
                     elif name == 'Author':
@@ -148,7 +148,10 @@ class SundayPlusImport(SongImport):
                             verse_type = HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'rtf':
                         value = self.unescape(value)
-                        verse, self.encoding = strip_rtf(value, self.encoding)
+                        result = strip_rtf(value, self.encoding)
+                        if result is None:
+                            return
+                        verse, self.encoding = result
                         lines = verse.strip().split('\n')
                         # If any line inside any verse contains CCLI or
                         # only Public Domain, we treat this as special data:

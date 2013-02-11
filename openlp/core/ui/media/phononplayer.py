@@ -36,7 +36,7 @@ from datetime import datetime
 from PyQt4 import QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, translate, Settings
+from openlp.core.lib import Settings, translate
 
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -168,7 +168,7 @@ class PhononPlayer(MediaPlayer):
             current_state = display.mediaObject.state()
             if current_state == Phonon.ErrorState:
                 return False
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             if (datetime.now() - start).seconds > 5:
                 return False
         return True

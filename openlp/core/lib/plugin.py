@@ -409,6 +409,12 @@ class Plugin(QtCore.QObject):
         """
         pass
 
+    def new_service_created(self):
+        """
+        The plugin's needs to handle a new song creation
+        """
+        pass
+
     def _get_main_window(self):
         """
         Adds the main window to the class dynamically
@@ -418,3 +424,13 @@ class Plugin(QtCore.QObject):
         return self._main_window
 
     main_window = property(_get_main_window)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

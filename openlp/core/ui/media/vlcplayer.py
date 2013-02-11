@@ -37,7 +37,7 @@ import sys
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, translate, Settings
+from openlp.core.lib import Settings, translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
@@ -187,7 +187,7 @@ class VlcPlayer(MediaPlayer):
         while not mediaState == display.vlcMedia.get_state():
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             if (datetime.now() - start).seconds > 60:
                 return False
         return True

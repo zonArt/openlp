@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, Settings, translate, UiStrings
+from openlp.core.lib import Receiver, Registry, Settings, UiStrings, build_icon, translate
 from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)
@@ -219,7 +219,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressLabel.setText(status_text)
         if increment > 0:
             self.progressBar.setValue(self.progressBar.value() + increment)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
 
     def preWizard(self):
         """
@@ -237,7 +237,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.progressBar.setValue(self.progressBar.maximum())
         self.finishButton.setVisible(True)
         self.cancelButton.setVisible(False)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
 
     def getFileName(self, title, editbox, setting_name, filters=u''):
         """
@@ -286,3 +286,13 @@ class OpenLPWizard(QtGui.QWizard):
         if folder:
             editbox.setText(folder)
         Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

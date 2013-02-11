@@ -32,7 +32,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Plugin, Receiver, Settings, StringContent, translate
+from openlp.core.lib import Plugin, Receiver, Settings, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList

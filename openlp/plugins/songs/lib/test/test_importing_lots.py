@@ -30,18 +30,14 @@
 from openlp.plugins.songs.lib.opensongimport import OpenSongImport
 from openlp.plugins.songs.lib.db import init_schema
 from openlp.core.lib.db import Manager
-from glob import glob
-from zipfile import ZipFile
 import os
-from traceback import print_exc
-import sys
 import codecs
 
 import logging
 LOG_FILENAME = 'import.log'
 logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 
-from test_opensongimport import wizard_stub, progbar_stub
+from test_opensongimport import wizard_stub
 
 # Useful test function for importing a variety of different files
 # Uncomment below depending on what problem trying to make occur!

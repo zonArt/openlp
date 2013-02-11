@@ -32,9 +32,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, ItemCapabilities, SettingsManager, translate, \
-    check_item_selected, check_directory_exists, Receiver, create_thumb, validate_thumb, ServiceItemContext, Settings, \
-    StringContent, TreeWidgetWithDnD, UiStrings
+from openlp.core.lib import ItemCapabilities, MediaManagerItem, Receiver, ServiceItemContext, Settings, \
+    SettingsManager, StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, \
+    check_item_selected, create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
@@ -197,7 +197,7 @@ class ImageMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
             'You must select an image or group to delete.')):
             item_list = self.listView.selectedItems()
-            Receiver.send_message(u'cursor_busy')
+            self.application.set_busy_cursor()
             self.main_window.displayProgressBar(len(item_list))
             for row_item in item_list:
                 if row_item:
@@ -226,7 +226,7 @@ class ImageMediaItem(MediaManagerItem):
                             self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
-            Receiver.send_message(u'cursor_normal')
+            self.application.set_normal_cursor()
         self.listView.blockSignals(False)
 
     def add_sub_groups(self, group_list, parent_group_id):
@@ -280,7 +280,7 @@ class ImageMediaItem(MediaManagerItem):
         Replace the list of images and groups in the interface.
         """
         if not initial_load:
-            Receiver.send_message(u'cursor_busy')
+            self.application.set_busy_cursor()
             self.main_window.displayProgressBar(len(images))
         self.listView.clear()
         # Load the list of groups and add them to the treeView
@@ -315,7 +315,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.main_window.incrementProgressBar()
         if not initial_load:
             self.main_window.finishedProgressBar()
-            Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def validateAndLoad(self, files, target_group=None):
         """

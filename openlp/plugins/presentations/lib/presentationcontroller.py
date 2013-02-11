@@ -33,7 +33,7 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Registry, check_directory_exists, create_thumb, validate_thumb, Settings
+from openlp.core.lib import Receiver, Registry, Settings, check_directory_exists, create_thumb, validate_thumb
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)

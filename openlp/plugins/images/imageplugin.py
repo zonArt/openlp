@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings
+from openlp.core.lib import Plugin, StringContent, Receiver, ImageSource, Settings, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 from openlp.plugins.images.lib.db import init_schema
