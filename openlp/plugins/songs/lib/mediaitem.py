@@ -35,7 +35,6 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-
 from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
     UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
