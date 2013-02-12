@@ -79,5 +79,5 @@ class TestStartFileRenameForm(TestCase):
         QtTest.QTest.keyClicks(self.form.fileNameEdit, u'I/n\\v?a*l|i<d> \F[i\l]e" :N+a%me')
 
         # THEN: The text in the QLineEdit should be the same as the input string with the invalid chatacters filtered
-        #       out.
+        # out.
         self.assertEqual(self.form.fileNameEdit.text(), u'Invalid File Name')
