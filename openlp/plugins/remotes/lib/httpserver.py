@@ -123,7 +123,7 @@ import urlparse
 from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
 
-from openlp.core.lib import Receiver, Settings, PluginStatus, StringContent
+from openlp.core.lib import Receiver, Settings, PluginStatus, StringContent, Registry
 from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
@@ -252,12 +252,11 @@ class HttpConnection(object):
 
     def _get_service_items(self):
         service_items = []
-        service_manager = self.parent.plugin.serviceManager
         if self.parent.current_item:
             current_unique_identifier = self.parent.current_item.unique_identifier
         else:
             current_unique_identifier = None
-        for item in service_manager.serviceItems:
+        for item in self.service_manager.serviceItems:
             service_item = item[u'service_item']
             service_items.append({
                 u'id': unicode(service_item.unique_identifier),
@@ -388,13 +387,13 @@ class HttpConnection(object):
         Poll OpenLP to determine the current slide number and item name.
         """
         result = {
-            u'service': self.parent.plugin.serviceManager.service_id,
+            u'service': self.service_manager.service_id,
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
             u'twelve':Settings().value(u'remotes/twelve hour'),
-            u'blank': self.parent.plugin.liveController.blankScreen.isChecked(),
-            u'theme': self.parent.plugin.liveController.themeScreen.isChecked(),
-            u'display': self.parent.plugin.liveController.desktopScreen.isChecked()
+            u'blank': self.live_controller.blankScreen.isChecked(),
+            u'theme': self.live_controller.themeScreen.isChecked(),
+            u'display': self.live_controller.desktopScreen.isChecked()
         }
         return HttpResponse(json.dumps({u'results': result}),
             {u'Content-Type': u'application/json'})
@@ -414,7 +413,7 @@ class HttpConnection(object):
         """
         Send an alert.
         """
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name("alerts")
+        plugin = self.plugin_manager.get_plugin_by_name("alerts")
         if plugin.status == PluginStatus.Active:
             try:
                 text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
@@ -506,7 +505,7 @@ class HttpConnection(object):
         """
         if action == u'search':
             searches = []
-            for plugin in self.parent.plugin.pluginManager.plugins:
+            for plugin in self.plugin_manager.plugins:
                 if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
                     searches.append([plugin.name, unicode(plugin.textStrings[StringContent.Name][u'plural'])])
             return HttpResponse(
@@ -525,7 +524,7 @@ class HttpConnection(object):
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
+        plugin = self.plugin_manager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
             results = plugin.mediaItem.search(text, False)
         else:
@@ -541,7 +540,7 @@ class HttpConnection(object):
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
+        plugin = self.plugin_manager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             plugin.mediaItem.goLive(id, remote=True)
         return HttpResponse(code=u'200 OK')
@@ -554,7 +553,7 @@ class HttpConnection(object):
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
+        plugin = self.plugin_manager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
             plugin.mediaItem.addToService(item_id, remote=True)
@@ -585,3 +584,33 @@ class HttpConnection(object):
         self.socket.close()
         self.socket = None
         self.parent.close_connection(self)
+
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
