@@ -26,15 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets of the plugin view dialog
+#"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, UiStrings
+from openlp.core.lib import UiStrings, translate
 from openlp.core.lib.ui import create_button_box
 
 
 class Ui_PluginViewDialog(object):
+    """
+    The UI of the plugin view dialog
+    """
     def setupUi(self, pluginViewDialog):
+        """
+        Set up the UI
+        """
         pluginViewDialog.setObjectName(u'pluginViewDialog')
         pluginViewDialog.setWindowModality(QtCore.Qt.ApplicationModal)
         self.pluginLayout = QtGui.QVBoxLayout(pluginViewDialog)
@@ -72,6 +80,9 @@ class Ui_PluginViewDialog(object):
         self.retranslateUi(pluginViewDialog)
 
     def retranslateUi(self, pluginViewDialog):
+        """
+        Translate the UI on the fly
+        """
         pluginViewDialog.setWindowTitle(translate('OpenLP.PluginForm', 'Plugin List'))
         self.pluginInfoGroupBox.setTitle(translate('OpenLP.PluginForm', 'Plugin Details'))
         self.versionLabel.setText(u'%s:' % UiStrings().Version)

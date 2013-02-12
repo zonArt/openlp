@@ -33,12 +33,13 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, build_icon, PluginStatus, Registry
+from openlp.core.lib import Receiver, PluginStatus, Registry, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
+
 
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
@@ -54,13 +55,16 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         # General tab
         self.generalTab = GeneralTab(self)
         # Themes tab
-        self.themesTab = ThemesTab(self, self.main_window)
+        self.themesTab = ThemesTab(self)
         # Advanced tab
         self.advancedTab = AdvancedTab(self)
         # Advanced tab
-        self.playerTab = PlayerTab(self, self.main_window)
+        self.playerTab = PlayerTab(self)
 
     def exec_(self):
+        """
+        Execute the form
+        """
         # load all the settings
         self.settingListWidget.clear()
         while self.stackedLayout.count():

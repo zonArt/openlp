@@ -26,13 +26,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The Theme wizard
+"""
 import logging
 import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, UiStrings
+from openlp.core.lib import Receiver, UiStrings, Registry, translate
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
@@ -40,6 +42,7 @@ from openlp.core.utils import get_images_filter
 from themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
+
 
 class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     """
@@ -56,7 +59,6 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             The QWidget-derived parent of the wizard.
         """
         QtGui.QWizard.__init__(self, parent)
-        self.thememanager = parent
         self.setupUi(self)
         self.registerFields()
         self.updateThemeAllowed = True
@@ -72,14 +74,14 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.onGradientStartButtonClicked)
         QtCore.QObject.connect(self.gradientEndButton, QtCore.SIGNAL(u'clicked()'), self.onGradientEndButtonClicked)
         QtCore.QObject.connect(self.imageBrowseButton, QtCore.SIGNAL(u'clicked()'), self.onImageBrowseButtonClicked)
-        QtCore.QObject.connect(self.mainColorButton,  QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
+        QtCore.QObject.connect(self.mainColorButton, QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
         QtCore.QObject.connect(self.outlineColorButton, QtCore.SIGNAL(u'clicked()'), self.onOutlineColorButtonClicked)
         QtCore.QObject.connect(self.shadowColorButton, QtCore.SIGNAL(u'clicked()'), self.onShadowColorButtonClicked)
         QtCore.QObject.connect(self.outlineCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onOutlineCheckCheckBoxStateChanged)
         QtCore.QObject.connect(self.shadowCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onShadowCheckCheckBoxStateChanged)
-        QtCore.QObject.connect(self.footerColorButton,QtCore.SIGNAL(u'clicked()'), self.onFooterColorButtonClicked)
+        QtCore.QObject.connect(self.footerColorButton, QtCore.SIGNAL(u'clicked()'), self.onFooterColorButtonClicked)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'customButtonClicked(int)'), self.onCustom1ButtonClicked)
         QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onMainPositionCheckBoxStateChanged)
@@ -149,7 +151,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         # Do not trigger on start up
         if self.currentPage != self.welcomePage:
             self.updateTheme()
-            self.thememanager.generateImage(self.theme, True)
+            self.theme_manager.generate_image(self.theme, True)
 
     def updateLinesText(self, lines):
         """
@@ -178,6 +180,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
                 pixmapHeight + 2 * frameWidth)
 
     def validateCurrentPage(self):
+        """
+        Validate the current page
+        """
         background_image = BackgroundType.to_string(BackgroundType.Image)
         if self.page(self.currentId()) == self.backgroundPage and \
                 self.theme.background_type == background_image and not self.imageFileEdit.text():
@@ -196,7 +201,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setOption(QtGui.QWizard.HaveCustomButton1, enabled)
         if self.page(pageId) == self.previewPage:
             self.updateTheme()
-            frame = self.thememanager.generateImage(self.theme)
+            frame = self.theme_manager.generate_image(self.theme)
             self.previewBoxLabel.setPixmap(frame)
             self.displayAspectRatio = float(frame.width()) / frame.height()
             self.resizeEvent()
@@ -206,15 +211,15 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Generate layout preview and display the form.
         """
         self.updateTheme()
-        width = self.thememanager.mainwindow.renderer.width
-        height = self.thememanager.mainwindow.renderer.height
+        width = self.renderer.width
+        height = self.renderer.height
         pixmap = QtGui.QPixmap(width, height)
         pixmap.fill(QtCore.Qt.white)
         paint = QtGui.QPainter(pixmap)
         paint.setPen(QtGui.QPen(QtCore.Qt.blue, 2))
-        paint.drawRect(self.thememanager.mainwindow.renderer.get_main_rectangle(self.theme))
+        paint.drawRect(self.renderer.get_main_rectangle(self.theme))
         paint.setPen(QtGui.QPen(QtCore.Qt.red, 2))
-        paint.drawRect(self.thememanager.mainwindow.renderer.get_footer_rectangle(self.theme))
+        paint.drawRect(self.renderer.get_footer_rectangle(self.theme))
         paint.end()
         self.themeLayoutForm.exec_(pixmap)
 
@@ -444,18 +449,30 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.setBackgroundPageValues()
 
     def onMainColorButtonClicked(self):
+        """
+        Set the main colour value
+        """
         self.theme.font_main_color = self._colorButton(self.theme.font_main_color)
         self.setMainAreaPageValues()
 
     def onOutlineColorButtonClicked(self):
+        """
+        Set the outline colour value
+        """
         self.theme.font_main_outline_color = self._colorButton(self.theme.font_main_outline_color)
         self.setMainAreaPageValues()
 
     def onShadowColorButtonClicked(self):
+        """
+        Set the shadow colour value
+        """
         self.theme.font_main_shadow_color = self._colorButton(self.theme.font_main_shadow_color)
         self.setMainAreaPageValues()
 
     def onFooterColorButtonClicked(self):
+        """
+        Set the footer colour value
+        """
         self.theme.font_footer_color = self._colorButton(self.theme.font_footer_color)
         self.setFooterAreaPageValues()
 
@@ -514,9 +531,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             filename = os.path.split(unicode(self.theme.background_filename))[1]
             saveTo = os.path.join(self.path, self.theme.theme_name, filename)
             saveFrom = self.theme.background_filename
-        if not self.edit_mode and not self.thememanager.checkIfThemeExists(self.theme.theme_name):
+        if not self.edit_mode and not self.theme_manager.check_if_theme_exists(self.theme.theme_name):
             return
-        self.thememanager.saveTheme(self.theme, saveFrom, saveTo)
+        self.theme_manager.save_theme(self.theme, saveFrom, saveTo)
         return QtGui.QDialog.accept(self)
 
     def _colorButton(self, field):
@@ -527,3 +544,23 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if new_color.isValid():
             field = new_color.name()
         return field
+
+    def _get_renderer(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_renderer'):
+            self._renderer = Registry().get(u'renderer')
+        return self._renderer
+
+    renderer = property(_get_renderer)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)

@@ -26,17 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The list of shortcuts within a dialog.
+"""
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
+
 
 class CaptureShortcutButton(QtGui.QPushButton):
     """
     A class to encapsulate a ``QPushButton``.
     """
     def __init__(self, *args):
+        """
+        Constructor
+        """
         QtGui.QPushButton.__init__(self, *args)
         self.setCheckable(True)
 
@@ -51,7 +57,13 @@ class CaptureShortcutButton(QtGui.QPushButton):
 
 
 class Ui_ShortcutListDialog(object):
+    """
+    The UI widgets for the shortcut dialog.
+    """
     def setupUi(self, shortcutListDialog):
+        """
+        Set up the UI
+        """
         shortcutListDialog.setObjectName(u'shortcutListDialog')
         shortcutListDialog.resize(500, 438)
         self.shortcutListLayout = QtGui.QVBoxLayout(shortcutListDialog)
@@ -113,6 +125,9 @@ class Ui_ShortcutListDialog(object):
         self.retranslateUi(shortcutListDialog)
 
     def retranslateUi(self, shortcutListDialog):
+        """
+        Translate the UI on the fly
+        """
         shortcutListDialog.setWindowTitle(translate('OpenLP.ShortcutListDialog', 'Configure Shortcuts'))
         self.descriptionLabel.setText(
             translate('OpenLP.ShortcutListDialog', 'Select an action and click one of the buttons below to start '

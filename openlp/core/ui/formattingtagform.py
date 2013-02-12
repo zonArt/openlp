@@ -27,14 +27,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are
-protected and included each time loaded. Custom tags can be defined and saved.
-The Custom Tag arrays are saved in a pickle so QSettings works on them. Base
-Tags cannot be changed.
+The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are protected and included each time loaded.
+Custom tags can be defined and saved. The Custom Tag arrays are saved in a pickle so QSettings works on them. Base Tags
+cannot be changed.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, FormattingTags
+from openlp.core.lib import FormattingTags, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 
@@ -49,7 +48,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.tagTableWidget, QtCore.SIGNAL(u'itemSelectionChanged()'),self.onRowSelected)
+        QtCore.QObject.connect(self.tagTableWidget, QtCore.SIGNAL(u'itemSelectionChanged()'), self.onRowSelected)
         QtCore.QObject.connect(self.newPushButton, QtCore.SIGNAL(u'clicked()'), self.onNewClicked)
         QtCore.QObject.connect(self.savePushButton, QtCore.SIGNAL(u'clicked()'), self.onSavedClicked)
         QtCore.QObject.connect(self.deletePushButton, QtCore.SIGNAL(u'clicked()'), self.onDeleteClicked)

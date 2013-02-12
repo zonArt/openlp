@@ -26,11 +26,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm` class.
+"""
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate, SpellTextEdit, Registry
+from openlp.core.lib import SpellTextEdit, Registry, translate
 from openlp.core.lib.ui import create_button_box
+
 
 class ServiceNoteForm(QtGui.QDialog):
     """
@@ -45,10 +48,16 @@ class ServiceNoteForm(QtGui.QDialog):
         self.retranslateUi()
 
     def exec_(self):
+        """
+        Execute the form and return the result.
+        """
         self.text_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def setupUi(self):
+        """
+        Set up the UI of the dialog
+        """
         self.setObjectName(u'serviceNoteEdit')
         self.dialog_layout = QtGui.QVBoxLayout(self)
         self.dialog_layout.setContentsMargins(8, 8, 8, 8)
@@ -61,6 +70,9 @@ class ServiceNoteForm(QtGui.QDialog):
         self.dialog_layout.addWidget(self.button_box)
 
     def retranslateUi(self):
+        """
+        Translate the UI on the fly
+        """
         self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
 
     def _get_main_window(self):

@@ -35,6 +35,7 @@ from PyQt4 import QtCore
 
 log = logging.getLogger(__name__)
 
+
 class EventReceiver(QtCore.QObject):
     """
     Class to allow events to be passed from different parts of the system. This
@@ -46,23 +47,11 @@ class EventReceiver(QtCore.QObject):
     ``mainwindow_status_text``
         Changes the bottom status bar text on the mainwindow.
 
-    ``openlp_warning_message``
-        Displays a standalone Warning Message.
-
     ``openlp_error_message``
         Displays a standalone Error Message.
 
     ``openlp_information_message``
         Displays a standalone Information Message.
-
-    ``cursor_busy``
-        Makes the cursor got to a busy form.
-
-    ``cursor_normal``
-        Resets the cursor to default.
-
-    ``openlp_process_events``
-        Requests the Application to flush the events queue.
 
     ``openlp_version_check``
         Version has changed so pop up window.
@@ -119,29 +108,6 @@ class EventReceiver(QtCore.QObject):
 
     ``slidecontroller_live_stop_loop``
         Stop the loop on the main display.
-
-
-    **Servicemanager related signals**
-
-    ``servicemanager_new_service``
-        A new service is being loaded or created.
-
-    ``servicemanager_previous_item``
-        Display the previous item in the service.
-
-    ``servicemanager_preview_live``
-        Requests a Preview item from the Service Manager to update live and add
-        a new item to the preview panel.
-
-    ``servicemanager_next_item``
-        Display the next item in the service.
-
-    ``servicemanager_set_item``
-        Go live on a specific item, by index.
-
-    ``service_item_update``
-        Passes back to the service manager the service item after it has been
-        processed by the plugin.
 
     **Display signals**
 

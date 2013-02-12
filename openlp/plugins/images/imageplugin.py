@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings
+from openlp.core.lib import Plugin, StringContent, Receiver, ImageSource, Settings, build_icon, translate
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -98,4 +98,4 @@ class ImagePlugin(Plugin):
         last part of saving the config.
         """
         background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
-        self.liveController.imageManager.updateImagesBorder(ImageSource.ImagePlugin, background)
+        self.liveController.imageManager.update_images_border(ImageSource.ImagePlugin, background)

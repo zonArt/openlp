@@ -35,13 +35,13 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, build_icon, translate, Receiver, \
-    ListWidgetWithDnD, ServiceItemContext, Settings, Registry, UiStrings
+from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, Receiver, ListWidgetWithDnD, \
+    ServiceItemContext, Settings, Registry, UiStrings, build_icon, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 
-
 log = logging.getLogger(__name__)
+
 
 class MediaManagerItem(QtGui.QWidget):
     """
@@ -332,9 +332,9 @@ class MediaManagerItem(QtGui.QWidget):
             Settings().value(self.settingsSection + u'/last directory'), self.onNewFileMasks)
         log.info(u'New files(s) %s', files)
         if files:
-            Receiver.send_message(u'cursor_busy')
+            self.application.set_busy_cursor()
             self.validateAndLoad(files)
-        Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def loadFile(self, files):
         """
@@ -345,15 +345,15 @@ class MediaManagerItem(QtGui.QWidget):
         """
         new_files = []
         error_shown = False
-        for file in files:
-            type = file.split(u'.')[-1]
-            if type.lower() not in self.onNewFileMasks:
+        for file_name in files:
+            file_type = file_name.split(u'.')[-1]
+            if file_type.lower() not in self.onNewFileMasks:
                 if not error_shown:
                     critical_error_message_box(translate('OpenLP.MediaManagerItem', 'Invalid File Type'),
-                        translate('OpenLP.MediaManagerItem', 'Invalid File %s.\nSuffix not supported') % file)
+                        translate('OpenLP.MediaManagerItem', 'Invalid File %s.\nSuffix not supported') % file_name)
                     error_shown = True
             else:
-                new_files.append(file)
+                new_files.append(file_name)
         if new_files:
             self.validateAndLoad(new_files)
 
@@ -390,6 +390,9 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem', 'Duplicate files were found on import and were ignored.'))
 
     def contextMenu(self, point):
+        """
+        Display a context menu
+        """
         item = self.listView.itemAt(point)
         # Decide if we have to show the context menu or not.
         if item is None:
@@ -412,6 +415,9 @@ class MediaManagerItem(QtGui.QWidget):
         return file_list
 
     def loadList(self, list):
+        """
+        Load a list. Needs to be implemented by the plugin.
+        """
         raise NotImplementedError(u'MediaManagerItem.loadList needs to be defined by the plugin')
 
     def onNewClick(self):
@@ -427,6 +433,9 @@ class MediaManagerItem(QtGui.QWidget):
         pass
 
     def onDeleteClick(self):
+        """
+        Delete an item. Needs to be implemented by the plugin.
+        """
         raise NotImplementedError(u'MediaManagerItem.onDeleteClick needs to be defined by the plugin')
 
     def onFocus(self):
@@ -438,6 +447,9 @@ class MediaManagerItem(QtGui.QWidget):
 
     def generateSlideData(self, serviceItem, item=None, xmlVersion=False, remote=False,
             context=ServiceItemContext.Live):
+        """
+        Generate the slide data. Needs to be implemented by the plugin.
+        """
         raise NotImplementedError(u'MediaManagerItem.generateSlideData needs to be defined by the plugin')
 
     def onDoubleClicked(self):
@@ -486,6 +498,9 @@ class MediaManagerItem(QtGui.QWidget):
             self.goLive()
 
     def goLive(self, item_id=None, remote=False):
+        """
+        Make the currently selected item go live.
+        """
         log.debug(u'%s Live requested', self.plugin.name)
         item = None
         if item_id:
@@ -499,6 +514,9 @@ class MediaManagerItem(QtGui.QWidget):
             self.live_controller.add_service_item(serviceItem)
 
     def createItemFromId(self, item_id):
+        """
+        Create a media item from an item id.
+        """
         item = QtGui.QListWidgetItem()
         item.setData(QtCore.Qt.UserRole, item_id)
         return item
@@ -522,6 +540,9 @@ class MediaManagerItem(QtGui.QWidget):
                     self.addToService(item)
 
     def addToService(self, item=None, replace=None, remote=False):
+        """
+        Add this item to the current service.
+        """
         serviceItem = self.buildServiceItem(item, True, remote=remote, context=ServiceItemContext.Service)
         if serviceItem:
             serviceItem.from_plugin = False
@@ -688,3 +709,22 @@ class MediaManagerItem(QtGui.QWidget):
 
     service_manager = property(_get_service_manager)
 
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

@@ -45,6 +45,7 @@ from openlp.core.utils import AppLocation, delete_file
 
 log = logging.getLogger(__name__)
 
+
 def init_db(url, auto_flush=True, auto_commit=False):
     """
     Initialise and return the session and metadata for a database
@@ -60,8 +61,7 @@ def init_db(url, auto_flush=True, auto_commit=False):
     """
     engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
-    session = scoped_session(sessionmaker(autoflush=auto_flush,
-        autocommit=auto_commit, bind=engine))
+    session = scoped_session(sessionmaker(autoflush=auto_flush, autocommit=auto_commit, bind=engine))
     return session, metadata
 
 
@@ -109,14 +109,17 @@ def upgrade_db(url, upgrade):
         while hasattr(upgrade, u'upgrade_%d' % version):
             log.debug(u'Running upgrade_%d', version)
             try:
-                getattr(upgrade, u'upgrade_%d' % version) (session, metadata, tables)
+                upgrade_func = getattr(upgrade, u'upgrade_%d' % version)
+                upgrade_func(session, metadata, tables)
+                session.commit()
+                # Update the version number AFTER a commit so that we are sure the previous transaction happened
+                version_meta.value = unicode(version)
+                session.commit()
+                version += 1
             except (SQLAlchemyError, DBAPIError):
                 log.exception(u'Could not run database upgrade script '
                     '"upgrade_%s", upgrade process has been halted.', version)
                 break
-            version_meta.value = unicode(version)
-            session.commit()
-            version += 1
     else:
         version_meta = Metadata.populate(key=u'version', value=int(upgrade.__version__))
         session.commit()
@@ -155,6 +158,7 @@ class BaseModel(object):
         for key, value in kwargs.iteritems():
             instance.__setattr__(key, value)
         return instance
+
 
 class Manager(object):
     """
@@ -205,19 +209,17 @@ class Manager(object):
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
-                    translate('OpenLP.Manager', 'The database being '
-                        'loaded was created in a more recent version of '
-                        'OpenLP. The database is version %d, while OpenLP '
-                        'expects version %d. The database will not be loaded.'
-                        '\n\nDatabase: %s') % \
-                        (db_ver, up_ver, self.db_url)
+                    translate('OpenLP.Manager', 'The database being loaded was created in a more recent version of '
+                        'OpenLP. The database is version %d, while OpenLP expects version %d. The database will not '
+                        'be loaded.\n\nDatabase: %s') % (db_ver, up_ver, self.db_url)
                 )
                 return
         try:
             self.session = init_schema(self.db_url)
         except (SQLAlchemyError, DBAPIError):
             log.exception(u'Error loading database: %s', self.db_url)
-            critical_error_message_box(translate('OpenLP.Manager', 'Database Error'),
+            critical_error_message_box(
+                translate('OpenLP.Manager', 'Database Error'),
                 translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s') % self.db_url
             )
 

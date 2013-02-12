@@ -29,8 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, translate, SpellTextEdit
-from openlp.core.lib.ui import create_button_box, UiStrings
+from openlp.core.lib import SpellTextEdit, build_icon, translate
+from openlp.core.lib.ui import UiStrings, create_button_box
 from openlp.plugins.songs.lib import VerseType
 
 class Ui_EditVerseDialog(object):

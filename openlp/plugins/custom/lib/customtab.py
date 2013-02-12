@@ -33,7 +33,7 @@ for the Custom Slides plugin, which is inserted into the configuration dialog.
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Settings
+from openlp.core.lib import SettingsTab, Settings, translate
 
 class CustomTab(SettingsTab):
     """

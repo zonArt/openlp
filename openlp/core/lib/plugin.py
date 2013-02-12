@@ -38,6 +38,7 @@ from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
 
+
 class PluginStatus(object):
     """
     Defines the status of the plugin
@@ -294,7 +295,7 @@ class Plugin(QtCore.QObject):
         if self.mediaItem:
             self.main_window.mediaDockManager.remove_dock(self.mediaItem)
 
-    def appStartup(self):
+    def app_startup(self):
         """
         Perform tasks on application startup
         """
@@ -319,7 +320,6 @@ class Plugin(QtCore.QObject):
                 # Now save the list to the config using our Settings class.
                 Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
             settings.endGroup()
-
 
     def usesTheme(self, theme):
         """
@@ -409,6 +409,12 @@ class Plugin(QtCore.QObject):
         """
         pass
 
+    def new_service_created(self):
+        """
+        The plugin's needs to handle a new song creation
+        """
+        pass
+
     def _get_main_window(self):
         """
         Adds the main window to the class dynamically
@@ -419,3 +425,12 @@ class Plugin(QtCore.QObject):
 
     main_window = property(_get_main_window)
 
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

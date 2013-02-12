@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets for the first time wizard.
+"""
 from PyQt4 import QtCore, QtGui
 
 import sys
@@ -34,7 +36,11 @@ import sys
 from openlp.core.lib import translate
 from openlp.core.lib.ui import add_welcome_page
 
+
 class FirstTimePage(object):
+    """
+    An enumeration class with each of the pages of the wizard.
+    """
     Welcome = 0
     Plugins = 1
     NoInternet = 2
@@ -46,13 +52,19 @@ class FirstTimePage(object):
 
 
 class Ui_FirstTimeWizard(object):
+    """
+    The UI widgets for the first time wizard.
+    """
     def setupUi(self, FirstTimeWizard):
+        """
+        Set up the UI.
+        """
         FirstTimeWizard.setObjectName(u'FirstTimeWizard')
         FirstTimeWizard.resize(550, 386)
         FirstTimeWizard.setModal(True)
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages | QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage |QtGui.QWizard.HaveCustomButton1)
+            QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.noInternetFinishButton = self.button(QtGui.QWizard.CustomButton1)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
@@ -193,17 +205,20 @@ class Ui_FirstTimeWizard(object):
         self.retranslateUi(FirstTimeWizard)
 
     def retranslateUi(self, FirstTimeWizard):
+        """
+        Translate the UI on the fly
+        """
         FirstTimeWizard.setWindowTitle(translate(
             'OpenLP.FirstTimeWizard', 'First Time Wizard'))
-        self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
+        self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
             translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
         self.informationLabel.setText(translate('OpenLP.FirstTimeWizard',
             'This wizard will help you to configure OpenLP for initial use.'
             ' Click the next button below to start.'))
         self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
-        self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard','Select the Plugins you wish to use. '))
+        self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songsCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
-        self.customCheckBox.setText(translate('OpenLP.FirstTimeWizard','Custom Slides'))
+        self.customCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Custom Slides'))
         self.bibleCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
         self.imageCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Images'))
         # TODO Presentation plugin is not yet working on Mac OS X.

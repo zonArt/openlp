@@ -31,7 +31,6 @@ The :mod:`ui` module provides the core user interface for OpenLP
 """
 
 
-
 class HideMode(object):
     """
     This is an enumeration class which specifies the different modes of hiding the display.
@@ -101,6 +100,8 @@ from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', 'FirstTimeForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
+    'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',
+    'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay', 'Display', 'ServiceNoteForm',
+    'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
+    'FormattingTagForm', 'ShortcutListForm']

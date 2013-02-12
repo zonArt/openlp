@@ -31,7 +31,8 @@ Provide HTML Tag management and Formatting Tag access class
 """
 import cPickle
 
-from openlp.core.lib import translate, Settings
+from openlp.core.lib import Settings, translate
+
 
 class FormattingTags(object):
     """

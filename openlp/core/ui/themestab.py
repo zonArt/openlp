@@ -26,10 +26,12 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The Themes configuration tab
+"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
+from openlp.core.lib import Receiver, Settings, SettingsTab, UiStrings, translate
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import find_and_set_in_combo_box
 
@@ -38,13 +40,18 @@ class ThemesTab(SettingsTab):
     """
     ThemesTab is the theme settings tab in the settings dialog.
     """
-    def __init__(self, parent, mainwindow):
-        self.mainwindow = mainwindow
+    def __init__(self, parent):
+        """
+        Constructor
+        """
         generalTranslated = translate('OpenLP.ThemesTab', 'Themes')
         SettingsTab.__init__(self, parent, u'Themes', generalTranslated)
         self.iconPath = u':/themes/theme_new.png'
 
     def setupUi(self):
+        """
+        Set up the UI
+        """
         self.setObjectName(u'ThemesTab')
         SettingsTab.setupUi(self)
         self.GlobalGroupBox = QtGui.QGroupBox(self.leftColumn)
@@ -100,6 +107,9 @@ class ThemesTab(SettingsTab):
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
 
     def retranslateUi(self):
+        """
+        Translate the UI on the fly
+        """
         self.tabTitleVisible = UiStrings().Themes
         self.GlobalGroupBox.setTitle(translate('OpenLP.ThemesTab', 'Global Theme'))
         self.LevelGroupBox.setTitle(translate('OpenLP.ThemesTab', 'Theme Level'))
@@ -117,6 +127,9 @@ class ThemesTab(SettingsTab):
             'any themes associated with either the service or the songs.'))
 
     def load(self):
+        """
+        Load the theme settings into the tab
+        """
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         self.theme_level = settings.value(u'theme level')
@@ -130,30 +143,48 @@ class ThemesTab(SettingsTab):
             self.SongLevelRadioButton.setChecked(True)
 
     def save(self):
+        """
+        Save the settings
+        """
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'theme level', self.theme_level)
         settings.setValue(u'global theme', self.global_theme)
         settings.endGroup()
-        self.mainwindow.renderer.set_global_theme(self.global_theme)
-        self.mainwindow.renderer.set_theme_level(self.theme_level)
+        self.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_theme_level(self.theme_level)
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
+        """
+        After setting things up...
+        """
         Receiver.send_message(u'theme_update_global', self.global_theme)
 
     def onSongLevelButtonClicked(self):
+        """
+        Set the theme level
+        """
         self.theme_level = ThemeLevel.Song
 
     def onServiceLevelButtonClicked(self):
+        """
+        Set the theme level
+        """
         self.theme_level = ThemeLevel.Service
 
     def onGlobalLevelButtonClicked(self):
+        """
+        Set the theme level
+        """
         self.theme_level = ThemeLevel.Global
 
     def onDefaultComboBoxChanged(self, value):
+        """
+        Set the global default theme
+        """
         self.global_theme = self.DefaultComboBox.currentText()
-        self.mainwindow.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_global_theme(self.global_theme)
         self.__previewGlobalTheme()
 
     def updateThemeList(self, theme_list):
@@ -170,8 +201,8 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.mainwindow.renderer.set_global_theme(self.global_theme)
-        self.mainwindow.renderer.set_theme_level(self.theme_level)
+        self.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_theme_level(self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()
 
@@ -179,7 +210,7 @@ class ThemesTab(SettingsTab):
         """
         Utility method to update the global theme preview image.
         """
-        image = self.mainwindow.themeManagerContents.getPreviewImage(self.global_theme)
+        image = self.theme_manager.get_preview_image(self.global_theme)
         preview = QtGui.QPixmap(unicode(image))
         if not preview.isNull():
             preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)

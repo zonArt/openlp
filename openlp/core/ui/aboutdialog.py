@@ -29,12 +29,19 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, translate, UiStrings
+from openlp.core.lib import UiStrings, build_icon, translate
 from openlp.core.lib.ui import create_button, create_button_box
 
 
 class Ui_AboutDialog(object):
+    """
+    The actual GUI widgets for the About form.
+    """
+
     def setupUi(self, aboutDialog):
+        """
+        Set up the UI for the dialog.
+        """
         aboutDialog.setObjectName(u'aboutDialog')
         aboutDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         self.aboutDialogLayout = QtGui.QVBoxLayout(aboutDialog)
@@ -80,6 +87,9 @@ class Ui_AboutDialog(object):
         self.aboutNotebook.setCurrentIndex(0)
 
     def retranslateUi(self, aboutDialog):
+        """
+        Dynamically translate the UI.
+        """
         aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings().About)
         self.aboutTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
@@ -134,17 +144,17 @@ class Ui_AboutDialog(object):
             u'en_ZA': [u'Raoul "superfly" Snyman',
                        u'Johan "nuvolari" Mynhardt'],
             u'el': [u'Alexander Siozos'],
-            u'es': [u'Josu\xe9 Z\xfa\xf1iga',u'Christian Gonzalez'],
+            u'es': [u'Josu\xe9 Z\xfa\xf1iga', u'Christian Gonzalez'],
             u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
             u'fi': [u'Jori "joribu" Brander', u'Tobbe "tobbeb" Bildo'],
             u'fr': [u'Stephan\xe9 "stbrunner" Brunner', u'Jeremie "jnau05"',
                     u'Carl "carl.fischer" Fischer'],
             u'hu': [u'Gyuris Gell\xe9rt'],
-            u'id': [u'Mico "bangmico" Siahaan' ,u' ign_christian'],
+            u'id': [u'Mico "bangmico" Siahaan', u' ign_christian'],
             u'ja': [u'Kunio "Kunio" Nakamaru', u'Chris Haris'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
-            u'pt_BR': [u'David Mederiros',u'Rafael "rafaellerm" Lerm',
+            u'pt_BR': [u'David Mederiros', u'Rafael "rafaellerm" Lerm',
                        u'Eduardo Levi Chaves',
                        u'Gustavo Bim', u'Rog\xeanio Bel\xe9m', u'Samuel'
                 u'Simon "samscudder" Scudder', u'Van Der Fran'],
@@ -260,7 +270,7 @@ class Ui_AboutDialog(object):
             u'\n    '.join(documentors)))
         self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
-        copyright = translate('OpenLP.AboutForm',
+        copyright_note = translate('OpenLP.AboutForm',
             'Copyright \xa9 2004-2013 %s\n'
             'Portions copyright \xa9 2004-2013 %s') % (u'Raoul Snyman',
             u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
@@ -652,7 +662,7 @@ class Ui_AboutDialog(object):
             'linking proprietary applications with the library. If this is '
             'what you want to do, use the GNU Lesser General Public License '
             'instead of this License.')
-        self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' % (copyright, licence, disclaimer, gpltext))
+        self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' % (copyright_note, licence, disclaimer, gpltext))
         self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.licenseTab),
             translate('OpenLP.AboutForm', 'License'))
         self.volunteerButton.setText(translate('OpenLP.AboutForm', 'Volunteer'))

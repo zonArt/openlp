@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The actual print service dialog
+"""
 import cgi
 import datetime
 import os
@@ -33,7 +36,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string, Receiver, Settings, UiStrings, Registry
+from openlp.core.lib import Receiver, Settings, UiStrings, Registry, translate, get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -106,8 +109,11 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 }
 """
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
+class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
+    """
+    The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
+    """
     def __init__(self):
         """
         Constructor
@@ -143,6 +149,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.updatePreviewText()
 
     def toggleOptions(self, checked):
+        """
+        Toggle various options
+        """
         self.optionsWidget.setVisible(checked)
         if checked:
             left = self.optionsButton.pos().x()
@@ -169,7 +178,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self._addElement(u'body', parent=html_data)
         self._addElement(u'h1', cgi.escape(self.titleLineEdit.text()),
             html_data.body, classId=u'serviceTitle')
-        for index, item in enumerate(self.service_manager.serviceItems):
+        for index, item in enumerate(self.service_manager.service_items):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
@@ -181,6 +190,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.previewWidget.updatePreview()
 
     def _addPreviewItem(self, body, item, index):
+        """
+        Add a preview item
+        """
         div = self._addElement(u'div', classId=u'item', parent=body)
         # Add the title of the service item.
         item_title = self._addElement(u'h2', parent=div, classId=u'itemTitle')
@@ -388,6 +400,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.endGroup()
 
     def update_song_usage(self):
+        """
+        Update the song usage
+        """
         # Only continue when we include the song's text.
         if not self.slideTextCheckBox.isChecked():
             return

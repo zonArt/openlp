@@ -26,15 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets for the time dialog
+"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, UiStrings
+from openlp.core.lib import UiStrings, translate
 from openlp.core.lib.ui import create_button_box
 
 
 class Ui_StartTimeDialog(object):
+    """
+    The UI widgets for the time dialog
+    """
     def setupUi(self, StartTimeDialog):
+        """
+        Set up the UI
+        """
         StartTimeDialog.setObjectName(u'StartTimeDialog')
         StartTimeDialog.resize(350, 10)
         self.dialogLayout = QtGui.QGridLayout(StartTimeDialog)
@@ -108,6 +116,9 @@ class Ui_StartTimeDialog(object):
         self.setMaximumHeight(self.sizeHint().height())
 
     def retranslateUi(self, StartTimeDialog):
+        """
+        Update the translations on the fly
+        """
         self.setWindowTitle(translate('OpenLP.StartTimeForm', 'Item Start and Finish Time'))
         self.hourSpinBox.setSuffix(UiStrings().Hours)
         self.minuteSpinBox.setSuffix(UiStrings().Minutes)

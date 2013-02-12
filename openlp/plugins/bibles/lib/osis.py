@@ -33,7 +33,7 @@ import chardet
 import codecs
 import re
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -182,7 +182,7 @@ class OSISBible(BibleDB):
                         .replace(u'</div>', u'').replace(u'</w>', u'')
                     verse_text = self.spaces_regex.sub(u' ', verse_text)
                     self.create_verse(db_book.id, chapter, verse, verse_text)
-                    Receiver.send_message(u'openlp_process_events')
+                    self.application.process_events()
             self.session.commit()
             if match_count == 0:
                 success = False

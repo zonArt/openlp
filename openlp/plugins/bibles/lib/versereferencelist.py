@@ -72,12 +72,12 @@ class VerseReferenceList(object):
             prev = index - 1
             if self.verse_list[prev][u'version'] != verse[u'version']:
                 result = u'%s (%s)' % (result, self.verse_list[prev][u'version'])
-            result = result + u', '
+            result += u', '
             if self.verse_list[prev][u'book'] != verse[u'book']:
                 result = u'%s%s %s:' % (result, verse[u'book'], verse[u'chapter'])
             elif self.verse_list[prev][u'chapter'] != verse[u'chapter']:
                 result = u'%s%s:' % (result, verse[u'chapter'])
-            result = result + str(verse[u'start'])
+            result += str(verse[u'start'])
             if verse[u'start'] != verse[u'end']:
                 result = u'%s-%s' % (result, verse[u'end'])
         if len(self.version_list) > 1:
@@ -89,8 +89,8 @@ class VerseReferenceList(object):
         for index, version in enumerate(self.version_list):
             if index > 0:
                 if result[-1] not in [u';', u',', u'.']:
-                    result = result + u';'
-                result = result + u' '
+                    result += u';'
+                result += u' '
             result = u'%s%s, %s' % (result, version[u'version'], version[u'copyright'])
             if version[u'permission'].strip():
                 result = result + u', ' + version[u'permission']

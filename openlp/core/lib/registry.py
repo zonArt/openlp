@@ -34,6 +34,7 @@ import sys
 
 log = logging.getLogger(__name__)
 
+
 class Registry(object):
     """
     This is the Component Registry.  It is a singleton object and is used to provide a
@@ -43,6 +44,9 @@ class Registry(object):
     __instance__ = None
 
     def __new__(cls):
+        """
+        Re-implement the __new__ method to make sure we create a true singleton.
+        """
         if not cls.__instance__:
             cls.__instance__ = object.__new__(cls)
         return cls.__instance__
@@ -60,7 +64,6 @@ class Registry(object):
         if u'nosetest' in sys.argv[0]:
             registry.running_under_test = True
         return registry
-
 
     def get(self, key):
         """
@@ -87,10 +90,9 @@ class Registry(object):
         Removes the registry value from the list based on the key passed in
         (Only valid and active for testing framework)
         """
-        if self.running_under_test == False:
+        if self.running_under_test is False:
             log.error(u'Invalid Method call for key %s' % key)
             raise KeyError(u'Invalid Method call for key %s' % key)
             return
         if key in self.service_list:
-             del self.service_list[key]
-
+            del self.service_list[key]

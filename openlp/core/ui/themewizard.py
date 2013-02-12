@@ -26,15 +26,24 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The Create/Edit theme wizard
+"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon, UiStrings
+from openlp.core.lib import UiStrings, build_icon, translate
 from openlp.core.lib.theme import HorizontalType, BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import add_welcome_page, create_valign_selection_widgets
 
+
 class Ui_ThemeWizard(object):
+    """
+    The Create/Edit theme wizard
+    """
     def setupUi(self, themeWizard):
+        """
+        Set up the UI
+        """
         themeWizard.setObjectName(u'OpenLP.ThemeWizard')
         themeWizard.setModal(True)
         themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
@@ -372,7 +381,7 @@ class Ui_ThemeWizard(object):
             QtCore.SLOT(u'setDisabled(bool)'))
         QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.mainHeightSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
-        QtCore.QObject.connect(self.footerPositionCheckBox,QtCore.SIGNAL(u'toggled(bool)'), self.footerXSpinBox,
+        QtCore.QObject.connect(self.footerPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.footerXSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
         QtCore.QObject.connect(self.footerPositionCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.footerYSpinBox,
             QtCore.SLOT(u'setDisabled(bool)'))
@@ -382,8 +391,11 @@ class Ui_ThemeWizard(object):
             QtCore.SLOT(u'setDisabled(bool)'))
 
     def retranslateUi(self, themeWizard):
+        """
+        Translate the UI on the fly
+        """
         themeWizard.setWindowTitle(translate('OpenLP.ThemeWizard', 'Theme Wizard'))
-        self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
+        self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
             translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard'))
         self.informationLabel.setText(
             translate('OpenLP.ThemeWizard', 'This wizard will help you to '

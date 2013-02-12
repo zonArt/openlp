@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The file rename dialog.
+"""
 
 from PyQt4 import QtGui
 
@@ -33,11 +36,15 @@ from filerenamedialog import Ui_FileRenameDialog
 
 from openlp.core.lib import translate
 
+
 class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
     """
-    The exception dialog
+    The file rename dialog
     """
     def __init__(self, parent):
+        """
+        Constructor
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
 

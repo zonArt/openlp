@@ -37,7 +37,6 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Receiver, translate
 
-
 log = logging.getLogger(__name__)
 
 
@@ -51,6 +50,9 @@ class ScreenList(object):
     __instance__ = None
 
     def __new__(cls):
+        """
+        Re-implement __new__ to create a true singleton.
+        """
         if not cls.__instance__:
             cls.__instance__ = object.__new__(cls)
         return cls.__instance__
@@ -137,8 +139,7 @@ class ScreenList(object):
         """
         screen_list = []
         for screen in self.screen_list:
-            screen_name = u'%s %d' % (translate('OpenLP.ScreenList', 'Screen'),
-                screen[u'number'] + 1)
+            screen_name = u'%s %d' % (translate('OpenLP.ScreenList', 'Screen'), screen[u'number'] + 1)
             if screen[u'primary']:
                 screen_name = u'%s (%s)' % (screen_name, translate('OpenLP.ScreenList', 'primary'))
             screen_list.append(screen_name)
@@ -235,8 +236,7 @@ class ScreenList(object):
         y = window.y() + (window.height() / 2)
         for screen in self.screen_list:
             size = screen[u'size']
-            if x >= size.x() and x <= (size.x() + size.width()) and \
-                y >= size.y() and y <= (size.y() + size.height()):
+            if x >= size.x() and x <= (size.x() + size.width()) and y >= size.y() and y <= (size.y() + size.height()):
                 return screen[u'number']
 
     def load_screen_settings(self):

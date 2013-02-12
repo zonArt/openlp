@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Settings
-from openlp.core.lib.ui import create_action, UiStrings
+from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.bibles.lib import BibleManager, BiblesTab, BibleMediaItem, LayoutStyle, DisplayStyle, \
     LanguageSelection
@@ -102,11 +102,11 @@ class BiblePlugin(Plugin):
         #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
         self.exportBibleItem.setVisible(False)
 
-    def appStartup(self):
+    def app_startup(self):
         """
         Perform tasks on application startup
         """
-        Plugin.appStartup(self)
+        Plugin.app_startup(self)
         if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),

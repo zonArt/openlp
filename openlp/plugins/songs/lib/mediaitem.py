@@ -35,8 +35,8 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, check_item_selected, \
-    PluginStatus, create_separated_list, check_directory_exists, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
+    UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, SongImportForm, SongExportForm
@@ -361,7 +361,7 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
-            Receiver.send_message(u'cursor_busy')
+            self.application.set_busy_cursor()
             self.main_window.displayProgressBar(len(items))
             for item in items:
                 item_id = item.data(QtCore.Qt.UserRole)
@@ -380,7 +380,7 @@ class SongMediaItem(MediaManagerItem):
                 self.plugin.manager.delete_object(Song, item_id)
                 self.main_window.incrementProgressBar()
             self.main_window.finishedProgressBar()
-            Receiver.send_message(u'cursor_normal')
+            self.application.set_normal_cursor()
             self.onSearchTextButtonClicked()
 
     def onCloneClick(self):
@@ -526,7 +526,7 @@ class SongMediaItem(MediaManagerItem):
             temporary = True
         # Update service with correct song id.
         if editId:
-            Receiver.send_message(u'service_item_update%s:%s:%s' % (editId, item.unique_identifier, temporary))
+            self.service_manager.service_item_update(editId, item.unique_identifier, temporary)
 
     def search(self, string, showError):
         """
