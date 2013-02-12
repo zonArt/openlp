@@ -108,7 +108,6 @@ class AlertsManager(QtCore.QObject):
         self.timer_id = 0
         self.generateAlert()
 
-
     def _get_live_controller(self):
         """
         Adds the live controller to the class dynamically
