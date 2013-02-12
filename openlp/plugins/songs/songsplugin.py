@@ -153,7 +153,7 @@ class SongsPlugin(Plugin):
             visible=False, triggers=self.onToolsReindexItemTriggered)
         tools_menu.addAction(self.toolsReindexItem)
         self.toolsFindDuplicates = create_action(tools_menu, u'toolsFindDuplicates',
-            text=translate('SongsPlugin', 'Find &duplicate songs'),
+            text=translate('SongsPlugin', 'Find &Duplicate Songs'),
             statustip=translate('SongsPlugin',
             'Find and remove duplicate songs in the song database.'),
             visible=False, triggers=self.onToolsFindDuplicatesTriggered)
@@ -181,7 +181,7 @@ class SongsPlugin(Plugin):
         """
         Search for duplicates in the song database.
         """
-        DuplicateSongRemovalForm(self.formParent, self).exec_()
+        DuplicateSongRemovalForm(self.main_window, self).exec_()
 
     def onSongImportItemClicked(self):
         if self.mediaItem:

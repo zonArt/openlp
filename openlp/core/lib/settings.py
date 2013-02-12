@@ -200,6 +200,7 @@ class Settings(QtCore.QSettings):
         u'shortcuts/songImportItem': [],
         u'shortcuts/themeScreen': [QtGui.QKeySequence(u'T')],
         u'shortcuts/toolsReindexItem': [],
+        u'shortcuts/toolsFindDuplicates': [],
         u'shortcuts/toolsAlertItem': [u'F7'],
         u'shortcuts/toolsFirstTimeWizard': [],
         u'shortcuts/toolsOpenDataFolder': [],

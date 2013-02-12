@@ -66,7 +66,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.duplicateSongList = []
         self.reviewCurrentCount = 0
         self.reviewTotalCount = 0
-        self.clipboard = plugin.formParent.clipboard
         OpenLPWizard.__init__(self, parent, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_duplicateremoval.bmp', False)
 
@@ -185,7 +184,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             if self.reviewTotalCount == 0:
                 self.notifyNoDuplicates()
         elif pageId == self.reviewPageId:
-            self.nextReviewButtonClicked()
+            self.processCurrentDuplicateEntry()
 
     def notifyNoDuplicates(self):
         """
@@ -201,10 +200,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
 
     def addDuplicatesToSongList(self, searchSong, duplicateSong):
         """
-        Inserts a song duplicate (two simliar songs) to the duplicate song list.
+        Inserts a song duplicate (two similar songs) to the duplicate song list.
         If one of the two songs is already part of the duplicate song list,
         don't add another duplicate group but add the other song to that group.
-        Retruns True if at least one of the songs was added, False if both were already
+        Returns True if at least one of the songs was added, False if both were already
         member of a group.
 
         ``searchSong``
@@ -233,7 +232,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 break
         if not duplicateGroupFound:
             self.duplicateSongList.append([searchSong, duplicateSong])
-            duplicateGroupFound = True
+            duplicateAdded = True
         return duplicateAdded
 
     def onWizardExit(self):
@@ -257,11 +256,11 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         on the review page as long as there are more song duplicates to review.
         """
         if self.currentId() == self.reviewPageId:
-            #as long as the duplicate list is not empty we revisit the review page
-            if len(self.duplicateSongList) == 0:
+            #as long as it's not the last duplicate list entry we revisit the review page
+            if len(self.duplicateSongList) == 1:
                 return True
             else:
-                self.nextReviewButtonClicked()
+                self.proceedToNextReview()
                 return False
         return OpenLPWizard.validateCurrentPage(self)
 
@@ -301,17 +300,12 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         if self.songsHorizontalLayout.count() == 5:
             self.songsHorizontalLayout.itemAt(2).widget().songRemoveButton.setEnabled(False)
 
-    def nextReviewButtonClicked(self):
+    def proceedToNextReview(self):
         """
-        Called whenever the "next" button is clicked on the review page.
-        Update the review counter in the wizard header, remove all previous
-        song widgets, add song widgets for the current duplicate group to review,
-        if it's the last duplicate song group, hide the "next" button and show
-        the "finish" button.
+        Removes the previous review UI elements and calls processCurrentDuplicateEntry.
         """
-        # update counter
-        self.reviewCurrentCount = self.reviewTotalCount - (len(self.duplicateSongList) - 1)
-        self.updateReviewCounterText()
+        #remove last duplicate group
+        self.duplicateSongList.pop()
         # remove all previous elements
         for i in reversed(range(self.songsHorizontalLayout.count())): 
             item = self.songsHorizontalLayout.itemAt(i)
@@ -322,13 +316,25 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 self.songsHorizontalLayout.removeItem(item) 
                 widget.setParent(None)
             else:
-                self.songsHorizontalLayout.removeItem(item) 
-        #add next set of duplicates
+                self.songsHorizontalLayout.removeItem(item)
+        #process next set of duplicates
+        self.processCurrentDuplicateEntry()
+    
+    def processCurrentDuplicateEntry(self):
+        """
+        Update the review counter in the wizard header, add song widgets for
+        the current duplicate group to review, if it's the last
+        duplicate song group, hide the "next" button and show the "finish" button.
+        """
+        # update counter
+        self.reviewCurrentCount = self.reviewTotalCount - (len(self.duplicateSongList) - 1)
+        self.updateReviewCounterText()
+        # add song elements to the UI
         if len(self.duplicateSongList) > 0:
             # a stretch doesn't seem to stretch endlessly, so I add two to get enough stetch for 1400x1050
             self.songsHorizontalLayout.addStretch()
             self.songsHorizontalLayout.addStretch()
-            for duplicate in self.duplicateSongList.pop(0):
+            for duplicate in self.duplicateSongList[-1]:
                 songReviewWidget = SongReviewWidget(self.reviewPage, duplicate)
                 QtCore.QObject.connect(songReviewWidget,
                         QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'),
@@ -337,7 +343,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.songsHorizontalLayout.addStretch()
             self.songsHorizontalLayout.addStretch()
         #change next button to finish button on last review
-        if len(self.duplicateSongList) == 0:
+        if len(self.duplicateSongList) == 1:
             self.button(QtGui.QWizard.FinishButton).show()
             self.button(QtGui.QWizard.FinishButton).setEnabled(True)
             self.button(QtGui.QWizard.NextButton).hide()
