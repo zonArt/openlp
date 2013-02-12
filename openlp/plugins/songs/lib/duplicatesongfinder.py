@@ -70,7 +70,7 @@ class DuplicateSongFinder(object):
         else:
             small = song2.search_lyrics
             large = song1.search_lyrics
-        differ = difflib.SequenceMatcher(a=small, b=large)
+        differ = difflib.SequenceMatcher(a=large, b=small)
         diff_tuples = differ.get_opcodes()
         diff_no_typos = self.__removeTypos(diff_tuples)
         #print(diff_no_typos)
