@@ -273,6 +273,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         ``songReviewWidget``
             The SongReviewWidget whose song we should delete.
         """
+        #remove song from duplicate song list
+        self.duplicateSongList[-1].remove(songReviewWidget.song)
         #remove song
         item_id = songReviewWidget.song.id
         media_files = self.plugin.manager.get_all_objects(MediaFile,
@@ -294,10 +296,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         # remove GUI elements
         self.songsHorizontalLayout.removeWidget(songReviewWidget)
         songReviewWidget.setParent(None)
-        # check if we only have one SongReviewWidget left
+        # check if we only have one duplicate left
         # 4 stretches + 1 SongReviewWidget = 5
         # the SongReviewWidget is then at position 2
-        if self.songsHorizontalLayout.count() == 5:
+        if len(self.duplicateSongList[-1]) == 1:
             self.songsHorizontalLayout.itemAt(2).widget().songRemoveButton.setEnabled(False)
 
     def proceedToNextReview(self):
