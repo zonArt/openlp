@@ -33,6 +33,7 @@ from openlp.core.lib import Registry, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
 
+
 class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
     Class documentation goes here.
@@ -65,6 +66,7 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
                 self.accept()
         else:
             self.reject()
+
     def _get_main_window(self):
         """
         Adds the main window to the class dynamically
