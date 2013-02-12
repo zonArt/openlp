@@ -4,12 +4,12 @@
 import os
 
 from unittest import TestCase
-from mock import MagicMock
 from openlp.core.lib import Settings
 
 from PyQt4 import QtGui, QtTest
 
 TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
+
 
 class TestSettings(TestCase):
 
@@ -29,7 +29,7 @@ class TestSettings(TestCase):
         del self.application
         try:
             os.remove(Settings().fileName())
-        except:
+        except OSError:
             pass
 
     def settings_basic_test(self):
@@ -42,13 +42,13 @@ class TestSettings(TestCase):
         default_value = Settings().value(u'general/has run wizard')
 
         # THEN the default value is returned
-        assert default_value is False, u'The default value defined is returned'
+        assert default_value is False, u'The default value defined has not been returned'
 
         # WHEN a new value is saved into config
         Settings().setValue(u'general/has run wizard', True)
 
         # THEN the new value is returned when re-read
-        assert Settings().value(u'general/has run wizard') is True, u'The saved value is returned'
+        assert Settings().value(u'general/has run wizard') is True, u'The saved value has not been returned'
 
     def settings_override_test(self):
         """
@@ -79,7 +79,7 @@ class TestSettings(TestCase):
         # GIVEN: an override for the settings
         screen_settings = {
             u'test/extend': u'very wide',
-            }
+        }
         Settings.extend_default_settings(screen_settings)
 
         # WHEN reading a setting for the first time
@@ -88,10 +88,10 @@ class TestSettings(TestCase):
         extend = settings.value(u'extend')
 
         # THEN the default value is returned
-        assert extend == u'very wide', u'The default value defined is returned'
+        assert extend == u'very wide', u'The default value defined has not been returned'
 
         # WHEN a new value is saved into config
         Settings().setValue(u'test/extend', u'very short')
 
         # THEN the new value is returned when re-read
-        assert Settings().value(u'test/extend') == u'very short', u'The saved value is returned'
+        assert Settings().value(u'test/extend') == u'very short', u'The saved value has not been returned'
