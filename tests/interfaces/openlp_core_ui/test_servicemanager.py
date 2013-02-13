@@ -1,5 +1,5 @@
 """
-    Package to test the openlp.core.ui package.
+    Package to test the openlp.core.lib package.
 """
 from unittest import TestCase
 
@@ -38,4 +38,4 @@ class TestStartNoteDialog(TestCase):
         # WHEN I have an empty display
         # THEN the count of items should be zero
         self.assertEqual(self.service_manager.service_manager_list.topLevelItemCount(), 0,
-            u'There the service manager list is empty ')
+            u'There the service manager list is not empty ')

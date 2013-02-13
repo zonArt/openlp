@@ -6,11 +6,11 @@ import os
 
 from unittest import TestCase
 
-from mock import MagicMock
 from openlp.core.lib import Registry, ImageManager, ScreenList
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt4 import QtGui
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
+
 
 class TestImageManager(TestCase):
 
