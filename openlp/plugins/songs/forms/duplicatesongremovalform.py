@@ -167,19 +167,19 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 self.duplicateSearchProgressBar.setValue(1)
                 self.notifyNoDuplicates()
                 return
-            # with x songs we have x*(x-1)/2 comparisons
-            maxProgressCount = maxSongs*(maxSongs-1)/2
+            # with x songs we have x*(x - 1) / 2 comparisons
+            maxProgressCount = maxSongs * (maxSongs - 1) / 2
             self.duplicateSearchProgressBar.setMaximum(maxProgressCount)
             songs = self.plugin.manager.get_all_objects(Song)
-            for outerSongCounter in range(maxSongs-1):
-                for innerSongCounter in range(outerSongCounter+1, maxSongs):
+            for outerSongCounter in range(maxSongs - 1):
+                for innerSongCounter in range(outerSongCounter + 1, maxSongs):
                     doubleFinder = DuplicateSongFinder()
                     if doubleFinder.songsProbablyEqual(songs[outerSongCounter], songs[innerSongCounter]):
                         duplicateAdded = self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
                         if duplicateAdded:
                             self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " +
                                 songs[innerSongCounter].title)
-                    self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value()+1)
+                    self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value() + 1)
             self.reviewTotalCount = len(self.duplicateSongList)
             if self.reviewTotalCount == 0:
                 self.notifyNoDuplicates()

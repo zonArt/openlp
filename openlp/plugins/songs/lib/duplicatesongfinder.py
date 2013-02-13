@@ -75,7 +75,7 @@ class DuplicateSongFinder(object):
         diff_no_typos = self.__removeTypos(diff_tuples)
         #print(diff_no_typos)
         if self.__lengthOfEqualBlocks(diff_no_typos) >= self.minBlockSize or \
-                self.__lengthOfLongestEqualBlock(diff_no_typos) > len(small)*2/3:
+                self.__lengthOfLongestEqualBlock(diff_no_typos) > len(small) * 2 / 3:
                     return True
         else:
             return False
@@ -87,7 +87,7 @@ class DuplicateSongFinder(object):
         ``opcode``
             The difference.
         """
-        return max(opcode[2]-opcode[1], opcode[4] - opcode[3])
+        return max(opcode[2] - opcode[1], opcode[4] - opcode[3])
 
     def __removeTypos(self, diff):
         """
@@ -104,11 +104,11 @@ class DuplicateSongFinder(object):
                         del diff[0]
         #remove typos in the middle of string
         if len(diff) >= 3:
-            for index in range(len(diff)-3, -1, -1):
+            for index in range(len(diff) - 3, -1, -1):
                 if self.__opLength(diff[index]) >= self.minFragmentSize and \
-                    diff[index+1][0] != "equal" and self.__opLength(diff[index+1]) <= self.maxTypoSize and \
-                        self.__opLength(diff[index+2]) >= self.minFragmentSize:
-                            del diff[index+1]
+                    diff[index + 1][0] != "equal" and self.__opLength(diff[index + 1]) <= self.maxTypoSize and \
+                        self.__opLength(diff[index + 2]) >= self.minFragmentSize:
+                            del diff[index + 1]
         #remove typo at the end of string
         if len(diff) >= 2:
             if self.__opLength(diff[-2]) >= self.minFragmentSize and \
@@ -116,12 +116,12 @@ class DuplicateSongFinder(object):
                         del diff[-1]
 
         #merge fragments
-        for index in range(len(diff)-2, -1, -1):
+        for index in range(len(diff) - 2, -1, -1):
             if diff[index][0] == "equal" and self.__opLength(diff[index]) >= self.minFragmentSize and \
-                diff[index+1][0] == "equal" and self.__opLength(diff[index+1]) >= self.minFragmentSize:
-                        diff[index] = ("equal", diff[index][1], diff[index+1][2], diff[index][3],
-                            diff[index+1][4])
-                        del diff[index+1]
+                diff[index + 1][0] == "equal" and self.__opLength(diff[index + 1]) >= self.minFragmentSize:
+                        diff[index] = ("equal", diff[index][1], diff[index + 1][2], diff[index][3],
+                            diff[index + 1][4])
+                        del diff[index + 1]
 
         return diff
 
