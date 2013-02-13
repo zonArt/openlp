@@ -95,7 +95,7 @@ class CCLIFileImport(SongImport):
                     self.logError(filename,
                         translate('SongsPlugin.CCLIFileImport', 'The file does not have a valid extension.'))
                     log.info(u'Extension %s is not valid', filename)
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
 
     def doImportUsrFile(self, textList):

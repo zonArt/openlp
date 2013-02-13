@@ -142,7 +142,7 @@ class EasyWorshipSongImport(SongImport):
             rec_count = (rec_count + record_size) / record_size
             # Loop through each record within the current block
             for i in range(rec_count):
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 raw_record = db_file.read(record_size)
                 self.fields = self.recordStruct.unpack(raw_record)
@@ -216,7 +216,7 @@ class EasyWorshipSongImport(SongImport):
                 if len(self.comments) > 5:
                     self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
                         '\n[above are Song Tags with notes imported from EasyWorship]'))
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 if not self.finish():
                     self.logError(self.importSource)
