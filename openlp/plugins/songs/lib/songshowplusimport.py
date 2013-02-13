@@ -105,7 +105,7 @@ class SongShowPlusImport(SongImport):
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self.sspVerseOrderList = []
             other_count = 0

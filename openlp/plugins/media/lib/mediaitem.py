@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, Receiver, ServiceItem, ServiceItemContext, \
+from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, Registry, ServiceItem, ServiceItemContext, \
     Settings, UiStrings, build_icon, check_item_selected, check_directory_exists, translate
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
@@ -71,10 +71,9 @@ class MediaMediaItem(MediaManagerItem):
         self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
         self.displayController.previewDisplay.setup()
         self.media_controller.setup_display(self.displayController.previewDisplay, False)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'video_background_replaced'),
-            self.videobackgroundReplaced)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.rebuild_players)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.displaySetup)
+        Registry().register_function(u'video_background_replaced', self.video_background_replaced)
+        Registry().register_function(u'mediaitem_media_rebuild', self.rebuild_players)
+        Registry().register_function(u'config_screen_changed', self.display_setup)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -133,7 +132,7 @@ class MediaMediaItem(MediaManagerItem):
         self.media_controller.media_reset(self.live_controller)
         self.resetAction.setVisible(False)
 
-    def videobackgroundReplaced(self):
+    def video_background_replaced(self):
         """
         Triggered by main display on change of serviceitem.
         """
@@ -214,7 +213,7 @@ class MediaMediaItem(MediaManagerItem):
             u' '.join(self.media_controller.video_extensions_list),
             u' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
-    def displaySetup(self):
+    def display_setup(self):
         self.media_controller.setup_display(self.displayController.previewDisplay, False)
 
     def populateDisplayTypes(self):

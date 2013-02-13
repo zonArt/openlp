@@ -100,7 +100,7 @@ class SofImport(OooImport):
         try:
             paragraphs = self.document.getText().createEnumeration()
             while paragraphs.hasMoreElements():
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     return
                 paragraph = paragraphs.nextElement()
                 if paragraph.supportsService("com.sun.star.text.Paragraph"):

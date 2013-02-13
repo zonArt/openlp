@@ -29,7 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, Settings, UiStrings, translate
+from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate
 from openlp.core.lib.ui import create_valign_selection_widgets
 
 class AlertsTab(SettingsTab):
@@ -174,7 +174,7 @@ class AlertsTab(SettingsTab):
         settings.setValue(u'location', self.location)
         settings.endGroup()
         if self.changed:
-            Receiver.send_message(u'update_display_css')
+            Registry().execute(u'update_display_css')
         self.changed = False
 
     def updateDisplay(self):
