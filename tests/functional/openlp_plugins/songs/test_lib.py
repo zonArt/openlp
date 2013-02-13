@@ -34,7 +34,11 @@ from mock import MagicMock
 from openlp.plugins.songs.lib.duplicatesongfinder import DuplicateSongFinder
 
 class TestLib(TestCase):
-    def duplicate_song_removal_test(self):
+
+    def songs_probably_equal_test(self):
+        """
+        Test the DuplicateSongFinder.songsProbablyEqual function.
+        """
         full_lyrics =u'''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am found was
         blind but now i see  twas grace that taught my heart to fear and grace my fears relieved how precious did that grace
         appear the hour i first believed  through many dangers toils and snares i have already come tis grace that brought
@@ -58,15 +62,42 @@ class TestLib(TestCase):
         song1 = MagicMock()
         song2 = MagicMock()
         
+        #GIVEN: Two equal songs
         song1.search_lyrics = full_lyrics
         song2.search_lyrics = full_lyrics
-        assert dsf.songsProbablyEqual(song1, song2) is True, u'The result should be True'
+        
+        #WHEN: We compare those songs for equality
+        result = dsf.songsProbablyEqual(song1, song2)
+        
+        #THEN: The result should be True
+        assert result is True, u'The result should be True'
+        
+        #GIVEN: A song and a short version of the same song
         song1.search_lyrics = full_lyrics
         song2.search_lyrics = short_lyrics
-        assert dsf.songsProbablyEqual(song1, song2) is True, u'The result should be True'
+        
+        #WHEN: We compare those songs for equality
+        result = dsf.songsProbablyEqual(song1, song2)
+        
+        #THEN: The result should be True
+        assert result  is True, u'The result should be True'
+        
+        #GIVEN: A song and the same song with lots of errors
         song1.search_lyrics = full_lyrics
         song2.search_lyrics = error_lyrics
-        assert dsf.songsProbablyEqual(song1, song2) is True, u'The result should be True'
+        
+        #WHEN: We compare those songs for equality
+        result = dsf.songsProbablyEqual(song1, song2)
+        
+        #THEN: The result should be True
+        assert result is True, u'The result should be True'
+        
+        #GIVEN: Two different songs
         song1.search_lyrics = full_lyrics
         song2.search_lyrics = different_lyrics
-        assert dsf.songsProbablyEqual(song1, song2) is False, u'The result should be False'
+        
+        #WHEN: We compare those songs for equality
+        result = dsf.songsProbablyEqual(song1, song2)
+        
+        #THEN: The result should be False
+        assert result is False, u'The result should be False'
