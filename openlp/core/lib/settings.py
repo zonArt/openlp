@@ -322,7 +322,7 @@ class Settings(QtCore.QSettings):
         """
         # if group() is not empty the group has not been specified together with the key.
         if self.group():
-            default_value = Settings.__default_settings__[unicode(self.group() + u'/' + key)]
+            default_value = Settings.__default_settings__[self.group() + u'/' + key]
         else:
             default_value = Settings.__default_settings__[key]
         setting = super(Settings, self).value(key, default_value)
@@ -343,13 +343,8 @@ class Settings(QtCore.QSettings):
         """
         # On OS X (and probably on other platforms too) empty value from QSettings is represented as type
         # PyQt4.QtCore.QPyNullVariant. This type has to be converted to proper 'None' Python type.
-        # Python wants the test one way but nose wants it the other way Madness!
-        try:
-            if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
-                setting = None
-        except AttributeError:
-            if setting.isNull() and isinstance(setting, QtCore.QPyNullVariant):
-                setting = None
+        if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
+            setting = None
         # Handle 'None' type (empty value) properly.
         if setting is None:
             # An empty string saved to the settings results in a None type being returned.
