@@ -33,7 +33,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Registry
 
 
 class TreeWidgetWithDnD(QtGui.QTreeWidget):
@@ -59,10 +59,8 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
-            self.parent().loadFile)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd_internal' % self.mimeDataText),
-            self.parent().dnd_move_internal)
+        Registry().register_function((u'%s_dnd' % self.mimeDataText), self.parent().loadFile)
+        Registry().register_function((u'%s_dnd_internal' % self.mimeDataText), self.parent().dnd_move_internal)
 
     def mouseMoveEvent(self, event):
         """
@@ -120,11 +118,11 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
                     listing = os.listdir(localFile)
                     for file_name in listing:
                         files.append(os.path.join(localFile, file_name))
-            Receiver.send_message(u'%s_dnd' % self.mimeDataText, {'files': files, 'target': self.itemAt(event.pos())})
+            Registry().execute(u'%s_dnd' % self.mimeDataText, {'files': files, 'target': self.itemAt(event.pos())})
         elif self.allow_internal_dnd:
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
-            Receiver.send_message(u'%s_dnd_internal' % self.mimeDataText, self.itemAt(event.pos()))
+            Registry().execute(u'%s_dnd_internal' % self.mimeDataText, self.itemAt(event.pos()))
         else:
             event.ignore()
 

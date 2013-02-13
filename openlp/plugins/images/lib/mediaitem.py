@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ItemCapabilities, MediaManagerItem, Receiver, ServiceItemContext, Settings, \
+from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, ServiceItemContext, Settings, \
     SettingsManager, StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, \
     check_item_selected, create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
@@ -59,7 +59,7 @@ class ImageMediaItem(MediaManagerItem):
         self.add_group_form = AddGroupForm(self)
         self.fill_groups_combobox(self.choose_group_form.group_combobox)
         self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_theme_changed'), self.liveThemeChanged)
+        Registry().register_function(u'live_theme_changed', self.live_theme_changed)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -551,7 +551,7 @@ class ImageMediaItem(MediaManagerItem):
         self.resetAction.setVisible(False)
         self.live_controller.display.resetImage()
 
-    def liveThemeChanged(self):
+    def live_theme_changed(self):
         """
         Triggered by the change of theme in the slide controller
         """

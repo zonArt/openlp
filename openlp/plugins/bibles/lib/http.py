@@ -234,10 +234,8 @@ class BGExtract(object):
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
             pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='', cleaner=cleaner)
-        self.application.process_events()
         if not soup:
             return None
-        self.application.process_events()
         div = soup.find('div', 'result-text-style-normal')
         self._clean_soup(div)
         span_list = div.findAll('span', 'text')
@@ -295,6 +293,16 @@ class BGExtract(object):
             if book:
                 books.append(book.contents[0])
         return books
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
 
 
 class BSExtract(object):
@@ -456,6 +464,16 @@ class CWExtract(object):
             book = book.find(u'a')
             books.append(book.contents[0])
         return books
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
 
 
 class HTTPBible(BibleDB):

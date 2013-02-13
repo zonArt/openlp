@@ -29,7 +29,7 @@
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import Settings, SettingsTab, Receiver, translate
+from openlp.core.lib import Registry, Settings, SettingsTab, translate
 
 
 ZERO_URL = u'0.0.0.0'
@@ -152,7 +152,7 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settingsSection + u'/ip address', self.addressEdit.text())
         Settings().setValue(self.settingsSection + u'/twelve hour', self.twelveHour)
         if changed:
-            Receiver.send_message(u'remotes_config_updated')
+            Registry().register_function(u'remotes_config_updated')
 
     def onTwelveHourCheckBoxChanged(self, check_state):
         self.twelveHour = False

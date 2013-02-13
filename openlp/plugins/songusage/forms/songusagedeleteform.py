@@ -29,9 +29,10 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Registry, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
+
 
 class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
@@ -57,11 +58,21 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
             if ret == QtGui.QMessageBox.Yes:
                 deleteDate = self.deleteCalendar.selectedDate().toPyDate()
                 self.manager.delete_all_objects(SongUsageItem, SongUsageItem.usagedate <= deleteDate)
-                Receiver.send_message(u'openlp_information_message', {
-                    u'title': translate('SongUsagePlugin.SongUsageDeleteForm', 'Deletion Successful'),
-                    u'message': translate(
-                        'SongUsagePlugin.SongUsageDeleteForm', 'All requested data has been deleted successfully. ')}
+                self.main_window.information_message(
+                    translate('SongUsagePlugin.SongUsageDeleteForm', 'Deletion Successful'),
+                    translate(
+                        'SongUsagePlugin.SongUsageDeleteForm', 'All requested data has been deleted successfully. ')
                 )
                 self.accept()
         else:
             self.reject()
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
