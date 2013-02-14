@@ -63,9 +63,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        self.duplicateSongList = []
-        self.reviewCurrentCount = 0
-        self.reviewTotalCount = 0
+        self.duplicate_song_list = []
+        self.review_current_count = 0
+        self.review_total_count = 0
         OpenLPWizard.__init__(self, parent, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_duplicateremoval.bmp', False)
 
@@ -87,44 +87,46 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Add song wizard specific pages.
         """
         #add custom pages
-        self.searchingPage = QtGui.QWizardPage()
-        self.searchingPage.setObjectName(u'searchingPage')
-        self.searchingVerticalLayout = QtGui.QVBoxLayout(self.searchingPage)
-        self.searchingVerticalLayout.setObjectName(u'searchingVerticalLayout')
-        self.duplicateSearchProgressBar = QtGui.QProgressBar(self.searchingPage)
-        self.duplicateSearchProgressBar.setObjectName(u'duplicateSearchProgressBar')
-        self.duplicateSearchProgressBar.setFormat(WizardStrings.PercentSymbolFormat)
-        self.searchingVerticalLayout.addWidget(self.duplicateSearchProgressBar)
-        self.foundDuplicatesEdit = QtGui.QPlainTextEdit(self.searchingPage)
-        self.foundDuplicatesEdit.setUndoRedoEnabled(False)
-        self.foundDuplicatesEdit.setReadOnly(True)
-        self.foundDuplicatesEdit.setObjectName(u'foundDuplicatesEdit')
-        self.searchingVerticalLayout.addWidget(self.foundDuplicatesEdit)
-        self.searchingPageId = self.addPage(self.searchingPage)
-        self.reviewPage = QtGui.QWizardPage()
-        self.reviewPage.setObjectName(u'reviewPage')
-        self.reviewLayout = QtGui.QVBoxLayout(self.reviewPage)
-        self.reviewLayout.setObjectName(u'reviewLayout')
-        self.songsHorizontalScrollArea = QtGui.QScrollArea(self.reviewPage)
-        self.songsHorizontalScrollArea.setObjectName(u'songsHorizontalScrollArea')
-        self.songsHorizontalScrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.songsHorizontalScrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.songsHorizontalScrollArea.setFrameStyle(QtGui.QFrame.NoFrame)
-        self.songsHorizontalScrollArea.setWidgetResizable(True)
-        self.songsHorizontalScrollArea.setStyleSheet(u'QScrollArea#songsHorizontalScrollArea {background-color:transparent;}')
-        self.songsHorizontalSongsWidget = QtGui.QWidget(self.songsHorizontalScrollArea)
-        self.songsHorizontalSongsWidget.setObjectName(u'songsHorizontalSongsWidget')
-        self.songsHorizontalSongsWidget.setStyleSheet(u'QWidget#songsHorizontalSongsWidget {background-color:transparent;}')
-        self.songsHorizontalLayout = QtGui.QHBoxLayout(self.songsHorizontalSongsWidget)
-        self.songsHorizontalLayout.setObjectName(u'songsHorizontalLayout')
-        self.songsHorizontalLayout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
-        self.songsHorizontalScrollArea.setWidget(self.songsHorizontalSongsWidget)
-        self.reviewLayout.addWidget(self.songsHorizontalScrollArea)
-        self.reviewPageId = self.addPage(self.reviewPage)
+        self.searching_page = QtGui.QWizardPage()
+        self.searching_page.setObjectName(u'searching_page')
+        self.searching_vertical_layout = QtGui.QVBoxLayout(self.searching_page)
+        self.searching_vertical_layout.setObjectName(u'searching_vertical_layout')
+        self.duplicate_search_progress_bar = QtGui.QProgressBar(self.searching_page)
+        self.duplicate_search_progress_bar.setObjectName(u'duplicate_search_progress_bar')
+        self.duplicate_search_progress_bar.setFormat(WizardStrings.PercentSymbolFormat)
+        self.searching_vertical_layout.addWidget(self.duplicate_search_progress_bar)
+        self.found_duplicates_edit = QtGui.QPlainTextEdit(self.searching_page)
+        self.found_duplicates_edit.setUndoRedoEnabled(False)
+        self.found_duplicates_edit.setReadOnly(True)
+        self.found_duplicates_edit.setObjectName(u'found_duplicates_edit')
+        self.searching_vertical_layout.addWidget(self.found_duplicates_edit)
+        self.searching_page_id = self.addPage(self.searching_page)
+        self.review_page = QtGui.QWizardPage()
+        self.review_page.setObjectName(u'review_page')
+        self.review_layout = QtGui.QVBoxLayout(self.review_page)
+        self.review_layout.setObjectName(u'review_layout')
+        self.songs_horizontal_scroll_area = QtGui.QScrollArea(self.review_page)
+        self.songs_horizontal_scroll_area.setObjectName(u'songs_horizontal_scroll_area')
+        self.songs_horizontal_scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.songs_horizontal_scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.songs_horizontal_scroll_area.setFrameStyle(QtGui.QFrame.NoFrame)
+        self.songs_horizontal_scroll_area.setWidgetResizable(True)
+        self.songs_horizontal_scroll_area.setStyleSheet(
+            u'QScrollArea#songs_horizontal_scroll_area {background-color:transparent;}')
+        self.songs_horizontal_songs_widget = QtGui.QWidget(self.songs_horizontal_scroll_area)
+        self.songs_horizontal_songs_widget.setObjectName(u'songs_horizontal_songs_widget')
+        self.songs_horizontal_songs_widget.setStyleSheet(
+            u'QWidget#songs_horizontal_songs_widget {background-color:transparent;}')
+        self.songs_horizontal_layout = QtGui.QHBoxLayout(self.songs_horizontal_songs_widget)
+        self.songs_horizontal_layout.setObjectName(u'songs_horizontal_layout')
+        self.songs_horizontal_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
+        self.songs_horizontal_scroll_area.setWidget(self.songs_horizontal_songs_widget)
+        self.review_layout.addWidget(self.songs_horizontal_scroll_area)
+        self.review_page_id = self.addPage(self.review_page)
         #add a dummy page to the end, to prevent the finish button to appear and the next button do disappear on the
         #review page
-        self.dummyPage = QtGui.QWizardPage()
-        self.dummyPageId = self.addPage(self.dummyPage)
+        self.dummy_page = QtGui.QWizardPage()
+        self.dummy_page_id = self.addPage(self.dummy_page)
 
     def retranslateUi(self):
         """
@@ -137,53 +139,54 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             u'This wizard will help you to remove duplicate songs from the song database. You will have a chance to '
             u'review every potential duplicate song before it is deleted. So no songs will be deleted without your '
             u'explicit approval.'))
-        self.searchingPage.setTitle(translate(u'Wizard', u'Searching for duplicate songs.'))
-        self.searchingPage.setSubTitle(translate(u'Wizard', u'The song database is searched for double songs.'))
+        self.searching_page.setTitle(translate(u'Wizard', u'Searching for duplicate songs.'))
+        self.searching_page.setSubTitle(translate(u'Wizard', u'The song database is searched for double songs.'))
         self.updateReviewCounterText()
-        self.reviewPage.setSubTitle(translate(u'Wizard',
+        self.review_page.setSubTitle(translate(u'Wizard',
             u'Here you can decide which songs to remove and which ones to keep.'))
 
     def updateReviewCounterText(self):
         """
         Set the wizard review page header text.
         """
-        self.reviewPage.setTitle(translate(u'Wizard', u'Review duplicate songs (%s/%s)') % \
-                (self.reviewCurrentCount, self.reviewTotalCount))
+        self.review_page.setTitle(translate(u'Wizard', u'Review duplicate songs (%s/%s)') % \
+                (self.review_current_count, self.review_total_count))
 
-    def customPageChanged(self, pageId):
+    def customPageChanged(self, page_id):
         """
         Called when changing the wizard page.
 
-        ``pageId``
+        ``page_id``
             ID of the page the wizard changed to.
         """
         #hide back button
         self.button(QtGui.QWizard.BackButton).hide()
-        if pageId == self.searchingPageId:
+        if page_id == self.searching_page_id:
             #search duplicate songs
-            maxSongs = self.plugin.manager.get_object_count(Song)
-            if maxSongs == 0 or maxSongs == 1:
-                self.duplicateSearchProgressBar.setMaximum(1)
-                self.duplicateSearchProgressBar.setValue(1)
+            max_songs = self.plugin.manager.get_object_count(Song)
+            if max_songs == 0 or max_songs == 1:
+                self.duplicate_search_progress_bar.setMaximum(1)
+                self.duplicate_search_progress_bar.setValue(1)
                 self.notifyNoDuplicates()
                 return
             # with x songs we have x*(x - 1) / 2 comparisons
-            maxProgressCount = maxSongs * (maxSongs - 1) / 2
-            self.duplicateSearchProgressBar.setMaximum(maxProgressCount)
+            max_progress_count = max_songs * (max_songs - 1) / 2
+            self.duplicate_search_progress_bar.setMaximum(max_progress_count)
             songs = self.plugin.manager.get_all_objects(Song)
-            for outerSongCounter in range(maxSongs - 1):
-                for innerSongCounter in range(outerSongCounter + 1, maxSongs):
-                    doubleFinder = DuplicateSongFinder()
-                    if doubleFinder.songsProbablyEqual(songs[outerSongCounter], songs[innerSongCounter]):
-                        duplicateAdded = self.addDuplicatesToSongList(songs[outerSongCounter], songs[innerSongCounter])
-                        if duplicateAdded:
-                            self.foundDuplicatesEdit.appendPlainText(songs[outerSongCounter].title + "  =  " +
-                                songs[innerSongCounter].title)
-                    self.duplicateSearchProgressBar.setValue(self.duplicateSearchProgressBar.value() + 1)
-            self.reviewTotalCount = len(self.duplicateSongList)
-            if self.reviewTotalCount == 0:
+            for outer_song_counter in range(max_songs - 1):
+                for inner_song_counter in range(outer_song_counter + 1, max_songs):
+                    double_finder = DuplicateSongFinder()
+                    if double_finder.songs_probably_equal(songs[outer_song_counter], songs[inner_song_counter]):
+                        duplicate_added = self.addDuplicatesToSongList(songs[outer_song_counter],
+                            songs[inner_song_counter])
+                        if duplicate_added:
+                            self.found_duplicates_edit.appendPlainText(songs[outer_song_counter].title + "  =  " +
+                                songs[inner_song_counter].title)
+                    self.duplicate_search_progress_bar.setValue(self.duplicate_search_progress_bar.value() + 1)
+            self.review_total_count = len(self.duplicate_song_list)
+            if self.review_total_count == 0:
                 self.notifyNoDuplicates()
-        elif pageId == self.reviewPageId:
+        elif page_id == self.review_page_id:
             self.processCurrentDuplicateEntry()
 
     def notifyNoDuplicates(self):
@@ -198,7 +201,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
 
-    def addDuplicatesToSongList(self, searchSong, duplicateSong):
+    def addDuplicatesToSongList(self, search_song, duplicate_song):
         """
         Inserts a song duplicate (two similar songs) to the duplicate song list.
         If one of the two songs is already part of the duplicate song list,
@@ -206,34 +209,34 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Returns True if at least one of the songs was added, False if both were already
         member of a group.
 
-        ``searchSong``
+        ``search_song``
             The song we searched the duplicate for.
 
-        ``duplicateSong``
+        ``duplicate_song``
             The duplicate song.
         """
-        duplicateGroupFound = False
-        duplicateAdded = False
-        for duplicateGroup in self.duplicateSongList:
+        duplicate_group_found = False
+        duplicate_added = False
+        for duplicate_group in self.duplicate_song_list:
             #skip the first song in the duplicate lists, since the first one has to be an earlier song
-            if searchSong in duplicateGroup and not duplicateSong in duplicateGroup:
-                duplicateGroup.append(duplicateSong)
-                duplicateGroupFound = True
-                duplicateAdded = True
+            if search_song in duplicate_group and not duplicate_song in duplicate_group:
+                duplicate_group.append(duplicate_song)
+                duplicate_group_found = True
+                duplicate_added = True
                 break
-            elif not searchSong in duplicateGroup and duplicateSong in duplicateGroup:
-                duplicateGroup.append(searchSong)
-                duplicateGroupFound = True
-                duplicateAdded = True
+            elif not search_song in duplicate_group and duplicate_song in duplicate_group:
+                duplicate_group.append(search_song)
+                duplicate_group_found = True
+                duplicate_added = True
                 break
-            elif searchSong in duplicateGroup and duplicateSong in duplicateGroup:
-                duplicateGroupFound = True
-                duplicateAdded = False
+            elif search_song in duplicate_group and duplicate_song in duplicate_group:
+                duplicate_group_found = True
+                duplicate_added = False
                 break
-        if not duplicateGroupFound:
-            self.duplicateSongList.append([searchSong, duplicateSong])
-            duplicateAdded = True
-        return duplicateAdded
+        if not duplicate_group_found:
+            self.duplicate_song_list.append([search_song, duplicate_song])
+            duplicate_added = True
+        return duplicate_added
 
     def onWizardExit(self):
         """
@@ -247,36 +250,36 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Set default form values for the song import wizard.
         """
         self.restart()
-        self.duplicateSearchProgressBar.setValue(0)
-        self.foundDuplicatesEdit.clear()
+        self.duplicate_search_progress_bar.setValue(0)
+        self.found_duplicates_edit.clear()
 
     def validateCurrentPage(self):
         """
         Controls whether we should switch to the next wizard page. This method loops
         on the review page as long as there are more song duplicates to review.
         """
-        if self.currentId() == self.reviewPageId:
+        if self.currentId() == self.review_page_id:
             #as long as it's not the last duplicate list entry we revisit the review page
-            if len(self.duplicateSongList) == 1:
+            if len(self.duplicate_song_list) == 1:
                 return True
             else:
                 self.proceedToNextReview()
                 return False
         return OpenLPWizard.validateCurrentPage(self)
 
-    def removeButtonClicked(self, songReviewWidget):
+    def removeButtonClicked(self, song_review_widget):
         """
         Removes a song from the database, removes the GUI element representing the
         song on the review page, and disable the remove button if only one duplicate
         is left.
 
-        ``songReviewWidget``
+        ``song_review_widget``
             The SongReviewWidget whose song we should delete.
         """
         #remove song from duplicate song list
-        self.duplicateSongList[-1].remove(songReviewWidget.song)
+        self.duplicate_song_list[-1].remove(song_review_widget.song)
         #remove song
-        item_id = songReviewWidget.song.id
+        item_id = song_review_widget.song.id
         media_files = self.plugin.manager.get_all_objects(MediaFile,
             MediaFile.song_id == item_id)
         for media_file in media_files:
@@ -294,31 +297,31 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             log.exception(u'Could not remove directory: %s', save_path)
         self.plugin.manager.delete_object(Song, item_id)
         # remove GUI elements
-        self.songsHorizontalLayout.removeWidget(songReviewWidget)
-        songReviewWidget.setParent(None)
+        self.songs_horizontal_layout.removeWidget(song_review_widget)
+        song_review_widget.setParent(None)
         # check if we only have one duplicate left
         # 4 stretches + 1 SongReviewWidget = 5
         # the SongReviewWidget is then at position 2
-        if len(self.duplicateSongList[-1]) == 1:
-            self.songsHorizontalLayout.itemAt(2).widget().songRemoveButton.setEnabled(False)
+        if len(self.duplicate_song_list[-1]) == 1:
+            self.songs_horizontal_layout.itemAt(2).widget().song_remove_button.setEnabled(False)
 
     def proceedToNextReview(self):
         """
         Removes the previous review UI elements and calls processCurrentDuplicateEntry.
         """
         #remove last duplicate group
-        self.duplicateSongList.pop()
+        self.duplicate_song_list.pop()
         # remove all previous elements
-        for i in reversed(range(self.songsHorizontalLayout.count())): 
-            item = self.songsHorizontalLayout.itemAt(i)
+        for i in reversed(range(self.songs_horizontal_layout.count())): 
+            item = self.songs_horizontal_layout.itemAt(i)
             if isinstance(item, QtGui.QWidgetItem):
-                # the order is important here, if the .setParent(None) call is done before the .removeItem() call, a
-                # segfault occurs
+                # The order is important here, if the .setParent(None) call is done
+                # before the .removeItem() call, a segfault occurs.
                 widget = item.widget()
-                self.songsHorizontalLayout.removeItem(item) 
+                self.songs_horizontal_layout.removeItem(item) 
                 widget.setParent(None)
             else:
-                self.songsHorizontalLayout.removeItem(item)
+                self.songs_horizontal_layout.removeItem(item)
         #process next set of duplicates
         self.processCurrentDuplicateEntry()
     
@@ -329,23 +332,23 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         duplicate song group, hide the "next" button and show the "finish" button.
         """
         # update counter
-        self.reviewCurrentCount = self.reviewTotalCount - (len(self.duplicateSongList) - 1)
+        self.review_current_count = self.review_total_count - (len(self.duplicate_song_list) - 1)
         self.updateReviewCounterText()
         # add song elements to the UI
-        if len(self.duplicateSongList) > 0:
+        if len(self.duplicate_song_list) > 0:
             # a stretch doesn't seem to stretch endlessly, so I add two to get enough stetch for 1400x1050
-            self.songsHorizontalLayout.addStretch()
-            self.songsHorizontalLayout.addStretch()
-            for duplicate in self.duplicateSongList[-1]:
-                songReviewWidget = SongReviewWidget(self.reviewPage, duplicate)
-                QtCore.QObject.connect(songReviewWidget,
+            self.songs_horizontal_layout.addStretch()
+            self.songs_horizontal_layout.addStretch()
+            for duplicate in self.duplicate_song_list[-1]:
+                song_review_widget = SongReviewWidget(self.review_page, duplicate)
+                QtCore.QObject.connect(song_review_widget,
                         QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'),
                         self.removeButtonClicked)
-                self.songsHorizontalLayout.addWidget(songReviewWidget)
-            self.songsHorizontalLayout.addStretch()
-            self.songsHorizontalLayout.addStretch()
+                self.songs_horizontal_layout.addWidget(song_review_widget)
+            self.songs_horizontal_layout.addStretch()
+            self.songs_horizontal_layout.addStretch()
         #change next button to finish button on last review
-        if len(self.duplicateSongList) == 1:
+        if len(self.duplicate_song_list) == 1:
             self.button(QtGui.QWizard.FinishButton).show()
             self.button(QtGui.QWizard.FinishButton).setEnabled(True)
             self.button(QtGui.QWizard.NextButton).hide()
@@ -370,119 +373,119 @@ class SongReviewWidget(QtGui.QWidget):
         self.song = song
         self.setupUi()
         self.retranslateUi()
-        QtCore.QObject.connect(self.songRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onRemoveButtonClicked)
+        QtCore.QObject.connect(self.song_remove_button, QtCore.SIGNAL(u'clicked()'), self.onRemoveButtonClicked)
 
     def setupUi(self):
-        self.songVerticalLayout = QtGui.QVBoxLayout(self)
-        self.songVerticalLayout.setObjectName(u'songVerticalLayout')
-        self.songGroupBox = QtGui.QGroupBox(self)
-        self.songGroupBox.setObjectName(u'songGroupBox')
-        self.songGroupBox.setMinimumWidth(300)
-        self.songGroupBox.setMaximumWidth(300)
-        self.songGroupBoxLayout = QtGui.QVBoxLayout(self.songGroupBox)
-        self.songGroupBoxLayout.setObjectName(u'songGroupBoxLayout')
-        self.songInfoFormLayout = QtGui.QFormLayout()
-        self.songInfoFormLayout.setObjectName(u'songInfoFormLayout')
+        self.song_vertical_layout = QtGui.QVBoxLayout(self)
+        self.song_vertical_layout.setObjectName(u'song_vertical_layout')
+        self.song_group_box = QtGui.QGroupBox(self)
+        self.song_group_box.setObjectName(u'song_group_box')
+        self.song_group_box.setMinimumWidth(300)
+        self.song_group_box.setMaximumWidth(300)
+        self.song_group_box_layout = QtGui.QVBoxLayout(self.song_group_box)
+        self.song_group_box_layout.setObjectName(u'song_group_box_layout')
+        self.song_info_form_layout = QtGui.QFormLayout()
+        self.song_info_form_layout.setObjectName(u'song_info_form_layout')
         #title
-        self.songTitleLabel = QtGui.QLabel(self)
-        self.songTitleLabel.setObjectName(u'songTitleLabel')
-        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.songTitleLabel)
-        self.songTitleContent = QtGui.QLabel(self)
-        self.songTitleContent.setObjectName(u'songTitleContent')
-        self.songTitleContent.setText(self.song.title)
-        self.songTitleContent.setWordWrap(True)
-        self.songInfoFormLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.songTitleContent)
+        self.song_title_label = QtGui.QLabel(self)
+        self.song_title_label.setObjectName(u'song_title_label')
+        self.song_info_form_layout.setWidget(0, QtGui.QFormLayout.LabelRole, self.song_title_label)
+        self.song_title_content = QtGui.QLabel(self)
+        self.song_title_content.setObjectName(u'song_title_content')
+        self.song_title_content.setText(self.song.title)
+        self.song_title_content.setWordWrap(True)
+        self.song_info_form_layout.setWidget(0, QtGui.QFormLayout.FieldRole, self.song_title_content)
         #alternate title
-        self.songAlternateTitleLabel = QtGui.QLabel(self)
-        self.songAlternateTitleLabel.setObjectName(u'songAlternateTitleLabel')
-        self.songInfoFormLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.songAlternateTitleLabel)
-        self.songAlternateTitleContent = QtGui.QLabel(self)
-        self.songAlternateTitleContent.setObjectName(u'songAlternateTitleContent')
-        self.songAlternateTitleContent.setText(self.song.alternate_title)
-        self.songAlternateTitleContent.setWordWrap(True)
-        self.songInfoFormLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.songAlternateTitleContent)
+        self.song_alternate_title_label = QtGui.QLabel(self)
+        self.song_alternate_title_label.setObjectName(u'song_alternate_title_label')
+        self.song_info_form_layout.setWidget(1, QtGui.QFormLayout.LabelRole, self.song_alternate_title_label)
+        self.song_alternate_title_content = QtGui.QLabel(self)
+        self.song_alternate_title_content.setObjectName(u'song_alternate_title_content')
+        self.song_alternate_title_content.setText(self.song.alternate_title)
+        self.song_alternate_title_content.setWordWrap(True)
+        self.song_info_form_layout.setWidget(1, QtGui.QFormLayout.FieldRole, self.song_alternate_title_content)
         #CCLI number
-        self.songCCLINumberLabel = QtGui.QLabel(self)
-        self.songCCLINumberLabel.setObjectName(u'songCCLINumberLabel')
-        self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.songCCLINumberLabel)
-        self.songCCLINumberContent = QtGui.QLabel(self)
-        self.songCCLINumberContent.setObjectName(u'songCCLINumberContent')
-        self.songCCLINumberContent.setText(self.song.ccli_number)
-        self.songCCLINumberContent.setWordWrap(True)
-        self.songInfoFormLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.songCCLINumberContent)
+        self.song_ccli_number_label = QtGui.QLabel(self)
+        self.song_ccli_number_label.setObjectName(u'song_ccli_number_label')
+        self.song_info_form_layout.setWidget(2, QtGui.QFormLayout.LabelRole, self.song_ccli_number_label)
+        self.song_ccli_number_content = QtGui.QLabel(self)
+        self.song_ccli_number_content.setObjectName(u'song_ccli_number_content')
+        self.song_ccli_number_content.setText(self.song.ccli_number)
+        self.song_ccli_number_content.setWordWrap(True)
+        self.song_info_form_layout.setWidget(2, QtGui.QFormLayout.FieldRole, self.song_ccli_number_content)
         #copyright
-        self.songCopyrightLabel = QtGui.QLabel(self)
-        self.songCopyrightLabel.setObjectName(u'songCopyrightLabel')
-        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.songCopyrightLabel)
-        self.songCopyrightContent = QtGui.QLabel(self)
-        self.songCopyrightContent.setObjectName(u'songCopyrightContent')
-        self.songCopyrightContent.setWordWrap(True)
-        self.songCopyrightContent.setText(self.song.copyright)
-        self.songInfoFormLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.songCopyrightContent)
+        self.song_copyright_label = QtGui.QLabel(self)
+        self.song_copyright_label.setObjectName(u'song_copyright_label')
+        self.song_info_form_layout.setWidget(3, QtGui.QFormLayout.LabelRole, self.song_copyright_label)
+        self.song_copyright_content = QtGui.QLabel(self)
+        self.song_copyright_content.setObjectName(u'song_copyright_content')
+        self.song_copyright_content.setWordWrap(True)
+        self.song_copyright_content.setText(self.song.copyright)
+        self.song_info_form_layout.setWidget(3, QtGui.QFormLayout.FieldRole, self.song_copyright_content)
         #comments
-        self.songCommentsLabel = QtGui.QLabel(self)
-        self.songCommentsLabel.setObjectName(u'songCommentsLabel')
-        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.songCommentsLabel)
-        self.songCommentsContent = QtGui.QLabel(self)
-        self.songCommentsContent.setObjectName(u'songCommentsContent')
-        self.songCommentsContent.setText(self.song.comments)
-        self.songCommentsContent.setWordWrap(True)
-        self.songInfoFormLayout.setWidget(4, QtGui.QFormLayout.FieldRole, self.songCommentsContent)
+        self.song_comments_label = QtGui.QLabel(self)
+        self.song_comments_label.setObjectName(u'song_comments_label')
+        self.song_info_form_layout.setWidget(4, QtGui.QFormLayout.LabelRole, self.song_comments_label)
+        self.song_comments_content = QtGui.QLabel(self)
+        self.song_comments_content.setObjectName(u'song_comments_content')
+        self.song_comments_content.setText(self.song.comments)
+        self.song_comments_content.setWordWrap(True)
+        self.song_info_form_layout.setWidget(4, QtGui.QFormLayout.FieldRole, self.song_comments_content)
         #authors
-        self.songAuthorsLabel = QtGui.QLabel(self)
-        self.songAuthorsLabel.setObjectName(u'songAuthorsLabel')
-        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.LabelRole, self.songAuthorsLabel)
-        self.songAuthorsContent = QtGui.QLabel(self)
-        self.songAuthorsContent.setObjectName(u'songAuthorsContent')
-        self.songAuthorsContent.setWordWrap(True)
-        authorsText = u''
+        self.song_authors_label = QtGui.QLabel(self)
+        self.song_authors_label.setObjectName(u'song_authors_label')
+        self.song_info_form_layout.setWidget(5, QtGui.QFormLayout.LabelRole, self.song_authors_label)
+        self.song_authors_content = QtGui.QLabel(self)
+        self.song_authors_content.setObjectName(u'song_authors_content')
+        self.song_authors_content.setWordWrap(True)
+        authors_text = u''
         for author in self.song.authors:
-            authorsText += author.display_name + ', '
-        if authorsText:
-            authorsText = authorsText[:-2]
-        self.songAuthorsContent.setText(authorsText)
-        self.songInfoFormLayout.setWidget(5, QtGui.QFormLayout.FieldRole, self.songAuthorsContent)
+            authors_text += author.display_name + ', '
+        if authors_text:
+            authors_text = authors_text[:-2]
+        self.song_authors_content.setText(authors_text)
+        self.song_info_form_layout.setWidget(5, QtGui.QFormLayout.FieldRole, self.song_authors_content)
         #verse order
-        self.songVerseOrderLabel = QtGui.QLabel(self)
-        self.songVerseOrderLabel.setObjectName(u'songVerseOrderLabel')
-        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.songVerseOrderLabel)
-        self.songVerseOrderContent = QtGui.QLabel(self)
-        self.songVerseOrderContent.setObjectName(u'songVerseOrderContent')
-        self.songVerseOrderContent.setText(self.song.verse_order)
-        self.songVerseOrderContent.setWordWrap(True)
-        self.songInfoFormLayout.setWidget(6, QtGui.QFormLayout.FieldRole, self.songVerseOrderContent)
+        self.song_verse_order_label = QtGui.QLabel(self)
+        self.song_verse_order_label.setObjectName(u'song_verse_order_label')
+        self.song_info_form_layout.setWidget(6, QtGui.QFormLayout.LabelRole, self.song_verse_order_label)
+        self.song_verse_order_content = QtGui.QLabel(self)
+        self.song_verse_order_content.setObjectName(u'song_verse_order_content')
+        self.song_verse_order_content.setText(self.song.verse_order)
+        self.song_verse_order_content.setWordWrap(True)
+        self.song_info_form_layout.setWidget(6, QtGui.QFormLayout.FieldRole, self.song_verse_order_content)
         #verses
-        self.songGroupBoxLayout.addLayout(self.songInfoFormLayout)
-        self.songInfoVerseGroupBox = QtGui.QGroupBox(self.songGroupBox)
-        self.songInfoVerseGroupBox.setObjectName(u'songInfoVerseGroupBox')
-        self.songInfoVerseGroupBoxLayout = QtGui.QFormLayout(self.songInfoVerseGroupBox)
-        songXml = SongXML()
-        verses = songXml.get_verses(self.song.lyrics)
+        self.song_group_box_layout.addLayout(self.song_info_form_layout)
+        self.song_info_verse_group_box = QtGui.QGroupBox(self.song_group_box)
+        self.song_info_verse_group_box.setObjectName(u'song_info_verse_group_box')
+        self.song_info_verse_group_box_layout = QtGui.QFormLayout(self.song_info_verse_group_box)
+        song_xml = SongXML()
+        verses = song_xml.get_verses(self.song.lyrics)
         for verse in verses:
-            verseMarker = verse[0]['type'] + verse[0]['label']
-            verseLabel = QtGui.QLabel(self.songInfoVerseGroupBox)
-            verseLabel.setText(verse[1])
-            verseLabel.setWordWrap(True)
-            self.songInfoVerseGroupBoxLayout.addRow(verseMarker, verseLabel)
-        self.songGroupBoxLayout.addWidget(self.songInfoVerseGroupBox)
-        self.songGroupBoxLayout.addStretch()
-        self.songVerticalLayout.addWidget(self.songGroupBox)
-        self.songRemoveButton = QtGui.QPushButton(self)
-        self.songRemoveButton.setObjectName(u'songRemoveButton')
-        self.songRemoveButton.setIcon(build_icon(u':/songs/song_delete.png'))
-        self.songRemoveButton.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.songVerticalLayout.addWidget(self.songRemoveButton, alignment = QtCore.Qt.AlignHCenter)
+            verse_marker = verse[0]['type'] + verse[0]['label']
+            verse_label = QtGui.QLabel(self.song_info_verse_group_box)
+            verse_label.setText(verse[1])
+            verse_label.setWordWrap(True)
+            self.song_info_verse_group_box_layout.addRow(verse_marker, verse_label)
+        self.song_group_box_layout.addWidget(self.song_info_verse_group_box)
+        self.song_group_box_layout.addStretch()
+        self.song_vertical_layout.addWidget(self.song_group_box)
+        self.song_remove_button = QtGui.QPushButton(self)
+        self.song_remove_button.setObjectName(u'song_remove_button')
+        self.song_remove_button.setIcon(build_icon(u':/songs/song_delete.png'))
+        self.song_remove_button.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.song_vertical_layout.addWidget(self.song_remove_button, alignment = QtCore.Qt.AlignHCenter)
 
     def retranslateUi(self):
-        self.songRemoveButton.setText(u'Remove')
-        self.songTitleLabel.setText(u'Title:')
-        self.songAlternateTitleLabel.setText(u'Alternate Title:')
-        self.songCCLINumberLabel.setText(u'CCLI Number:')
-        self.songVerseOrderLabel.setText(u'Verse Order:')
-        self.songCopyrightLabel.setText(u'Copyright:')
-        self.songCommentsLabel.setText(u'Comments:')
-        self.songAuthorsLabel.setText(u'Authors:')
-        self.songInfoVerseGroupBox.setTitle(u'Verses')
+        self.song_remove_button.setText(u'Remove')
+        self.song_title_label.setText(u'Title:')
+        self.song_alternate_title_label.setText(u'Alternate Title:')
+        self.song_ccli_number_label.setText(u'CCLI Number:')
+        self.song_verse_order_label.setText(u'Verse Order:')
+        self.song_copyright_label.setText(u'Copyright:')
+        self.song_comments_label.setText(u'Comments:')
+        self.song_authors_label.setText(u'Authors:')
+        self.song_info_verse_group_box.setTitle(u'Verses')
 
     def onRemoveButtonClicked(self):
         """

@@ -38,23 +38,23 @@ class DuplicateSongFinder(object):
     The algorithm is based on the diff algorithm.
     First a diffset is calculated for two songs.
     To compensate for typos all differences that are smaller than a
-    limit (<maxTypoSize) and are surrounded by larger equal blocks
-    (>minFragmentSize) are removed and the surrounding equal parts are merged.
+    limit (<max_typo_size) and are surrounded by larger equal blocks
+    (>min_fragment_size) are removed and the surrounding equal parts are merged.
     Finally two conditions can qualify a song tuple to be a duplicate:
-    1. There is a block of equal content that is at least minBlockSize large.
+    1. There is a block of equal content that is at least min_block_size large.
        This condition should hit for all larger songs that have a long enough
        equal part. Even if only one verse is equal this condition should still hit.
     2. Two thirds of the smaller song is contained in the larger song.
        This condition should hit if one of the two songs (or both) is small (smaller
-       than the minBlockSize), but most of the song is contained in the other song.
+       than the min_block_size), but most of the song is contained in the other song.
     """
 
     def __init__(self):
-        self.minFragmentSize = 5
-        self.minBlockSize = 70
-        self.maxTypoSize = 3
+        self.min_fragment_size = 5
+        self.min_block_size = 70
+        self.max_typo_size = 3
 
-    def songsProbablyEqual(self, song1, song2):
+    def songs_probably_equal(self, song1, song2):
         """
         Calculate and return whether two songs are probably equal.
 
@@ -72,15 +72,15 @@ class DuplicateSongFinder(object):
             large = song1.search_lyrics
         differ = difflib.SequenceMatcher(a=large, b=small)
         diff_tuples = differ.get_opcodes()
-        diff_no_typos = self.__removeTypos(diff_tuples)
+        diff_no_typos = self.__remove_typos(diff_tuples)
         #print(diff_no_typos)
-        if self.__lengthOfEqualBlocks(diff_no_typos) >= self.minBlockSize or \
-                self.__lengthOfLongestEqualBlock(diff_no_typos) > len(small) * 2 / 3:
+        if self.__length_of_equal_blocks(diff_no_typos) >= self.min_block_size or \
+                self.__length_of_longest_equal_block(diff_no_typos) > len(small) * 2 / 3:
                     return True
         else:
             return False
 
-    def __opLength(self, opcode):
+    def __op_length(self, opcode):
         """
         Return the length of a given difference.
 
@@ -89,57 +89,57 @@ class DuplicateSongFinder(object):
         """
         return max(opcode[2] - opcode[1], opcode[4] - opcode[3])
 
-    def __removeTypos(self, diff):
+    def __remove_typos(self, diff):
         """
-        Remove typos from a diff set. A typo is a small difference (<maxTypoSize)
-        surrounded by larger equal passages (>minFragmentSize).
+        Remove typos from a diff set. A typo is a small difference (<max_typo_size)
+        surrounded by larger equal passages (>min_fragment_size).
 
         ``diff``
             The diff set to remove the typos from.
         """
         #remove typo at beginning of string
         if len(diff) >= 2:
-            if diff[0][0] != "equal" and self.__opLength(diff[0]) <= self.maxTypoSize and \
-                    self.__opLength(diff[1]) >= self.minFragmentSize:
+            if diff[0][0] != "equal" and self.__op_length(diff[0]) <= self.max_typo_size and \
+                    self.__op_length(diff[1]) >= self.min_fragment_size:
                         del diff[0]
         #remove typos in the middle of string
         if len(diff) >= 3:
             for index in range(len(diff) - 3, -1, -1):
-                if self.__opLength(diff[index]) >= self.minFragmentSize and \
-                    diff[index + 1][0] != "equal" and self.__opLength(diff[index + 1]) <= self.maxTypoSize and \
-                        self.__opLength(diff[index + 2]) >= self.minFragmentSize:
+                if self.__op_length(diff[index]) >= self.min_fragment_size and \
+                    diff[index + 1][0] != "equal" and self.__op_length(diff[index + 1]) <= self.max_typo_size and \
+                        self.__op_length(diff[index + 2]) >= self.min_fragment_size:
                             del diff[index + 1]
         #remove typo at the end of string
         if len(diff) >= 2:
-            if self.__opLength(diff[-2]) >= self.minFragmentSize and \
-                diff[-1][0] != "equal" and self.__opLength(diff[-1]) <= self.maxTypoSize:
+            if self.__op_length(diff[-2]) >= self.min_fragment_size and \
+                diff[-1][0] != "equal" and self.__op_length(diff[-1]) <= self.max_typo_size:
                         del diff[-1]
 
         #merge fragments
         for index in range(len(diff) - 2, -1, -1):
-            if diff[index][0] == "equal" and self.__opLength(diff[index]) >= self.minFragmentSize and \
-                diff[index + 1][0] == "equal" and self.__opLength(diff[index + 1]) >= self.minFragmentSize:
+            if diff[index][0] == "equal" and self.__op_length(diff[index]) >= self.min_fragment_size and \
+                diff[index + 1][0] == "equal" and self.__op_length(diff[index + 1]) >= self.min_fragment_size:
                         diff[index] = ("equal", diff[index][1], diff[index + 1][2], diff[index][3],
                             diff[index + 1][4])
                         del diff[index + 1]
 
         return diff
 
-    def __lengthOfEqualBlocks(self, diff):
+    def __length_of_equal_blocks(self, diff):
         """
         Return the total length of all equal blocks in a diff set.
-        Blocks smaller than minBlockSize are not counted.
+        Blocks smaller than min_block_size are not counted.
 
         ``diff``
             The diff set to return the length for.
         """
         length = 0
         for element in diff:
-            if element[0] == "equal" and self.__opLength(element) >= self.minBlockSize:
-                length += self.__opLength(element)
+            if element[0] == "equal" and self.__op_length(element) >= self.min_block_size:
+                length += self.__op_length(element)
         return length
 
-    def __lengthOfLongestEqualBlock(self, diff):
+    def __length_of_longest_equal_block(self, diff):
         """
         Return the length of the largest equal block in a diff set.
 
@@ -148,7 +148,7 @@ class DuplicateSongFinder(object):
         """
         length = 0
         for element in diff:
-            if element[0] == "equal" and self.__opLength(element) > length:
-                length = self.__opLength(element)
+            if element[0] == "equal" and self.__op_length(element) > length:
+                length = self.__op_length(element)
         return length
 

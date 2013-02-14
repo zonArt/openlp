@@ -37,27 +37,22 @@ class TestLib(TestCase):
 
     def songs_probably_equal_test(self):
         """
-        Test the DuplicateSongFinder.songsProbablyEqual function.
+        Test the DuplicateSongFinder.songs_probably_equal function.
         """
-        full_lyrics =u'''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am found was
-        blind but now i see  twas grace that taught my heart to fear and grace my fears relieved how precious did that grace
-        appear the hour i first believed  through many dangers toils and snares i have already come tis grace that brought
-        me safe thus far and grace will lead me home  the lord has promised good to me his word my hope secures he will my
-        shield and portion be as long as life endures  yea when this flesh and heart shall fail and mortal life shall cease
-        i shall possess within the veil a life of joy and peace  when weve been here ten thousand years bright shining as
-        the sun weve no less days to sing gods praise than when weve first begun'''
-        short_lyrics =u'''twas grace that taught my heart to fear and grace my fears relieved how precious did that grace
-        appear the hour i first believed'''
-        error_lyrics =u'''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am found was
-        blind but now i see  twas grace that taught my heart to fear and grace my fears relieved how precious did that grace
-        appear the hour i first believedxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx snares i have already come tis grace that brought
-        me safe thus far and grace will lead me home  the lord has promised good to me his word my hope secures he will my
-        shield andwhen this flcsh and heart shall fail and mortal life shall cease
-        i shall possess within the veila lifeofjoy and peace  when weve been here ten thousand years bright shining as
-        the sun weve no less days to sing gods praise than when weve first begun'''
-        different_lyrics=u'''on a hill far away stood an old rugged cross the emblem of suffering and shame and i love that
-        old cross where the dearest and best for a world of lost sinners was slain  so ill cherish the old rugged cross till
-        my trophies at last i lay down i will cling to the old rugged cross and exchange it some day for a crown'''
+        full_lyrics =u'''amazing grace how sweet the sound that saved a wretch like me i once was lost but now am
+        found was blind but now i see  twas grace that taught my heart to fear and grace my fears relieved how
+        precious did that grace appear the hour i first believed  through many dangers toils and snares i have already
+        come tis grace that brought me safe thus far and grace will lead me home'''
+        short_lyrics =u'''twas grace that taught my heart to fear and grace my fears relieved how precious did that
+        grace appear the hour i first believed'''
+        error_lyrics =u'''amazing how sweet the trumpet that saved a wrench like me i once was losst but now am
+        found waf blind but now i see  it was grace that taught my heart to fear and grace my fears relieved how
+        precious did that grace appppppppear the hour i first believedxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx snares i have
+        already come to this grace that brought me safe so far and grace will lead me home'''
+        different_lyrics=u'''on a hill far away stood an old rugged cross the emblem of suffering and shame and i love
+        that old cross where the dearest and best for a world of lost sinners was slain  so ill cherish the old rugged
+        cross till my trophies at last i lay down i will cling to the old rugged cross and exchange it some day for a
+        crown'''
         dsf = DuplicateSongFinder()
         song1 = MagicMock()
         song2 = MagicMock()
@@ -67,7 +62,7 @@ class TestLib(TestCase):
         song2.search_lyrics = full_lyrics
         
         #WHEN: We compare those songs for equality
-        result = dsf.songsProbablyEqual(song1, song2)
+        result = dsf.songs_probably_equal(song1, song2)
         
         #THEN: The result should be True
         assert result is True, u'The result should be True'
@@ -77,7 +72,7 @@ class TestLib(TestCase):
         song2.search_lyrics = short_lyrics
         
         #WHEN: We compare those songs for equality
-        result = dsf.songsProbablyEqual(song1, song2)
+        result = dsf.songs_probably_equal(song1, song2)
         
         #THEN: The result should be True
         assert result  is True, u'The result should be True'
@@ -87,7 +82,7 @@ class TestLib(TestCase):
         song2.search_lyrics = error_lyrics
         
         #WHEN: We compare those songs for equality
-        result = dsf.songsProbablyEqual(song1, song2)
+        result = dsf.songs_probably_equal(song1, song2)
         
         #THEN: The result should be True
         assert result is True, u'The result should be True'
@@ -97,7 +92,7 @@ class TestLib(TestCase):
         song2.search_lyrics = different_lyrics
         
         #WHEN: We compare those songs for equality
-        result = dsf.songsProbablyEqual(song1, song2)
+        result = dsf.songs_probably_equal(song1, song2)
         
         #THEN: The result should be False
         assert result is False, u'The result should be False'
