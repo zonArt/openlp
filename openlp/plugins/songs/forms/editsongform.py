@@ -38,8 +38,8 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, MediaType, Registry, UiStrings, translate, create_separated_list, \
-    check_directory_exists
+from openlp.core.lib import Registry, PluginStatus, MediaType, translate, create_separated_list, \
+    check_directory_exists, UiStrings
 from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, \
     find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
@@ -97,7 +97,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.audioRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onAudioRemoveButtonClicked)
         QtCore.QObject.connect(self.audioRemoveAllButton, QtCore.SIGNAL(u'clicked()'),
             self.onAudioRemoveAllButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
+        Registry().register_function(u'theme_update_list', self.load_themes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(UiStrings().SaveAndPreview)
@@ -169,7 +169,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             combo.setItemData(row, object.id)
         set_case_insensitive_completer(cache, combo)
 
-    def loadThemes(self, theme_list):
+    def load_themes(self, theme_list):
         """
         Load the themes into a combobox.
         """
@@ -699,7 +699,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.objectName() == u'previewButton':
             self.saveSong(True)
-            Receiver.send_message(u'songs_preview')
+            Registry().execute(u'songs_preview')
 
     def onAudioAddFromFileButtonClicked(self):
         """

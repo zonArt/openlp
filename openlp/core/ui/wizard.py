@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Registry, Settings, UiStrings, build_icon, translate
+from openlp.core.lib import Registry, Settings, UiStrings, build_icon, translate
 from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)
@@ -192,7 +192,7 @@ class OpenLPWizard(QtGui.QWizard):
         """
         log.debug(u'Wizard cancelled by user.')
         if self.withProgressPage and self.currentPage() == self.progressPage:
-            Receiver.send_message(u'openlp_stop_wizard')
+            Registry().execute(u'openlp_stop_wizard')
         self.done(QtGui.QDialog.Rejected)
 
     def onCurrentIdChanged(self, pageId):

@@ -41,7 +41,7 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, Settings, Registry, build_icon, check_directory_exists, translate
+from openlp.core.lib import PluginStatus, Settings, Registry, build_icon, check_directory_exists, translate
 from openlp.core.utils import AppLocation, get_web_page, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -95,7 +95,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.web_access:
             files = self.web_access.read()
             self.config.readfp(io.BytesIO(files))
-        self.updateScreenListCombo()
+        self.update_screen_list_combo()
         self.was_download_cancelled = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
@@ -103,8 +103,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         QtCore.QObject.connect(self.noInternetFinishButton, QtCore.SIGNAL('clicked()'),
             self.onNoInternetFinishButtonClicked)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
-            self.updateScreenListCombo)
+        Registry().register_function(u'config_screen_changed', self.update_screen_list_combo)
 
     def exec_(self):
         """
@@ -227,7 +226,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self._postWizard()
             self.application.set_normal_cursor()
 
-    def updateScreenListCombo(self):
+    def update_screen_list_combo(self):
         """
         The user changed screen resolution or enabled/disabled more screens, so
         we need to update the combo box.
@@ -294,8 +293,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(index)
                 if item.data(QtCore.Qt.UserRole) == filename:
                     break
-            item.setIcon(build_icon(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp',
-                screenshot)))
+            item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
+                    get_filesystem_encoding()), u'openlp', screenshot)))
 
     def _getFileSize(self, url):
         """

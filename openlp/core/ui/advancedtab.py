@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, Settings, UiStrings, translate, build_icon
+from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate, build_icon
 from openlp.core.utils import AppLocation, format_time, get_images_filter
 from openlp.core.lib import SlideLimits
 
@@ -397,22 +397,19 @@ class AdvancedTab(SettingsTab):
         if not os.path.exists(self.current_data_path):
             log.error(u'Data path not found %s' % self.current_data_path)
             answer = QtGui.QMessageBox.critical(self,
-                translate('OpenLP.AdvancedTab',
-                'Data Directory Error'),
-                translate('OpenLP.AdvancedTab',
-                'OpenLP data directory was not found\n\n%s\n\n'
+                translate('OpenLP.AdvancedTab', 'Data Directory Error'),
+                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
                 'This data directory was previously changed from the OpenLP '
                 'default location.  If the new location was on removable '
                 'media, that media needs to be made available.\n\n'
-                'Click "No" to stop loading OpenLP. allowing you to fix '
-                'the the problem.\n\n'
+                'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
                 'Click "Yes" to reset the data directory to the default '
                 'location.').replace('%s', self.current_data_path),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                 QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
                 log.info(u'User requested termination')
-                Receiver.send_message(u'cleanup')
+                self.main_window.clean_up()
                 sys.exit()
             # Set data location to default.
             settings.remove(u'advanced/data path')
@@ -455,9 +452,9 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'slide limits', self.slide_limits)
         settings.endGroup()
         if self.display_changed:
-            Receiver.send_message(u'config_screen_changed')
+            Registry().execute(u'config_screen_changed')
             self.display_changed = False
-        Receiver.send_message(u'slidecontroller_update_slide_limits')
+        Registry().execute(u'slidecontroller_update_slide_limits')
 
     def cancel(self):
         """
@@ -573,7 +570,7 @@ class AdvancedTab(SettingsTab):
         # Check if data already exists here.
         self.check_data_overwrite(new_data_path)
         # Save the new location.
-        Receiver.send_message(u'set_new_data_path', new_data_path)
+        self.main_window.set_new_data_path(new_data_path)
         self.new_data_directory_edit.setText(new_data_path)
         self.data_directory_cancel_button.show()
 
@@ -594,7 +591,7 @@ class AdvancedTab(SettingsTab):
                 return
             self.check_data_overwrite(new_data_path)
             # Save the new location.
-            Receiver.send_message(u'set_new_data_path', new_data_path)
+            self.main_window.set_new_data_path(new_data_path)
             self.new_data_directory_edit.setText(os.path.abspath(new_data_path))
             self.data_directory_cancel_button.show()
         else:
@@ -605,8 +602,7 @@ class AdvancedTab(SettingsTab):
         """
         Copy existing data when you change your data directory.
         """
-        Receiver.send_message(u'set_copy_data',
-            self.data_directory_copy_check_box.isChecked())
+        self.main_window.set_copy_data(self.data_directory_copy_check_box.isChecked())
         if self.data_exists:
             if self.data_directory_copy_check_box.isChecked():
                 self.new_data_directory_has_files_label.show()
@@ -645,8 +641,8 @@ class AdvancedTab(SettingsTab):
         """
         self.new_data_directory_edit.clear()
         self.data_directory_copy_check_box.setChecked(False)
-        Receiver.send_message(u'set_new_data_path', u'')
-        Receiver.send_message(u'set_copy_data', False)
+        self.main_window.set_new_data_path(None)
+        self.main_window.set_copy_data(False)
         self.data_directory_copy_check_box.hide()
         self.data_directory_cancel_button.hide()
         self.new_data_directory_has_files_label.hide()

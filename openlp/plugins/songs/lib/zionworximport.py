@@ -96,7 +96,7 @@ class ZionWorxImport(SongImport):
             log.info(u'%s records found in CSV file' % num_records)
             self.importWizard.progressBar.setMaximum(num_records)
             for index, record in enumerate(records, 1):
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     return
                 self.setDefaults()
                 try:

@@ -260,6 +260,7 @@ class Settings(QtCore.QSettings):
         """
         Settings.__default_settings__ = dict(default_values.items() + Settings.__default_settings__.items())
 
+
     @staticmethod
     def set_filename(ini_file):
         """
