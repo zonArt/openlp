@@ -178,7 +178,7 @@ class SongsPlugin(Plugin):
         """
         Search for duplicates in the song database.
         """
-        DuplicateSongRemovalForm(self.main_window, self).exec_()
+        DuplicateSongRemovalForm(self).exec_()
 
     def onSongImportItemClicked(self):
         if self.mediaItem:

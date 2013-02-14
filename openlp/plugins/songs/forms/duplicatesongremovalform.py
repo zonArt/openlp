@@ -35,7 +35,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import Registry, translate, build_icon
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import UiStrings, critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
@@ -53,7 +53,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
     """
     log.info(u'DuplicateSongRemovalForm loaded')
 
-    def __init__(self, parent, plugin):
+    def __init__(self, plugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
@@ -66,7 +66,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.duplicate_song_list = []
         self.review_current_count = 0
         self.review_total_count = 0
-        OpenLPWizard.__init__(self, parent, plugin, u'duplicateSongRemovalWizard',
+        OpenLPWizard.__init__(self, self.main_window, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_duplicateremoval.bmp', False)
 
     def customSignals(self):
@@ -346,3 +346,13 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.button(QtGui.QWizard.FinishButton).show()
             self.button(QtGui.QWizard.FinishButton).setEnabled(True)
             self.button(QtGui.QWizard.NextButton).hide()
+    
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
