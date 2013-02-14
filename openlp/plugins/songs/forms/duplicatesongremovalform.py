@@ -69,12 +69,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         OpenLPWizard.__init__(self, parent, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_duplicateremoval.bmp', False)
 
-    def customInit(self):
-        """
-        Song wizard specific initialisation.
-        """
-        pass
-
     def customSignals(self):
         """
         Song wizard specific signals.

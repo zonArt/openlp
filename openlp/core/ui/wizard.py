@@ -206,6 +206,12 @@ class OpenLPWizard(QtGui.QWizard):
         else:
             self.customPageChanged(pageId)
 
+    def customInit(self):
+        """
+        Song wizard specific initialization.
+        """
+        pass
+
     def customPageChanged(self, pageId):
         """
         Called when changing to a page other than the progress page
