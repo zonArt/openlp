@@ -47,7 +47,6 @@ class AlertsManager(QtCore.QObject):
 
     def __init__(self, parent):
         QtCore.QObject.__init__(self, parent)
-        self.screen = None
         self.timer_id = 0
         self.alert_list = []
         Registry().register_function(u'live_display_active', self.generate_alert)
@@ -87,7 +86,7 @@ class AlertsManager(QtCore.QObject):
             return
         text = self.alert_list.pop(0)
         alertTab = self.parent().settingsTab
-        self.parent().liveController.display.alert(text, alertTab.location)
+        self.live_controller.display.alert(text, alertTab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
@@ -103,7 +102,7 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
             alertTab = self.parent().settingsTab
-            self.parent().liveController.display.alert(u'', alertTab.location)
+            self.live_controller.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generate_alert()
@@ -117,3 +116,13 @@ class AlertsManager(QtCore.QObject):
         return self._main_window
 
     main_window = property(_get_main_window)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)

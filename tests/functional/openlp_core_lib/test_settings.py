@@ -42,7 +42,7 @@ class TestSettings(TestCase):
         default_value = Settings().value(u'general/has run wizard')
 
         # THEN the default value is returned
-        assert default_value is False, u'The default value defined has not been returned'
+        assert default_value is False, u'The default value should be False'
 
         # WHEN a new value is saved into config
         Settings().setValue(u'general/has run wizard', True)
