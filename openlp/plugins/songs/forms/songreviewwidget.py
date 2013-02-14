@@ -54,7 +54,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song = song
         self.setupUi()
         self.retranslateUi()
-        QtCore.QObject.connect(self.song_remove_button, QtCore.SIGNAL(u'clicked()'), self.onRemoveButtonClicked)
+        QtCore.QObject.connect(self.song_remove_button, QtCore.SIGNAL(u'clicked()'), self.on_remove_button_clicked)
 
     def setupUi(self):
         self.song_vertical_layout = QtGui.QVBoxLayout(self)
@@ -168,8 +168,8 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_authors_label.setText(u'Authors:')
         self.song_info_verse_group_box.setTitle(u'Verses')
 
-    def onRemoveButtonClicked(self):
+    def on_remove_button_clicked(self):
         """
         Signal emitted when the "remove" button is clicked.
         """
-        self.emit(QtCore.SIGNAL(u'songRemoveButtonClicked(PyQt_PyObject)'), self)
+        self.emit(QtCore.SIGNAL(u'song_remove_button_clicked(PyQt_PyObject)'), self)
