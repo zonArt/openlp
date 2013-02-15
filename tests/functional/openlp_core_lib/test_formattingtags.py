@@ -1,12 +1,13 @@
 """
 Package to test the openlp.core.lib.formattingtags package.
 """
-
+import copy
 from unittest import TestCase
 
 from mock import patch
 
 from openlp.core.lib import FormattingTags
+
 
 class TestFormattingTags(TestCase):
 
@@ -47,26 +48,29 @@ class TestFormattingTags(TestCase):
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate: string_to_translate
             mocked_settings.value.return_value = u''
-            tags = [{
+            tag = {
                 u'end tag': '{/aa}',
                 u'start html': '<span>',
                 u'start tag': '{aa}',
                 u'protected': False,
                 u'end html': '</span>',
                 u'desc': 'name'
-            }]
-            mocked_cPickle.load.return_value = tags
+            }
+            mocked_cPickle.loads.side_effect = [[], [tag]]
 
             # WHEN: Get the display tags.
             FormattingTags.load_tags()
-            old_tags_list = FormattingTags.get_html_tags()
+            old_tags_list = copy.deepcopy(FormattingTags.get_html_tags())
 
-            FormattingTags.add_html_tags(tags)
+            # WHEN: Add our tag and get the tags again.
             FormattingTags.load_tags()
+            FormattingTags.add_html_tags([tag])
             new_tags_list = FormattingTags.get_html_tags()
 
             # THEN: Lists should not be identically.
-            assert len(old_tags_list) - 1 == len(new_tags_list), u'The lists should be different.'
+            assert old_tags_list != new_tags_list, u'The lists should be different.'
 
-
+            # THEN: Added tag and last tag should be the same.
+            new_tag = new_tags_list.pop()
+            assert tag == new_tag, u'Tags should be identically.'
 

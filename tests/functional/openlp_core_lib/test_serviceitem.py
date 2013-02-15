@@ -211,3 +211,4 @@ class TestServiceItem(TestCase):
         except:
             first_line = u''
         return first_line
+
