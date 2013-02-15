@@ -167,7 +167,7 @@ class VerseType(object):
         translate('SongsPlugin.VerseType', 'Intro'),
         translate('SongsPlugin.VerseType', 'Ending'),
         translate('SongsPlugin.VerseType', 'Other')]
-    TranslatedTags = [name[0].lower() for name in TranslatedNames]
+    TranslatedTags = [unicode(name[0]).lower() for name in TranslatedNames]
 
     @staticmethod
     def translated_tag(verse_tag, default=Other):
