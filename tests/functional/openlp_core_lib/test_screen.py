@@ -4,6 +4,7 @@ Package to test the openlp.core.lib.screenlist package.
 import copy
 from unittest import TestCase
 
+from mock import MagicMock
 from PyQt4 import QtGui, QtCore
 
 from openlp.core.lib import ScreenList
