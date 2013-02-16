@@ -4,9 +4,9 @@
 import os
 import cPickle
 from unittest import TestCase
-from mock import MagicMock
+from mock import MagicMock, patch
 
-from openlp.core.lib import ServiceItem, Registry
+from openlp.core.lib import ItemCapabilities, ServiceItem, Registry
 
 
 VERSE = u'The Lord said to {r}Noah{/r}: \n'\
@@ -27,7 +27,7 @@ class TestServiceItem(TestCase):
         """
         Set up the Registry
         """
-        registry = Registry.create()
+        Registry.create()
         mocked_renderer = MagicMock()
         mocked_renderer.format_slide.return_value = [VERSE]
         Registry().register(u'renderer', mocked_renderer)
@@ -102,9 +102,9 @@ class TestServiceItem(TestCase):
 
         # THEN: We should have two parts of the service.
         assert len(service) == 2, u'A saved service has two parts'
-        assert service[u'header'][u'name']  == u'test' , u'A test plugin was returned'
-        assert service[u'data'][0][u'title'] == u'Image Title' , u'The first title name matches the request'
-        assert service[u'data'][0][u'path'] == test_image , u'The first image name matches'
+        assert service[u'header'][u'name'] == u'test', u'A test plugin was returned'
+        assert service[u'data'][0][u'title'] == u'Image Title', u'The first title name matches the request'
+        assert service[u'data'][0][u'path'] == test_image, u'The first image name matches'
         assert service[u'data'][0][u'title'] != service[u'data'][1][u'title'], \
             u'The individual titles should not match'
         assert service[u'data'][0][u'path'] == service[u'data'][1][u'path'], u'The file paths should match'
@@ -149,10 +149,10 @@ class TestServiceItem(TestCase):
 
         # THEN: We should have two parts of the service.
         assert len(service) == 2, u'A saved service has two parts'
-        assert service[u'header'][u'name']  == u'test' , u'A test plugin'
-        assert service[u'data'][0][u'title'] == u'church.jpg' , u'The first title name '
-        assert service[u'data'][0][u'path'] == TESTPATH , u'The first image name'
-        assert service[u'data'][0][u'image'] == test_file , u'The first image name'
+        assert service[u'header'][u'name'] == u'test', u'A test plugin'
+        assert service[u'data'][0][u'title'] == u'church.jpg', u'The first title name '
+        assert service[u'data'][0][u'path'] == TESTPATH, u'The first image name'
+        assert service[u'data'][0][u'image'] == test_file, u'The first image name'
 
         # WHEN validating a service item
         service_item.validate_item([u'jpg'])
@@ -172,8 +172,7 @@ class TestServiceItem(TestCase):
         """
         # GIVEN: A new service item and a mocked add icon function
         service_item = ServiceItem(None)
-        mocked_add_icon =  MagicMock()
-        service_item.add_icon = mocked_add_icon
+        service_item.add_icon = MagicMock()
 
         # WHEN: adding a custom from a saved Service
         line = self.convert_file_service_item(u'serviceitem_custom1.osd')
@@ -184,21 +183,41 @@ class TestServiceItem(TestCase):
         assert len(service_item._display_frames) == 0, u'The service item has no display frames'
         assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
         service_item.render(True)
-        assert (service_item.get_display_title()) == u'Test Custom', u'The custom title should be correct'
+        assert service_item.get_display_title() == u'Test Custom', u'The custom title should be correct'
+        assert service_item.get_frames()[0][u'text'] == VERSE[:-1], \
+            u'The original text has been returned except the last line feed'
+        assert service_item.get_rendered_frame(1) == VERSE.split(u'\n', 1)[0], u'The first line has been returned'
+        assert service_item.get_frame_title(0) == u'Slide 1', u'The title of the first slide is returned'
+        assert service_item.get_frame_title(1) == u'Slide 2', u'The title of the second slide is returned'
+        assert service_item.get_frame_title(2) == u'', u'The title of the first slide is returned'
 
     def serviceitem_load_image_from_service_test(self):
         """
         Test the Service Item - adding an image from a saved service
         """
         # GIVEN: A new service item and a mocked add icon function
-        service_item = ServiceItem(None)
-        mocked_add_icon =  MagicMock()
-        service_item.add_icon = mocked_add_icon
+        image_name = u'IMG_7453.JPG'
+        test_file = os.path.join(TESTPATH, image_name)
+        frame_array = {u'path': test_file, u'title': image_name}
 
-        # WHEN: adding a custom from a saved Service
+        service_item = ServiceItem(None)
+        service_item.add_icon = MagicMock()
+
+        # WHEN: adding an image from a saved Service and mocked exists
+        line = self.convert_file_service_item(u'serviceitem_image1.osd')
+        with patch('os.path.exists'):
+            service_item.set_from_service(line, TESTPATH)
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
+        assert service_item.get_rendered_frame(0) == test_file, u'The first frame is the path to the image'
+        assert service_item.get_frames()[0] == frame_array, u'The first frame array is as expected'
+        assert service_item.get_frame_path(0) == test_file, u'The frame path is the full path to the image'
+        assert service_item.get_frame_title(0) == image_name, u'The frame title is the image name'
+        assert service_item.get_display_title() == image_name, u'The display title is the first image name'
+        assert service_item.is_image() is True, u'This is an image service item'
+        assert service_item.is_capable(ItemCapabilities.CanMaintain)
+
 
 
     def convert_file_service_item(self, name):
@@ -207,6 +226,6 @@ class TestServiceItem(TestCase):
             open_file = open(service_file, u'r')
             items = cPickle.load(open_file)
             first_line = items[0]
-        except:
+        except IOError:
             first_line = u''
         return first_line
