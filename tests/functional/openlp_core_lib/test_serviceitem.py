@@ -3,10 +3,9 @@
 """
 import os
 import cPickle
-
 from unittest import TestCase
-
 from mock import MagicMock
+
 from openlp.core.lib import ServiceItem, Registry
 
 

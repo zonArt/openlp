@@ -37,7 +37,9 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Registry, translate
 
+
 log = logging.getLogger(__name__)
+
 
 class AlertsManager(QtCore.QObject):
     """
@@ -107,16 +109,6 @@ class AlertsManager(QtCore.QObject):
         self.timer_id = 0
         self.generate_alert()
 
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
-
     def _get_live_controller(self):
         """
         Adds the live controller to the class dynamically
@@ -126,3 +118,13 @@ class AlertsManager(QtCore.QObject):
         return self._live_controller
 
     live_controller = property(_get_live_controller)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

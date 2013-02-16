@@ -30,6 +30,7 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
+from distutils.version import LooseVersion
 import logging
 import os
 
@@ -366,23 +367,23 @@ def create_separated_list(stringlist):
     ``stringlist``
         List of unicode strings
     """
-    if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
+    if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion(u'4.9') and \
+            LooseVersion(Qt.qVersion()) >= LooseVersion(u'4.8'):
         return QtCore.QLocale().createSeparatedList(stringlist)
     if not stringlist:
         return u''
     elif len(stringlist) == 1:
         return stringlist[0]
     elif len(stringlist) == 2:
-        return translate('OpenLP.core.lib', '%1 and %2',
+        return translate('OpenLP.core.lib', '%s and %s',
             'Locale list separator: 2 items') % (stringlist[0], stringlist[1])
     else:
-        merged = translate('OpenLP.core.lib', '%1, and %2',
+        merged = translate('OpenLP.core.lib', '%s, and %s',
             u'Locale list separator: end') % (stringlist[-2], stringlist[-1])
         for index in reversed(range(1, len(stringlist) - 2)):
-            merged = translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: middle') % (stringlist[index], merged)
-        return translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: start') % (stringlist[0], merged)
+            merged = translate('OpenLP.core.lib', '%s, %s',
+                u'Locale list separator: middle') % (stringlist[index], merged)
+        return translate('OpenLP.core.lib', '%s, %s', u'Locale list separator: start') % (stringlist[0], merged)
 
 
 from registry import Registry

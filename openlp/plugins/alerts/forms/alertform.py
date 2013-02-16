@@ -198,8 +198,10 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False
+
         text = text.replace(u'<>', self.parameter_edit.text())
         self.plugin.alerts_manager.display_alert(text)
+        self.plugin.alertsmanager.display_alert(text)
         return True
 
     def on_current_row_changed(self, row):

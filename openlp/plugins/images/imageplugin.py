@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 import logging
 
@@ -98,4 +98,14 @@ class ImagePlugin(Plugin):
         last part of saving the config.
         """
         background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
-        self.liveController.imageManager.update_images_border(ImageSource.ImagePlugin, background)
+        self.image_manager.update_images_border(ImageSource.ImagePlugin, background)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
