@@ -83,7 +83,7 @@ class SongProImport(SongImport):
             tag = u''
             text = u''
             for file_line in songs_file:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 file_line = unicode(file_line, u'cp1252')
                 file_text = file_line.rstrip()

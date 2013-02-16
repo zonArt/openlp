@@ -36,7 +36,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import Receiver, Settings, UiStrings, Registry, translate, get_text_file_string
+from openlp.core.lib import Settings, UiStrings, Registry, translate, get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -408,7 +408,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             return
         for item in self.service_manager.serviceItems:
             # Trigger Audit requests
-            Receiver.send_message(u'print_service_started', [item[u'service_item']])
+            Registry().register_function(u'print_service_started', [item[u'service_item']])
 
     def _get_service_manager(self):
         """

@@ -109,7 +109,7 @@ class SongBeamerImport(SongImport):
             return
         for file in self.importSource:
             # TODO: check that it is a valid SongBeamer file
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self.setDefaults()
             self.currentVerse = u''
