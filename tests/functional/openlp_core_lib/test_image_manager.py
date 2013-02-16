@@ -20,9 +20,15 @@ class TestImageManager(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        self.app = QtGui.QApplication.instance()
         ScreenList.create(self.app.desktop())
         self.image_manager = ImageManager()
+
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        del self.app
 
     def basic_image_manager_test(self):
         """

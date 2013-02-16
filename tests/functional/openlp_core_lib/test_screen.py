@@ -19,6 +19,11 @@ class TestScreenList(TestCase):
         self.application = QtGui.QApplication.instance()
         self.screens = ScreenList.create(self.application.desktop())
 
+    def tearDown(self):
+        """
+        """
+        del self.application
+
     def add_desktop_test(self):
         """
         Test to check if new monitors are detected by OpenLP (= plugged in while OpenLP is running).
