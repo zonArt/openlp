@@ -33,7 +33,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Registry
 
 
 class ListWidgetWithDnD(QtGui.QListWidget):
@@ -54,8 +54,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
-            self.parent().loadFile)
+        Registry().register_function((u'%s_dnd' % self.mimeDataText), self.parent().loadFile)
 
     def mouseMoveEvent(self, event):
         """
@@ -112,6 +111,6 @@ class ListWidgetWithDnD(QtGui.QListWidget):
                     listing = os.listdir(localFile)
                     for file in listing:
                         files.append(os.path.join(localFile, file))
-            Receiver.send_message(u'%s_dnd' % self.mimeDataText, files)
+            Registry().execute(u'%s_dnd' % self.mimeDataText, files)
         else:
             event.ignore()
