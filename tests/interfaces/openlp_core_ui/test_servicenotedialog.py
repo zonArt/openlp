@@ -67,3 +67,4 @@ class TestStartNoteDialog(TestCase):
 
         # THEN the following text is returned
         self.assertEqual(self.form.text_edit.toPlainText(), text, u'The new text should be returned')
+
