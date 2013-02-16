@@ -26,13 +26,14 @@ class TestPluginManager(TestCase):
         Settings().set_filename(self.ini_file)
         Registry.create()
         Registry().register(u'service_list', MagicMock())
-        self.app = QtGui.QApplication([])
+        self.app = QtGui.QApplication.instance()
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.plugins_dir = os.path.abspath(os.path.join(os.path.basename(__file__), u'..', u'openlp', u'plugins'))
 
     def tearDown(self):
         os.unlink(self.ini_file)
+        del self.app
 
     def find_plugins_test(self):
         """
