@@ -31,7 +31,7 @@ class TestFormattingTags(TestCase):
 
             # WHEN: Get the display tags.
             FormattingTags.load_tags()
-            old_tags_list = FormattingTags.get_html_tags()
+            old_tags_list = copy.deepcopy(FormattingTags.get_html_tags())
             FormattingTags.load_tags()
             new_tags_list = FormattingTags.get_html_tags()
 
