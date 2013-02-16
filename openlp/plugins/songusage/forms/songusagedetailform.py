@@ -58,10 +58,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         We need to set up the screen
         """
-        to_date = Settings().value(self.plugin.settingsSection + u'/to date')
-        from_date = Settings().value(self.plugin.settingsSection + u'/from date')
-        self.from_date.setSelectedDate(from_date)
-        self.to_date.setSelectedDate(to_date)
+        self.from_date_calendar.setSelectedDate(Settings().value(self.plugin.settingsSection + u'/from date'))
+        self.to_date_calendar.setSelectedDate(Settings().value(self.plugin.settingsSection + u'/to date'))
         self.file_line_edit.setText(Settings().value(self.plugin.settingsSection + u'/last directory export'))
 
     def define_output_location(self):
@@ -90,14 +88,14 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             return
         check_directory_exists(path)
         file_name = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % (
-            self.from_date.selectedDate().toString(u'ddMMyyyy'),
-            self.to_date.selectedDate().toString(u'ddMMyyyy'))
-        Settings().setValue(u'songusage/from date', self.from_date.selectedDate())
-        Settings().setValue(u'songusage/to date', self.to_date.selectedDate())
+            self.from_date_calendar.selectedDate().toString(u'ddMMyyyy'),
+            self.to_date_calendar.selectedDate().toString(u'ddMMyyyy'))
+        Settings().setValue(self.plugin.settingsSection + u'/from date', self.from_date_calendar.selectedDate())
+        Settings().setValue(self.plugin.settingsSection + u'/to date', self.to_date_calendar.selectedDate())
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
-            SongUsageItem.usagedate >= self.from_date.selectedDate().toPyDate(),
-            SongUsageItem.usagedate < self.to_date.selectedDate().toPyDate()),
+            SongUsageItem.usagedate >= self.from_date_calendar.selectedDate().toPyDate(),
+            SongUsageItem.usagedate < self.to_date_calendar.selectedDate().toPyDate()),
             [SongUsageItem.usagedate, SongUsageItem.usagetime])
         report_file_name = os.path.join(path, file_name)
         file_handle = None

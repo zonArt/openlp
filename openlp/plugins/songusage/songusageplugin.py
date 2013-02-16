@@ -66,7 +66,7 @@ class SongUsagePlugin(Plugin):
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
         self.activeIcon = build_icon(u':/songusage/song_usage_active.png')
         self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
-        self.songUsageActive = False
+        self.song_usage_active = False
 
     def checkPreConditions(self):
         return self.manager.session is not None
@@ -168,7 +168,7 @@ class SongUsagePlugin(Plugin):
         """
         self.song_usage_active_button.blockSignals(True)
         self.song_usage_status.blockSignals(True)
-        if self.songUsageActive:
+        if self.song_usage_active:
             self.song_usage_active_button.setIcon(self.activeIcon)
             self.song_usage_status.setChecked(True)
             self.song_usage_active_button.setChecked(True)
@@ -195,7 +195,7 @@ class SongUsagePlugin(Plugin):
 
     def _add_song_usage(self, source, item):
         audit = item[0].audit
-        if self.songUsageActive and audit:
+        if self.song_usage_active and audit:
             song_usage_item = SongUsageItem()
             song_usage_item.usagedate = datetime.today()
             song_usage_item.usagetime = datetime.now().time()
