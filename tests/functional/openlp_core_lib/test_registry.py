@@ -1,13 +1,15 @@
 """
-    Package to test the openlp.core.lib package.
+Package to test the openlp.core.lib package.
 """
 import os
 from unittest import TestCase
+
 from mock import MagicMock
 
 from openlp.core.lib import Registry
 
-TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
+
 
 
 class TestRegistry(TestCase):
