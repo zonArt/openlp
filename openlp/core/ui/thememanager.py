@@ -157,7 +157,6 @@ class ThemeManager(QtGui.QWidget):
             delete_file(theme_file)
         self.application.set_normal_cursor()
 
-
     def config_updated(self):
         """
         Triggered when Config dialog is updated.

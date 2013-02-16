@@ -205,10 +205,6 @@ class ServiceManagerDialog(object):
         self.service_manager_list.doubleClicked.connect(self.on_make_live)
         self.service_manager_list.itemCollapsed.connect(self.collapsed)
         self.service_manager_list.itemExpanded.connect(self.expanded)
-        Registry().register_function(u'theme_update_list', self.update_theme_list)
-        Registry().register_function(u'config_updated', self.config_updated)
-        Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
-        Registry().register_function(u'theme_update_global', self.theme_change)
         # Last little bits of setting up
         self.service_theme = Settings().value(self.main_window.serviceManagerSettingsSection + u'/service theme')
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
@@ -268,6 +264,10 @@ class ServiceManagerDialog(object):
              self.service_manager_list.expand,
              self.service_manager_list.collapse
             ])
+        Registry().register_function(u'theme_update_list', self.update_theme_list)
+        Registry().register_function(u'config_updated', self.config_updated)
+        Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
+        Registry().register_function(u'theme_update_global', self.theme_change)
 
     def drag_enter_event(self, event):
         """
