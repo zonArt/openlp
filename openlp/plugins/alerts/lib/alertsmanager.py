@@ -108,7 +108,7 @@ class AlertsManager(QtCore.QObject):
             self.live_controller.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
-        self.generateAlert()
+        self.generate_alert()
 
     def _get_live_controller(self):
         """
