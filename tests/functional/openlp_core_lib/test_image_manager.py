@@ -28,8 +28,7 @@ class TestImageManager(TestCase):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        #del self.app
-        pass
+        del self.app
 
     def basic_image_manager_test(self):
         """
