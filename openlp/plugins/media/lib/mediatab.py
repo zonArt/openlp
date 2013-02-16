@@ -27,11 +27,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
-from openlp.core.lib.ui import create_button
-from openlp.core.ui.media import get_media_players, set_media_players
+from openlp.core.lib import Registry, Settings, SettingsTab, UiStrings, translate
 
 class MediaQCheckBox(QtGui.QCheckBox):
     """
@@ -86,5 +84,5 @@ class MediaTab(SettingsTab):
             Settings().setValue(setting_key, self.autoStartCheckBox.checkState())
         if override_changed:
             self.parent.reset_supported_suffixes()
-            Receiver.send_message(u'mediaitem_media_rebuild')
-            Receiver.send_message(u'mediaitem_suffixes')
+            Registry().execute(u'mediaitem_media_rebuild')
+            Registry().execute(u'mediaitem_suffixes')

@@ -32,8 +32,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
-    ServiceItemContext, Settings, PluginStatus, UiStrings
+from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, Settings, PluginStatus,\
+    UiStrings, check_item_selected, translate
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -73,11 +73,10 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_load_list'), self.loadList)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_create_from_service'),
-            self.create_from_service_item)
+        Registry().register_function(u'custom_load_list', self.loadList)
+        Registry().register_function(u'custom_preview', self.onPreviewClick)
+        Registry().register_function(u'config_updated', self.config_updated)
+        Registry().register_function(u'custom_create_from_service', self.create_from_service_item)
 
     def config_updated(self):
         self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service')
@@ -280,7 +279,7 @@ class CustomMediaItem(MediaManagerItem):
         self.plugin.manager.save_object(custom)
         self.onSearchTextButtonClicked()
         if item.name.lower() == u'custom':
-            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
+            Registry().execute(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
 
     def onClearTextButtonClick(self):
         """

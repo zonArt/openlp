@@ -32,8 +32,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, translate, check_item_selected, Receiver, \
-    ItemCapabilities, create_thumb, validate_thumb, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import MediaManagerItem, Registry, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
+    build_icon, check_item_selected, create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare
 from openlp.plugins.presentations.lib import MessageListener
@@ -60,9 +60,8 @@ class PresentationMediaItem(MediaManagerItem):
         self.message_listener = MessageListener(self)
         self.hasSearch = True
         self.singleServiceItem = False
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_presentation_rebuild'),
-            self.populateDisplayTypes)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_suffixes'), self.buildFileMaskString)
+        Registry().register_function(u'mediaitem_presentation_rebuild', self.populate_display_types)
+        Registry().register_function(u'mediaitem_suffixes', self.build_file_mask_string)
         # Allow DnD from the desktop
         self.listView.activateDnD()
 
@@ -74,7 +73,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.Automatic = translate('PresentationPlugin.MediaItem', 'Automatic')
         self.displayTypeLabel.setText(translate('PresentationPlugin.MediaItem', 'Present using:'))
 
-    def buildFileMaskString(self):
+    def build_file_mask_string(self):
         """
         Build the list of file extensions to be used in the Open file dialog
         """
@@ -122,9 +121,9 @@ class PresentationMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         files = Settings().value(self.settingsSection + u'/presentations files')
         self.loadList(files, True)
-        self.populateDisplayTypes()
+        self.populate_display_types()
 
-    def populateDisplayTypes(self):
+    def populate_display_types(self):
         """
         Load the combobox with the enabled presentation controllers,
         allowing user to select a specific app if settings allow
@@ -269,7 +268,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if img:
                     while img:
                         service_item.add_from_command(path, name, img)
-                        i = i + 1
+                        i += 1
                         img = doc.get_thumbnail_path(i, True)
                     doc.close_presentation()
                     return True

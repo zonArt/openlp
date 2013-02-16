@@ -32,7 +32,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Plugin, Receiver, Settings, StringContent, translate
+from openlp.core.lib import Plugin, Registry, Settings, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
@@ -123,10 +123,8 @@ class SongUsagePlugin(Plugin):
     def initialise(self):
         log.info(u'SongUsage Initialising')
         Plugin.initialise(self)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'slidecontroller_live_started'),
-            self.displaySongUsage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'print_service_started'),
-            self.printSongUsage)
+        Registry().register_function(u'slidecontroller_live_started', self.display_song_usage)
+        Registry().register_function(u'print_service_started', self.print_song_usage)
         self.songUsageActive = Settings().value(self.settingsSection + u'/active')
         # Set the button and checkbox state
         self.setButtonState()
@@ -185,13 +183,13 @@ class SongUsagePlugin(Plugin):
         self.songUsageStatus.blockSignals(False)
 
 
-    def displaySongUsage(self, item):
+    def display_song_usage(self, item):
         """
         Song Usage for which has been displayed
         """
         self._add_song_usage(translate('SongUsagePlugin', 'display'), item)
 
-    def printSongUsage(self, item):
+    def print_song_usage(self, item):
         """
         Song Usage for which has been printed
         """

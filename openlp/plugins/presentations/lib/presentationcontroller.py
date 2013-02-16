@@ -33,7 +33,7 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Registry, check_directory_exists, create_thumb, validate_thumb, Settings
+from openlp.core.lib import Registry, Settings, check_directory_exists, create_thumb, validate_thumb
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -274,7 +274,7 @@ class PresentationDocument(object):
             prefix = u'live'
         else:
             prefix = u'preview'
-        Receiver.send_message(u'slidecontroller_%s_change' % prefix, self.slidenumber - 1)
+        Registry().execute(u'slidecontroller_%s_change' % prefix, self.slidenumber - 1)
 
     def get_slide_text(self, slide_no):
         """

@@ -105,7 +105,7 @@ class SongShowPlusImport(SongImport):
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self.sspVerseOrderList = []
             other_count = 0
@@ -203,7 +203,7 @@ class SongShowPlusImport(SongImport):
             if verse_name not in self.otherList:
                 if ignore_unique:
                     return None
-                self.otherCount = self.otherCount + 1
+                self.otherCount += 1
                 self.otherList[verse_name] = str(self.otherCount)
             verse_tag = VerseType.Tags[VerseType.Other]
             verse_number = self.otherList[verse_name]

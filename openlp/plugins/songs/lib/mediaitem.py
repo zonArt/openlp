@@ -35,8 +35,8 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, translate, check_item_selected, \
-    PluginStatus, create_separated_list, check_directory_exists, ServiceItemContext, Settings, UiStrings
+from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
+    UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, SongImportForm, SongExportForm
@@ -99,9 +99,9 @@ class SongMediaItem(MediaManagerItem):
             triggers=self.onSongMaintenanceClick)
         self.addSearchToToolBar()
         # Signals and slots
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_load_list'), self.onSongListLoad)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configUpdated)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_preview'), self.onPreviewClick)
+        Registry().register_function(u'songs_load_list', self.on_song_list_load)
+        Registry().register_function(u'config_updated', self.config_update)
+        Registry().register_function(u'songs_preview', self.onPreviewClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClicked)
@@ -115,7 +115,7 @@ class SongMediaItem(MediaManagerItem):
     def onFocus(self):
         self.searchTextEdit.setFocus()
 
-    def configUpdated(self):
+    def config_update(self):
         self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type')
         self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit')
         self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service',)
@@ -146,7 +146,7 @@ class SongMediaItem(MediaManagerItem):
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.searchTextEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
-        self.configUpdated()
+        self.config_update()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
@@ -198,12 +198,12 @@ class SongMediaItem(MediaManagerItem):
                 Song.search_lyrics.like(u'%' + clean_string(search_keywords) + u'%'),
                 Song.comments.like(u'%' + search_keywords.lower() + u'%')))
 
-    def onSongListLoad(self):
+    def on_song_list_load(self):
         """
         Handle the exit from the edit dialog and trigger remote updates
         of songs
         """
-        log.debug(u'onSongListLoad - start')
+        log.debug(u'on_song_list_load - start')
         # Called to redisplay the song list screen edit from a search
         # or from the exit of the Song edit dialog. If remote editing is active
         # Trigger it and clean up so it will not update again.
@@ -212,7 +212,7 @@ class SongMediaItem(MediaManagerItem):
             item = self.buildServiceItem(self.editItem)
             self.service_manager.replace_service_item(item)
         self.onSearchTextButtonClicked()
-        log.debug(u'onSongListLoad - finished')
+        log.debug(u'on_song_list_load - finished')
 
     def displayResultsSong(self, searchresults):
         log.debug(u'display results Song')
@@ -293,7 +293,7 @@ class SongMediaItem(MediaManagerItem):
             self.importWizard = SongImportForm(self, self.plugin)
         self.importWizard.exec_()
         # Run song load as list may have been cancelled but some songs loaded
-        Receiver.send_message(u'songs_load_list')
+        Registry().execute(u'songs_load_list')
 
     def onExportClick(self):
         if not hasattr(self, u'exportWizard'):
@@ -324,7 +324,7 @@ class SongMediaItem(MediaManagerItem):
             self.editSongForm.loadSong(song_id, preview)
             if self.editSongForm.exec_() == QtGui.QDialog.Accepted:
                 self.autoSelectId = -1
-                self.onSongListLoad()
+                self.on_song_list_load()
                 self.remoteSong = song_id
                 self.remoteTriggered = True
                 item = self.buildServiceItem(remote=True)
@@ -345,7 +345,7 @@ class SongMediaItem(MediaManagerItem):
             self.editSongForm.loadSong(item_id, False)
             self.editSongForm.exec_()
             self.autoSelectId = -1
-            self.onSongListLoad()
+            self.on_song_list_load()
         self.editItem = None
 
     def onDeleteClick(self):
@@ -397,7 +397,7 @@ class SongMediaItem(MediaManagerItem):
             new_song.title = u'%s <%s>' % (new_song.title,
                 translate('SongsPlugin.MediaItem', 'copy', 'For song cloning'))
             self.plugin.manager.save_object(new_song)
-        self.onSongListLoad()
+        self.on_song_list_load()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
                 remote=False, context=ServiceItemContext.Service):

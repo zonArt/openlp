@@ -34,7 +34,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, translate, create_separated_list, UiStrings
+from openlp.core.lib import Registry, UiStrings, create_separated_list, build_icon, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib import natcmp
@@ -62,7 +62,7 @@ class SongExportForm(OpenLPWizard):
         """
         OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard', u':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_export)
+        Registry().register_function(u'openlp_stop_wizard', self.stop_export)
 
     def stop_export(self):
         """

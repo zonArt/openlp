@@ -29,7 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver, Settings, UiStrings
+from openlp.core.lib import SettingsTab, Registry, Settings, UiStrings, translate
 
 class ImageTab(SettingsTab):
     """
@@ -91,5 +91,5 @@ class ImageTab(SettingsTab):
         settings.setValue(u'background color', self.bg_color)
         settings.endGroup()
         if self.initial_color != self.bg_color:
-            Receiver.send_message(u'image_updated')
+            Registry().execute(u'image_updated')
 

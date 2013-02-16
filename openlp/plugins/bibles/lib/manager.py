@@ -30,7 +30,7 @@
 import logging
 import os
 
-from openlp.core.lib import Receiver, SettingsManager, translate, Settings
+from openlp.core.lib import Registry, SettingsManager, Settings, translate
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -304,12 +304,12 @@ class BibleManager(object):
         log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
         if not bible:
             if show_error:
-                Receiver.send_message(u'openlp_information_message', {
-                    u'title': translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                    u'message': translate('BiblesPlugin.BibleManager',
+                self.main_window.information_message(
+                    translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
+                    translate('BiblesPlugin.BibleManager',
                         'There are no Bibles currently installed. Please use the '
                         'Import Wizard to install one or more Bibles.')
-                    })
+                    )
             return None
         language_selection = self.get_language_selection(bible)
         reflist = parse_reference(versetext, self.db_cache[bible],
@@ -322,14 +322,11 @@ class BibleManager(object):
                     u'verse': get_reference_separator(u'sep_v_display'),
                     u'range': get_reference_separator(u'sep_r_display'),
                     u'list': get_reference_separator(u'sep_l_display')}
-                Receiver.send_message(u'openlp_information_message', {
-                    u'title': translate('BiblesPlugin.BibleManager',
-                    'Scripture Reference Error'),
-                    u'message': translate('BiblesPlugin.BibleManager',
-                    'Your scripture reference is either not supported by '
+                self.main_window.information_message(
+                    translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
+                    translate('BiblesPlugin.BibleManager', 'Your scripture reference is either not supported by '
                     'OpenLP or is invalid. Please make sure your reference '
-                    'conforms to one of the following patterns or consult the '
-                    'manual:\n\n'
+                    'conforms to one of the following patterns or consult the manual:\n\n'
                     'Book Chapter\n'
                     'Book Chapter%(range)sChapter\n'
                     'Book Chapter%(verse)sVerse%(range)sVerse\n'
@@ -339,9 +336,8 @@ class BibleManager(object):
                     '%(verse)sVerse%(range)sVerse\n'
                     'Book Chapter%(verse)sVerse%(range)sChapter%(verse)sVerse',
                     'Please pay attention to the appended "s" of the wildcards '
-                    'and refrain from translating the words inside the '
-                    'names in the brackets.') % reference_seperators
-                    })
+                    'and refrain from translating the words inside the names in the brackets.') % reference_seperators
+                    )
             return None
 
     def get_language_selection(self, bible):
@@ -380,36 +376,33 @@ class BibleManager(object):
         """
         log.debug(u'BibleManager.verse_search("%s", "%s")', bible, text)
         if not bible:
-            Receiver.send_message(u'openlp_information_message', {
-                u'title': translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
-                u'message': translate('BiblesPlugin.BibleManager',
-                    'There are no Bibles currently installed. Please use the '
-                    'Import Wizard to install one or more Bibles.')
-                })
+            self.main_window.information_message(
+                translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
+                translate('BiblesPlugin.BibleManager',
+                    'There are no Bibles currently installed. Please use the Import Wizard to install one or more'
+                    ' Bibles.')
+                )
             return None
         # Check if the bible or second_bible is a web bible.
-        webbible = self.db_cache[bible].get_object(BibleMeta,
-            u'download_source')
+        webbible = self.db_cache[bible].get_object(BibleMeta, u'download_source')
         second_webbible = u''
         if second_bible:
-            second_webbible = self.db_cache[second_bible].get_object(BibleMeta,
-                u'download_source')
+            second_webbible = self.db_cache[second_bible].get_object(BibleMeta, u'download_source')
         if webbible or second_webbible:
-            Receiver.send_message(u'openlp_information_message', {
-                u'title': translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
-                u'message': translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.')
-                })
+            self.main_window.information_message(
+                translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
+                translate('BiblesPlugin.BibleManager', 'Text Search is not available with Web Bibles.')
+                )
             return None
         if text:
             return self.db_cache[bible].verse_search(text)
         else:
-            Receiver.send_message(u'openlp_information_message', {
-                u'title': translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
-                u'message': translate('BiblesPlugin.BibleManager', 'You did not enter a search keyword.\n'
-                    'You can separate different keywords by a space to '
-                    'search for all of your keywords and you can separate '
+            self.main_window.information_message(
+                translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
+                translate('BiblesPlugin.BibleManager', 'You did not enter a search keyword.\nYou can separate '
+                    'different keywords by a space to search for all of your keywords and you can separate '
                     'them by a comma to search for one of them.')
-                })
+                )
             return None
 
     def save_meta_data(self, bible, version, copyright, permissions,
@@ -459,6 +452,16 @@ class BibleManager(object):
         """
         for bible in self.db_cache:
             self.db_cache[bible].finalise()
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
 
 BibleFormat.set_availability(BibleFormat.OpenLP1, HAS_OPENLP1)
 

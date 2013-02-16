@@ -31,7 +31,7 @@ The Themes configuration tab
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate, UiStrings
+from openlp.core.lib import Registry, Settings, SettingsTab, UiStrings, translate
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import find_and_set_in_combo_box
 
@@ -104,7 +104,7 @@ class ThemesTab(SettingsTab):
         QtCore.QObject.connect(self.GlobalLevelRadioButton, QtCore.SIGNAL(u'clicked()'),
             self.onGlobalLevelButtonClicked)
         QtCore.QObject.connect(self.DefaultComboBox, QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
+        Registry().register_function(u'theme_update_list', self.update_theme_list)
 
     def retranslateUi(self):
         """
@@ -153,13 +153,13 @@ class ThemesTab(SettingsTab):
         settings.endGroup()
         self.renderer.set_global_theme(self.global_theme)
         self.renderer.set_theme_level(self.theme_level)
-        Receiver.send_message(u'theme_update_global', self.global_theme)
+        Registry().execute(u'theme_update_global', self.global_theme)
 
     def postSetUp(self):
         """
         After setting things up...
         """
-        Receiver.send_message(u'theme_update_global', self.global_theme)
+        Registry().execute(u'theme_update_global', self.global_theme)
 
     def onSongLevelButtonClicked(self):
         """
@@ -187,7 +187,7 @@ class ThemesTab(SettingsTab):
         self.renderer.set_global_theme(self.global_theme)
         self.__previewGlobalTheme()
 
-    def updateThemeList(self, theme_list):
+    def update_theme_list(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed.
 

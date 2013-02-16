@@ -123,7 +123,7 @@ import urlparse
 from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
 
-from openlp.core.lib import Receiver, Settings, PluginStatus, StringContent
+from openlp.core.lib import Registry, Settings, PluginStatus, StringContent
 from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
@@ -138,7 +138,9 @@ class HttpResponse(object):
         'Content-Type': 'text/html; charset="utf-8"\r\n'
     }
 
-    def __init__(self, content='', headers={}, code=None):
+    def __init__(self, content='', headers=None, code=None):
+        if headers is None:
+            headers = {}
         self.content = content
         for key, value in headers.iteritems():
             self.headers[key] = value
@@ -173,10 +175,8 @@ class HttpServer(object):
         address = Settings().value(self.plugin.settingsSection + u'/ip address')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'slidecontroller_live_changed'),
-            self.slide_change)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'slidecontroller_live_started'),
-            self.item_change)
+        Registry().register_function(u'slidecontroller_live_changed', self.slide_change)
+        Registry().register_function(u'slidecontroller_live_started', self.item_change)
         QtCore.QObject.connect(self.server, QtCore.SIGNAL(u'newConnection()'), self.new_connection)
         log.debug(u'TCP listening on port %d' % port)
 
@@ -404,7 +404,7 @@ class HttpConnection(object):
         ``action``
             This is the action, either ``hide`` or ``show``.
         """
-        Receiver.send_message(u'slidecontroller_toggle_display', action)
+        Registry().execute(u'slidecontroller_toggle_display', action)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 
@@ -419,7 +419,7 @@ class HttpConnection(object):
             except KeyError, ValueError:
                 return HttpResponse(code=u'400 Bad Request')
             text = urllib.unquote(text)
-            Receiver.send_message(u'alerts_text', [text])
+            Registry().execute(u'alerts_text', [text])
             success = True
         else:
             success = False
@@ -469,9 +469,9 @@ class HttpConnection(object):
                 log.info(data)
                 # This slot expects an int within a list.
                 id = data[u'request'][u'id']
-                Receiver.send_message(event, [id])
+                Registry().execute(event, [id])
             else:
-                Receiver.send_message(event)
+                Registry().execute(event)
             json_data = {u'results': {u'success': True}}
         return HttpResponse(json.dumps(json_data),
             {u'Content-Type': u'application/json'})
@@ -488,9 +488,9 @@ class HttpConnection(object):
                 data = json.loads(self.url_params[u'data'][0])
             except KeyError, ValueError:
                 return HttpResponse(code=u'400 Bad Request')
-            Receiver.send_message(event, data[u'request'][u'id'])
+            Registry().execute(event, data[u'request'][u'id'])
         else:
-            Receiver.send_message(event)
+            Registry().execute(event)
         return HttpResponse(json.dumps({u'results': {u'success': True}}),
             {u'Content-Type': u'application/json'})
 

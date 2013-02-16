@@ -43,7 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, ScreenList, UiStrings, Registry, check_directory_exists
+from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -150,15 +150,9 @@ class OpenLP(QtGui.QApplication):
         update_check = Settings().value(u'general/update check')
         if update_check:
             VersionThread(self.main_window).start()
-        Receiver.send_message(u'live_display_blank_check')
+        self.main_window.is_display_blank()
         self.main_window.app_startup()
         return self.exec_()
-
-    def close_splash_screen(self):
-        """
-        Close the splash screen when requested.
-        """
-        self.splash.close()
 
     def is_already_running(self):
         """
@@ -203,6 +197,7 @@ class OpenLP(QtGui.QApplication):
         """
         Wrapper to make ProcessEvents visible and named correctly
         """
+        log.debug(u'processing event flush')
         self.processEvents()
 
     def set_busy_cursor(self):
@@ -242,7 +237,7 @@ def set_up_logging(log_path):
     logfile.setFormatter(logging.Formatter(u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
-        print 'Logging to:', filename
+        print('Logging to: %s' % filename)
 
 
 def main(args=None):

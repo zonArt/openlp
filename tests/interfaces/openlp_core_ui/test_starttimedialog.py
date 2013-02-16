@@ -1,7 +1,6 @@
 """
     Package to test the openlp.core.ui package.
 """
-import sys
 from unittest import TestCase
 
 from mock import MagicMock, patch
@@ -15,7 +14,7 @@ class TestStartTimeDialog(TestCase):
         """
         Create the UI
         """
-        registry = Registry.create()
+        Registry.create()
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
@@ -68,7 +67,7 @@ class TestStartTimeDialog(TestCase):
 
         # WHEN displaying the UI and pressing enter
         self.form.item = {u'service_item': mocked_serviceitem}
-        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+        with patch(u'PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
         okWidget = self.form.button_box.button(self.form.button_box.Ok)
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
@@ -81,7 +80,7 @@ class TestStartTimeDialog(TestCase):
 
         # WHEN displaying the UI, changing the time to 2min 3secs and pressing enter
         self.form.item = {u'service_item': mocked_serviceitem}
-        with patch(u'PyQt4.QtGui.QDialog') as mocked_exec:
+        with patch(u'PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
         self.form.minuteSpinBox.setValue(2)
         self.form.secondSpinBox.setValue(3)

@@ -190,7 +190,7 @@ class ImpressController(PresentationController):
             while list.hasMoreElements():
                 doc = list.nextElement()
                 if doc.getImplementationName() != u'com.sun.star.comp.framework.BackingComp':
-                    cnt = cnt + 1
+                    cnt += 1
         if cnt > 0:
             log.debug(u'OpenOffice not terminated as docs are still open')
         else:
@@ -400,7 +400,7 @@ class ImpressDocument(PresentationDocument):
             i = 1
             while not self.control and i < 150:
                 time.sleep(0.1)
-                i = i + 1
+                i += 1
                 self.control = self.presentation.getController()
         else:
             self.control.activate()

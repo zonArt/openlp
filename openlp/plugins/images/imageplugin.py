@@ -31,7 +31,7 @@ from PyQt4 import QtCore, QtGui
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings
+from openlp.core.lib import Plugin, StringContent, Registry, ImageSource, Settings, build_icon, translate
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ class ImagePlugin(Plugin):
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'image_updated'), self.image_updated)
+        Registry().execute(u'image_updated', self.image_updated)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'

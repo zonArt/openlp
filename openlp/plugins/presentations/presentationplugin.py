@@ -37,8 +37,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
-from openlp.plugins.presentations.lib import PresentationController, \
-    PresentationMediaItem, PresentationTab
+from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
 log = logging.getLogger(__name__)
 
@@ -91,7 +90,7 @@ class PresentationPlugin(Plugin):
                 except Exception:
                     log.warn(u'Failed to start controller process')
                     self.controllers[controller].available = False
-        self.mediaItem.buildFileMaskString()
+        self.mediaItem.build_file_mask_string()
 
     def finalise(self):
         """

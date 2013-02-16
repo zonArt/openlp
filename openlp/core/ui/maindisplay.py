@@ -42,8 +42,8 @@ import sys
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, translate, expand_tags,\
-    Settings, ImageSource, Registry
+from openlp.core.lib import ServiceItem, Settings, ImageSource, Registry, build_html, expand_tags, \
+    image_to_byte, translate
 from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.lib import ScreenList
@@ -158,10 +158,10 @@ class MainDisplay(Display):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setTransparency(False)
         if self.isLive:
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_show'), self.showDisplay)
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
-            QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.configChanged)
+            Registry().register_function(u'live_display_hide', self.hide_display)
+            Registry().register_function(u'live_display_show', self.show_display)
+            Registry().register_function(u'update_display_css', self.css_changed)
+            Registry().register_function(u'config_updated', self.config_changed)
 
     def setTransparency(self, enabled):
         """
@@ -174,13 +174,13 @@ class MainDisplay(Display):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
         self.repaint()
 
-    def cssChanged(self):
+    def css_changed(self):
         """
         We may need to rebuild the CSS on the live display.
         """
         self.rebuildCSS = True
 
-    def configChanged(self):
+    def config_changed(self):
         """
         Call the plugins to rebuild the Live display CSS as the screen has
         not been rebuild on exit of config.
@@ -362,7 +362,7 @@ class MainDisplay(Display):
         # if was hidden keep it hidden
         if self.isLive:
             if self.hideMode:
-                self.hideDisplay(self.hideMode)
+                self.hide_display(self.hideMode)
             else:
                 # Single screen active
                 if self.screens.display_count == 1:
@@ -387,11 +387,11 @@ class MainDisplay(Display):
         if self.override:
             # We have an video override so allow it to be stopped.
             if u'video' in self.override:
-                Receiver.send_message(u'video_background_replaced')
+                Registry().execute(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
             elif self.override[u'theme'] != serviceItem.themedata.background_filename:
-                Receiver.send_message(u'live_theme_changed')
+                Registry().execute(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
@@ -417,9 +417,9 @@ class MainDisplay(Display):
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
             if Settings().value(u'general/auto unblank'):
-                Receiver.send_message(u'slidecontroller_live_unblank')
+                Registry().execute(u'slidecontroller_live_unblank')
             else:
-                self.hideDisplay(self.hideMode)
+                self.hide_display(self.hideMode)
         self.__hideMouse()
 
     def footer(self, text):
@@ -430,12 +430,12 @@ class MainDisplay(Display):
         js = u'show_footer(\'' + text.replace(u'\\', u'\\\\').replace(u'\'', u'\\\'') + u'\')'
         self.frame.evaluateJavaScript(js)
 
-    def hideDisplay(self, mode=HideMode.Screen):
+    def hide_display(self, mode=HideMode.Screen):
         """
         Hide the display by making all layers transparent
         Store the images so they can be replaced when required
         """
-        log.debug(u'hideDisplay mode = %d', mode)
+        log.debug(u'hide_display mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
             if not Settings().value(u'general/display on monitor'):
@@ -453,13 +453,13 @@ class MainDisplay(Display):
                 self.webView.setVisible(True)
         self.hideMode = mode
 
-    def showDisplay(self):
+    def show_display(self):
         """
         Show the stored layers so the screen reappears as it was
         originally.
         Make the stored images None to release memory.
         """
-        log.debug(u'showDisplay')
+        log.debug(u'show_display')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
             if not Settings().value(u'general/display on monitor'):
@@ -470,7 +470,7 @@ class MainDisplay(Display):
         self.hideMode = None
         # Trigger actions when display is active again.
         if self.isLive:
-            Receiver.send_message(u'live_display_active')
+            Registry().execute(u'live_display_active')
 
     def __hideMouse(self):
         """

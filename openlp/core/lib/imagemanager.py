@@ -39,7 +39,7 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import resize_image, image_to_byte, Receiver, Registry, ScreenList
+from openlp.core.lib import Registry, ScreenList, resize_image, image_to_byte
 
 log = logging.getLogger(__name__)
 
@@ -200,7 +200,7 @@ class ImageManager(QtCore.QObject):
         self.image_thread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
         self.stop_manager = False
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.process_updates)
+        Registry().register_function(u'config_updated', self.process_updates)
 
     def update_display(self):
         """

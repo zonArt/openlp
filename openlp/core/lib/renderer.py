@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.lib import ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags, ImageSource, Registry, ScreenList
+from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, ServiceItem, \
+    expand_tags, build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
@@ -80,7 +80,7 @@ class Renderer(object):
         self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
+        Registry().register_function(u'theme_update_global', self.set_global_theme)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web_frame = self.web.page().mainFrame()
@@ -602,7 +602,7 @@ class Renderer(object):
                 previous_raw = u''
                 # Stop here as the theme line count was requested.
                 if self.force_page:
-                    Receiver.send_message(u'theme_line_count', index + 1)
+                    Registry().execute(u'theme_line_count', index + 1)
                     break
             else:
                 continue

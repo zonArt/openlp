@@ -31,7 +31,7 @@ The Create/Edit theme wizard
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon, UiStrings
+from openlp.core.lib import UiStrings, build_icon, translate
 from openlp.core.lib.theme import HorizontalType, BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import add_welcome_page, create_valign_selection_widgets
 

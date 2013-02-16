@@ -33,7 +33,7 @@ from PyQt4 import QtGui
 
 from starttimedialog import Ui_StartTimeDialog
 
-from openlp.core.lib import translate, UiStrings, Registry
+from openlp.core.lib import UiStrings, Registry, translate
 from openlp.core.lib.ui import critical_error_message_box
 
 

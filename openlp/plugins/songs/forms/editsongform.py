@@ -38,9 +38,9 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, MediaType, translate, create_separated_list, \
-    check_directory_exists, Registry, UiStrings
-from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, critical_error_message_box, \
+from openlp.core.lib import Registry, PluginStatus, MediaType, translate, create_separated_list, \
+    check_directory_exists, UiStrings
+from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, \
     find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
@@ -97,7 +97,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         QtCore.QObject.connect(self.audioRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onAudioRemoveButtonClicked)
         QtCore.QObject.connect(self.audioRemoveAllButton, QtCore.SIGNAL(u'clicked()'),
             self.onAudioRemoveAllButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
+        Registry().register_function(u'theme_update_list', self.load_themes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(UiStrings().SaveAndPreview)
@@ -115,6 +115,23 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.audioListWidget.setAlternatingRowColors(True)
         self.findVerseSplit = re.compile(u'---\[\]---\n', re.UNICODE)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
+
+    def keyPressEvent(self, event):
+        """
+        Reimplement the keyPressEvent to react on Return/Enter keys. When some combo boxes have focus we do not want
+        dialog's default action be triggered but instead our own.
+
+        ``event``
+            A QtGui.QKeyEvent event.
+        """
+        if event.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
+            if self.authorsComboBox.hasFocus() and self.authorsComboBox.currentText():
+                self.onAuthorAddButtonClicked()
+                return
+            if self.topicsComboBox.hasFocus() and self.topicsComboBox.currentText():
+                self.onTopicAddButtonClicked()
+                return
+        QtGui.QDialog.keyPressEvent(self, event)
 
     def initialise(self):
         """
@@ -169,7 +186,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             combo.setItemData(row, object.id)
         set_case_insensitive_completer(cache, combo)
 
-    def loadThemes(self, theme_list):
+    def load_themes(self, theme_list):
         """
         Load the themes into a combobox.
         """
@@ -184,7 +201,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         Load the media files into a combobox.
         """
         self.audioAddFromMediaButton.setVisible(False)
-        for plugin in self.parent().pluginManager.plugins:
+        for plugin in self.plugin_manager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.audioAddFromMediaButton.setVisible(True)
                 self.mediaForm.populateFiles(plugin.mediaItem.getList(MediaType.Audio))
@@ -699,7 +716,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         log.debug(u'onPreview')
         if button.objectName() == u'previewButton':
             self.saveSong(True)
-            Receiver.send_message(u'songs_preview')
+            Registry().execute(u'songs_preview')
 
     def onAudioAddFromFileButtonClicked(self):
         """
@@ -907,6 +924,16 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         except:
             log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
 
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
+
     def _get_theme_manager(self):
         """
         Adds the theme manager to the class dynamically
@@ -916,3 +943,4 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
+

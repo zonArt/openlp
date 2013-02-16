@@ -66,7 +66,7 @@ class MediaShoutImport(SongImport):
         songs = cursor.fetchall()
         self.importWizard.progressBar.setMaximum(len(songs))
         for song in songs:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             cursor.execute(u'SELECT Type, Number, Text FROM Verses '
                 u'WHERE Record = %s ORDER BY Type, Number' % song.Record)

@@ -77,7 +77,7 @@ class OooImport(SongImport):
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for filename in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             filename = unicode(filename)
             if os.path.isfile(filename):
@@ -189,7 +189,7 @@ class OooImport(SongImport):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 self.importWizard.incrementProgressBar(u'Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)

@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, SettingsTab, translate, Settings, UiStrings
+from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate
 from openlp.core.lib.ui import find_and_set_in_combo_box
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, update_reference_separators, \
     get_reference_separator, LanguageSelection
@@ -168,7 +168,7 @@ class BiblesTab(SettingsTab):
             self.onEndSeparatorLineEditEdited)
         QtCore.QObject.connect(self.endSeparatorLineEdit, QtCore.SIGNAL(u'editingFinished()'),
             self.onEndSeparatorLineEditFinished)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.updateThemeList)
+        Registry().register_function(u'theme_update_list', self.update_theme_list)
         QtCore.QObject.connect(self.languageSelectionComboBox, QtCore.SIGNAL(u'activated(int)'),
             self.onLanguageSelectionComboBoxChanged)
 
@@ -406,10 +406,10 @@ class BiblesTab(SettingsTab):
         else:
             settings.remove(u'end separator')
         update_reference_separators()
-        Receiver.send_message(u'bibles_load_list')
+        Registry().execute(u'bibles_load_list')
         settings.endGroup()
 
-    def updateThemeList(self, theme_list):
+    def update_theme_list(self, theme_list):
         """
         Called from ThemeManager when the Themes have changed.
 

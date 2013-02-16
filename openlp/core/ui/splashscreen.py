@@ -29,7 +29,6 @@
 """
 The splash screen
 """
-from openlp.core.lib import Receiver
 
 from PyQt4 import QtCore, QtGui
 

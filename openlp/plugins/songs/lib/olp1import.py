@@ -110,7 +110,7 @@ class OpenLP1SongImport(SongImport):
         self.importWizard.progressBar.setMaximum(len(songs))
         for song in songs:
             self.setDefaults()
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             song_id = song[0]
             self.title = song[1]
@@ -131,13 +131,13 @@ class OpenLP1SongImport(SongImport):
                 u'WHERE songid = %s' % song_id)
             author_ids = cursor.fetchall()
             for author_id in author_ids:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
                         self.parseAuthor(author[1])
                         break
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             if db_has_tracks:
                 cursor.execute(u'-- types int, int')
@@ -146,14 +146,14 @@ class OpenLP1SongImport(SongImport):
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()
                 for track_id, listindex in track_ids:
-                    if self.stopImportFlag:
+                    if self.stop_import_flag:
                         break
                     for track in tracks:
                         if track[0] == track_id:
                             media_file = self.expandMediaFile(track[1])
                             self.addMediaFile(media_file, listindex)
                             break
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             if not self.finish():
                 self.logError(self.importSource)

@@ -66,7 +66,7 @@ class SundayPlusImport(SongImport):
     def doImport(self):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for filename in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             song_file = open(filename)
             self.doImportFile(song_file)
@@ -121,7 +121,7 @@ class SundayPlusImport(SongImport):
                         end = data.find(')', i) + 1
                     value = data[i:end]
                 # If we are in the main group.
-                if cell == False:
+                if not cell:
                     if name == 'title':
                         self.title = self.decode(self.unescape(value))
                     elif name == 'Author':

@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate, UiStrings, Registry
+from openlp.core.lib import UiStrings, Registry, translate
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
@@ -88,7 +88,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         QtCore.QObject.connect(self.footerPositionCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
             self.onFooterPositionCheckBoxStateChanged)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_line_count'), self.updateLinesText)
+        Registry().register_function(u'theme_line_count', self.updateLinesText)
         QtCore.QObject.connect(self.mainSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.lineSpacingSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
         QtCore.QObject.connect(self.outlineSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
