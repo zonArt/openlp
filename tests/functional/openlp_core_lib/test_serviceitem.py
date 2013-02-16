@@ -185,7 +185,7 @@ class TestServiceItem(TestCase):
         service_item.render(True)
         assert service_item.get_display_title() == u'Test Custom', u'The custom title should be correct'
         assert service_item.get_frames()[0][u'text'] == VERSE[:-1], \
-            u'The original text has been returned except the last line feed'
+            u'The returned text matches the input, except the last line feed'
         assert service_item.get_rendered_frame(1) == VERSE.split(u'\n', 1)[0], u'The first line has been returned'
         assert service_item.get_frame_title(0) == u'Slide 1', u'The title of the first slide is returned'
         assert service_item.get_frame_title(1) == u'Slide 2', u'The title of the second slide is returned'
@@ -211,16 +211,17 @@ class TestServiceItem(TestCase):
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
         print service_item.get_rendered_frame(0)
-        assert service_item.get_rendered_frame(0) == test_file, u'The first frame is the path to the image'
-        assert service_item.get_frames()[0] == frame_array, u'The first frame array is as expected'
-        assert service_item.get_frame_path(0) == test_file, u'The frame path is the full path to the image'
-        assert service_item.get_frame_title(0) == image_name, u'The frame title is the image name'
-        assert service_item.get_display_title() == image_name, u'The display title is the first image name'
-        assert service_item.is_image() is True, u'This is an image service item'
-        assert service_item.is_capable(ItemCapabilities.CanMaintain) is True, u'Images can be Maintained'
-        assert service_item.is_capable(ItemCapabilities.CanPreview) is True, u'Images can be Previewed'
-        assert service_item.is_capable(ItemCapabilities.CanLoop) is True, u'Images can be made to Loop'
-        assert service_item.is_capable(ItemCapabilities.CanAppend) is True, u'Images can have new items added'
+        assert service_item.get_rendered_frame(0) == test_file, u'The first frame matches the path to the image'
+        assert service_item.get_frames()[0] == frame_array, u'The return matches the frame array1'
+        assert service_item.get_frame_path(0) == test_file, u'The frame path matches the full path to the image'
+        assert service_item.get_frame_title(0) == image_name, u'The frame title matches the image name'
+        assert service_item.get_display_title() == image_name, u'The display title matches the first image name'
+        assert service_item.is_image() is True, u'This service item is an Image'
+        assert service_item.is_capable(ItemCapabilities.CanMaintain) is True, u'This service item can be Maintained'
+        assert service_item.is_capable(ItemCapabilities.CanPreview) is True, u'This service item can be Previewed'
+        assert service_item.is_capable(ItemCapabilities.CanLoop) is True, u'This service item can be made to Loop'
+        assert service_item.is_capable(ItemCapabilities.CanAppend) is True, \
+            u'This service item can have new items added'
 
     def serviceitem_load_image_from_local_service_test(self):
         """
@@ -244,23 +245,22 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        assert service_item.get_rendered_frame(0) == test_file1, u'The first frame is the path to the image'
-        assert service_item.get_rendered_frame(1) == test_file2, u'The Second frame is the path to the image'
-        assert service_item.get_frames()[0] == frame_array1, u'The first frame array is as expected'
-        assert service_item.get_frames()[1] == frame_array2, u'The first frame array is as expected'
-        assert service_item.get_frame_path(0) == test_file1, u'The frame path is the full path to the image'
-        assert service_item.get_frame_path(1) == test_file2, u'The frame path is the full path to the image'
-        assert service_item.get_frame_title(0) == image_name1, u'The 1st frame title is the image name'
-        assert service_item.get_frame_title(1) == image_name2, u'The 2nd frame title is the image name'
-
+        assert service_item.get_rendered_frame(0) == test_file1, u'The first frame matches the path to the image'
+        assert service_item.get_rendered_frame(1) == test_file2, u'The Second frame matches the path to the image'
+        assert service_item.get_frames()[0] == frame_array1, u'The return matches the frame array1'
+        assert service_item.get_frames()[1] == frame_array2, u'The return matches the frame array2'
+        assert service_item.get_frame_path(0) == test_file1, u'The frame path matches the full path to the image'
+        assert service_item.get_frame_path(1) == test_file2, u'The frame path matches the full path to the image'
+        assert service_item.get_frame_title(0) == image_name1, u'The 1st frame title matches the image name'
+        assert service_item.get_frame_title(1) == image_name2, u'The 2nd frame title matches the image name'
         assert service_item.get_display_title().lower() == service_item.name, \
-            u'The display title as there are > 1 Images'
-        assert service_item.is_image() is True, u'This is an image service item'
-        assert service_item.is_capable(ItemCapabilities.CanMaintain) is True, u'Images can be Maintained'
-        assert service_item.is_capable(ItemCapabilities.CanPreview) is True, u'Images can be Previewed'
-        assert service_item.is_capable(ItemCapabilities.CanLoop) is True, u'Images can be made to Loop'
-        assert service_item.is_capable(ItemCapabilities.CanAppend) is True, u'Images can have new items added'
-
+            u'The plugin name matches the display title, as there are > 1 Images'
+        assert service_item.is_image() is True, u'This service item is an image '
+        assert service_item.is_capable(ItemCapabilities.CanMaintain) is True, u'This service item can be Maintained'
+        assert service_item.is_capable(ItemCapabilities.CanPreview) is True, u'This service item can be Previewed'
+        assert service_item.is_capable(ItemCapabilities.CanLoop) is True, u'This service item can be made to Loop'
+        assert service_item.is_capable(ItemCapabilities.CanAppend) is True, \
+            u'This service item can have new items added'
 
     def convert_file_service_item(self, name):
         service_file = os.path.join(TEST_PATH, name)
