@@ -3,11 +3,12 @@
 """
 
 import os
-
 from unittest import TestCase
 
-from openlp.core.lib import Registry, ImageManager, ScreenList
 from PyQt4 import QtGui
+
+from openlp.core.lib import Registry, ImageManager, ScreenList
+
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 

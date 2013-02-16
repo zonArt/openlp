@@ -1,12 +1,14 @@
 """
     Package to test the openlp.core.lib package.
 """
-from unittest import TestCase
 
+from unittest import TestCase
 from mock import MagicMock
+
+from PyQt4 import QtGui
+
 from openlp.core.lib import Registry, ScreenList
 from openlp.core.ui.mainwindow import MainWindow
-from PyQt4 import QtGui
 
 
 class TestStartNoteDialog(TestCase):
