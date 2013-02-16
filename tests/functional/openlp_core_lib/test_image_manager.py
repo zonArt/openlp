@@ -41,7 +41,7 @@ class TestImageManager(TestCase):
         image = self.image_manager.get_image(TEST_PATH, u'church.jpg')
 
         # THEN returned record is a type of image
-        self.assertEqual(isinstance(image, QtGui.QImage), True, u'The returned field is an image')
+        self.assertEqual(isinstance(image, QtGui.QImage), True, u'The returned object should be a QImage')
 
         # WHEN the image is retrieved has not been loaded
         # THEN a KeyError is thrown

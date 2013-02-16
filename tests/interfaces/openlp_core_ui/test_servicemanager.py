@@ -40,4 +40,4 @@ class TestStartNoteDialog(TestCase):
         # WHEN I have an empty display
         # THEN the count of items should be zero
         self.assertEqual(self.service_manager.service_manager_list.topLevelItemCount(), 0,
-            u'There the service manager list is not empty ')
+            u'The service manager list is not empty ')
