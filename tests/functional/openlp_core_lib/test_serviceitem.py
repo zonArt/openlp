@@ -39,7 +39,7 @@ class TestServiceItem(TestCase):
         """
         # GIVEN: A new service item
 
-        # WHEN:A service item is created (without a plugin)
+        # WHEN: A service item is created (without a plugin)
         service_item = ServiceItem(None)
 
         # THEN: We should get back a valid service item
@@ -271,3 +271,4 @@ class TestServiceItem(TestCase):
         except IOError:
             first_line = u''
         return first_line
+
