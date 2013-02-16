@@ -276,8 +276,7 @@ def main(args=None):
         qt_args.append('OpenLP')
     # Initialise the resources
     qInitResources()
-    # Now create and actually run the application.#
-    print qt_args
+    # Now create and actually run the application.
     application = OpenLP(qt_args)
     application.setOrganizationName(u'OpenLP')
     application.setOrganizationDomain(u'openlp.org')

@@ -24,13 +24,6 @@ class TestImageManager(TestCase):
         ScreenList.create(self.app.desktop())
         self.image_manager = ImageManager()
 
-    def tearDown(self):
-        """
-        Delete all the C++ objects at the end so that we don't have a segfault
-        """
-        #del self.app
-        pass
-
     def basic_image_manager_test(self):
         """
         Test the Image Manager setup basic functionality
