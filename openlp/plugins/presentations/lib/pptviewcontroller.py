@@ -34,6 +34,7 @@ if os.name == u'nt':
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
+from openlp.core.lib import ScreenList
 from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -120,8 +121,7 @@ class PptviewDocument(PresentationDocument):
         PptView task started earlier.
         """
         log.debug(u'LoadPresentation')
-        renderer = self.controller.plugin.renderer
-        rect = renderer.screens.current[u'size']
+        rect = ScreenList().current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
         if not os.path.isdir(self.get_temp_folder()):
