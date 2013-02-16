@@ -33,6 +33,7 @@ class TestPluginManager(TestCase):
 
     def tearDown(self):
         os.unlink(self.ini_file)
+        del self.app
 
     def find_plugins_test(self):
         """
