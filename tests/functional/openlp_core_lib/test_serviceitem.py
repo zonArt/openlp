@@ -18,7 +18,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
-TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 
 class TestServiceItem(TestCase):
@@ -78,7 +78,7 @@ class TestServiceItem(TestCase):
         service_item.name = u'test'
 
         # WHEN: adding image to a service item
-        test_image = os.path.join(TESTPATH, u'church.jpg')
+        test_image = os.path.join(TEST_PATH, u'church.jpg')
         service_item.add_from_image(test_image, u'Image Title')
 
         # THEN: We should get back a valid service item
@@ -133,8 +133,8 @@ class TestServiceItem(TestCase):
         service_item.name = u'test'
 
         # WHEN: adding image to a service item
-        test_file = os.path.join(TESTPATH, u'church.jpg')
-        service_item.add_from_command(TESTPATH, u'church.jpg', test_file)
+        test_file = os.path.join(TEST_PATH, u'church.jpg')
+        service_item.add_from_command(TEST_PATH, u'church.jpg', test_file)
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -151,7 +151,7 @@ class TestServiceItem(TestCase):
         assert len(service) == 2, u'A saved service has two parts'
         assert service[u'header'][u'name'] == u'test', u'A test plugin'
         assert service[u'data'][0][u'title'] == u'church.jpg', u'The first title name '
-        assert service[u'data'][0][u'path'] == TESTPATH, u'The first image name'
+        assert service[u'data'][0][u'path'] == TEST_PATH, u'The first image name'
         assert service[u'data'][0][u'image'] == test_file, u'The first image name'
 
         # WHEN validating a service item
@@ -197,7 +197,7 @@ class TestServiceItem(TestCase):
         """
         # GIVEN: A new service item and a mocked add icon function
         image_name = u'IMG_7453.JPG'
-        test_file = os.path.join(TESTPATH, image_name)
+        test_file = os.path.join(TEST_PATH, image_name)
         frame_array = {u'path': test_file, u'title': image_name}
 
         service_item = ServiceItem(None)
@@ -206,7 +206,7 @@ class TestServiceItem(TestCase):
         # WHEN: adding an image from a saved Service and mocked exists
         line = self.convert_file_service_item(u'serviceitem_image1.osd')
         with patch('os.path.exists'):
-            service_item.set_from_service(line, TESTPATH)
+            service_item.set_from_service(line, TEST_PATH)
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -216,12 +216,15 @@ class TestServiceItem(TestCase):
         assert service_item.get_frame_title(0) == image_name, u'The frame title is the image name'
         assert service_item.get_display_title() == image_name, u'The display title is the first image name'
         assert service_item.is_image() is True, u'This is an image service item'
-        assert service_item.is_capable(ItemCapabilities.CanMaintain)
+        assert service_item.is_capable(ItemCapabilities.CanMaintain) is True, u'Images can be Maintained'
+        assert service_item.is_capable(ItemCapabilities.CanPreview) is True, u'Images can be Previewed'
+        assert service_item.is_capable(ItemCapabilities.CanLoop) is True, u'Images can be made to Loop'
+        assert service_item.is_capable(ItemCapabilities.CanAppend) is True, u'Images can have new items added'
 
 
 
     def convert_file_service_item(self, name):
-        service_file = os.path.join(TESTPATH, name)
+        service_file = os.path.join(TEST_PATH, name)
         try:
             open_file = open(service_file, u'r')
             items = cPickle.load(open_file)
