@@ -90,7 +90,7 @@ class DreamBeamImport(SongImport):
         if isinstance(self.importSource, list):
             self.importWizard.progressBar.setMaximum(len(self.importSource))
             for file in self.importSource:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     return
                 self.setDefaults()
                 parser = etree.XMLParser(remove_blank_text=True)

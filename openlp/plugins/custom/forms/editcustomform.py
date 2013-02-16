@@ -31,9 +31,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import critical_error_message_box, \
-    find_and_set_in_combo_box
+from openlp.core.lib import Registry, translate
+from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
 from editcustomdialog import Ui_CustomEditDialog
@@ -65,9 +64,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.editAllButton.clicked.connect(self.on_edit_all_button_clicked)
         self.slideListView.currentRowChanged.connect(self.on_current_row_changed)
         self.slideListView.doubleClicked.connect(self.on_edit_button_clicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.loadThemes)
+        Registry().register_function(u'theme_update_list', self.load_themes)
 
-    def loadThemes(self, theme_list):
+    def load_themes(self, theme_list):
         """
         Load a list of themes into the themes combo box.
 
@@ -191,7 +190,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         log.debug(u'onPreview')
         if self.saveCustom():
-            Receiver.send_message(u'custom_preview')
+            Registry().execute(u'custom_preview')
 
     def updateSlideList(self, slides, edit_all=False):
         """

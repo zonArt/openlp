@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, PluginStatus, Registry, build_icon
+from openlp.core.lib import PluginStatus, Registry, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from settingsdialog import Ui_SettingsDialog
@@ -107,7 +107,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
-        Receiver.send_message(u'config_updated')
+        Registry().execute(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def reject(self):

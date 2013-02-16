@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Settings, Registry, UiStrings
+from openlp.core.lib import Settings, Registry, UiStrings
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
@@ -171,10 +171,8 @@ class Plugin(QtCore.QObject):
             default_settings[u'%s/%s files' % (name, name)] = []
         # Add settings to the dict of all settings.
         Settings.extend_default_settings(default_settings)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_add_service_item' % self.name),
-            self.processAddServiceEvent)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_config_updated' % self.name),
-            self.configUpdated)
+        Registry().register_function(u'%s_add_service_item' % self.name, self.processAddServiceEvent)
+        Registry().register_function(u'%s_config_updated' % self.name, self.config_update)
 
     def checkPreConditions(self):
         """
@@ -403,7 +401,7 @@ class Plugin(QtCore.QObject):
         """
         return u''
 
-    def configUpdated(self):
+    def config_update(self):
         """
         The plugin's config has changed
         """

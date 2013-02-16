@@ -35,7 +35,7 @@ import os
 import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, Settings, Registry, UiStrings, translate
+from openlp.core.lib import OpenLPToolbar, Settings, Registry, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -107,21 +107,19 @@ class MediaController(object):
         self.timer.setInterval(200)
         # Signals
         self.timer.timeout.connect(self.media_state)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackPlay'), self.media_play_msg)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackPause'), self.media_pause_msg)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'playbackStop'), self.media_stop_msg)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'seekSlider'), self.media_seek_msg)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'volumeSlider'), self.media_volume_msg)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'media_hide'), self.media_hide)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'media_blank'), self.media_blank)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'media_unblank'), self.media_unblank)
+        Registry().register_function(u'playbackPlay', self.media_play_msg)
+        Registry().register_function(u'playbackPause', self.media_pause_msg)
+        Registry().register_function(u'playbackStop', self.media_stop_msg)
+        Registry().register_function(u'seekSlider', self.media_seek_msg)
+        Registry().register_function(u'volumeSlider', self.media_volume_msg)
+        Registry().register_function(u'media_hide', self.media_hide)
+        Registry().register_function(u'media_blank', self.media_blank)
+        Registry().register_function(u'media_unblank', self.media_unblank)
         # Signals for background video
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_hide'), self.media_hide)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'songs_unblank'), self.media_unblank)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_media_rebuild'),
-            self._set_active_players)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mediaitem_suffixes'),
-            self._generate_extensions_lists)
+        Registry().register_function(u'songs_hide', self.media_hide)
+        Registry().register_function(u'songs_unblank', self.media_unblank)
+        Registry().register_function(u'mediaitem_media_rebuild', self._set_active_players)
+        Registry().register_function(u'mediaitem_suffixes', self._generate_extensions_lists)
 
     def _set_active_players(self):
         """
@@ -694,7 +692,7 @@ class MediaController(object):
         hide_mode = msg[2]
         if not isLive:
             return
-        Receiver.send_message(u'live_display_hide', hide_mode)
+        Registry().execute(u'live_display_hide', hide_mode)
         controller = self.mainWindow.liveController
         display = self._define_display(controller)
         if self.currentMediaPlayer[controller.controllerType].state == MediaState.Playing:
@@ -709,7 +707,7 @@ class MediaController(object):
             First element is not relevant in this context
             Second element is the boolean for Live indication
         """
-        Receiver.send_message(u'live_display_show')
+        Registry().execute(u'live_display_show')
         isLive = msg[1]
         if not isLive:
             return
