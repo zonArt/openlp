@@ -10,7 +10,7 @@ class TestUiStrings(TestCase):
 
     def check_same_instance_test(self):
         """
-        Test if the always only one instance of the UiStrings is created.
+        Test the UiStrings class - we always should have only one instance of the UiStrings class.
         """
         # WHEN: Create two instances of the UiStrings class.
         first_instance = UiStrings()

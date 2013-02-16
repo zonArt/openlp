@@ -9,6 +9,16 @@ from mock import patch
 from openlp.core.lib import FormattingTags
 
 
+TAG = {
+    u'end tag': '{/aa}',
+    u'start html': '<span>',
+    u'start tag': '{aa}',
+    u'protected': False,
+    u'end html': '</span>',
+    u'desc': 'name'
+}
+
+
 class TestFormattingTags(TestCase):
 
     def tearDown(self):
@@ -19,7 +29,7 @@ class TestFormattingTags(TestCase):
 
     def get_html_tags_no_user_tags_test(self):
         """
-        Test the get_html_tags static method.
+        Test the FormattingTags class' get_html_tags static method.
         """
         with patch(u'openlp.core.lib.translate') as mocked_translate, \
                 patch(u'openlp.core.lib.settings') as mocked_settings, \
@@ -40,7 +50,7 @@ class TestFormattingTags(TestCase):
 
     def get_html_tags_with_user_tags_test(self):
         """
-        Add a tag and check if it still exists after reloading the tags list.
+        Test the FormattingTags class' get_html_tags static method in combination with user tags.
         """
         with patch(u'openlp.core.lib.translate') as mocked_translate, \
                 patch(u'openlp.core.lib.settings') as mocked_settings, \
@@ -48,15 +58,7 @@ class TestFormattingTags(TestCase):
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate: string_to_translate
             mocked_settings.value.return_value = u''
-            tag = {
-                u'end tag': '{/aa}',
-                u'start html': '<span>',
-                u'start tag': '{aa}',
-                u'protected': False,
-                u'end html': '</span>',
-                u'desc': 'name'
-            }
-            mocked_cPickle.loads.side_effect = [[], [tag]]
+            mocked_cPickle.loads.side_effect = [[], [TAG]]
 
             # WHEN: Get the display tags.
             FormattingTags.load_tags()
@@ -64,7 +66,7 @@ class TestFormattingTags(TestCase):
 
             # WHEN: Add our tag and get the tags again.
             FormattingTags.load_tags()
-            FormattingTags.add_html_tags([tag])
+            FormattingTags.add_html_tags([TAG])
             new_tags_list = FormattingTags.get_html_tags()
 
             # THEN: Lists should not be identically.
@@ -72,5 +74,5 @@ class TestFormattingTags(TestCase):
 
             # THEN: Added tag and last tag should be the same.
             new_tag = new_tags_list.pop()
-            assert tag == new_tag, u'Tags should be identically.'
+            assert TAG == new_tag, u'Tags should be identically.'
 
