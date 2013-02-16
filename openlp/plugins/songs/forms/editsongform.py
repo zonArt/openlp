@@ -116,6 +116,23 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.findVerseSplit = re.compile(u'---\[\]---\n', re.UNICODE)
         self.whitespace = re.compile(r'\W+', re.UNICODE)
 
+    def keyPressEvent(self, event):
+        """
+        Reimplement the keyPressEvent to react on Return/Enter keys. When some combo boxes have focus we do not want
+        dialog's default action be triggered but instead our own.
+
+        ``event``
+            A QtGui.QKeyEvent event.
+        """
+        if event.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
+            if self.authorsComboBox.hasFocus() and self.authorsComboBox.currentText():
+                self.onAuthorAddButtonClicked()
+                return
+            if self.topicsComboBox.hasFocus() and self.topicsComboBox.currentText():
+                self.onTopicAddButtonClicked()
+                return
+        QtGui.QDialog.keyPressEvent(self, event)
+
     def initialise(self):
         """
         Set up the form for when it is displayed.
