@@ -23,8 +23,8 @@ class TestScreenList(TestCase):
         """
         Set up the components need for all tests.
         """
+        self.application = QtGui.QApplication.instance()
         Registry.create()
-        self.application = QtGui.QApplication([])
         self.application.setOrganizationName(u'OpenLP-tests')
         self.application.setOrganizationDomain(u'openlp.org')
         self.screens = ScreenList.create(self.application.desktop())
