@@ -84,7 +84,7 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug(u'start PPTView')
-            dllpath = os.path.join(self.plugin_manager.basepath, u'presentations', u'lib', u'pptviewlib',
+            dllpath = os.path.join(self.plugin_manager.base_path, u'presentations', u'lib', u'pptviewlib',
                 u'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dllpath)
             if log.isEnabledFor(logging.DEBUG):
