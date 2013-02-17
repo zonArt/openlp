@@ -18,7 +18,7 @@ class TestStartNoteDialog(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         ScreenList.create(self.app.desktop())
         Registry().register(u'application', MagicMock())
         self.main_window = MainWindow()

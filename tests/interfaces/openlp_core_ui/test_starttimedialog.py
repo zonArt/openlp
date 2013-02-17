@@ -17,7 +17,7 @@ class TestStartTimeDialog(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = starttimeform.StartTimeForm()

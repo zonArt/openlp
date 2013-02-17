@@ -6,7 +6,7 @@ import sys
 from tempfile import mkstemp
 from unittest import TestCase
 
-from mock import MagicMock, patch
+from mock import MagicMock
 from PyQt4 import QtGui
 
 from openlp.core.lib.pluginmanager import PluginManager
@@ -26,7 +26,7 @@ class TestPluginManager(TestCase):
         Settings().set_filename(self.ini_file)
         Registry.create()
         Registry().register(u'service_list', MagicMock())
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.plugins_dir = os.path.abspath(os.path.join(os.path.basename(__file__), u'..', u'openlp', u'plugins'))
@@ -34,6 +34,7 @@ class TestPluginManager(TestCase):
     def tearDown(self):
         os.unlink(self.ini_file)
         del self.app
+        del self.main_window
 
     def find_plugins_test(self):
         """
