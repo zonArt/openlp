@@ -43,7 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists
+from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists, bootstrap
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -135,6 +135,7 @@ class OpenLP(QtGui.QApplication):
         # make sure Qt really display the splash screen
         self.processEvents()
         # start the main app window
+        bootstrap()
         self.main_window = MainWindow()
         self.main_window.show()
         if show_splash:

@@ -386,6 +386,35 @@ def create_separated_list(stringlist):
         return translate('OpenLP.core.lib', '%s, %s', u'Locale list separator: start') % (stringlist[0], merged)
 
 
+def bootstrap():
+    """
+    Bootstrap control function to build all the components and initialise them.
+    """
+    print "bs"
+    bootstrap_phase_1()
+    bootstrap_phase_2()
+
+
+def bootstrap_phase_1():
+    """
+    Bootstrap phase to define all the components so they are registered correctly.
+    """
+    print "ba1"
+    from openlp.core.lib import ImageManager
+    ImageManager()
+
+
+def bootstrap_phase_2():
+    """
+    Bootstrap phase to initialise any components.
+    """
+    print "bs2"
+    from openlp.core.lib import Settings, PluginManager
+    from openlp.core.utils import AppLocation
+    Settings().set_up_default_values()
+    Settings().remove_obsolete_settings()
+    PluginManager(AppLocation.get_directory(AppLocation.PluginsDir))
+
 from registry import Registry
 from uistrings import UiStrings
 from screen import ScreenList

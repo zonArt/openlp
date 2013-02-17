@@ -475,8 +475,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.playersSettingsSection = u'players'
         self.displayTagsSection = u'displayTags'
         self.headerSection = u'SettingsImport'
-        Settings().set_up_default_values()
-        Settings().remove_obsolete_settings()
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
         self.mediaController = MediaController(self)
@@ -487,8 +485,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer_id = 0
         self.timer_version_id = 0
         # Set up the path with plugins
-        self.plugin_manager = PluginManager(AppLocation.get_directory(AppLocation.PluginsDir))
-        self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
         # Register the active media players and suffixes
@@ -1015,7 +1011,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug(u'screen_changed')
         self.application.set_busy_cursor()
-        self.imageManager.update_display()
+        self.image_manager.update_display()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
         self.liveController.screenSizeChanged()
@@ -1071,8 +1067,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``save_settings``
             Switch to prevent saving settings. Defaults to **True**.
         """
-        self.imageManager.stop_manager = True
-        while self.imageManager.image_thread.isRunning():
+        self.image_manager.stop_manager = True
+        while self.image_manager.image_thread.isRunning():
             time.sleep(0.1)
         # Clean temporary files used by services
         self.serviceManagerContents.clean_up()
@@ -1408,3 +1404,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         return self._application
 
     application = property(_get_application)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
