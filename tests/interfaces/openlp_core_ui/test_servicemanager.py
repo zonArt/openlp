@@ -3,7 +3,7 @@
 """
 
 from unittest import TestCase
-from mock import MagicMock
+from mock import MagicMock, patch
 
 from PyQt4 import QtGui
 
@@ -11,17 +11,18 @@ from openlp.core.lib import Registry, ScreenList
 from openlp.core.ui.mainwindow import MainWindow
 
 
-class TestStartNoteDialog(TestCase):
+class TestServiceManager(TestCase):
 
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        self.app = QtGui.QApplication.instance()
         ScreenList.create(self.app.desktop())
         Registry().register(u'application', MagicMock())
-        self.main_window = MainWindow()
+        with patch(u'openlp.core.lib.PluginManager'):
+            self.main_window = MainWindow()
         self.service_manager = Registry().get(u'service_manager')
 
     def tearDown(self):

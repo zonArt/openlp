@@ -15,7 +15,7 @@ class TestStartFileRenameForm(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        self.app = QtGui.QApplication.instance()
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = filerenameform.FileRenameForm()
