@@ -260,7 +260,8 @@ class SongImport(QtCore.QObject):
         elif int(verse_def[1:]) > self.verseCounts[verse_def[0]]:
             self.verseCounts[verse_def[0]] = int(verse_def[1:])
         self.verses.append([verse_def, verse_text.rstrip(), lang])
-        self.verseOrderListGenerated.append(verse_def)
+        if verse_def not in self.verseOrderListGenerated:
+            self.verseOrderListGenerated.append(verse_def)
 
     def repeatVerse(self):
         """

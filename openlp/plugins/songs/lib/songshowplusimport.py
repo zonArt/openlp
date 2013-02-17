@@ -32,6 +32,7 @@ SongShow Plus songs into the OpenLP database.
 """
 import os
 import logging
+import re
 import struct
 
 from openlp.core.ui.wizard import WizardStrings
@@ -44,13 +45,13 @@ COPYRIGHT = 3
 CCLI_NO = 5
 VERSE = 12
 CHORUS = 20
+BRIDGE = 24
 TOPIC = 29
 COMMENTS = 30
 VERSE_ORDER = 31
 SONG_BOOK = 35
 SONG_NUMBER = 36
 CUSTOM_VERSE = 37
-BRIDGE = 24
 
 log = logging.getLogger(__name__)
 
@@ -183,13 +184,16 @@ class SongShowPlusImport(SongImport):
                 self.logError(file)
 
     def toOpenLPVerseTag(self, verse_name, ignore_unique=False):
-        if verse_name.find(" ") != -1:
-            verse_parts = verse_name.split(" ")
-            verse_type = verse_parts[0]
-            verse_number = verse_parts[1]
+        # Have we got any digits? If so, verse number is everything from the digits to the end (OpenLP does not have
+        # concept of part verses, so just ignore any non integers on the end (including floats))
+        match = re.match(u'(\D*)(\d+)', verse_name)
+        if match is not None:
+            verse_type = match.group(1).strip()
+            verse_number = match.group(2)
         else:
+            # otherwise we assume number 1 and take the whole prefix as the verse tag
             verse_type = verse_name
-            verse_number = "1"
+            verse_number = u'1'
         verse_type = verse_type.lower()
         if verse_type == "verse":
             verse_tag = VerseType.Tags[VerseType.Verse]
