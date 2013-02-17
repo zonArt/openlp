@@ -157,12 +157,9 @@ class ImageMediaItem(MediaManagerItem):
         # Create the context menu and add all actions from the listView.
         self.menu = QtGui.QMenu()
         self.menu.addActions(self.listView.actions())
-        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onDoubleClicked)
-        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'itemSelectionChanged()'),
-            self.onSelectionChange)
-        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'customContextMenuRequested(QPoint)'),
-            self.contextMenu)
+        self.listView.doubleClicked.connect(self.onDoubleClicked)
+        self.listView.itemSelectionChanged.connect(self.onSelectionChange)
+        self.listView.customContextMenuRequested.connect(self.contextMenu)
         self.listView.addAction(self.replaceAction)
 
     def addStartHeaderBar(self):
