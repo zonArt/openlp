@@ -119,11 +119,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_authors_content = QtGui.QLabel(self)
         self.song_authors_content.setObjectName(u'song_authors_content')
         self.song_authors_content.setWordWrap(True)
-        authors_text = u''
-        for author in self.song.authors:
-            authors_text += author.display_name + ', '
-        if authors_text:
-            authors_text = authors_text[:-2]
+        authors_text = u', '.join([author.display_name for author in self.song.authors])
         self.song_authors_content.setText(authors_text)
         self.song_info_form_layout.setWidget(5, QtGui.QFormLayout.FieldRole, self.song_authors_content)
         # Add verse order widget.
