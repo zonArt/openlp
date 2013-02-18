@@ -119,18 +119,18 @@ class Ui_MainWindow(object):
         self.fileMenu.setObjectName(u'fileMenu')
         self.recentFilesMenu = QtGui.QMenu(self.fileMenu)
         self.recentFilesMenu.setObjectName(u'recentFilesMenu')
-        self.fileImportMenu = QtGui.QMenu(self.fileMenu)
-        self.fileImportMenu.setObjectName(u'fileImportMenu')
-        self.fileExportMenu = QtGui.QMenu(self.fileMenu)
-        self.fileExportMenu.setObjectName(u'fileExportMenu')
+        self.file_import_menu = QtGui.QMenu(self.fileMenu)
+        self.file_import_menu.setObjectName(u'file_import_menu')
+        self.file_export_menu = QtGui.QMenu(self.fileMenu)
+        self.file_export_menu.setObjectName(u'file_export_menu')
         # View Menu
         self.viewMenu = QtGui.QMenu(self.menuBar)
         self.viewMenu.setObjectName(u'viewMenu')
         self.viewModeMenu = QtGui.QMenu(self.viewMenu)
         self.viewModeMenu.setObjectName(u'viewModeMenu')
         # Tools Menu
-        self.toolsMenu = QtGui.QMenu(self.menuBar)
-        self.toolsMenu.setObjectName(u'toolsMenu')
+        self.tools_menu = QtGui.QMenu(self.menuBar)
+        self.tools_menu.setObjectName(u'tools_menu')
         # Settings Menu
         self.settingsMenu = QtGui.QMenu(self.menuBar)
         self.settingsMenu.setObjectName(u'settingsMenu')
@@ -305,11 +305,11 @@ class Ui_MainWindow(object):
             shortcuts=[QtGui.QKeySequence(u'Alt+F1')],
             category=UiStrings().Help, triggers=self.onOnlineHelpClicked)
         self.webSiteItem = create_action(main_window, u'webSiteItem', category=UiStrings().Help)
-        add_actions(self.fileImportMenu, (self.settingsImportItem, None, self.importThemeItem, self.importLanguageItem))
-        add_actions(self.fileExportMenu, (self.settingsExportItem, None, self.exportThemeItem, self.exportLanguageItem))
+        add_actions(self.file_import_menu, (self.settingsImportItem, None, self.importThemeItem, self.importLanguageItem))
+        add_actions(self.file_export_menu, (self.settingsExportItem, None, self.exportThemeItem, self.exportLanguageItem))
         add_actions(self.fileMenu, (self.fileNewItem, self.fileOpenItem,
             self.fileSaveItem, self.fileSaveAsItem, self.recentFilesMenu.menuAction(), None,
-            self.fileImportMenu.menuAction(), self.fileExportMenu.menuAction(), None, self.printServiceOrderItem,
+            self.file_import_menu.menuAction(), self.file_export_menu.menuAction(), None, self.printServiceOrderItem,
             self.fileExitItem))
         add_actions(self.viewModeMenu, (self.modeDefaultItem, self.modeSetupItem, self.modeLiveItem))
         add_actions(self.viewMenu, (self.viewModeMenu.menuAction(), None, self.viewMediaManagerItem,
@@ -326,16 +326,16 @@ class Ui_MainWindow(object):
         else:
             add_actions(self.settingsMenu, (self.settingsPluginListItem, self.settingsLanguageMenu.menuAction(), None,
                 self.formattingTagItem, self.settingsShortcutsItem, self.settingsConfigureItem))
-        add_actions(self.toolsMenu, (self.toolsAddToolItem, None))
-        add_actions(self.toolsMenu, (self.toolsOpenDataFolder, None))
-        add_actions(self.toolsMenu, (self.toolsFirstTimeWizard, None))
-        add_actions(self.toolsMenu, [self.updateThemeImages])
+        add_actions(self.tools_menu, (self.toolsAddToolItem, None))
+        add_actions(self.tools_menu, (self.toolsOpenDataFolder, None))
+        add_actions(self.tools_menu, (self.toolsFirstTimeWizard, None))
+        add_actions(self.tools_menu, [self.updateThemeImages])
         if os.name == u'nt':
             add_actions(self.helpMenu, (self.offlineHelpItem, self.onlineHelpItem, None, self.webSiteItem,
                 self.aboutItem))
         else:
             add_actions(self.helpMenu, (self.onlineHelpItem, None, self.webSiteItem, self.aboutItem))
-        add_actions(self.menuBar, (self.fileMenu.menuAction(), self.viewMenu.menuAction(), self.toolsMenu.menuAction(),
+        add_actions(self.menuBar, (self.fileMenu.menuAction(), self.viewMenu.menuAction(), self.tools_menu.menuAction(),
             self.settingsMenu.menuAction(), self.helpMenu.menuAction()))
         # Initialise the translation
         self.retranslateUi(main_window)
@@ -356,12 +356,12 @@ class Ui_MainWindow(object):
         mainWindow.mainTitle = UiStrings().OLPV2x
         mainWindow.setWindowTitle(mainWindow.mainTitle)
         self.fileMenu.setTitle(translate('OpenLP.MainWindow', '&File'))
-        self.fileImportMenu.setTitle(translate('OpenLP.MainWindow', '&Import'))
-        self.fileExportMenu.setTitle(translate('OpenLP.MainWindow', '&Export'))
+        self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
+        self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
         self.recentFilesMenu.setTitle(translate('OpenLP.MainWindow', '&Recent Files'))
         self.viewMenu.setTitle(translate('OpenLP.MainWindow', '&View'))
         self.viewModeMenu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
-        self.toolsMenu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
+        self.tools_menu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
         self.settingsMenu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
         self.settingsLanguageMenu.setTitle(translate('OpenLP.MainWindow', '&Language'))
         self.helpMenu.setTitle(translate('OpenLP.MainWindow', '&Help'))
@@ -490,13 +490,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         # Set up the path with plugins
-        self.plugin_manager = PluginManager(AppLocation.get_directory(AppLocation.PluginsDir))
+
+        self.plugin_manager = PluginManager()
+        self.imageManager = ImageManager()
+
         # Set up the interface
         self.setupUi(self)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
 
-        self.image_manager = ImageManager()
         # Register the active media players and suffixes
         self.media_controller.check_available_media_players()
         # Load settings after setupUi so default UI sizes are overwritten
@@ -551,11 +553,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.hook_media_manager()
         # Call the hook method to pull in import menus.
         log.info(u'hook menus')
-        self.plugin_manager.hook_import_menu(self.fileImportMenu)
+        self.plugin_manager.hook_import_menu()
         # Call the hook method to pull in export menus.
-        self.plugin_manager.hook_export_menu(self.fileExportMenu)
+        self.plugin_manager.hook_export_menu()
         # Call the hook method to pull in tools menus.
-        self.plugin_manager.hook_tools_menu(self.toolsMenu)
+        self.plugin_manager.hook_tools_menu()
         # Call the initialise method to setup plugins.
         log.info(u'initialise plugins')
         self.plugin_manager.initialise_plugins()

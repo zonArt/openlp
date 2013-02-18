@@ -7,7 +7,7 @@ from unittest import TestCase
 from mock import MagicMock
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import ScreenList
+from openlp.core.lib import Registry, ScreenList
 
 
 SCREEN = {
@@ -24,17 +24,21 @@ class TestScreenList(TestCase):
         Set up the components need for all tests.
         """
         self.application = QtGui.QApplication.instance()
+        Registry.create()
+        self.application.setOrganizationName(u'OpenLP-tests')
+        self.application.setOrganizationDomain(u'openlp.org')
         self.screens = ScreenList.create(self.application.desktop())
 
     def tearDown(self):
         """
         Delete QApplication.
         """
+        del self.screens
         del self.application
 
     def add_desktop_test(self):
         """
-        Test the ScreenList class' screen_count_changed method to check if new monitors are detected by OpenLP.
+        Test the ScreenList class' - screen_count_changed method to check if new monitors are detected by OpenLP.
         """
         # GIVEN: The screen list.
         old_screens = copy.deepcopy(self.screens.screen_list)
@@ -52,4 +56,3 @@ class TestScreenList(TestCase):
 
         # THEN: The screens should be identically.
         assert SCREEN == new_screens.pop(), u'The new screen should be identically to the screen defined above.'
-

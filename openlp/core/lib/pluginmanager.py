@@ -35,6 +35,7 @@ import logging
 import imp
 
 from openlp.core.lib import Plugin, PluginStatus, Registry
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -46,17 +47,14 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
-    def __init__(self, plugin_dir):
+    def __init__(self):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
-
-        ``plugin_dir``
-            The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
-        self.base_path = os.path.abspath(plugin_dir)
+        self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
         log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
@@ -131,41 +129,33 @@ class PluginManager(object):
             if plugin.status is not PluginStatus.Disabled:
                 plugin.createSettingsTab(self.settings_form)
 
-    def hook_import_menu(self, import_menu):
+    def hook_import_menu(self):
         """
         Loop through all the plugins and give them an opportunity to add an
         item to the import menu.
 
-        ``import_menu``
-            The Import menu.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addImportMenuItem(import_menu)
+                plugin.addImportMenuItem(self.main_window.file_import_menu)
 
-    def hook_export_menu(self, export_menu):
+    def hook_export_menu(self):
         """
         Loop through all the plugins and give them an opportunity to add an
         item to the export menu.
-
-        ``export_menu``
-            The Export menu.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addExportMenuItem(export_menu)
+                plugin.addExportMenuItem(self.main_window.file_export_menu)
 
-    def hook_tools_menu(self, tools_menu):
+    def hook_tools_menu(self):
         """
         Loop through all the plugins and give them an opportunity to add an
         item to the tools menu.
-
-        ``tools_menu``
-            The Tools menu.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addToolsMenuItem(tools_menu)
+                plugin.addToolsMenuItem(self.main_window.tools_menu)
 
     def initialise_plugins(self):
         """
@@ -209,13 +199,23 @@ class PluginManager(object):
             if plugin.isActive():
                 plugin.new_service_created()
 
-    #def _get_settings_form(self):
-    #    """
-    #    Adds the plugin manager to the class dynamically
-    #    """
-    #    if not hasattr(self, u'_settings_form'):
-    #        self._settings_form = Registry().get(u'settings_form')
-    #    return self._settings_form
+    def _get_settings_form(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_settings_form'):
+            self._settings_form = Registry().get(u'settings_form')
+        return self._settings_form
 
-    #settings_form = property(_get_settings_form)
+    settings_form = property(_get_settings_form)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
 
