@@ -29,20 +29,17 @@
 """
 The duplicate song removal logic for OpenLP.
 """
-import codecs
 import logging
 import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, translate, build_icon
-from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import Registry, translate
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib.db import Song, MediaFile
-from openlp.plugins.songs.lib.duplicatesongfinder import DuplicateSongFinder
 from openlp.plugins.songs.forms.songreviewwidget import SongReviewWidget
+from openlp.plugins.songs.lib.songcompare import songs_probably_equal
 
 log = logging.getLogger(__name__)
 
@@ -169,8 +166,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             songs = self.plugin.manager.get_all_objects(Song)
             for outer_song_counter in range(max_songs - 1):
                 for inner_song_counter in range(outer_song_counter + 1, max_songs):
-                    double_finder = DuplicateSongFinder()
-                    if double_finder.songs_probably_equal(songs[outer_song_counter], songs[inner_song_counter]):
+                    if songs_probably_equal(songs[outer_song_counter], songs[inner_song_counter]):
                         duplicate_added = self.add_duplicates_to_song_list(songs[outer_song_counter],
                             songs[inner_song_counter])
                         if duplicate_added:
