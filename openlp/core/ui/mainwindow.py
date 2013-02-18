@@ -106,12 +106,12 @@ class Ui_MainWindow(object):
         self.mainContentLayout.addWidget(self.controlSplitter)
         # Create slide controllers
         self.previewController = SlideController(self)
-        self.liveController = SlideController(self, True)
+        self.live_controller = SlideController(self, True)
         previewVisible = Settings().value(u'user interface/preview panel')
         self.previewController.panel.setVisible(previewVisible)
         liveVisible = Settings().value(u'user interface/live panel')
         panelLocked = Settings().value(u'user interface/lock panel')
-        self.liveController.panel.setVisible(liveVisible)
+        self.live_controller.panel.setVisible(liveVisible)
         # Create menu
         self.menuBar = QtGui.QMenuBar(main_window)
         self.menuBar.setObjectName(u'menuBar')
@@ -475,9 +475,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.playersSettingsSection = u'players'
         self.displayTagsSection = u'displayTags'
         self.headerSection = u'SettingsImport'
+        Settings().set_up_default_values()
+        Settings().remove_obsolete_settings()
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
-        self.mediaController = MediaController(self)
+        self.media_controller = MediaController(self)
         self.settingsForm = SettingsForm(self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
@@ -485,10 +487,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer_id = 0
         self.timer_version_id = 0
         # Set up the path with plugins
+        self.plugin_manager = PluginManager(AppLocation.get_directory(AppLocation.PluginsDir))
+        self.image_manager = ImageManager()
         # Set up the interface
         self.setupUi(self)
         # Register the active media players and suffixes
-        self.mediaController.check_available_media_players()
+        self.media_controller.check_available_media_players()
         # Load settings after setupUi so default UI sizes are overwritten
         self.loadSettings()
         # Once settings are loaded update the menu with the recent files.
@@ -557,7 +561,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.initialise_plugins()
         # Create the displays as all necessary components are loaded.
         self.previewController.screenSizeChanged()
-        self.liveController.screenSizeChanged()
+        self.live_controller.screenSizeChanged()
         log.info(u'Load data from Settings')
         if Settings().value(u'advanced/save current plugin'):
             savedPlugin = Settings().value(u'advanced/current media plugin')
@@ -601,8 +605,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Show the main form, as well as the display form
         """
         QtGui.QWidget.show(self)
-        if self.liveController.display.isVisible():
-            self.liveController.display.setFocus()
+        if self.live_controller.display.isVisible():
+            self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
             args = []
@@ -695,7 +699,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Check and display message if screen blank on setup.
         """
         settings = Settings()
-        self.liveController.mainDisplaySetBackground()
+        self.live_controller.mainDisplaySetBackground()
         if settings.value(u'%s/screen blank' % self.generalSettingsSection):
             if settings.value(u'%s/blank warning' % self.generalSettingsSection):
                 QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
@@ -803,7 +807,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         We need to make sure, that the SlidePreview's size is correct.
         """
         self.previewController.previewSizeChanged()
-        self.liveController.previewSizeChanged()
+        self.live_controller.previewSizeChanged()
 
     def onSettingsShortcutsItemClicked(self):
         """
@@ -1014,7 +1018,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.image_manager.update_display()
         self.renderer.update_display()
         self.previewController.screenSizeChanged()
-        self.liveController.screenSizeChanged()
+        self.live_controller.screenSizeChanged()
         self.setFocus()
         self.activateWindow()
         self.application.set_normal_cursor()
@@ -1085,9 +1089,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.new_data_path:
             self.changeDataDirectory()
         # Close down the display
-        if self.liveController.display:
-            self.liveController.display.close()
-            self.liveController.display = None
+        if self.live_controller.display:
+            self.live_controller.display.close()
+            self.live_controller.display = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
@@ -1168,7 +1172,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.previewController.panel.setVisible(visible)
+        self.preview_controller.panel.setVisible(visible)
         Settings().setValue(u'user interface/preview panel', visible)
         self.viewPreviewPanel.setChecked(visible)
 
@@ -1206,7 +1210,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 True - Visible
                 False - Hidden
         """
-        self.liveController.panel.setVisible(visible)
+        self.live_controller.panel.setVisible(visible)
         Settings().setValue(u'user interface/live panel', visible)
         self.viewLivePanel.setChecked(visible)
 
@@ -1226,8 +1230,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.move(settings.value(u'main window position'))
         self.restoreGeometry(settings.value(u'main window geometry'))
         self.restoreState(settings.value(u'main window state'))
-        self.liveController.splitter.restoreState(settings.value(u'live splitter geometry'))
-        self.previewController.splitter.restoreState(settings.value(u'preview splitter geometry'))
+        self.live_controller.splitter.restoreState(settings.value(u'live splitter geometry'))
+        self.preview_controller.splitter.restoreState(settings.value(u'preview splitter geometry'))
         self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
@@ -1247,8 +1251,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'main window position', self.pos())
         settings.setValue(u'main window state', self.saveState())
         settings.setValue(u'main window geometry', self.saveGeometry())
-        settings.setValue(u'live splitter geometry', self.liveController.splitter.saveState())
-        settings.setValue(u'preview splitter geometry', self.previewController.splitter.saveState())
+        settings.setValue(u'live splitter geometry', self.live_controller.splitter.saveState())
+        settings.setValue(u'preview splitter geometry', self.preview_controller.splitter.saveState())
         settings.setValue(u'main window splitter geometry', self.controlSplitter.saveState())
         settings.endGroup()
 
@@ -1404,23 +1408,3 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         return self._application
 
     application = property(_get_application)
-
-    def _get_plugin_manager(self):
-        """
-        Adds the plugin manager to the class dynamically
-        """
-        if not hasattr(self, u'_plugin_manager'):
-            self._plugin_manager = Registry().get(u'plugin_manager')
-        return self._plugin_manager
-
-    plugin_manager = property(_get_plugin_manager)
-
-    def _get_image_manager(self):
-        """
-        Adds the image manager to the class dynamically
-        """
-        if not hasattr(self, u'_image_manager'):
-            self._image_manager = Registry().get(u'image_manager')
-        return self._image_manager
-
-    image_manager = property(_get_image_manager)
