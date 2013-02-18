@@ -28,7 +28,7 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Disabled
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_media_manager()
@@ -45,7 +45,7 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_media_manager()
@@ -61,7 +61,7 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Disabled
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_settings_tabs()
@@ -79,7 +79,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
         mocked_settings_form = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_settings_tabs()
@@ -98,7 +98,7 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_settings_tabs()
@@ -115,7 +115,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
         mocked_settings_form = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_settings_tabs()
@@ -134,7 +134,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
         mocked_import_menu = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_import_menu()
@@ -152,7 +152,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
         mocked_import_menu = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_import_menu()
@@ -169,7 +169,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
         mocked_export_menu = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_export_menu()
@@ -187,7 +187,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
         mocked_export_menu = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_export_menu()
@@ -204,7 +204,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
         mocked_tools_menu = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_tools_menu()
@@ -222,7 +222,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
         mocked_tools_menu = MagicMock()
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_tools_menu()
@@ -239,7 +239,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
         mocked_plugin.isActive.return_value = False
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run initialise_plugins()
@@ -257,7 +257,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
         mocked_plugin.isActive.return_value = True
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run initialise_plugins()
@@ -275,7 +275,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
         mocked_plugin.isActive.return_value = False
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run finalise_plugins()
@@ -293,7 +293,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
         mocked_plugin.isActive.return_value = True
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run finalise_plugins()
@@ -310,7 +310,7 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.name = 'Mocked Plugin'
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run finalise_plugins()
@@ -326,7 +326,7 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.name = 'Mocked Plugin'
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run finalise_plugins()
@@ -343,7 +343,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
         mocked_plugin.isActive.return_value = False
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run finalise_plugins()
@@ -362,7 +362,7 @@ class TestPluginManager(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
         mocked_plugin.isActive.return_value = True
-        plugin_manager = PluginManager('')
+        plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run new_service_created()
