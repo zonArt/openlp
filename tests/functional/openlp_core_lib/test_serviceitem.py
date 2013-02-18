@@ -3,10 +3,9 @@
 """
 import os
 import cPickle
-
 from unittest import TestCase
-
 from mock import MagicMock
+
 from openlp.core.lib import ServiceItem, Registry
 
 
@@ -18,7 +17,6 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
-
 TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 
@@ -40,7 +38,7 @@ class TestServiceItem(TestCase):
         """
         # GIVEN: A new service item
 
-        # WHEN:A service item is created (without a plugin)
+        # WHEN: A service item is created (without a plugin)
         service_item = ServiceItem(None)
 
         # THEN: We should get back a valid service item
@@ -211,3 +209,4 @@ class TestServiceItem(TestCase):
         except:
             first_line = u''
         return first_line
+
