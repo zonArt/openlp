@@ -1,12 +1,13 @@
 """
 Package to test the openlp.core.ui package.
 """
+import nose
 from unittest import TestCase
 
 from PyQt4 import QtGui
 
-from openlp.plugins.songs.forms.authorsform import AuthorsForm
 from openlp.core.lib import Registry
+from openlp.plugins.songs.forms.authorsform import AuthorsForm
 
 
 class TestAuthorsForm(TestCase):

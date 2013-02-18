@@ -32,6 +32,7 @@ Provide plugin management
 import os
 import sys
 import logging
+import imp
 
 from openlp.core.lib import Plugin, PluginStatus, Registry
 
@@ -55,11 +56,8 @@ class PluginManager(object):
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
-        if not plugin_dir in sys.path:
-            log.debug(u'Inserting %s into sys.path', plugin_dir)
-            sys.path.insert(0, plugin_dir)
-        self.basepath = os.path.abspath(plugin_dir)
-        log.debug(u'Base path %s ', self.basepath)
+        self.base_path = os.path.abspath(plugin_dir)
+        log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
@@ -73,37 +71,34 @@ class PluginManager(object):
 
         """
         log.info(u'Finding plugins')
-        startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
-        log.debug(u'finding plugins in %s at depth %d',
-            unicode(plugin_dir), startdepth)
+        start_depth = len(os.path.abspath(plugin_dir).split(os.sep))
+        present_plugin_dir = os.path.join(plugin_dir, 'presentations')
+        log.debug(u'finding plugins in %s at depth %d', unicode(plugin_dir), start_depth)
         for root, dirs, files in os.walk(plugin_dir):
-            # TODO Presentation plugin is not yet working on Mac OS X.
-            # For now just ignore it. The following code will hide it
-            # in settings dialog.
-            if sys.platform == 'darwin':
-                present_plugin_dir = os.path.join(plugin_dir, 'presentations')
-                # Ignore files from the presentation plugin directory.
-                if root.startswith(present_plugin_dir):
-                    continue
+            if sys.platform == 'darwin'and root.startswith(present_plugin_dir):
+                # TODO Presentation plugin is not yet working on Mac OS X.
+                # For now just ignore it. The following code will ignore files from the presentation plugin directory
+                # and thereby never import the plugin.
+                continue
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
-                    thisdepth = len(path.split(os.sep))
-                    if thisdepth - startdepth > 2:
+                    this_depth = len(path.split(os.sep))
+                    if this_depth - start_depth > 2:
                         # skip anything lower down
                         break
-                    modulename = os.path.splitext(path)[0]
-                    prefix = os.path.commonprefix([self.basepath, path])
-                    # hack off the plugin base path
-                    modulename = modulename[len(prefix) + 1:]
-                    modulename = modulename.replace(os.path.sep, '.')
+                    module_name = name[:-3]
                     # import the modules
-                    log.debug(u'Importing %s from %s. Depth %d', modulename, path, thisdepth)
+                    log.debug(u'Importing %s from %s. Depth %d', module_name, root, this_depth)
                     try:
-                        __import__(modulename, globals(), locals(), [])
+                        # Use the "imp" library to try to get around a problem with the PyUNO library which
+                        # monkey-patches the __import__ function to do some magic. This causes issues with our tests.
+                        # First, try to find the module we want to import, searching the directory in root
+                        fp, path_name, description = imp.find_module(module_name, [root])
+                        # Then load the module (do the actual import) using the details from find_module()
+                        imp.load_module(module_name, fp, path_name, description)
                     except ImportError, e:
-                        log.exception(u'Failed to import module %s on path %s for reason %s',
-                            modulename, path, e.args[0])
+                        log.exception(u'Failed to import module %s on path %s: %s', module_name, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
@@ -142,7 +137,8 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.createSettingsTab(settings_form)
-        settings_form.plugins = self.plugins
+        if settings_form:
+            settings_form.plugins = self.plugins
 
     def hook_import_menu(self, import_menu):
         """
