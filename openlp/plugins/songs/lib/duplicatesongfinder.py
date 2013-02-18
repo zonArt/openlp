@@ -73,7 +73,6 @@ class DuplicateSongFinder(object):
         differ = difflib.SequenceMatcher(a=large, b=small)
         diff_tuples = differ.get_opcodes()
         diff_no_typos = self.__remove_typos(diff_tuples)
-        #print(diff_no_typos)
         if self.__length_of_equal_blocks(diff_no_typos) >= self.min_block_size or \
                 self.__length_of_longest_equal_block(diff_no_typos) > len(small) * 2 / 3:
                     return True
@@ -97,25 +96,25 @@ class DuplicateSongFinder(object):
         ``diff``
             The diff set to remove the typos from.
         """
-        #remove typo at beginning of string
+        # Remove typo at beginning of the string.
         if len(diff) >= 2:
             if diff[0][0] != "equal" and self.__op_length(diff[0]) <= self.max_typo_size and \
                     self.__op_length(diff[1]) >= self.min_fragment_size:
                         del diff[0]
-        #remove typos in the middle of string
+        # Remove typos in the middle of the string.
         if len(diff) >= 3:
             for index in range(len(diff) - 3, -1, -1):
                 if self.__op_length(diff[index]) >= self.min_fragment_size and \
                     diff[index + 1][0] != "equal" and self.__op_length(diff[index + 1]) <= self.max_typo_size and \
                         self.__op_length(diff[index + 2]) >= self.min_fragment_size:
                             del diff[index + 1]
-        #remove typo at the end of string
+        # Remove typo at the end of the string.
         if len(diff) >= 2:
             if self.__op_length(diff[-2]) >= self.min_fragment_size and \
                 diff[-1][0] != "equal" and self.__op_length(diff[-1]) <= self.max_typo_size:
                         del diff[-1]
 
-        #merge fragments
+        # Merge the bordering equal passages that occured by removing differences.
         for index in range(len(diff) - 2, -1, -1):
             if diff[index][0] == "equal" and self.__op_length(diff[index]) >= self.min_fragment_size and \
                 diff[index + 1][0] == "equal" and self.__op_length(diff[index + 1]) >= self.min_fragment_size:

@@ -94,12 +94,12 @@ class SongsPlugin(Plugin):
         self.songImportItem.setVisible(True)
         self.songExportItem.setVisible(True)
         self.toolsReindexItem.setVisible(True)
-        self.toolsFindDuplicates.setVisible(True)
+        self.tools_find_duplicates.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.songImportItem, UiStrings().Import)
         action_list.add_action(self.songExportItem, UiStrings().Export)
         action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
-        action_list.add_action(self.toolsFindDuplicates, UiStrings().Tools)
+        action_list.add_action(self.tools_find_duplicates, UiStrings().Tools)
 
     def addImportMenuItem(self, import_menu):
         """
@@ -149,12 +149,12 @@ class SongsPlugin(Plugin):
             statustip=translate('SongsPlugin', 'Re-index the songs database to improve searching and ordering.'),
             visible=False, triggers=self.onToolsReindexItemTriggered)
         tools_menu.addAction(self.toolsReindexItem)
-        self.toolsFindDuplicates = create_action(tools_menu, u'toolsFindDuplicates',
+        self.tools_find_duplicates = create_action(tools_menu, u'toolsFindDuplicates',
             text=translate('SongsPlugin', 'Find &Duplicate Songs'),
             statustip=translate('SongsPlugin',
             'Find and remove duplicate songs in the song database.'),
-            visible=False, triggers=self.onToolsFindDuplicatesTriggered)
-        tools_menu.addAction(self.toolsFindDuplicates)
+            visible=False, triggers=self.on_tools_find_duplicates_triggered)
+        tools_menu.addAction(self.tools_find_duplicates)
 
     def onToolsReindexItemTriggered(self):
         """
@@ -174,7 +174,7 @@ class SongsPlugin(Plugin):
         self.manager.save_objects(songs)
         self.mediaItem.onSearchTextButtonClicked()
 
-    def onToolsFindDuplicatesTriggered(self):
+    def on_tools_find_duplicates_triggered(self):
         """
         Search for duplicates in the song database.
         """
@@ -300,12 +300,12 @@ class SongsPlugin(Plugin):
         self.songImportItem.setVisible(False)
         self.songExportItem.setVisible(False)
         self.toolsReindexItem.setVisible(False)
-        self.toolsFindDuplicates.setVisible(False)
+        self.tools_find_duplicates.setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.songImportItem, UiStrings().Import)
         action_list.remove_action(self.songExportItem, UiStrings().Export)
         action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
-        action_list.remove_action(self.toolsFindDuplicates, UiStrings().Tools)
+        action_list.remove_action(self.tools_find_duplicates, UiStrings().Tools)
         Plugin.finalise(self)
 
     def new_service_created(self):
