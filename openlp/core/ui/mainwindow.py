@@ -105,10 +105,10 @@ class Ui_MainWindow(object):
         self.controlSplitter.setObjectName(u'controlSplitter')
         self.mainContentLayout.addWidget(self.controlSplitter)
         # Create slide controllers
-        self.previewController = SlideController(self)
+        self.preview_controller = SlideController(self)
         self.live_controller = SlideController(self, True)
         previewVisible = Settings().value(u'user interface/preview panel')
-        self.previewController.panel.setVisible(previewVisible)
+        self.preview_controller.panel.setVisible(previewVisible)
         liveVisible = Settings().value(u'user interface/live panel')
         panelLocked = Settings().value(u'user interface/lock panel')
         self.live_controller.panel.setVisible(liveVisible)
@@ -475,6 +475,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.playersSettingsSection = u'players'
         self.displayTagsSection = u'displayTags'
         self.headerSection = u'SettingsImport'
+
+        self.recentFiles = []
+        self.timer_id = 0
+        self.timer_version_id = 0
+        self.new_data_path = None
+        self.copy_data = False
         Settings().set_up_default_values()
         Settings().remove_obsolete_settings()
         self.serviceNotSaved = False
@@ -483,14 +489,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settingsForm = SettingsForm(self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
-        self.recentFiles = []
-        self.timer_id = 0
-        self.timer_version_id = 0
         # Set up the path with plugins
         self.plugin_manager = PluginManager(AppLocation.get_directory(AppLocation.PluginsDir))
-        self.image_manager = ImageManager()
         # Set up the interface
         self.setupUi(self)
+        # Define the media Dock Manager
+        self.mediaDockManager = MediaDockManager(self.mediaToolBox)
+
+        self.image_manager = ImageManager()
         # Register the active media players and suffixes
         self.media_controller.check_available_media_players()
         # Load settings after setupUi so default UI sizes are overwritten
@@ -498,54 +504,48 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once settings are loaded update the menu with the recent files.
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
-        self.new_data_path = None
-        self.copy_data = False
+
         # Set up signals and slots
-        QtCore.QObject.connect(self.importThemeItem, QtCore.SIGNAL(u'triggered()'),
-            self.themeManagerContents.on_import_theme)
-        QtCore.QObject.connect(self.exportThemeItem, QtCore.SIGNAL(u'triggered()'),
-            self.themeManagerContents.on_export_theme)
         QtCore.QObject.connect(self.mediaManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-            self.viewMediaManagerItem.setChecked)
+                               self.viewMediaManagerItem.setChecked)
         QtCore.QObject.connect(self.serviceManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-            self.viewServiceManagerItem.setChecked)
+                               self.viewServiceManagerItem.setChecked)
         QtCore.QObject.connect(self.themeManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-            self.viewThemeManagerItem.setChecked)
-        QtCore.QObject.connect(self.webSiteItem, QtCore.SIGNAL(u'triggered()'), self.onHelpWebSiteClicked)
-        QtCore.QObject.connect(self.toolsOpenDataFolder, QtCore.SIGNAL(u'triggered()'),
-            self.onToolsOpenDataFolderClicked)
-        QtCore.QObject.connect(self.toolsFirstTimeWizard, QtCore.SIGNAL(u'triggered()'), self.onFirstTimeWizardClicked)
-        QtCore.QObject.connect(self.updateThemeImages, QtCore.SIGNAL(u'triggered()'), self.onUpdateThemeImages)
-        QtCore.QObject.connect(self.formattingTagItem, QtCore.SIGNAL(u'triggered()'), self.onFormattingTagItemClicked)
-        QtCore.QObject.connect(self.settingsConfigureItem, QtCore.SIGNAL(u'triggered()'),
-            self.onSettingsConfigureItemClicked)
-        QtCore.QObject.connect(self.settingsShortcutsItem, QtCore.SIGNAL(u'triggered()'),
-            self.onSettingsShortcutsItemClicked)
-        QtCore.QObject.connect(self.settingsImportItem, QtCore.SIGNAL(u'triggered()'),
-            self.onSettingsImportItemClicked)
-        QtCore.QObject.connect(self.settingsExportItem, QtCore.SIGNAL(u'triggered()'), self.onSettingsExportItemClicked)
+                               self.viewThemeManagerItem.setChecked)
+        self.importThemeItem.triggered.connect(self.themeManagerContents.on_import_theme)
+        self.exportThemeItem.triggered.connect(self.themeManagerContents.on_export_theme)
+        self.webSiteItem.triggered.connect(self.onHelpWebSiteClicked)
+        self.toolsOpenDataFolder.triggered.connect(self.onToolsOpenDataFolderClicked)
+        self.toolsFirstTimeWizard.triggered.connect(self.onFirstTimeWizardClicked)
+        self.updateThemeImages.triggered.connect(self.onUpdateThemeImages)
+        self.formattingTagItem.triggered.connect(self.onFormattingTagItemClicked)
+        self.settingsConfigureItem.triggered.connect(self.onSettingsConfigureItemClicked)
+        self.settingsShortcutsItem.triggered.connect(self.onSettingsShortcutsItemClicked)
+        self.settingsImportItem.triggered.connect(self.onSettingsImportItemClicked)
+        self.settingsExportItem.triggered.connect(self.onSettingsExportItemClicked)
         # i18n set signals for languages
         self.languageGroup.triggered.connect(LanguageManager.set_language)
-        QtCore.QObject.connect(self.modeDefaultItem, QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
-        QtCore.QObject.connect(self.modeSetupItem, QtCore.SIGNAL(u'triggered()'), self.onModeSetupItemClicked)
-        QtCore.QObject.connect(self.modeLiveItem, QtCore.SIGNAL(u'triggered()'), self.onModeLiveItemClicked)
+        self.modeDefaultItem.triggered.connect(self.onModeDefaultItemClicked)
+        self.modeSetupItem.triggered.connect(self.onModeSetupItemClicked)
+        self.modeLiveItem.triggered.connect(self.onModeLiveItemClicked)
         # Media Manager
-        QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
+        self.mediaToolBox.currentChanged.connect(self.onMediaToolBoxChanged)
         self.application.set_busy_cursor()
+
         # Simple message boxes
         Registry().register_function(u'theme_update_global', self.default_theme_changed)
         Registry().register_function(u'openlp_version_check', self.version_notice)
         Registry().register_function(u'config_screen_changed', self.screen_changed)
+
         self.renderer = Renderer()
-        # Define the media Dock Manager
-        self.mediaDockManager = MediaDockManager(self.mediaToolBox)
+
         log.info(u'Load Plugins')
         self.plugin_manager.find_plugins()
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
         log.info(u'hook settings')
-        self.plugin_manager.hook_settings_tabs(self.settingsForm)
+        self.plugin_manager.hook_settings_tabs()
         # Find and insert media manager items
         log.info(u'hook media')
         self.plugin_manager.hook_media_manager()
@@ -560,7 +560,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         log.info(u'initialise plugins')
         self.plugin_manager.initialise_plugins()
         # Create the displays as all necessary components are loaded.
-        self.previewController.screenSizeChanged()
+        self.preview_controller.screenSizeChanged()
         self.live_controller.screenSizeChanged()
         log.info(u'Load data from Settings')
         if Settings().value(u'advanced/save current plugin'):
@@ -806,7 +806,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         We need to make sure, that the SlidePreview's size is correct.
         """
-        self.previewController.previewSizeChanged()
+        self.preview_controller.previewSizeChanged()
         self.live_controller.previewSizeChanged()
 
     def onSettingsShortcutsItemClicked(self):
@@ -1017,7 +1017,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.application.set_busy_cursor()
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.previewController.screenSizeChanged()
+        self.preview_controller.screenSizeChanged()
         self.live_controller.screenSizeChanged()
         self.setFocus()
         self.activateWindow()

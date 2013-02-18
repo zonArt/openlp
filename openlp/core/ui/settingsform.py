@@ -75,7 +75,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.insertTab(self.advancedTab, 2, PluginStatus.Active)
         self.insertTab(self.playerTab, 3, PluginStatus.Active)
         count = 4
-        for plugin in self.plugins:
+        for plugin in self.plugin_manager.plugins:
             if plugin.settingsTab:
                 self.insertTab(plugin.settingsTab, count, plugin.status)
                 count += 1
@@ -126,7 +126,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.themesTab.postSetUp()
         self.advancedTab.postSetUp()
         self.playerTab.postSetUp()
-        for plugin in self.plugins:
+        for plugin in self.plugin_manager.plugins:
             if plugin.settingsTab:
                 plugin.settingsTab.postSetUp()
 
@@ -166,3 +166,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         return self._service_manager
 
     service_manager = property(_get_service_manager)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)

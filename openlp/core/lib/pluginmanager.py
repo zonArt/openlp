@@ -120,20 +120,16 @@ class PluginManager(object):
             if plugin.status is not PluginStatus.Disabled:
                 plugin.createMediaManagerItem()
 
-    def hook_settings_tabs(self, settings_form=None):
+    def hook_settings_tabs(self):
         """
         Loop through all the plugins. If a plugin has a valid settings tab
         item, add it to the settings tab.
         Tabs are set for all plugins not just Active ones
 
-        ``settings_form``
-            Defaults to *None*. The settings form to add tabs to.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.createSettingsTab(settings_form)
-        if settings_form:
-            settings_form.plugins = self.plugins
+                plugin.createSettingsTab(self.settings_form)
 
     def hook_import_menu(self, import_menu):
         """
@@ -212,4 +208,14 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.isActive():
                 plugin.new_service_created()
+
+    #def _get_settings_form(self):
+    #    """
+    #    Adds the plugin manager to the class dynamically
+    #    """
+    #    if not hasattr(self, u'_settings_form'):
+    #        self._settings_form = Registry().get(u'settings_form')
+    #    return self._settings_form
+
+    #settings_form = property(_get_settings_form)
 
