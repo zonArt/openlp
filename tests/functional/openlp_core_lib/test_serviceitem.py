@@ -101,12 +101,12 @@ class TestServiceItem(TestCase):
         service = service_item.get_service_repr(True)
 
         # THEN: We should have two parts of the service.
-        assert len(service) == 2, u'A saved service has two parts'
-        assert service[u'header'][u'name'] == u'test', u'A test plugin was returned'
-        assert service[u'data'][0][u'title'] == u'Image Title', u'The first title name matches the request'
-        assert service[u'data'][0][u'path'] == test_image, u'The first image name matches'
+        assert len(service) == 2, u'A saved service should have two parts'
+        assert service[u'header'][u'name'] == u'test', u'A test plugin should have been returned'
+        assert service[u'data'][0][u'title'] == u'Image Title', u'"Image Title" should be returned as the title'
+        assert service[u'data'][0][u'path'] == test_image, u'The returned path should match the inputted path'
         assert service[u'data'][0][u'title'] != service[u'data'][1][u'title'], \
-            u'The individual titles should not match'
+            u'The individual slide titles should not match'
         assert service[u'data'][0][u'path'] == service[u'data'][1][u'path'], u'The file paths should match'
 
         # WHEN validating a service item
@@ -122,7 +122,7 @@ class TestServiceItem(TestCase):
         service_item.validate_item([u'jpg'])
 
         # THEN the service item should be valid
-        assert service_item.is_valid is False, u'The service item is not valid due to validation changes'
+        assert service_item.is_valid is False, u'The service item should not be valid due to validation changes'
 
     def serviceitem_add_command_test(self):
         """
@@ -138,21 +138,21 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        assert len(service_item._display_frames) == 0, u'The service item has no display frames '
+        assert len(service_item._display_frames) == 0, u'The service item should have no display frames '
 
         # THEN: We should have a page of output.
-        assert len(service_item._raw_frames) == 1, u'A valid rendered Service Item has one raw frame'
-        assert service_item.get_rendered_frame(0) == test_file, u'The image matches the input'
+        assert len(service_item._raw_frames) == 1, u'A valid rendered Service Item should have one raw frame'
+        assert service_item.get_rendered_frame(0) == test_file, u'The image should match the input'
 
         # WHEN requesting a saved service item
         service = service_item.get_service_repr(True)
 
         # THEN: We should have two parts of the service.
-        assert len(service) == 2, u'A saved service has two parts'
-        assert service[u'header'][u'name'] == u'test', u'A test plugin'
-        assert service[u'data'][0][u'title'] == u'church.jpg', u'The first title name '
-        assert service[u'data'][0][u'path'] == TEST_PATH, u'The first image name'
-        assert service[u'data'][0][u'image'] == test_file, u'The first image name'
+        assert len(service) == 2, u'The saved service should have two parts'
+        assert service[u'header'][u'name'] == u'test', u'A test plugin should be returned'
+        assert service[u'data'][0][u'title'] == u'church.jpg', u'The first title name should be "church,jpg"'
+        assert service[u'data'][0][u'path'] == TEST_PATH, u'The path should match the input path'
+        assert service[u'data'][0][u'image'] == test_file, u'The image should match the full path to image'
 
         # WHEN validating a service item
         service_item.validate_item([u'jpg'])
@@ -164,7 +164,7 @@ class TestServiceItem(TestCase):
         service_item.validate_item([u'png'])
 
         # THEN the service item should not be valid
-        assert service_item.is_valid is False, u'The service item is not valid'
+        assert service_item.is_valid is False, u'The service item should not be valid'
 
     def serviceitem_load_custom_from_service_test(self):
         """
@@ -180,16 +180,16 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        assert len(service_item._display_frames) == 0, u'The service item has no display frames'
-        assert len(service_item.capabilities) == 5, u'There are 5 default custom item capabilities'
+        assert len(service_item._display_frames) == 0, u'The service item should have no display frames'
+        assert len(service_item.capabilities) == 5, u'There should be 5 default custom item capabilities'
         service_item.render(True)
-        assert service_item.get_display_title() == u'Test Custom', u'The custom title should be correct'
+        assert service_item.get_display_title() == u'Test Custom', u'The title should be "Test Custom"'
         assert service_item.get_frames()[0][u'text'] == VERSE[:-1], \
             u'The returned text matches the input, except the last line feed'
         assert service_item.get_rendered_frame(1) == VERSE.split(u'\n', 1)[0], u'The first line has been returned'
-        assert service_item.get_frame_title(0) == u'Slide 1', u'The title of the first slide is returned'
-        assert service_item.get_frame_title(1) == u'Slide 2', u'The title of the second slide is returned'
-        assert service_item.get_frame_title(2) == u'', u'The title of the first slide is returned'
+        assert service_item.get_frame_title(0) == u'Slide 1', u'"Slide 1" has been returned as the title'
+        assert service_item.get_frame_title(1) == u'Slide 2', u'"Slide 2" has been returned as the title'
+        assert service_item.get_frame_title(2) == u'', u'Blank has been returned as the title of slide 3'
 
     def serviceitem_load_image_from_service_test(self):
         """
@@ -211,11 +211,11 @@ class TestServiceItem(TestCase):
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
         print service_item.get_rendered_frame(0)
-        assert service_item.get_rendered_frame(0) == test_file, u'The first frame matches the path to the image'
-        assert service_item.get_frames()[0] == frame_array, u'The return matches the frame array1'
-        assert service_item.get_frame_path(0) == test_file, u'The frame path matches the full path to the image'
-        assert service_item.get_frame_title(0) == image_name, u'The frame title matches the image name'
-        assert service_item.get_display_title() == image_name, u'The display title matches the first image name'
+        assert service_item.get_rendered_frame(0) == test_file, u'The first frame should match the path to the image'
+        assert service_item.get_frames()[0] == frame_array, u'The return should match frame array1'
+        assert service_item.get_frame_path(0) == test_file, u'The frame path should match the full path to the image'
+        assert service_item.get_frame_title(0) == image_name, u'The frame title should match the image name'
+        assert service_item.get_display_title() == image_name, u'The display title should match the first image name'
         assert service_item.is_image() is True, u'This service item is an Image'
         assert service_item.is_capable(ItemCapabilities.CanMaintain) is True, u'This service item can be Maintained'
         assert service_item.is_capable(ItemCapabilities.CanPreview) is True, u'This service item can be Previewed'
@@ -245,17 +245,17 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        assert service_item.get_rendered_frame(0) == test_file1, u'The first frame matches the path to the image'
-        assert service_item.get_rendered_frame(1) == test_file2, u'The Second frame matches the path to the image'
-        assert service_item.get_frames()[0] == frame_array1, u'The return matches the frame array1'
-        assert service_item.get_frames()[1] == frame_array2, u'The return matches the frame array2'
-        assert service_item.get_frame_path(0) == test_file1, u'The frame path matches the full path to the image'
-        assert service_item.get_frame_path(1) == test_file2, u'The frame path matches the full path to the image'
-        assert service_item.get_frame_title(0) == image_name1, u'The 1st frame title matches the image name'
-        assert service_item.get_frame_title(1) == image_name2, u'The 2nd frame title matches the image name'
+        assert service_item.get_rendered_frame(0) == test_file1, u'The first frame should match the path to the image'
+        assert service_item.get_rendered_frame(1) == test_file2, u'The Second frame should match the path to the image'
+        assert service_item.get_frames()[0] == frame_array1, u'The return should match the frame array1'
+        assert service_item.get_frames()[1] == frame_array2, u'The return should match the frame array2'
+        assert service_item.get_frame_path(0) == test_file1, u'The frame path should match the full path to the image'
+        assert service_item.get_frame_path(1) == test_file2, u'The frame path should match the full path to the image'
+        assert service_item.get_frame_title(0) == image_name1, u'The 1st frame title should match the image name'
+        assert service_item.get_frame_title(1) == image_name2, u'The 2nd frame title should match the image name'
         assert service_item.get_display_title().lower() == service_item.name, \
-            u'The plugin name matches the display title, as there are > 1 Images'
-        assert service_item.is_image() is True, u'This service item is an image '
+            u'The plugin name should match the display title, as there are > 1 Images'
+        assert service_item.is_image() is True, u'This service item should be of an "image" type'
         assert service_item.is_capable(ItemCapabilities.CanMaintain) is True, u'This service item can be Maintained'
         assert service_item.is_capable(ItemCapabilities.CanPreview) is True, u'This service item can be Previewed'
         assert service_item.is_capable(ItemCapabilities.CanLoop) is True, u'This service item can be made to Loop'
