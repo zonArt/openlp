@@ -1,16 +1,16 @@
 """
 Package to test the openlp.core.ui package.
 """
-from unittest import TestCase
-
-from PyQt4 import QtGui
-
-from openlp.core.lib import Registry
-from openlp.plugins.songs.forms.authorsform import AuthorsForm
-
-
 ##  SHE IS NOT WORKING :-(
 
+# from unittest import TestCase
+#
+# from PyQt4 import QtGui
+#
+# from openlp.core.lib import Registry
+# from openlp.plugins.songs.forms.authorsform import AuthorsForm
+#
+#
 # class TestAuthorsForm(TestCase):
 #
 #     def setUp(self):
