@@ -54,10 +54,36 @@ class PluginManager(object):
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
+        Registry().register_function(u'bootstrap', self.bootstrap)
         self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
         log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
+
+    def bootstrap(self):
+        """
+        Bootstrap all the plugin manager functions
+        """
+        log.info(u'Bootstrap')
+        self.find_plugins()
+        # hook methods have to happen after find_plugins. Find plugins needs
+        # the controllers hence the hooks have moved from setupUI() to here
+        # Find and insert settings tabs
+        log.info(u'hook settings')
+        self.hook_settings_tabs()
+        # Find and insert media manager items
+        log.info(u'hook media')
+        self.hook_media_manager()
+        # Call the hook method to pull in import menus.
+        log.info(u'hook menus')
+        self.hook_import_menu()
+        # Call the hook method to pull in export menus.
+        self.hook_export_menu()
+        # Call the hook method to pull in tools menus.
+        self.hook_tools_menu()
+        # Call the initialise method to setup plugins.
+        log.info(u'initialise plugins')
+        self.initialise_plugins()
 
     def find_plugins(self):
         """

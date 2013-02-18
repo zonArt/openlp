@@ -492,7 +492,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Set up the path with plugins
 
         self.plugin_manager = PluginManager()
-        self.imageManager = ImageManager()
+        self.image_manager = ImageManager()
 
         # Set up the interface
         self.setupUi(self)
@@ -541,26 +541,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.renderer = Renderer()
 
-        log.info(u'Load Plugins')
-        self.plugin_manager.find_plugins()
-        # hook methods have to happen after find_plugins. Find plugins needs
-        # the controllers hence the hooks have moved from setupUI() to here
-        # Find and insert settings tabs
-        log.info(u'hook settings')
-        self.plugin_manager.hook_settings_tabs()
-        # Find and insert media manager items
-        log.info(u'hook media')
-        self.plugin_manager.hook_media_manager()
-        # Call the hook method to pull in import menus.
-        log.info(u'hook menus')
-        self.plugin_manager.hook_import_menu()
-        # Call the hook method to pull in export menus.
-        self.plugin_manager.hook_export_menu()
-        # Call the hook method to pull in tools menus.
-        self.plugin_manager.hook_tools_menu()
-        # Call the initialise method to setup plugins.
-        log.info(u'initialise plugins')
-        self.plugin_manager.initialise_plugins()
+
         # Create the displays as all necessary components are loaded.
         self.preview_controller.screenSizeChanged()
         self.live_controller.screenSizeChanged()
