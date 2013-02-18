@@ -6,7 +6,7 @@ import sys
 from tempfile import mkstemp
 from unittest import TestCase
 
-from mock import MagicMock, patch
+from mock import MagicMock
 from PyQt4 import QtGui
 
 from openlp.core.lib.pluginmanager import PluginManager
@@ -33,6 +33,7 @@ class TestPluginManager(TestCase):
     def tearDown(self):
         os.unlink(self.ini_file)
         del self.app
+        del self.main_window
 
     def find_plugins_test(self):
         """

@@ -11,7 +11,6 @@ from openlp.core.lib import Registry
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 
-
 class TestRegistry(TestCase):
 
     def registry_service_test(self):
