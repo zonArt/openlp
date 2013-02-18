@@ -17,7 +17,7 @@ class TestSettings(TestCase):
         """
         Create the UI
         """
-        self.application = QtGui.QApplication([])
+        self.application = QtGui.QApplication.instance()
         self.application.setOrganizationName(u'OpenLP-tests')
         self.application.setOrganizationDomain(u'openlp.org')
         Settings()
@@ -48,7 +48,7 @@ class TestSettings(TestCase):
         Settings().setValue(u'general/has run wizard', True)
 
         # THEN the new value is returned when re-read
-        assert Settings().value(u'general/has run wizard') is True, u'The saved value has not been returned'
+        assert Settings().value(u'general/has run wizard') is True, u'The saved value should have been returned'
 
     def settings_override_test(self):
         """
@@ -64,13 +64,13 @@ class TestSettings(TestCase):
         extend = Settings().value(u'test/extend')
 
         # THEN the default value is returned
-        assert extend == u'very wide', u'The default value defined is returned'
+        assert extend == u'very wide', u'The default value of "very wide" should be returned'
 
         # WHEN a new value is saved into config
         Settings().setValue(u'test/extend', u'very short')
 
         # THEN the new value is returned when re-read
-        assert Settings().value(u'test/extend') == u'very short', u'The saved value is returned'
+        assert Settings().value(u'test/extend') == u'very short', u'The saved value should be returned'
 
     def settings_override_with_group_test(self):
         """
@@ -88,10 +88,10 @@ class TestSettings(TestCase):
         extend = settings.value(u'extend')
 
         # THEN the default value is returned
-        assert extend == u'very wide', u'The default value defined has not been returned'
+        assert extend == u'very wide', u'The default value defined should be returned'
 
         # WHEN a new value is saved into config
         Settings().setValue(u'test/extend', u'very short')
 
         # THEN the new value is returned when re-read
-        assert Settings().value(u'test/extend') == u'very short', u'The saved value has not been returned'
+        assert Settings().value(u'test/extend') == u'very short', u'The saved value should be returned'
