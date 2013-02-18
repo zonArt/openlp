@@ -54,7 +54,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song = song
         self.setupUi()
         self.retranslateUi()
-        QtCore.QObject.connect(self.song_remove_button, QtCore.SIGNAL(u'clicked()'), self.on_remove_button_clicked)
+        self.song_remove_button.clicked.connect(self.on_remove_button_clicked)
 
     def setupUi(self):
         self.song_vertical_layout = QtGui.QVBoxLayout(self)

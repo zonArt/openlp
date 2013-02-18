@@ -112,10 +112,10 @@ class OpenLPWizard(QtGui.QWizard):
         self.registerFields()
         self.customInit()
         self.customSignals()
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
+        self.currentIdChanged.connect(self.onCurrentIdChanged)
         if self.with_progress_page:
-            QtCore.QObject.connect(self.errorCopyToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
-            QtCore.QObject.connect(self.errorSaveToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
+            self.errorCopyToButton.clicked.connect(self.onErrorCopyToButtonClicked)
+            self.errorSaveToButton.clicked.connect(self.onErrorSaveToButtonClicked)
 
     def setupUi(self, image):
         """

@@ -70,8 +70,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Song wizard specific signals.
         """
-        QtCore.QObject.connect(self.finishButton, QtCore.SIGNAL(u'clicked()'), self.onWizardExit)
-        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL(u'clicked()'), self.onWizardExit)
+        self.finishButton.clicked.connect(self.onWizardExit)
+        self.cancelButton.clicked.connect(self.onWizardExit)
 
     def addCustomPages(self):
         """
