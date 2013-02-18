@@ -35,6 +35,7 @@ import logging
 import imp
 
 from openlp.core.lib import Plugin, PluginStatus, Registry
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -46,36 +47,28 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
-    def __init__(self, plugin_dir):
+    def __init__(self):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
-
-        ``plugin_dir``
-            The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
-        self.base_path = os.path.abspath(plugin_dir)
+        self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
         log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, plugin_dir):
+    def find_plugins(self):
         """
-        Scan the directory ``plugin_dir`` for objects inheriting from the
-        ``Plugin`` class.
-
-        ``plugin_dir``
-            The directory to scan.
-
+        Scan a directory for objects inheriting from the ``Plugin`` class.
         """
         log.info(u'Finding plugins')
-        start_depth = len(os.path.abspath(plugin_dir).split(os.sep))
-        present_plugin_dir = os.path.join(plugin_dir, 'presentations')
-        log.debug(u'finding plugins in %s at depth %d', unicode(plugin_dir), start_depth)
-        for root, dirs, files in os.walk(plugin_dir):
-            if sys.platform == 'darwin'and root.startswith(present_plugin_dir):
+        start_depth = len(os.path.abspath(self.base_path).split(os.sep))
+        present_plugin_dir = os.path.join(self.base_path, 'presentations')
+        log.debug(u'finding plugins in %s at depth %d', unicode(self.base_path), start_depth)
+        for root, dirs, files in os.walk(self.base_path):
+            if sys.platform == 'darwin' and root.startswith(present_plugin_dir):
                 # TODO Presentation plugin is not yet working on Mac OS X.
                 # For now just ignore it. The following code will ignore files from the presentation plugin directory
                 # and thereby never import the plugin.

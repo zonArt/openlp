@@ -634,7 +634,7 @@ class ServiceItem(object):
         """
         self.is_valid = True
         for frame in self._raw_frames:
-            if self.is_image() and not os.path.exists((frame[u'path'])):
+            if self.is_image() and not os.path.exists(frame[u'path']):
                 self.is_valid = False
             elif self.is_command():
                 file_name = os.path.join(frame[u'path'], frame[u'title'])

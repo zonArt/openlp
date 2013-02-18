@@ -199,7 +199,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             self.parameterEdit.setFocus()
             return False
         text = text.replace(u'<>', self.parameterEdit.text())
-        self.plugin.alertsmanager.displayAlert(text)
+        self.plugin.alertsmanager.display_alert(text)
         return True
 
     def onCurrentRowChanged(self, row):

@@ -31,7 +31,7 @@ import logging
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import Receiver, UiStrings, translate
+from openlp.core.lib import Registry, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
@@ -284,7 +284,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(author):
                     self.resetAuthors()
                     if not self.fromSongEdit:
-                        Receiver.send_message(u'songs_load_list')
+                        Registry().execute(u'songs_load_list')
                 else:
                     critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm', 'Could not save your changes.'))
@@ -379,7 +379,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         merge(dbObject)
         reset()
         if not self.fromSongEdit:
-            Receiver.send_message(u'songs_load_list')
+            Registry().execute(u'songs_load_list')
         self.application.set_normal_cursor()
 
     def mergeAuthors(self, oldAuthor):

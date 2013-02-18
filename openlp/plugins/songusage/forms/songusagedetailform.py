@@ -33,7 +33,7 @@ import os
 from PyQt4 import QtGui
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import Receiver, Settings, translate, check_directory_exists
+from openlp.core.lib import Registry, Settings, translate, check_directory_exists
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -81,11 +81,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         log.debug(u'accept')
         path = self.fileLineEdit.text()
         if not path:
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate('SongUsagePlugin.SongUsageDetailForm', 'Output Path Not Selected'),
-                u'message': translate(
-                'SongUsagePlugin.SongUsageDetailForm', 'You have not set a valid output location for your song usage '
-                    'report. Please select an existing path on your computer.')})
+            self.main_window.error_message(
+                translate('SongUsagePlugin.SongUsageDetailForm', 'Output Path Not Selected'),
+                translate('SongUsagePlugin.SongUsageDetailForm', 'You have not set a valid output location for your'
+                    ' song usage report. Please select an existing path on your computer.')
+            )
             return
         check_directory_exists(path)
         filename = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % (
@@ -108,13 +108,24 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
                     instance.usagetime, instance.title, instance.copyright,
                     instance.ccl_number, instance.authors, instance.plugin_name, instance.source)
                 fileHandle.write(record.encode(u'utf-8'))
-            Receiver.send_message(u'openlp_information_message', {
-                u'title': translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation'),
-                u'message': translate('SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
-                    'has been successfully created. ') % outname})
+            self.main_window.information_message(
+                translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation'),
+                translate('SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
+                    'has been successfully created. ') % outname
+            )
         except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:
             if fileHandle:
                 fileHandle.close()
         self.close()
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

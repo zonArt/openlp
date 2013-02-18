@@ -36,7 +36,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, UiStrings, translate, check_directory_exists
+from openlp.core.lib import Registry, Settings, UiStrings, translate, check_directory_exists
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
@@ -82,7 +82,7 @@ class BibleUpgradeForm(OpenLPWizard):
         Set up the UI for the bible wizard.
         """
         OpenLPWizard.setupUi(self, image)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_stop_wizard'), self.stop_import)
+        Registry().execute(u'openlp_stop_wizard', self.stop_import)
 
     def stop_import(self):
         """
