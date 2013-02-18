@@ -29,7 +29,6 @@ class TestPluginManager(TestCase):
         self.app = QtGui.QApplication.instance()
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
-        self.plugins_dir = os.path.abspath(os.path.join(os.path.basename(__file__), u'..', u'openlp', u'plugins'))
 
     def tearDown(self):
         os.unlink(self.ini_file)
@@ -40,7 +39,7 @@ class TestPluginManager(TestCase):
         Test the find_plugins() method to ensure it imports the correct plugins.
         """
         # GIVEN: A plugin manager
-        plugin_manager = PluginManager(self.plugins_dir)
+        plugin_manager = PluginManager()
 
         # WHEN: We mock out sys.platform to make it return "darwin" and then find the plugins
         old_platform = sys.platform
