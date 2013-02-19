@@ -1,9 +1,11 @@
 """
-    Package to test the openlp.core.lib package.
+    Package to test the openlp.core.lib.settings package.
 """
 import os
 
 from unittest import TestCase
+from tempfile import mkstemp
+
 from openlp.core.lib import Settings
 
 from PyQt4 import QtGui, QtTest
@@ -17,20 +19,19 @@ class TestSettings(TestCase):
         """
         Create the UI
         """
+        fd, self.ini_file = mkstemp(u'.ini')
+        Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         self.application.setOrganizationName(u'OpenLP-tests')
         self.application.setOrganizationDomain(u'openlp.org')
-        Settings()
 
     def tearDown(self):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         del self.application
-        try:
-            os.remove(Settings().fileName())
-        except OSError:
-            pass
+        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
     def settings_basic_test(self):
         """
