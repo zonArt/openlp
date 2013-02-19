@@ -221,7 +221,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.listView)
         # define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # FIXME: Look for better objectNames.
         if self.hasEditIcon:
             create_widget_action(self.listView,
                 text=self.plugin.getString(StringContent.Edit)[u'title'],
@@ -229,22 +228,26 @@ class MediaManagerItem(QtGui.QWidget):
                 triggers=self.onEditClick)
             create_widget_action(self.listView, separator=True)
         if self.hasDeleteIcon:
-            create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Delete),
+            create_widget_action(self.listView,
+                u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
                 text=self.plugin.getString(StringContent.Delete)[u'title'],
                 icon=u':/general/general_delete.png',
                 can_shortcuts=True, triggers=self.onDeleteClick)
             create_widget_action(self.listView, separator=True)
-        create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Preview),
+        create_widget_action(self.listView,
+            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
             text=self.plugin.getString(StringContent.Preview)[u'title'],
             icon=u':/general/general_preview.png',
             can_shortcuts=True,
             triggers=self.onPreviewClick)
-        create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Live),
+        create_widget_action(self.listView,
+            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Live.title()),
             text=self.plugin.getString(StringContent.Live)[u'title'],
             icon=u':/general/general_live.png',
             can_shortcuts=True,
             triggers=self.onLiveClick)
-        create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Service),
+        create_widget_action(self.listView,
+            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Service.title()),
             can_shortcuts=True,
             text=self.plugin.getString(StringContent.Service)[u'title'],
             icon=u':/general/general_add.png',
