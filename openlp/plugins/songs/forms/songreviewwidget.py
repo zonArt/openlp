@@ -42,6 +42,18 @@ class SongReviewWidget(QtGui.QWidget):
     The remove logic is not implemented here, but a signal is provided
     when the remove button is clicked.
     """
+
+    # Signals have to be class variables and not instance variables. Otherwise
+    # they are not registered by Qt (missing emit and connect methods are artifacts of this).
+    # To use SongReviewWidget as a signal parameter one would have to assigning the class
+    # variable after the class is declared. While this is possible, it also messes Qts meta
+    # object system up. The result is an
+    # "Object::connect: Use the SIGNAL macro to bind SongReviewWidget::(QWidget*)" error on
+    # connect calls.
+    # That's why we cheat a little and use QWidget instead of SongReviewWidget as parameter.
+    # While not being entirely correct, it does work.
+    song_remove_button_clicked = QtCore.pyqtSignal(QtGui.QWidget)
+
     def __init__(self, parent, song):
         """
         ``parent``
@@ -168,4 +180,4 @@ class SongReviewWidget(QtGui.QWidget):
         """
         Signal emitted when the "remove" button is clicked.
         """
-        self.emit(QtCore.SIGNAL(u'song_remove_button_clicked(PyQt_PyObject)'), self)
+        self.song_remove_button_clicked.emit(self)

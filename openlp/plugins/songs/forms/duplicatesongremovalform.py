@@ -331,9 +331,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.songs_horizontal_layout.addStretch()
             for duplicate in self.duplicate_song_list[-1]:
                 song_review_widget = SongReviewWidget(self.review_page, duplicate)
-                QtCore.QObject.connect(song_review_widget,
-                        QtCore.SIGNAL(u'song_remove_button_clicked(PyQt_PyObject)'),
-                        self.remove_button_clicked)
+                song_review_widget.song_remove_button_clicked.connect(self.remove_button_clicked)
                 self.songs_horizontal_layout.addWidget(song_review_widget)
             self.songs_horizontal_layout.addStretch()
             self.songs_horizontal_layout.addStretch()
