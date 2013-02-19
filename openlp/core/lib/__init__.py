@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,12 +30,21 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
+from distutils.version import LooseVersion
 import logging
 import os
 
 from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
+
+class ServiceItemContext(object):
+    """
+    The context in which a Service Item is being generated
+    """
+    Preview = 0
+    Live = 1
+    Service = 2
 
 
 class ImageSource(object):
@@ -81,9 +91,8 @@ class ServiceItemAction(object):
     Next = 3
 
 
-def translate(context, text, comment=None,
-    encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
-    translate=QtCore.QCoreApplication.translate):
+def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
+              translate=QtCore.QCoreApplication.translate):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -160,14 +169,11 @@ def build_icon(icon):
         button_icon = icon
     elif isinstance(icon, basestring):
         if icon.startswith(u':/'):
-            button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal,
-                QtGui.QIcon.Off)
+            button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
-            button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)),
-                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     elif isinstance(icon, QtGui.QImage):
-        button_icon.addPixmap(QtGui.QPixmap.fromImage(icon),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        button_icon.addPixmap(QtGui.QPixmap.fromImage(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
     return button_icon
 
 
@@ -285,12 +291,10 @@ def resize_image(image_path, width, height, background=u'#000000'):
     real_width = preview.width()
     real_height = preview.height()
     # and move it to the centre of the preview space
-    new_image = QtGui.QImage(width, height,
-        QtGui.QImage.Format_ARGB32_Premultiplied)
+    new_image = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
     painter.fillRect(new_image.rect(), QtGui.QColor(background))
-    painter.drawImage(
-        (width - real_width) / 2, (height - real_height) / 2, preview)
+    painter.drawImage((width - real_width) / 2, (height - real_height) / 2, preview)
     return new_image
 
 
@@ -334,17 +338,21 @@ def expand_tags(text):
     return text
 
 
-def check_directory_exists(dir):
+def check_directory_exists(directory, do_not_log=False):
     """
     Check a theme directory exists and if not create it
 
-    ``dir``
-        Theme directory to make sure exists
+    ``directory``
+        The directory to make sure exists
+
+    ``do_not_log``
+        To not log anything. This is need for the start up, when the log isn't ready.
     """
-    log.debug(u'check_directory_exists %s' % dir)
+    if not do_not_log:
+        log.debug(u'check_directory_exists %s' % directory)
     try:
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
     except IOError:
         pass
 
@@ -359,26 +367,29 @@ def create_separated_list(stringlist):
     ``stringlist``
         List of unicode strings
     """
-    if Qt.PYQT_VERSION_STR >= u'4.9' and Qt.qVersion() >= u'4.8':
-        return unicode(QtCore.QLocale().createSeparatedList(stringlist))
+    if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion(u'4.9') and \
+            LooseVersion(Qt.qVersion()) >= LooseVersion(u'4.8'):
+        return QtCore.QLocale().createSeparatedList(stringlist)
     if not stringlist:
         return u''
     elif len(stringlist) == 1:
         return stringlist[0]
     elif len(stringlist) == 2:
-        return unicode(translate('OpenLP.core.lib', '%1 and %2',
-            'Locale list separator: 2 items').arg(stringlist[0], stringlist[1]))
+        return translate('OpenLP.core.lib', '%s and %s',
+            'Locale list separator: 2 items') % (stringlist[0], stringlist[1])
     else:
-        merged = unicode(translate('OpenLP.core.lib', '%1, and %2',
-            u'Locale list separator: end').arg(stringlist[-2], stringlist[-1]))
+        merged = translate('OpenLP.core.lib', '%s, and %s',
+            u'Locale list separator: end') % (stringlist[-2], stringlist[-1])
         for index in reversed(range(1, len(stringlist) - 2)):
-            merged = unicode(translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: middle').arg(stringlist[index], merged))
-        return unicode(translate('OpenLP.core.lib', '%1, %2',
-            u'Locale list separator: start').arg(stringlist[0], merged))
+            merged = translate('OpenLP.core.lib', '%s, %s',
+                u'Locale list separator: middle') % (stringlist[index], merged)
+        return translate('OpenLP.core.lib', '%s, %s', u'Locale list separator: start') % (stringlist[0], merged)
 
 
-from eventreceiver import Receiver
+from registry import Registry
+from uistrings import UiStrings
+from screen import ScreenList
+from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
@@ -387,11 +398,10 @@ from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
 from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
-from htmlbuilder import build_html, build_lyrics_format_css, \
-    build_lyrics_outline_css
+from htmlbuilder import build_html, build_lyrics_format_css, build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from imagemanager import ImageManager
 from renderer import Renderer
 from mediamanageritem import MediaManagerItem
-from openlp.core.utils.actions import ActionList
+

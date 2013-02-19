@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,8 +29,7 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Receiver
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import SettingsTab, Registry, Settings, UiStrings, translate
 
 class ImageTab(SettingsTab):
     """
@@ -59,45 +59,37 @@ class ImageTab(SettingsTab):
         self.formLayout.addRow(self.informationLabel)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
-        self.rightColumn.setSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton,
-            QtCore.SIGNAL(u'clicked()'), self.onbackgroundColorButtonClicked)
+        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
+            self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
-        self.bgColorGroupBox.setTitle(
-            translate('ImagesPlugin.ImageTab', 'Background Color'))
-        self.backgroundColorLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Default Color:'))
+        self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
+        self.backgroundColorLabel.setText(UiStrings().DefaultColor)
         self.informationLabel.setText(
-            translate('ImagesPlugin.ImageTab', 'Visible background for images '
-            'with aspect ratio different to screen.'))
+            translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 
     def onbackgroundColorButtonClicked(self):
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.bg_color), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.bg_color), self)
         if new_color.isValid():
             self.bg_color = new_color.name()
-            self.backgroundColorButton.setStyleSheet(
-                u'background-color: %s' % self.bg_color)
+            self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.bg_color = unicode(settings.value(
-            u'background color', QtCore.QVariant(u'#000000')).toString())
+        self.bg_color = settings.value(u'background color')
         self.initial_color = self.bg_color
         settings.endGroup()
-        self.backgroundColorButton.setStyleSheet(
-            u'background-color: %s' % self.bg_color)
+        self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'background color', QtCore.QVariant(self.bg_color))
+        settings.setValue(u'background color', self.bg_color)
         settings.endGroup()
         if self.initial_color != self.bg_color:
-            Receiver.send_message(u'image_updated')
+            Registry().execute(u'image_updated')
 

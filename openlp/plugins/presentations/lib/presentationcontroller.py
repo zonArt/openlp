@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,9 +33,7 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, check_directory_exists, create_thumb, \
-    validate_thumb
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Registry, Settings, check_directory_exists, create_thumb, validate_thumb
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -124,7 +123,7 @@ class PresentationDocument(object):
 
     def get_file_name(self):
         """
-        Return just the filename of the presention, without the directory
+        Return just the filename of the presentation, without the directory
         """
         return os.path.split(self.filepath)[1]
 
@@ -179,7 +178,7 @@ class PresentationDocument(object):
 
     def unblank_screen(self):
         """
-        Unblanks (restores) the presentationn
+        Unblanks (restores) the presentation
         """
         pass
 
@@ -275,8 +274,7 @@ class PresentationDocument(object):
             prefix = u'live'
         else:
             prefix = u'preview'
-        Receiver.send_message(u'slidecontroller_%s_change' % prefix,
-            self.slidenumber - 1)
+        Registry().execute(u'slidecontroller_%s_change' % prefix, self.slidenumber - 1)
 
     def get_slide_text(self, slide_no):
         """
@@ -379,11 +377,8 @@ class PresentationController(object):
         self.document_class = document_class
         self.settings_section = self.plugin.settingsSection
         self.available = None
-        self.temp_folder = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section), name)
-        self.thumbnail_folder = os.path.join(
-            AppLocation.get_section_data_path(self.settings_section),
-            u'thumbnails')
+        self.temp_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), name)
+        self.thumbnail_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         self.thumbnail_prefix = u'slide'
         check_directory_exists(self.thumbnail_folder)
         check_directory_exists(self.temp_folder)
@@ -392,10 +387,7 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if Settings().value(
-            self.settings_section + u'/' + self.name,
-            QtCore.QVariant(QtCore.Qt.Checked)).toInt()[0] == \
-                QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + u'/' + self.name) == QtCore.Qt.Checked:
             return self.is_available()
         else:
             return False
@@ -446,3 +438,13 @@ class PresentationController(object):
 
     def close_presentation(self):
         pass
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)

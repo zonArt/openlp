@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,35 +29,30 @@
 """
 The :mod:`ui` module provides the core user interface for OpenLP
 """
-from PyQt4 import QtGui
 
-from openlp.core.lib import translate
 
 class HideMode(object):
     """
-    This is an enumeration class which specifies the different modes of hiding
-    the display.
+    This is an enumeration class which specifies the different modes of hiding the display.
 
     ``Blank``
-        This mode is used to hide all output, specifically by covering the
-        display with a black screen.
+        This mode is used to hide all output, specifically by covering the display with a black screen.
 
     ``Theme``
-        This mode is used to hide all output, but covers the display with the
-        current theme background, as opposed to black.
+        This mode is used to hide all output, but covers the display with the current theme background, as opposed to
+        black.
 
     ``Desktop``
-        This mode hides all output by minimising the display, leaving the user's
-        desktop showing.
+        This mode hides all output by minimising the display, leaving the user's desktop showing.
     """
     Blank = 1
     Theme = 2
     Screen = 3
 
+
 class AlertLocation(object):
     """
-    This is an enumeration class which controls where Alerts are placed on the
-    screen.
+    This is an enumeration class which controls where Alerts are placed on the screen.
 
     ``Top``
         Place the text at the top of the screen.
@@ -71,17 +67,26 @@ class AlertLocation(object):
     Middle = 1
     Bottom = 2
 
+
+class DisplayControllerType(object):
+    """
+    This is an enumeration class which says where a display controller originated from.
+    """
+    Live = 0
+    Preview = 1
+    Plugin = 2
+
+
 from firsttimeform import FirstTimeForm
 from firsttimelanguageform import FirstTimeLanguageForm
 from themelayoutform import ThemeLayoutForm
 from themeform import ThemeForm
 from filerenameform import FileRenameForm
 from starttimeform import StartTimeForm
-from screen import ScreenList
 from maindisplay import MainDisplay, Display
 from servicenoteform import ServiceNoteForm
 from serviceitemeditform import ServiceItemEditForm
-from slidecontroller import SlideController, Controller
+from slidecontroller import SlideController, DisplayController
 from splashscreen import SplashScreen
 from generaltab import GeneralTab
 from themestab import ThemesTab
@@ -95,6 +100,8 @@ from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
 
-__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay',
-    'SlideController', 'ServiceManager', 'ThemeManager', 'MediaDockManager',
-    'ServiceItemEditForm', u'FirstTimeForm']
+__all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
+    'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',
+    'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay', 'Display', 'ServiceNoteForm',
+    'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
+    'FormattingTagForm', 'ShortcutListForm']

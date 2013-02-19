@@ -1,16 +1,17 @@
- # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -123,7 +124,7 @@ class FoilPresenterImport(SongImport):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         parser = etree.XMLParser(remove_blank_text=True)
         for file_path in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self.importWizard.incrementProgressBar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
@@ -334,9 +335,7 @@ class FoilPresenter(object):
                         author)
                     author = re.compile(u'[N|n]ach.*$').sub(u'', author)
                     author = author.strip()
-                    if re.search(
-                        u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s',
-                        author, re.U):
+                    if re.search(u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', author, re.U):
                         temp = re.split(u'\s[a|u]nd\s|\s&\s', author)
                         for tempx in temp:
                             tempx = tempx.strip()
@@ -344,12 +343,10 @@ class FoilPresenter(object):
                     elif len(author) > 2:
                         authors.append(author)
         for display_name in authors:
-            author = self.manager.get_object_filtered(Author,
-                Author.display_name == display_name)
+            author = self.manager.get_object_filtered(Author, Author.display_name == display_name)
             if author is None:
                 # We need to create a new author, as the author does not exist.
-                author = Author.populate(display_name=display_name,
-                    last_name=display_name.split(u' ')[-1],
+                author = Author.populate(display_name=display_name, last_name=display_name.split(u' ')[-1],
                     first_name=u' '.join(display_name.split(u' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
@@ -424,8 +421,7 @@ class FoilPresenter(object):
             VerseType.Tags[VerseType.PreChorus]: 1
         }
         for strophe in foilpresenterfolie.strophen.strophe:
-            text = self._child(strophe.text_) if hasattr(strophe, u'text_') \
-                else u''
+            text = self._child(strophe.text_) if hasattr(strophe, u'text_') else u''
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
             sortnr = False

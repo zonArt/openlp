@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,21 +29,20 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button_box, create_button
+from openlp.core.lib import UiStrings, build_icon, translate
+from openlp.core.lib.ui import create_button_box, create_button
 from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_EditSongDialog(object):
     def setupUi(self, editSongDialog):
         editSongDialog.setObjectName(u'editSongDialog')
         editSongDialog.resize(650, 400)
-        editSongDialog.setWindowIcon(
-            build_icon(u':/icon/openlp-logo-16x16.png'))
+        editSongDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         editSongDialog.setModal(True)
         self.dialogLayout = QtGui.QVBoxLayout(editSongDialog)
         self.dialogLayout.setSpacing(8)
         self.dialogLayout.setContentsMargins(8, 8, 8, 8)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.songTabWidget = QtGui.QTabWidget(editSongDialog)
         self.songTabWidget.setObjectName(u'songTabWidget')
         # lyrics tab
@@ -67,16 +67,12 @@ class Ui_EditSongDialog(object):
         self.lyricsLabel = QtGui.QLabel(self.lyricsTab)
         self.lyricsLabel.setFixedHeight(self.titleEdit.sizeHint().height())
         self.lyricsLabel.setObjectName(u'lyricsLabel')
-        self.lyricsTabLayout.addWidget(self.lyricsLabel, 2, 0,
-            QtCore.Qt.AlignTop)
+        self.lyricsTabLayout.addWidget(self.lyricsLabel, 2, 0, QtCore.Qt.AlignTop)
         self.verseListWidget = SingleColumnTableWidget(self.lyricsTab)
         self.verseListWidget.setAlternatingRowColors(True)
-        self.verseListWidget.setSelectionBehavior(
-            QtGui.QAbstractItemView.SelectRows)
-        self.verseListWidget.setSelectionMode(
-            QtGui.QAbstractItemView.SingleSelection)
-        self.verseListWidget.setEditTriggers(
-            QtGui.QAbstractItemView.NoEditTriggers)
+        self.verseListWidget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.verseListWidget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.verseListWidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.verseListWidget.setObjectName(u'verseListWidget')
         self.lyricsLabel.setBuddy(self.verseListWidget)
         self.lyricsTabLayout.addWidget(self.verseListWidget, 2, 1)
@@ -117,8 +113,7 @@ class Ui_EditSongDialog(object):
         self.authorsLayout.setObjectName(u'authorsLayout')
         self.authorAddLayout = QtGui.QHBoxLayout()
         self.authorAddLayout.setObjectName(u'authorAddLayout')
-        self.authorsComboBox = editSongDialogComboBox(
-            self.authorsGroupBox, u'authorsComboBox')
+        self.authorsComboBox = editSongDialogComboBox(self.authorsGroupBox, u'authorsComboBox')
         self.authorAddLayout.addWidget(self.authorsComboBox)
         self.authorAddButton = QtGui.QPushButton(self.authorsGroupBox)
         self.authorAddButton.setObjectName(u'authorAddButton')
@@ -152,8 +147,7 @@ class Ui_EditSongDialog(object):
         self.topicsLayout.setObjectName(u'topicsLayout')
         self.topicAddLayout = QtGui.QHBoxLayout()
         self.topicAddLayout.setObjectName(u'topicAddLayout')
-        self.topicsComboBox = editSongDialogComboBox(
-            self.topicsGroupBox, u'topicsComboBox')
+        self.topicsComboBox = editSongDialogComboBox(self.topicsGroupBox, u'topicsComboBox')
         self.topicAddLayout.addWidget(self.topicsComboBox)
         self.topicAddButton = QtGui.QPushButton(self.topicsGroupBox)
         self.topicAddButton.setObjectName(u'topicAddButton')
@@ -177,18 +171,15 @@ class Ui_EditSongDialog(object):
         self.songBookLayout.setObjectName(u'songBookLayout')
         self.songBookNameLabel = QtGui.QLabel(self.songBookGroupBox)
         self.songBookNameLabel.setObjectName(u'songBookNameLabel')
-        self.songBookComboBox = editSongDialogComboBox(
-            self.songBookGroupBox, u'songBookComboBox')
+        self.songBookComboBox = editSongDialogComboBox(self.songBookGroupBox, u'songBookComboBox')
         self.songBookNameLabel.setBuddy(self.songBookComboBox)
-        self.songBookLayout.addRow(self.songBookNameLabel,
-            self.songBookComboBox)
+        self.songBookLayout.addRow(self.songBookNameLabel, self.songBookComboBox)
         self.songBookNumberLabel = QtGui.QLabel(self.songBookGroupBox)
         self.songBookNumberLabel.setObjectName(u'songBookNumberLabel')
         self.songBookNumberEdit = QtGui.QLineEdit(self.songBookGroupBox)
         self.songBookNumberEdit.setObjectName(u'songBookNumberEdit')
         self.songBookNumberLabel.setBuddy(self.songBookNumberEdit)
-        self.songBookLayout.addRow(self.songBookNumberLabel,
-            self.songBookNumberEdit)
+        self.songBookLayout.addRow(self.songBookNumberLabel, self.songBookNumberEdit)
         self.authorsRightLayout.addWidget(self.songBookGroupBox)
         self.authorsTabLayout.addLayout(self.authorsRightLayout)
         self.songTabWidget.addTab(self.authorsTab, u'')
@@ -203,8 +194,7 @@ class Ui_EditSongDialog(object):
         self.themeGroupBox.setObjectName(u'themeGroupBox')
         self.themeLayout = QtGui.QHBoxLayout(self.themeGroupBox)
         self.themeLayout.setObjectName(u'themeLayout')
-        self.themeComboBox = editSongDialogComboBox(
-            self.themeGroupBox, u'themeComboBox')
+        self.themeComboBox = editSongDialogComboBox(self.themeGroupBox, u'themeComboBox')
         self.themeLayout.addWidget(self.themeComboBox)
         self.themeAddButton = QtGui.QPushButton(self.themeGroupBox)
         self.themeAddButton.setObjectName(u'themeAddButton')
@@ -268,10 +258,8 @@ class Ui_EditSongDialog(object):
         self.audioRemoveAllButton.setObjectName(u'audioRemoveAllButton')
         self.audioButtonsLayout.addWidget(self.audioRemoveAllButton)
         self.audioButtonsLayout.addStretch(1)
-        self.upButton = create_button(self, u'upButton', role=u'up',
-            click=self.onUpButtonClicked)
-        self.downButton = create_button(self, u'downButton', role=u'down',
-            click=self.onDownButtonClicked)
+        self.upButton = create_button(self, u'upButton', role=u'up', click=self.onUpButtonClicked)
+        self.downButton = create_button(self, u'downButton', role=u'down', click=self.onDownButtonClicked)
         self.audioButtonsLayout.addWidget(self.upButton)
         self.audioButtonsLayout.addWidget(self.downButton)
         self.audioLayout.addLayout(self.audioButtonsLayout)
@@ -284,89 +272,59 @@ class Ui_EditSongDialog(object):
         self.warningLabel.setObjectName(u'warningLabel')
         self.warningLabel.setVisible(False)
         self.bottomLayout.addWidget(self.warningLabel)
-        self.buttonBox = create_button_box(editSongDialog, u'buttonBox',
-            [u'cancel', u'save'])
-        self.bottomLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(editSongDialog, u'button_box', [u'cancel', u'save'])
+        self.bottomLayout.addWidget(self.button_box)
         self.dialogLayout.addLayout(self.bottomLayout)
         self.retranslateUi(editSongDialog)
 
     def retranslateUi(self, editSongDialog):
-        editSongDialog.setWindowTitle(
-            translate('SongsPlugin.EditSongForm', 'Song Editor'))
-        self.titleLabel.setText(
-            translate('SongsPlugin.EditSongForm', '&Title:'))
-        self.alternativeTitleLabel.setText(
-            translate('SongsPlugin.EditSongForm', 'Alt&ernate title:'))
-        self.lyricsLabel.setText(
-            translate('SongsPlugin.EditSongForm', '&Lyrics:'))
-        self.verseOrderLabel.setText(
-            translate('SongsPlugin.EditSongForm', '&Verse order:'))
+        editSongDialog.setWindowTitle(translate('SongsPlugin.EditSongForm', 'Song Editor'))
+        self.titleLabel.setText(translate('SongsPlugin.EditSongForm', '&Title:'))
+        self.alternativeTitleLabel.setText(translate('SongsPlugin.EditSongForm', 'Alt&ernate title:'))
+        self.lyricsLabel.setText(translate('SongsPlugin.EditSongForm', '&Lyrics:'))
+        self.verseOrderLabel.setText(translate('SongsPlugin.EditSongForm', '&Verse order:'))
         self.verseAddButton.setText(UiStrings().Add)
         self.verseEditButton.setText(UiStrings().Edit)
-        self.verseEditAllButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Ed&it All'))
+        self.verseEditAllButton.setText(translate('SongsPlugin.EditSongForm', 'Ed&it All'))
         self.verseDeleteButton.setText(UiStrings().Delete)
-        self.songTabWidget.setTabText(
-            self.songTabWidget.indexOf(self.lyricsTab),
+        self.songTabWidget.setTabText(self.songTabWidget.indexOf(self.lyricsTab),
             translate('SongsPlugin.EditSongForm', 'Title && Lyrics'))
         self.authorsGroupBox.setTitle(SongStrings.Authors)
-        self.authorAddButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Add to Song'))
-        self.authorRemoveButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Remove'))
-        self.maintenanceButton.setText(translate('SongsPlugin.EditSongForm',
-            '&Manage Authors, Topics, Song Books'))
+        self.authorAddButton.setText(translate('SongsPlugin.EditSongForm', '&Add to Song'))
+        self.authorRemoveButton.setText(translate('SongsPlugin.EditSongForm', '&Remove'))
+        self.maintenanceButton.setText(translate('SongsPlugin.EditSongForm', '&Manage Authors, Topics, Song Books'))
         self.topicsGroupBox.setTitle(SongStrings.Topic)
-        self.topicAddButton.setText(
-            translate('SongsPlugin.EditSongForm', 'A&dd to Song'))
-        self.topicRemoveButton.setText(
-            translate('SongsPlugin.EditSongForm', 'R&emove'))
+        self.topicAddButton.setText(translate('SongsPlugin.EditSongForm', 'A&dd to Song'))
+        self.topicRemoveButton.setText(translate('SongsPlugin.EditSongForm', 'R&emove'))
         self.songBookGroupBox.setTitle(SongStrings.SongBook)
-        self.songBookNameLabel.setText(translate('SongsPlugin.EditSongForm',
-            'Book:'))
-        self.songBookNumberLabel.setText(translate('SongsPlugin.EditSongForm',
-            'Number:'))
-        self.songTabWidget.setTabText(
-            self.songTabWidget.indexOf(self.authorsTab),
-            translate('SongsPlugin.EditSongForm',
-                'Authors, Topics && Song Book'))
+        self.songBookNameLabel.setText(translate('SongsPlugin.EditSongForm', 'Book:'))
+        self.songBookNumberLabel.setText(translate('SongsPlugin.EditSongForm', 'Number:'))
+        self.songTabWidget.setTabText(self.songTabWidget.indexOf(self.authorsTab),
+            translate('SongsPlugin.EditSongForm', 'Authors, Topics && Song Book'))
         self.themeGroupBox.setTitle(UiStrings().Theme)
-        self.themeAddButton.setText(
-            translate('SongsPlugin.EditSongForm', 'New &Theme'))
-        self.rightsGroupBox.setTitle(
-            translate('SongsPlugin.EditSongForm', 'Copyright Information'))
+        self.themeAddButton.setText(translate('SongsPlugin.EditSongForm', 'New &Theme'))
+        self.rightsGroupBox.setTitle(translate('SongsPlugin.EditSongForm', 'Copyright Information'))
         self.copyrightInsertButton.setText(SongStrings.CopyrightSymbol)
         self.CCLILabel.setText(UiStrings().CCLINumberLabel)
-        self.commentsGroupBox.setTitle(
-            translate('SongsPlugin.EditSongForm', 'Comments'))
-        self.songTabWidget.setTabText(
-            self.songTabWidget.indexOf(self.themeTab),
-            translate('SongsPlugin.EditSongForm',
-                'Theme, Copyright Info && Comments'))
-        self.songTabWidget.setTabText(
-            self.songTabWidget.indexOf(self.audioTab),
+        self.commentsGroupBox.setTitle(translate('SongsPlugin.EditSongForm', 'Comments'))
+        self.songTabWidget.setTabText(self.songTabWidget.indexOf(self.themeTab),
+            translate('SongsPlugin.EditSongForm', 'Theme, Copyright Info && Comments'))
+        self.songTabWidget.setTabText(self.songTabWidget.indexOf(self.audioTab),
             translate('SongsPlugin.EditSongForm', 'Linked Audio'))
-        self.audioAddFromFileButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Add &File(s)'))
-        self.audioAddFromMediaButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Add &Media'))
-        self.audioRemoveButton.setText(
-            translate('SongsPlugin.EditSongForm', '&Remove'))
-        self.audioRemoveAllButton.setText(
-            translate('SongsPlugin.EditSongForm', 'Remove &All'))
+        self.audioAddFromFileButton.setText(translate('SongsPlugin.EditSongForm', 'Add &File(s)'))
+        self.audioAddFromMediaButton.setText(translate('SongsPlugin.EditSongForm', 'Add &Media'))
+        self.audioRemoveButton.setText(translate('SongsPlugin.EditSongForm', '&Remove'))
+        self.audioRemoveAllButton.setText(translate('SongsPlugin.EditSongForm', 'Remove &All'))
         self.warningLabel.setText(
-            translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong>'
-                ' Not all of the verses are in use.'))
+            translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong> Not all of the verses are in use.'))
 
 def editSongDialogComboBox(parent, name):
     """
     Utility method to generate a standard combo box for this dialog.
     """
     comboBox = QtGui.QComboBox(parent)
-    comboBox.setSizeAdjustPolicy(
-        QtGui.QComboBox.AdjustToMinimumContentsLength)
-    comboBox.setSizePolicy(
-        QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+    comboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
+    comboBox.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
     comboBox.setEditable(True)
     comboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
     comboBox.setObjectName(name)

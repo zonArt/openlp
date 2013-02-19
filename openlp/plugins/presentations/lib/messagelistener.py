@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,11 +28,10 @@
 ###############################################################################
 
 import logging
-import os
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Registry
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class Controller(object):
         self.hide_mode = hide_mode
         if self.is_live:
             if hide_mode == HideMode.Screen:
-                Receiver.send_message(u'live_display_hide', HideMode.Screen)
+                Registry().execute(u'live_display_hide', HideMode.Screen)
                 self.stop()
             elif hide_mode == HideMode.Theme:
                 self.blank(hide_mode)
@@ -79,7 +79,7 @@ class Controller(object):
                 self.blank(hide_mode)
             else:
                 self.doc.start_presentation()
-                Receiver.send_message(u'live_display_hide', HideMode.Screen)
+                Registry().execute(u'live_display_hide', HideMode.Screen)
                 self.doc.slidenumber = 1
                 if slide_no > 1:
                     self.slide(slide_no)
@@ -177,7 +177,7 @@ class Controller(object):
             if not self.doc.is_active():
                 return
             if self.doc.slidenumber < self.doc.get_slide_count():
-                self.doc.slidenumber = self.doc.slidenumber + 1
+                self.doc.slidenumber += 1
                 self.poll()
             return
         if not self.activate():
@@ -203,7 +203,7 @@ class Controller(object):
             if not self.doc.is_active():
                 return
             if self.doc.slidenumber > 1:
-                self.doc.slidenumber = self.doc.slidenumber - 1
+                self.doc.slidenumber -= 1
                 self.poll()
             return
         if not self.activate():
@@ -236,7 +236,7 @@ class Controller(object):
                 return
             if not self.doc.is_active():
                 return
-            Receiver.send_message(u'live_display_hide', HideMode.Theme)
+            Registry().execute(u'live_display_hide', HideMode.Theme)
         elif hide_mode == HideMode.Blank:
             if not self.activate():
                 return
@@ -270,11 +270,10 @@ class Controller(object):
             return
         if not self.activate():
             return
-        if self.doc.slidenumber and \
-            self.doc.slidenumber != self.doc.get_slide_number():
+        if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
-        Receiver.send_message(u'live_display_hide', HideMode.Screen)
+        Registry().execute(u'live_display_hide', HideMode.Screen)
 
     def poll(self):
         if not self.doc:
@@ -295,30 +294,19 @@ class MessageListener(object):
         self.preview_handler = Controller(False)
         self.live_handler = Controller(True)
         # messages are sent from core.ui.slidecontroller
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_start'), self.startup)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_stop'), self.shutdown)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_hide'), self.hide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_first'), self.first)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_previous'), self.previous)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_next'), self.next)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_last'), self.last)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_slide'), self.slide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_blank'), self.blank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'presentations_unblank'), self.unblank)
+        Registry().register_function(u'presentations_start', self.startup)
+        Registry().register_function(u'presentations_stop', self.shutdown)
+        Registry().register_function(u'presentations_hide', self.hide)
+        Registry().register_function(u'presentations_first', self.first)
+        Registry().register_function(u'presentations_previous', self.previous)
+        Registry().register_function(u'presentations_next', self.next)
+        Registry().register_function(u'presentations_last', self.last)
+        Registry().register_function(u'presentations_slide', self.slide)
+        Registry().register_function(u'presentations_blank', self.blank)
+        Registry().register_function(u'presentations_unblank', self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
-        QtCore.QObject.connect(
-            self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
+        QtCore.QObject.connect(self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
 
     def startup(self, message):
         """
@@ -329,7 +317,7 @@ class MessageListener(object):
         item = message[0]
         log.debug(u'Startup called with message %s' % message)
         hide_mode = message[2]
-        file = os.path.join(item.get_frame_path(), item.get_frame_title())
+        file = item.get_frame_path()
         self.handler = item.title
         if self.handler == self.mediaitem.Automatic:
             self.handler = self.mediaitem.findControllerByType(file)
@@ -339,8 +327,7 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        controller.add_handler(self.controllers[self.handler], file, hide_mode,
-            message[3])
+        controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
 
     def slide(self, message):
         """
@@ -432,7 +419,7 @@ class MessageListener(object):
     def timeout(self):
         """
         The presentation may be timed or might be controlled by the
-        application directly, rather than through OpenLP. Poll occassionally
+        application directly, rather than through OpenLP. Poll occasionally
         to check which slide is currently displayed so the slidecontroller
         view can be updated
         """

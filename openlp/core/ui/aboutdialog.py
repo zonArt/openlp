@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,18 +29,25 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon, translate
-from openlp.core.lib.ui import UiStrings, create_button, create_button_box
+from openlp.core.lib import UiStrings, build_icon, translate
+from openlp.core.lib.ui import create_button, create_button_box
+
 
 class Ui_AboutDialog(object):
+    """
+    The actual GUI widgets for the About form.
+    """
+
     def setupUi(self, aboutDialog):
+        """
+        Set up the UI for the dialog.
+        """
         aboutDialog.setObjectName(u'aboutDialog')
         aboutDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
         self.aboutDialogLayout = QtGui.QVBoxLayout(aboutDialog)
         self.aboutDialogLayout.setObjectName(u'aboutDialogLayout')
         self.logoLabel = QtGui.QLabel(aboutDialog)
-        self.logoLabel.setPixmap(
-            QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
+        self.logoLabel.setPixmap(QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
         self.logoLabel.setObjectName(u'logoLabel')
         self.aboutDialogLayout.addWidget(self.logoLabel)
         self.aboutNotebook = QtGui.QTabWidget(aboutDialog)
@@ -72,15 +80,16 @@ class Ui_AboutDialog(object):
         self.licenseTabLayout.addWidget(self.licenseTextEdit)
         self.aboutNotebook.addTab(self.licenseTab, u'')
         self.aboutDialogLayout.addWidget(self.aboutNotebook)
-        self.volunteerButton = create_button(None, u'volunteerButton',
-            icon=u':/system/system_volunteer.png')
-        self.buttonBox = create_button_box(aboutDialog, u'buttonBox',
-            [u'close'], [self.volunteerButton])
-        self.aboutDialogLayout.addWidget(self.buttonBox)
+        self.volunteerButton = create_button(None, u'volunteerButton', icon=u':/system/system_volunteer.png')
+        self.button_box = create_button_box(aboutDialog, u'button_box', [u'close'], [self.volunteerButton])
+        self.aboutDialogLayout.addWidget(self.button_box)
         self.retranslateUi(aboutDialog)
         self.aboutNotebook.setCurrentIndex(0)
 
     def retranslateUi(self, aboutDialog):
+        """
+        Dynamically translate the UI.
+        """
         aboutDialog.setWindowTitle(u'%s OpenLP' % UiStrings().About)
         self.aboutTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
@@ -98,8 +107,7 @@ class Ui_AboutDialog(object):
             'like to see more free Christian software being written, please '
             'consider volunteering by using the button below.'
         ))
-        self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.aboutTab), UiStrings().About)
+        self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.aboutTab), UiStrings().About)
         lead = u'Raoul "superfly" Snyman'
         developers = [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin',
             u'Michael "cocooncrash" Gorven',
@@ -108,40 +116,56 @@ class Ui_AboutDialog(object):
         contributors = [u'Gerald "jerryb" Britton',
             u'Samuel "MrGamgee" Findlay', u'Scott "sguerrieri" Guerrieri',
             u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
-            u'Armin "orangeshirt" K\xf6hler', u'Edwin "edwinlunando" Lunando',
+            u'Armin "orangeshirt" K\xf6hler', u'Erik "luen" Lundin',
+            u'Edwin "edwinlunando" Lunando', u'Brian "brianmeyer" Meyer',
             u'Joshua "milleja46" Miller', u'Stevan "ElderP" Pettit',
             u'Mattias "mahfiaz" P\xf5ldaru', u'Christian "crichter" Richter',
             u'Philip "Phill" Ridout', u'Simon "samscudder" Scudder',
             u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
-            u'Dave "Dave42W" Warnock', u'Frode "frodus" Woldsund']
+            u'Dave "Dave42W" Warnock', u'Frode "frodus" Woldsund',
+            u'Martin "matysek" Zibricky', u'Patrick "mohij" Zimmermann']
         testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
             u'Tim "TRB143" Bentley (Fedora and Android)',
             u'Matthias "matthub" Hub (Mac OS X)',
+            u'Joseph "jdmulloy" Mulloy (openSUSE)',
             u'Stevan "ElderP" Pettit (Windows)',
-            u'Raoul "superfly" Snyman (Ubuntu)',
+            u'Raoul "superfly" Snyman (Debian, Ubuntu)',
             u'Garrett "floft" Wilson (Arch Linux)']
         translators = {
             u'af': [u'Johan "nuvolari" Mynhardt'],
+            u'cs': [u'Martin "matysek" Zibricky'],
+            u'da': [u'Henrik "Hsonesson" Sonesson'],
             u'de': [u'Patrick "madmuffin" Br\xfcckner',
                 u'Meinert "m2j" Jordan', u'Andreas "googol" Preikschat',
                 u'Christian "crichter" Richter'],
             u'en_GB': [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin'],
-            u'en_ZA': [u'Raoul "superfly" Snyman'],
+            u'en_ZA': [u'Raoul "superfly" Snyman',
+                       u'Johan "nuvolari" Mynhardt'],
+            u'el': [u'Alexander Siozos'],
+            u'es': [u'Josu\xe9 Z\xfa\xf1iga', u'Christian Gonzalez'],
             u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
-            u'fr': [u'Stephan\xe9 "stbrunner" Brunner'],
+            u'fi': [u'Jori "joribu" Brander', u'Tobbe "tobbeb" Bildo'],
+            u'fr': [u'Stephan\xe9 "stbrunner" Brunner', u'Jeremie "jnau05"',
+                    u'Carl "carl.fischer" Fischer'],
             u'hu': [u'Gyuris Gell\xe9rt'],
-            u'ja': [u'Kunio "Kunio" Nakamaru'],
+            u'id': [u'Mico "bangmico" Siahaan', u' ign_christian'],
+            u'ja': [u'Kunio "Kunio" Nakamaru', u'Chris Haris'],
             u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
             u'nl': [u'Arjen "typovar" van Voorst'],
-            u'pt_BR': [u'Rafael "rafaellerm" Lerm', u'Gustavo Bim',
-                u'Simon "samscudder" Scudder'],
-            u'ru': [u'Sergey "ratz" Ratz']
+            u'pt_BR': [u'David Mederiros', u'Rafael "rafaellerm" Lerm',
+                       u'Eduardo Levi Chaves',
+                       u'Gustavo Bim', u'Rog\xeanio Bel\xe9m', u'Samuel'
+                u'Simon "samscudder" Scudder', u'Van Der Fran'],
+            u'ru': [u'Sergey "ratz" Ratz'],
+            u'sv': [u'Erik "luen" Lundin'],
+            u'ta_LK': [u'"Prasad"'],
+            u'zh_CN': [u' "executor" ']
         }
         documentors = [u'Wesley "wrst" Stout',
             u'John "jseagull1" Cegalis (lead)']
-        self.creditsTextEdit.setPlainText(unicode(translate('OpenLP.AboutForm',
+        self.creditsTextEdit.setPlainText(translate('OpenLP.AboutForm',
             'Project Lead\n'
             '    %s\n'
             '\n'
@@ -160,17 +184,29 @@ class Ui_AboutDialog(object):
             'Translators\n'
             '    Afrikaans (af)\n'
             '        %s\n'
+            '    Czech (cs)\n'
+            '        %s\n'
+            '    Danish (da)\n'
+            '        %s\n'
             '    German (de)\n'
+            '        %s\n'
+            '    Greek (el)\n'
             '        %s\n'
             '    English, United Kingdom (en_GB)\n'
             '        %s\n'
             '    English, South Africa (en_ZA)\n'
             '        %s\n'
+            '    Spanish (es)\n'
+            '        %s\n'
             '    Estonian (et)\n'
+            '        %s\n'
+            '    Finnish (fi)\n'
             '        %s\n'
             '    French (fr)\n'
             '        %s\n'
             '    Hungarian (hu)\n'
+            '        %s\n'
+            '    Indonesian (id)\n'
             '        %s\n'
             '    Japanese (ja)\n'
             '        %s\n'
@@ -182,13 +218,19 @@ class Ui_AboutDialog(object):
             '        %s\n'
             '    Russian (ru)\n'
             '        %s\n'
+            '    Swedish (sv)\n'
+            '        %s\n'
+            '    Tamil(Sri-Lanka) (ta_LK)\n'
+            '        %s\n'
+            '    Chinese(China) (zh_CN)\n'
+            '        %s\n'
             '\n'
             'Documentation\n'
             '    %s\n'
             '\n'
             'Built With\n'
             '    Python: http://www.python.org/\n'
-            '    Qt4: http://qt.nokia.com/\n'
+            '    Qt4: http://qt.digia.com/\n'
             '    PyQt4: http://www.riverbankcomputing.co.uk/software/pyqt/'
             'intro\n'
             '    Oxygen Icons: http://oxygen-icons.org/\n'
@@ -202,33 +244,43 @@ class Ui_AboutDialog(object):
             '    God our Father, for sending His Son to die\n'
             '    on the cross, setting us free from sin. We\n'
             '    bring this software to you for free because\n'
-            '    He has set us free.')) % (lead, u'\n    '.join(developers),
+            '    He has set us free.') % (lead, u'\n    '.join(developers),
             u'\n    '.join(contributors), u'\n    '.join(testers),
             u'\n    '.join(packagers), u'\n        '.join(translators[u'af']),
+            u'\n        '.join(translators[u'cs']),
+            u'\n        '.join(translators[u'da']),
             u'\n        '.join(translators[u'de']),
+            u'\n        '.join(translators[u'el']),
             u'\n        '.join(translators[u'en_GB']),
             u'\n        '.join(translators[u'en_ZA']),
+            u'\n        '.join(translators[u'es']),
             u'\n        '.join(translators[u'et']),
+            u'\n        '.join(translators[u'fi']),
             u'\n        '.join(translators[u'fr']),
             u'\n        '.join(translators[u'hu']),
+            u'\n        '.join(translators[u'id']),
             u'\n        '.join(translators[u'ja']),
             u'\n        '.join(translators[u'nb']),
             u'\n        '.join(translators[u'nl']),
             u'\n        '.join(translators[u'pt_BR']),
             u'\n        '.join(translators[u'ru']),
+            u'\n        '.join(translators[u'sv']),
+            u'\n        '.join(translators[u'ta_LK']),
+            u'\n        '.join(translators[u'zh_CN']),
             u'\n    '.join(documentors)))
-        self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.creditsTab),
+        self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.creditsTab),
             translate('OpenLP.AboutForm', 'Credits'))
-        copyright = unicode(translate('OpenLP.AboutForm',
-            'Copyright \xa9 2004-2012 %s\n'
-            'Portions copyright \xa9 2004-2012 %s')) % (u'Raoul Snyman',
+        copyright_note = translate('OpenLP.AboutForm',
+            'Copyright \xa9 2004-2013 %s\n'
+            'Portions copyright \xa9 2004-2013 %s') % (u'Raoul Snyman',
             u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
             u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
-            u'Armin K\xf6hler, Edwin Lunando, Joshua Miller, Stevan Pettit, '
-            u'Andreas Preikschat, Mattias P\xf5ldaru, Christian Richter, '
+            u'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
+            u'Brian T. Meyer, Stevan Pettit, Andreas Preikschat, '
+            u'Mattias P\xf5ldaru, Christian Richter, '
             u'Philip Ridout, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
-            u'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund')
+            u'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund, '
+            u'Martin Zibricky, Patrick Zimmermann')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '
@@ -610,10 +662,7 @@ class Ui_AboutDialog(object):
             'linking proprietary applications with the library. If this is '
             'what you want to do, use the GNU Lesser General Public License '
             'instead of this License.')
-        self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' %
-            (copyright, licence, disclaimer, gpltext))
-        self.aboutNotebook.setTabText(
-            self.aboutNotebook.indexOf(self.licenseTab),
+        self.licenseTextEdit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' % (copyright_note, licence, disclaimer, gpltext))
+        self.aboutNotebook.setTabText(self.aboutNotebook.indexOf(self.licenseTab),
             translate('OpenLP.AboutForm', 'License'))
-        self.volunteerButton.setText(translate('OpenLP.AboutForm',
-            'Volunteer'))
+        self.volunteerButton.setText(translate('OpenLP.AboutForm', 'Volunteer'))

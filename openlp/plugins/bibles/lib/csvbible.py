@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -61,7 +62,7 @@ import logging
 import chardet
 import csv
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
@@ -108,21 +109,16 @@ class CSVBible(BibleDB):
             for line in books_reader:
                 if self.stop_import_flag:
                     break
-                self.wizard.incrementProgressBar(unicode(
-                    translate('BiblesPlugin.CSVBible',
-                    'Importing books... %s')) %
+                self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible', 'Importing books... %s') %
                     unicode(line[2], details['encoding']))
-                book_ref_id = self.get_book_ref_id_by_name(
-                    unicode(line[2], details['encoding']), 67, language_id)
+                book_ref_id = self.get_book_ref_id_by_name(unicode(line[2], details['encoding']), 67, language_id)
                 if not book_ref_id:
-                    log.exception(u'Importing books from "%s" '\
-                        'failed' % self.booksfile)
+                    log.exception(u'Importing books from "%s" failed' % self.booksfile)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                self.create_book(unicode(line[2], details['encoding']),
-                    book_ref_id, book_details[u'testament_id'])
+                self.create_book(unicode(line[2], details['encoding']), book_ref_id, book_details[u'testament_id'])
                 book_list[int(line[0])] = unicode(line[2], details['encoding'])
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
         except (IOError, IndexError):
             log.exception(u'Loading books from file failed')
             success = False
@@ -152,18 +148,16 @@ class CSVBible(BibleDB):
                 if book_ptr != line_book:
                     book = self.get_book(line_book)
                     book_ptr = book.name
-                    self.wizard.incrementProgressBar(unicode(translate(
-                        'BiblesPlugin.CSVBible', 'Importing verses from %s...',
-                        'Importing verses from <book name>...')) % book.name)
+                    self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible',
+                        'Importing verses from %s... Importing verses from <book name>...') % book.name)
                     self.session.commit()
                 try:
                     verse_text = unicode(line[3], details['encoding'])
                 except UnicodeError:
                     verse_text = unicode(line[3], u'cp1252')
                 self.create_verse(book.id, line[1], line[2], verse_text)
-            self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible',
-                'Importing verses... done.'))
-            Receiver.send_message(u'openlp_process_events')
+            self.wizard.incrementProgressBar(translate('BiblesPlugin.CSVBible', 'Importing verses... done.'))
+            self.application.process_events()
             self.session.commit()
         except IOError:
             log.exception(u'Loading verses from file failed')

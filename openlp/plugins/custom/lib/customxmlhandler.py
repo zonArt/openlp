@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -49,6 +50,7 @@ from lxml import etree, objectify
 
 log = logging.getLogger(__name__)
 
+#TODO: These classes need to be refactored into a single class.
 class CustomXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
@@ -61,6 +63,8 @@ class CustomXMLBuilder(object):
         """
         # Create the minidom document
         self.custom_xml = Document()
+        self.new_document()
+        self.add_lyrics_to_song()
 
     def new_document(self):
         """
@@ -81,11 +85,11 @@ class CustomXMLBuilder(object):
         self.lyrics.setAttribute(u'language', u'en')
         self.song.appendChild(self.lyrics)
 
-    def add_verse_to_lyrics(self, type, number, content):
+    def add_verse_to_lyrics(self, verse_type, number, content):
         """
         Add a verse to the ``<lyrics>`` tag.
 
-        ``type``
+        ``verse_type``
             A string denoting the type of verse. Possible values are "Chorus",
             "Verse", "Bridge", and "Custom".
 
@@ -96,7 +100,7 @@ class CustomXMLBuilder(object):
             The actual text of the verse to be stored.
         """
         verse = self.custom_xml.createElement(u'verse')
-        verse.setAttribute(u'type', type)
+        verse.setAttribute(u'type', verse_type)
         verse.setAttribute(u'label', number)
         self.lyrics.appendChild(verse)
         # add data as a CDATA section to protect the XML from special chars

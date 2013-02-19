@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,23 +26,30 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.core.ui.media.webkit` module contains our WebKit video player
+"""
+from PyQt4 import QtGui
 
 import logging
 
-from openlp.core.lib.mediaplayer import MediaPlayer
+from openlp.core.lib import Settings, translate
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
 
 VIDEO_CSS = u"""
 #videobackboard {
     z-index:3;
-    background-color: black;
+    background-color: %(bgcolor)s;
 }
 #video1 {
+    background-color: %(bgcolor)s;
     z-index:4;
 }
 #video2 {
+    background-color: %(bgcolor)s;
     z-index:4;
 }
 """
@@ -228,33 +236,33 @@ FLASH_HTML = u"""
 """
 
 VIDEO_EXT = [
-        u'*.3gp'
-        , u'*.3gpp'
-        , u'*.3g2'
-        , u'*.3gpp2'
-        , u'*.aac'
-        , u'*.flv'
-        , u'*.f4a'
-        , u'*.f4b'
-        , u'*.f4p'
-        , u'*.f4v'
-        , u'*.mov'
-        , u'*.m4a'
-        , u'*.m4b'
-        , u'*.m4p'
-        , u'*.m4v'
-        , u'*.mkv'
-        , u'*.mp4'
-        , u'*.ogv'
-        , u'*.webm'
-        , u'*.mpg', u'*.wmv',  u'*.mpeg', u'*.avi'
-        , u'*.swf'
-    ]
+    u'*.3gp',
+    u'*.3gpp',
+    u'*.3g2',
+    u'*.3gpp2',
+    u'*.aac',
+    u'*.flv',
+    u'*.f4a',
+    u'*.f4b',
+    u'*.f4p',
+    u'*.f4v',
+    u'*.mov',
+    u'*.m4a',
+    u'*.m4b',
+    u'*.m4p',
+    u'*.m4v',
+    u'*.mkv',
+    u'*.mp4',
+    u'*.ogv',
+    u'*.webm',
+    u'*.mpg', u'*.wmv', u'*.mpeg', u'*.avi',
+    u'*.swf'
+]
 
 AUDIO_EXT = [
-        u'*.mp3'
-        , u'*.ogg'
-    ]
+    u'*.mp3',
+    u'*.ogg'
+]
 
 
 class WebkitPlayer(MediaPlayer):
@@ -264,6 +272,9 @@ class WebkitPlayer(MediaPlayer):
     """
 
     def __init__(self, parent):
+        """
+        Constructor
+        """
         MediaPlayer.__init__(self, parent, u'webkit')
         self.original_name = u'WebKit'
         self.display_name = u'&WebKit'
@@ -276,7 +287,9 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        return VIDEO_CSS + FLASH_CSS
+        background = QtGui.QColor(Settings().value(u'players/background color')).name()
+        css = VIDEO_CSS % {u'bgcolor': background}
+        return css + FLASH_CSS
 
     def get_media_display_javascript(self):
         """
@@ -291,14 +304,23 @@ class WebkitPlayer(MediaPlayer):
         return VIDEO_HTML + FLASH_HTML
 
     def setup(self, display):
+        """
+        Set up the player
+        """
         display.webView.resize(display.size())
         display.webView.raise_()
         self.hasOwnWidget = False
 
     def check_available(self):
+        """
+        Check the availability of the media player
+        """
         return True
 
     def load(self, display):
+        """
+        Load a video
+        """
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
         if display.hasAudio and not controller.media_info.is_background:
@@ -314,25 +336,27 @@ class WebkitPlayer(MediaPlayer):
         display.webView.setVisible(True)
         if controller.media_info.file_info.suffix() == u'swf':
             controller.media_info.is_flash = True
-            js = u'show_flash("load","%s");' % \
-                (path.replace(u'\\', u'\\\\'))
+            js = u'show_flash("load","%s");' % (path.replace(u'\\', u'\\\\'))
         else:
-            js = u'show_video("init", "%s", %s, %s);' % \
-                (path.replace(u'\\', u'\\\\'), str(vol), loop)
+            js = u'show_video("init", "%s", %s, %s);' % (path.replace(u'\\', u'\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
 
     def resize(self, display):
-        controller = display.controller
+        """
+        Resize the player
+        """
         display.webView.resize(display.size())
 
     def play(self, display):
+        """
+        Play a video
+        """
         controller = display.controller
         display.webLoaded = True
         length = 0
         start_time = 0
-        if self.state != MediaState.Paused and \
-            controller.media_info.start_time > 0:
+        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         self.set_visible(display, True)
         if controller.media_info.is_flash:
@@ -348,6 +372,9 @@ class WebkitPlayer(MediaPlayer):
         return True
 
     def pause(self, display):
+        """
+        Pause a video
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("pause");')
@@ -356,6 +383,9 @@ class WebkitPlayer(MediaPlayer):
         self.state = MediaState.Paused
 
     def stop(self, display):
+        """
+        Stop a video
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("stop");')
@@ -364,26 +394,32 @@ class WebkitPlayer(MediaPlayer):
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
+        """
+        Set the volume
+        """
         controller = display.controller
         # 1.0 is the highest value
         if display.hasAudio:
             vol = float(vol) / float(100)
             if not controller.media_info.is_flash:
-                display.frame.evaluateJavaScript(
-                    u'show_video(null, null, %s);' % str(vol))
+                display.frame.evaluateJavaScript(u'show_video(null, null, %s);' % str(vol))
 
     def seek(self, display, seekVal):
+        """
+        Go to a position in the video
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             seek = seekVal
-            display.frame.evaluateJavaScript(
-                u'show_flash("seek", null, null, "%s");' % (seek))
+            display.frame.evaluateJavaScript(u'show_flash("seek", null, null, "%s");' % (seek))
         else:
             seek = float(seekVal) / 1000
-            display.frame.evaluateJavaScript(
-                u'show_video("seek", null, null, null, "%f");' % (seek))
+            display.frame.evaluateJavaScript(u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
+        """
+        Reset the player
+        """
         controller = display.controller
         if controller.media_info.is_flash:
             display.frame.evaluateJavaScript(u'show_flash("close");')
@@ -392,41 +428,54 @@ class WebkitPlayer(MediaPlayer):
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
+        """
+        Set the visibility
+        """
         controller = display.controller
         if status:
             is_visible = "visible"
         else:
             is_visible = "hidden"
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash( \
-                "setVisible", null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript(u'show_flash("setVisible", null, null, "%s");' % (is_visible))
         else:
-            display.frame.evaluateJavaScript(u'show_video( \
-                "setVisible", null, null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript(u'show_video("setVisible", null, null, null, "%s");' % (is_visible))
 
     def update_ui(self, display):
+        """
+        Update the UI
+        """
         controller = display.controller
         if controller.media_info.is_flash:
-            currentTime = display.frame.evaluateJavaScript(
-                u'show_flash("currentTime");').toInt()[0]
-            length = display.frame.evaluateJavaScript(
-                u'show_flash("length");').toInt()[0]
+            currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");')
+            length = display.frame.evaluateJavaScript(u'show_flash("length");')
         else:
-            if display.frame.evaluateJavaScript(
-                u'show_video("isEnded");').toString() == 'true':
+            if display.frame.evaluateJavaScript(u'show_video("isEnded");') == 'true':
                 self.stop(display)
-            (currentTime, ok) = display.frame.evaluateJavaScript(
-                u'show_video("currentTime");').toFloat()
+            currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and currentTime != float('inf'):
+            if currentTime and currentTime != float('inf'):
                 currentTime = int(currentTime * 1000)
-            (length, ok) = display.frame.evaluateJavaScript(
-                u'show_video("length");').toFloat()
+            length = display.frame.evaluateJavaScript(u'show_video("length");')
             # check if conversion was ok and value is not 'NaN'
-            if ok and length != float('inf'):
+            if length and length != float('inf'):
                 length = int(length * 1000)
         if currentTime > 0:
             controller.media_info.length = length
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
+                controller.seekSlider.blockSignals(True)
                 controller.seekSlider.setSliderPosition(currentTime)
+                controller.seekSlider.blockSignals(False)
+
+    def get_info(self):
+        """
+        Return some information about this player
+        """
+        return(translate('Media.player', 'Webkit is a media player which runs '
+            'inside a web browser. This player allows text over video to be '
+            'rendered.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
+            translate('Media.player', 'Video') + u'</strong><br/>' +
+            unicode(VIDEO_EXT) + u'<br/>')

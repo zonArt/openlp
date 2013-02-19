@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,16 +26,17 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The general tab of the configuration dialog.
+"""
 import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, translate
-from openlp.core.lib.ui import UiStrings
-from openlp.core.lib.settings import Settings
-from openlp.core.ui import ScreenList
+from openlp.core.lib import Registry, Settings, SettingsTab, ScreenList, UiStrings, translate
 
 log = logging.getLogger(__name__)
+
 
 class GeneralTab(SettingsTab):
     """
@@ -189,21 +191,15 @@ class GeneralTab(SettingsTab):
         self.rightLayout.addWidget(self.settingsGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.overrideRadioButton,
-            QtCore.SIGNAL(u'toggled(bool)'), self.onOverrideRadioButtonPressed)
-        QtCore.QObject.connect(self.customHeightValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.customWidthValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.customYValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.customXValueEdit,
-            QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.monitorComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.onDisplayChanged)
+        QtCore.QObject.connect(self.overrideRadioButton, QtCore.SIGNAL(u'toggled(bool)'),
+            self.onOverrideRadioButtonPressed)
+        QtCore.QObject.connect(self.customHeightValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
+        QtCore.QObject.connect(self.customWidthValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
+        QtCore.QObject.connect(self.customYValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
+        QtCore.QObject.connect(self.customXValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
+        QtCore.QObject.connect(self.monitorComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'), self.onDisplayChanged)
         # Reload the tab, as the screen resolution/count may have changed.
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'config_screen_changed'), self.load)
+        Registry().register_function(u'config_screen_changed', self.load)
         # Remove for now
         self.usernameLabel.setVisible(False)
         self.usernameEdit.setVisible(False)
@@ -215,40 +211,25 @@ class GeneralTab(SettingsTab):
         Translate the general settings tab to the currently selected language
         """
         self.tabTitleVisible = translate('OpenLP.GeneralTab', 'General')
-        self.monitorGroupBox.setTitle(translate('OpenLP.GeneralTab',
-            'Monitors'))
-        self.monitorRadioButton.setText(translate('OpenLP.GeneralTab',
-            'Select monitor for output display:'))
-        self.displayOnMonitorCheck.setText(
-            translate('OpenLP.GeneralTab', 'Display if a single screen'))
-        self.startupGroupBox.setTitle(
-            translate('OpenLP.GeneralTab', 'Application Startup'))
-        self.warningCheckBox.setText(
-            translate('OpenLP.GeneralTab', 'Show blank screen warning'))
-        self.autoOpenCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Automatically open the last service'))
-        self.showSplashCheckBox.setText(
-            translate('OpenLP.GeneralTab', 'Show the splash screen'))
-        self.checkForUpdatesCheckBox.setText(
-            translate('OpenLP.GeneralTab', 'Check for updates to OpenLP'))
-        self.settingsGroupBox.setTitle(
-            translate('OpenLP.GeneralTab', 'Application Settings'))
+        self.monitorGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Monitors'))
+        self.monitorRadioButton.setText(translate('OpenLP.GeneralTab', 'Select monitor for output display:'))
+        self.displayOnMonitorCheck.setText(translate('OpenLP.GeneralTab', 'Display if a single screen'))
+        self.startupGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Application Startup'))
+        self.warningCheckBox.setText(translate('OpenLP.GeneralTab', 'Show blank screen warning'))
+        self.autoOpenCheckBox.setText(translate('OpenLP.GeneralTab', 'Automatically open the last service'))
+        self.showSplashCheckBox.setText(translate('OpenLP.GeneralTab', 'Show the splash screen'))
+        self.checkForUpdatesCheckBox.setText(translate('OpenLP.GeneralTab', 'Check for updates to OpenLP'))
+        self.settingsGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Application Settings'))
         self.saveCheckServiceCheckBox.setText(translate('OpenLP.GeneralTab',
             'Prompt to save before starting a new service'))
-        self.autoUnblankCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Unblank display when adding new live item'))
-        self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab',
-            'Automatically preview next item in service'))
-        self.timeoutLabel.setText(translate('OpenLP.GeneralTab',
-            'Timed slide interval:'))
+        self.autoUnblankCheckBox.setText(translate('OpenLP.GeneralTab', 'Unblank display when adding new live item'))
+        self.autoPreviewCheckBox.setText(translate('OpenLP.GeneralTab', 'Automatically preview next item in service'))
+        self.timeoutLabel.setText(translate('OpenLP.GeneralTab', 'Timed slide interval:'))
         self.timeoutSpinBox.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
-        self.ccliGroupBox.setTitle(
-            translate('OpenLP.GeneralTab', 'CCLI Details'))
+        self.ccliGroupBox.setTitle(translate('OpenLP.GeneralTab', 'CCLI Details'))
         self.numberLabel.setText(UiStrings().CCLINumberLabel)
-        self.usernameLabel.setText(
-            translate('OpenLP.GeneralTab', 'SongSelect username:'))
-        self.passwordLabel.setText(
-            translate('OpenLP.GeneralTab', 'SongSelect password:'))
+        self.usernameLabel.setText(translate('OpenLP.GeneralTab', 'SongSelect username:'))
+        self.passwordLabel.setText(translate('OpenLP.GeneralTab', 'SongSelect password:'))
         # Moved from display tab
         self.overrideRadioButton.setText(translate('OpenLP.GeneralTab',
             'Override display position:'))
@@ -256,12 +237,9 @@ class GeneralTab(SettingsTab):
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
         self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))
         self.customWidthLabel.setText(translate('OpenLP.GeneralTab', 'Width'))
-        self.audioGroupBox.setTitle(
-            translate('OpenLP.GeneralTab', 'Background Audio'))
-        self.startPausedCheckBox.setText(
-            translate('OpenLP.GeneralTab', 'Start background audio paused'))
-        self.repeatListCheckBox.setText(
-            translate('OpenLP.GeneralTab', 'Repeat track list'))
+        self.audioGroupBox.setTitle(translate('OpenLP.GeneralTab', 'Background Audio'))
+        self.startPausedCheckBox.setText(translate('OpenLP.GeneralTab', 'Start background audio paused'))
+        self.repeatListCheckBox.setText(translate('OpenLP.GeneralTab', 'Repeat track list'))
 
     def load(self):
         """
@@ -271,57 +249,34 @@ class GeneralTab(SettingsTab):
         settings.beginGroup(self.settingsSection)
         self.monitorComboBox.clear()
         self.monitorComboBox.addItems(self.screens.get_screen_list())
-        monitorNumber = settings.value(u'monitor',
-            QtCore.QVariant(self.screens.display_count - 1)).toInt()[0]
+        monitorNumber = settings.value(u'monitor')
         self.monitorComboBox.setCurrentIndex(monitorNumber)
-        self.numberEdit.setText(unicode(settings.value(
-            u'ccli number', QtCore.QVariant(u'')).toString()))
-        self.usernameEdit.setText(unicode(settings.value(
-            u'songselect username', QtCore.QVariant(u'')).toString()))
-        self.passwordEdit.setText(unicode(settings.value(
-            u'songselect password', QtCore.QVariant(u'')).toString()))
-        self.saveCheckServiceCheckBox.setChecked(settings.value(u'save prompt',
-            QtCore.QVariant(False)).toBool())
-        self.autoUnblankCheckBox.setChecked(settings.value(u'auto unblank',
-            QtCore.QVariant(False)).toBool())
+        self.numberEdit.setText(settings.value(u'ccli number'))
+        self.usernameEdit.setText(settings.value(u'songselect username'))
+        self.passwordEdit.setText(settings.value(u'songselect password'))
+        self.saveCheckServiceCheckBox.setChecked(settings.value(u'save prompt'))
+        self.autoUnblankCheckBox.setChecked(settings.value(u'auto unblank'))
         self.displayOnMonitorCheck.setChecked(self.screens.display)
-        self.warningCheckBox.setChecked(settings.value(u'blank warning',
-            QtCore.QVariant(False)).toBool())
-        self.autoOpenCheckBox.setChecked(settings.value(u'auto open',
-            QtCore.QVariant(False)).toBool())
-        self.showSplashCheckBox.setChecked(settings.value(u'show splash',
-            QtCore.QVariant(True)).toBool())
-        self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check',
-            QtCore.QVariant(True)).toBool())
-        self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview',
-            QtCore.QVariant(False)).toBool())
-        self.timeoutSpinBox.setValue(settings.value(u'loop delay',
-           QtCore.QVariant(5)).toInt()[0])
-        self.monitorRadioButton.setChecked(
-            not settings.value(u'override position',
-            QtCore.QVariant(False)).toBool())
-        self.overrideRadioButton.setChecked(settings.value(u'override position',
-            QtCore.QVariant(False)).toBool())
-        self.customXValueEdit.setValue(settings.value(u'x position',
-            QtCore.QVariant(self.screens.current[u'size'].x())).toInt()[0])
-        self.customYValueEdit.setValue(settings.value(u'y position',
-            QtCore.QVariant(self.screens.current[u'size'].y())).toInt()[0])
-        self.customHeightValueEdit.setValue(settings.value(u'height',
-            QtCore.QVariant(self.screens.current[u'size'].height())).toInt()[0])
-        self.customWidthValueEdit.setValue(settings.value(u'width',
-            QtCore.QVariant(self.screens.current[u'size'].width())).toInt()[0])
-        self.startPausedCheckBox.setChecked(settings.value(
-            u'audio start paused', QtCore.QVariant(True)).toBool())
-        self.repeatListCheckBox.setChecked(settings.value(
-            u'audio repeat list', QtCore.QVariant(False)).toBool())
+        self.warningCheckBox.setChecked(settings.value(u'blank warning'))
+        self.autoOpenCheckBox.setChecked(settings.value(u'auto open'))
+        self.showSplashCheckBox.setChecked(settings.value(u'show splash'))
+        self.checkForUpdatesCheckBox.setChecked(settings.value(u'update check'))
+        self.autoPreviewCheckBox.setChecked(settings.value(u'auto preview'))
+        self.timeoutSpinBox.setValue(settings.value(u'loop delay'))
+        self.monitorRadioButton.setChecked(not settings.value(u'override position',))
+        self.overrideRadioButton.setChecked(settings.value(u'override position'))
+        self.customXValueEdit.setValue(settings.value(u'x position'))
+        self.customYValueEdit.setValue(settings.value(u'y position'))
+        self.customHeightValueEdit.setValue(settings.value(u'height'))
+        self.customWidthValueEdit.setValue(settings.value(u'width'))
+        self.startPausedCheckBox.setChecked(settings.value(u'audio start paused'))
+        self.repeatListCheckBox.setChecked(settings.value(u'audio repeat list'))
         settings.endGroup()
         self.monitorComboBox.setDisabled(self.overrideRadioButton.isChecked())
         self.customXValueEdit.setEnabled(self.overrideRadioButton.isChecked())
         self.customYValueEdit.setEnabled(self.overrideRadioButton.isChecked())
-        self.customHeightValueEdit.setEnabled(
-            self.overrideRadioButton.isChecked())
-        self.customWidthValueEdit.setEnabled(
-            self.overrideRadioButton.isChecked())
+        self.customHeightValueEdit.setEnabled(self.overrideRadioButton.isChecked())
+        self.customWidthValueEdit.setEnabled(self.overrideRadioButton.isChecked())
         self.display_changed = False
         settings.beginGroup(self.settingsSection)
 
@@ -331,46 +286,26 @@ class GeneralTab(SettingsTab):
         """
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        settings.setValue(u'monitor',
-            QtCore.QVariant(self.monitorComboBox.currentIndex()))
-        settings.setValue(u'display on monitor',
-            QtCore.QVariant(self.displayOnMonitorCheck.isChecked()))
-        settings.setValue(u'blank warning',
-            QtCore.QVariant(self.warningCheckBox.isChecked()))
-        settings.setValue(u'auto open',
-            QtCore.QVariant(self.autoOpenCheckBox.isChecked()))
-        settings.setValue(u'show splash',
-            QtCore.QVariant(self.showSplashCheckBox.isChecked()))
-        settings.setValue(u'update check',
-            QtCore.QVariant(self.checkForUpdatesCheckBox.isChecked()))
-        settings.setValue(u'save prompt',
-            QtCore.QVariant(self.saveCheckServiceCheckBox.isChecked()))
-        settings.setValue(u'auto unblank',
-            QtCore.QVariant(self.autoUnblankCheckBox.isChecked()))
-        settings.setValue(u'auto preview',
-            QtCore.QVariant(self.autoPreviewCheckBox.isChecked()))
-        settings.setValue(u'loop delay',
-            QtCore.QVariant(self.timeoutSpinBox.value()))
-        settings.setValue(u'ccli number',
-            QtCore.QVariant(self.numberEdit.displayText()))
-        settings.setValue(u'songselect username',
-            QtCore.QVariant(self.usernameEdit.displayText()))
-        settings.setValue(u'songselect password',
-            QtCore.QVariant(self.passwordEdit.displayText()))
-        settings.setValue(u'x position',
-            QtCore.QVariant(self.customXValueEdit.value()))
-        settings.setValue(u'y position',
-            QtCore.QVariant(self.customYValueEdit.value()))
-        settings.setValue(u'height',
-            QtCore.QVariant(self.customHeightValueEdit.value()))
-        settings.setValue(u'width',
-            QtCore.QVariant(self.customWidthValueEdit.value()))
-        settings.setValue(u'override position',
-            QtCore.QVariant(self.overrideRadioButton.isChecked()))
-        settings.setValue(u'audio start paused',
-            QtCore.QVariant(self.startPausedCheckBox.isChecked()))
-        settings.setValue(u'audio repeat list',
-            QtCore.QVariant(self.repeatListCheckBox.isChecked()))
+        settings.setValue(u'monitor', self.monitorComboBox.currentIndex())
+        settings.setValue(u'display on monitor', self.displayOnMonitorCheck.isChecked())
+        settings.setValue(u'blank warning', self.warningCheckBox.isChecked())
+        settings.setValue(u'auto open', self.autoOpenCheckBox.isChecked())
+        settings.setValue(u'show splash', self.showSplashCheckBox.isChecked())
+        settings.setValue(u'update check', self.checkForUpdatesCheckBox.isChecked())
+        settings.setValue(u'save prompt', self.saveCheckServiceCheckBox.isChecked())
+        settings.setValue(u'auto unblank', self.autoUnblankCheckBox.isChecked())
+        settings.setValue(u'auto preview', self.autoPreviewCheckBox.isChecked())
+        settings.setValue(u'loop delay', self.timeoutSpinBox.value())
+        settings.setValue(u'ccli number', self.numberEdit.displayText())
+        settings.setValue(u'songselect username', self.usernameEdit.displayText())
+        settings.setValue(u'songselect password', self.passwordEdit.displayText())
+        settings.setValue(u'x position', self.customXValueEdit.value())
+        settings.setValue(u'y position', self.customYValueEdit.value())
+        settings.setValue(u'height', self.customHeightValueEdit.value())
+        settings.setValue(u'width', self.customWidthValueEdit.value())
+        settings.setValue(u'override position', self.overrideRadioButton.isChecked())
+        settings.setValue(u'audio start paused', self.startPausedCheckBox.isChecked())
+        settings.setValue(u'audio repeat list', self.repeatListCheckBox.isChecked())
         settings.endGroup()
         # On save update the screens as well
         self.postSetUp(True)
@@ -380,8 +315,7 @@ class GeneralTab(SettingsTab):
         Apply settings after settings tab has loaded and most of the
         system so must be delayed
         """
-        Receiver.send_message(u'slidecontroller_live_spin_delay',
-            self.timeoutSpinBox.value())
+        Registry().execute(u'slidecontroller_live_spin_delay', self.timeoutSpinBox.value())
         # Do not continue on start up.
         if not postUpdate:
             return
@@ -397,7 +331,7 @@ class GeneralTab(SettingsTab):
         else:
             self.screens.reset_current_display()
         if self.display_changed:
-            Receiver.send_message(u'config_screen_changed')
+            Registry().execute(u'config_screen_changed')
         self.display_changed = False
 
     def onOverrideRadioButtonPressed(self, checked):

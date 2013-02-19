@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,7 +33,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Registry
+
 
 class ListWidgetWithDnD(QtGui.QListWidget):
     """
@@ -52,15 +54,12 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_dnd' % self.mimeDataText),
-            self.parent().loadFile)
+        Registry().register_function((u'%s_dnd' % self.mimeDataText), self.parent().loadFile)
 
     def mouseMoveEvent(self, event):
         """
-        Drag and drop event does not care what data is selected
-        as the recipient will use events to request the data move
-        just tell it what plugin to call
+        Drag and drop event does not care what data is selected as the recipient will use events to request the data
+        move just tell it what plugin to call
         """
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
@@ -75,12 +74,18 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         drag.start(QtCore.Qt.CopyAction)
 
     def dragEnterEvent(self, event):
+        """
+        When something is dragged into this object, check if you should be able to drop it in here.
+        """
         if event.mimeData().hasUrls():
             event.accept()
         else:
             event.ignore()
 
     def dragMoveEvent(self, event):
+        """
+        Make an object droppable, and set it to copy the contents of the object, not move it.
+        """
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
@@ -99,13 +104,13 @@ class ListWidgetWithDnD(QtGui.QListWidget):
             event.accept()
             files = []
             for url in event.mimeData().urls():
-                localFile = unicode(url.toLocalFile())
+                localFile = url.toLocalFile()
                 if os.path.isfile(localFile):
                     files.append(localFile)
                 elif os.path.isdir(localFile):
                     listing = os.listdir(localFile)
                     for file in listing:
                         files.append(os.path.join(localFile, file))
-            Receiver.send_message(u'%s_dnd' % self.mimeDataText, files)
+            Registry().execute(u'%s_dnd' % self.mimeDataText, files)
         else:
             event.ignore()

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,6 +36,7 @@ from openlp.core.lib.ui import create_widget_action
 
 log = logging.getLogger(__name__)
 
+
 class SearchEdit(QtGui.QLineEdit):
     """
     This is a specialised QLineEdit with a "clear" button inside for searches.
@@ -53,16 +55,8 @@ class SearchEdit(QtGui.QLineEdit):
             u'QToolButton { border: none; padding: 0px; }')
         self.clearButton.resize(18, 18)
         self.clearButton.hide()
-        QtCore.QObject.connect(
-            self.clearButton,
-            QtCore.SIGNAL(u'clicked()'),
-            self._onClearButtonClicked
-        )
-        QtCore.QObject.connect(
-            self,
-            QtCore.SIGNAL(u'textChanged(const QString&)'),
-            self._onSearchEditTextChanged
-        )
+        QtCore.QObject.connect(self.clearButton, QtCore.SIGNAL(u'clicked()'), self._onClearButtonClicked)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'textChanged(const QString&)'), self._onSearchEditTextChanged)
         self._updateStyleSheet()
         self.setAcceptDrops(False)
 
@@ -71,24 +65,16 @@ class SearchEdit(QtGui.QLineEdit):
         Internal method to update the stylesheet depending on which widgets are
         available and visible.
         """
-        frameWidth = self.style().pixelMetric(
-            QtGui.QStyle.PM_DefaultFrameWidth)
+        frameWidth = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
         rightPadding = self.clearButton.width() + frameWidth
         if hasattr(self, u'menuButton'):
             leftPadding = self.menuButton.width()
-            self.setStyleSheet(
-                u'QLineEdit { padding-left: %spx; padding-right: %spx; } ' %
-                (leftPadding, rightPadding))
+            self.setStyleSheet(u'QLineEdit { padding-left: %spx; padding-right: %spx; } ' % (leftPadding, rightPadding))
         else:
-            self.setStyleSheet(u'QLineEdit { padding-right: %spx; } ' %
-                rightPadding)
+            self.setStyleSheet(u'QLineEdit { padding-right: %spx; } ' % rightPadding)
         msz = self.minimumSizeHint()
-        self.setMinimumSize(
-            max(msz.width(),
-                self.clearButton.width() + (frameWidth * 2) + 2),
-            max(msz.height(),
-                self.clearButton.height() + (frameWidth * 2) + 2)
-        )
+        self.setMinimumSize(max(msz.width(), self.clearButton.width() + (frameWidth * 2) + 2),
+            max(msz.height(), self.clearButton.height() + (frameWidth * 2) + 2))
 
     def resizeEvent(self, event):
         """
@@ -98,14 +84,12 @@ class SearchEdit(QtGui.QLineEdit):
             The event that happened.
         """
         size = self.clearButton.size()
-        frameWidth = self.style().pixelMetric(
-            QtGui.QStyle.PM_DefaultFrameWidth)
+        frameWidth = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
         self.clearButton.move(self.rect().right() - frameWidth - size.width(),
             (self.rect().bottom() + 1 - size.height()) / 2)
         if hasattr(self, u'menuButton'):
             size = self.menuButton.size()
-            self.menuButton.move(self.rect().left() + frameWidth + 2,
-                (self.rect().bottom() + 1 - size.height()) / 2)
+            self.menuButton.move(self.rect().left() + frameWidth + 2, (self.rect().bottom() + 1 - size.height()) / 2)
 
     def currentSearchType(self):
         """
@@ -122,7 +106,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         menu = self.menuButton.menu()
         for action in menu.actions():
-            if identifier == action.data().toInt()[0]:
+            if identifier == action.data():
                 # setPlaceholderText has been implemented in Qt 4.7 and in at
                 # least PyQt 4.9 (I am not sure, if it was implemented in
                 # PyQt 4.8).
@@ -186,7 +170,7 @@ class SearchEdit(QtGui.QLineEdit):
             A :class:`~PyQt4.QtCore.QString` instance which represents the text
             in the line edit.
         """
-        self.clearButton.setVisible(not text.isEmpty())
+        self.clearButton.setVisible(bool(text))
 
     def _onClearButtonClicked(self):
         """
@@ -210,13 +194,11 @@ class SearchEdit(QtGui.QLineEdit):
         for action in self.menuButton.menu().actions():
             action.setChecked(False)
         self.menuButton.setDefaultAction(sender)
-        self._currentSearchType = sender.data().toInt()[0]
+        self._currentSearchType = sender.data()
         # setPlaceholderText has been implemented in Qt 4.7 and in at least
         # PyQt 4.9 (I am not sure, if it was implemented in PyQt 4.8).
         try:
-            self.setPlaceholderText(
-                self.menuButton.defaultAction().placeholderText)
+            self.setPlaceholderText(self.menuButton.defaultAction().placeholderText)
         except AttributeError:
             pass
-        self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'),
-            self._currentSearchType)
+        self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), self._currentSearchType)

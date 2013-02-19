@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,12 +31,14 @@ The :mod:`db` module provides the database and schema that is the backend for
 the Songs plugin
 """
 
+import re
+
 from sqlalchemy import Column, ForeignKey, Table, types
 from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func
-from PyQt4 import QtCore
 
 from openlp.core.lib.db import BaseModel, init_db
+
 
 class Author(BaseModel):
     """
@@ -49,8 +52,7 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return u'<Book id="%s" name="%s" publisher="%s" />' % (
-            str(self.id), self.name, self.publisher)
+        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
 
 
 class MediaFile(BaseModel):
@@ -65,21 +67,38 @@ class Song(BaseModel):
     Song model
     """
     def __init__(self):
-        self.sort_string = ''
+        self.sort_key = ()
+
+    def _try_int(self, s):
+        """
+        Convert to integer if possible.
+        """
+        try:
+            return int(s)
+        except:
+            return s.lower()
+
+    def _natsort_key(self, s):
+        """
+        Used internally to get a tuple by which s is sorted.
+        """
+        return map(self._try_int, re.findall(r'(\d+|\D+)', s))
 
     # This decorator tells sqlalchemy to call this method everytime
-    # any data on this object are updated.
+    # any data on this object is updated.
+
     @reconstructor
     def init_on_load(self):
         """
-        Precompute string to be used for sorting.
+        Precompute a tuple to be used for sorting.
 
         Song sorting is performance sensitive operation.
         To get maximum speed lets precompute the string
         used for comparison.
         """
         # Avoid the overhead of converting string to lowercase and to QString
-        self.sort_string = QtCore.QString(self.title.lower())
+        # with every call to sort().
+        self.sort_key = self._natsort_key(self.title)
 
 
 class Topic(BaseModel):

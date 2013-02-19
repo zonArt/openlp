@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -57,7 +58,7 @@ class EasySlidesImport(SongImport):
         song_xml = objectify.fromstring(xml)
         self.importWizard.progressBar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self._parseSong(song)
 
@@ -86,8 +87,7 @@ class EasySlidesImport(SongImport):
         else:
             self.setDefaults()
 
-    def _addUnicodeAttribute(self, self_attribute, import_attribute,
-        mandatory=False):
+    def _addUnicodeAttribute(self, self_attribute, import_attribute, mandatory=False):
         """
         Add imported values to the song model converting them to unicode at the
         same time. If the unicode decode fails or a mandatory attribute is not
@@ -116,8 +116,7 @@ class EasySlidesImport(SongImport):
     def _addAuthors(self, song):
         try:
             authors = unicode(song.Writer).split(u',')
-            self.authors = \
-                [author.strip() for author in authors if author.strip()]
+            self.authors = [author.strip() for author in authors if author.strip()]
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Writer')
             self._success = False
@@ -163,14 +162,13 @@ class EasySlidesImport(SongImport):
                 region = self._extractRegion(line)
                 regionlines[region] = 1 + regionlines.get(region, 0)
             elif line[0] == u'[':
-                separatorlines = separatorlines + 1
+                separatorlines += 1
         # if the song has separators
         separators = (separatorlines > 0)
         # the number of different regions in song - 1
         if len(regionlines) > 1:
             log.info(u'EasySlidesImport: the file contained a song named "%s"'
-                u'with more than two regions, but only two regions are',
-                u'tested, encountered regions were: %s',
+                u'with more than two regions, but only two regions are tested, encountered regions were: %s',
                 self.title, u','.join(regionlines.keys()))
         # if the song has regions
         regions = (len(regionlines) > 0)
@@ -202,7 +200,7 @@ class EasySlidesImport(SongImport):
                     # separators are used, so empty line means slide break
                     # inside verse
                     if self._listHas(verses, [reg, vt, vn, inst]):
-                        inst = inst + 1
+                        inst += 1
                 else:
                     # separators are not used, so empty line starts a new verse
                     vt = u'V'
@@ -275,8 +273,8 @@ class EasySlidesImport(SongImport):
                 if tag in versetags:
                     self.verseOrderList.append(tag)
                 else:
-                    log.info(u'Got order item %s, which is not in versetags,'
-                        u'dropping item from presentation order', tag)
+                    log.info(u'Got order item %s, which is not in versetags, dropping item from presentation order',
+                        tag)
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Sequence')
             self._success = False

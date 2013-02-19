@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -45,21 +46,15 @@ class Ui_SongUsageDeleteDialog(object):
         self.deleteCalendar = QtGui.QCalendarWidget(songUsageDeleteDialog)
         self.deleteCalendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
         self.deleteCalendar.setGridVisible(True)
-        self.deleteCalendar.setVerticalHeaderFormat(
-            QtGui.QCalendarWidget.NoVerticalHeader)
+        self.deleteCalendar.setVerticalHeaderFormat(QtGui.QCalendarWidget.NoVerticalHeader)
         self.deleteCalendar.setObjectName(u'deleteCalendar')
         self.verticalLayout.addWidget(self.deleteCalendar)
-        self.buttonBox = create_button_box(songUsageDeleteDialog, u'buttonBox',
-            [u'cancel', u'ok'])
-        self.verticalLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(songUsageDeleteDialog, u'button_box', [u'cancel', u'ok'])
+        self.verticalLayout.addWidget(self.button_box)
         self.retranslateUi(songUsageDeleteDialog)
 
     def retranslateUi(self, songUsageDeleteDialog):
-        songUsageDeleteDialog.setWindowTitle(
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Delete Song Usage Data'))
+        songUsageDeleteDialog.setWindowTitle(translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Song Usage Data'))
         self.deleteLabel.setText(
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Select the date up to which the song usage data should be '
-                'deleted. All data recorded before this date will be '
-                'permanently deleted.'))
+            translate('SongUsagePlugin.SongUsageDeleteForm', 'Select the date up to which the song usage data '
+                'should be deleted. All data recorded before this date will be permanently deleted.'))

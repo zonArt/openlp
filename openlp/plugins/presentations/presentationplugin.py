@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,12 +33,22 @@ presentations from a variety of document formats.
 import os
 import logging
 
+from PyQt4 import QtCore
+
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
-from openlp.plugins.presentations.lib import PresentationController, \
-    PresentationMediaItem, PresentationTab
+from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
 log = logging.getLogger(__name__)
+
+__default_settings__ = {
+        u'presentations/override app': QtCore.Qt.Unchecked,
+        u'presentations/Impress': QtCore.Qt.Checked,
+        u'presentations/Powerpoint': QtCore.Qt.Checked,
+        u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
+        u'presentations/presentations files': []
+    }
+
 
 class PresentationPlugin(Plugin):
     """
@@ -47,13 +58,13 @@ class PresentationPlugin(Plugin):
     """
     log = logging.getLogger(u'PresentationPlugin')
 
-    def __init__(self, plugin_helpers):
+    def __init__(self):
         """
         PluginPresentation constructor.
         """
         log.debug(u'Initialised')
         self.controllers = {}
-        Plugin.__init__(self, u'presentations', plugin_helpers)
+        Plugin.__init__(self, u'presentations', __default_settings__, __default_settings__)
         self.weight = -8
         self.iconPath = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.iconPath)
@@ -63,8 +74,7 @@ class PresentationPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.getString(StringContent.VisibleName)
-        self.settingsTab = PresentationTab(parent, self.name,
-            visible_name[u'title'], self.controllers, self.iconPath)
+        self.settingsTab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers, self.iconPath)
 
     def initialise(self):
         """
@@ -77,10 +87,10 @@ class PresentationPlugin(Plugin):
             if self.controllers[controller].enabled():
                 try:
                     self.controllers[controller].start_process()
-                except:
+                except Exception:
                     log.warn(u'Failed to start controller process')
                     self.controllers[controller].available = False
-        self.mediaItem.buildFileMaskString()
+        self.mediaItem.build_file_mask_string()
 
     def finalise(self):
         """
@@ -100,7 +110,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         self.mediaItem = PresentationMediaItem(
-            self.mediaDock.media_dock, self, self.icon, self.controllers)
+            self.main_window.mediaDockManager.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """
@@ -119,12 +129,10 @@ class PresentationPlugin(Plugin):
             AppLocation.get_directory(AppLocation.PluginsDir),
             u'presentations', u'lib')
         for filename in os.listdir(controller_dir):
-            if filename.endswith(u'controller.py') and \
-                not filename == 'presentationcontroller.py':
+            if filename.endswith(u'controller.py') and not filename == 'presentationcontroller.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
-                    modulename = u'openlp.plugins.presentations.lib.' + \
-                        os.path.splitext(filename)[0]
+                    modulename = u'openlp.plugins.presentations.lib.' + os.path.splitext(filename)[0]
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
@@ -154,30 +162,22 @@ class PresentationPlugin(Plugin):
         """
         ## Name PluginList ##
         self.textStrings[StringContent.Name] = {
-            u'singular': translate('PresentationPlugin', 'Presentation',
-                'name singular'),
-            u'plural': translate('PresentationPlugin', 'Presentations',
-                'name plural')
+            u'singular': translate('PresentationPlugin', 'Presentation', 'name singular'),
+            u'plural': translate('PresentationPlugin', 'Presentations', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('PresentationPlugin', 'Presentations',
-                'container title')
+            u'title': translate('PresentationPlugin', 'Presentations', 'container title')
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('PresentationPlugin',
-                'Load a new presentation.'),
+            u'load': translate('PresentationPlugin', 'Load a new presentation.'),
             u'import': u'',
             u'new': u'',
             u'edit': u'',
-            u'delete': translate('PresentationPlugin',
-                'Delete the selected presentation.'),
-            u'preview': translate('PresentationPlugin',
-                'Preview the selected presentation.'),
-            u'live': translate('PresentationPlugin',
-                'Send the selected presentation live.'),
-            u'service': translate('PresentationPlugin',
-                'Add the selected presentation to the service.')
+            u'delete': translate('PresentationPlugin', 'Delete the selected presentation.'),
+            u'preview': translate('PresentationPlugin', 'Preview the selected presentation.'),
+            u'live': translate('PresentationPlugin', 'Send the selected presentation live.'),
+            u'service': translate('PresentationPlugin', 'Add the selected presentation to the service.')
         }
         self.setPluginUiTextStrings(tooltips)

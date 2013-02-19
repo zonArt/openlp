@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,19 +27,19 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`languagemanager` module provides all the translation settings and
-language file loading for OpenLP.
+The :mod:`languagemanager` module provides all the translation settings and language file loading for OpenLP.
 """
 import logging
+import re
 import sys
 
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import AppLocation
-from openlp.core.lib import translate
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings, translate
 
 log = logging.getLogger(__name__)
+
 
 class LanguageManager(object):
     """
@@ -62,8 +63,7 @@ class LanguageManager(object):
         app_translator.load(language, lang_path)
         # A translator for buttons and other default strings provided by Qt.
         if sys.platform != u'win32' and sys.platform != u'darwin':
-            lang_path = QtCore.QLibraryInfo.location(
-                QtCore.QLibraryInfo.TranslationsPath)
+            lang_path = QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath)
         default_translator = QtCore.QTranslator()
         default_translator.load(u'qt_%s' % language, lang_path)
         return app_translator, default_translator
@@ -75,15 +75,11 @@ class LanguageManager(object):
         """
         log.debug(u'Translation files: %s', AppLocation.get_directory(
             AppLocation.LanguageDir))
-        trans_dir = QtCore.QDir(AppLocation.get_directory(
-            AppLocation.LanguageDir))
-        file_names = trans_dir.entryList(QtCore.QStringList(u'*.qm'),
-                QtCore.QDir.Files, QtCore.QDir.Name)
+        trans_dir = QtCore.QDir(AppLocation.get_directory(AppLocation.LanguageDir))
+        file_names = trans_dir.entryList(u'*.qm', QtCore.QDir.Files, QtCore.QDir.Name)
         # Remove qm files from the list which start with "qt_".
-        file_names = file_names.filter(QtCore.QRegExp("^(?!qt_)"))
-        for name in file_names:
-            file_names.replaceInStrings(name, trans_dir.filePath(name))
-        return file_names
+        file_names = filter(lambda file_: not file_.startswith(u'qt_'), file_names)
+        return map(trans_dir.filePath, file_names)
 
     @staticmethod
     def language_name(qm_file):
@@ -95,22 +91,19 @@ class LanguageManager(object):
         """
         translator = QtCore.QTranslator()
         translator.load(qm_file)
-        return translator.translate('OpenLP.MainWindow', 'English',
-            'Please add the name of your language here')
+        return translator.translate('OpenLP.MainWindow', 'English', 'Please add the name of your language here')
 
     @staticmethod
     def get_language():
         """
         Retrieve a saved language to use from settings
         """
-        settings = Settings()
-        language = unicode(settings.value(
-            u'general/language', QtCore.QVariant(u'[en]')).toString())
+        language = Settings().value(u'general/language')
+        language = str(language)
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
-        reg_ex = QtCore.QRegExp("^\[(.*)\]")
-        if reg_ex.exactMatch(language):
+        if re.match(r'[[].*[]]', language):
             LanguageManager.auto_language = True
-            language = reg_ex.cap(1)
+            language = re.sub(r'[\[\]]', '', language)
         return language
 
     @staticmethod
@@ -135,14 +128,12 @@ class LanguageManager(object):
                 language = unicode(qm_list[action_name])
         if LanguageManager.auto_language:
             language = u'[%s]' % language
-        Settings().setValue(
-            u'general/language', QtCore.QVariant(language))
+        Settings().setValue(u'general/language', language)
         log.info(u'Language file: \'%s\' written to conf file' % language)
         if message:
             QtGui.QMessageBox.information(None,
                 translate('OpenLP.LanguageManager', 'Language'),
-                translate('OpenLP.LanguageManager',
-                    'Please restart OpenLP to use your new language setting.'))
+                translate('OpenLP.LanguageManager', 'Please restart OpenLP to use your new language setting.'))
 
     @staticmethod
     def init_qm_list():
@@ -155,8 +146,7 @@ class LanguageManager(object):
             reg_ex = QtCore.QRegExp("^.*i18n/(.*).qm")
             if reg_ex.exactMatch(qmf):
                 name = u'%s' % reg_ex.cap(1)
-                LanguageManager.__qm_list__[u'%#2i %s' % (counter + 1,
-                    LanguageManager.language_name(qmf))] = name
+                LanguageManager.__qm_list__[u'%#2i %s' % (counter + 1, LanguageManager.language_name(qmf))] = name
 
     @staticmethod
     def get_qm_list():

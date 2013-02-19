@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,11 +37,21 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
 DELPHI_COLORS = {
-    u'clAqua': 0x00FFFF,    u'clBlack': 0x000000,   u'clBlue': 0x0000FF,
-    u'clFuchsia': 0xFF00FF, u'clGray': 0x808080,    u'clGreen': 0x008000,
-    u'clLime': 0x00FF00,    u'clMaroon': 0x800000,  u'clNavy': 0x000080,
-    u'clOlive': 0x808000,   u'clPurple': 0x800080,  u'clRed': 0xFF0000,
-    u'clSilver': 0xC0C0C0,  u'clTeal': 0x008080,    u'clWhite': 0xFFFFFF,
+    u'clAqua': 0x00FFFF,
+    u'clBlack': 0x000000,
+    u'clBlue': 0x0000FF,
+    u'clFuchsia': 0xFF00FF,
+    u'clGray': 0x808080,
+    u'clGreen': 0x008000,
+    u'clLime': 0x00FF00,
+    u'clMaroon': 0x800000,
+    u'clNavy': 0x000080,
+    u'clOlive': 0x808000,
+    u'clPurple': 0x800080,
+    u'clRed': 0xFF0000,
+    u'clSilver': 0xC0C0C0,
+    u'clTeal': 0x008080,
+    u'clWhite': 0xFFFFFF,
     u'clYellow': 0xFFFF00
 }
 
@@ -64,6 +75,7 @@ BLANK_STYLE_XML = \
   <WrapStyle>0</WrapStyle>
 </Theme>
 '''
+
 
 class Theme(object):
     """
@@ -163,6 +175,7 @@ class Theme(object):
             * ``0`` - normal
             * ``1`` - lyrics
     """
+
     def __init__(self, xml):
         """
         Initialise a theme with data from xml
@@ -193,8 +206,7 @@ class Theme(object):
         ``xml``
             The data to apply to the theme
         """
-        root = ElementTree(element=XML(xml.encode(u'ascii',
-            u'xmlcharrefreplace')))
+        root = ElementTree(element=XML(xml.encode(u'ascii', u'xmlcharrefreplace')))
         xml_iter = root.getiterator()
         for element in xml_iter:
             delphi_color_change = False
@@ -205,10 +217,12 @@ class Theme(object):
                     val = element_text
                 # strings need special handling to sort the colours out
                 if isinstance(element_text, basestring):
-                    if element_text[0] == u'$': # might be a hex number
+                    if element_text[0] == u'$':
+                        # might be a hex number
                         try:
                             val = int(element_text[1:], 16)
-                        except ValueError: # nope
+                        except ValueError:
+                            # nope
                             pass
                     elif element_text in DELPHI_COLORS:
                         val = DELPHI_COLORS[element_text]
@@ -218,16 +232,13 @@ class Theme(object):
                             val = int(element_text)
                         except ValueError:
                             val = element_text
-                if (element.tag.find(u'Color') > 0 or
-                    (element.tag.find(u'BackgroundParameter') == 0 and
+                if (element.tag.find(u'Color') > 0 or (element.tag.find(u'BackgroundParameter') == 0 and
                     isinstance(val, int))):
                     # convert to a wx.Colour
                     if not delphi_color_change:
-                        val = QtGui.QColor(
-                            val&0xFF, (val>>8)&0xFF, (val>>16)&0xFF)
+                        val = QtGui.QColor(val & 0xFF, (val >> 8) & 0xFF, (val >> 16) & 0xFF)
                     else:
-                        val = QtGui.QColor(
-                            (val>>16)&0xFF, (val>>8)&0xFF, val&0xFF)
+                        val = QtGui.QColor((val >> 16) & 0xFF, (val >> 8) & 0xFF, val & 0xFF)
                 setattr(self, element.tag, val)
 
     def __str__(self):

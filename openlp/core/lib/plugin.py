@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,12 +33,11 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
-from openlp.core.lib.settings import Settings
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import Settings, Registry, UiStrings
 from openlp.core.utils import get_application_version
 
 log = logging.getLogger(__name__)
+
 
 class PluginStatus(object):
     """
@@ -119,8 +119,7 @@ class Plugin(QtCore.QObject):
     """
     log.info(u'loaded')
 
-    def __init__(self, name, plugin_helpers=None, media_item_class=None,
-        settings_tab_class=None, version=None):
+    def __init__(self, name, default_settings, media_item_class=None, settings_tab_class=None, version=None):
         """
         This is the constructor for the plugin object. This provides an easy
         way for descendent plugins to populate common data. This method *must*
@@ -133,17 +132,17 @@ class Plugin(QtCore.QObject):
         ``name``
             Defaults to *None*. The name of the plugin.
 
-        ``version``
-            Defaults to *None*. The version of the plugin.
-
-        ``plugin_helpers``
-            Defaults to *None*. A list of helper objects.
+        ``default_settings``
+            A dict containing the plugin's settings. The value to each key is the default value to be used.
 
         ``media_item_class``
             The class name of the plugin's media item.
 
         ``settings_tab_class``
             The class name of the plugin's settings tab.
+
+        ``version``
+            Defaults to *None*, which means that the same version number is used as OpenLP's version number.
         """
         log.debug(u'Plugin %s initialised' % name)
         QtCore.QObject.__init__(self)
@@ -163,21 +162,17 @@ class Plugin(QtCore.QObject):
         self.mediaItem = None
         self.weight = 0
         self.status = PluginStatus.Inactive
-        self.previewController = plugin_helpers[u'preview']
-        self.liveController = plugin_helpers[u'live']
-        self.renderer = plugin_helpers[u'renderer']
-        self.serviceManager = plugin_helpers[u'service']
-        self.settingsForm = plugin_helpers[u'settings form']
-        self.mediaDock = plugin_helpers[u'toolbox']
-        self.pluginManager = plugin_helpers[u'pluginmanager']
-        self.formParent = plugin_helpers[u'formparent']
-        self.mediaController = plugin_helpers[u'mediacontroller']
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_add_service_item' % self.name),
-            self.processAddServiceEvent)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'%s_config_updated' % self.name),
-            self.configUpdated)
+        # Add the default status to the default settings.
+        default_settings[name + u'/status'] = PluginStatus.Inactive
+        default_settings[name + u'/last directory'] = u''
+        # Append a setting for files in the mediamanager (note not all plugins
+        # which have a mediamanager need this).
+        if media_item_class is not None:
+            default_settings[u'%s/%s files' % (name, name)] = []
+        # Add settings to the dict of all settings.
+        Settings.extend_default_settings(default_settings)
+        Registry().register_function(u'%s_add_service_item' % self.name, self.processAddServiceEvent)
+        Registry().register_function(u'%s_config_updated' % self.name, self.config_update)
 
     def checkPreConditions(self):
         """
@@ -192,17 +187,14 @@ class Plugin(QtCore.QObject):
         """
         Sets the status of the plugin
         """
-        self.status = Settings().value(
-            self.settingsSection + u'/status',
-            QtCore.QVariant(PluginStatus.Inactive)).toInt()[0]
+        self.status = Settings().value(self.settingsSection + u'/status')
 
     def toggleStatus(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
         self.status = new_status
-        Settings().setValue(
-            self.settingsSection + u'/status', QtCore.QVariant(self.status))
+        Settings().setValue(self.settingsSection + u'/status', self.status)
         if new_status == PluginStatus.Active:
             self.initialise()
         elif new_status == PluginStatus.Inactive:
@@ -222,8 +214,7 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into OpenLP.
         """
         if self.mediaItemClass:
-            self.mediaItem = self.mediaItemClass(self.mediaDock.media_dock,
-                self, self.icon)
+            self.mediaItem = self.mediaItemClass(self.main_window.mediaDockManager.media_dock, self, self.icon)
 
     def addImportMenuItem(self, importMenu):
         """
@@ -259,8 +250,7 @@ class Plugin(QtCore.QObject):
         """
         if self.settingsTabClass:
             self.settingsTab = self.settingsTabClass(parent, self.name,
-                self.getString(StringContent.VisibleName)[u'title'],
-                self.iconPath)
+                self.getString(StringContent.VisibleName)[u'title'], self.iconPath)
 
     def addToMenu(self, menubar):
         """
@@ -275,8 +265,7 @@ class Plugin(QtCore.QObject):
         """
         Generic Drag and drop handler triggered from service_manager.
         """
-        log.debug(u'processAddServiceEvent event called for plugin %s' %
-            self.name)
+        log.debug(u'processAddServiceEvent event called for plugin %s' % self.name)
         if replace:
             self.mediaItem.onAddEditClick()
         else:
@@ -287,8 +276,7 @@ class Plugin(QtCore.QObject):
         Show a dialog when the user clicks on the 'About' button in the plugin
         manager.
         """
-        raise NotImplementedError(
-            u'Plugin.about needs to be defined by the plugin')
+        raise NotImplementedError(u'Plugin.about needs to be defined by the plugin')
 
     def initialise(self):
         """
@@ -296,20 +284,40 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-            self.mediaDock.insert_dock(self.mediaItem, self.icon, self.weight)
+            self.main_window.mediaDockManager.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
         if self.mediaItem:
-            self.mediaDock.remove_dock(self.mediaItem)
+            self.main_window.mediaDockManager.remove_dock(self.mediaItem)
 
-    def appStartup(self):
+    def app_startup(self):
         """
-        Perform tasks on application starup
+        Perform tasks on application startup
         """
-        pass
+        # FIXME: Remove after 2.2 release.
+        # This is needed to load the list of images/media/presentation from the config saved
+        # before the settings rewrite.
+        if self.mediaItemClass is not None:
+            # We need QSettings instead of Settings here to bypass our central settings dict.
+            # Do NOT do this anywhere else!
+            settings = QtCore.QSettings()
+            settings.beginGroup(self.settingsSection)
+            if settings.contains(u'%s count' % self.name):
+                list_count = int(settings.value(u'%s count' % self.name, 0))
+                loaded_list = []
+                if list_count:
+                    for counter in range(list_count):
+                        item = settings.value(u'%s %d' % (self.name, counter), u'')
+                        if item:
+                            loaded_list.append(item)
+                        settings.remove(u'%s %d' % (self.name, counter))
+                settings.remove(u'%s count' % self.name)
+                # Now save the list to the config using our Settings class.
+                Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
+            settings.endGroup()
 
     def usesTheme(self, theme):
         """
@@ -342,29 +350,21 @@ class Plugin(QtCore.QObject):
         Called to define all translatable texts of the plugin
         """
         ## Load Action ##
-        self.__setNameTextString(StringContent.Load,
-            UiStrings().Load, tooltips[u'load'])
+        self.__setNameTextString(StringContent.Load, UiStrings().Load, tooltips[u'load'])
         ## Import Action ##
-        self.__setNameTextString(StringContent.Import,
-            UiStrings().Import, tooltips[u'import'])
+        self.__setNameTextString(StringContent.Import, UiStrings().Import, tooltips[u'import'])
         ## New Action ##
-        self.__setNameTextString(StringContent.New,
-            UiStrings().Add, tooltips[u'new'])
+        self.__setNameTextString(StringContent.New, UiStrings().Add, tooltips[u'new'])
         ## Edit Action ##
-        self.__setNameTextString(StringContent.Edit,
-            UiStrings().Edit, tooltips[u'edit'])
+        self.__setNameTextString(StringContent.Edit, UiStrings().Edit, tooltips[u'edit'])
         ## Delete Action ##
-        self.__setNameTextString(StringContent.Delete,
-            UiStrings().Delete, tooltips[u'delete'])
+        self.__setNameTextString(StringContent.Delete, UiStrings().Delete, tooltips[u'delete'])
         ## Preview Action ##
-        self.__setNameTextString(StringContent.Preview,
-            UiStrings().Preview, tooltips[u'preview'])
+        self.__setNameTextString(StringContent.Preview, UiStrings().Preview, tooltips[u'preview'])
         ## Send Live Action ##
-        self.__setNameTextString(StringContent.Live,
-            UiStrings().Live, tooltips[u'live'])
+        self.__setNameTextString(StringContent.Live, UiStrings().Live, tooltips[u'live'])
         ## Add to Service Action ##
-        self.__setNameTextString(StringContent.Service,
-            UiStrings().Service, tooltips[u'service'])
+        self.__setNameTextString(StringContent.Service, UiStrings().Service, tooltips[u'service'])
 
     def __setNameTextString(self, name, title, tooltip):
         """
@@ -401,8 +401,34 @@ class Plugin(QtCore.QObject):
         """
         return u''
 
-    def configUpdated(self):
+    def config_update(self):
         """
         The plugin's config has changed
         """
         pass
+
+    def new_service_created(self):
+        """
+        The plugin's needs to handle a new song creation
+        """
+        pass
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

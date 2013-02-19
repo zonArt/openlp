@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -60,8 +61,7 @@ class OpenLP1SongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.availableThemes = \
-            kwargs[u'plugin'].formParent.themeManagerContents.getThemes()
+        self.availableThemes = kwargs[u'plugin'].theme_manager.get_themes()
 
     def doImport(self):
         """
@@ -69,15 +69,13 @@ class OpenLP1SongImport(SongImport):
         """
         if not self.importSource.endswith(u'.olp'):
             self.logError(self.importSource,
-                translate('SongsPlugin.OpenLP1SongImport',
-                'Not a valid openlp.org 1.x song database.'))
+                translate('SongsPlugin.OpenLP1SongImport', 'Not a valid openlp.org 1.x song database.'))
             return
         encoding = self.getEncoding()
         if not encoding:
             return
         # Connect to the database.
-        connection = sqlite.connect(self.importSource, mode=0444,
-            encoding=(encoding, 'replace'))
+        connection = sqlite.connect(self.importSource, mode=0444, encoding=(encoding, 'replace'))
         cursor = connection.cursor()
         # Determine if the db supports linking audio to songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
@@ -112,7 +110,7 @@ class OpenLP1SongImport(SongImport):
         self.importWizard.progressBar.setMaximum(len(songs))
         for song in songs:
             self.setDefaults()
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             song_id = song[0]
             self.title = song[1]
@@ -133,13 +131,13 @@ class OpenLP1SongImport(SongImport):
                 u'WHERE songid = %s' % song_id)
             author_ids = cursor.fetchall()
             for author_id in author_ids:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
                         self.parseAuthor(author[1])
                         break
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             if db_has_tracks:
                 cursor.execute(u'-- types int, int')
@@ -148,14 +146,14 @@ class OpenLP1SongImport(SongImport):
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()
                 for track_id, listindex in track_ids:
-                    if self.stopImportFlag:
+                    if self.stop_import_flag:
                         break
                     for track in tracks:
                         if track[0] == track_id:
                             media_file = self.expandMediaFile(track[1])
                             self.addMediaFile(media_file, listindex)
                             break
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             if not self.finish():
                 self.logError(self.importSource)
@@ -211,9 +209,7 @@ class OpenLP1SongImport(SongImport):
         ``filename``
             The filename to expand.
         """
-        if sys.platform != u'win32' and \
-            not os.environ.get(u'ALLUSERSPROFILE') and \
-            not os.environ.get(u'APPDATA'):
+        if sys.platform != u'win32' and not os.environ.get(u'ALLUSERSPROFILE') and not os.environ.get(u'APPDATA'):
             return filename
         common_app_data = os.path.join(os.environ[u'ALLUSERSPROFILE'],
             os.path.split(os.environ[u'APPDATA'])[1])

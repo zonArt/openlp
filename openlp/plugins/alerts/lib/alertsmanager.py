@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,14 +26,20 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.alerts.lib.alertsmanager` module contains the part of
+the plugin which manages storing and displaying of alerts.
+"""
 
 import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Registry, translate
+
 
 log = logging.getLogger(__name__)
+
 
 class AlertsManager(QtCore.QObject):
     """
@@ -44,21 +51,19 @@ class AlertsManager(QtCore.QObject):
         QtCore.QObject.__init__(self, parent)
         self.screen = None
         self.timer_id = 0
-        self.alertList = []
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'live_display_active'), self.generateAlert)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
+        self.alert_list = []
+        Registry().register_function(u'live_display_active', self.generate_alert)
+        Registry().register_function(u'alerts_text', self.alert_text)
 
-    def onAlertText(self, message):
+    def alert_text(self, message):
         """
         Called via a alerts_text event. Message is single element array
         containing text
         """
         if message:
-            self.displayAlert(message[0])
+            self.display_alert(message[0])
 
-    def displayAlert(self, text=u''):
+    def display_alert(self, text=u''):
         """
         Called from the Alert Tab to display an alert
 
@@ -67,25 +72,24 @@ class AlertsManager(QtCore.QObject):
         """
         log.debug(u'display alert called %s' % text)
         if text:
-            self.alertList.append(text)
+            self.alert_list.append(text)
             if self.timer_id != 0:
-                Receiver.send_message(u'mainwindow_status_text',
-                    translate('AlertsPlugin.AlertsManager',
-                    'Alert message created and displayed.'))
+                self.main_window.show_status_message(
+                    translate('AlertsPlugin.AlertsManager', 'Alert message created and displayed.'))
                 return
-            Receiver.send_message(u'mainwindow_status_text', u'')
-            self.generateAlert()
+            self.main_window.show_status_message(u'')
+            self.generate_alert()
 
-    def generateAlert(self):
+    def generate_alert(self):
         """
         Format and request the Alert and start the timer
         """
         log.debug(u'Generate Alert called')
-        if not self.alertList:
+        if not self.alert_list:
             return
-        text = self.alertList.pop(0)
+        text = self.alert_list.pop(0)
         alertTab = self.parent().settingsTab
-        self.parent().liveController.display.alert(text, alertTab.location)
+        self.live_controller.display.alert(text, alertTab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
             self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
@@ -101,7 +105,27 @@ class AlertsManager(QtCore.QObject):
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
             alertTab = self.parent().settingsTab
-            self.parent().liveController.display.alert(u'', alertTab.location)
+            self.live_controller.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
-        self.generateAlert()
+        self.generate_alert()
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

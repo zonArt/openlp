@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,15 +34,21 @@ from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 
 log = logging.getLogger(__name__)
 
+__default_settings__ = {
+        u'remotes/twelve hour': True,
+        u'remotes/port': 4316,
+        u'remotes/ip address': u'0.0.0.0'
+    }
+
+
 class RemotesPlugin(Plugin):
     log.info(u'Remote Plugin loaded')
 
-    def __init__(self, plugin_helpers):
+    def __init__(self):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'remotes', plugin_helpers,
-            settings_tab_class=RemoteTab)
+        Plugin.__init__(self, u'remotes', __default_settings__, settings_tab_class=RemoteTab)
         self.iconPath = u':/plugins/plugin_remote.png'
         self.icon = build_icon(self.iconPath)
         self.weight = -1
@@ -88,7 +95,7 @@ class RemotesPlugin(Plugin):
             u'title': translate('RemotePlugin', 'Remote', 'container title')
         }
 
-    def configUpdated(self):
+    def config_update(self):
         """
         Called when Config is changed to restart the server on new address or
         port

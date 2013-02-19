@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -74,8 +75,7 @@ class EasyWorshipSongImport(SongImport):
         db_file = open(self.importSource, 'rb')
         self.memoFile = open(import_source_mb, 'rb')
         # Don't accept files that are clearly not paradox files
-        record_size, header_size, block_size, first_block, num_fields \
-            = struct.unpack('<hhxb8xh17xh', db_file.read(35))
+        record_size, header_size, block_size, first_block, num_fields = struct.unpack('<hhxb8xh17xh', db_file.read(35))
         if header_size != 0x800 or block_size < 1 or block_size > 4:
             db_file.close()
             self.memoFile.close()
@@ -115,15 +115,12 @@ class EasyWorshipSongImport(SongImport):
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
         db_file.seek(4 + (num_fields * 4) + 261, os.SEEK_CUR)
-        field_names = db_file.read(header_size - db_file.tell()).split('\0',
-            num_fields)
+        field_names = db_file.read(header_size - db_file.tell()).split('\0', num_fields)
         field_names.pop()
         field_descs = []
         for i, field_name in enumerate(field_names):
-            field_type, field_size = struct.unpack_from('BB',
-                field_info, i * 2)
-            field_descs.append(FieldDescEntry(field_name, field_type,
-                field_size))
+            field_type, field_size = struct.unpack_from('BB', field_info, i * 2)
+            field_descs.append(FieldDescEntry(field_name, field_type, field_size))
         self.setRecordStruct(field_descs)
         # Pick out the field description indexes we will need
         try:
@@ -145,7 +142,7 @@ class EasyWorshipSongImport(SongImport):
             rec_count = (rec_count + record_size) / record_size
             # Loop through each record within the current block
             for i in range(rec_count):
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 raw_record = db_file.read(record_size)
                 self.fields = self.recordStruct.unpack(raw_record)
@@ -163,9 +160,7 @@ class EasyWorshipSongImport(SongImport):
                 if admin:
                     if copy:
                         self.copyright += u', '
-                    self.copyright += \
-                        unicode(translate('SongsPlugin.EasyWorshipSongImport',
-                            'Administered by %s')) % admin
+                    self.copyright += translate('SongsPlugin.EasyWorshipSongImport', 'Administered by %s') % admin
                 if ccli:
                     self.ccliNumber = ccli
                 if authors:
@@ -179,7 +174,10 @@ class EasyWorshipSongImport(SongImport):
                         self.addAuthor(author_name.strip())
                 if words:
                     # Format the lyrics
-                    words, self.encoding = strip_rtf(words, self.encoding)
+                    result = strip_rtf(words, self.encoding)
+                    if result is None:
+                        return
+                    words, self.encoding = result
                     verse_type = VerseType.Tags[VerseType.Verse]
                     for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()
@@ -216,11 +214,9 @@ class EasyWorshipSongImport(SongImport):
                                 if first_line_is_tag else verse,
                             verse_type)
                 if len(self.comments) > 5:
-                    self.comments += unicode(
-                        translate('SongsPlugin.EasyWorshipSongImport',
-                        '\n[above are Song Tags with notes imported from \
-                        EasyWorship]'))
-                if self.stopImportFlag:
+                    self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
+                        '\n[above are Song Tags with notes imported from EasyWorship]'))
+                if self.stop_import_flag:
                     break
                 if not self.finish():
                     self.logError(self.importSource)
@@ -285,8 +281,7 @@ class EasyWorshipSongImport(SongImport):
             return (field ^ 0x80 == 1)
         elif field_desc.type == 0x0c or field_desc.type == 0x0d:
             # Memo or Blob
-            block_start, blob_size = \
-                struct.unpack_from('<II', field, len(field)-10)
+            block_start, blob_size = struct.unpack_from('<II', field, len(field)-10)
             sub_block = block_start & 0xff
             block_start &= ~0xff
             self.memoFile.seek(block_start)

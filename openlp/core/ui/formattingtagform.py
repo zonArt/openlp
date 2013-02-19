@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,14 +27,13 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are
-protected and included each time loaded. Custom tags can be defined and saved.
-The Custom Tag arrays are saved in a pickle so QSettings works on them. Base
-Tags cannot be changed.
+The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are protected and included each time loaded.
+Custom tags can be defined and saved. The Custom Tag arrays are saved in a pickle so QSettings works on them. Base Tags
+cannot be changed.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, FormattingTags
+from openlp.core.lib import FormattingTags, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 
@@ -48,24 +48,15 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.tagTableWidget,
-            QtCore.SIGNAL(u'itemSelectionChanged()'),self.onRowSelected)
-        QtCore.QObject.connect(self.newPushButton,
-            QtCore.SIGNAL(u'clicked()'), self.onNewClicked)
-        QtCore.QObject.connect(self.savePushButton,
-            QtCore.SIGNAL(u'clicked()'), self.onSavedClicked)
-        QtCore.QObject.connect(self.deletePushButton,
-            QtCore.SIGNAL(u'clicked()'), self.onDeleteClicked)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'rejected()'),
-            self.close)
-        QtCore.QObject.connect(self.descriptionLineEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
-        QtCore.QObject.connect(self.tagLineEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
-        QtCore.QObject.connect(self.startTagLineEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
-        QtCore.QObject.connect(self.endTagLineEdit,
-            QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
+        QtCore.QObject.connect(self.tagTableWidget, QtCore.SIGNAL(u'itemSelectionChanged()'), self.onRowSelected)
+        QtCore.QObject.connect(self.newPushButton, QtCore.SIGNAL(u'clicked()'), self.onNewClicked)
+        QtCore.QObject.connect(self.savePushButton, QtCore.SIGNAL(u'clicked()'), self.onSavedClicked)
+        QtCore.QObject.connect(self.deletePushButton, QtCore.SIGNAL(u'clicked()'), self.onDeleteClicked)
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'rejected()'), self.close)
+        QtCore.QObject.connect(self.descriptionLineEdit, QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
+        QtCore.QObject.connect(self.tagLineEdit, QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
+        QtCore.QObject.connect(self.startTagLineEdit, QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
+        QtCore.QObject.connect(self.endTagLineEdit, QtCore.SIGNAL(u'textEdited(QString)'), self.onTextEdited)
         # Forces reloading of tags from openlp configuration.
         FormattingTags.load_tags()
 
@@ -117,8 +108,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             if self._strip(html[u'start tag']) == u'n':
                 critical_error_message_box(
                     translate('OpenLP.FormattingTagForm', 'Update Error'),
-                    translate('OpenLP.FormattingTagForm',
-                    'Tag "n" already defined.'))
+                    translate('OpenLP.FormattingTagForm', 'Tag "n" already defined.'))
                 return
         # Add new tag to list
         tag = {
@@ -159,18 +149,16 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         html_expands = FormattingTags.get_html_tags()
         if self.selected != -1:
             html = html_expands[self.selected]
-            tag = unicode(self.tagLineEdit.text())
+            tag = self.tagLineEdit.text()
             for linenumber, html1 in enumerate(html_expands):
-                if self._strip(html1[u'start tag']) == tag and \
-                    linenumber != self.selected:
+                if self._strip(html1[u'start tag']) == tag and linenumber != self.selected:
                     critical_error_message_box(
                         translate('OpenLP.FormattingTagForm', 'Update Error'),
-                        unicode(translate('OpenLP.FormattingTagForm',
-                        'Tag %s already defined.')) % tag)
+                        translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag)
                     return
-            html[u'desc'] = unicode(self.descriptionLineEdit.text())
-            html[u'start html'] = unicode(self.startTagLineEdit.text())
-            html[u'end html'] = unicode(self.endTagLineEdit.text())
+            html[u'desc'] = self.descriptionLineEdit.text()
+            html[u'start html'] = self.startTagLineEdit.text()
+            html[u'end html'] = self.endTagLineEdit.text()
             html[u'start tag'] = u'{%s}' % tag
             html[u'end tag'] = u'{/%s}' % tag
             # Keep temporary tags when the user changes one.
@@ -190,14 +178,10 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.deletePushButton.setEnabled(False)
         for linenumber, html in enumerate(FormattingTags.get_html_tags()):
             self.tagTableWidget.setRowCount(self.tagTableWidget.rowCount() + 1)
-            self.tagTableWidget.setItem(linenumber, 0,
-                QtGui.QTableWidgetItem(html[u'desc']))
-            self.tagTableWidget.setItem(linenumber, 1,
-                QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
-            self.tagTableWidget.setItem(linenumber, 2,
-                QtGui.QTableWidgetItem(html[u'start html']))
-            self.tagTableWidget.setItem(linenumber, 3,
-                QtGui.QTableWidgetItem(html[u'end html']))
+            self.tagTableWidget.setItem(linenumber, 0, QtGui.QTableWidgetItem(html[u'desc']))
+            self.tagTableWidget.setItem(linenumber, 1, QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
+            self.tagTableWidget.setItem(linenumber, 2, QtGui.QTableWidgetItem(html[u'start html']))
+            self.tagTableWidget.setItem(linenumber, 3, QtGui.QTableWidgetItem(html[u'end html']))
             # Permanent (persistent) tags do not have this key.
             if u'temporary' not in html:
                 html[u'temporary'] = False

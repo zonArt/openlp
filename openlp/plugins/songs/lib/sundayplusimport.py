@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -65,7 +66,7 @@ class SundayPlusImport(SongImport):
     def doImport(self):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for filename in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             song_file = open(filename)
             self.doImportFile(song_file)
@@ -120,7 +121,7 @@ class SundayPlusImport(SongImport):
                         end = data.find(')', i) + 1
                     value = data[i:end]
                 # If we are in the main group.
-                if cell == False:
+                if not cell:
                     if name == 'title':
                         self.title = self.decode(self.unescape(value))
                     elif name == 'Author':
@@ -138,18 +139,19 @@ class SundayPlusImport(SongImport):
                         if len(value):
                             verse_type = VerseType.Tags[
                                 VerseType.from_loose_input(value[0])]
-                            if len(value) >= 2 and value[-1] in ['0', '1', '2',
-                                '3', '4', '5', '6', '7', '8', '9']:
+                            if len(value) >= 2 and value[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                                 verse_type = "%s%s" % (verse_type, value[-1])
                     elif name == 'Hotkey':
                         # Hotkey always appears after MARKER_NAME, so it
                         # effectively overrides MARKER_NAME, if present.
-                        if len(value) and \
-                            value in HOTKEY_TO_VERSE_TYPE.keys():
+                        if len(value) and value in HOTKEY_TO_VERSE_TYPE.keys():
                             verse_type = HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'rtf':
                         value = self.unescape(value)
-                        verse, self.encoding = strip_rtf(value, self.encoding)
+                        result = strip_rtf(value, self.encoding)
+                        if result is None:
+                            return
+                        verse, self.encoding = result
                         lines = verse.strip().split('\n')
                         # If any line inside any verse contains CCLI or
                         # only Public Domain, we treat this as special data:

@@ -299,7 +299,7 @@ This General Public License does not permit incorporating your program into prop
          <string>Contribute</string>
         </property>
         <property name="icon">
-         <iconset resource="../images/openlp-2.qrc">
+         <iconset>
           <normaloff>:/system/system_contribute.png</normaloff>:/system/system_contribute.png</iconset>
         </property>
        </widget>

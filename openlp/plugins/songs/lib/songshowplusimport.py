@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -69,10 +70,10 @@ class SongShowPlusImport(SongImport):
     the data is (see blockKey below)
     4 Bytes, forming a 32 bit number, which is the number of bytes until the
     next block starts
-    1 Byte, which tells how namy bytes follows
+    1 Byte, which tells how many bytes follows
     1 or 4 Bytes, describes how long the string is, if its 1 byte, the string
     is less than 255
-    The next bytes are the actuall data.
+    The next bytes are the actual data.
     The next block of data follows on.
 
     This description does differ for verses. Which includes extra bytes
@@ -104,18 +105,17 @@ class SongShowPlusImport(SongImport):
             return
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for file in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self.sspVerseOrderList = []
             other_count = 0
             other_list = {}
             file_name = os.path.split(file)[1]
-            self.importWizard.incrementProgressBar(
-                WizardStrings.ImportingType % file_name, 0)
+            self.importWizard.incrementProgressBar(WizardStrings.ImportingType % file_name, 0)
             song_data = open(file, 'rb')
             while True:
                 block_key, = struct.unpack("I", song_data.read(4))
-                # The file ends with 4 NUL's
+                # The file ends with 4 NULL's
                 if block_key == 0:
                     break
                 next_block_starts, = struct.unpack("I", song_data.read(4))
@@ -123,8 +123,7 @@ class SongShowPlusImport(SongImport):
                 if block_key in (VERSE, CHORUS, BRIDGE):
                     null, verse_no, = struct.unpack("BB", song_data.read(2))
                 elif block_key == CUSTOM_VERSE:
-                    null, verse_name_length, = struct.unpack("BB",
-                        song_data.read(2))
+                    null, verse_name_length, = struct.unpack("BB", song_data.read(2))
                     verse_name = song_data.read(verse_name_length)
                 length_descriptor_size, = struct.unpack("B", song_data.read(1))
                 log.debug(length_descriptor_size)
@@ -153,14 +152,11 @@ class SongShowPlusImport(SongImport):
                 elif block_key == CCLI_NO:
                     self.ccliNumber = int(data)
                 elif block_key == VERSE:
-                    self.addVerse(unicode(data, u'cp1252'),
-                        "%s%s" % (VerseType.Tags[VerseType.Verse], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
-                    self.addVerse(unicode(data, u'cp1252'),
-                        "%s%s" % (VerseType.Tags[VerseType.Chorus], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Chorus], verse_no))
                 elif block_key == BRIDGE:
-                    self.addVerse(unicode(data, u'cp1252'),
-                        "%s%s" % (VerseType.Tags[VerseType.Bridge], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Bridge], verse_no))
                 elif block_key == TOPIC:
                     self.topics.append(unicode(data, u'cp1252'))
                 elif block_key == COMMENTS:
@@ -179,8 +175,7 @@ class SongShowPlusImport(SongImport):
                     verse_tag = self.toOpenLPVerseTag(verse_name)
                     self.addVerse(unicode(data, u'cp1252'), verse_tag)
                 else:
-                    log.debug("Unrecognised blockKey: %s, data: %s"
-                        % (block_key, data))
+                    log.debug("Unrecognised blockKey: %s, data: %s" % (block_key, data))
                     song_data.seek(next_block_starts)
             self.verseOrderList = self.sspVerseOrderList
             song_data.close()
@@ -208,7 +203,7 @@ class SongShowPlusImport(SongImport):
             if verse_name not in self.otherList:
                 if ignore_unique:
                     return None
-                self.otherCount = self.otherCount + 1
+                self.otherCount += 1
                 self.otherList[verse_name] = str(self.otherCount)
             verse_tag = VerseType.Tags[VerseType.Other]
             verse_number = self.otherList[verse_name]

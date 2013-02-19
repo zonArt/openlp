@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,9 +29,10 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, Receiver
+from openlp.core.lib import Registry, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedeletedialog import Ui_SongUsageDeleteDialog
+
 
 class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
     """
@@ -43,32 +45,34 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         self.manager = manager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(
-            self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
             self.onButtonBoxClicked)
 
     def onButtonBoxClicked(self, button):
-        if self.buttonBox.standardButton(button) == QtGui.QDialogButtonBox.Ok:
+        if self.button_box.standardButton(button) == QtGui.QDialogButtonBox.Ok:
             ret = QtGui.QMessageBox.question(self,
+                translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Selected Song Usage Events?'),
                 translate('SongUsagePlugin.SongUsageDeleteForm',
-                    'Delete Selected Song Usage Events?'),
-                translate('SongUsagePlugin.SongUsageDeleteForm',
-                    'Are you sure you want to delete selected Song Usage '
-                    'data?'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                    QtGui.QMessageBox.No),
-                QtGui.QMessageBox.No)
+                    'Are you sure you want to delete selected Song Usage data?'),
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
             if ret == QtGui.QMessageBox.Yes:
                 deleteDate = self.deleteCalendar.selectedDate().toPyDate()
-                self.manager.delete_all_objects(SongUsageItem,
-                    SongUsageItem.usagedate <= deleteDate)
-                Receiver.send_message(u'openlp_information_message', {
-                    u'title': translate('SongUsagePlugin.SongUsageDeleteForm',
-                        'Deletion Successful'),
-                    u'message': translate(
-                        'SongUsagePlugin.SongUsageDeleteForm',
-                        'All requested data has been deleted successfully. ')}
+                self.manager.delete_all_objects(SongUsageItem, SongUsageItem.usagedate <= deleteDate)
+                self.main_window.information_message(
+                    translate('SongUsagePlugin.SongUsageDeleteForm', 'Deletion Successful'),
+                    translate(
+                        'SongUsagePlugin.SongUsageDeleteForm', 'All requested data has been deleted successfully. ')
                 )
                 self.accept()
         else:
             self.reject()
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

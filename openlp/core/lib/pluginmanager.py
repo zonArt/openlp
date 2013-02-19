@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,10 +32,13 @@ Provide plugin management
 import os
 import sys
 import logging
+import imp
 
-from openlp.core.lib import Plugin, PluginStatus
+from openlp.core.lib import Plugin, PluginStatus, Registry
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
+
 
 class PluginManager(object):
     """
@@ -42,82 +46,57 @@ class PluginManager(object):
     and executes all the hooks, as and when necessary.
     """
     log.info(u'Plugin manager loaded')
-    __instance__ = None
-    @staticmethod
-    def get_instance():
-        """
-        Obtain a single instance of class.
-        """
-        return PluginManager.__instance__
 
-    def __init__(self, plugin_dir):
+    def __init__(self):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
-
-        ``plugin_dir``
-            The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
-        PluginManager.__instance__ = self
-        if not plugin_dir in sys.path:
-            log.debug(u'Inserting %s into sys.path', plugin_dir)
-            sys.path.insert(0, plugin_dir)
-        self.basepath = os.path.abspath(plugin_dir)
-        log.debug(u'Base path %s ', self.basepath)
+        Registry().register(u'plugin_manager', self)
+        self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
+        log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, plugin_dir, plugin_helpers):
+    def find_plugins(self):
         """
-        Scan the directory ``plugin_dir`` for objects inheriting from the
-        ``Plugin`` class.
-
-        ``plugin_dir``
-            The directory to scan.
-
-        ``plugin_helpers``
-            A list of helper objects to pass to the plugins.
-
+        Scan a directory for objects inheriting from the ``Plugin`` class.
         """
         log.info(u'Finding plugins')
-        startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
-        log.debug(u'finding plugins in %s at depth %d',
-            unicode(plugin_dir), startdepth)
-        for root, dirs, files in os.walk(plugin_dir):
-            # TODO Presentation plugin is not yet working on Mac OS X.
-            # For now just ignore it. The following code will hide it
-            # in settings dialog.
-            if sys.platform == 'darwin':
-                present_plugin_dir = os.path.join(plugin_dir, 'presentations')
-                # Ignore files from the presentation plugin directory.
-                if root.startswith(present_plugin_dir):
-                    continue
+        start_depth = len(os.path.abspath(self.base_path).split(os.sep))
+        present_plugin_dir = os.path.join(self.base_path, 'presentations')
+        log.debug(u'finding plugins in %s at depth %d', unicode(self.base_path), start_depth)
+        for root, dirs, files in os.walk(self.base_path):
+            if sys.platform == 'darwin' and root.startswith(present_plugin_dir):
+                # TODO Presentation plugin is not yet working on Mac OS X.
+                # For now just ignore it. The following code will ignore files from the presentation plugin directory
+                # and thereby never import the plugin.
+                continue
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
-                    thisdepth = len(path.split(os.sep))
-                    if thisdepth - startdepth > 2:
+                    this_depth = len(path.split(os.sep))
+                    if this_depth - start_depth > 2:
                         # skip anything lower down
                         break
-                    modulename = os.path.splitext(path)[0]
-                    prefix = os.path.commonprefix([self.basepath, path])
-                    # hack off the plugin base path
-                    modulename = modulename[len(prefix) + 1:]
-                    modulename = modulename.replace(os.path.sep, '.')
+                    module_name = name[:-3]
                     # import the modules
-                    log.debug(u'Importing %s from %s. Depth %d',
-                        modulename, path, thisdepth)
+                    log.debug(u'Importing %s from %s. Depth %d', module_name, root, this_depth)
                     try:
-                        __import__(modulename, globals(), locals(), [])
+                        # Use the "imp" library to try to get around a problem with the PyUNO library which
+                        # monkey-patches the __import__ function to do some magic. This causes issues with our tests.
+                        # First, try to find the module we want to import, searching the directory in root
+                        fp, path_name, description = imp.find_module(module_name, [root])
+                        # Then load the module (do the actual import) using the details from find_module()
+                        imp.load_module(module_name, fp, path_name, description)
                     except ImportError, e:
-                        log.exception(u'Failed to import module %s on path %s '
-                            'for reason %s', modulename, path, e.args[0])
+                        log.exception(u'Failed to import module %s on path %s: %s', module_name, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
             try:
-                plugin = p(plugin_helpers)
+                plugin = p()
                 log.debug(u'Loaded plugin %s', unicode(p))
                 plugin_objects.append(plugin)
             except TypeError:
@@ -151,7 +130,8 @@ class PluginManager(object):
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
                 plugin.createSettingsTab(settings_form)
-        settings_form.plugins = self.plugins
+        if settings_form:
+            settings_form.plugins = self.plugins
 
     def hook_import_menu(self, import_menu):
         """
@@ -196,8 +176,7 @@ class PluginManager(object):
         """
         log.info(u'Initialise Plugins - Started')
         for plugin in self.plugins:
-            log.info(u'initialising plugins %s in a %s state'
-                % (plugin.name, plugin.isActive()))
+            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.isActive()))
             if plugin.isActive():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
@@ -222,3 +201,13 @@ class PluginManager(object):
             if plugin.name == name:
                 return plugin
         return None
+
+    def new_service_created(self):
+        """
+        Loop through all the plugins and give them an opportunity to handle a new service
+        """
+        log.info(u'plugins - new service created')
+        for plugin in self.plugins:
+            if plugin.isActive():
+                plugin.new_service_created()
+

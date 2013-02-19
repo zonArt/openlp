@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -30,11 +31,10 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.lib import ServiceItem, expand_tags, \
-    build_lyrics_format_css, build_lyrics_outline_css, Receiver, \
-    ItemCapabilities, FormattingTags, ImageSource
+from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, ServiceItem, \
+    expand_tags, build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.ui import MainDisplay, ScreenList
+from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
 
@@ -48,6 +48,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
 VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
+
 class Renderer(object):
     """
     Class to pull all Renderer interactions into one place. The plugins will
@@ -56,7 +57,7 @@ class Renderer(object):
     """
     log.info(u'Renderer Loaded')
 
-    def __init__(self, image_manager, theme_manager):
+    def __init__(self):
         """
         Initialise the renderer.
 
@@ -68,20 +69,18 @@ class Renderer(object):
             The theme_manager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
-        self.theme_manager = theme_manager
-        self.image_manager = image_manager
         self.screens = ScreenList()
+        Registry().register(u'renderer', self)
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = u''
         self.service_theme_name = u''
         self.item_theme_name = u''
         self.force_page = False
-        self.display = MainDisplay(None, self.image_manager, False, self)
+        self.display = MainDisplay(None, False, self)
         self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'theme_update_global'), self.set_global_theme)
+        Registry().register_function(u'theme_update_global', self.set_global_theme)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web_frame = self.web.page().mainFrame()
@@ -94,7 +93,7 @@ class Renderer(object):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, self.image_manager, False, self)
+        self.display = MainDisplay(None, False, self)
         self.display.setup()
         self._theme_dimensions = {}
 
@@ -114,8 +113,7 @@ class Renderer(object):
             Only remove the given ``theme_name`` from the ``_theme_dimensions``
             list. This can be used when a theme is permanently deleted.
         """
-        if old_theme_name is not None and \
-            old_theme_name in self._theme_dimensions:
+        if old_theme_name is not None and old_theme_name in self._theme_dimensions:
             del self._theme_dimensions[old_theme_name]
         if theme_name in self._theme_dimensions:
             del self._theme_dimensions[theme_name]
@@ -130,19 +128,16 @@ class Renderer(object):
             The theme name.
         """
         if theme_name not in self._theme_dimensions:
-            theme_data = self.theme_manager.getThemeData(theme_name)
+            theme_data = self.theme_manager.get_theme_data(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
             footer_rect = self.get_footer_rectangle(theme_data)
-            self._theme_dimensions[theme_name] = \
-                [theme_data, main_rect, footer_rect]
+            self._theme_dimensions[theme_name] = [theme_data, main_rect, footer_rect]
         else:
-            theme_data, main_rect, footer_rect = \
-                self._theme_dimensions[theme_name]
+            theme_data, main_rect, footer_rect = self._theme_dimensions[theme_name]
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.background_filename,
-                ImageSource.Theme,
-                QtGui.QColor(theme_data.background_border_color))
+            self.image_manager.add_image(theme_data.background_filename,
+                ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
 
     def pre_render(self, override_theme_data=None):
         """
@@ -171,8 +166,7 @@ class Renderer(object):
         if override_theme_data is None:
             if theme_to_use not in self._theme_dimensions:
                 self._set_theme(theme_to_use)
-            theme_data, main_rect, footer_rect = \
-                self._theme_dimensions[theme_to_use]
+            theme_data, main_rect, footer_rect = self._theme_dimensions[theme_to_use]
         else:
             # Ignore everything and use own theme data.
             theme_data = override_theme_data
@@ -241,11 +235,10 @@ class Renderer(object):
             serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
             serviceItem.add_from_text(VERSE)
-        serviceItem.renderer = self
         serviceItem.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.addImage(theme_data.background_filename,
+            self.image_manager.add_image(theme_data.background_filename,
                 ImageSource.Theme,
                 QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
@@ -304,13 +297,11 @@ class Renderer(object):
                         text_contains_split = u'[---]' in text
                         if text_contains_split:
                             try:
-                                text_to_render, text = \
-                                    text.split(u'\n[---]\n', 1)
+                                text_to_render, text = text.split(u'\n[---]\n', 1)
                             except ValueError:
                                 text_to_render = text.split(u'\n[---]\n')[0]
                                 text = u''
-                            text_to_render, raw_tags, html_tags = \
-                                self._get_start_tags(text_to_render)
+                            text_to_render, raw_tags, html_tags = self._get_start_tags(text_to_render)
                             if text:
                                 text = raw_tags + text
                         else:
@@ -324,7 +315,7 @@ class Renderer(object):
                             if  text_contains_split:
                                 text = slides[-1] + u'\n[---]\n' + text
                             else:
-                                text = slides[-1] + u'\n'+ text
+                                text = slides[-1] + u'\n' + text
                             text = text.replace(u'<br>', u'\n')
                         else:
                             pages.extend(slides)
@@ -503,9 +494,8 @@ class Renderer(object):
                 # the line will not fit as a whole.
                 raw_words = self._words_split(line)
                 html_words = map(expand_tags, raw_words)
-                previous_html, previous_raw = self._binary_chop(
-                    formatted, previous_html, previous_raw, html_words,
-                    raw_words, u' ', line_end)
+                previous_html, previous_raw = \
+                    self._binary_chop(formatted, previous_html, previous_raw, html_words, raw_words, u' ', line_end)
             else:
                 previous_html += html_line + line_end
                 previous_raw += line + line_end
@@ -536,13 +526,9 @@ class Renderer(object):
         for tag in FormattingTags.get_html_tags():
             if tag[u'start tag'] == u'{br}':
                 continue
-            if raw_text.count(tag[u'start tag']) != \
-                raw_text.count(tag[u'end tag']):
-                raw_tags.append(
-                    (raw_text.find(tag[u'start tag']), tag[u'start tag'],
-                    tag[u'end tag']))
-                html_tags.append(
-                        (raw_text.find(tag[u'start tag']), tag[u'start html']))
+            if raw_text.count(tag[u'start tag']) != raw_text.count(tag[u'end tag']):
+                raw_tags.append((raw_text.find(tag[u'start tag']), tag[u'start tag'], tag[u'end tag']))
+                html_tags.append((raw_text.find(tag[u'start tag']), tag[u'start html']))
         # Sort the lists, so that the tags which were opened first on the first
         # slide (the text we are checking) will be opened first on the next
         # slide as well.
@@ -557,11 +543,9 @@ class Renderer(object):
         end_tags.reverse()
         # Remove the indexes.
         html_tags = [tag[1] for tag in html_tags]
-        return raw_text + u''.join(end_tags),  u''.join(start_tags), \
-            u''.join(html_tags)
+        return raw_text + u''.join(end_tags), u''.join(start_tags), u''.join(html_tags)
 
-    def _binary_chop(self, formatted, previous_html, previous_raw, html_list,
-        raw_list, separator, line_end):
+    def _binary_chop(self, formatted, previous_html, previous_raw, html_list, raw_list, separator, line_end):
         """
         This implements the binary chop algorithm for faster rendering. This
         algorithm works line based (line by line) and word based (word by word).
@@ -611,25 +595,22 @@ class Renderer(object):
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
-                text = previous_raw.rstrip(u'<br>') + \
-                    separator.join(raw_list[:index + 1])
+                text = previous_raw.rstrip(u'<br>') + separator.join(raw_list[:index + 1])
                 text, raw_tags, html_tags = self._get_start_tags(text)
                 formatted.append(text)
                 previous_html = u''
                 previous_raw = u''
                 # Stop here as the theme line count was requested.
                 if self.force_page:
-                    Receiver.send_message(u'theme_line_count', index + 1)
+                    Registry().execute(u'theme_line_count', index + 1)
                     break
             else:
                 continue
             # Check if the remaining elements fit on the slide.
             if self._text_fits_on_slide(
                     html_tags + separator.join(html_list[index + 1:]).strip()):
-                previous_html = html_tags + separator.join(
-                    html_list[index + 1:]).strip() + line_end
-                previous_raw = raw_tags + separator.join(
-                    raw_list[index + 1:]).strip() + line_end
+                previous_html = html_tags + separator.join(html_list[index + 1:]).strip() + line_end
+                previous_raw = raw_tags + separator.join(raw_list[index + 1:]).strip() + line_end
                 break
             else:
                 # The remaining elements do not fit, thus reset the indexes,
@@ -651,8 +632,7 @@ class Renderer(object):
         ``text``
             The text to check. It may contain HTML tags.
         """
-        self.web_frame.evaluateJavaScript(u'show_text("%s")' %
-            text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        self.web_frame.evaluateJavaScript(u'show_text("%s")' % text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         return self.web_frame.contentsSize().height() <= self.empty_height
 
     def _words_split(self, line):
@@ -662,3 +642,24 @@ class Renderer(object):
         # this parse we are to be wordy
         line = line.replace(u'\n', u' ')
         return line.split(u' ')
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)
+

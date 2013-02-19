@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,12 +26,15 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The media manager dock.
+"""
 import logging
 
 from openlp.core.lib import StringContent
 
 log = logging.getLogger(__name__)
+
 
 class MediaDockManager(object):
     """
@@ -66,8 +70,7 @@ class MediaDockManager(object):
         log.debug(u'Inserting %s dock' % visible_title[u'title'])
         match = False
         for dock_index in range(self.media_dock.count()):
-            if self.media_dock.widget(dock_index).settingsSection == \
-                media_item.plugin.name:
+            if self.media_dock.widget(dock_index).settingsSection == media_item.plugin.name:
                 match = True
                 break
         if not match:
@@ -84,7 +87,6 @@ class MediaDockManager(object):
         log.debug(u'remove %s dock' % visible_title[u'title'])
         for dock_index in range(self.media_dock.count()):
             if self.media_dock.widget(dock_index):
-                if self.media_dock.widget(dock_index).settingsSection == \
-                    media_item.plugin.name:
+                if self.media_dock.widget(dock_index).settingsSection == media_item.plugin.name:
                     self.media_dock.widget(dock_index).setVisible(False)
                     self.media_dock.removeItem(dock_index)

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,13 +29,13 @@
 
 import logging
 
-from PyQt4 import QtCore
+from PyQt4 import QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
+from openlp.core.lib import Plugin, Settings, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
-from openlp.core.lib.settings import Settings
 from openlp.core.lib.theme import VerticalType
+from openlp.core.ui import AlertLocation
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.alerts.lib import AlertsManager, AlertsTab
 from openlp.plugins.alerts.lib.db import init_schema
@@ -113,12 +114,22 @@ HTML = """
     <div id="alert" style="visibility:hidden"></div>
 """
 
+__default_settings__ = {
+        u'alerts/font face': QtGui.QFont().family(),
+        u'alerts/font size': 40,
+        u'alerts/db type': u'sqlite',
+        u'alerts/location': AlertLocation.Bottom,
+        u'alerts/background color': u'#660000',
+        u'alerts/font color': u'#ffffff',
+        u'alerts/timeout': 5
+    }
+
+
 class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'alerts', plugin_helpers,
-            settings_tab_class=AlertsTab)
+    def __init__(self):
+        Plugin.__init__(self, u'alerts', __default_settings__, settings_tab_class=AlertsTab)
         self.weight = -3
         self.iconPath = u':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.iconPath)
@@ -137,18 +148,17 @@ class AlertsPlugin(Plugin):
         """
         log.info(u'add tools menu')
         self.toolsAlertItem = create_action(tools_menu, u'toolsAlertItem',
-            text=translate('AlertsPlugin', '&Alert'),
-            icon=u':/plugins/plugin_alerts.png',
+            text=translate('AlertsPlugin', '&Alert'), icon=u':/plugins/plugin_alerts.png',
             statustip=translate('AlertsPlugin', 'Show an alert message.'),
             visible=False, shortcuts=[u'F7'], triggers=self.onAlertsTrigger)
-        self.serviceManager.mainwindow.toolsMenu.addAction(self.toolsAlertItem)
+        self.main_window.toolsMenu.addAction(self.toolsAlertItem)
 
     def initialise(self):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
         self.toolsAlertItem.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.toolsAlertItem, unicode(UiStrings().Tools))
+        action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
 
     def finalise(self):
         """
@@ -163,8 +173,7 @@ class AlertsPlugin(Plugin):
 
     def toggleAlertsState(self):
         self.alertsActive = not self.alertsActive
-        Settings().setValue(self.settingsSection + u'/active',
-            QtCore.QVariant(self.alertsActive))
+        Settings().setValue(self.settingsSection + u'/active', self.alertsActive)
 
     def onAlertsTrigger(self):
         self.alertForm.loadList()
@@ -172,8 +181,7 @@ class AlertsPlugin(Plugin):
 
     def about(self):
         about_text = translate('AlertsPlugin', '<strong>Alerts Plugin</strong>'
-            '<br />The alert plugin controls the displaying of nursery alerts '
-            'on the display screen.')
+            '<br />The alert plugin controls the displaying of nursery alerts on the display screen.')
         return about_text
 
     def setPluginTextStrings(self):
@@ -186,8 +194,7 @@ class AlertsPlugin(Plugin):
             u'plural': translate('AlertsPlugin', 'Alerts', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
-            u'title': translate('AlertsPlugin', 'Alerts', 'container title')
+        self.textStrings[StringContent.VisibleName] = {u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
 
     def getDisplayJavaScript(self):
@@ -201,8 +208,7 @@ class AlertsPlugin(Plugin):
         Add CSS to the main display.
         """
         align = VerticalType.Names[self.settingsTab.location]
-        return CSS % (align, self.settingsTab.font_face,
-            self.settingsTab.font_size, self.settingsTab.font_color,
+        return CSS % (align, self.settingsTab.font_face, self.settingsTab.font_size, self.settingsTab.font_color,
             self.settingsTab.bg_color)
 
     def getDisplayHtml(self):

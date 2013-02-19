@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,8 +30,6 @@
 The :mod:`dreambeamimport` module provides the functionality for importing
 DreamBeam songs into the OpenLP database.
 """
-import os
-import sys
 import logging
 
 from lxml import etree, objectify
@@ -45,11 +44,11 @@ class DreamBeamImport(SongImport):
     """
     The :class:`DreamBeamImport` class provides the ability to import song files from
     DreamBeam.
-    
+
     An example of DreamBeam xml mark-up::
-    
+
         <?xml version="1.0"?>
-        <DreamSong xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        <DreamSong xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
           <WordWrap>false</WordWrap>
           <Version>0.80</Version>
@@ -83,7 +82,7 @@ class DreamBeamImport(SongImport):
 
         * \*.xml
     """
-    
+
     def doImport(self):
         """
         Receive a single file or a list of files to import.
@@ -91,7 +90,7 @@ class DreamBeamImport(SongImport):
         if isinstance(self.importSource, list):
             self.importWizard.progressBar.setMaximum(len(self.importSource))
             for file in self.importSource:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     return
                 self.setDefaults()
                 parser = etree.XMLParser(remove_blank_text=True)
@@ -106,8 +105,7 @@ class DreamBeamImport(SongImport):
                 if song_xml.tag != u'DreamSong':
                     self.logError(file, unicode(
                         translate('SongsPlugin.DreamBeamImport',
-                        ('Invalid DreamBeam song file. Missing '
-                            'DreamSong tag.'))))
+                            ('Invalid DreamBeam song file. Missing DreamSong tag.'))))
                     continue
                 if hasattr(song_xml, u'Version'):
                     self.version = float(song_xml.Version.text)
@@ -124,17 +122,14 @@ class DreamBeamImport(SongImport):
                             verse_type =  lyrics_item.get(u'Type')
                             verse_number = lyrics_item.get(u'Number')
                             verse_text = unicode(lyrics_item.text)
-                            self.addVerse(verse_text, 
-                                (u'%s%s' % (verse_type[:1], verse_number)))
+                            self.addVerse(verse_text, (u'%s%s' % (verse_type[:1], verse_number)))
                     if hasattr(song_xml, u'Collection'):
                         self.songBookName = unicode(song_xml.Collection.text)
                     if hasattr(song_xml, u'Number'):
                         self.songNumber = unicode(song_xml.Number.text)
                     if hasattr(song_xml, u'Sequence'):
-                        for LyricsSequenceItem in (
-                            song_xml.Sequence.iterchildren()):
-                            self.verseOrderList.append(
-                                "%s%s" % (LyricsSequenceItem.get(u'Type')[:1], 
+                        for LyricsSequenceItem in (song_xml.Sequence.iterchildren()):
+                            self.verseOrderList.append("%s%s" % (LyricsSequenceItem.get(u'Type')[:1],
                                 LyricsSequenceItem.get(u'Number')))
                     if hasattr(song_xml, u'Notes'):
                         self.comments = unicode(song_xml.Notes.text)

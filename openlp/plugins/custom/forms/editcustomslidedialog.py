@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,8 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate, SpellTextEdit, build_icon
-from openlp.core.lib.ui import UiStrings, create_button, create_button_box
+from openlp.core.lib import SpellTextEdit, UiStrings, translate
+from openlp.core.lib.ui import create_button, create_button_box
 
 class Ui_CustomSlideEditDialog(object):
     def setupUi(self, customSlideEditDialog):
@@ -39,22 +40,17 @@ class Ui_CustomSlideEditDialog(object):
         self.slideTextEdit = SpellTextEdit(self)
         self.slideTextEdit.setObjectName(u'slideTextEdit')
         self.dialogLayout.addWidget(self.slideTextEdit)
-        self.splitButton = create_button(customSlideEditDialog, u'splitButton',
-            icon=u':/general/general_add.png')
-        self.insertButton = create_button(customSlideEditDialog,
-            u'insertButton', icon=u':/general/general_add.png')
-        self.buttonBox = create_button_box(customSlideEditDialog, u'buttonBox',
-            [u'cancel', u'save'], [self.splitButton, self.insertButton])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.splitButton = create_button(customSlideEditDialog, u'splitButton', icon=u':/general/general_add.png')
+        self.insertButton = create_button(customSlideEditDialog, u'insertButton', icon=u':/general/general_add.png')
+        self.button_box = create_button_box(customSlideEditDialog, u'button_box', [u'cancel', u'save'],
+            [self.splitButton, self.insertButton])
+        self.dialogLayout.addWidget(self.button_box)
         self.retranslateUi(customSlideEditDialog)
 
     def retranslateUi(self, customSlideEditDialog):
-        customSlideEditDialog.setWindowTitle(
-            translate('CustomPlugin.EditVerseForm', 'Edit Slide'))
+        customSlideEditDialog.setWindowTitle(translate('CustomPlugin.EditVerseForm', 'Edit Slide'))
         self.splitButton.setText(UiStrings().Split)
         self.splitButton.setToolTip(UiStrings().SplitToolTip)
-        self.insertButton.setText(
-            translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
-        self.insertButton.setToolTip(
-            translate('CustomPlugin.EditCustomForm', 'Split a slide into two '
-            'by inserting a slide splitter.'))
+        self.insertButton.setText(translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
+        self.insertButton.setToolTip(translate('CustomPlugin.EditCustomForm',
+            'Split a slide into two by inserting a slide splitter.'))

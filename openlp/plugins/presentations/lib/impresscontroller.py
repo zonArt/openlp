@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -57,6 +58,7 @@ else:
 
 from PyQt4 import QtCore
 
+from openlp.core.lib import ScreenList
 from openlp.core.utils import delete_file, get_uno_command, get_uno_instance
 from presentationcontroller import PresentationController, PresentationDocument
 
@@ -75,8 +77,7 @@ class ImpressController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Impress',
-            ImpressDocument)
+        PresentationController.__init__(self, plugin, u'Impress', ImpressDocument)
         self.supports = [u'odp']
         self.alsosupports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
@@ -120,10 +121,8 @@ class ImpressController(PresentationController):
         loop = 0
         log.debug(u'get UNO Desktop Openoffice - getComponentContext')
         context = uno.getComponentContext()
-        log.debug(u'get UNO Desktop Openoffice - createInstaneWithContext - '
-            u'UnoUrlResolver')
-        resolver = context.ServiceManager.createInstanceWithContext(
-            u'com.sun.star.bridge.UnoUrlResolver', context)
+        log.debug(u'get UNO Desktop Openoffice - createInstaneWithContext - UnoUrlResolver')
+        resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
         while uno_instance is None and loop < 3:
             try:
                 uno_instance = get_uno_instance(resolver)
@@ -135,8 +134,7 @@ class ImpressController(PresentationController):
             self.manager = uno_instance.ServiceManager
             log.debug(u'get UNO Desktop Openoffice - createInstanceWithContext'
                 u' - Desktop')
-            desktop = self.manager.createInstanceWithContext(
-                "com.sun.star.frame.Desktop", uno_instance)
+            desktop = self.manager.createInstanceWithContext("com.sun.star.frame.Desktop", uno_instance)
             return desktop
         except:
             log.warn(u'Failed to get UNO desktop')
@@ -165,8 +163,7 @@ class ImpressController(PresentationController):
         try:
             return Dispatch(u'com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.warn(u'Failed to get COM service manager. '
-                u'Impress Controller has been disabled')
+            log.warn(u'Failed to get COM service manager. Impress Controller has been disabled')
             return None
 
     def kill(self):
@@ -192,9 +189,8 @@ class ImpressController(PresentationController):
             list = docs.createEnumeration()
             while list.hasMoreElements():
                 doc = list.nextElement()
-                if doc.getImplementationName() != \
-                    u'com.sun.star.comp.framework.BackingComp':
-                    cnt = cnt + 1
+                if doc.getImplementationName() != u'com.sun.star.comp.framework.BackingComp':
+                    cnt += 1
         if cnt > 0:
             log.debug(u'OpenOffice not terminated as docs are still open')
         else:
@@ -234,8 +230,7 @@ class ImpressDocument(PresentationDocument):
             if desktop is None:
                 self.controller.start_process()
                 desktop = self.controller.get_com_desktop()
-            url = u'file:///' + self.filepath.replace(u'\\', u'/').replace(
-                u':', u'|').replace(u' ', u'%20')
+            url = u'file:///' + self.filepath.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
         else:
             desktop = self.controller.get_uno_desktop()
             url = uno.systemPathToFileUrl(self.filepath)
@@ -257,12 +252,10 @@ class ImpressDocument(PresentationDocument):
         if os.name == u'nt':
             # As we can't start minimized the Impress window gets in the way.
             # Either window.setPosSize(0, 0, 200, 400, 12) or .setVisible(False)
-            window = self.document.getCurrentController().getFrame() \
-                .getContainerWindow()
+            window = self.document.getCurrentController().getFrame().getContainerWindow()
             window.setVisible(False)
         self.presentation = self.document.getPresentation()
-        self.presentation.Display = \
-            self.controller.plugin.renderer.screens.current[u'number'] + 1
+        self.presentation.Display = ScreenList().current[u'number'] + 1
         self.control = None
         self.create_thumbnails()
         return True
@@ -275,8 +268,8 @@ class ImpressDocument(PresentationDocument):
         if self.check_thumbnails():
             return
         if os.name == u'nt':
-            thumbdirurl = u'file:///' + self.get_temp_folder().replace(
-                u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+            thumbdirurl = u'file:///' + self.get_temp_folder().replace(u'\\', u'/') \
+                .replace(u':', u'|').replace(u' ', u'%20')
         else:
             thumbdirurl = uno.systemPathToFileUrl(self.get_temp_folder())
         props = []
@@ -292,15 +285,13 @@ class ImpressDocument(PresentationDocument):
             page = pages.getByIndex(idx)
             doc.getCurrentController().setCurrentPage(page)
             urlpath = u'%s/%s.png' % (thumbdirurl, unicode(idx + 1))
-            path = os.path.join(self.get_temp_folder(),
-                unicode(idx + 1) + u'.png')
+            path = os.path.join(self.get_temp_folder(), unicode(idx + 1) + u'.png')
             try:
                 doc.storeToURL(urlpath, props)
                 self.convert_thumbnail(path, idx + 1)
                 delete_file(path)
             except ErrorCodeIOException, exception:
-                log.exception(u'ERROR! ErrorCodeIOException %d' %
-                    exception.ErrCode)
+                log.exception(u'ERROR! ErrorCodeIOException %d' % exception.ErrCode)
             except:
                 log.exception(u'%s - Unable to store openoffice preview' % path)
 
@@ -311,8 +302,7 @@ class ImpressDocument(PresentationDocument):
         """
         log.debug(u'create property OpenOffice')
         if os.name == u'nt':
-            prop = self.controller.manager.\
-                Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+            prop = self.controller.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
         else:
             prop = PropertyValue()
         prop.Name = name
@@ -410,7 +400,7 @@ class ImpressDocument(PresentationDocument):
             i = 1
             while not self.control and i < 150:
                 time.sleep(0.1)
-                i = i + 1
+                i += 1
                 self.control = self.presentation.getController()
         else:
             self.control.activate()

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -112,7 +113,7 @@ class OpenSongImport(SongImport):
     def doImport(self):
         self.importWizard.progressBar.setMaximum(len(self.importSource))
         for filename in self.importSource:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             song_file = open(filename)
             self.doImportFile(song_file)
@@ -132,9 +133,7 @@ class OpenSongImport(SongImport):
         root = tree.getroot()
         if root.tag != u'song':
             self.logError(file.name, unicode(
-                translate('SongsPlugin.OpenSongImport',
-                ('Invalid OpenSong song file. Missing '
-                'song tag.'))))
+                translate('SongsPlugin.OpenSongImport', ('Invalid OpenSong song file. Missing song tag.'))))
             return
         fields = dir(root)
         decode = {
@@ -178,8 +177,7 @@ class OpenSongImport(SongImport):
             if not this_line:
                 continue
             # skip guitar chords and page and column breaks
-            if this_line.startswith(u'.') or this_line.startswith(u'---') \
-                or this_line.startswith(u'-!!'):
+            if this_line.startswith(u'.') or this_line.startswith(u'---') or this_line.startswith(u'-!!'):
                 continue
             # verse/chorus/etc. marker
             if this_line.startswith(u'['):
@@ -199,12 +197,10 @@ class OpenSongImport(SongImport):
                     # the verse tag
                     verse_tag = content
                     verse_num = u'1'
-                verse_index = VerseType.from_loose_input(verse_tag) \
-                    if verse_tag else 0
+                verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
                 verse_tag = VerseType.Tags[verse_index]
                 inst = 1
-                if [verse_tag, verse_num, inst] in our_verse_order \
-                    and verse_num in verses.get(verse_tag, {}):
+                if [verse_tag, verse_num, inst] in our_verse_order and verse_num in verses.get(verse_tag, {}):
                     inst = len(verses[verse_tag][verse_num]) + 1
                 continue
             # number at start of line.. it's verse number
@@ -231,8 +227,7 @@ class OpenSongImport(SongImport):
             while(length < len(verse_num) and verse_num[length].isnumeric()):
                 length += 1
             verse_def = u'%s%s' % (verse_tag, verse_num[:length])
-            verse_joints[verse_def] = \
-                u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
+            verse_joints[verse_def] = u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
                 if verse_def in verse_joints else lines
         for verse_def, lines in verse_joints.iteritems():
             self.addVerse(lines, verse_def)

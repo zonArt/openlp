@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2011 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2011 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -25,139 +26,197 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.media.mediacontroller` module contains a base class for media components and other widgets
+related to playing media, such as sliders.
+"""
 import logging
 import os
-import sys
+import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, Receiver, translate
-from openlp.core.lib.settings import Settings
-from openlp.core.lib.mediaplayer import MediaPlayer
+from openlp.core.lib import OpenLPToolbar, Settings, Registry, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.ui.media import MediaState, MediaInfo, MediaType, \
-    get_media_players, set_media_players
+from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
+from openlp.core.ui.media.mediaplayer import MediaPlayer
 from openlp.core.utils import AppLocation
+from openlp.core.ui import DisplayControllerType
 
 log = logging.getLogger(__name__)
+
+
+class MediaSlider(QtGui.QSlider):
+    """
+    Allows the mouse events of a slider to be overridden and extra functionality added
+    """
+    def __init__(self, direction, manager, controller, parent=None):
+        """
+        Constructor
+        """
+        QtGui.QSlider.__init__(self, direction)
+        self.manager = manager
+        self.controller = controller
+
+    def mouseMoveEvent(self, event):
+        """
+        Override event to allow hover time to be displayed.
+        """
+        timevalue = QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
+        self.setToolTip(u'%s' % datetime.timedelta(seconds=int(timevalue / 1000)))
+        QtGui.QSlider.mouseMoveEvent(self, event)
+
+    def mousePressEvent(self, event):
+        """
+        Mouse Press event no new functionality
+        """
+        QtGui.QSlider.mousePressEvent(self, event)
+
+    def mouseReleaseEvent(self, event):
+        """
+        Set the slider position when the mouse is clicked and released on the slider.
+        """
+        self.setValue(QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width()))
+        QtGui.QSlider.mouseReleaseEvent(self, event)
+
 
 class MediaController(object):
     """
     The implementation of the Media Controller. The Media Controller adds an own
     class for every Player. Currently these are QtWebkit, Phonon and Vlc.
-    """
 
+    displayControllers are an array of controllers keyed on the
+    slidecontroller or plugin which built them.  ControllerType is the class
+    containing the key values.
+
+    mediaPlayers are an array of media players keyed on player name.
+
+    currentMediaPlayer is an array of player instances keyed on ControllerType.
+
+    """
     def __init__(self, parent):
-        self.parent = parent
+        """
+        Constructor
+        """
+        self.mainWindow = parent
+        Registry().register(u'media_controller', self)
         self.mediaPlayers = {}
-        self.controller = []
-        self.curDisplayMediaPlayer = {}
+        self.displayControllers = {}
+        self.currentMediaPlayer = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
         self.timer.setInterval(200)
-        self.withLivePreview = False
-        self.check_available_media_players()
         # Signals
-        QtCore.QObject.connect(self.timer,
-            QtCore.SIGNAL("timeout()"), self.video_state)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackPlay'), self.video_play)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackPause'), self.video_pause)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'playbackStop'), self.video_stop)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'seekSlider'), self.video_seek)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'volumeSlider'), self.video_volume)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_hide'), self.video_hide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_blank'), self.video_blank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'media_unblank'), self.video_unblank)
+        self.timer.timeout.connect(self.media_state)
+        Registry().register_function(u'playbackPlay', self.media_play_msg)
+        Registry().register_function(u'playbackPause', self.media_pause_msg)
+        Registry().register_function(u'playbackStop', self.media_stop_msg)
+        Registry().register_function(u'seekSlider', self.media_seek_msg)
+        Registry().register_function(u'volumeSlider', self.media_volume_msg)
+        Registry().register_function(u'media_hide', self.media_hide)
+        Registry().register_function(u'media_blank', self.media_blank)
+        Registry().register_function(u'media_unblank', self.media_unblank)
         # Signals for background video
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_hide'), self.video_hide)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'songs_unblank'), self.video_unblank)
-        QtCore.QObject.connect(Receiver.get_receiver(),
-            QtCore.SIGNAL(u'mediaitem_media_rebuild'), self.set_active_players)
+        Registry().register_function(u'songs_hide', self.media_hide)
+        Registry().register_function(u'songs_unblank', self.media_unblank)
+        Registry().register_function(u'mediaitem_media_rebuild', self._set_active_players)
+        Registry().register_function(u'mediaitem_suffixes', self._generate_extensions_lists)
 
-    def set_active_players(self):
+    def _set_active_players(self):
+        """
+        Set the active players and available media files
+        """
         savedPlayers = get_media_players()[0]
         for player in self.mediaPlayers.keys():
             self.mediaPlayers[player].isActive = player in savedPlayers
 
-    def register_controllers(self, controller):
+    def _generate_extensions_lists(self):
         """
-        Register each media Player controller (Webkit, Phonon, etc) and store
+        Set the active players and available media files
+        """
+        self.audio_extensions_list = []
+        for player in self.mediaPlayers.values():
+            if player.isActive:
+                for item in player.audio_extensions_list:
+                    if not item in self.audio_extensions_list:
+                        self.audio_extensions_list.append(item)
+                        self.service_manager.supported_suffixes(item[2:])
+        self.video_extensions_list = []
+        for player in self.mediaPlayers.values():
+            if player.isActive:
+                for item in player.video_extensions_list:
+                    if item not in self.video_extensions_list:
+                        self.video_extensions_list.extend(item)
+                        self.service_manager.supported_suffixes(item[2:])
+
+    def register_players(self, player):
+        """
+        Register each media Player (Webkit, Phonon, etc) and store
         for later use
+
+        ``player``
+            Individual player class which has been enabled
         """
-        self.mediaPlayers[controller.name] = controller
+        self.mediaPlayers[player.name] = player
 
     def check_available_media_players(self):
         """
-        Check to see if we have any media Player's available. If Not do not
-        install the plugin.
+        Check to see if we have any media Player's available.
         """
-        log.debug(u'check_available_media_players')
+        log.debug(u'_check_available_media_players')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.AppDir),
             u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
-            # TODO vlc backend is not yet working on Mac OS X.
-            # For now just ignore vlc backend on Mac OS X.
-            if sys.platform == 'darwin' and filename == 'vlcplayer.py':
-                log.warn(u'Disabling vlc media player')
-                continue
-            if filename.endswith(u'player.py'):
+            if filename.endswith(u'player.py') and not filename == 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
-                    modulename = u'openlp.core.ui.media.' + \
-                        os.path.splitext(filename)[0]
+                    modulename = u'openlp.core.ui.media.' + os.path.splitext(filename)[0]
                     log.debug(u'Importing controller %s', modulename)
                     try:
                         __import__(modulename, globals(), locals(), [])
                     # On some platforms importing vlc.py might cause
                     # also OSError exceptions. (e.g. Mac OS X)
                     except (ImportError, OSError):
-                        log.warn(u'Failed to import %s on path %s',
-                            modulename, path)
-        controller_classes = MediaPlayer.__subclasses__()
-        for controller_class in controller_classes:
-            controller = controller_class(self)
-            self.register_controllers(controller)
+                        log.warn(u'Failed to import %s on path %s', modulename, path)
+        player_classes = MediaPlayer.__subclasses__()
+        for player_class in player_classes:
+            player = player_class(self)
+            self.register_players(player)
         if not self.mediaPlayers:
             return False
         savedPlayers, overriddenPlayer = get_media_players()
         invalidMediaPlayers = [mediaPlayer for mediaPlayer in savedPlayers
-            if not mediaPlayer in self.mediaPlayers or not
-            self.mediaPlayers[mediaPlayer].check_available()]
+            if not mediaPlayer in self.mediaPlayers or not self.mediaPlayers[mediaPlayer].check_available()]
         if invalidMediaPlayers:
             for invalidPlayer in invalidMediaPlayers:
                 savedPlayers.remove(invalidPlayer)
             set_media_players(savedPlayers, overriddenPlayer)
-        self.set_active_players()
+        self._set_active_players()
+        self._generate_extensions_lists()
         return True
 
-    def video_state(self):
+    def media_state(self):
         """
         Check if there is a running media Player and do updating stuff (e.g.
         update the UI)
         """
-        if not self.curDisplayMediaPlayer.keys():
+        if not self.currentMediaPlayer.keys():
             self.timer.stop()
         else:
-            for display in self.curDisplayMediaPlayer.keys():
-                self.curDisplayMediaPlayer[display].resize(display)
-                self.curDisplayMediaPlayer[display].update_ui(display)
-                if self.curDisplayMediaPlayer[display].state == \
-                    MediaState.Playing:
-                    return
+            any_active = False
+            for source in self.currentMediaPlayer.keys():
+                display = self._define_display(self.displayControllers[source])
+                self.currentMediaPlayer[source].resize(display)
+                self.currentMediaPlayer[source].update_ui(display)
+                if self.currentMediaPlayer[source].state == MediaState.Playing:
+                    any_active = True
+        # There are still any active players - no need to stop timer.
+            if any_active:
+                return
         # no players are active anymore
-        for display in self.curDisplayMediaPlayer.keys():
-            if self.curDisplayMediaPlayer[display].state != MediaState.Paused:
+        for source in self.currentMediaPlayer.keys():
+            if self.currentMediaPlayer[source].state != MediaState.Paused:
+                display = self._define_display(self.displayControllers[source])
                 display.controller.seekSlider.setSliderPosition(0)
         self.timer.stop()
 
@@ -191,39 +250,41 @@ class MediaController(object):
                 html += player.get_media_display_html()
         return html
 
-    def add_controller_items(self, controller, control_panel):
-        self.controller.append(controller)
-        self.setup_generic_controls(controller, control_panel)
-        self.setup_special_controls(controller, control_panel)
-
-    def setup_generic_controls(self, controller, control_panel):
+    def register_controller(self, controller):
         """
-        Add generic media control items (valid for all types of medias)
+        Registers media controls where the players will be placed to run.
+
+        ``controller``
+            The controller where a player will be placed
+        """
+        self.displayControllers[controller.controllerType] = controller
+        self.setup_generic_controls(controller)
+
+    def setup_generic_controls(self, controller):
+        """
+        Set up controls on the control_panel for a given controller
+
+        ``controller``
+            First element is the controller which should be used
         """
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
         controller.mediabar = OpenLPToolbar(controller)
-        controller.mediabar.addToolbarAction(u'playbackPlay',
-            text=u'media_playback_play',
+        controller.mediabar.addToolbarAction(u'playbackPlay', text=u'media_playback_play',
             icon=u':/slides/media_playback_start.png',
-            tooltip=translate('OpenLP.SlideController', 'Start playing media.'),
-            triggers=controller.sendToPlugins)
-        controller.mediabar.addToolbarAction(u'playbackPause',
-            text=u'media_playback_pause',
+            tooltip=translate('OpenLP.SlideController', 'Start playing media.'), triggers=controller.sendToPlugins)
+        controller.mediabar.addToolbarAction(u'playbackPause', text=u'media_playback_pause',
             icon=u':/slides/media_playback_pause.png',
-            tooltip=translate('OpenLP.SlideController', 'Pause playing media.'),
-            triggers=controller.sendToPlugins)
-        controller.mediabar.addToolbarAction(u'playbackStop',
-            text=u'media_playback_stop',
+            tooltip=translate('OpenLP.SlideController', 'Pause playing media.'), triggers=controller.sendToPlugins)
+        controller.mediabar.addToolbarAction(u'playbackStop', text=u'media_playback_stop',
             icon=u':/slides/media_playback_stop.png',
-            tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
-            triggers=controller.sendToPlugins)
+            tooltip=translate('OpenLP.SlideController', 'Stop playing media.'), triggers=controller.sendToPlugins)
         # Build the seekSlider.
-        controller.seekSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        controller.seekSlider = MediaSlider(QtCore.Qt.Horizontal, self, controller)
         controller.seekSlider.setMaximum(1000)
-        controller.seekSlider.setTracking(False)
-        controller.seekSlider.setToolTip(translate(
-            'OpenLP.SlideController', 'Video position.'))
+        controller.seekSlider.setTracking(True)
+        controller.seekSlider.setMouseTracking(True)
+        controller.seekSlider.setToolTip(translate('OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
         controller.seekSlider.setObjectName(u'seekSlider')
         controller.mediabar.addToolbarWidget(controller.seekSlider)
@@ -234,88 +295,100 @@ class MediaController(object):
         controller.volumeSlider.setMinimum(0)
         controller.volumeSlider.setMaximum(100)
         controller.volumeSlider.setTracking(True)
-        controller.volumeSlider.setToolTip(translate(
-            'OpenLP.SlideController', 'Audio Volume.'))
+        controller.volumeSlider.setToolTip(translate('OpenLP.SlideController', 'Audio Volume.'))
         controller.volumeSlider.setValue(controller.media_info.volume)
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volumeSlider.setObjectName(u'volumeSlider')
         controller.mediabar.addToolbarWidget(controller.volumeSlider)
-        control_panel.addWidget(controller.mediabar)
+        controller.controllerLayout.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
-        QtCore.QObject.connect(controller.seekSlider,
-            QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
-        QtCore.QObject.connect(controller.volumeSlider,
-            QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
+        QtCore.QObject.connect(controller.seekSlider, QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
+        QtCore.QObject.connect(controller.volumeSlider, QtCore.SIGNAL(u'valueChanged(int)'), controller.sendToPlugins)
 
-    def setup_special_controls(self, controller, control_panel):
-        """
-        Special media Toolbars will be created here (e.g. for DVD Playback)
-        """
-        controller.media_info = MediaInfo()
-        # TODO: add Toolbar for DVD, ...
-
-    def setup_display(self, display):
+    def setup_display(self, display, preview):
         """
         After a new display is configured, all media related widget will be
         created too
+
+        ``display``
+            Display on which the output is to be played
+
+        ``preview``
+            Whether the display is a main or preview display
         """
         # clean up possible running old media files
         self.finalise()
         # update player status
-        self.set_active_players()
+        self._set_active_players()
         display.hasAudio = True
-        if not self.withLivePreview and \
-            display == self.parent.liveController.previewDisplay:
+        if display.isLive and preview:
             return
-        if display == self.parent.previewController.previewDisplay or \
-            display == self.parent.liveController.previewDisplay:
+        if preview:
             display.hasAudio = False
         for player in self.mediaPlayers.values():
             if player.isActive:
                 player.setup(display)
 
     def set_controls_visible(self, controller, value):
+        """
+        After a new display is configured, all media related widget will be
+        created too
+
+        ``controller``
+            The controller on which controls act.
+
+        ``value``
+            control name to be changed.
+        """
         # Generic controls
         controller.mediabar.setVisible(value)
         if controller.isLive and controller.display:
-            if self.curDisplayMediaPlayer and value:
-                if self.curDisplayMediaPlayer[controller.display] != \
-                    self.mediaPlayers[u'webkit']:
+            if self.currentMediaPlayer and value:
+                if self.currentMediaPlayer[controller.controllerType] != self.mediaPlayers[u'webkit']:
                     controller.display.setTransparency(False)
-        # Special controls: Here media type specific Controls will be enabled
-        # (e.g. for DVD control, ...)
-        # TODO
 
-    def resize(self, controller, display, player):
+    def resize(self, display, player):
         """
         After Mainwindow changes or Splitter moved all related media widgets
         have to be resized
+
+        ``display``
+            The display on which output is playing.
+
+        ``player``
+            The player which is doing the playing.
         """
         player.resize(display)
 
-    def video(self, controller, file, muted, isBackground, hidden=False):
+    def video(self, source, serviceItem, hidden=False, videoBehindText=False):
         """
         Loads and starts a video to run with the option of sound
+
+        ``source``
+            Where the call originated form
+
+        ``serviceItem``
+            The player which is doing the playing
+
+        ``hidden``
+            The player which is doing the playing
+
+        ``videoBehindText``
+            Is the video to be played behind text.
         """
         log.debug(u'video')
         isValid = False
+        controller = self.displayControllers[source]
         # stop running videos
-        self.video_reset(controller)
+        self.media_reset(controller)
         controller.media_info = MediaInfo()
-        if muted:
-            controller.media_info.volume = 0
-        else:
-            controller.media_info.volume = controller.volumeSlider.value()
-        controller.media_info.file_info = QtCore.QFileInfo(file)
-        controller.media_info.is_background = isBackground
-        display = None
+        controller.media_info.volume = controller.volumeSlider.value()
+        controller.media_info.is_background = videoBehindText
+        controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_frame_path())
+        display = self._define_display(controller)
         if controller.isLive:
-            if self.withLivePreview and controller.previewDisplay:
-                display = controller.previewDisplay
-                isValid = self.check_file_type(controller, display)
-            display = controller.display
-            isValid = self.check_file_type(controller, display)
+            isValid = self._check_file_type(controller, display, serviceItem)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
             if controller.media_info.is_background:
@@ -323,139 +396,212 @@ class MediaController(object):
                 controller.media_info.start_time = 0
                 controller.media_info.end_time = 0
             else:
-                controller.media_info.start_time = \
-                    display.serviceItem.start_time
-                controller.media_info.end_time = display.serviceItem.end_time
+                controller.media_info.start_time = serviceItem.start_time
+                controller.media_info.end_time = serviceItem.end_time
         elif controller.previewDisplay:
-            display = controller.previewDisplay
-            isValid = self.check_file_type(controller, display)
+            isValid = self._check_file_type(controller, display, serviceItem)
         if not isValid:
             # Media could not be loaded correctly
-            critical_error_message_box(
-                translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                unicode(translate('MediaPlugin.MediaItem',
-                'Unsupported File')))
+            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         # dont care about actual theme, set a black background
         if controller.isLive and not controller.media_info.is_background:
-            display.frame.evaluateJavaScript(u'show_video( \
-            "setBackBoard", null, null, null,"visible");')
+            display.frame.evaluateJavaScript(u'show_video( "setBackBoard", null, null, null,"visible");')
         # now start playing - Preview is autoplay!
         autoplay = False
         # Preview requested
         if not controller.isLive:
             autoplay = True
-        # Visible or background requested
-        elif not hidden or controller.media_info.is_background:
+        # Visible or background requested or Service Item wants to autostart
+        elif not hidden or controller.media_info.is_background or serviceItem.will_auto_start:
             autoplay = True
         # Unblank on load set
-        elif Settings().value(u'general/auto unblank',
-            QtCore.QVariant(False)).toBool():
+        elif Settings().value(u'general/auto unblank'):
             autoplay = True
         if autoplay:
-            if not self.video_play([controller]):
-                critical_error_message_box(
-                    translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                    unicode(translate('MediaPlugin.MediaItem',
-                    'Unsupported File')))
+            if not self.media_play(controller):
+                critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                    translate('MediaPlugin.MediaItem', 'Unsupported File'))
                 return False
         self.set_controls_visible(controller, True)
-        log.debug(u'use %s controller' % self.curDisplayMediaPlayer[display])
+        log.debug(u'use %s controller' % self.currentMediaPlayer[controller.controllerType])
         return True
 
-    def check_file_type(self, controller, display):
+    def media_length(self, serviceItem):
+        """
+        Loads and starts a media item to obtain the media length
+
+        ``serviceItem``
+            The ServiceItem containing the details to be played.
+        """
+        controller = self.displayControllers[DisplayControllerType.Plugin]
+        log.debug(u'media_length')
+        # stop running videos
+        self.media_reset(controller)
+        controller.media_info = MediaInfo()
+        controller.media_info.volume = 0
+        controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_frame_path())
+        display = controller.previewDisplay
+        if not self._check_file_type(controller, display, serviceItem):
+            # Media could not be loaded correctly
+            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
+            return False
+        if not self.media_play(controller):
+            critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
+                translate('MediaPlugin.MediaItem', 'Unsupported File'))
+            return False
+        serviceItem.set_media_length(controller.media_info.length)
+        self.media_stop(controller)
+        log.debug(u'use %s controller' % self.currentMediaPlayer[controller.controllerType])
+        return True
+
+    def _check_file_type(self, controller, display, serviceItem):
         """
         Select the correct media Player type from the prioritized Player list
+
+        ``controller``
+            First element is the controller which should be used
+
+        ``serviceItem``
+            The ServiceItem containing the details to be played.
         """
-        usedPlayers, overriddenPlayer = get_media_players()
-        if overriddenPlayer and overriddenPlayer != u'auto':
-            usedPlayers = [overriddenPlayer]
+        usedPlayers = get_media_players()[0]
+        if serviceItem.title != UiStrings().Automatic:
+            usedPlayers = [serviceItem.title.lower()]
         if controller.media_info.file_info.isFile():
-            suffix = u'*.%s' % \
-                controller.media_info.file_info.suffix().toLower()
+            suffix = u'*.%s' % controller.media_info.file_info.suffix().lower()
             for title in usedPlayers:
                 player = self.mediaPlayers[title]
                 if suffix in player.video_extensions_list:
-                    if not controller.media_info.is_background or \
-                        controller.media_info.is_background and \
-                        player.canBackground:
-                        self.resize(controller, display, player)
+                    if not controller.media_info.is_background or controller.media_info.is_background and \
+                            player.canBackground:
+                        self.resize(display, player)
                         if player.load(display):
-                            self.curDisplayMediaPlayer[display] = player
+                            self.currentMediaPlayer[controller.controllerType] = player
                             controller.media_info.media_type = MediaType.Video
                             return True
                 if suffix in player.audio_extensions_list:
                     if player.load(display):
-                        self.curDisplayMediaPlayer[display] = player
+                        self.currentMediaPlayer[controller.controllerType] = player
                         controller.media_info.media_type = MediaType.Audio
                         return True
         else:
             for title in usedPlayers:
                 player = self.mediaPlayers[title]
                 if player.canFolder:
-                    self.resize(controller, display, player)
+                    self.resize(display, player)
                     if player.load(display):
-                        self.curDisplayMediaPlayer[display] = player
+                        self.currentMediaPlayer[controller.controllerType] = player
                         controller.media_info.media_type = MediaType.Video
                         return True
         # no valid player found
         return False
 
-    def video_play(self, msg, status=True):
+    def media_play_msg(self, msg, status=True):
         """
         Responds to the request to play a loaded video
 
         ``msg``
             First element is the controller which should be used
         """
-        log.debug(u'video_play')
-        controller = msg[0]
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller == controller:
-                if not self.curDisplayMediaPlayer[display].play(display):
-                    return False
-                if status:
-                    display.frame.evaluateJavaScript(u'show_blank("desktop");')
-                    self.curDisplayMediaPlayer[display].set_visible(display,
-                        True)
-                    if controller.isLive:
-                        if controller.hideMenu.defaultAction().isChecked():
-                            controller.hideMenu.defaultAction().trigger()
+        log.debug(u'media_play_msg')
+        self.media_play(msg[0], status)
+
+    def media_play(self, controller, status=True):
+        """
+        Responds to the request to play a loaded video
+
+        ``controller``
+            The controller to be played
+        """
+        log.debug(u'media_play')
+        controller.seekSlider.blockSignals(True)
+        controller.volumeSlider.blockSignals(True)
+        display = self._define_display(controller)
+        if not self.currentMediaPlayer[controller.controllerType].play(display):
+            controller.seekSlider.blockSignals(False)
+            controller.volumeSlider.blockSignals(False)
+            return False
+        if controller.media_info.is_background:
+            self.media_volume(controller, 0)
+        else:
+            self.media_volume(controller, controller.media_info.volume)
+        if status:
+            display.frame.evaluateJavaScript(u'show_blank("desktop");')
+            self.currentMediaPlayer[controller.controllerType].set_visible(display, True)
+            # Flash needs to be played and will not AutoPlay
+            if controller.media_info.is_flash:
+                controller.mediabar.actions[u'playbackPlay'].setVisible(True)
+                controller.mediabar.actions[u'playbackPause'].setVisible(False)
+            else:
+                controller.mediabar.actions[u'playbackPlay'].setVisible(False)
+                controller.mediabar.actions[u'playbackPause'].setVisible(True)
+            controller.mediabar.actions[u'playbackStop'].setVisible(True)
+            if controller.isLive:
+                if controller.hideMenu.defaultAction().isChecked():
+                    controller.hideMenu.defaultAction().trigger()
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
+        controller.seekSlider.blockSignals(False)
+        controller.volumeSlider.blockSignals(False)
         return True
 
-    def video_pause(self, msg):
+    def media_pause_msg(self, msg):
         """
         Responds to the request to pause a loaded video
 
         ``msg``
             First element is the controller which should be used
         """
-        log.debug(u'video_pause')
-        controller = msg[0]
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller == controller:
-                self.curDisplayMediaPlayer[display].pause(display)
+        log.debug(u'media_pause_msg')
+        self.media_pause(msg[0])
 
-    def video_stop(self, msg):
+    def media_pause(self, controller):
+        """
+        Responds to the request to pause a loaded video
+
+        ``controller``
+            The Controller to be paused
+        """
+        log.debug(u'media_pause')
+        display = self._define_display(controller)
+        self.currentMediaPlayer[controller.controllerType].pause(display)
+        controller.mediabar.actions[u'playbackPlay'].setVisible(True)
+        controller.mediabar.actions[u'playbackStop'].setVisible(True)
+        controller.mediabar.actions[u'playbackPause'].setVisible(False)
+
+    def media_stop_msg(self, msg):
         """
         Responds to the request to stop a loaded video
 
         ``msg``
             First element is the controller which should be used
         """
-        log.debug(u'video_stop')
-        controller = msg[0]
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller == controller:
-                display.frame.evaluateJavaScript(u'show_blank("black");')
-                self.curDisplayMediaPlayer[display].stop(display)
-                self.curDisplayMediaPlayer[display].set_visible(display, False)
-                controller.seekSlider.setSliderPosition(0)
+        log.debug(u'media_stop_msg')
+        self.media_stop(msg[0])
 
-    def video_volume(self, msg):
+    def media_stop(self, controller):
+        """
+        Responds to the request to stop a loaded video
+
+        ``controller``
+            The controller that needs to be stopped
+        """
+        log.debug(u'media_stop')
+        display = self._define_display(controller)
+        if controller.controllerType in self.currentMediaPlayer:
+            display.frame.evaluateJavaScript(u'show_blank("black");')
+            self.currentMediaPlayer[controller.controllerType].stop(display)
+            self.currentMediaPlayer[controller.controllerType].set_visible(display, False)
+            controller.seekSlider.setSliderPosition(0)
+            controller.mediabar.actions[u'playbackPlay'].setVisible(True)
+            controller.mediabar.actions[u'playbackStop'].setVisible(False)
+            controller.mediabar.actions[u'playbackPause'].setVisible(False)
+
+    def media_volume_msg(self, msg):
         """
         Changes the volume of a running video
 
@@ -464,12 +610,21 @@ class MediaController(object):
         """
         controller = msg[0]
         vol = msg[1][0]
-        log.debug(u'video_volume %d' % vol)
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller == controller:
-                self.curDisplayMediaPlayer[display].volume(display, vol)
+        self.media_volume(controller, vol)
 
-    def video_seek(self, msg):
+    def media_volume(self, controller, volume):
+        """
+        Changes the volume of a running video
+
+        ``msg``
+            First element is the controller which should be used
+        """
+        log.debug(u'media_volume %d' % volume)
+        display = self._define_display(controller)
+        self.currentMediaPlayer[controller.controllerType].volume(display, volume)
+        controller.volumeSlider.setValue(volume)
+
+    def media_seek_msg(self, msg):
         """
         Responds to the request to change the seek Slider of a loaded video
 
@@ -477,29 +632,38 @@ class MediaController(object):
             First element is the controller which should be used
             Second element is a list with the seek Value as first element
         """
-        log.debug(u'video_seek')
+        log.debug(u'media_seek')
         controller = msg[0]
         seekVal = msg[1][0]
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller == controller:
-                self.curDisplayMediaPlayer[display].seek(display, seekVal)
+        self.media_seek(controller, seekVal)
 
-    def video_reset(self, controller):
+    def media_seek(self, controller, seekVal):
+        """
+        Responds to the request to change the seek Slider of a loaded video
+
+        ``msg``
+            First element is the controller which should be used
+            Second element is a list with the seek Value as first element
+        """
+        log.debug(u'media_seek')
+        display = self._define_display(controller)
+        self.currentMediaPlayer[controller.controllerType].seek(display, seekVal)
+
+    def media_reset(self, controller):
         """
         Responds to the request to reset a loaded video
         """
-        log.debug(u'video_reset')
+        log.debug(u'media_reset')
         self.set_controls_visible(controller, False)
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller == controller:
-                display.override = {}
-                self.curDisplayMediaPlayer[display].reset(display)
-                self.curDisplayMediaPlayer[display].set_visible(display, False)
-                display.frame.evaluateJavaScript(u'show_video( \
-                "setBackBoard", null, null, null,"hidden");')
-                del self.curDisplayMediaPlayer[display]
+        display = self._define_display(controller)
+        if controller.controllerType in self.currentMediaPlayer:
+            display.override = {}
+            self.currentMediaPlayer[controller.controllerType].reset(display)
+            self.currentMediaPlayer[controller.controllerType].set_visible(display, False)
+            display.frame.evaluateJavaScript(u'show_video( "setBackBoard", null, null, null,"hidden");')
+            del self.currentMediaPlayer[controller.controllerType]
 
-    def video_hide(self, msg):
+    def media_hide(self, msg):
         """
         Hide the related video Widget
 
@@ -509,15 +673,14 @@ class MediaController(object):
         isLive = msg[1]
         if not isLive:
             return
-        controller = self.parent.liveController
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller != controller or \
-                self.curDisplayMediaPlayer[display].state != MediaState.Playing:
-                continue
-            self.curDisplayMediaPlayer[display].pause(display)
-            self.curDisplayMediaPlayer[display].set_visible(display, False)
+        controller = self.mainWindow.liveController
+        display = self._define_display(controller)
+        if controller.controllerType in self.currentMediaPlayer and \
+            self.currentMediaPlayer[controller.controllerType].state == MediaState.Playing:
+            self.currentMediaPlayer[controller.controllerType].pause(display)
+            self.currentMediaPlayer[controller.controllerType].set_visible(display, False)
 
-    def video_blank(self, msg):
+    def media_blank(self, msg):
         """
         Blank the related video Widget
 
@@ -529,16 +692,14 @@ class MediaController(object):
         hide_mode = msg[2]
         if not isLive:
             return
-        Receiver.send_message(u'live_display_hide', hide_mode)
-        controller = self.parent.liveController
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller != controller or \
-                self.curDisplayMediaPlayer[display].state != MediaState.Playing:
-                continue
-            self.curDisplayMediaPlayer[display].pause(display)
-            self.curDisplayMediaPlayer[display].set_visible(display, False)
+        Registry().execute(u'live_display_hide', hide_mode)
+        controller = self.mainWindow.liveController
+        display = self._define_display(controller)
+        if self.currentMediaPlayer[controller.controllerType].state == MediaState.Playing:
+            self.currentMediaPlayer[controller.controllerType].pause(display)
+            self.currentMediaPlayer[controller.controllerType].set_visible(display, False)
 
-    def video_unblank(self, msg):
+    def media_unblank(self, msg):
         """
         Unblank the related video Widget
 
@@ -546,39 +707,45 @@ class MediaController(object):
             First element is not relevant in this context
             Second element is the boolean for Live indication
         """
-        Receiver.send_message(u'live_display_show')
+        Registry().execute(u'live_display_show')
         isLive = msg[1]
         if not isLive:
             return
-        controller = self.parent.liveController
-        for display in self.curDisplayMediaPlayer.keys():
-            if display.controller != controller or \
-                self.curDisplayMediaPlayer[display].state != MediaState.Paused:
-                continue
-            if self.curDisplayMediaPlayer[display].play(display):
-                self.curDisplayMediaPlayer[display].set_visible(display, True)
+        controller = self.mainWindow.liveController
+        display = self._define_display(controller)
+        if controller.controllerType in self.currentMediaPlayer and \
+                self.currentMediaPlayer[controller.controllerType].state != MediaState.Playing:
+            if self.currentMediaPlayer[controller.controllerType].play(display):
+                self.currentMediaPlayer[controller.controllerType].set_visible(display, True)
                 # Start Timer for ui updates
                 if not self.timer.isActive():
                     self.timer.start()
 
-    def get_audio_extensions_list(self):
-        audio_list = []
-        for player in self.mediaPlayers.values():
-            if player.isActive:
-                for item in player.audio_extensions_list:
-                    if not item in audio_list:
-                        audio_list.append(item)
-        return audio_list
-
-    def get_video_extensions_list(self):
-        video_list = []
-        for player in self.mediaPlayers.values():
-            if player.isActive:
-                video_list.extend([item for item in player.video_extensions_list
-                    if item not in video_list])
-        return video_list
-
     def finalise(self):
+        """
+        Reset all the media controllers when OpenLP shuts down
+        """
         self.timer.stop()
-        for controller in self.controller:
-            self.video_reset(controller)
+        for controller in self.displayControllers:
+            self.media_reset(self.displayControllers[controller])
+
+    def _define_display(self, controller):
+        """
+        Extract the correct display for a given controller
+
+        ``controller``
+            Controller to be used
+        """
+        if controller.isLive:
+            return controller.display
+        return controller.previewDisplay
+
+    def _get_service_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)

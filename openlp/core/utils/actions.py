@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
-# Meinert Jordan, Armin Köhler, Edwin Lunando, Joshua Miller, Stevan Pettit,  #
-# Andreas Preikschat, Mattias Põldaru, Christian Richter, Philip Ridout,      #
-# Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, Martin Thompson, Jon      #
-# Tibble, Dave Warnock, Frode Woldsund                                        #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,7 +32,8 @@ by the shortcuts system.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings
+
 
 class ActionCategory(object):
     """
@@ -39,6 +41,9 @@ class ActionCategory(object):
     category for the :class:`~openlp.core.utils.CategoryList` class.
     """
     def __init__(self, name, weight=0):
+        """
+        Constructor
+        """
         self.name = name
         self.weight = weight
         self.actions = CategoryActionList()
@@ -50,22 +55,37 @@ class CategoryActionList(object):
     list of actions within a category.
     """
     def __init__(self):
+        """
+        Constructor
+        """
         self.index = 0
         self.actions = []
 
     def __getitem__(self, key):
+        """
+        Implement the __getitem__() method to make this class a dictionary type
+        """
         for weight, action in self.actions:
             if action.text() == key:
                 return action
         raise KeyError(u'Action "%s" does not exist.' % key)
 
     def __contains__(self, item):
+        """
+        Implement the __contains__() method to make this class a dictionary type
+        """
         return self.has_key(item)
 
     def __len__(self):
+        """
+        Implement the __len__() method to make this class a dictionary type
+        """
         return len(self.actions)
 
     def __iter__(self):
+        """
+        Implement the __getitem__() method to make this class iterable
+        """
         return self
 
     def __next__(self):
@@ -86,22 +106,34 @@ class CategoryActionList(object):
         return self.__next__()
 
     def has_key(self, key):
+        """
+        Implement the has_key() method to make this class a dictionary type
+        """
         for weight, action in self.actions:
             if action.text() == key:
                 return True
         return False
 
     def append(self, name):
+        """
+        Append an action
+        """
         weight = 0
         if self.actions:
             weight = self.actions[-1][0] + 1
         self.add(name, weight)
 
     def add(self, action, weight=0):
+        """
+        Add an action.
+        """
         self.actions.append((weight, action))
         self.actions.sort(key=lambda act: act[0])
 
     def remove(self, remove_action):
+        """
+        Remove an action
+        """
         for action in self.actions:
             if action[1] == remove_action:
                 self.actions.remove(action)
@@ -116,22 +148,37 @@ class CategoryList(object):
     """
 
     def __init__(self):
+        """
+        Constructor
+        """
         self.index = 0
         self.categories = []
 
     def __getitem__(self, key):
+        """
+        Implement the __getitem__() method to make this class like a dictionary
+        """
         for category in self.categories:
             if category.name == key:
                 return category
         raise KeyError(u'Category "%s" does not exist.' % key)
 
     def __contains__(self, item):
+        """
+        Implement the __contains__() method to make this class like a dictionary
+        """
         return self.has_key(item)
 
     def __len__(self):
+        """
+        Implement the __len__() method to make this class like a dictionary
+        """
         return len(self.categories)
 
     def __iter__(self):
+        """
+        Implement the __iter__() method to make this class like a dictionary
+        """
         return self
 
     def __next__(self):
@@ -152,12 +199,18 @@ class CategoryList(object):
         return self.__next__()
 
     def has_key(self, key):
+        """
+        Implement the has_key() method to make this class like a dictionary
+        """
         for category in self.categories:
             if category.name == key:
                 return True
         return False
 
     def append(self, name, actions=None):
+        """
+        Append a category
+        """
         weight = 0
         if self.categories:
             weight = self.categories[-1].weight + 1
@@ -167,6 +220,9 @@ class CategoryList(object):
             self.add(name, weight)
 
     def add(self, name, weight=0, actions=None):
+        """
+        Add a category
+        """
         category = ActionCategory(name, weight)
         if actions:
             for action in actions:
@@ -178,6 +234,9 @@ class CategoryList(object):
         self.categories.sort(key=lambda cat: cat.weight)
 
     def remove(self, name):
+        """
+        Remove a category
+        """
         for category in self.categories:
             if category.name == name:
                 self.categories.remove(category)
@@ -194,10 +253,16 @@ class ActionList(object):
     shortcut_map = {}
 
     def __init__(self):
+        """
+        Constructor
+        """
         self.categories = CategoryList()
 
     @staticmethod
     def get_instance():
+        """
+        Get the instance of this class.
+        """
         if ActionList.instance is None:
             ActionList.instance = ActionList()
         return ActionList.instance
@@ -211,11 +276,11 @@ class ActionList(object):
             empty ``objectName``.
 
         ``category``
-            The category this action belongs to. The category can be a QString
-            or python unicode string. **Note**, if the category is ``None``, the
-            category and its actions are being hidden in the shortcut dialog.
-            However, if they are added, it is possible to avoid assigning
-            shortcuts twice, which is important.
+            The category this action belongs to. The category has to be a python
+            string. . **Note**, if the category is ``None``, the category and
+            its actions are being hidden in the shortcut dialog. However, if
+            they are added, it is possible to avoid assigning shortcuts twice,
+            which is important.
 
         ``weight``
             The weight specifies how important a category is. However, this only
@@ -231,8 +296,7 @@ class ActionList(object):
         # Load the shortcut from the config.
         settings = Settings()
         settings.beginGroup(u'shortcuts')
-        shortcuts = settings.value(action.objectName(),
-            QtCore.QVariant(action.shortcuts())).toStringList()
+        shortcuts = settings.value(action.objectName())
         settings.endGroup()
         if not shortcuts:
             action.setShortcuts([])
@@ -286,8 +350,7 @@ class ActionList(object):
         # Remove empty categories.
         if not self.categories[category].actions:
             self.categories.remove(category)
-        shortcuts = map(unicode,
-            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        shortcuts = map(unicode, map(QtGui.QKeySequence.toString, action.shortcuts()))
         for shortcut in shortcuts:
             # Remove action from the list of actions which are using this
             # shortcut.
@@ -338,8 +401,7 @@ class ActionList(object):
             # Remove empty entries.
             if not ActionList.shortcut_map[old_shortcut]:
                 del ActionList.shortcut_map[old_shortcut]
-        new_shortcuts = map(unicode,
-            map(QtGui.QKeySequence.toString, action.shortcuts()))
+        new_shortcuts = map(unicode, map(QtGui.QKeySequence.toString, action.shortcuts()))
         # Add the new shortcuts to the map.
         for new_shortcut in new_shortcuts:
             existing_actions = ActionList.shortcut_map.get(new_shortcut, [])
@@ -357,8 +419,7 @@ class ActionList(object):
         ``action``
             The action which wants to use a particular shortcut.
         """
-        local = action.shortcutContext() in \
-            [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
+        local = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = filter(lambda a: isinstance(a, QtGui.QAction),
             self.getAllChildObjects(action.parent())) if local else []
         for existing_action in existing_actions:
@@ -366,8 +427,7 @@ class ActionList(object):
                 continue
             if not local or existing_action in affected_actions:
                 return False
-            if existing_action.shortcutContext() \
-                in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
+            if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                 return False
             elif action in self.getAllChildObjects(existing_action.parent()):
                 return False
