@@ -475,7 +475,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.playersSettingsSection = u'players'
         self.displayTagsSection = u'displayTags'
         self.headerSection = u'SettingsImport'
-
         self.recentFiles = []
         self.timer_id = 0
         self.timer_version_id = 0
@@ -490,23 +489,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         # Set up the path with plugins
-
         self.plugin_manager = PluginManager()
         self.image_manager = ImageManager()
-
         # Set up the interface
         self.setupUi(self)
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
-
-        # Register the active media players and suffixes
-        self.media_controller.check_available_media_players()
         # Load settings after setupUi so default UI sizes are overwritten
         self.loadSettings()
         # Once settings are loaded update the menu with the recent files.
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
-
         # Set up signals and slots
         QtCore.QObject.connect(self.mediaManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
                                self.viewMediaManagerItem.setChecked)
@@ -533,15 +526,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Media Manager
         self.mediaToolBox.currentChanged.connect(self.onMediaToolBoxChanged)
         self.application.set_busy_cursor()
-
         # Simple message boxes
         Registry().register_function(u'theme_update_global', self.default_theme_changed)
         Registry().register_function(u'openlp_version_check', self.version_notice)
         Registry().register_function(u'config_screen_changed', self.screen_changed)
-
         self.renderer = Renderer()
-
-
         # Create the displays as all necessary components are loaded.
         self.preview_controller.screenSizeChanged()
         self.live_controller.screenSizeChanged()
@@ -550,10 +539,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             savedPlugin = Settings().value(u'advanced/current media plugin')
             if savedPlugin != -1:
                 self.mediaToolBox.setCurrentIndex(savedPlugin)
-        self.settingsForm.postSetUp()
-        # Once all components are initialised load the Themes
-        log.info(u'Load Themes')
-        self.themeManagerContents.load_themes(True)
         # Reset the cursor
         self.application.set_normal_cursor()
 

@@ -18,8 +18,14 @@ class TestPluginManager(TestCase):
         """
         Some pre-test setup required.
         """
+        mocked_main_window = MagicMock()
+        mocked_main_window.file_import_menu.return_value = True
+        mocked_main_window.file_export_menu.return_value = True
+        mocked_main_window.tools_menu.return_value = True
         Registry.create()
         Registry().register(u'service_list', MagicMock())
+        Registry().register(u'main_window', mocked_main_window)
+        Registry().register(u'settings_form', MagicMock())
 
     def hook_media_manager_with_disabled_plugin_test(self):
         """
@@ -83,7 +89,7 @@ class TestPluginManager(TestCase):
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_settings_tabs()
-        plugin_manager.hook_settings_tabs(mocked_settings_form)
+        plugin_manager.hook_settings_tabs()
 
         # THEN: The createSettingsTab() method should not have been called, but the plugins lists should be the same
         assert mocked_plugin.createSettingsTab.call_count == 0, \
@@ -119,7 +125,7 @@ class TestPluginManager(TestCase):
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_settings_tabs()
-        plugin_manager.hook_settings_tabs(mocked_settings_form)
+        plugin_manager.hook_settings_tabs()
 
         # THEN: The createMediaManagerItem() method should have been called with the mocked settings form
         mocked_plugin.createSettingsTab.assert_called_with(mocked_settings_form)
@@ -138,7 +144,7 @@ class TestPluginManager(TestCase):
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_import_menu()
-        plugin_manager.hook_import_menu(mocked_import_menu)
+        plugin_manager.hook_import_menu()
 
         # THEN: The createMediaManagerItem() method should have been called
         assert mocked_plugin.addImportMenuItem.call_count == 0, \
@@ -156,7 +162,7 @@ class TestPluginManager(TestCase):
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_import_menu()
-        plugin_manager.hook_import_menu(mocked_import_menu)
+        plugin_manager.hook_import_menu()
 
         # THEN: The addImportMenuItem() method should have been called
         mocked_plugin.addImportMenuItem.assert_called_with(mocked_import_menu)
@@ -168,12 +174,11 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Disabled
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
-        mocked_export_menu = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_export_menu()
-        plugin_manager.hook_export_menu(mocked_export_menu)
+        plugin_manager.hook_export_menu()
 
         # THEN: The addExportMenuItem() method should have been called
         assert mocked_plugin.addExportMenuItem.call_count == 0, \
@@ -186,15 +191,14 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
-        mocked_export_menu = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_export_menu()
-        plugin_manager.hook_export_menu(mocked_export_menu)
+        plugin_manager.hook_export_menu()
 
         # THEN: The addExportMenuItem() method should have been called
-        mocked_plugin.addExportMenuItem.assert_called_with(mocked_export_menu)
+        mocked_plugin.addExportMenuItem.assert_called_with()
 
     def hook_tools_menu_with_disabled_plugin_test(self):
         """
@@ -203,12 +207,11 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Disabled
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
-        mocked_tools_menu = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_tools_menu()
-        plugin_manager.hook_tools_menu(mocked_tools_menu)
+        plugin_manager.hook_tools_menu()
 
         # THEN: The addToolsMenuItem() method should have been called
         assert mocked_plugin.addToolsMenuItem.call_count == 0, \
@@ -221,15 +224,14 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
-        mocked_tools_menu = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
         # WHEN: We run hook_tools_menu()
-        plugin_manager.hook_tools_menu(mocked_tools_menu)
+        plugin_manager.hook_tools_menu()
 
         # THEN: The addToolsMenuItem() method should have been called
-        mocked_plugin.addToolsMenuItem.assert_called_with(mocked_tools_menu)
+        mocked_plugin.addToolsMenuItem.assert_called_with()
 
     def initialise_plugins_with_disabled_plugin_test(self):
         """

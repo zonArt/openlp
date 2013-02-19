@@ -99,6 +99,7 @@ class MediaController(object):
         """
         self.mainWindow = parent
         Registry().register(u'media_controller', self)
+        Registry().register_function(u'bootstrap_stage_1', self.check_available_media_players)
         self.mediaPlayers = {}
         self.displayControllers = {}
         self.currentMediaPlayer = {}

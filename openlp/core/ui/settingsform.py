@@ -50,6 +50,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Initialise the settings form
         """
         Registry().register(u'settings_form', self)
+        Registry().register_function(u'bootstrap_stage_2', self.post_set_up)
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
@@ -118,17 +119,17 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
-    def postSetUp(self):
+    def post_set_up(self):
         """
         Run any post-setup code for the tabs on the form
         """
-        self.generalTab.postSetUp()
-        self.themesTab.postSetUp()
-        self.advancedTab.postSetUp()
-        self.playerTab.postSetUp()
+        self.generalTab.post_set_up()
+        self.themesTab.post_set_up()
+        self.advancedTab.post_set_up()
+        self.playerTab.post_set_up()
         for plugin in self.plugin_manager.plugins:
             if plugin.settingsTab:
-                plugin.settingsTab.postSetUp()
+                plugin.settingsTab.post_set_up()
 
     def tabChanged(self, tabIndex):
         """
