@@ -221,6 +221,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.listView)
         # define and add the context menu
         self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # FIXME: Look for better objectNames.
         if self.hasEditIcon:
             create_widget_action(self.listView,
                 text=self.plugin.getString(StringContent.Edit)[u'title'],
@@ -231,22 +232,21 @@ class MediaManagerItem(QtGui.QWidget):
             create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Delete),
                 text=self.plugin.getString(StringContent.Delete)[u'title'],
                 icon=u':/general/general_delete.png',
-                can_shortcuts=True,
-                triggers=self.onDeleteClick)
+                can_shortcuts=True, triggers=self.onDeleteClick)
             create_widget_action(self.listView, separator=True)
-        create_widget_action(self.listView,
+        create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Preview),
             text=self.plugin.getString(StringContent.Preview)[u'title'],
             icon=u':/general/general_preview.png',
             can_shortcuts=True,
             triggers=self.onPreviewClick)
-        create_widget_action(self.listView,
+        create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Live),
             text=self.plugin.getString(StringContent.Live)[u'title'],
             icon=u':/general/general_live.png',
             can_shortcuts=True,
             triggers=self.onLiveClick)
-        create_widget_action(self.listView,
-            text=self.plugin.getString(StringContent.Service)[u'title'],
+        create_widget_action(self.listView, u'%s%s' % (self.plugin.name, StringContent.Service),
             can_shortcuts=True,
+            text=self.plugin.getString(StringContent.Service)[u'title'],
             icon=u':/general/general_add.png',
             triggers=self.onAddClick)
         if self.addToServiceItem:

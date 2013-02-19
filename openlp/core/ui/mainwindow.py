@@ -195,15 +195,13 @@ class Ui_MainWindow(object):
             category=UiStrings().File,
             triggers=self.serviceManagerContents.save_file_as)
         self.printServiceOrderItem = create_action(main_window,
-            u'printServiceItem',
-            can_shortcuts=True,
+            u'printServiceItem', can_shortcuts=True,
             category=UiStrings().File,
             triggers=self.serviceManagerContents.print_service_order)
         self.fileExitItem = create_action(main_window, u'fileExitItem',
             icon=u':/system/system_exit.png',
             can_shortcuts=True,
-            category=UiStrings().File,
-            triggers=main_window.close)
+            category=UiStrings().File, triggers=main_window.close)
         # Give QT Extra Hint that this is the Exit Menu Item
         self.fileExitItem.setMenuRole(QtGui.QAction.QuitRole)
         action_list.add_category(UiStrings().Import, CategoryOrder.standard_menu)
@@ -220,28 +218,23 @@ class Ui_MainWindow(object):
             can_shortcuts=True,
             category=UiStrings().View, triggers=self.toggleMediaManager)
         self.viewThemeManagerItem = create_action(main_window,
-            u'viewThemeManagerItem',
+            u'viewThemeManagerItem', can_shortcuts=True,
             icon=u':/system/system_thememanager.png',
             checked=self.themeManagerDock.isVisible(),
-            can_shortcuts=True,
             category=UiStrings().View, triggers=self.toggleThemeManager)
         self.viewServiceManagerItem = create_action(main_window,
-            u'viewServiceManagerItem',
+            u'viewServiceManagerItem', can_shortcuts=True,
             icon=u':/system/system_servicemanager.png',
             checked=self.serviceManagerDock.isVisible(),
-            can_shortcuts=True,
             category=UiStrings().View, triggers=self.toggleServiceManager)
         self.viewPreviewPanel = create_action(main_window, u'viewPreviewPanel',
-            checked=previewVisible,
-            can_shortcuts=True,
+            can_shortcuts=True, checked=previewVisible,
             category=UiStrings().View, triggers=self.setPreviewPanelVisibility)
         self.viewLivePanel = create_action(main_window, u'viewLivePanel',
-            checked=liveVisible,
-            can_shortcuts=True,
+            can_shortcuts=True, checked=liveVisible,
             category=UiStrings().View, triggers=self.setLivePanelVisibility)
         self.lockPanel = create_action(main_window, u'lockPanel',
-            checked=panelLocked,
-            can_shortcuts=True,
+            can_shortcuts=True, checked=panelLocked,
             category=UiStrings().View,
             triggers=self.setLockPanel)
         action_list.add_category(UiStrings().ViewMode,

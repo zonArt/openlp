@@ -235,11 +235,6 @@ def create_action(parent, name, **kwargs):
         Either a QIcon, a resource string, or a file location string for the
         action icon.
 
-    ``can_shortcuts``
-        Boolean stating if this action has shortcuts or if it can have shortcuts. If ``True`` the action is added to
-        shortcut dialog. **Note**: Never set the shortcuts yourselt; use the :class:`~openlp.core.lib.Settings` class
-        to define the action's shortcuts.
-
     ``tooltip``
         A string for the action tool tip.
 
@@ -260,6 +255,11 @@ def create_action(parent, name, **kwargs):
 
     ``data``
         The action's data.
+
+    ``can_shortcuts``
+        Boolean stating if this action has shortcuts or if it can have shortcuts. If ``True`` the action is added to
+        shortcut dialog. **Note**: Never set the shortcuts yourselt; use the :class:`~openlp.core.lib.Settings` class
+        to define the action's shortcuts.
 
     ``context``
         A context for the shortcut execution.
@@ -291,20 +291,18 @@ def create_action(parent, name, **kwargs):
         action.setSeparator(True)
     if u'data' in kwargs:
         action.setData(kwargs.pop(u'data'))
-    if u'context' in kwargs:
-        action.setShortcutContext(kwargs.pop(u'context'))
-    if kwargs.get(u'triggers'):
-        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), kwargs.pop(u'triggers'))
     if kwargs.pop(u'can_shortcuts', False):
         if not action.objectName():
             raise Exception("objectName not set")
         action_list = ActionList.get_instance()
         action_list.add_action(action, kwargs.pop(u'category', None))
-    else:
-        pass
-        #print u'else', action.objectName()
+    if u'context' in kwargs:
+        action.setShortcutContext(kwargs.pop(u'context'))
+    if kwargs.get(u'triggers'):
+        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), kwargs.pop(u'triggers'))
     for key in kwargs.keys():
-        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked', u'category', u'triggers']:
+        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked', u'can_shortcuts',
+                u'category', u'triggers']:
             log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
 

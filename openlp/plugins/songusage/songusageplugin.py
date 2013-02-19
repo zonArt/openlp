@@ -100,7 +100,7 @@ class SongUsagePlugin(Plugin):
         self.songUsageStatus = create_action(tools_menu, u'songUsageStatus',
             text=translate('SongUsagePlugin', 'Toggle Tracking'),
             statustip=translate('SongUsagePlugin', 'Toggle the tracking of song usage.'), checked=False,
-            triggers=self.toggleSongUsageState)
+            can_shortcuts=True, triggers=self.toggleSongUsageState)
         # Add Menus together
         self.toolsMenu.addAction(self.songUsageMenu.menuAction())
         self.songUsageMenu.addAction(self.songUsageStatus)

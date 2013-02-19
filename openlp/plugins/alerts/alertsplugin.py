@@ -150,7 +150,7 @@ class AlertsPlugin(Plugin):
         self.toolsAlertItem = create_action(tools_menu, u'toolsAlertItem',
             text=translate('AlertsPlugin', '&Alert'), icon=u':/plugins/plugin_alerts.png',
             statustip=translate('AlertsPlugin', 'Show an alert message.'),
-            visible=False, triggers=self.onAlertsTrigger)
+            visible=False, can_shortcuts=True, triggers=self.onAlertsTrigger)
         self.main_window.toolsMenu.addAction(self.toolsAlertItem)
 
     def initialise(self):
