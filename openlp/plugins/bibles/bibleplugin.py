@@ -164,7 +164,7 @@ class BiblePlugin(Plugin):
             'verses from different sources during the service.')
         return about_text
 
-    def usesTheme(self, theme):
+    def uses_theme(self, theme):
         """
         Called to find out if the bible plugin is currently using a theme.
         Returns ``True`` if the theme is being used, otherwise returns
@@ -172,7 +172,7 @@ class BiblePlugin(Plugin):
         """
         return unicode(self.settingsTab.bible_theme) == theme
 
-    def renameTheme(self, oldTheme, newTheme):
+    def rename_theme(self, oldTheme, newTheme):
         """
         Rename the theme the bible plugin is using making the plugin use the
         new name.
@@ -187,7 +187,7 @@ class BiblePlugin(Plugin):
         self.settingsTab.bible_theme = newTheme
         self.settingsTab.save()
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
