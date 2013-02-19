@@ -107,10 +107,6 @@ class EasyWorshipSongImport(SongImport):
         self.encoding = retrieve_windows_encoding(self.encoding)
         if not self.encoding:
             return
-        # There does not appear to be a _reliable_ way of getting the number
-        # of songs/records, so let's use file blocks for measuring progress.
-        total_blocks = (db_size - header_size) / (block_size * 1024)
-        self.importWizard.progressBar.setMaximum(total_blocks)
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
@@ -134,12 +130,22 @@ class EasyWorshipSongImport(SongImport):
         except IndexError:
             # This is the wrong table
             success = False
-        # Loop through each block of the file
+        # There does not appear to be a _reliable_ way of getting the number of songs/records, so loop through the file
+        # blocks and total the number of records. Store the information in a list so we dont have to do all this again.
         cur_block = first_block
+        total_count = 0
+        block_list = []
         while cur_block != 0 and success:
-            db_file.seek(header_size + ((cur_block - 1) * 1024 * block_size))
+            cur_block_pos = header_size + ((cur_block - 1) * 1024 * block_size)
+            db_file.seek(cur_block_pos)
             cur_block, rec_count = struct.unpack('<h2xh', db_file.read(6))
             rec_count = (rec_count + record_size) / record_size
+            block_list.append((cur_block_pos, rec_count))
+            total_count += rec_count
+            self.importWizard.progressBar.setMaximum(total_count)
+        for block in block_list:
+            cur_block_pos, rec_count = block
+            db_file.seek(cur_block_pos + 6)
             # Loop through each record within the current block
             for i in range(rec_count):
                 if self.stop_import_flag:
