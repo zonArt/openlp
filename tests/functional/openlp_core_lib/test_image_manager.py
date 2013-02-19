@@ -20,7 +20,7 @@ class TestImageManager(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        self.app = QtGui.QApplication.instance()
         ScreenList.create(self.app.desktop())
         self.image_manager = ImageManager()
 

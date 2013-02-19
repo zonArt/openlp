@@ -34,6 +34,7 @@ if os.name == u'nt':
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
+from openlp.core.lib import ScreenList
 from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -83,7 +84,7 @@ class PptviewController(PresentationController):
             if self.process:
                 return
             log.debug(u'start PPTView')
-            dllpath = os.path.join(self.plugin_manager.basepath, u'presentations', u'lib', u'pptviewlib',
+            dllpath = os.path.join(self.plugin_manager.base_path, u'presentations', u'lib', u'pptviewlib',
                 u'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dllpath)
             if log.isEnabledFor(logging.DEBUG):
@@ -120,8 +121,7 @@ class PptviewDocument(PresentationDocument):
         PptView task started earlier.
         """
         log.debug(u'LoadPresentation')
-        renderer = self.controller.plugin.renderer
-        rect = renderer.screens.current[u'size']
+        rect = ScreenList().current[u'size']
         rect = RECT(rect.x(), rect.y(), rect.right(), rect.bottom())
         filepath = str(self.filepath.replace(u'/', u'\\'))
         if not os.path.isdir(self.get_temp_folder()):

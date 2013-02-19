@@ -140,6 +140,7 @@ class Settings(QtCore.QSettings):
         # circular dependency.
         u'general/display on monitor': True,
         u'general/override position': False,
+        u'images/background color': u'#000000',
         u'media/players': u'webkit',
         u'media/override player': QtCore.Qt.Unchecked,
         u'players/background color': u'#000000',

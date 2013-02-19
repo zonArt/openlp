@@ -14,8 +14,8 @@ class TestStartFileRenameForm(TestCase):
         """
         Create the UI
         """
-        registry = Registry.create()
-        self.app = QtGui.QApplication([])
+        Registry.create()
+        self.app = QtGui.QApplication.instance()
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = filerenameform.FileRenameForm()
@@ -78,6 +78,6 @@ class TestStartFileRenameForm(TestCase):
         # WHEN: 'Typing' a string containing invalid file characters.
         QtTest.QTest.keyClicks(self.form.fileNameEdit, u'I/n\\v?a*l|i<d> \F[i\l]e" :N+a%me')
 
-        # THEN: The text in the QLineEdit should be the same as the input string with the invalid chatacters filtered
+        # THEN: The text in the QLineEdit should be the same as the input string with the invalid characters filtered
         # out.
         self.assertEqual(self.form.fileNameEdit.text(), u'Invalid File Name')
