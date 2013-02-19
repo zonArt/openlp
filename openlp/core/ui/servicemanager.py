@@ -42,7 +42,7 @@ log = logging.getLogger(__name__)
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, Receiver, ItemCapabilities, Settings, PluginStatus, Registry, \
+from openlp.core.lib import OpenLPToolbar, ServiceItem, ItemCapabilities, Settings, PluginStatus, Registry, \
     UiStrings, build_icon, translate, str_to_bool, check_directory_exists
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action, find_and_set_in_combo_box
@@ -210,11 +210,10 @@ class ServiceManagerDialog(object):
             self.collapsed)
         QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'),
             self.expanded)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_list'), self.update_theme_list)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
-            self.regenerate_service_Items)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.theme_change)
+        Registry().register_function(u'theme_update_list', self.update_theme_list)
+        Registry().register_function(u'config_updated', self.config_updated)
+        Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
+        Registry().register_function(u'theme_update_global', self.theme_change)
         # Last little bits of setting up
         self.service_theme = Settings().value(self.main_window.serviceManagerSettingsSection + u'/service theme')
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
@@ -555,10 +554,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 zip_file.write(audio_from, audio_to.encode(u'utf-8'))
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate(u'OpenLP.ServiceManager', u'Error Saving File'),
-                u'message': translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
-            })
+            self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
+                translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
+            )
             success = False
         finally:
             if zip_file:
@@ -613,10 +611,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             zip_file.writestr(service_file_name.encode(u'utf-8'), service_content)
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
-            Receiver.send_message(u'openlp_error_message', {
-                u'title': translate(u'OpenLP.ServiceManager', u'Error Saving File'),
-                u'message': translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
-            })
+            self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
+                translate(u'OpenLP.ServiceManager', u'There was an error saving your file.')
+            )
             success = False
         finally:
             if zip_file:
@@ -736,7 +733,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     service_item.validate_item(self.suffixes)
                     self.load_item_unique_identifier = 0
                     if service_item.is_capable(ItemCapabilities.OnLoadUpdate):
-                        Receiver.send_message(u'%s_service_load' % service_item.name.lower(), service_item)
+                        Registry().execute(u'%s_service_load' % service_item.name.lower(), service_item)
                     # if the item has been processed
                     if service_item.unique_identifier == self.load_item_unique_identifier:
                         service_item.edit_id = int(self.load_item_edit_id)
@@ -1237,13 +1234,13 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Set the theme for the current service.
         """
-        log.debug(u'ontheme_combo_box_selected')
+        log.debug(u'on_theme_combo_box_selected')
         self.service_theme = self.theme_combo_box.currentText()
         self.renderer.set_service_theme(self.service_theme)
         Settings().setValue(self.main_window.serviceManagerSettingsSection + u'/service theme', self.service_theme)
         self.regenerate_service_Items(True)
 
-    def theme_change(self):
+    def theme_change(self, global_theme):
         """
         The theme may have changed in the settings dialog so make
         sure the theme combo box is in the correct state.
@@ -1439,7 +1436,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Saves the current text item as a custom slide
         """
         item = self.find_service_item()[0]
-        Receiver.send_message(u'custom_create_from_service', self.service_items[item][u'service_item'])
+        Registry().execute(u'custom_create_from_service', self.service_items[item][u'service_item'])
 
     def find_service_item(self):
         """
@@ -1526,7 +1523,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                             replace = True
                     else:
                         self.drop_position = self._get_parent_item_data(item)
-                Receiver.send_message(u'%s_add_service_item' % plugin, replace)
+                Registry().execute(u'%s_add_service_item' % plugin, replace)
 
     def update_theme_list(self, theme_list):
         """

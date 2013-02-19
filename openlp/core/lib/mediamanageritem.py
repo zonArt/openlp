@@ -35,7 +35,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, Receiver, ListWidgetWithDnD, \
+from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
     ServiceItemContext, Settings, Registry, UiStrings, build_icon, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
@@ -116,8 +116,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.setupUi()
         self.retranslateUi()
         self.autoSelectId = -1
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'%s_service_load' % self.plugin.name),
-            self.serviceLoad)
+        Registry().register_function(u'%s_service_load' % self.plugin.name, self.serviceLoad)
 
     def requiredIcons(self):
         """

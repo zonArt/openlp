@@ -41,7 +41,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, Receiver, ImageManager, PluginStatus, Registry, \
+from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, Registry, \
     Settings, ScreenList, build_icon, check_directory_exists, translate
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
@@ -494,9 +494,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
         self.recentFiles = []
+        self.timer_id = 0
+        self.timer_version_id = 0
         # Set up the path with plugins
-        plugin_path = AppLocation.get_directory(AppLocation.PluginsDir)
-        self.plugin_manager = PluginManager(plugin_path)
+        self.plugin_manager = PluginManager()
         self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)
@@ -507,8 +508,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once settings are loaded update the menu with the recent files.
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
-        self.newDataPath = u''
-        self.copyData = False
+        self.new_data_path = None
+        self.copy_data = False
         # Set up signals and slots
         QtCore.QObject.connect(self.importThemeItem, QtCore.SIGNAL(u'triggered()'),
             self.themeManagerContents.on_import_theme)
@@ -538,30 +539,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.modeDefaultItem, QtCore.SIGNAL(u'triggered()'), self.onModeDefaultItemClicked)
         QtCore.QObject.connect(self.modeSetupItem, QtCore.SIGNAL(u'triggered()'), self.onModeSetupItemClicked)
         QtCore.QObject.connect(self.modeLiveItem, QtCore.SIGNAL(u'triggered()'), self.onModeLiveItemClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'theme_update_global'), self.defaultThemeChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_version_check'), self.versionNotice)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_blank_check'), self.blankCheck)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'), self.screenChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'mainwindow_status_text'),
-            self.showStatusMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'cleanup'), self.clean_up)
         # Media Manager
         QtCore.QObject.connect(self.mediaToolBox, QtCore.SIGNAL(u'currentChanged(int)'), self.onMediaToolBoxChanged)
         self.application.set_busy_cursor()
         # Simple message boxes
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_error_message'), self.onErrorMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'openlp_information_message'),
-            self.onInformationMessage)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_new_data_path'), self.setNewDataPath)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'set_copy_data'), self.setCopyData)
-        # warning cyclic dependency
-        # renderer needs to call ThemeManager and
-        # ThemeManager needs to call Renderer
+        Registry().register_function(u'theme_update_global', self.default_theme_changed)
+        Registry().register_function(u'openlp_version_check', self.version_notice)
+        Registry().register_function(u'config_screen_changed', self.screen_changed)
         self.renderer = Renderer()
         # Define the media Dock Manager
         self.mediaDockManager = MediaDockManager(self.mediaToolBox)
         log.info(u'Load Plugins')
-        self.plugin_manager.find_plugins(plugin_path)
+        self.plugin_manager.find_plugins()
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here
         # Find and insert settings tabs
@@ -592,8 +581,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Once all components are initialised load the Themes
         log.info(u'Load Themes')
         self.themeManagerContents.load_themes(True)
-        # Hide/show the theme combobox on the service manager
-        self.serviceManagerContents.theme_change()
         # Reset the cursor
         self.application.set_normal_cursor()
 
@@ -613,16 +600,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if widget:
             widget.onFocus()
 
-    def versionNotice(self, version):
+    def version_notice(self, version):
         """
         Notifies the user that a newer version of OpenLP is available.
-        Triggered by delay thread.
+        Triggered by delay thread and cannot display popup.
         """
+        log.debug(u'version_notice')
         version_text = translate('OpenLP.MainWindow', 'Version %s of OpenLP is now available for download (you are '
             'currently running version %s). \n\nYou can download the latest version from http://openlp.org/.')
-        QtGui.QMessageBox.question(self,
-            translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-                version_text % (version, get_application_version()[u'full']))
+        self.version_text = version_text % (version, get_application_version()[u'full'])
 
     def show(self):
         """
@@ -642,6 +628,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.serviceManagerContents.load_file(filename)
         elif Settings().value(self.generalSettingsSection + u'/auto open'):
             self.serviceManagerContents.load_Last_file()
+        self.timer_version_id = self.startTimer(1000)
         view_mode = Settings().value(u'%s/view mode' % self.generalSettingsSection)
         if view_mode == u'default':
             self.modeDefaultItem.setChecked(True)
@@ -711,13 +698,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.activePlugin.toggleStatus(PluginStatus.Inactive)
         self.themeManagerContents.config_updated()
         self.themeManagerContents.load_themes(True)
-        Receiver.send_message(u'theme_update_global', self.themeManagerContents.global_theme)
+        Registry().execute(u'theme_update_global', self.themeManagerContents.global_theme)
         # Check if any Bibles downloaded.  If there are, they will be
         # processed.
-        Receiver.send_message(u'bibles_load_list', True)
+        Registry().execute(u'bibles_load_list', True)
         self.application.set_normal_cursor()
 
-    def blankCheck(self):
+    def is_display_blank(self):
         """
         Check and display message if screen blank on setup.
         """
@@ -728,26 +715,44 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
                     translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
 
-    def onErrorMessage(self, data):
+    def error_message(self, title, message):
         """
         Display an error message
-        """
-        self.application.close_splash_screen()
-        QtGui.QMessageBox.critical(self, data[u'title'], data[u'message'])
 
-    def warning_message(self, message):
+        ``title``
+            The title of the warning box.
+
+        ``message``
+            The message to be displayed.
+        """
+        self.application.splash.close()
+        QtGui.QMessageBox.critical(self, title, message)
+
+    def warning_message(self, title, message):
         """
         Display a warning message
-        """
-        self.application.close_splash_screen()
-        QtGui.QMessageBox.warning(self, message[u'title'], message[u'message'])
 
-    def onInformationMessage(self, data):
+        ``title``
+            The title of the warning box.
+
+        ``message``
+            The message to be displayed.
+        """
+        self.application.splash.close()
+        QtGui.QMessageBox.warning(self, title, message)
+
+    def information_message(self, title, message):
         """
         Display an informational message
+
+        ``title``
+            The title of the warning box.
+
+        ``message``
+            The message to be displayed.
         """
-        self.application.close_splash_screen()
-        QtGui.QMessageBox.information(self, data[u'title'], data[u'message'])
+        self.application.splash.close()
+        QtGui.QMessageBox.information(self, title, message)
 
     def onHelpWebSiteClicked(self):
         """
@@ -1013,12 +1018,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setPreviewPanelVisibility(preview)
         self.setLivePanelVisibility(live)
 
-    def screenChanged(self):
+    def screen_changed(self):
         """
         The screen has changed so we have to update components such as the
         renderer.
         """
-        log.debug(u'screenChanged')
+        log.debug(u'screen_changed')
         self.application.set_busy_cursor()
         self.imageManager.update_display()
         self.renderer.update_display()
@@ -1091,14 +1096,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # Save settings
             self.saveSettings()
         # Check if we need to change the data directory
-        if self.newDataPath:
+        if self.new_data_path:
             self.changeDataDirectory()
         # Close down the display
         if self.liveController.display:
             self.liveController.display.close()
             self.liveController.display = None
-        # Allow the main process to exit
-        self.application = None
 
     def serviceChanged(self, reset=False, serviceName=None):
         """
@@ -1139,13 +1142,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             title = u'%s - %s' % (self.mainTitle, fileName)
         self.setWindowTitle(title)
 
-    def showStatusMessage(self, message):
+    def show_status_message(self, message):
         """
         Show a message in the status bar
         """
         self.statusBar.showMessage(message)
 
-    def defaultThemeChanged(self, theme):
+    def default_theme_changed(self, theme):
         """
         Update the default theme indicator in the status bar
         """
@@ -1348,34 +1351,45 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.timer_id = 0
             self.loadProgressBar.hide()
             self.application.process_events()
+        if event.timerId() == self.timer_version_id:
+            self.timer_version_id = 0
+            # Has the thread passed some data to be displayed so display it and stop all waiting
+            if hasattr(self, u'version_text'):
+                QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
+                    self.version_text)
+            else:
+                # the thread has not confirmed it is running or it has not yet sent any data so lets keep waiting
+                if not hasattr(self,u'version_update_running') or self.version_update_running:
+                    self.timer_version_id = self.startTimer(1000)
+            self.application.process_events()
 
-    def setNewDataPath(self, new_data_path):
+    def set_new_data_path(self, new_data_path):
         """
         Set the new data path
         """
-        self.newDataPath = new_data_path
+        self.new_data_path = new_data_path
 
-    def setCopyData(self, copy_data):
+    def set_copy_data(self, copy_data):
         """
         Set the flag to copy the data
         """
-        self.copyData = copy_data
+        self.copy_data = copy_data
 
     def changeDataDirectory(self):
         """
         Change the data directory.
         """
-        log.info(u'Changing data path to %s' % self.newDataPath)
+        log.info(u'Changing data path to %s' % self.new_data_path)
         old_data_path = unicode(AppLocation.get_data_path())
         # Copy OpenLP data to new location if requested.
         self.application.set_busy_cursor()
-        if self.copyData:
+        if self.copy_data:
             log.info(u'Copying data to new path')
             try:
                 self.showStatusMessage(
                     translate('OpenLP.MainWindow', 'Copying OpenLP data to new data directory location - %s '
-                    '- Please wait for copy to finish').replace('%s', self.newDataPath))
-                dir_util.copy_tree(old_data_path, self.newDataPath)
+                    '- Please wait for copy to finish').replace('%s', self.new_data_path))
+                dir_util.copy_tree(old_data_path, self.new_data_path)
                 log.info(u'Copy sucessful')
             except (IOError, os.error, DistutilsFileError), why:
                 self.application.set_normal_cursor()
@@ -1389,9 +1403,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             log.info(u'No data copy requested')
         # Change the location of data directory in config file.
         settings = QtCore.QSettings()
-        settings.setValue(u'advanced/data path', self.newDataPath)
+        settings.setValue(u'advanced/data path', self.new_data_path)
         # Check if the new data path is our default.
-        if self.newDataPath == AppLocation.get_directory(AppLocation.DataDir):
+        if self.new_data_path == AppLocation.get_directory(AppLocation.DataDir):
             settings.remove(u'advanced/data path')
         self.application.set_normal_cursor()
 

@@ -108,7 +108,7 @@ class WowImport(SongImport):
         if isinstance(self.importSource, list):
             self.importWizard.progressBar.setMaximum(len(self.importSource))
             for source in self.importSource:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     return
                 self.setDefaults()
                 song_data = open(source, 'rb')
