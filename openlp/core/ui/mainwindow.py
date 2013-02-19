@@ -288,9 +288,9 @@ class Ui_MainWindow(object):
         # Give QT Extra Hint that this is the Preferences Menu Item
         self.settingsConfigureItem.setMenuRole(QtGui.QAction.PreferencesRole)
         self.settingsImportItem = create_action(
-            main_window, u'settingsImportItem', category=UiStrings().Settings, can_shortcuts=True)
+            main_window, u'settingsImportItem', category=UiStrings().Import, can_shortcuts=True)
         self.settingsExportItem = create_action(
-            main_window, u'settingsExportItem', category=UiStrings().Settings, can_shortcuts=True)
+            main_window, u'settingsExportItem', category=UiStrings().Export, can_shortcuts=True)
         action_list.add_category(UiStrings().Help, CategoryOrder.standard_menu)
         self.aboutItem = create_action(main_window, u'aboutItem', icon=u':/system/system_about.png',
             can_shortcuts=True, category=UiStrings().Help, triggers=self.onAboutItemClicked)
