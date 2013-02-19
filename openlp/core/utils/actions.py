@@ -322,7 +322,6 @@ class ActionList(object):
             ActionList.shortcut_map[shortcuts[0]] = actions
         else:
             shortcuts.remove(shortcuts[0])
-
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
 
     def remove_action(self, action, category=None):
@@ -404,15 +403,15 @@ class ActionList(object):
         ``action``
             The action which wants to use a particular shortcut.
         """
-        local_context = action.shortcutContext() not in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
+        global_context = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = []
-        if local_context:
+        if global_context:
             affected_actions = filter(
                 lambda a: isinstance(a, QtGui.QAction), self.get_all_child_objects(action.parent()))
         for existing_action in existing_actions:
             if action is existing_action:
                 continue
-            if not local_context or existing_action in affected_actions:
+            if global_context or existing_action in affected_actions:
                 return False
             if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                 return False
