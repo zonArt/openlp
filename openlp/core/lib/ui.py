@@ -284,7 +284,7 @@ def create_action(parent, name, **kwargs):
         action.setSeparator(True)
     if u'data' in kwargs:
         action.setData(kwargs.pop(u'data'))
-    if kwargs.pop(u'can_shortcuts'):
+    if kwargs.pop(u'can_shortcuts', False):
         action_list = ActionList.get_instance()
         action_list.add_action(action, kwargs.pop(u'category', None))
     if u'context' in kwargs:
