@@ -187,8 +187,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return VerseType.TranslatedTags[num].upper()
-        if len(VerseType.TranslatedTags) > default:
+        if len(VerseType.Names) > default:
             return VerseType.TranslatedTags[default].upper()
+        else:
+            return VerseType.TranslatedTags[VerseType.Other].upper()
 
     @staticmethod
     def translated_name(verse_tag, default=Other):
@@ -205,8 +207,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return VerseType.TranslatedNames[num]
-        if default in VerseType.TranslatedNames:
+        if len(VerseType.Names) > default:
             return VerseType.TranslatedNames[default]
+        else:
+            return VerseType.TranslatedNames[VerseType.Other]
 
     @staticmethod
     def from_tag(verse_tag, default=Other):
@@ -223,7 +227,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return num
-        return default
+        if len(VerseType.Names) > default:
+            return default
+        else:
+            return VerseType.Other
 
     @staticmethod
     def from_translated_tag(verse_tag, default=Other):
@@ -240,7 +247,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.TranslatedTags):
             if verse_tag == tag:
                 return num
-        return default
+        if len(VerseType.Names) > default:
+            return default
+        else:
+            return VerseType.Other
 
     @staticmethod
     def from_string(verse_name, default=Other):
