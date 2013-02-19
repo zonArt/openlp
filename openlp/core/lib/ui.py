@@ -69,9 +69,8 @@ def add_welcome_page(parent, image):
 
 def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     """
-    Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and
-    ``rejected()`` signals of the button box are connected with the dialogs
-    ``accept()`` and ``reject()`` slots.
+    Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and ``rejected()`` signals of the button box
+    are connected with the dialogs ``accept()`` and ``reject()`` slots.
 
     ``dialog``
         The parent object. This has to be a ``QDialog`` descendant.
@@ -80,13 +79,12 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
         A string which is set as object name.
 
     ``standard_buttons``
-        A list of strings for the used buttons. It might contain: ``ok``,
-        ``save``, ``cancel``, ``close``, and ``defaults``.
+        A list of strings for the used buttons. It might contain: ``ok``, ``save``, ``cancel``, ``close``, and
+        ``defaults``.
 
     ``custom_buttons``
-        A list of additional buttons. If a item is a instance of
-        QtGui.QAbstractButton it is added with QDialogButtonBox.ActionRole.
-        Otherwhise the item has to be a tuple of a button and a ButtonRole.
+        A list of additional buttons. If a item is a instance of QtGui.QAbstractButton it is added with
+        QDialogButtonBox.ActionRole. Otherwhise the item has to be a tuple of a button and a ButtonRole.
     """
     if custom_buttons is None:
         custom_buttons = []
@@ -116,8 +114,7 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
 
 def critical_error_message_box(title=None, message=None, parent=None, question=False):
     """
-    Provides a standard critical message box for errors that OpenLP displays
-    to users.
+    Provides a standard critical message box for errors that OpenLP displays to users.
 
     ``title``
         The title for the message box.
@@ -134,7 +131,6 @@ def critical_error_message_box(title=None, message=None, parent=None, question=F
     if question:
         return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
-    data = {u'message': message}
     return Registry().get(u'main_window').error_message(title if title else UiStrings().Error, message)
 
 
@@ -166,16 +162,14 @@ def create_button(parent, name, **kwargs):
         A string which is set as object name (required).
 
     ``role``
-        A string which can have one value out of ``delete``, ``up``, and
-        ``down``. This decides about default values for properties like text,
-        icon, or tooltip.
+        A string which can have one value out of ``delete``, ``up``, and ``down``. This decides about default values
+        for properties like text, icon, or tooltip.
 
     ``text``
         A string for the action text.
 
     ``icon``
-        Either a QIcon, a resource string, or a file location string for the
-        action icon.
+        Either a QIcon, a resource string, or a file location string for the action icon.
 
     ``tooltip``
         A string for the action tool tip.
@@ -195,8 +189,7 @@ def create_button(parent, name, **kwargs):
             kwargs.setdefault(u'icon', u':/services/service_down.png')
             kwargs.setdefault(u'tooltip', translate('OpenLP.Ui', 'Move selection down one position.'))
         else:
-            log.warn(u'The role "%s" is not defined in create_push_button().',
-                role)
+            log.warn(u'The role "%s" is not defined in create_push_button().', role)
     if kwargs.pop(u'class', u'') == u'toolbutton':
         button = QtGui.QToolButton(parent)
     else:
@@ -291,9 +284,7 @@ def create_action(parent, name, **kwargs):
         action.setSeparator(True)
     if u'data' in kwargs:
         action.setData(kwargs.pop(u'data'))
-    if kwargs.pop(u'can_shortcuts', False):
-        if not action.objectName():
-            raise Exception("objectName not set")
+    if kwargs.pop(u'can_shortcuts'):
         action_list = ActionList.get_instance()
         action_list.add_action(action, kwargs.pop(u'category', None))
     if u'context' in kwargs:
@@ -309,9 +300,8 @@ def create_action(parent, name, **kwargs):
 
 def create_widget_action(parent, name=u'', **kwargs):
     """
-    Return a new QAction by calling ``create_action(parent, name, **kwargs)``.
-    The shortcut context defaults to ``QtCore.Qt.WidgetShortcut`` and the action
-    is added to the parents action list.
+    Return a new QAction by calling ``create_action(parent, name, **kwargs)``. The shortcut context defaults to
+    ``QtCore.Qt.WidgetShortcut`` and the action is added to the parents action list.
     """
     kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut)
     action = create_action(parent, name, **kwargs)
@@ -336,8 +326,7 @@ def set_case_insensitive_completer(cache, widget):
 
 def create_valign_selection_widgets(parent):
     """
-    Creates a standard label and combo box for asking users to select a
-    vertical alignment.
+    Creates a standard label and combo box for asking users to select a vertical alignment.
 
     ``parent``
         The parent object. This should be a ``QWidget`` descendant.

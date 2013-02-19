@@ -56,8 +56,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.setupUi(self)
         self.changedActions = {}
         self.action_list = ActionList.get_instance()
-        QtCore.QObject.connect(self.primaryPushButton, QtCore.SIGNAL(u'toggled(bool)'),
-            self.onPrimaryPushButtonClicked)
+        QtCore.QObject.connect(self.primaryPushButton, QtCore.SIGNAL(u'toggled(bool)'), self.onPrimaryPushButtonClicked)
         QtCore.QObject.connect(self.alternatePushButton, QtCore.SIGNAL(u'toggled(bool)'),
             self.onAlternatePushButtonClicked)
         QtCore.QObject.connect(self.treeWidget,
@@ -72,8 +71,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onRestoreDefaultsClicked)
         QtCore.QObject.connect(self.defaultRadioButton, QtCore.SIGNAL(u'clicked(bool)'),
             self.onDefaultRadioButtonClicked)
-        QtCore.QObject.connect(self.customRadioButton, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onCustomRadioButtonClicked)
+        QtCore.QObject.connect(self.customRadioButton, QtCore.SIGNAL(u'clicked(bool)'), self.onCustomRadioButtonClicked)
 
     def keyPressEvent(self, event):
         """
@@ -95,7 +93,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             return
         key = event.key()
         if key == QtCore.Qt.Key_Shift or key == QtCore.Qt.Key_Control or \
-            key == QtCore.Qt.Key_Meta or key == QtCore.Qt.Key_Alt:
+                key == QtCore.Qt.Key_Meta or key == QtCore.Qt.Key_Alt:
             return
         key_string = QtGui.QKeySequence(key).toString()
         if event.modifiers() & QtCore.Qt.ControlModifier == QtCore.Qt.ControlModifier:
@@ -109,11 +107,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         key_sequence = QtGui.QKeySequence(key_string)
         if self._validiate_shortcut(self._currentItemAction(), key_sequence):
             if self.primaryPushButton.isChecked():
-                self._adjustButton(self.primaryPushButton,
-                    False, text=key_sequence.toString())
+                self._adjustButton(self.primaryPushButton, False, text=key_sequence.toString())
             elif self.alternatePushButton.isChecked():
-                self._adjustButton(self.alternatePushButton,
-                    False, text=key_sequence.toString())
+                self._adjustButton(self.alternatePushButton, False, text=key_sequence.toString())
 
     def exec_(self):
         """
@@ -419,8 +415,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                     is_valid = False
                 # The new shortcut is already assigned, but if both shortcuts are only valid in a different widget the
                 # new shortcut is vaild, because they will not interfere.
-                if action.shortcutContext() in [QtCore.Qt.WindowShortcut,
-                    QtCore.Qt.ApplicationShortcut]:
+                if action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
                 if changing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
