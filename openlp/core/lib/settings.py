@@ -151,12 +151,15 @@ class Settings(QtCore.QSettings):
         u'SettingsImport/type': u'OpenLP_settings_export',
         u'SettingsImport/version': u'',
         u'shortcuts/aboutItem': [QtGui.QKeySequence(u'Ctrl+F1')],
+        u'shortcuts/addToService': [],
         u'shortcuts/audioPauseItem': [],
         u'shortcuts/displayTagItem': [],
         u'shortcuts/blankScreen': [QtCore.Qt.Key_Period],
         u'shortcuts/collapse': [QtCore.Qt.Key_Minus],
         u'shortcuts/desktopScreen': [QtGui.QKeySequence(u'D')],
+        u'shortcuts/delete': [],
         u'shortcuts/down': [QtCore.Qt.Key_Down],
+        u'shortcuts/editSong': [],
         u'shortcuts/escapeItem': [QtCore.Qt.Key_Escape],
         u'shortcuts/expand': [QtCore.Qt.Key_Plus],
         u'shortcuts/exportThemeItem': [],
@@ -165,8 +168,10 @@ class Settings(QtCore.QSettings):
         u'shortcuts/fileExitItem': [QtGui.QKeySequence(u'Alt+F4')],
         u'shortcuts/fileSaveItem': [QtGui.QKeySequence(u'Ctrl+S')],
         u'shortcuts/fileOpenItem': [QtGui.QKeySequence(u'Ctrl+O')],
+        u'shortcuts/goLive': [],
         u'shortcuts/importThemeItem': [],
         u'shortcuts/importBibleItem': [],
+        u'shortcuts/lockPanel': [],
         u'shortcuts/modeDefaultItem': [],
         u'shortcuts/modeLiveItem': [],
         u'shortcuts/make_live': [QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
@@ -177,13 +182,21 @@ class Settings(QtCore.QSettings):
         u'shortcuts/moveDown': [QtCore.Qt.Key_PageDown],
         u'shortcuts/nextTrackItem': [],
         u'shortcuts/nextItem_live': [QtCore.Qt.Key_Down, QtCore.Qt.Key_PageDown],
+        u'shortcuts/nextItem_preview': [],
         u'shortcuts/nextService': [QtCore.Qt.Key_Right],
+        u'shortcuts/newService': [],
         u'shortcuts/offlineHelpItem': [],
         u'shortcuts/onlineHelpItem': [QtGui.QKeySequence(u'Alt+F1')],
+        u'shortcuts/openService': [],
+        u'shortcuts/saveService': [],
         u'shortcuts/previousItem_live': [QtCore.Qt.Key_Up, QtCore.Qt.Key_PageUp],
+        u'shortcuts/playbackPause': [],
+        u'shortcuts/playbackPlay': [],
+        u'shortcuts/playbackStop': [],
         u'shortcuts/playSlidesLoop': [],
         u'shortcuts/playSlidesOnce': [],
         u'shortcuts/previousService': [QtCore.Qt.Key_Left],
+        u'shortcuts/previousItem_preview': [],
         u'shortcuts/printServiceItem': [QtGui.QKeySequence(u'Ctrl+P')],
         u'shortcuts/songExportItem': [],
         u'shortcuts/songUsageStatus': [QtCore.Qt.Key_F4],
@@ -199,6 +212,16 @@ class Settings(QtCore.QSettings):
         u'shortcuts/shortcutAction_O': [QtGui.QKeySequence(u'O')],
         u'shortcuts/shortcutAction_P': [QtGui.QKeySequence(u'P')],
         u'shortcuts/shortcutAction_V': [QtGui.QKeySequence(u'V')],
+        u'shortcuts/shortcutAction_0': [QtGui.QKeySequence(u'0')],
+        u'shortcuts/shortcutAction_1': [QtGui.QKeySequence(u'1')],
+        u'shortcuts/shortcutAction_2': [QtGui.QKeySequence(u'2')],
+        u'shortcuts/shortcutAction_3': [QtGui.QKeySequence(u'3')],
+        u'shortcuts/shortcutAction_4': [QtGui.QKeySequence(u'4')],
+        u'shortcuts/shortcutAction_5': [QtGui.QKeySequence(u'5')],
+        u'shortcuts/shortcutAction_6': [QtGui.QKeySequence(u'6')],
+        u'shortcuts/shortcutAction_7': [QtGui.QKeySequence(u'7')],
+        u'shortcuts/shortcutAction_8': [QtGui.QKeySequence(u'8')],
+        u'shortcuts/shortcutAction_9': [QtGui.QKeySequence(u'9')],
         u'shortcuts/settingsExportItem': [],
         u'shortcuts/songUsageReport': [],
         u'shortcuts/songImportItem': [],
@@ -285,6 +308,14 @@ class Settings(QtCore.QSettings):
             QtCore.QSettings.__init__(self, Settings.__file_path__, Settings.IniFormat)
         else:
             QtCore.QSettings.__init__(self, *args)
+
+    def get_default_value(self, key):
+        """
+        Get the default value of the given key
+        """
+        if self.group():
+            key = self.group() + u'/' + key
+        return Settings.__default_settings__[key]
 
     def remove_obsolete_settings(self):
         """

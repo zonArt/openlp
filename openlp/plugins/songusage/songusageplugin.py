@@ -100,7 +100,7 @@ class SongUsagePlugin(Plugin):
         self.songUsageStatus = create_action(tools_menu, u'songUsageStatus',
             text=translate('SongUsagePlugin', 'Toggle Tracking'),
             statustip=translate('SongUsagePlugin', 'Toggle the tracking of song usage.'), checked=False,
-            shortcuts=[QtCore.Qt.Key_F4], triggers=self.toggleSongUsageState)
+            triggers=self.toggleSongUsageState)
         # Add Menus together
         self.toolsMenu.addAction(self.songUsageMenu.menuAction())
         self.songUsageMenu.addAction(self.songUsageStatus)

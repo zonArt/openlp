@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, Receiver, SettingsManager, ServiceItemContext, \
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, Receiver, ServiceItemContext, \
     Settings, UiStrings, build_icon, check_item_selected, check_directory_exists, create_thumb, translate, \
     validate_thumb
 from openlp.core.lib.ui import critical_error_message_box
@@ -107,7 +107,7 @@ class ImageMediaItem(MediaManagerItem):
                     delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
                 self.main_window.incrementProgressBar()
-            SettingsManager.setValue(self.settingsSection + u'/images files', self.getFileList())
+            Settings.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
             self.application.set_normal_cursor()
         self.listView.blockSignals(False)

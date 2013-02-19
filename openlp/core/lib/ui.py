@@ -33,7 +33,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, UiStrings, build_icon, translate
+from openlp.core.lib import Receiver, UiStrings, Settings, build_icon, translate
 from openlp.core.utils.actions import ActionList
 
 
@@ -236,6 +236,11 @@ def create_action(parent, name, **kwargs):
         Either a QIcon, a resource string, or a file location string for the
         action icon.
 
+    ``can_shortcuts``
+        Boolean stating if this action has shortcuts or if it can have shortcuts. If ``True`` the action is added to
+        shortcut dialog. **Note**: Never set the shortcuts yourselt; use the :class:`~openlp.core.lib.Settings` class
+        to define the action's shortcuts.
+
     ``tooltip``
         A string for the action tool tip.
 
@@ -256,9 +261,6 @@ def create_action(parent, name, **kwargs):
 
     ``data``
         The action's data.
-
-    ``shortcuts``
-        A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
 
     ``context``
         A context for the shortcut execution.
@@ -290,18 +292,20 @@ def create_action(parent, name, **kwargs):
         action.setSeparator(True)
     if u'data' in kwargs:
         action.setData(kwargs.pop(u'data'))
-    if kwargs.get(u'shortcuts'):
-        action.setShortcuts(kwargs.pop(u'shortcuts'))
     if u'context' in kwargs:
         action.setShortcutContext(kwargs.pop(u'context'))
-    if kwargs.get(u'category'):
-        action_list = ActionList.get_instance()
-        action_list.add_action(action, unicode(kwargs.pop(u'category')))
     if kwargs.get(u'triggers'):
-        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
-            kwargs.pop(u'triggers'))
+        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), kwargs.pop(u'triggers'))
+    if kwargs.pop(u'can_shortcuts', False):
+        if not action.objectName():
+            raise Exception("objectName not set")
+        action_list = ActionList.get_instance()
+        action_list.add_action(action, kwargs.pop(u'category', None))
+    else:
+        pass
+        #print u'else', action.objectName()
     for key in kwargs.keys():
-        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked', u'shortcuts', u'category', u'triggers']:
+        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked', u'category', u'triggers']:
             log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
 
