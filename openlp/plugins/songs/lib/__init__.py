@@ -187,7 +187,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.Tags):
             if verse_tag == tag:
                 return VerseType.TranslatedTags[num].upper()
-        if default in VerseType.TranslatedTags:
+        if len(VerseType.TranslatedTags) > default:
             return VerseType.TranslatedTags[default].upper()
 
     @staticmethod
