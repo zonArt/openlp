@@ -76,7 +76,7 @@ class TestFormattingTags(TestCase):
             new_tag = new_tags_list.pop()
             assert TAG == new_tag, u'Tags should be identically.'
 
-            # WHEN: Remove the new tag with the FormattingTags.remove_html_tag() method.
+            # WHEN: Remove the new tag.
             FormattingTags.remove_html_tag(len(new_tags_list))
 
             # THEN: The lists should now be identically.
