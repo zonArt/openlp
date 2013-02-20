@@ -37,27 +37,27 @@ class TestActionList(TestCase):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action = QtGui.QAction(parent)
-        action.setObjectName(u'action')
-        action_with_same_shortcuts = QtGui.QAction(parent)
-        action_with_same_shortcuts.setObjectName(u'action_with_same_shortcuts')
+        action1 = QtGui.QAction(parent)
+        action1.setObjectName(u'action1')
+        action_with_same_shortcuts1 = QtGui.QAction(parent)
+        action_with_same_shortcuts1.setObjectName(u'action_with_same_shortcuts1')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            u'shortcuts/action': [QtGui.QKeySequence(u'v'), QtGui.QKeySequence(u'c')],
-            u'shortcuts/action_with_same_shortcuts': [QtGui.QKeySequence(u'v'), QtGui.QKeySequence(u'c')]
+            u'shortcuts/action1': [QtGui.QKeySequence(u'a'), QtGui.QKeySequence(u'b')],
+            u'shortcuts/action_with_same_shortcuts1': [QtGui.QKeySequence(u'b'), QtGui.QKeySequence(u'a')]
         }
         Settings.extend_default_settings(default_shortcuts)
 
         # WHEN: Add the two actions to the action list.
-        self.action_list.add_action(action, u'example_category')
-        self.action_list.add_action(action_with_same_shortcuts, u'example_category')
+        self.action_list.add_action(action1, u'example_category')
+        self.action_list.add_action(action_with_same_shortcuts1, u'example_category')
         # Remove the actions again.
-        self.action_list.remove_action(action, u'example_category')
-        self.action_list.remove_action(action_with_same_shortcuts, u'example_category')
+        self.action_list.remove_action(action1, u'example_category')
+        self.action_list.remove_action(action_with_same_shortcuts1, u'example_category')
 
         # THEN: As both actions have the same shortcuts, they should be removed from one action.
-        assert len(action.shortcuts()) == 2, u'The action should have two shortcut assigned.'
-        assert len(action_with_same_shortcuts.shortcuts()) == 0, u'The action should not have a shortcut assigned.'
+        assert len(action1.shortcuts()) == 2, u'The action should have two shortcut assigned.'
+        assert len(action_with_same_shortcuts1.shortcuts()) == 0, u'The action should not have a shortcut assigned.'
 
     def test_add_action_different_parent(self):
         """
@@ -66,28 +66,28 @@ class TestActionList(TestCase):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action = QtGui.QAction(parent)
-        action.setObjectName(u'action2')
+        action2 = QtGui.QAction(parent)
+        action2.setObjectName(u'action2')
         second_parent = QtCore.QObject()
-        action_with_same_shortcuts = QtGui.QAction(second_parent)
-        action_with_same_shortcuts.setObjectName(u'action_with_same_shortcuts2')
+        action_with_same_shortcuts2 = QtGui.QAction(second_parent)
+        action_with_same_shortcuts2.setObjectName(u'action_with_same_shortcuts2')
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            u'shortcuts/action2': [QtGui.QKeySequence(u'v'), QtGui.QKeySequence(u'c')],
-            u'shortcuts/action_with_same_shortcuts2': [QtGui.QKeySequence(u'v'), QtGui.QKeySequence(u'c')]
+            u'shortcuts/action2': [QtGui.QKeySequence(u'c'), QtGui.QKeySequence(u'd')],
+            u'shortcuts/action_with_same_shortcuts2': [QtGui.QKeySequence(u'd'), QtGui.QKeySequence(u'c')]
         }
         Settings.extend_default_settings(default_shortcuts)
 
         # WHEN: Add the two actions to the action list.
-        self.action_list.add_action(action, u'example_category')
-        self.action_list.add_action(action_with_same_shortcuts, u'example_category')
+        self.action_list.add_action(action2, u'example_category')
+        self.action_list.add_action(action_with_same_shortcuts2, u'example_category')
         # Remove the actions again.
-        self.action_list.remove_action(action, u'example_category')
-        self.action_list.remove_action(action_with_same_shortcuts, u'example_category')
+        self.action_list.remove_action(action2, u'example_category')
+        self.action_list.remove_action(action_with_same_shortcuts2, u'example_category')
 
         # THEN: As both actions have the same shortcuts, they should be removed from one action.
-        assert len(action.shortcuts()) == 2, u'The action should have two shortcut assigned.'
-        assert len(action_with_same_shortcuts.shortcuts()) == 0, u'The action should not have a shortcut assigned.'
+        assert len(action2.shortcuts()) == 2, u'The action should have two shortcut assigned.'
+        assert len(action_with_same_shortcuts2.shortcuts()) == 0, u'The action should not have a shortcut assigned.'
 
     def test_add_action_different_context(self):
         """
@@ -96,29 +96,29 @@ class TestActionList(TestCase):
         """
         # GIVEN: Two actions with the same shortcuts.
         parent = QtCore.QObject()
-        action = QtGui.QAction(parent)
-        action.setObjectName(u'action3')
-        action.setShortcutContext(QtCore.Qt.WidgetShortcut)
+        action3 = QtGui.QAction(parent)
+        action3.setObjectName(u'action3')
+        action3.setShortcutContext(QtCore.Qt.WidgetShortcut)
         second_parent = QtCore.QObject()
-        action_with_same_shortcuts = QtGui.QAction(second_parent)
-        action_with_same_shortcuts.setObjectName(u'action_with_same_shortcuts3')
-        action_with_same_shortcuts.setShortcutContext(QtCore.Qt.WidgetShortcut)
+        action_with_same_shortcuts3 = QtGui.QAction(second_parent)
+        action_with_same_shortcuts3.setObjectName(u'action_with_same_shortcuts3')
+        action_with_same_shortcuts3.setShortcutContext(QtCore.Qt.WidgetShortcut)
         # Add default shortcuts to Settings class.
         default_shortcuts = {
-            u'shortcuts/action3': [QtGui.QKeySequence(u'1'), QtGui.QKeySequence(u'2')],
-            u'shortcuts/action_with_same_shortcuts3': [QtGui.QKeySequence(u'1'), QtGui.QKeySequence(u'2')]
+            u'shortcuts/action3': [QtGui.QKeySequence(u'e'), QtGui.QKeySequence(u'f')],
+            u'shortcuts/action_with_same_shortcuts3': [QtGui.QKeySequence(u'e'), QtGui.QKeySequence(u'f')]
         }
         Settings.extend_default_settings(default_shortcuts)
 
         # WHEN: Add the two actions to the action list.
-        self.action_list.add_action(action, u'example_category2')
-        self.action_list.add_action(action_with_same_shortcuts, u'example_category2')
+        self.action_list.add_action(action3, u'example_category2')
+        self.action_list.add_action(action_with_same_shortcuts3, u'example_category2')
         # Remove the actions again.
-        self.action_list.remove_action(action, u'example_category2')
-        self.action_list.remove_action(action_with_same_shortcuts, u'example_category2')
+        self.action_list.remove_action(action3, u'example_category2')
+        self.action_list.remove_action(action_with_same_shortcuts3, u'example_category2')
 
         # THEN: Both action should keep their shortcuts.
-        assert len(action.shortcuts()) == 2, u'The action should have two shortcut assigned.'
-        assert len(action_with_same_shortcuts.shortcuts()) == 2, u'The action should have two shortcuts assigned.'
+        assert len(action3.shortcuts()) == 2, u'The action should have two shortcut assigned.'
+        assert len(action_with_same_shortcuts3.shortcuts()) == 2, u'The action should have two shortcuts assigned.'
 
 
