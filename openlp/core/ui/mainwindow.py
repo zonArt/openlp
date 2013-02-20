@@ -1352,7 +1352,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.version_text)
             else:
                 # the thread has not confirmed it is running or it has not yet sent any data so lets keep waiting
-                if not hasattr(self,u'version_update_running') or self.version_update_running:
+                if not hasattr(self, u'version_update_running') or self.version_update_running:
                     self.timer_version_id = self.startTimer(1000)
             self.application.process_events()
 
