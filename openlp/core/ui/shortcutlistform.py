@@ -56,6 +56,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.setupUi(self)
         self.changedActions = {}
         self.action_list = ActionList.get_instance()
+        self.dialog_was_shown = False
         QtCore.QObject.connect(self.primaryPushButton, QtCore.SIGNAL(u'toggled(bool)'), self.onPrimaryPushButtonClicked)
         QtCore.QObject.connect(self.alternatePushButton, QtCore.SIGNAL(u'toggled(bool)'),
             self.onAlternatePushButtonClicked)
@@ -90,6 +91,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         Respond to certain key presses
         """
         if not self.primaryPushButton.isChecked() and not self.alternatePushButton.isChecked():
+            return
+        # Do not continue, as the event is for the dialog (close it).
+        if self.dialog_was_shown and event.key() in (QtCore.Qt.Key_Escape, QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
+            self.dialog_was_shown = False
             return
         key = event.key()
         if key == QtCore.Qt.Key_Shift or key == QtCore.Qt.Key_Control or \
@@ -425,6 +430,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                     'The shortcut "%s" is already assigned to another action, please use a different shortcut.') %
                     key_sequence.toString()
             )
+            self.dialog_was_shown = True
         return is_valid
 
     def _actionShortcuts(self, action):
