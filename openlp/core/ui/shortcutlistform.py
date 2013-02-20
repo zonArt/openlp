@@ -97,8 +97,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.dialog_was_shown = False
             return
         key = event.key()
-        if key == QtCore.Qt.Key_Shift or key == QtCore.Qt.Key_Control or \
-                key == QtCore.Qt.Key_Meta or key == QtCore.Qt.Key_Alt:
+        if key in (QtCore.Qt.Key_Shift, QtCore.Qt.Key_Control, QtCore.Qt.Key_Meta, QtCore.Qt.Key_Alt):
             return
         key_string = QtGui.QKeySequence(key).toString()
         if event.modifiers() & QtCore.Qt.ControlModifier == QtCore.Qt.ControlModifier:
