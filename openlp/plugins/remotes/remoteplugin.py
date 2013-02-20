@@ -38,7 +38,7 @@ __default_settings__ = {
         u'remotes/twelve hour': True,
         u'remotes/port': 4316,
         u'remotes/ip address': u'0.0.0.0'
-    }
+}
 
 
 class RemotesPlugin(Plugin):

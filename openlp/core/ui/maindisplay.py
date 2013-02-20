@@ -85,37 +85,34 @@ class Display(QtGui.QGraphicsView):
         log.debug(u'Start Display base setup (live = %s)' % self.isLive)
         self.setGeometry(self.screen[u'size'])
         log.debug(u'Setup webView')
-        self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.webView.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
-        palette = self.webView.palette()
+        self.web_view = QtWebKit.QWebView(self)
+        self.web_view.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.web_view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
+        palette = self.web_view.palette()
         palette.setBrush(QtGui.QPalette.Base, QtCore.Qt.transparent)
-        self.webView.page().setPalette(palette)
-        self.webView.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
-        self.page = self.webView.page()
+        self.web_view.page().setPalette(palette)
+        self.web_view.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
+        self.page = self.web_view.page()
         self.frame = self.page.mainFrame()
         if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
-            self.webView.settings().setAttribute(QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-        QtCore.QObject.connect(self.webView,
-            QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
+            self.web_view.settings().setAttribute(QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+        self.web_view.loadFinished.connect(self.is_web_loaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
-            QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
 
     def resizeEvent(self, event):
         """
         React to resizing of this display
         """
-        self.webView.setGeometry(0, 0, self.width(), self.height())
+        self.web_view.setGeometry(0, 0, self.width(), self.height())
 
-    def isWebLoaded(self):
+    def is_web_loaded(self):
         """
         Called by webView event to show display is fully loaded
         """
-        log.debug(u'Webloaded')
+        log.debug(u'is web loaded')
         self.webLoaded = True
 
 
@@ -129,11 +126,11 @@ class MainDisplay(Display):
         """
         Display.__init__(self, parent, live, controller)
         self.screens = ScreenList()
-        self.rebuildCSS = False
-        self.hideMode = None
+        self.rebuild_css = False
+        self.hide_mode = None
         self.override = {}
         self.retranslateUi()
-        self.mediaObject = None
+        self.media_object = None
         if live:
             self.audioPlayer = AudioPlayer(self)
         else:
@@ -156,14 +153,14 @@ class MainDisplay(Display):
                 self.setWindowState(QtCore.Qt.WindowFullScreen)
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setTransparency(False)
+        self.set_transparency(False)
         if self.isLive:
             Registry().register_function(u'live_display_hide', self.hide_display)
             Registry().register_function(u'live_display_show', self.show_display)
             Registry().register_function(u'update_display_css', self.css_changed)
             Registry().register_function(u'config_updated', self.config_changed)
 
-    def setTransparency(self, enabled):
+    def set_transparency(self, enabled):
         """
         Set the transparency of the window
         """
@@ -178,17 +175,17 @@ class MainDisplay(Display):
         """
         We may need to rebuild the CSS on the live display.
         """
-        self.rebuildCSS = True
+        self.rebuild_css = True
 
     def config_changed(self):
         """
         Call the plugins to rebuild the Live display CSS as the screen has
         not been rebuild on exit of config.
         """
-        if self.rebuildCSS and self.plugin_manager.plugins:
+        if self.rebuild_css and self.plugin_manager.plugins:
             for plugin in self.plugin_manager.plugins:
                 plugin.refreshCss(self.frame)
-        self.rebuildCSS = False
+        self.rebuild_css = False
 
     def retranslateUi(self):
         """
@@ -225,7 +222,7 @@ class MainDisplay(Display):
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
-            self.webView.setHtml(build_html(serviceItem, self.screen, self.isLive, None,
+            self.web_view.setHtml(build_html(serviceItem, self.screen, self.isLive, None,
                 plugins=self.plugin_manager.plugins))
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
@@ -288,7 +285,7 @@ class MainDisplay(Display):
                 self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
-    def directImage(self, path, background):
+    def direct_image(self, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
@@ -318,7 +315,7 @@ class MainDisplay(Display):
         self.controller.media_controller.media_reset(self.controller)
         self.displayImage(image)
 
-    def displayImage(self, image):
+    def display_image(self, image):
         """
         Display an image, as is.
         """
@@ -329,16 +326,16 @@ class MainDisplay(Display):
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
 
-    def resetImage(self):
+    def reset_image(self):
         """
         Reset the backgound image to the service item image. Used after the
         image plugin has changed the background.
         """
         log.debug(u'resetImage')
         if hasattr(self, u'serviceItem'):
-            self.displayImage(self.serviceItem.bg_image_bytes)
+            self.display_image(self.serviceItem.bg_image_bytes)
         else:
-            self.displayImage(None)
+            self.display_image(None)
         # clear the cache
         self.override = {}
 
@@ -361,8 +358,8 @@ class MainDisplay(Display):
             self.application.process_events()
         # if was hidden keep it hidden
         if self.isLive:
-            if self.hideMode:
-                self.hide_display(self.hideMode)
+            if self.hide_mode:
+                self.hide_display(self.hide_mode)
             else:
                 # Single screen active
                 if self.screens.display_count == 1:
@@ -373,12 +370,12 @@ class MainDisplay(Display):
                     self.setVisible(True)
         return QtGui.QPixmap.grabWidget(self)
 
-    def buildHtml(self, serviceItem, image_path=u''):
+    def build_html(self, serviceItem, image_path=u''):
         """
         Store the serviceItem and build the new HTML from it. Add the
         HTML to the display
         """
-        log.debug(u'buildHtml')
+        log.debug(u'build_html')
         self.webLoaded = False
         self.initialFrame = None
         self.serviceItem = serviceItem
@@ -396,12 +393,11 @@ class MainDisplay(Display):
             else:
                 # replace the background
                 background = self.image_manager.get_image_bytes(self.override[u'image'], ImageSource.ImagePlugin)
-        self.setTransparency(self.serviceItem.themedata.background_type ==
-            BackgroundType.to_string(BackgroundType.Transparent))
+        self.set_transparency(self.serviceItem.themedata.background_type ==
+                              BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.image_manager.get_image_bytes(
-                self.serviceItem.themedata.background_filename,
-                ImageSource.Theme
+                self.serviceItem.themedata.background_filename, ImageSource.Theme
             )
         if image_path:
             image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
@@ -410,16 +406,16 @@ class MainDisplay(Display):
         html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes,
             plugins=self.plugin_manager.plugins)
         log.debug(u'buildHtml - pre setHtml')
-        self.webView.setHtml(html)
+        self.web_view.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
         if serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
-        if self.hideMode and self.isLive and not serviceItem.is_media():
+        if self.hide_mode and self.isLive and not serviceItem.is_media():
             if Settings().value(u'general/auto unblank'):
                 Registry().execute(u'slidecontroller_live_unblank')
             else:
-                self.hide_display(self.hideMode)
+                self.hide_display(self.hide_mode)
         self.__hideMouse()
 
     def footer(self, text):
@@ -450,13 +446,12 @@ class MainDisplay(Display):
         if mode != HideMode.Screen:
             if self.isHidden():
                 self.setVisible(True)
-                self.webView.setVisible(True)
-        self.hideMode = mode
+                self.web_view.setVisible(True)
+        self.hide_mode = mode
 
     def show_display(self):
         """
-        Show the stored layers so the screen reappears as it was
-        originally.
+        Show the stored layers so the screen reappears as it was originally.
         Make the stored images None to release memory.
         """
         log.debug(u'show_display')
@@ -467,7 +462,7 @@ class MainDisplay(Display):
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)
-        self.hideMode = None
+        self.hide_mode = None
         # Trigger actions when display is active again.
         if self.isLive:
             Registry().execute(u'live_display_active')
@@ -533,38 +528,38 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex = -1
         self.playlist = []
         self.repeat = False
-        self.mediaObject = Phonon.MediaObject()
-        self.mediaObject.setTickInterval(100)
-        self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
-        Phonon.createPath(self.mediaObject, self.audioObject)
-        QtCore.QObject.connect(self.mediaObject, QtCore.SIGNAL(u'aboutToFinish()'), self.onAboutToFinish)
-        QtCore.QObject.connect(self.mediaObject, QtCore.SIGNAL(u'finished()'), self.onFinished)
+        self.media_object = Phonon.MediaObject()
+        self.media_object.setTickInterval(100)
+        self.audio_object = Phonon.AudioOutput(Phonon.VideoCategory)
+        Phonon.createPath(self.media_object, self.audio_object)
+        self.media_object.aboutToFinish.connect(self.on_about_to_finish)
+        self.media_object.finished.connect(self.on_finished)
 
     def __del__(self):
         """
         Shutting down so clean up connections
         """
         self.stop()
-        for path in self.mediaObject.outputPaths():
+        for path in self.media_object.outputPaths():
             path.disconnect()
 
-    def onAboutToFinish(self):
+    def on_about_to_finish(self):
         """
         Just before the audio player finishes the current track, queue the next
         item in the playlist, if there is one.
         """
         self.currentIndex += 1
         if len(self.playlist) > self.currentIndex:
-            self.mediaObject.enqueue(self.playlist[self.currentIndex])
+            self.media_object.enqueue(self.playlist[self.currentIndex])
 
-    def onFinished(self):
+    def on_finished(self):
         """
         When the audio track finishes.
         """
         if self.repeat:
             log.debug(u'Repeat is enabled... here we go again!')
-            self.mediaObject.clearQueue()
-            self.mediaObject.clear()
+            self.media_object.clearQueue()
+            self.media_object.clear()
             self.currentIndex = -1
             self.play()
 
@@ -572,7 +567,7 @@ class AudioPlayer(QtCore.QObject):
         """
         Connect the volume slider to the output channel.
         """
-        slider.setAudioOutput(self.audioObject)
+        slider.setAudioOutput(self.audio_object)
 
     def reset(self):
         """
@@ -581,7 +576,7 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex = -1
         self.playlist = []
         self.stop()
-        self.mediaObject.clear()
+        self.media_object.clear()
 
     def play(self):
         """
@@ -589,24 +584,24 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer.play() called')
         if self.currentIndex == -1:
-            self.onAboutToFinish()
-        self.mediaObject.play()
+            self.on_about_to_finish()
+        self.media_object.play()
 
     def pause(self):
         """
         Pause the Audio
         """
         log.debug(u'AudioPlayer.pause() called')
-        self.mediaObject.pause()
+        self.media_object.pause()
 
     def stop(self):
         """
         Stop the Audio and clean up
         """
         log.debug(u'AudioPlayer.stop() called')
-        self.mediaObject.stop()
+        self.media_object.stop()
 
-    def addToPlaylist(self, filenames):
+    def add_to_playlist(self, filenames):
         """
         Add another file to the playlist.
 
@@ -623,31 +618,24 @@ class AudioPlayer(QtCore.QObject):
         """
         if not self.repeat and self.currentIndex + 1 >= len(self.playlist):
             return
-        isPlaying = self.mediaObject.state() == Phonon.PlayingState
+        isPlaying = self.media_object.state() == Phonon.PlayingState
         self.currentIndex += 1
         if self.repeat and self.currentIndex == len(self.playlist):
             self.currentIndex = 0
-        self.mediaObject.clearQueue()
-        self.mediaObject.clear()
-        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        self.media_object.clearQueue()
+        self.media_object.clear()
+        self.media_object.enqueue(self.playlist[self.currentIndex])
         if isPlaying:
-            self.mediaObject.play()
+            self.media_object.play()
 
-    def goTo(self, index):
+    def go_to(self, index):
         """
         Go to a particular track in the list
         """
-        isPlaying = self.mediaObject.state() == Phonon.PlayingState
-        self.mediaObject.clearQueue()
-        self.mediaObject.clear()
+        isPlaying = self.media_object.state() == Phonon.PlayingState
+        self.media_object.clearQueue()
+        self.media_object.clear()
         self.currentIndex = index
-        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        self.media_object.enqueue(self.playlist[self.currentIndex])
         if isPlaying:
-            self.mediaObject.play()
-
-    #@todo is this used?
-    def connectSlot(self, signal, slot):
-        """
-        Connect a slot to a signal on the media object
-        """
-        QtCore.QObject.connect(self.mediaObject, signal, slot)
+            self.media_object.play()

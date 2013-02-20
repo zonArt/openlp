@@ -538,7 +538,7 @@ class SlideController(DisplayController):
         self.previewSizeChanged()
         self.previewDisplay.setup()
         serviceItem = ServiceItem()
-        self.previewDisplay.webView.setHtml(build_html(serviceItem, self.previewDisplay.screen, None, self.isLive,
+        self.previewDisplay.web_view.setHtml(build_html(serviceItem, self.previewDisplay.screen, None, self.isLive,
             plugins=self.plugin_manager.plugins))
         self.media_controller.setup_display(self.previewDisplay, True)
         if self.serviceItem:
@@ -760,7 +760,7 @@ class SlideController(DisplayController):
             # If the current item has background audio
             if self.serviceItem.is_capable(ItemCapabilities.HasBackgroundAudio):
                 log.debug(u'Starting to play...')
-                self.display.audioPlayer.addToPlaylist(self.serviceItem.background_audio)
+                self.display.audioPlayer.add_to_playlist(self.serviceItem.background_audio)
                 self.trackMenu.clear()
                 for counter in range(len(self.serviceItem.background_audio)):
                     action = self.trackMenu.addAction(os.path.basename(self.serviceItem.background_audio[counter]))
@@ -831,7 +831,7 @@ class SlideController(DisplayController):
         # Postpone image build, we need to do this later to avoid the theme
         # flashing on the screen
         if not self.serviceItem.is_image():
-            self.display.buildHtml(self.serviceItem)
+            self.display.build_html(self.serviceItem)
         if serviceItem.is_media():
             self.onMediaStart(serviceItem)
         self.slideSelected(True)
@@ -1025,7 +1025,7 @@ class SlideController(DisplayController):
                     self.display.text(to_display)
                 else:
                     if start:
-                        self.display.buildHtml(self.serviceItem, to_display)
+                        self.display.build_html(self.serviceItem, to_display)
                     else:
                         self.display.image(to_display)
                     # reset the store used to display first image
@@ -1333,7 +1333,7 @@ class SlideController(DisplayController):
         Start playing a track
         """
         action = self.sender()
-        self.display.audioPlayer.goTo(action.data())
+        self.display.audioPlayer.go_to(action.data())
 
     def _get_plugin_manager(self):
         """
