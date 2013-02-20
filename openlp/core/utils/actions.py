@@ -411,7 +411,7 @@ class ActionList(object):
         for existing_action in existing_actions:
             if action is existing_action:
                 continue
-            if global_context or existing_action in affected_actions:
+            if not global_context or existing_action in affected_actions:
                 return False
             if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                 return False
