@@ -68,7 +68,7 @@ class Display(QtGui.QGraphicsView):
             self.parent = lambda: parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
-        self.isLive = live
+        self.is_live = live
         self.controller = controller
         self.screen = {}
         # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
@@ -82,7 +82,7 @@ class Display(QtGui.QGraphicsView):
         """
         Set up and build the screen base
         """
-        log.debug(u'Start Display base setup (live = %s)' % self.isLive)
+        log.debug(u'Start Display base setup (live = %s)' % self.is_live)
         self.setGeometry(self.screen[u'size'])
         log.debug(u'Setup webView')
         self.web_view = QtWebKit.QWebView(self)
@@ -94,7 +94,7 @@ class Display(QtGui.QGraphicsView):
         self.web_view.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
         self.page = self.web_view.page()
         self.frame = self.page.mainFrame()
-        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
+        if self.is_live and log.getEffectiveLevel() == logging.DEBUG:
             self.web_view.settings().setAttribute(QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
         self.web_view.loadFinished.connect(self.is_web_loaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -154,7 +154,7 @@ class MainDisplay(Display):
         self.setWindowFlags(windowFlags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.set_transparency(False)
-        if self.isLive:
+        if self.is_live:
             Registry().register_function(u'live_display_hide', self.hide_display)
             Registry().register_function(u'live_display_show', self.show_display)
             Registry().register_function(u'update_display_css', self.css_changed)
@@ -197,11 +197,11 @@ class MainDisplay(Display):
         """
         Set up and build the output screen
         """
-        log.debug(u'Start MainDisplay setup (live = %s)' % self.isLive)
+        log.debug(u'Start MainDisplay setup (live = %s)' % self.is_live)
         self.screen = self.screens.current
         self.setVisible(False)
         Display.setup(self)
-        if self.isLive:
+        if self.is_live:
             # Build the initial frame.
             background_color = QtGui.QColor()
             background_color.setNamedColor(Settings().value(u'advanced/default color'))
@@ -222,7 +222,7 @@ class MainDisplay(Display):
                 splash_image)
             serviceItem = ServiceItem()
             serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
-            self.web_view.setHtml(build_html(serviceItem, self.screen, self.isLive, None,
+            self.web_view.setHtml(build_html(serviceItem, self.screen, self.is_live, None,
                 plugins=self.plugin_manager.plugins))
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
@@ -296,7 +296,7 @@ class MainDisplay(Display):
         self.override[u'theme'] = self.serviceItem.themedata.background_filename
         self.image(path)
         # Update the preview frame.
-        if self.isLive:
+        if self.is_live:
             self.parent().updatePreview()
         return True
 
@@ -343,10 +343,10 @@ class MainDisplay(Display):
         """
         Generates a preview of the image displayed.
         """
-        log.debug(u'preview for %s', self.isLive)
+        log.debug(u'preview for %s', self.is_live)
         self.application.process_events()
         # We must have a service item to preview.
-        if self.isLive and hasattr(self, u'serviceItem'):
+        if self.is_live and hasattr(self, u'serviceItem'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
             if self.serviceItem.themedata and self.serviceItem.themedata.display_slide_transition:
@@ -357,7 +357,7 @@ class MainDisplay(Display):
         while not self.webLoaded:
             self.application.process_events()
         # if was hidden keep it hidden
-        if self.isLive:
+        if self.is_live:
             if self.hide_mode:
                 self.hide_display(self.hide_mode)
             else:
@@ -403,7 +403,7 @@ class MainDisplay(Display):
             image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.isLive, background, image_bytes,
+        html = build_html(self.serviceItem, self.screen, self.is_live, background, image_bytes,
             plugins=self.plugin_manager.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.web_view.setHtml(html)
@@ -411,7 +411,7 @@ class MainDisplay(Display):
         if serviceItem.foot_text:
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
-        if self.hide_mode and self.isLive and not serviceItem.is_media():
+        if self.hide_mode and self.is_live and not serviceItem.is_media():
             if Settings().value(u'general/auto unblank'):
                 Registry().execute(u'slidecontroller_live_unblank')
             else:
@@ -464,7 +464,7 @@ class MainDisplay(Display):
             self.setVisible(True)
         self.hide_mode = None
         # Trigger actions when display is active again.
-        if self.isLive:
+        if self.is_live:
             Registry().execute(u'live_display_active')
 
     def __hideMouse(self):
@@ -639,3 +639,9 @@ class AudioPlayer(QtCore.QObject):
         self.media_object.enqueue(self.playlist[self.currentIndex])
         if isPlaying:
             self.media_object.play()
+
+    def connectSlot(self, signal, slot):
+        """
+        Connect a slot to a signal on the media object
+        """
+        QtCore.QObject.connect(self.media_object, signal, slot)

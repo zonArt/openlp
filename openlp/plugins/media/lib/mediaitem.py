@@ -61,16 +61,16 @@ class MediaMediaItem(MediaManagerItem):
         self.singleServiceItem = False
         self.hasSearch = True
         self.mediaObject = None
-        self.displayController = DisplayController(parent)
-        self.displayController.controllerLayout = QtGui.QVBoxLayout()
-        self.media_controller.register_controller(self.displayController)
-        self.media_controller.set_controls_visible(self.displayController, False)
-        self.displayController.previewDisplay = Display(self.displayController, False, self.displayController)
-        self.displayController.previewDisplay.hide()
-        self.displayController.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
-        self.displayController.previewDisplay.setup()
-        self.media_controller.setup_display(self.displayController.previewDisplay, False)
+        self.display_controller = DisplayController(parent)
+        self.display_controller.controller_layout = QtGui.QVBoxLayout()
+        self.media_controller.register_controller(self.display_controller)
+        self.media_controller.set_controls_visible(self.display_controller, False)
+        self.display_controller.preview_display = Display(self.display_controller, False, self.display_controller)
+        self.display_controller.preview_display.hide()
+        self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
+        self.display_controller.preview_display.screen = {u'size': self.display_controller.preview_display.geometry()}
+        self.display_controller.preview_display.setup()
+        self.media_controller.setup_display(self.display_controller.preview_display, False)
         Registry().register_function(u'video_background_replaced', self.video_background_replaced)
         Registry().register_function(u'mediaitem_media_rebuild', self.rebuild_players)
         Registry().register_function(u'config_screen_changed', self.display_setup)
@@ -214,7 +214,7 @@ class MediaMediaItem(MediaManagerItem):
             u' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
     def display_setup(self):
-        self.media_controller.setup_display(self.displayController.previewDisplay, False)
+        self.media_controller.setup_display(self.display_controller.previewDisplay, False)
 
     def populateDisplayTypes(self):
         """
