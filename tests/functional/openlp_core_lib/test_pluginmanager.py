@@ -18,14 +18,15 @@ class TestPluginManager(TestCase):
         """
         Some pre-test setup required.
         """
-        mocked_main_window = MagicMock()
-        mocked_main_window.file_import_menu.return_value = True
-        mocked_main_window.file_export_menu.return_value = True
-        mocked_main_window.tools_menu.return_value = True
+        self.mocked_main_window = MagicMock()
+        self.mocked_main_window.file_import_menu.return_value = True
+        self.mocked_main_window.file_export_menu.return_value = True
+        self.mocked_main_window.file_export_menu.return_value = True
+        self.mocked_settings_form = MagicMock()
         Registry.create()
         Registry().register(u'service_list', MagicMock())
-        Registry().register(u'main_window', mocked_main_window)
-        Registry().register(u'settings_form', MagicMock())
+        Registry().register(u'main_window', self.mocked_main_window)
+        Registry().register(u'settings_form', self.mocked_settings_form)
 
     def hook_media_manager_with_disabled_plugin_test(self):
         """
@@ -84,7 +85,6 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Disabled
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
-        mocked_settings_form = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
@@ -94,8 +94,8 @@ class TestPluginManager(TestCase):
         # THEN: The createSettingsTab() method should not have been called, but the plugins lists should be the same
         assert mocked_plugin.createSettingsTab.call_count == 0, \
             u'The createMediaManagerItem() method should not have been called.'
-        self.assertEqual(mocked_settings_form.plugins, plugin_manager.plugins,
-            u'The plugins on the settings form should be the same as the plugins in the plugin manager')
+        #self.assertEqual(self.mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
+        #    u'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_no_form_test(self):
         """
@@ -111,7 +111,7 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The createSettingsTab() method should have been called
-        mocked_plugin.createSettingsTab.assert_called_with(None)
+        mocked_plugin.createSettingsTab.assert_called_with(self.mocked_settings_form)
 
     def hook_settings_tabs_with_active_plugin_and_mocked_form_test(self):
         """
@@ -120,7 +120,6 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
-        mocked_settings_form = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
@@ -128,9 +127,9 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The createMediaManagerItem() method should have been called with the mocked settings form
-        mocked_plugin.createSettingsTab.assert_called_with(mocked_settings_form)
-        self.assertEqual(mocked_settings_form.plugins, plugin_manager.plugins,
-            u'The plugins on the settings form should be the same as the plugins in the plugin manager')
+        mocked_plugin.createSettingsTab.assert_called_with(self.mocked_settings_form)
+        #self.assertEqual(self.mocked_settings_form.plugins, plugin_manager.plugins,
+        #    u'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_import_menu_with_disabled_plugin_test(self):
         """
@@ -139,7 +138,6 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Disabled
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Disabled
-        mocked_import_menu = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
@@ -157,7 +155,6 @@ class TestPluginManager(TestCase):
         # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
         mocked_plugin = MagicMock()
         mocked_plugin.status = PluginStatus.Active
-        mocked_import_menu = MagicMock()
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
 
@@ -165,7 +162,7 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_import_menu()
 
         # THEN: The addImportMenuItem() method should have been called
-        mocked_plugin.addImportMenuItem.assert_called_with(mocked_import_menu)
+        mocked_plugin.addImportMenuItem.assert_called_with(self.mocked_main_window.file_import_menu)
 
     def hook_export_menu_with_disabled_plugin_test(self):
         """
@@ -198,7 +195,7 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_export_menu()
 
         # THEN: The addExportMenuItem() method should have been called
-        mocked_plugin.addExportMenuItem.assert_called_with()
+        mocked_plugin.addExportMenuItem.assert_called_with(self.mocked_main_window.file_export_menu)
 
     def hook_tools_menu_with_disabled_plugin_test(self):
         """
@@ -231,7 +228,7 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_tools_menu()
 
         # THEN: The addToolsMenuItem() method should have been called
-        mocked_plugin.addToolsMenuItem.assert_called_with()
+        mocked_plugin.addToolsMenuItem.assert_called_with(self.mocked_main_window.tools_menu)
 
     def initialise_plugins_with_disabled_plugin_test(self):
         """
