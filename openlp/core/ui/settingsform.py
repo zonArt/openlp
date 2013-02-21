@@ -50,7 +50,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Initialise the settings form
         """
         Registry().register(u'settings_form', self)
-        Registry().register_function(u'bootstrap_stage_2', self.post_set_up)
+        Registry().register_function(u'bootstrap_post_set_up', self.post_set_up)
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab

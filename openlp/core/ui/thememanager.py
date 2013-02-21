@@ -60,7 +60,7 @@ class ThemeManager(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self, parent)
         Registry().register(u'theme_manager', self)
-        Registry().register_function(u'bootstrap_stage_1', self.load_first_time_themes)
+        Registry().register_function(u'bootstrap_initialise', self.load_first_time_themes)
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm()

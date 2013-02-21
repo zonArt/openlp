@@ -54,13 +54,13 @@ class PluginManager(object):
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
-        Registry().register_function(u'bootstrap_stage_1', self.bootstrap_stage_1)
+        Registry().register_function(u'bootstrap_initialise', self.bootstrap_initialise)
         self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
         log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
-    def bootstrap_stage_1(self):
+    def bootstrap_initialise(self):
         """
         Bootstrap all the plugin manager functions
         """
