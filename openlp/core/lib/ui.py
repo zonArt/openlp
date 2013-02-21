@@ -107,8 +107,8 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
             button_box.addButton(button, QtGui.QDialogButtonBox.ActionRole)
         else:
             button_box.addButton(*button)
-    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'), dialog.accept)
-    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'rejected()'), dialog.reject)
+    button_box.accepted.connect(dialog.accept)
+    button_box.rejected.connect(dialog.reject)
     return button_box
 
 
@@ -204,7 +204,7 @@ def create_button(parent, name, **kwargs):
     if not kwargs.pop(u'enabled', True):
         button.setEnabled(False)
     if kwargs.get(u'click'):
-        QtCore.QObject.connect(button, QtCore.SIGNAL(u'clicked()'), kwargs.pop(u'click'))
+        button.clicked.connect(kwargs.pop(u'click'))
     for key in kwargs.keys():
         if key not in [u'text', u'icon', u'tooltip', u'click']:
             log.warn(u'Parameter %s was not consumed in create_button().', key)
@@ -290,7 +290,7 @@ def create_action(parent, name, **kwargs):
     if u'context' in kwargs:
         action.setShortcutContext(kwargs.pop(u'context'))
     if kwargs.get(u'triggers'):
-        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), kwargs.pop(u'triggers'))
+        action.triggered.connect(kwargs.pop(u'triggers'))
     for key in kwargs.keys():
         if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked', u'can_shortcuts',
                 u'category', u'triggers']:
