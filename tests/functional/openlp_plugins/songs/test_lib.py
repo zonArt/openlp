@@ -6,7 +6,38 @@ from unittest import TestCase
 
 from mock import patch
 
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import VerseType, clean_string, clean_title
+
+
+class TestLib(TestCase):
+    """
+    Test the functions in the :mod:`lib` module.
+    """
+    def clean_string_test(self):
+        """
+        Test the clean_string() function
+        """
+        # GIVEN: A "dirty" string
+        dirty_string = u'Ain\'t gonna   find\t you there.'
+
+        # WHEN: We run the string through the function
+        result = clean_string(dirty_string)
+
+        # THEN: The string should be cleaned up and lower-cased
+        self.assertEqual(result, u'aint gonna find you there ', u'The string should be cleaned up properly')
+
+    def clean_title_test(self):
+        """
+        Test the clean_title() function
+        """
+        # GIVEN: A "dirty" string
+        dirty_string = u'This\u0000 is a\u0014 dirty \u007Fstring\u009F'
+
+        # WHEN: We run the string through the function
+        result = clean_title(dirty_string)
+
+        # THEN: The string should be cleaned up
+        self.assertEqual(result, u'This is a dirty string', u'The title should be cleaned up properly: "%s"' % result)
 
 
 class TestVerseType(TestCase):
