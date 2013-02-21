@@ -142,8 +142,7 @@ class ServiceManagerDialog(object):
         self.service_manager_list.setHeaderHidden(True)
         self.service_manager_list.setExpandsOnDoubleClick(False)
         self.service_manager_list.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
-            self.context_menu)
+        self.service_manager_list.customContextMenuRequested.connect(self.context_menu)
         self.service_manager_list.setObjectName(u'service_manager_list')
         # enable drop
         self.service_manager_list.__class__.dragEnterEvent = self.drag_enter_event
@@ -202,18 +201,10 @@ class ServiceManagerDialog(object):
             triggers=self.make_live)
         self.layout.addWidget(self.order_toolbar)
         # Connect up our signals and slots
-        QtCore.QObject.connect(self.theme_combo_box, QtCore.SIGNAL(u'activated(int)'),
-            self.on_theme_combo_box_selected)
-        QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.on_make_live)
-        QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'itemCollapsed(QTreeWidgetItem*)'),
-            self.collapsed)
-        QtCore.QObject.connect(self.service_manager_list, QtCore.SIGNAL(u'itemExpanded(QTreeWidgetItem*)'),
-            self.expanded)
-        Registry().register_function(u'theme_update_list', self.update_theme_list)
-        Registry().register_function(u'config_updated', self.config_updated)
-        Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
-        Registry().register_function(u'theme_update_global', self.theme_change)
+        self.theme_combo_box.activated.connect(self.on_theme_combo_box_selected)
+        self.service_manager_list.doubleClicked.connect(self.on_make_live)
+        self.service_manager_list.itemCollapsed.connect(self.collapsed)
+        self.service_manager_list.itemExpanded.connect(self.expanded)
         # Last little bits of setting up
         self.service_theme = Settings().value(self.main_window.serviceManagerSettingsSection + u'/service theme')
         self.servicePath = AppLocation.get_section_data_path(u'servicemanager')
@@ -273,6 +264,10 @@ class ServiceManagerDialog(object):
              self.service_manager_list.expand,
              self.service_manager_list.collapse
             ])
+        Registry().register_function(u'theme_update_list', self.update_theme_list)
+        Registry().register_function(u'config_updated', self.config_updated)
+        Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
+        Registry().register_function(u'theme_update_global', self.theme_change)
 
     def drag_enter_event(self, event):
         """

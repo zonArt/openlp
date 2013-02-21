@@ -122,7 +122,7 @@ __default_settings__ = {
         u'alerts/background color': u'#660000',
         u'alerts/font color': u'#ffffff',
         u'alerts/timeout': 5
-    }
+}
 
 
 class AlertsPlugin(Plugin):
@@ -133,7 +133,7 @@ class AlertsPlugin(Plugin):
         self.weight = -3
         self.iconPath = u':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.iconPath)
-        self.alertsmanager = AlertsManager(self)
+        self.alerts_manager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
         self.alertForm = AlertForm(self)
 
@@ -176,7 +176,7 @@ class AlertsPlugin(Plugin):
         Settings().setValue(self.settingsSection + u'/active', self.alertsActive)
 
     def onAlertsTrigger(self):
-        self.alertForm.loadList()
+        self.alertForm.load_list()
         self.alertForm.exec_()
 
     def about(self):
@@ -194,7 +194,8 @@ class AlertsPlugin(Plugin):
             u'plural': translate('AlertsPlugin', 'Alerts', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {u'title': translate('AlertsPlugin', 'Alerts', 'container title')
+        self.textStrings[StringContent.VisibleName] = {
+            u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
 
     def getDisplayJavaScript(self):

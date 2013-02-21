@@ -106,8 +106,7 @@ class ThemeManager(QtGui.QWidget):
         self.theme_list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.theme_list_widget.setObjectName(u'theme_list_widget')
         self.layout.addWidget(self.theme_list_widget)
-        QtCore.QObject.connect(self.theme_list_widget, QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
-            self.context_menu)
+        self.theme_list_widget.customContextMenuRequested.connect(self.context_menu)
         # build the context menu
         self.menu = QtGui.QMenu()
         self.edit_action = create_widget_action(self.menu,
@@ -131,10 +130,8 @@ class ThemeManager(QtGui.QWidget):
             text=translate('OpenLP.ThemeManager', '&Export Theme'),
             icon=u':/general/general_export.png', triggers=self.on_export_theme)
         # Signals
-        QtCore.QObject.connect(self.theme_list_widget,
-            QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.change_global_from_screen)
-        QtCore.QObject.connect(self.theme_list_widget,
-            QtCore.SIGNAL(u'currentItemChanged(QListWidgetItem *, QListWidgetItem *)'), self.check_list_state)
+        self.theme_list_widget.doubleClicked.connect(self.change_global_from_screen)
+        self.theme_list_widget.currentItemChanged.connect(self.check_list_state)
         Registry().register_function(u'theme_update_global', self.change_global_from_tab)
         Registry().register_function(u'config_updated', self.config_updated)
         # Variables
