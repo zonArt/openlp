@@ -2,15 +2,12 @@
     Package to test the openlp.core.lib.settings package.
 """
 import os
-
 from unittest import TestCase
 from tempfile import mkstemp
 
 from openlp.core.lib import Settings
 
-from PyQt4 import QtGui, QtTest
-
-TESTPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
+from PyQt4 import QtGui
 
 
 class TestSettings(TestCase):
@@ -22,8 +19,6 @@ class TestSettings(TestCase):
         fd, self.ini_file = mkstemp(u'.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
-        self.application.setOrganizationName(u'OpenLP-tests')
-        self.application.setOrganizationDomain(u'openlp.org')
 
     def tearDown(self):
         """
