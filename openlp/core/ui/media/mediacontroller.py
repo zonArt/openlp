@@ -61,8 +61,8 @@ class MediaSlider(QtGui.QSlider):
         """
         Override event to allow hover time to be displayed.
         """
-        timevalue = QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
-        self.setToolTip(u'%s' % datetime.timedelta(seconds=int(timevalue / 1000)))
+        time_value = QtGui.QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
+        self.setToolTip(u'%s' % datetime.timedelta(seconds=int(time_value / 1000)))
         QtGui.QSlider.mouseMoveEvent(self, event)
 
     def mousePressEvent(self, event):
@@ -93,11 +93,10 @@ class MediaController(object):
     currentMediaPlayer is an array of player instances keyed on ControllerType.
 
     """
-    def __init__(self, parent):
+    def __init__(self):
         """
         Constructor
         """
-        self.mainWindow = parent
         Registry().register(u'media_controller', self)
         self.mediaPlayers = {}
         self.displayControllers = {}
@@ -673,12 +672,11 @@ class MediaController(object):
         is_live = msg[1]
         if not is_live:
             return
-        controller = self.mainWindow.liveController
-        display = self._define_display(controller)
-        if controller.controller_type in self.currentMediaPlayer and \
-            self.currentMediaPlayer[controller.controller_type].state == MediaState.Playing:
-            self.currentMediaPlayer[controller.controller_type].pause(display)
-            self.currentMediaPlayer[controller.controller_type].set_visible(display, False)
+        display = self._define_display(self.live_controller)
+        if self.live_controller.controller_type in self.currentMediaPlayer and \
+            self.currentMediaPlayer[self.live_controller.controller_type].state == MediaState.Playing:
+            self.currentMediaPlayer[self.live_controller.controller_type].pause(display)
+            self.currentMediaPlayer[self.live_controller.controller_type].set_visible(display, False)
 
     def media_blank(self, msg):
         """
@@ -693,11 +691,10 @@ class MediaController(object):
         if not is_live:
             return
         Registry().execute(u'live_display_hide', hide_mode)
-        controller = self.mainWindow.liveController
-        display = self._define_display(controller)
-        if self.currentMediaPlayer[controller.controller_type].state == MediaState.Playing:
-            self.currentMediaPlayer[controller.controller_type].pause(display)
-            self.currentMediaPlayer[controller.controller_type].set_visible(display, False)
+        display = self._define_display(self.live_controller)
+        if self.currentMediaPlayer[self.live_controller.controller_type].state == MediaState.Playing:
+            self.currentMediaPlayer[self.live_controller.controller_type].pause(display)
+            self.currentMediaPlayer[self.live_controller.controller_type].set_visible(display, False)
 
     def media_unblank(self, msg):
         """
@@ -711,12 +708,11 @@ class MediaController(object):
         is_live = msg[1]
         if not is_live:
             return
-        controller = self.mainWindow.liveController
-        display = self._define_display(controller)
-        if controller.controller_type in self.currentMediaPlayer and \
-                self.currentMediaPlayer[controller.controller_type].state != MediaState.Playing:
-            if self.currentMediaPlayer[controller.controller_type].play(display):
-                self.currentMediaPlayer[controller.controller_type].set_visible(display, True)
+        display = self._define_display(self.live_controller)
+        if self.live_controller.controller_type in self.currentMediaPlayer and \
+                self.currentMediaPlayer[self.live_controller.controller_type].state != MediaState.Playing:
+            if self.currentMediaPlayer[self.live_controller.controller_type].play(display):
+                self.currentMediaPlayer[self.live_controller.controller_type].set_visible(display, True)
                 # Start Timer for ui updates
                 if not self.timer.isActive():
                     self.timer.start()
@@ -749,3 +745,13 @@ class MediaController(object):
         return self._service_manager
 
     service_manager = property(_get_service_manager)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)

@@ -313,7 +313,7 @@ class MainDisplay(Display):
         log.debug(u'image to display')
         image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
         self.controller.media_controller.media_reset(self.controller)
-        self.displayImage(image)
+        self.display_image(image)
 
     def display_image(self, image):
         """
@@ -328,10 +328,10 @@ class MainDisplay(Display):
 
     def reset_image(self):
         """
-        Reset the backgound image to the service item image. Used after the
+        Reset the background image to the service item image. Used after the
         image plugin has changed the background.
         """
-        log.debug(u'resetImage')
+        log.debug(u'reset_image')
         if hasattr(self, u'serviceItem'):
             self.display_image(self.serviceItem.bg_image_bytes)
         else:
@@ -642,6 +642,6 @@ class AudioPlayer(QtCore.QObject):
 
     def connectSlot(self, signal, slot):
         """
-        Connect a slot to a signal on the media object
+        Connect a slot to a signal on the media object.  Used by slidecontroller to connect to audio object.
         """
         QtCore.QObject.connect(self.media_object, signal, slot)
