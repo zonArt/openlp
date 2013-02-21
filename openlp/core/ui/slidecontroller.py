@@ -90,7 +90,6 @@ class SlideController(DisplayController):
             u'delaySpinBox'
         ]
         self.audioList = [
-            u'songMenu',
             u'audioPauseItem',
             u'audioTimeLabel'
         ]
@@ -293,6 +292,7 @@ class SlideController(DisplayController):
             self.audioTimeLabel.setObjectName(u'audioTimeLabel')
             self.toolbar.addToolbarWidget(self.audioTimeLabel)
             self.toolbar.setWidgetVisible(self.audioList, False)
+            self.toolbar.setWidgetVisible([u'songMenu'], False)
         # Screen preview area
         self.previewFrame = QtGui.QFrame(self.splitter)
         self.previewFrame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -592,10 +592,14 @@ class SlideController(DisplayController):
         Change layout of display control buttons on controller size change
         """
         if self.isLive:
-            if width > 300 and self.hideMenu.isVisible():
+            # Space used by the toolbar.
+            used_space = self.toolbar.size().width() + self.hideMenu.size().width()
+            # The + 40 is needed to prevent flickering. This can be considered a "buffer".
+            if width > used_space + 40 and self.hideMenu.isVisible():
                 self.toolbar.setWidgetVisible(self.hideMenuList, False)
                 self.toolbar.setWidgetVisible(self.wideMenu)
-            elif width < 300 and not self.hideMenu.isVisible():
+            # The - 40 is needed to prevent flickering. This can be considered a "buffer".
+            elif width < used_space - 40 and not self.hideMenu.isVisible():
                 self.toolbar.setWidgetVisible(self.wideMenu, False)
                 self.toolbar.setWidgetVisible(self.hideMenuList)
 
@@ -640,6 +644,7 @@ class SlideController(DisplayController):
         self.mediabar.hide()
         self.songMenu.hide()
         self.toolbar.setWidgetVisible(self.loopList, False)
+        self.toolbar.setWidgetVisible([u'songMenu'], False)
         # Reset the button
         self.playSlidesOnce.setChecked(False)
         self.playSlidesOnce.setIcon(build_icon(u':/media/media_time.png'))
@@ -647,7 +652,7 @@ class SlideController(DisplayController):
         self.playSlidesLoop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
             if Settings().value(self.main_window.songsSettingsSection + u'/display songbar') and self.slideList:
-                self.songMenu.show()
+                self.toolbar.setWidgetVisible([u'songMenu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.setWidgetVisible(self.loopList)
         if item.is_media():
