@@ -106,7 +106,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.settingsSection = u'crashreport'
+        self.settings_section = u'crashreport'
 
     def exec_(self):
         """
@@ -159,12 +159,11 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- Library Versions ---\n%s\n')
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
-            Settings().value(self.settingsSection + u'/last directory'),
-            translate('OpenLP.ExceptionForm',
-            'Text files (*.txt *.log *.text)'))
+            Settings().value(self.settings_section + u'/last directory'),
+            translate('OpenLP.ExceptionForm', 'Text files (*.txt *.log *.text)'))
         if filename:
             filename = unicode(filename).replace(u'/', os.path.sep)
-            Settings().setValue(self.settingsSection + u'/last directory', os.path.dirname(filename))
+            Settings().setValue(self.settings_section + u'/last directory', os.path.dirname(filename))
             report_text = report_text % self._createReport()
             try:
                 report_file = open(filename, u'w')
@@ -230,7 +229,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         files = QtGui.QFileDialog.getOpenFileName(
             self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
-                Settings().value(self.settingsSection + u'/last directory'), u'%s (*.*) (*)' % UiStrings().AllFiles)
+                Settings().value(self.settings_section + u'/last directory'), u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.fileAttachment = unicode(files)
