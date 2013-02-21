@@ -487,7 +487,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer_id = 0
         self.timer_version_id = 0
         # Set up the path with plugins
-        self.plugin_manager = PluginManager(AppLocation.get_directory(AppLocation.PluginsDir))
+        self.plugin_manager = PluginManager()
         self.imageManager = ImageManager()
         # Set up the interface
         self.setupUi(self)

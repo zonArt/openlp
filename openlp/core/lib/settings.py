@@ -36,9 +36,8 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SlideLimits
+from openlp.core.lib import SlideLimits, UiStrings
 from openlp.core.lib.theme import ThemeLevel
-from openlp.core.lib import UiStrings
 
 
 log = logging.getLogger(__name__)
@@ -70,7 +69,8 @@ class Settings(QtCore.QSettings):
     ``__obsolete_settings__``
         Each entry is structured in the following way::
 
-            (u'general/enable slide loop',  u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
+            (u'general/enable slide loop',  u'advanced/slide limits',
+                [(SlideLimits.Wrap, True), (SlideLimits.End, False)])
 
         The first entry is the *old key*; it will be removed.
 
@@ -259,7 +259,6 @@ class Settings(QtCore.QSettings):
             A dict with setting keys and their default values.
         """
         Settings.__default_settings__ = dict(default_values.items() + Settings.__default_settings__.items())
-
 
     @staticmethod
     def set_filename(ini_file):

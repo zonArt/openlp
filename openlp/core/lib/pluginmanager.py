@@ -35,6 +35,7 @@ import logging
 import imp
 
 from openlp.core.lib import Plugin, PluginStatus, Registry
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -46,17 +47,14 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
-    def __init__(self, plugin_dir):
+    def __init__(self):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
-
-        ``plugin_dir``
-            The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
-        self.base_path = os.path.abspath(plugin_dir)
+        self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
         log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')

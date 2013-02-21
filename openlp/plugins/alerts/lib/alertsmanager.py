@@ -49,7 +49,6 @@ class AlertsManager(QtCore.QObject):
 
     def __init__(self, parent):
         QtCore.QObject.__init__(self, parent)
-        self.screen = None
         self.timer_id = 0
         self.alert_list = []
         Registry().register_function(u'live_display_active', self.generate_alert)

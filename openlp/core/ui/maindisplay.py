@@ -297,7 +297,7 @@ class MainDisplay(Display):
         self.image(path)
         # Update the preview frame.
         if self.is_live:
-            self.parent().updatePreview()
+            self.live_controller.updatePreview()
         return True
 
     def image(self, path):
@@ -507,6 +507,16 @@ class MainDisplay(Display):
         return self._application
 
     application = property(_get_application)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
 
 
 class AudioPlayer(QtCore.QObject):
