@@ -1418,7 +1418,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
                     'Your item cannot be displayed as the plugin required to display it is missing or inactive'))
-            self.application.set_normal_cursor()
+        self.application.set_normal_cursor()
 
     def remote_edit(self):
         """
