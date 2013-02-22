@@ -64,7 +64,7 @@ class PluginManager(object):
         """
         Bootstrap all the plugin manager functions
         """
-        log.info(u'Bootstrap')
+        log.info(u'bootstrap_initialise')
         self.find_plugins()
         # hook methods have to happen after find_plugins. Find plugins needs
         # the controllers hence the hooks have moved from setupUI() to here

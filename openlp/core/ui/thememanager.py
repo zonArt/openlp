@@ -417,7 +417,6 @@ class ThemeManager(QtGui.QWidget):
             self._write_theme(theme, None, None)
             Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
             self.config_updated()
-            files = SettingsManager.get_files(self.settingsSection, u'.png')
         self.application.set_normal_cursor()
         self.load_themes()
 
