@@ -404,19 +404,19 @@ class SlideController(DisplayController):
         verse_type = sender_name[15:] if sender_name[:15] == u'shortcutAction_' else u''
         if SONGS_PLUGIN_AVAILABLE:
             if verse_type == u'V':
-                self.current_shortcut = VerseType.TranslatedTags[VerseType.Verse]
+                self.current_shortcut = VerseType.translated_tags[VerseType.Verse]
             elif verse_type == u'C':
-                self.current_shortcut = VerseType.TranslatedTags[VerseType.Chorus]
+                self.current_shortcut = VerseType.translated_tags[VerseType.Chorus]
             elif verse_type == u'B':
-                self.current_shortcut = VerseType.TranslatedTags[VerseType.Bridge]
+                self.current_shortcut = VerseType.translated_tags[VerseType.Bridge]
             elif verse_type == u'P':
-                self.current_shortcut = VerseType.TranslatedTags[VerseType.PreChorus]
+                self.current_shortcut = VerseType.translated_tags[VerseType.PreChorus]
             elif verse_type == u'I':
-                self.current_shortcut = VerseType.TranslatedTags[VerseType.Intro]
+                self.current_shortcut = VerseType.translated_tags[VerseType.Intro]
             elif verse_type == u'E':
-                self.current_shortcut = VerseType.TranslatedTags[VerseType.Ending]
+                self.current_shortcut = VerseType.translated_tags[VerseType.Ending]
             elif verse_type == u'O':
-                self.current_shortcut = VerseType.TranslatedTags[VerseType.Other]
+                self.current_shortcut = VerseType.translated_tags[VerseType.Other]
             elif verse_type.isnumeric():
                 self.current_shortcut += verse_type
             self.current_shortcut = self.current_shortcut.upper()

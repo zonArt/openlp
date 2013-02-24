@@ -97,10 +97,8 @@ class SongXML(object):
         Add a verse to the ``<lyrics>`` tag.
 
         ``type``
-            A string denoting the type of verse. Possible values are *v*,
-            *c*, *b*, *p*, *i*, *e* and *o*.
-            Any other type is **not** allowed, this also includes translated
-            types.
+            A string denoting the type of verse. Possible values are *v*, *c*, *b*, *p*, *i*, *e* and *o*. Any other
+            type is **not** allowed, this also includes translated types.
 
         ``number``
             An integer denoting the number of the item, for example: verse 1.
@@ -109,8 +107,7 @@ class SongXML(object):
             The actual text of the verse to be stored.
 
         ``lang``
-            The verse's language code (ISO-639). This is not required, but
-            should be added if available.
+            The verse's language code (ISO-639). This is not required, but should be added if available.
         """
         verse = etree.Element(u'verse', type=unicode(type),
             label=unicode(number))
@@ -128,24 +125,21 @@ class SongXML(object):
 
     def get_verses(self, xml):
         """
-        Iterates through the verses in the XML and returns a list of verses
-        and their attributes.
+        Iterates through the verses in the XML and returns a list of verses and their attributes.
 
         ``xml``
             The XML of the song to be parsed.
 
         The returned list has the following format::
 
-            [[{'type': 'v', 'label': '1'},
-            u"optional slide split 1[---]optional slide split 2"],
+            [[{'type': 'v', 'label': '1'}, u"optional slide split 1[---]optional slide split 2"],
             [{'lang': 'en', 'type': 'c', 'label': '1'}, u"English chorus"]]
         """
         self.song_xml = None
         verse_list = []
         if not xml.startswith(u'<?xml') and not xml.startswith(u'<song'):
-            # This is an old style song, without XML. Let's handle it correctly
-            # by iterating through the verses, and then recreating the internal
-            # xml object as well.
+            # This is an old style song, without XML. Let's handle it correctly by iterating through the verses, and
+            # then recreating the internal xml object as well.
             self.song_xml = objectify.fromstring(u'<song version="1.0" />')
             self.lyrics = etree.SubElement(self.song_xml, u'lyrics')
             verses = xml.split(u'\n\n')
@@ -176,11 +170,10 @@ class SongXML(object):
 
 class OpenLyrics(object):
     """
-    This class represents the converter for OpenLyrics XML (version 0.8)
-    to/from a song.
+    This class represents the converter for OpenLyrics XML (version 0.8) to/from a song.
 
-    As OpenLyrics has a rich set of different features, we cannot support them
-    all. The following features are supported by the :class:`OpenLyrics` class:
+    As OpenLyrics has a rich set of different features, we cannot support them all. The following features are
+    supported by the :class:`OpenLyrics` class:
 
     ``<authors>``
         OpenLP does not support the attribute *type* and *lang*.
@@ -189,8 +182,7 @@ class OpenLyrics(object):
         This property is not supported.
 
     ``<comments>``
-        The ``<comments>`` property is fully supported. But comments in lyrics
-        are not supported.
+        The ``<comments>`` property is fully supported. But comments in lyrics are not supported.
 
     ``<copyright>``
         This property is fully supported.
@@ -208,23 +200,20 @@ class OpenLyrics(object):
         This property is not supported.
 
     ``<lines>``
-        The attribute *part* is not supported. The *break* attribute is
-        supported.
+        The attribute *part* is not supported. The *break* attribute is supported.
 
     ``<publisher>``
         This property is not supported.
 
     ``<songbooks>``
-        As OpenLP does only support one songbook, we cannot consider more than
-        one songbook.
+        As OpenLP does only support one songbook, we cannot consider more than one songbook.
 
     ``<tempo>``
         This property is not supported.
 
     ``<themes>``
-        Topics, as they are called in OpenLP, are fully supported, whereby only
-        the topic text (e. g. Grace) is considered, but neither the *id* nor
-        *lang*.
+        Topics, as they are called in OpenLP, are fully supported, whereby only the topic text (e. g. Grace) is
+        considered, but neither the *id* nor *lang*.
 
     ``<transposition>``
         This property is not supported.
@@ -233,9 +222,8 @@ class OpenLyrics(object):
         This property is not supported.
 
     ``<verse name="v1a" lang="he" translit="en">``
-        The attribute *translit* is not supported. Note, the attribute *lang* is
-        considered, but there is not further functionality implemented yet. The
-        following verse "types" are supported by OpenLP:
+        The attribute *translit* is not supported. Note, the attribute *lang* is considered, but there is not further
+        functionality implemented yet. The following verse "types" are supported by OpenLP:
 
             * v
             * c
@@ -245,13 +233,10 @@ class OpenLyrics(object):
             * e
             * o
 
-        The verse "types" stand for *Verse*, *Chorus*, *Bridge*, *Pre-Chorus*,
-        *Intro*, *Ending* and *Other*. Any numeric value is allowed after the
-        verse type. The complete verse name in OpenLP always consists of the
-        verse type and the verse number. If not number is present *1* is
-        assumed.
-        OpenLP will merge verses which are split up by appending a letter to the
-        verse name, such as *v1a*.
+        The verse "types" stand for *Verse*, *Chorus*, *Bridge*, *Pre-Chorus*, *Intro*, *Ending* and *Other*. Any
+        numeric value is allowed after the verse type. The complete verse name in OpenLP always consists of the verse
+        type and the verse number. If not number is present *1* is assumed. OpenLP will merge verses which are split
+        up by appending a letter to the verse name, such as *v1a*.
 
     ``<verseOrder>``
         OpenLP supports this property.
@@ -359,17 +344,14 @@ class OpenLyrics(object):
 
     def _get_missing_tags(self, text):
         """
-        Tests the given text for not closed formatting tags and returns a tuple
-        consisting of two unicode strings::
+        Tests the given text for not closed formatting tags and returns a tuple consisting of two unicode strings::
 
             (u'{st}{r}', u'{/r}{/st}')
 
-        The first unicode string are the start tags (for the next slide). The
-        second unicode string are the end tags.
+        The first unicode string are the start tags (for the next slide). The second unicode string are the end tags.
 
         ``text``
-            The text to test. The text must **not** contain html tags, only
-            OpenLP formatting tags are allowed::
+            The text to test. The text must **not** contain html tags, only OpenLP formatting tags are allowed::
 
                 {st}{r}Text text text
         """
@@ -379,9 +361,8 @@ class OpenLyrics(object):
                 continue
             if text.count(tag[u'start tag']) != text.count(tag[u'end tag']):
                 tags.append((text.find(tag[u'start tag']), tag[u'start tag'], tag[u'end tag']))
-        # Sort the lists, so that the tags which were opened first on the first
-        # slide (the text we are checking) will be opened first on the next
-        # slide as well.
+        # Sort the lists, so that the tags which were opened first on the first slide (the text we are checking) will
+        # be opened first on the next slide as well.
         tags.sort(key=lambda tag: tag[0])
         end_tags = []
         start_tags = []
@@ -393,16 +374,15 @@ class OpenLyrics(object):
 
     def xml_to_song(self, xml, parse_and_temporary_save=False):
         """
-        Create and save a song from OpenLyrics format xml to the database. Since
-        we also export XML from external sources (e. g. OpenLyrics import), we
-        cannot ensure, that it completely conforms to the OpenLyrics standard.
+        Create and save a song from OpenLyrics format xml to the database. Since we also export XML from external
+        sources (e. g. OpenLyrics import), we cannot ensure, that it completely conforms to the OpenLyrics standard.
 
         ``xml``
             The XML to parse (unicode).
 
         ``parse_and_temporary_save``
-            Switch to skip processing the whole song and storing the songs in
-            the database with a temporary flag. Defaults to ``False``.
+            Switch to skip processing the whole song and storing the songs in the database with a temporary flag.
+            Defaults to ``False``.
         """
         # No xml get out of here.
         if not xml:
@@ -448,8 +428,7 @@ class OpenLyrics(object):
 
     def _add_tag_to_formatting(self, tag_name, tags_element):
         """
-        Add new formatting tag to the element ``<format>`` if the tag is not
-        present yet.
+        Add new formatting tag to the element ``<format>`` if the tag is not present yet.
         """
         available_tags = FormattingTags.get_html_tags()
         start_tag = '{%s}' % tag_name
@@ -469,8 +448,7 @@ class OpenLyrics(object):
 
     def _add_text_with_tags_to_lines(self, verse_element, text, tags_element):
         """
-        Convert text with formatting tags from OpenLP format to OpenLyrics
-        format and append it to element ``<lines>``.
+        Convert text with formatting tags from OpenLP format to OpenLyrics format and append it to element ``<lines>``.
         """
         start_tags = OpenLyrics.START_TAGS_REGEX.findall(text)
         end_tags = OpenLyrics.END_TAGS_REGEX.findall(text)
@@ -478,8 +456,7 @@ class OpenLyrics(object):
         for tag in start_tags:
             # Tags already converted to xml structure.
             xml_tags = tags_element.xpath(u'tag/attribute::name')
-            # Some formatting tag has only starting part e.g. <br>.
-            # Handle this case.
+            # Some formatting tag has only starting part e.g. <br>. Handle this case.
             if tag in end_tags:
                 text = text.replace(u'{%s}' % tag, u'<tag name="%s">' % tag)
             else:
@@ -586,8 +563,8 @@ class OpenLyrics(object):
 
     def _process_formatting_tags(self, song_xml, temporary):
         """
-        Process the formatting tags from the song and either add missing tags
-        temporary or permanently to the formatting tag list.
+        Process the formatting tags from the song and either add missing tags temporary or permanently to the
+        formatting tag list.
         """
         if not hasattr(song_xml, u'format'):
             return
@@ -608,8 +585,8 @@ class OpenLyrics(object):
                 u'end html': tag.close.text if hasattr(tag, 'close') else u'',
                 u'protected': False,
             }
-            # Add 'temporary' key in case the formatting tag should not be
-            # saved otherwise it is supposed that formatting tag is permanent.
+            # Add 'temporary' key in case the formatting tag should not be saved otherwise it is supposed that
+            # formatting tag is permanent.
             if temporary:
                 openlp_tag[u'temporary'] = temporary
             found_tags.append(openlp_tag)
@@ -620,15 +597,14 @@ class OpenLyrics(object):
 
     def _process_lines_mixed_content(self, element, newlines=True):
         """
-        Converts the xml text with mixed content to OpenLP representation.
-        Chords are skipped and formatting tags are converted.
+        Converts the xml text with mixed content to OpenLP representation. Chords are skipped and formatting tags are
+        converted.
 
         ``element``
             The property object (lxml.etree.Element).
 
         ``newlines``
-            The switch to enable/disable processing of line breaks <br/>.
-            The <br/> is used since OpenLyrics 0.8.
+            The switch to enable/disable processing of line breaks <br/>. The <br/> is used since OpenLyrics 0.8.
         """
         text = u''
         use_endtag = True
@@ -684,12 +660,10 @@ class OpenLyrics(object):
         lines = etree.tostring(lines)
         element = etree.XML(lines)
 
-        # OpenLyrics 0.8 uses <br/> for new lines.
-        # Append text from "lines" element to verse text.
+        # OpenLyrics 0.8 uses <br/> for new lines. Append text from "lines" element to verse text.
         if version > '0.7':
             text = self._process_lines_mixed_content(element)
-        # OpenLyrics version <= 0.7 contais <line> elements to represent lines.
-        # First child element is tested.
+        # OpenLyrics version <= 0.7 contais <line> elements to represent lines. First child element is tested.
         else:
             # Loop over the "line" elements removing comments and chords.
             for line in element:
@@ -742,16 +716,15 @@ class OpenLyrics(object):
                     text += u'\n[---]'
             verse_def = verse.get(u'name', u' ').lower()
             verse_tag, verse_number, verse_part = OpenLyrics.VERSE_TAG_SPLITTER.search(verse_def).groups()
-            if verse_tag not in VerseType.Tags:
-                verse_tag = VerseType.Tags[VerseType.Other]
-            # OpenLyrics allows e. g. "c", but we need "c1". However, this does
-            # not correct the verse order.
+            if verse_tag not in VerseType.tags:
+                verse_tag = VerseType.tags[VerseType.Other]
+            # OpenLyrics allows e. g. "c", but we need "c1". However, this does not correct the verse order.
             if not verse_number:
                 verse_number = u'1'
             lang = verse.get(u'lang')
             translit = verse.get(u'translit')
-            # In OpenLP 1.9.6 we used v1a, v1b ... to represent visual slide
-            # breaks. In OpenLyrics 0.7 an attribute has been added.
+            # In OpenLP 1.9.6 we used v1a, v1b ... to represent visual slide breaks. In OpenLyrics 0.7 an attribute has
+            # been added.
             if song_xml.get(u'modifiedIn') in (u'1.9.6', u'OpenLP 1.9.6') and \
                     song_xml.get(u'version') == u'0.7' and (verse_tag, verse_number, lang, translit) in verses:
                 verses[(verse_tag, verse_number, lang, translit, None)] += u'\n[---]\n' + text

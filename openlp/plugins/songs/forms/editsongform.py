@@ -291,7 +291,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                         verse_tags_translated = True
                 if index is None:
                     index = VerseType.from_tag(verse_tag)
-                verse[0][u'type'] = VerseType.Tags[index]
+                verse[0][u'type'] = VerseType.tags[index]
                 if verse[0][u'label'] == u'':
                     verse[0][u'label'] = u'1'
                 verse_def = u'%s%s' % (verse[0][u'type'], verse[0][u'label'])
@@ -303,7 +303,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             for count, verse in enumerate(verses):
                 self.verseListWidget.setRowCount(self.verseListWidget.rowCount() + 1)
                 item = QtGui.QTableWidgetItem(verse)
-                verse_def = u'%s%s' % (VerseType.Tags[VerseType.Verse], unicode(count + 1))
+                verse_def = u'%s%s' % (VerseType.tags[VerseType.Verse], unicode(count + 1))
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 self.verseListWidget.setItem(count, 0, item)
         if self.song.verse_order:
@@ -315,7 +315,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     verse_index = VerseType.from_translated_tag(verse_def[0], None)
                 if verse_index is None:
                     verse_index = VerseType.from_tag(verse_def[0])
-                verse_tag = VerseType.TranslatedTags[verse_index].upper()
+                verse_tag = VerseType.translated_tags[verse_index].upper()
                 translated.append(u'%s%s' % (verse_tag, verse_def[1:]))
             self.verseOrderEdit.setText(u' '.join(translated))
         else:
@@ -547,7 +547,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                             verse_name = parts
                             verse_num = u'1'
                         verse_index = VerseType.from_loose_input(verse_name)
-                        verse_tag = VerseType.Tags[verse_index]
+                        verse_tag = VerseType.tags[verse_index]
                         # Later we need to handle v1a as well.
                         #regex = re.compile(r'(\d+\w.)')
                         regex = re.compile(r'\D*(\d+)\D*')
@@ -599,7 +599,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             if len(item) == 1:
                 verse_index = VerseType.from_translated_tag(item, None)
                 if verse_index is not None:
-                    order.append(VerseType.Tags[verse_index] + u'1')
+                    order.append(VerseType.tags[verse_index] + u'1')
                 else:
                     # it matches no verses anyway
                     order.append(u'')
@@ -609,7 +609,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     # it matches no verses anyway
                     order.append(u'')
                 else:
-                    verse_tag = VerseType.Tags[verse_index]
+                    verse_tag = VerseType.tags[verse_index]
                     verse_num = item[1:].lower()
                     order.append(verse_tag + verse_num)
         return order
@@ -831,7 +831,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         ordertext = self.verseOrderEdit.text()
         order = []
         for item in ordertext.split():
-            verse_tag = VerseType.Tags[VerseType.from_translated_tag(item[0])]
+            verse_tag = VerseType.tags[VerseType.from_translated_tag(item[0])]
             verse_num = item[1:].lower()
             order.append(u'%s%s' % (verse_tag, verse_num))
         self.song.verse_order = u' '.join(order)
