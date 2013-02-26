@@ -850,7 +850,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Remove/rename old settings to prepare the import.
         import_settings.remove_obsolete_settings()
         # FIXME: Convert image files
-
+        #settings.get_files_from_config()
         # Lets do a basic sanity check. If it contains this string we can assume it was created by OpenLP and so we'll
         # load what we can from it, and just silently ignore anything we don't recognise.
         if import_settings.value(u'SettingsImport/type') != u'OpenLP_settings_export':
