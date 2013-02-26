@@ -91,16 +91,12 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Import old images list
-        images_old = Settings().value(self.settingsSection + u'/images files')
-        if len(images_old) > 0:
-            for imageFile in images_old:
-                imagefilename = ImageFilenames()
-                imagefilename.group_id = 0
-                imagefilename.filename = imageFile
-                success = self.manager.save_object(imagefilename)
-            Settings().setValue(self.settingsSection + u'/images files', [])
-            Settings().remove(self.settingsSection + u'/images files')
-            Settings().remove(self.settingsSection + u'/images count')
+        files_from_config = Settings().get_files_from_config(self.plugin)
+        for old_file in files_from_config:
+            imagefilename = ImageFilenames()
+            imagefilename.group_id = 0
+            imagefilename.filename = old_file
+            success = self.manager.save_object(imagefilename)
         # Load images from the database
         self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
             initial_load=True)
