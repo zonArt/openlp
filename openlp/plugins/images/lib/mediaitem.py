@@ -96,10 +96,10 @@ class ImageMediaItem(MediaManagerItem):
             imagefilename = ImageFilenames()
             imagefilename.group_id = 0
             imagefilename.filename = old_file
-            success = self.manager.save_object(imagefilename)
+            self.manager.save_object(imagefilename)
         # Load images from the database
-        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
-            initial_load=True)
+        self.loadFullList(
+            self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename), initial_load=True)
 
     def addListViewToToolBar(self):
         """
