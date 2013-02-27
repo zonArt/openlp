@@ -835,19 +835,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         setting_sections = []
         # Add main sections.
-        setting_sections.extend([self.generalSettingsSection])
-        setting_sections.extend([self.advancedSettingsSection])
-        setting_sections.extend([self.uiSettingsSection])
-        setting_sections.extend([self.shortcutsSettingsSection])
-        setting_sections.extend([self.serviceManagerSettingsSection])
-        setting_sections.extend([self.themesSettingsSection])
-        setting_sections.extend([self.playersSettingsSection])
-        setting_sections.extend([self.displayTagsSection])
-        setting_sections.extend([self.headerSection])
-        setting_sections.extend([u'crashreport'])
+        setting_sections.extend([self.generalSettingsSection, self.advancedSettingsSection, self.uiSettingsSection,
+            self.shortcutsSettingsSection, self.serviceManagerSettingsSection, self.themesSettingsSection,
+            self.playersSettingsSection, self.displayTagsSection, self.headerSection, u'crashreport'])
         # Add plugin sections.
-        for plugin in self.plugin_manager.plugins:
-            setting_sections.extend([plugin.name])
+        setting_sections.extend([plugin.name for plugin in self.plugin_manager.plugins])
         # Copy the settings file to the tmp dir, because we do not want to change the original one.
         temp_directory = os.path.join(unicode(gettempdir()), u'openlp')
         check_directory_exists(temp_directory)
@@ -857,9 +849,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         import_settings = Settings(temp_config, Settings.IniFormat)
         # Remove/rename old settings to prepare the import.
         import_settings.remove_obsolete_settings()
-        # Lets do a basic sanity check. If it contains this string we can
-        # assume it was created by OpenLP and so we'll load what we can
-        # from it, and just silently ignore anything we don't recognise
+        # FIXME: Convert image files
+        #settings.get_files_from_config()
+        # Lets do a basic sanity check. If it contains this string we can assume it was created by OpenLP and so we'll
+        # load what we can from it, and just silently ignore anything we don't recognise.
         if import_settings.value(u'SettingsImport/type') != u'OpenLP_settings_export':
             QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
                 translate('OpenLP.MainWindow', 'The file you have selected does not appear to be a valid OpenLP '
@@ -894,9 +887,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'file_date_imported', now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
         settings.sync()
-        # We must do an immediate restart or current configuration will
-        # overwrite what was just imported when application terminates
-        # normally.   We need to exit without saving configuration.
+        # We must do an immediate restart or current configuration will overwrite what was just imported when
+        # application terminates normally.   We need to exit without saving configuration.
         QtGui.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
             translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
                 'be applied the next time you start OpenLP.'),

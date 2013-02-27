@@ -41,7 +41,6 @@ log = logging.getLogger(__name__)
 __default_settings__ = {
     u'images/db type': u'sqlite',
     u'images/background color': u'#000000',
-    u'images/images files': []
 }
 
 
