@@ -44,7 +44,7 @@ from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, Backgr
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import AppLocation, SettingsManager, delete_file, locale_compare, get_filesystem_encoding
+from openlp.core.utils import AppLocation, delete_file, locale_compare, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
@@ -149,7 +149,7 @@ class ThemeManager(QtGui.QWidget):
         Import new themes downloaded by the first time wizard
         """
         self.application.set_busy_cursor()
-        files = SettingsManager.get_files(self.settingsSection, u'.otz')
+        files = AppLocation.get_files(self.settingsSection, u'.otz')
         for theme_file in files:
             theme_file = os.path.join(self.path, theme_file)
             self.unzip_theme(theme_file, self.path)
@@ -418,10 +418,10 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'Load themes from dir')
         self.theme_list = []
         self.theme_list_widget.clear()
-        files = SettingsManager.get_files(self.settingsSection, u'.png')
+        files = AppLocation.get_files(self.settingsSection, u'.png')
         if first_time:
             self.first_time()
-            files = SettingsManager.get_files(self.settingsSection, u'.png')
+            files = AppLocation.get_files(self.settingsSection, u'.png')
             # No themes have been found so create one
             if not files:
                 theme = ThemeXML()
@@ -429,7 +429,7 @@ class ThemeManager(QtGui.QWidget):
                 self._write_theme(theme, None, None)
                 Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
                 self.config_updated()
-                files = SettingsManager.get_files(self.settingsSection, u'.png')
+                files = AppLocation.get_files(self.settingsSection, u'.png')
         # Sort the themes by its name considering language specific
         files.sort(key=lambda file_name: unicode(file_name), cmp=locale_compare)
         # now process the file list of png files
