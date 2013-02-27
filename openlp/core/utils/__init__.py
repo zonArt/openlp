@@ -39,9 +39,10 @@ from subprocess import Popen, PIPE
 import sys
 import urllib2
 
+from PyQt4 import QtGui, QtCore
+
 from openlp.core.lib import Registry, Settings
 
-from PyQt4 import QtGui, QtCore
 
 if sys.platform != u'win32' and sys.platform != u'darwin':
     try:
@@ -50,7 +51,7 @@ if sys.platform != u'win32' and sys.platform != u'darwin':
     except ImportError:
         XDG_BASE_AVAILABLE = False
 
-from openlp.core.lib import translate, check_directory_exists
+from openlp.core.lib import translate
 
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}

@@ -31,11 +31,9 @@ The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
 import logging
 import os
-import re
 import sys
-import urllib2
 
-from openlp.core.lib import Registry, Settings
+from openlp.core.lib import Settings
 from openlp.core.utils import _get_frozen_path
 
 
@@ -47,7 +45,7 @@ if sys.platform != u'win32' and sys.platform != u'darwin':
         XDG_BASE_AVAILABLE = False
 
 import openlp
-from openlp.core.lib import translate, check_directory_exists
+from openlp.core.lib import check_directory_exists
 
 
 log = logging.getLogger(__name__)
