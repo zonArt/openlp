@@ -113,7 +113,9 @@ class AppLocation(object):
             Defaults to *None*. The section of code getting the files - used to load from a section's data subdirectory.
 
         ``extension``
-            Defaults to *None*. The extension to search for.
+            Defaults to *None*. The extension to search for. For example::
+
+                u'.png'
         """
         path = AppLocation.get_data_path()
         if section:
