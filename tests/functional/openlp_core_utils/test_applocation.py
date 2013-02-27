@@ -69,8 +69,8 @@ class TestAppLocation(TestCase):
             # When: Get the list of files.
             result = AppLocation.get_files()
 
-            # Then: check if the file lists are identically.
-            assert result == FILE_LIST,  u'The file lists should be identically.'
+            # Then: check if the file lists are identical.
+            assert result == FILE_LIST,  u'The file lists should be identical.'
 
     def get_files_test(self):
         """
@@ -85,8 +85,8 @@ class TestAppLocation(TestCase):
             # When: Get the list of files.
             result = AppLocation.get_files(u'section', u'.mp3')
 
-            # Then: check if the file lists are identically.
-            assert result == [u'file5.mp3', u'file6.mp3'],  u'The file lists should be identically.'
+            # Then: check if the file lists are identical.
+            assert result == [u'file5.mp3', u'file6.mp3'],  u'The file lists should be identical.'
 
     def get_section_data_path_test(self):
         """
