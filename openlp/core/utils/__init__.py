@@ -499,7 +499,8 @@ locale_direct_compare = locale.strcoll
 
 from languagemanager import LanguageManager
 from actions import ActionList
+from settingsmanager import SettingsManager
 
-__all__ = [u'AppLocation', u'ActionList', u'LanguageManager', u'get_application_version', u'check_latest_version',
-    u'add_actions', u'get_filesystem_encoding', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename', u'format_time', u'locale_compare', u'locale_direct_compare']
+__all__ = [u'AppLocation', u'ActionList', u'LanguageManager', u'SettingsManager', u'get_application_version',
+    u'check_latest_version', u'add_actions', u'get_filesystem_encoding', u'get_web_page', u'get_uno_command',
+    u'get_uno_instance', u'delete_file', u'clean_filename', u'format_time', u'locale_compare', u'locale_direct_compare']

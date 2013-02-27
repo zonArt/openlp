@@ -32,11 +32,10 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, ItemCapabilities, Registry, SettingsManager, ServiceItemContext, \
-    Settings, UiStrings, build_icon, check_item_selected, check_directory_exists, create_thumb, translate, \
-    validate_thumb
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, Registry, ServiceItemContext, Settings, UiStrings, \
+    build_icon, check_item_selected, check_directory_exists, create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
+from openlp.core.utils import AppLocation, SettingsManager, delete_file, locale_compare, get_images_filter
 
 log = logging.getLogger(__name__)
 

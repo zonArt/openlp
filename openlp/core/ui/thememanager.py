@@ -38,14 +38,13 @@ import re
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ImageSource, OpenLPToolbar, Registry, SettingsManager, Settings, UiStrings, \
-    get_text_file_string, build_icon, translate, check_item_selected, check_directory_exists, create_thumb, \
-    validate_thumb
+from openlp.core.lib import ImageSource, OpenLPToolbar, Registry, Settings, UiStrings, get_text_file_string, \
+    build_icon, translate, check_item_selected, check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.theme import Theme
 from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import AppLocation, delete_file, locale_compare, get_filesystem_encoding
+from openlp.core.utils import AppLocation, SettingsManager, delete_file, locale_compare, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
