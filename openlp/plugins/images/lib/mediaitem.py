@@ -106,7 +106,7 @@ class ImageMediaItem(MediaManagerItem):
                     delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
                 self.main_window.incrementProgressBar()
-            AppLocation.setValue(self.settingsSection + u'/images files', self.getFileList())
+            Settings.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
             self.application.set_normal_cursor()
         self.listView.blockSignals(False)
