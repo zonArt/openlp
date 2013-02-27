@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
+The :mod:`openlp.core.utils.applocation` module provides an utility for OpenLP receiving the data path etc.
 """
 import logging
 import os
