@@ -176,7 +176,3 @@ def _get_os_dir_path(dir_type):
             return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp', u'data')
         return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp')
 
-
-
-
-
