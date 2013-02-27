@@ -165,7 +165,7 @@ class VerseType(object):
         translate('SongsPlugin.VerseType', 'Intro'),
         translate('SongsPlugin.VerseType', 'Ending'),
         translate('SongsPlugin.VerseType', 'Other')]
-    tanslated_tags = [name[0].lower() for name in translated_names]
+    translated_tags = [name[0].lower() for name in translated_names]
 
     @staticmethod
     def translated_tag(verse_tag, default=Other):
@@ -181,9 +181,9 @@ class VerseType(object):
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
-                return VerseType.tanslated_tags[num].upper()
-        if default in VerseType.tanslated_tags:
-            return VerseType.tanslated_tags[default].upper()
+                return VerseType.translated_tags[num].upper()
+        if default in VerseType.translated_tags:
+            return VerseType.translated_tags[default].upper()
 
     @staticmethod
     def translated_name(verse_tag, default=Other):
