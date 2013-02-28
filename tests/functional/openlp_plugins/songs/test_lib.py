@@ -61,14 +61,14 @@ class TestLib(TestCase):
         """
         Test the songs_probably_equal function with twice the same song.
         """
-        #GIVEN: Two equal songs.
+        # GIVEN: Two equal songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.full_lyrics
         
-        #WHEN: We compare those songs for equality.
+        # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
         
-        #THEN: The result should be True.
+        # THEN: The result should be True.
         assert result == True, u'The result should be True'
 
 
@@ -76,14 +76,14 @@ class TestLib(TestCase):
         """
         Test the songs_probably_equal function with a song and a shorter version of the same song.
         """
-        #GIVEN: A song and a short version of the same song.
+        # GIVEN: A song and a short version of the same song.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.short_lyrics
         
-        #WHEN: We compare those songs for equality.
+        # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
         
-        #THEN: The result should be True.
+        # THEN: The result should be True.
         assert result == True, u'The result should be True'
 
 
@@ -91,14 +91,14 @@ class TestLib(TestCase):
         """
         Test the songs_probably_equal function with a song and a  very erroneous version of the same song.
         """
-        #GIVEN: A song and the same song with lots of errors.
+        # GIVEN: A song and the same song with lots of errors.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.error_lyrics
         
-        #WHEN: We compare those songs for equality.
+        # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
         
-        #THEN: The result should be True.
+        # THEN: The result should be True.
         assert result == True, u'The result should be True'
 
 
@@ -106,14 +106,14 @@ class TestLib(TestCase):
         """
         Test the songs_probably_equal function with two different songs.
         """
-        #GIVEN: Two different songs.
+        # GIVEN: Two different songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.different_lyrics
         
-        #WHEN: We compare those songs for equality.
+        # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
         
-        #THEN: The result should be False.
+        # THEN: The result should be False.
         assert result == False, u'The result should be False'
 
 
@@ -121,13 +121,13 @@ class TestLib(TestCase):
         """
         Test the _remove_typos function with a typo at the beginning.
         """
-        #GIVEN: A diffset with a difference at the beginning.
+        # GIVEN: A diffset with a difference at the beginning.
         diff = [('replace', 0, 2, 0, 1), ('equal', 2, 11, 1, 10)]
 
-        #WHEN: We remove the typos in there.
+        # WHEN: We remove the typos in there.
         result = _remove_typos(diff)
 
-        #THEN: There should be no typos at the beginning anymore.
+        # THEN: There should be no typos at the beginning anymore.
         assert len(result) == 1, u'The result should contain only one element.'
         assert result[0][0] == 'equal', u'The result should contain an equal element.'
 
@@ -136,13 +136,13 @@ class TestLib(TestCase):
         """
         Test the _remove_typos function with a large difference at the beginning.
         """
-        #GIVEN: A diffset with a large difference at the beginning.
+        # GIVEN: A diffset with a large difference at the beginning.
         diff = [('replace', 0, 20, 0, 1), ('equal', 20, 29, 1, 10)]
 
-        #WHEN: We remove the typos in there.
+        # WHEN: We remove the typos in there.
         result = _remove_typos(diff)
 
-        #THEN: There diff should not have changed.
+        # THEN: There diff should not have changed.
         assert result == diff
 
 
@@ -150,13 +150,13 @@ class TestLib(TestCase):
         """
         Test the _remove_typos function with a typo at the end.
         """
-        #GIVEN: A diffset with a difference at the end.
+        # GIVEN: A diffset with a difference at the end.
         diff = [('equal', 0, 10, 0, 10), ('replace', 10, 12, 10, 11)]
 
-        #WHEN: We remove the typos in there.
+        # WHEN: We remove the typos in there.
         result = _remove_typos(diff)
 
-        #THEN: There should be no typos at the end anymore.
+        # THEN: There should be no typos at the end anymore.
         assert len(result) == 1, u'The result should contain only one element.'
         assert result[0][0] == 'equal', u'The result should contain an equal element.'
 
@@ -165,13 +165,13 @@ class TestLib(TestCase):
         """
         Test the _remove_typos function with a large difference at the end.
         """
-        #GIVEN: A diffset with a large difference at the end.
+        # GIVEN: A diffset with a large difference at the end.
         diff = [('equal', 0, 10, 0, 10), ('replace', 10, 20, 10, 1)]
 
-        #WHEN: We remove the typos in there.
+        # WHEN: We remove the typos in there.
         result = _remove_typos(diff)
 
-        #THEN: There diff should not have changed.
+        # THEN: There diff should not have changed.
         assert result == diff
 
 
@@ -179,13 +179,13 @@ class TestLib(TestCase):
         """
         Test the _remove_typos function with a typo in the middle.
         """
-        #GIVEN: A diffset with a difference in the middle.
+        # GIVEN: A diffset with a difference in the middle.
         diff = [('equal', 0, 10, 0, 10), ('replace', 10, 12, 10, 11), ('equal', 12, 22, 11, 21)]
 
-        #WHEN: We remove the typos in there.
+        # WHEN: We remove the typos in there.
         result = _remove_typos(diff)
 
-        #THEN: There should be no typos in the middle anymore. The remaining equals should have been merged.
+        # THEN: There should be no typos in the middle anymore. The remaining equals should have been merged.
         assert len(result) is 1, u'The result should contain only one element.'
         assert result[0][0] == 'equal', u'The result should contain an equal element.'
         assert result[0][1] == 0, u'The start indices should be kept.'
@@ -198,13 +198,13 @@ class TestLib(TestCase):
         """
         Test the _remove_typos function with a large difference in the middle.
         """
-        #GIVEN: A diffset with a large difference in the middle.
+        # GIVEN: A diffset with a large difference in the middle.
         diff = [('equal', 0, 10, 0, 10), ('replace', 10, 20, 10, 11), ('equal', 20, 30, 11, 21)]
 
-        #WHEN: We remove the typos in there.
+        # WHEN: We remove the typos in there.
         result = _remove_typos(diff)
 
-        #THEN: There diff should not have changed.
+        # THEN: There diff should not have changed.
         assert result == diff
 
 
@@ -212,13 +212,13 @@ class TestLib(TestCase):
         """
         Test the _op_length function.
         """
-        #GIVEN: A diff entry.
+        # GIVEN: A diff entry.
         diff_entry = ('replace', 0, 2, 4, 14)
 
-        #WHEN: We calculate the length of that diff.
+        # WHEN: We calculate the length of that diff.
         result = _op_length(diff_entry)
 
-        #THEN: The maximum length should be returned.
+        # THEN: The maximum length should be returned.
         assert result == 10, u'The length should be 10.'
 
 
@@ -226,14 +226,14 @@ class TestLib(TestCase):
         """
         Test the _length_of_equal_blocks function.
         """
-        #GIVEN: A diff.
+        # GIVEN: A diff.
         diff = [('equal', 0, 100, 0, 100), ('replace', 100, 110, 100, 110), ('equal', 110, 120, 110, 120), \
                 ('replace', 120, 200, 120, 200), ('equal', 200, 300, 200, 300)]
 
-        #WHEN: We calculate the length of that diffs equal blocks.
+        # WHEN: We calculate the length of that diffs equal blocks.
         result = _length_of_equal_blocks(diff)
 
-        #THEN: The total length should be returned. Note: Equals smaller 70 are ignored.
+        # THEN: The total length should be returned. Note: Equals smaller 70 are ignored.
         assert result == 200, u'The length should be 200.'
 
 
@@ -241,11 +241,11 @@ class TestLib(TestCase):
         """
         Test the _length_of_longest_equal_block function.
         """
-        #GIVEN: A diff.
+        # GIVEN: A diff.
         diff = [('equal', 0, 100, 0, 100), ('replace', 100, 110, 100, 110), ('equal', 200, 500, 200, 500)]
 
-        #WHEN: We calculate the length of that diffs longest equal block.
+        # WHEN: We calculate the length of that diffs longest equal block.
         result = _length_of_longest_equal_block(diff)
 
-        #THEN: The total correct length should be returned.
+        # dTHEN: The total correct length should be returned.
         assert result == 300, u'The length should be 300.'
