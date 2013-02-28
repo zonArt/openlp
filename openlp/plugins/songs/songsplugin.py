@@ -48,8 +48,7 @@ from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
-from openlp.plugins.songs.forms.duplicatesongremovalform import \
-    DuplicateSongRemovalForm
+from openlp.plugins.songs.forms.duplicatesongremovalform import DuplicateSongRemovalForm
 
 log = logging.getLogger(__name__)
 __default_settings__ = {

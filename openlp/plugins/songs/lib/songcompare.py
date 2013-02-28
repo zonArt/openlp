@@ -46,9 +46,9 @@ Finally two conditions can qualify a song tuple to be a duplicate:
 import difflib
 
 
-min_fragment_size = 5
-min_block_size = 70
-max_typo_size = 3
+MIN_FRAGMENT_SIZE = 5
+MIN_BLOCK_SIZE = 70
+MAX_TYPO_SIZE = 3
 
 
 def songs_probably_equal(song1, song2):
@@ -70,7 +70,7 @@ def songs_probably_equal(song1, song2):
     differ = difflib.SequenceMatcher(a=large, b=small)
     diff_tuples = differ.get_opcodes()
     diff_no_typos = _remove_typos(diff_tuples)
-    if _length_of_equal_blocks(diff_no_typos) >= min_block_size or \
+    if _length_of_equal_blocks(diff_no_typos) >= MIN_BLOCK_SIZE or \
             _length_of_longest_equal_block(diff_no_typos) > len(small) * 2 / 3:
                 return True
     else:
@@ -97,26 +97,26 @@ def _remove_typos(diff):
     """
     # Remove typo at beginning of the string.
     if len(diff) >= 2:
-        if diff[0][0] != "equal" and _op_length(diff[0]) <= max_typo_size and \
-                _op_length(diff[1]) >= min_fragment_size:
+        if diff[0][0] != "equal" and _op_length(diff[0]) <= MAX_TYPO_SIZE and \
+                _op_length(diff[1]) >= MIN_FRAGMENT_SIZE:
                     del diff[0]
     # Remove typos in the middle of the string.
     if len(diff) >= 3:
         for index in range(len(diff) - 3, -1, -1):
-            if _op_length(diff[index]) >= min_fragment_size and \
-                diff[index + 1][0] != "equal" and _op_length(diff[index + 1]) <= max_typo_size and \
-                    _op_length(diff[index + 2]) >= min_fragment_size:
+            if _op_length(diff[index]) >= MIN_FRAGMENT_SIZE and \
+                diff[index + 1][0] != "equal" and _op_length(diff[index + 1]) <= MAX_TYPO_SIZE and \
+                    _op_length(diff[index + 2]) >= MIN_FRAGMENT_SIZE:
                         del diff[index + 1]
     # Remove typo at the end of the string.
     if len(diff) >= 2:
-        if _op_length(diff[-2]) >= min_fragment_size and \
-            diff[-1][0] != "equal" and _op_length(diff[-1]) <= max_typo_size:
+        if _op_length(diff[-2]) >= MIN_FRAGMENT_SIZE and \
+            diff[-1][0] != "equal" and _op_length(diff[-1]) <= MAX_TYPO_SIZE:
                 del diff[-1]
 
     # Merge the bordering equal passages that occured by removing differences.
     for index in range(len(diff) - 2, -1, -1):
-        if diff[index][0] == "equal" and _op_length(diff[index]) >= min_fragment_size and \
-            diff[index + 1][0] == "equal" and _op_length(diff[index + 1]) >= min_fragment_size:
+        if diff[index][0] == "equal" and _op_length(diff[index]) >= MIN_FRAGMENT_SIZE and \
+            diff[index + 1][0] == "equal" and _op_length(diff[index + 1]) >= MIN_FRAGMENT_SIZE:
                 diff[index] = ("equal", diff[index][1], diff[index + 1][2], diff[index][3],
                     diff[index + 1][4])
                 del diff[index + 1]
@@ -134,7 +134,7 @@ def _length_of_equal_blocks(diff):
     """
     length = 0
     for element in diff:
-        if element[0] == "equal" and _op_length(element) >= min_block_size:
+        if element[0] == "equal" and _op_length(element) >= MIN_BLOCK_SIZE:
             length += _op_length(element)
     return length
 
