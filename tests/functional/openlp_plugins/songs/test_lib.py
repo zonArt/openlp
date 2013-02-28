@@ -31,8 +31,7 @@ from unittest import TestCase
 
 from mock import MagicMock
 
-from openlp.plugins.songs.lib.songcompare import songs_probably_equal, _remove_typos, _op_length, \
-    _length_of_equal_blocks, _length_of_longest_equal_block
+from openlp.plugins.songs.lib.songcompare import songs_probably_equal, _remove_typos, _op_length
 
 class TestLib(TestCase):
     def setUp(self):
@@ -220,32 +219,3 @@ class TestLib(TestCase):
 
         # THEN: The maximum length should be returned.
         assert result == 10, u'The length should be 10.'
-
-
-    def length_of_equal_blocks_test(self):
-        """
-        Test the _length_of_equal_blocks function.
-        """
-        # GIVEN: A diff.
-        diff = [('equal', 0, 100, 0, 100), ('replace', 100, 110, 100, 110), ('equal', 110, 120, 110, 120), \
-                ('replace', 120, 200, 120, 200), ('equal', 200, 300, 200, 300)]
-
-        # WHEN: We calculate the length of that diffs equal blocks.
-        result = _length_of_equal_blocks(diff)
-
-        # THEN: The total length should be returned. Note: Equals smaller 70 are ignored.
-        assert result == 200, u'The length should be 200.'
-
-
-    def length_of_longest_equal_block_test(self):
-        """
-        Test the _length_of_longest_equal_block function.
-        """
-        # GIVEN: A diff.
-        diff = [('equal', 0, 100, 0, 100), ('replace', 100, 110, 100, 110), ('equal', 200, 500, 200, 500)]
-
-        # WHEN: We calculate the length of that diffs longest equal block.
-        result = _length_of_longest_equal_block(diff)
-
-        # dTHEN: The total correct length should be returned.
-        assert result == 300, u'The length should be 300.'

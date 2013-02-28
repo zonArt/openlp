@@ -70,11 +70,25 @@ def songs_probably_equal(song1, song2):
     differ = difflib.SequenceMatcher(a=large, b=small)
     diff_tuples = differ.get_opcodes()
     diff_no_typos = _remove_typos(diff_tuples)
-    if _length_of_equal_blocks(diff_no_typos) >= MIN_BLOCK_SIZE or \
-            _length_of_longest_equal_block(diff_no_typos) > len(small) * 2 / 3:
-                return True
-    else:
-        return False
+    # Check 1: Similarity based on the absolute length of equal parts.
+    # Calculate the total length of all equal blocks of the set.
+    # Blocks smaller than min_block_size are not counted.
+    length_of_equal_blocks = 0
+    for element in diff_no_typos:
+        if element[0] == "equal" and _op_length(element) >= MIN_BLOCK_SIZE:
+            length_of_equal_blocks += _op_length(element)
+    if length_of_equal_blocks >= MIN_BLOCK_SIZE:
+        return True
+    # Check 2: Similarity based on the relative length of the longest equal block.
+    # Calculate the length of the largest equal block of the diff set.
+    length_of_longest_equal_block = 0
+    for element in diff_no_typos:
+        if element[0] == "equal" and _op_length(element) > length_of_longest_equal_block:
+            length_of_longest_equal_block = _op_length(element)
+    if length_of_equal_blocks >= MIN_BLOCK_SIZE or length_of_longest_equal_block > len(small) * 2 / 3:
+        return True
+    # Both checks failed. We assume the songs are not equal.
+    return False
 
 
 def _op_length(opcode):
@@ -122,32 +136,3 @@ def _remove_typos(diff):
                 del diff[index + 1]
 
     return diff
-
-
-def _length_of_equal_blocks(diff):
-    """
-    Return the total length of all equal blocks in a diff set.
-    Blocks smaller than min_block_size are not counted.
-
-    ``diff``
-        The diff set to return the length for.
-    """
-    length = 0
-    for element in diff:
-        if element[0] == "equal" and _op_length(element) >= MIN_BLOCK_SIZE:
-            length += _op_length(element)
-    return length
-
-
-def _length_of_longest_equal_block(diff):
-    """
-    Return the length of the largest equal block in a diff set.
-
-    ``diff``
-        The diff set to return the length for.
-    """
-    length = 0
-    for element in diff:
-        if element[0] == "equal" and _op_length(element) > length:
-            length = _op_length(element)
-    return length
