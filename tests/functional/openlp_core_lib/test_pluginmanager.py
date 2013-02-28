@@ -87,13 +87,40 @@ class TestPluginManager(TestCase):
         mocked_plugin.status = PluginStatus.Disabled
         plugin_manager = PluginManager()
         plugin_manager.plugins = [mocked_plugin]
+        mocked_settings_form = MagicMock()
+        # Replace the autoloaded plugin with the version for testing in real code this would error
+        mocked_settings_form.plugin_manager = plugin_manager
 
         # WHEN: We run hook_settings_tabs()
         plugin_manager.hook_settings_tabs()
 
         # THEN: The createSettingsTab() method should not have been called, but the plugins lists should be the same
         assert mocked_plugin.createSettingsTab.call_count == 0, \
-                u'The createMediaManagerItem() method should not have been called.'
+            u'The createMediaManagerItem() method should not have been called.'
+        self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
+            u'The plugins on the settings form should be the same as the plugins in the plugin manager')
+
+    def hook_settings_tabs_with_active_plugin_and_mocked_form_test(self):
+        """
+        Test running the hook_settings_tabs() method with an active plugin and a mocked settings form
+        """
+        # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
+        mocked_plugin = MagicMock()
+        mocked_plugin.status = PluginStatus.Active
+        plugin_manager = PluginManager()
+        plugin_manager.plugins = [mocked_plugin]
+        mocked_settings_form = MagicMock()
+        # Replace the autoloaded plugin with the version for testing in real code this would error
+        mocked_settings_form.plugin_manager = plugin_manager
+
+        # WHEN: We run hook_settings_tabs()
+        plugin_manager.hook_settings_tabs()
+
+        # THEN: The createMediaManagerItem() method should have been called with the mocked settings form
+        assert mocked_plugin.createSettingsTab.call_count == 1, \
+            u'The createMediaManagerItem() method should have been called once.'
+        self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
+             u'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_no_form_test(self):
         """
