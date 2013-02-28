@@ -54,5 +54,5 @@ class TestScreenList(TestCase):
         new_screens = self.screens.screen_list
         assert len(old_screens) + 1 == len(new_screens), u'The new_screens list should be bigger.'
 
-        # THEN: The screens should be identically.
-        assert SCREEN == new_screens.pop(), u'The new screen should be identically to the screen defined above.'
+        # THEN: The screens should be identical.
+        assert SCREEN == new_screens.pop(), u'The new screen should be identical to the screen defined above.'
