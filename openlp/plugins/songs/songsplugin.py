@@ -153,7 +153,7 @@ class SongsPlugin(Plugin):
             text=translate('SongsPlugin', 'Find &Duplicate Songs'),
             statustip=translate('SongsPlugin',
             'Find and remove duplicate songs in the song database.'),
-            visible=False, triggers=self.on_tools_find_duplicates_triggered)
+            visible=False, triggers=self.on_tools_find_duplicates_triggered, can_shortcuts=True)
         tools_menu.addAction(self.tools_find_duplicates)
 
     def onToolsReindexItemTriggered(self):
