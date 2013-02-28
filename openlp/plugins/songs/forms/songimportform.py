@@ -35,7 +35,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings, UiStrings, translate
+from openlp.core.lib import Registry, Settings, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
@@ -488,6 +488,16 @@ class SongImportForm(OpenLPWizard):
         self.formatWidgets[this_format][u'disabledLabel'] = disabledLabel
         self.formatWidgets[this_format][u'importWidget'] = importWidget
         return importWidget
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
 
 
 class SongImportSourcePage(QtGui.QWizardPage):
