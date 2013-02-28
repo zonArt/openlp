@@ -469,7 +469,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.arguments = self.application.args
         # Set up settings sections for the main application (not for use by plugins).
         self.uiSettingsSection = u'user interface'
-        self.generalSettingsSection = u'general'
+        self.generalSettingsSection = u'core'
         self.advancedSettingsSection = u'advanced'
         self.shortcutsSettingsSection = u'shortcuts'
         self.serviceManagerSettingsSection = u'servicemanager'

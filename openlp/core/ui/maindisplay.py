@@ -367,7 +367,7 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if Settings().value(u'general/display on monitor'):
+                    if Settings().value(u'core/display on monitor'):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
@@ -416,7 +416,7 @@ class MainDisplay(Display):
             self.footer(serviceItem.foot_text)
         # if was hidden keep it hidden
         if self.hideMode and self.isLive and not serviceItem.is_media():
-            if Settings().value(u'general/auto unblank'):
+            if Settings().value(u'core/auto unblank'):
                 Registry().execute(u'slidecontroller_live_unblank')
             else:
                 self.hide_display(self.hideMode)
@@ -438,7 +438,7 @@ class MainDisplay(Display):
         log.debug(u'hide_display mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor'):
+            if not Settings().value(u'core/display on monitor'):
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -462,7 +462,7 @@ class MainDisplay(Display):
         log.debug(u'show_display')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor'):
+            if not Settings().value(u'core/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():

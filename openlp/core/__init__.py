@@ -113,10 +113,10 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
-        has_run_wizard = Settings().value(u'general/has run wizard')
+        has_run_wizard = Settings().value(u'core/has run wizard')
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
-                Settings().setValue(u'general/has run wizard', True)
+                Settings().setValue(u'core/has run wizard', True)
         # Correct stylesheet bugs
         application_stylesheet = u''
         if not Settings().value(u'advanced/alternate rows'):
@@ -128,7 +128,7 @@ class OpenLP(QtGui.QApplication):
             application_stylesheet += nt_repair_stylesheet
         if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
-        show_splash = Settings().value(u'general/show splash')
+        show_splash = Settings().value(u'core/show splash')
         if show_splash:
             self.splash = SplashScreen()
             self.splash.show()
@@ -147,7 +147,7 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         if not has_run_wizard:
             self.main_window.first_time()
-        update_check = Settings().value(u'general/update check')
+        update_check = Settings().value(u'core/update check')
         if update_check:
             VersionThread(self.main_window).start()
         self.main_window.is_display_blank()
@@ -309,7 +309,7 @@ def main(args=None):
     if application.is_already_running():
         sys.exit()
     # First time checks in settings
-    if not Settings().value(u'general/has run wizard'):
+    if not Settings().value(u'core/has run wizard'):
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
             sys.exit()
