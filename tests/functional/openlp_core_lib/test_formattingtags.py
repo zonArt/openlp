@@ -45,8 +45,8 @@ class TestFormattingTags(TestCase):
             FormattingTags.load_tags()
             new_tags_list = FormattingTags.get_html_tags()
 
-            # THEN: Lists should be identically.
-            assert old_tags_list == new_tags_list, u'The formatting tag lists should be identically.'
+            # THEN: Lists should be identical.
+            assert old_tags_list == new_tags_list, u'The formatting tag lists should be identical.'
 
     def get_html_tags_with_user_tags_test(self):
         """
@@ -69,16 +69,16 @@ class TestFormattingTags(TestCase):
             FormattingTags.add_html_tags([TAG])
             new_tags_list = copy.deepcopy(FormattingTags.get_html_tags())
 
-            # THEN: Lists should not be identically.
+            # THEN: Lists should not be identical.
             assert old_tags_list != new_tags_list, u'The lists should be different.'
 
             # THEN: Added tag and last tag should be the same.
             new_tag = new_tags_list.pop()
-            assert TAG == new_tag, u'Tags should be identically.'
+            assert TAG == new_tag, u'Tags should be identical.'
 
             # WHEN: Remove the new tag.
             FormattingTags.remove_html_tag(len(new_tags_list))
 
-            # THEN: The lists should now be identically.
-            assert old_tags_list == FormattingTags.get_html_tags(), u'The lists should be identically.'
+            # THEN: The lists should now be identical.
+            assert old_tags_list == FormattingTags.get_html_tags(), u'The lists should be identical.'
 
