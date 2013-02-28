@@ -139,7 +139,7 @@ class TestLib(TestCase):
         diff = [('replace', 0, 20, 0, 1), ('equal', 20, 29, 1, 10)]
 
         # WHEN: We remove the typos in there.
-        result = _remove_typos(diff)
+        result = _remove_typos(list(diff))
 
         # THEN: There diff should not have changed.
         assert result == diff
@@ -168,7 +168,7 @@ class TestLib(TestCase):
         diff = [('equal', 0, 10, 0, 10), ('replace', 10, 20, 10, 1)]
 
         # WHEN: We remove the typos in there.
-        result = _remove_typos(diff)
+        result = _remove_typos(list(diff))
 
         # THEN: There diff should not have changed.
         assert result == diff
@@ -201,7 +201,7 @@ class TestLib(TestCase):
         diff = [('equal', 0, 10, 0, 10), ('replace', 10, 20, 10, 11), ('equal', 20, 30, 11, 21)]
 
         # WHEN: We remove the typos in there.
-        result = _remove_typos(diff)
+        result = _remove_typos(list(diff))
 
         # THEN: There diff should not have changed.
         assert result == diff
