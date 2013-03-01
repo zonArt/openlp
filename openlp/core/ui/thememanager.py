@@ -254,9 +254,9 @@ class ThemeManager(QtGui.QWidget):
                 translate('OpenLP.ThemeManager', 'Rename %s theme?'), False, False):
             item = self.theme_list_widget.currentItem()
             old_theme_name = item.data(QtCore.Qt.UserRole)
-            self.fileRenameForm.fileNameEdit.setText(old_theme_name)
+            self.fileRenameForm.file_name_edit.setText(old_theme_name)
             if self.fileRenameForm.exec_():
-                new_theme_name = self.fileRenameForm.fileNameEdit.text()
+                new_theme_name = self.fileRenameForm.file_name_edit.text()
                 if old_theme_name == new_theme_name:
                     return
                 if self.check_if_theme_exists(new_theme_name):
@@ -275,10 +275,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.theme_list_widget.currentItem()
         old_theme_name = item.data(QtCore.Qt.UserRole)
-        self.fileRenameForm.fileNameEdit.setText(translate('OpenLP.ThemeManager',
+        self.fileRenameForm.file_name_edit.setText(translate('OpenLP.ThemeManager',
             'Copy of %s', 'Copy of <theme name>') % old_theme_name)
         if self.fileRenameForm.exec_(True):
-            new_theme_name = self.fileRenameForm.fileNameEdit.text()
+            new_theme_name = self.fileRenameForm.file_name_edit.text()
             if self.check_if_theme_exists(new_theme_name):
                 theme_data = self.get_theme_data(old_theme_name)
                 self.cloneThemeData(theme_data, new_theme_name)
