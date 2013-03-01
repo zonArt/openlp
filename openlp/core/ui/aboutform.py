@@ -49,15 +49,15 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         QtGui.QDialog.__init__(self, parent)
         applicationVersion = get_application_version()
         self.setupUi(self)
-        about_text = self.aboutTextEdit.toPlainText()
+        about_text = self.about_text_edit.toPlainText()
         about_text = about_text.replace(u'<version>', applicationVersion[u'version'])
         if applicationVersion[u'build']:
             build_text = translate('OpenLP.AboutForm', ' build %s') % applicationVersion[u'build']
         else:
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
-        self.aboutTextEdit.setPlainText(about_text)
-        QtCore.QObject.connect(self.volunteerButton, QtCore.SIGNAL(u'clicked()'), self.onVolunteerButtonClicked)
+        self.about_text_edit.setPlainText(about_text)
+        QtCore.QObject.connect(self.volunteer_button, QtCore.SIGNAL(u'clicked()'), self.onVolunteerButtonClicked)
 
     def onVolunteerButtonClicked(self):
         """
