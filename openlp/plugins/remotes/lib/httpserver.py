@@ -255,7 +255,7 @@ class HttpConnection(object):
             current_unique_identifier = self.parent.current_item.unique_identifier
         else:
             current_unique_identifier = None
-        for item in self.service_manager.serviceItems:
+        for item in self.service_manager.service_items:
             service_item = item[u'service_item']
             service_items.append({
                 u'id': unicode(service_item.unique_identifier),
