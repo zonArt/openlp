@@ -393,7 +393,6 @@ from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
-from settingsmanager import SettingsManager
 from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab

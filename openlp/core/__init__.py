@@ -186,10 +186,8 @@ class OpenLP(QtGui.QApplication):
         ``traceback``
             A traceback object with the details of where the exception occurred.
         """
-        if not hasattr(self, u'mainWindow'):
-            log.exception(''.join(format_exception(exctype, value, traceback)))
-            return
-        if not hasattr(self, u'exceptionForm'):
+        log.exception(''.join(format_exception(exctype, value, traceback)))
+        if not hasattr(self, u'exception_form'):
             self.exception_form = ExceptionForm(self.main_window)
         self.exception_form.exceptionTextEdit.setPlainText(''.join(format_exception(exctype, value, traceback)))
         self.set_normal_cursor()
