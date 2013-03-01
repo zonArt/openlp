@@ -173,18 +173,16 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         custom_css = get_text_file_string(css_path)
         if not custom_css:
             custom_css = DEFAULT_CSS
-        self._addElement(u'style', custom_css, html_data.head,
-            attribute=(u'type', u'text/css'))
+        self._addElement(u'style', custom_css, html_data.head, attribute=(u'type', u'text/css'))
         self._addElement(u'body', parent=html_data)
-        self._addElement(u'h1', cgi.escape(self.titleLineEdit.text()),
-            html_data.body, classId=u'serviceTitle')
+        self._addElement(u'h1', cgi.escape(self.titleLineEdit.text()), html_data.body, classId=u'serviceTitle')
         for index, item in enumerate(self.service_manager.service_items):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
             div = self._addElement(u'div', parent=html_data.body, classId=u'customNotes')
-            self._addElement(u'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div,
-                classId=u'customNotesTitle')
+            self._addElement(
+                u'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId=u'customNotesTitle')
             self._addElement(u'span', cgi.escape(self.footerTextEdit.toPlainText()), div, classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
         self.previewWidget.updatePreview()
@@ -227,8 +225,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         if self.notesCheckBox.isChecked():
             if item.notes:
                 p = self._addElement(u'div', classId=u'itemNotes', parent=div)
-                self._addElement(u'span', translate('OpenLP.ServiceManager', 'Notes: '), p,
-                    classId=u'itemNotesTitle')
+                self._addElement(u'span', translate('OpenLP.ServiceManager', 'Notes: '), p, classId=u'itemNotesTitle')
                 self._addElement(u'span', cgi.escape(item.notes).replace(u'\n', u'<br>'), p, classId=u'itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.metaDataCheckBox.isChecked():
@@ -236,13 +233,11 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             if item.end_time > 0:
                 tme = item.end_time - item.start_time
             title = self._addElement(u'div', classId=u'media', parent=div)
-            self._addElement(u'span', translate('OpenLP.ServiceManager', 'Playing time: '), title,
-                classId=u'mediaTitle')
-            self._addElement(u'span', unicode(datetime.timedelta(seconds=tme)),
-                title, classId=u'mediaText')
+            self._addElement(
+                u'span', translate('OpenLP.ServiceManager', 'Playing time: '), title, classId=u'mediaTitle')
+            self._addElement(u'span', unicode(datetime.timedelta(seconds=tme)), title, classId=u'mediaText')
 
-    def _addElement(self, tag, text=None, parent=None, classId=None,
-        attribute=None):
+    def _addElement(self, tag, text=None, parent=None, classId=None, attribute=None):
         """
         Creates a html element. If ``text`` is given, the element's text will
         set and if a ``parent`` is given, the element is appended.

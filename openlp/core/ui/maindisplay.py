@@ -96,14 +96,11 @@ class Display(QtGui.QGraphicsView):
         self.frame = self.page.mainFrame()
         if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
             self.webView.settings().setAttribute(QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-        QtCore.QObject.connect(self.webView,
-            QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
+        QtCore.QObject.connect(self.webView, QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
-            QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
 
     def resizeEvent(self, event):
         """
@@ -213,9 +210,7 @@ class MainDisplay(Display):
             image_file = Settings().value(u'advanced/default image')
             splash_image = QtGui.QImage(image_file)
             self.initialFrame = QtGui.QImage(
-                self.screen[u'size'].width(),
-                self.screen[u'size'].height(),
-                QtGui.QImage.Format_ARGB32_Premultiplied)
+                self.screen[u'size'].width(), self.screen[u'size'].height(), QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
             painter_image.begin(self.initialFrame)
             painter_image.fillRect(self.initialFrame.rect(), background_color)

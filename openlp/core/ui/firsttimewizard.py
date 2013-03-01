@@ -208,13 +208,11 @@ class Ui_FirstTimeWizard(object):
         """
         Translate the UI on the fly
         """
-        FirstTimeWizard.setWindowTitle(translate(
-            'OpenLP.FirstTimeWizard', 'First Time Wizard'))
+        FirstTimeWizard.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'First Time Wizard'))
         self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
             translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
         self.informationLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'This wizard will help you to configure OpenLP for initial use.'
-            ' Click the next button below to start.'))
+            'This wizard will help you to configure OpenLP for initial use. Click the next button below to start.'))
         self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songsCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
@@ -240,8 +238,7 @@ class Ui_FirstTimeWizard(object):
             'check your Internet connection and re-run this wizard by '
             'selecting "Tools/Re-run First Time Wizard" from OpenLP.')
         self.cancelWizardText = translate('OpenLP.FirstTimeWizard',
-            '\n\nTo cancel the First Time Wizard completely (and not start '
-            'OpenLP), click the Cancel button now.')
+            '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), click the Cancel button now.')
         self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Songs'))
         self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download public domain songs.'))
         self.biblesPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Bibles'))

@@ -48,8 +48,7 @@ class Ui_ThemeWizard(object):
         themeWizard.setModal(True)
         themeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
         themeWizard.setOptions(QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.HaveCustomButton1)
+            QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.HaveCustomButton1)
         self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         # Welcome Page
         add_welcome_page(themeWizard, u':/wizards/wizard_createtheme.bmp')
@@ -398,9 +397,8 @@ class Ui_ThemeWizard(object):
         self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
             translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard'))
         self.informationLabel.setText(
-            translate('OpenLP.ThemeWizard', 'This wizard will help you to '
-                'create and edit your themes. Click the next button below to '
-                'start the process by setting up your background.'))
+            translate('OpenLP.ThemeWizard', 'This wizard will help you to create and edit your themes. Click the next '
+                'button below to start the process by setting up your background.'))
         self.backgroundPage.setTitle(translate('OpenLP.ThemeWizard', 'Set Up Background'))
         self.backgroundPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Set up your theme\'s background '
                 'according to the parameters below.'))
@@ -417,10 +415,8 @@ class Ui_ThemeWizard(object):
         self.gradientTypeLabel.setText(translate('OpenLP.ThemeWizard', 'Gradient:'))
         self.gradientComboBox.setItemText(BackgroundGradientType.Horizontal,
             translate('OpenLP.ThemeWizard', 'Horizontal'))
-        self.gradientComboBox.setItemText(BackgroundGradientType.Vertical,
-            translate('OpenLP.ThemeWizard', 'Vertical'))
-        self.gradientComboBox.setItemText(BackgroundGradientType.Circular,
-            translate('OpenLP.ThemeWizard', 'Circular'))
+        self.gradientComboBox.setItemText(BackgroundGradientType.Vertical, translate('OpenLP.ThemeWizard', 'Vertical'))
+        self.gradientComboBox.setItemText(BackgroundGradientType.Circular, translate('OpenLP.ThemeWizard', 'Circular'))
         self.gradientComboBox.setItemText(BackgroundGradientType.LeftTop,
             translate('OpenLP.ThemeWizard', 'Top Left - Bottom Right'))
         self.gradientComboBox.setItemText(BackgroundGradientType.LeftBottom,
@@ -484,12 +480,10 @@ class Ui_ThemeWizard(object):
         self.footerHeightSpinBox.setSuffix(translate('OpenLP.ThemeWizard', 'px'))
         self.footerPositionCheckBox.setText(translate('OpenLP.ThemeWizard', 'Use default location'))
         themeWizard.setOption(QtGui.QWizard.HaveCustomButton1, False)
-        themeWizard.setButtonText(QtGui.QWizard.CustomButton1,
-            translate('OpenLP.ThemeWizard', 'Layout Preview'))
+        themeWizard.setButtonText(QtGui.QWizard.CustomButton1, translate('OpenLP.ThemeWizard', 'Layout Preview'))
         self.previewPage.setTitle(translate('OpenLP.ThemeWizard', 'Preview and Save'))
         self.previewPage.setSubTitle(translate('OpenLP.ThemeWizard', 'Preview the theme and save it.'))
         self.themeNameLabel.setText(translate('OpenLP.ThemeWizard', 'Theme name:'))
         # Align all QFormLayouts towards each other.
-        labelWidth = max(self.backgroundLabel.minimumSizeHint().width(),
-            self.horizontalLabel.minimumSizeHint().width())
+        labelWidth = max(self.backgroundLabel.minimumSizeHint().width(), self.horizontalLabel.minimumSizeHint().width())
         self.spacer.changeSize(labelWidth, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)

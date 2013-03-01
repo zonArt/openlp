@@ -46,8 +46,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
         self.item_list = []
-        QtCore.QObject.connect(self.list_widget, QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.on_current_row_changed)
+        QtCore.QObject.connect(self.list_widget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.on_current_row_changed)
 
     def set_service_item(self, item):
         """
@@ -57,8 +56,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         self.item_list = []
         if self.item.is_image():
             self.data = True
-            for frame in self.item._raw_frames:
-                self.item_list.append(frame)
+            self.item_list.extend(self.item._raw_frames)
         self.load_data()
         self.list_widget.setCurrentItem(self.list_widget.currentItem())
 
@@ -94,9 +92,8 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         self.item_list.pop(row)
         self.load_data()
         if row == self.list_widget.count():
-            self.list_widget.setCurrentRow(row - 1)
-        else:
-            self.list_widget.setCurrentRow(row)
+            row -= 1
+        self.list_widget.setCurrentRow(row)
 
     def on_up_button_clicked(self):
         """

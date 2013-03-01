@@ -127,7 +127,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.tagTableWidget.selectRow(self.tagTableWidget.rowCount() - 1)
         self.onRowSelected()
         self.tagTableWidget.scrollToBottom()
-        #self.savePushButton.setEnabled(False)
 
     def onDeleteClicked(self):
         """

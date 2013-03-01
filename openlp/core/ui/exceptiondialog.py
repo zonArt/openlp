@@ -85,8 +85,7 @@ class Ui_ExceptionDialog(object):
         self.exceptionLayout.addWidget(self.button_box)
 
         self.retranslateUi(exceptionDialog)
-        QtCore.QObject.connect(self.descriptionTextEdit,
-            QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
+        QtCore.QObject.connect(self.descriptionTextEdit, QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
 
     def retranslateUi(self, exceptionDialog):
         """
@@ -102,9 +101,6 @@ class Ui_ExceptionDialog(object):
             'developers, so please e-mail it to bugs@openlp.org, along with a '
             'detailed description of what you were doing when the problem '
             'occurred.'))
-        self.sendReportButton.setText(translate('OpenLP.ExceptionDialog',
-            'Send E-Mail'))
-        self.saveReportButton.setText(translate('OpenLP.ExceptionDialog',
-            'Save to File'))
-        self.attachFileButton.setText(translate('OpenLP.ExceptionDialog',
-            'Attach File'))
+        self.sendReportButton.setText(translate('OpenLP.ExceptionDialog', 'Send E-Mail'))
+        self.saveReportButton.setText(translate('OpenLP.ExceptionDialog', 'Save to File'))
+        self.attachFileButton.setText(translate('OpenLP.ExceptionDialog', 'Attach File'))

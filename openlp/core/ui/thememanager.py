@@ -291,8 +291,7 @@ class ThemeManager(QtGui.QWidget):
         save_to = None
         save_from = None
         if theme_data.background_type == u'image':
-            save_to = os.path.join(self.path, new_theme_name,
-                os.path.split(unicode(theme_data.background_filename))[1])
+            save_to = os.path.join(self.path, new_theme_name, os.path.split(unicode(theme_data.background_filename))[1])
             save_from = theme_data.background_filename
         theme_data.theme_name = new_theme_name
         theme_data.extend_image_filename(self.path)
@@ -373,8 +372,7 @@ class ThemeManager(QtGui.QWidget):
                 for files in os.walk(source):
                     for name in files[2]:
                         theme_zip.write(
-                            os.path.join(source, name).encode(u'utf-8'),
-                            os.path.join(theme, name).encode(u'utf-8')
+                            os.path.join(source, name).encode(u'utf-8'), os.path.join(theme, name).encode(u'utf-8')
                         )
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.ThemeManager', 'Theme Exported'),
@@ -771,20 +769,20 @@ class ThemeManager(QtGui.QWidget):
         theme = Theme(xml_data)
         new_theme = ThemeXML()
         new_theme.theme_name = self.badV1NameChars.sub(u'', theme.Name)
-        if theme.BackgroundType == 0:
+        if theme.BackgroundType == BackgroundType.Solid:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Solid)
             new_theme.background_color = unicode(theme.BackgroundParameter1.name())
-        elif theme.BackgroundType == 1:
+        elif theme.BackgroundType == BackgroundType.Horizontal:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Gradient)
             new_theme.background_direction = BackgroundGradientType.to_string(BackgroundGradientType.Horizontal)
             if theme.BackgroundParameter3.name() == 1:
                 new_theme.background_direction = BackgroundGradientType.to_string(BackgroundGradientType.Horizontal)
             new_theme.background_start_color = unicode(theme.BackgroundParameter1.name())
             new_theme.background_end_color = unicode(theme.BackgroundParameter2.name())
-        elif theme.BackgroundType == 2:
+        elif theme.BackgroundType == BackgroundType.Image:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Image)
             new_theme.background_filename = unicode(theme.BackgroundParameter1)
-        elif theme.BackgroundType == 3:
+        elif theme.BackgroundType == BackgroundType.Transparent:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Transparent)
         new_theme.font_main_name = theme.FontName
         new_theme.font_main_color = unicode(theme.FontColor.name())

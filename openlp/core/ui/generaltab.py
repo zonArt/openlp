@@ -231,8 +231,7 @@ class GeneralTab(SettingsTab):
         self.usernameLabel.setText(translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.passwordLabel.setText(translate('OpenLP.GeneralTab', 'SongSelect password:'))
         # Moved from display tab
-        self.overrideRadioButton.setText(translate('OpenLP.GeneralTab',
-            'Override display position:'))
+        self.overrideRadioButton.setText(translate('OpenLP.GeneralTab', 'Override display position:'))
         self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
         self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))

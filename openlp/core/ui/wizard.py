@@ -57,11 +57,9 @@ class WizardStrings(object):
     Importing = translate('OpenLP.Ui', 'Importing')
     ImportingType = translate('OpenLP.Ui', 'Importing "%s"...')
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
-    ImportSelectLong = translate('OpenLP.Ui',
-        'Select the import format and the location to import from.')
-    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
-        'disabled due to a missing Python module. If you want to use this '
-        'importer, you will need to install the "python-sqlite" module.')
+    ImportSelectLong = translate('OpenLP.Ui', 'Select the import format and the location to import from.')
+    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been disabled due to a missing Python module. '
+        'If you want to use this importer, you will need to install the "python-sqlite" module.')
     OpenTypeFile = translate('OpenLP.Ui', 'Open %s File')
     OpenTypeFolder = translate('OpenLP.Ui', 'Open %s Folder')
     PercentSymbolFormat = translate('OpenLP.Ui', '%p%')
@@ -106,8 +104,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.setModal(True)
         self.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.setOptions(QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage)
+            QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
         add_welcome_page(self, image)
         self.addCustomPages()
         self.addProgressPage()
@@ -281,8 +278,7 @@ class OpenLPWizard(QtGui.QWizard):
             The place where to save the last opened directory.
         """
         folder = QtGui.QFileDialog.getExistingDirectory(self, title,
-            Settings().value(self.plugin.settingsSection + u'/' + setting_name),
-            QtGui.QFileDialog.ShowDirsOnly)
+            Settings().value(self.plugin.settingsSection + u'/' + setting_name), QtGui.QFileDialog.ShowDirsOnly)
         if folder:
             editbox.setText(folder)
         Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)

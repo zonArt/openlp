@@ -98,8 +98,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.update_screen_list_combo()
         self.was_download_cancelled = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
-        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
-            self.onCancelButtonClicked)
+        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'), self.onCancelButtonClicked)
         QtCore.QObject.connect(self.noInternetFinishButton, QtCore.SIGNAL('clicked()'),
             self.onNoInternetFinishButtonClicked)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)

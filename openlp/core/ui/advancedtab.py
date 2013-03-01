@@ -308,8 +308,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_day.setItemText(5, translate('OpenLP.AdvancedTab', 'Saturday'))
         self.service_name_day.setItemText(6, translate('OpenLP.AdvancedTab', 'Sunday'))
         self.service_name_day.setItemText(7, translate('OpenLP.AdvancedTab', 'Now'))
-        self.service_name_time.setToolTip(translate('OpenLP.AdvancedTab',
-            'Time when usual service starts.'))
+        self.service_name_time.setToolTip(translate('OpenLP.AdvancedTab', 'Time when usual service starts.'))
         self.service_name_label.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
@@ -524,8 +523,7 @@ class AdvancedTab(SettingsTab):
         """
         Select the background colour of the default display screen.
         """
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.default_color), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.default_color), self)
         if new_color.isValid():
             self.default_color = new_color.name()
             self.default_color_button.setStyleSheet(u'background-color: %s' % self.default_color)
