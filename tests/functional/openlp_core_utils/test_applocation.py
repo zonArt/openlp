@@ -83,7 +83,7 @@ class TestAppLocation(TestCase):
             mocked_listdir.return_value = copy.deepcopy(FILE_LIST)
 
             # When: Get the list of files.
-            result = AppLocation.get_files(u'sectidon', u'.mp3')
+            result = AppLocation.get_files(u'section', u'.mp3')
 
             # Then: Check if the section parameter was used correctly.
             mocked_listdir.assert_called_with(u'test/dir/section')
