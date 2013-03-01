@@ -125,7 +125,6 @@ class VlcPlayer(MediaPlayer):
         if Settings().value(u'advanced/hide mouse') and display.controller.is_live:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
-        display.vlcInstance.set_log_verbosity(2)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()
         display.vlcWidget.resize(display.size())

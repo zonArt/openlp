@@ -303,13 +303,13 @@ class SongImport(QtCore.QObject):
         sxml = SongXML()
         other_count = 1
         for (verse_def, verse_text, lang) in self.verses:
-            if verse_def[0].lower() in VerseType.Tags:
+            if verse_def[0].lower() in VerseType.tags:
                 verse_tag = verse_def[0].lower()
             else:
-                new_verse_def = u'%s%d' % (VerseType.Tags[VerseType.Other], other_count)
+                new_verse_def = u'%s%d' % (VerseType.tags[VerseType.Other], other_count)
                 verses_changed_to_other[verse_def] = new_verse_def
                 other_count += 1
-                verse_tag = VerseType.Tags[VerseType.Other]
+                verse_tag = VerseType.tags[VerseType.Other]
                 log.info(u'Versetype %s changing to %s', verse_def, new_verse_def)
                 verse_def = new_verse_def
             sxml.add_verse_to_lyrics(verse_tag, verse_def[1:], verse_text, lang)
