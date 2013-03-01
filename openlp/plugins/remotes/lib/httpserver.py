@@ -391,9 +391,9 @@ class HttpConnection(object):
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
             u'twelve': Settings().value(u'remotes/twelve hour'),
-            u'blank': self.live_controller.blankScreen.isChecked(),
-            u'theme': self.live_controller.themeScreen.isChecked(),
-            u'display': self.live_controller.desktopScreen.isChecked()
+            u'blank': self.live_controller.blank_screen.isChecked(),
+            u'theme': self.live_controller.theme_screen.isChecked(),
+            u'display': self.live_controller.desktop_screen.isChecked()
         }
         return HttpResponse(json.dumps({u'results': result}), {u'Content-Type': u'application/json'})
 
