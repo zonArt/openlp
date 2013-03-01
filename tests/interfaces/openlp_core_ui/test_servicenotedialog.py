@@ -2,11 +2,13 @@
     Package to test the openlp.core.ui package.
 """
 from unittest import TestCase
-
 from mock import patch
+
+from PyQt4 import QtCore, QtGui, QtTest
+
 from openlp.core.lib import Registry
 from openlp.core.ui import servicenoteform
-from PyQt4 import QtCore, QtGui, QtTest
+
 
 class TestStartNoteDialog(TestCase):
 
@@ -15,7 +17,7 @@ class TestStartNoteDialog(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication([])
+        self.app = QtGui.QApplication.instance()
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = servicenoteform.ServiceNoteForm()
@@ -65,3 +67,4 @@ class TestStartNoteDialog(TestCase):
 
         # THEN the following text is returned
         self.assertEqual(self.form.text_edit.toPlainText(), text, u'The new text should be returned')
+

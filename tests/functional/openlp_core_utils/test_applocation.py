@@ -1,11 +1,16 @@
 """
 Functional tests to test the AppLocation class and related methods.
 """
+import copy
 from unittest import TestCase
 
 from mock import patch
 
 from openlp.core.utils import AppLocation
+
+
+FILE_LIST = [u'file1', u'file2', u'file3.txt', u'file4.txt', u'file5.mp3', u'file6.mp3']
+
 
 class TestAppLocation(TestCase):
     """
@@ -15,10 +20,10 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_data_path() method
         """
-        with patch(u'openlp.core.utils.Settings') as mocked_class, \
-             patch(u'openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-             patch(u'openlp.core.utils.check_directory_exists') as mocked_check_directory_exists, \
-             patch(u'openlp.core.utils.os') as mocked_os:
+        with patch(u'openlp.core.utils.applocation.Settings') as mocked_class, \
+                patch(u'openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
+                patch(u'openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists, \
+                patch(u'openlp.core.utils.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = False
@@ -37,8 +42,8 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_data_path() method when a custom location is set in the settings
         """
-        with patch(u'openlp.core.utils.Settings') as mocked_class,\
-             patch(u'openlp.core.utils.os') as mocked_os:
+        with patch(u'openlp.core.utils.applocation.Settings') as mocked_class,\
+                patch(u'openlp.core.utils.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class which returns a custom data location
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = True
@@ -51,12 +56,44 @@ class TestAppLocation(TestCase):
             mocked_settings.value.assert_called_with(u'advanced/data path')
             assert data_path == u'custom/dir', u'Result should be "custom/dir"'
 
+    def get_files_no_section_no_extension_test(self):
+        """
+        Test the AppLocation.get_files() method with no parameters passed.
+        """
+        with patch(u'openlp.core.utils.AppLocation.get_data_path') as mocked_get_data_path, \
+                patch(u'openlp.core.utils.applocation.os.listdir') as mocked_listdir:
+            # GIVEN: Our mocked modules/methods.
+            mocked_get_data_path.return_value = u'test/dir'
+            mocked_listdir.return_value = copy.deepcopy(FILE_LIST)
+
+            # When: Get the list of files.
+            result = AppLocation.get_files()
+
+            # Then: check if the file lists are identical.
+            assert result == FILE_LIST,  u'The file lists should be identical.'
+
+    def get_files_test(self):
+        """
+        Test the AppLocation.get_files() method with all parameters passed.
+        """
+        with patch(u'openlp.core.utils.AppLocation.get_data_path') as mocked_get_data_path, \
+                patch(u'openlp.core.utils.applocation.os.listdir') as mocked_listdir:
+            # GIVEN: Our mocked modules/methods.
+            mocked_get_data_path.return_value = u'test/dir'
+            mocked_listdir.return_value = copy.deepcopy(FILE_LIST)
+
+            # When: Get the list of files.
+            result = AppLocation.get_files(u'section', u'.mp3')
+
+            # Then: check if the file lists are identical.
+            assert result == [u'file5.mp3', u'file6.mp3'],  u'The file lists should be identical.'
+
     def get_section_data_path_test(self):
         """
         Test the AppLocation.get_section_data_path() method
         """
         with patch(u'openlp.core.utils.AppLocation.get_data_path') as mocked_get_data_path, \
-             patch(u'openlp.core.utils.check_directory_exists') as mocked_check_directory_exists:
+                patch(u'openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists:
             # GIVEN: A mocked out AppLocation.get_data_path()
             mocked_get_data_path.return_value = u'test/dir'
             mocked_check_directory_exists.return_value = True
@@ -70,7 +107,7 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_directory() method for AppLocation.AppDir
         """
-        with patch(u'openlp.core.utils._get_frozen_path') as mocked_get_frozen_path:
+        with patch(u'openlp.core.utils.applocation._get_frozen_path') as mocked_get_frozen_path:
             mocked_get_frozen_path.return_value = u'app/dir'
             # WHEN: We call AppLocation.get_directory
             directory = AppLocation.get_directory(AppLocation.AppDir)
@@ -81,10 +118,10 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_directory() method for AppLocation.PluginsDir
         """
-        with patch(u'openlp.core.utils._get_frozen_path') as mocked_get_frozen_path, \
-             patch(u'openlp.core.utils.os.path.abspath') as mocked_abspath, \
-             patch(u'openlp.core.utils.os.path.split') as mocked_split, \
-             patch(u'openlp.core.utils.sys') as mocked_sys:
+        with patch(u'openlp.core.utils.applocation._get_frozen_path') as mocked_get_frozen_path, \
+                patch(u'openlp.core.utils.applocation.os.path.abspath') as mocked_abspath, \
+                patch(u'openlp.core.utils.applocation.os.path.split') as mocked_split, \
+                patch(u'openlp.core.utils.applocation.sys') as mocked_sys:
             mocked_abspath.return_value = u'plugins/dir'
             mocked_split.return_value = [u'openlp']
             mocked_get_frozen_path.return_value = u'plugins/dir'
