@@ -34,7 +34,7 @@ import logging
 from openlp.core.lib import Plugin, StringContent, Registry, ImageSource, Settings, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
-from openlp.plugins.images.lib.db import init_schema
+from openlp.plugins.images.lib.db import init_schema, ImageFilenames
 
 log = logging.getLogger(__name__)
 
@@ -68,6 +68,23 @@ class ImagePlugin(Plugin):
             'selected image as a background instead of the background '
             'provided by the theme.')
         return about_text
+
+    def app_startup(self):
+        """
+        Perform tasks on application startup
+        """
+        Plugin.app_startup(self)
+        # Convert old settings-based image list to the database
+        files_from_config = Settings().get_files_from_config(self)
+        if len(files_from_config) > 0:
+            log.debug(u'Importing images list from old config: %s' % files_from_config)
+            for filename in files_from_config:
+                imageFile = ImageFilenames()
+                imageFile.group_id = 0
+                imageFile.filename = unicode(filename)
+                self.manager.save_object(imageFile)
+            self.mediaItem.loadFullList(self.manager.get_all_objects(ImageFilenames,
+                order_by_ref=ImageFilenames.filename))
 
     def setPluginTextStrings(self):
         """
