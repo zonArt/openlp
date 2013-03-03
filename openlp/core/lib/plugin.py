@@ -35,6 +35,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Settings, Registry, UiStrings
 from openlp.core.utils import get_application_version
+from openlp.plugins.images.converter import ImagesListSaver
 
 log = logging.getLogger(__name__)
 
@@ -303,8 +304,10 @@ class Plugin(QtCore.QObject):
         if self.mediaItemClass is not None:
             loaded_list = Settings().get_files_from_config(self)
             # Now save the list to the config using our Settings class.
-            Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
-        # FIXME: make sure we do not do this for the images plugin.
+            if self.name == u'images':
+                ImagesListSaver.save_converted_images_list(loaded_list)
+            else:
+                Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
 
     def usesTheme(self, theme):
         """
