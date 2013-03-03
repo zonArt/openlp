@@ -175,12 +175,12 @@ class EasySlidesImport(SongImport):
         # if the regions are inside verses
         regionsInVerses = (regions and regionlines[regionlines.keys()[0]] > 1)
         MarkTypes = {
-            u'CHORUS': VerseType.Tags[VerseType.Chorus],
-            u'VERSE': VerseType.Tags[VerseType.Verse],
-            u'INTRO': VerseType.Tags[VerseType.Intro],
-            u'ENDING': VerseType.Tags[VerseType.Ending],
-            u'BRIDGE': VerseType.Tags[VerseType.Bridge],
-            u'PRECHORUS': VerseType.Tags[VerseType.PreChorus]
+            u'CHORUS': VerseType.tags[VerseType.Chorus],
+            u'VERSE': VerseType.tags[VerseType.Verse],
+            u'INTRO': VerseType.tags[VerseType.Intro],
+            u'ENDING': VerseType.tags[VerseType.Ending],
+            u'BRIDGE': VerseType.tags[VerseType.Bridge],
+            u'PRECHORUS': VerseType.tags[VerseType.PreChorus]
         }
         verses = {}
         # list as [region, versetype, versenum, instance]

@@ -36,6 +36,7 @@ if os.name == u'nt':
     import win32ui
     import pywintypes
 
+from openlp.core.lib import ScreenList
 from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -252,8 +253,7 @@ class PowerpointDocument(PresentationDocument):
                     dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except win32ui.error:
                     dpi = 96
-            renderer = self.controller.plugin.renderer
-            rect = renderer.screens.current[u'size']
+            rect = ScreenList().current[u'size']
             ppt_window = self.presentation.SlideShowSettings.Run()
             if not ppt_window:
                 return

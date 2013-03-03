@@ -33,8 +33,8 @@ import os
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, ServiceItemContext, Settings, \
-    SettingsManager, StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, \
-    check_item_selected, create_thumb, translate, validate_thumb
+    StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, check_item_selected, \
+    create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm

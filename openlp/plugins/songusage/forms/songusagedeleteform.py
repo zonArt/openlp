@@ -45,10 +45,9 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         self.manager = manager
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
-            self.onButtonBoxClicked)
+        self.button_box.clicked.connect(self.on_button_box_clicked)
 
-    def onButtonBoxClicked(self, button):
+    def on_button_box_clicked(self, button):
         if self.button_box.standardButton(button) == QtGui.QDialogButtonBox.Ok:
             ret = QtGui.QMessageBox.question(self,
                 translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Selected Song Usage Events?'),
@@ -56,12 +55,12 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
                     'Are you sure you want to delete selected Song Usage data?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
             if ret == QtGui.QMessageBox.Yes:
-                deleteDate = self.deleteCalendar.selectedDate().toPyDate()
-                self.manager.delete_all_objects(SongUsageItem, SongUsageItem.usagedate <= deleteDate)
+                delete_date = self.delete_calendar.selectedDate().toPyDate()
+                self.manager.delete_all_objects(SongUsageItem, SongUsageItem.usagedate <= delete_date)
                 self.main_window.information_message(
                     translate('SongUsagePlugin.SongUsageDeleteForm', 'Deletion Successful'),
                     translate(
-                        'SongUsagePlugin.SongUsageDeleteForm', 'All requested data has been deleted successfully. ')
+                        'SongUsagePlugin.SongUsageDeleteForm', 'All requested data has been deleted successfully.')
                 )
                 self.accept()
         else:

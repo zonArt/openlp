@@ -30,7 +30,7 @@
 import logging
 import os
 
-from openlp.core.lib import Registry, SettingsManager, Settings, translate
+from openlp.core.lib import Registry, Settings, translate
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -137,7 +137,7 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = SettingsManager.get_files(self.settingsSection, self.suffix)
+        files = AppLocation.get_files(self.settingsSection, self.suffix)
         if u'alternative_book_names.sqlite' in files:
             files.remove(u'alternative_book_names.sqlite')
         log.debug(u'Bible Files %s', files)
