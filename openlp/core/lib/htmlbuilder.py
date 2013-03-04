@@ -127,7 +127,7 @@ sup {
         document.getElementById('footer').innerHTML = footertext;
     }
 
-    function show_text(newtext){
+    function show_text(new_text){
         var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
@@ -142,19 +142,19 @@ sup {
             if(outline != null)
                 txt = outline;
             if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
-                newtext = newtext.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
+                new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
                     function(match) {
                         return '</span>' + match + '<span>';
                     });
-                newtext = '<span>' + newtext + '</span>';
+                new_text = '<span>' + new_text + '</span>';
             }
         }
-        text_fade('lyricsmain', newtext);
-        text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext.replace(match, ''));
+        text_fade('lyricsmain', new_text);
+        text_fade('lyricsoutline', new_text);
+        text_fade('lyricsshadow', new_text.replace(match, ''));
     }
 
-    function text_fade(id, newtext){
+    function text_fade(id, new_text){
         /*
         Using -webkit-transition: opacity 1s linear; would have been preferred
         but it isn't currently quick enough when animating multiple layers of
@@ -167,15 +167,18 @@ sup {
         var text = document.getElementById(id);
         if(text == null) return;
         if(!transition){
-            text.innerHTML = newtext;
+            text.innerHTML = new_text;
             return;
         }
         text.style.opacity = '0';
-        timer = window.setTimeout(function(){bla(text, newtext)}, 1000);
+        timer = window.setTimeout(function(){_show_text(text, new_text)}, 500);
     }
 
-    function bla(text, newtext) {
-        text.innerHTML = newtext;
+    function _show_text(text, new_text) {
+        /*
+        Helper function to show the new_text delayed.
+        */
+        text.innerHTML = new_text;
         text.style.opacity = '1';
     }
 
