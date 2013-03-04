@@ -317,7 +317,7 @@ class TestLib(TestCase):
             # WHEN: Clean the string.
             result_string = clean_tags(string_to_pass)
 
-            # THEN:
+            # THEN: The strings should be identical.
             assert result_string == wanted_string, u'The strings should be identical.'
 
     def validate_thumb_file_does_not_exist_test(self):
