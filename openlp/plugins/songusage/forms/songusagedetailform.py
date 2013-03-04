@@ -39,6 +39,7 @@ from songusagedetaildialog import Ui_SongUsageDetailDialog
 
 log = logging.getLogger(__name__)
 
+
 class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
     """
     Class documentation goes here.
@@ -57,13 +58,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         We need to set up the screen
         """
-        toDate = Settings().value(self.plugin.settingsSection + u'/to date')
-        fromDate = Settings().value(self.plugin.settingsSection + u'/from date')
-        self.fromDate.setSelectedDate(fromDate)
-        self.toDate.setSelectedDate(toDate)
-        self.fileLineEdit.setText(Settings().value(self.plugin.settingsSection + u'/last directory export'))
+        self.from_date_calendar.setSelectedDate(Settings().value(self.plugin.settingsSection + u'/from date'))
+        self.to_date_calendar.setSelectedDate(Settings().value(self.plugin.settingsSection + u'/to date'))
+        self.file_line_edit.setText(Settings().value(self.plugin.settingsSection + u'/last directory export'))
 
-    def defineOutputLocation(self):
+    def define_output_location(self):
         """
         Triggered when the Directory selection button is clicked
         """
@@ -72,14 +71,14 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             Settings().value(self.plugin.settingsSection + u'/last directory export'))
         if path:
             Settings().setValue(self.plugin.settingsSection + u'/last directory export', path)
-            self.fileLineEdit.setText(path)
+            self.file_line_edit.setText(path)
 
     def accept(self):
         """
         Ok was triggered so lets save the data and run the report
         """
         log.debug(u'accept')
-        path = self.fileLineEdit.text()
+        path = self.file_line_edit.text()
         if not path:
             self.main_window.error_message(
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Output Path Not Selected'),
@@ -88,36 +87,36 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             )
             return
         check_directory_exists(path)
-        filename = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % (
-            self.fromDate.selectedDate().toString(u'ddMMyyyy'),
-            self.toDate.selectedDate().toString(u'ddMMyyyy'))
-        Settings().setValue(u'songusage/from date', self.fromDate.selectedDate())
-        Settings().setValue(u'songusage/to date', self.toDate.selectedDate())
+        file_name = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % (
+            self.from_date_calendar.selectedDate().toString(u'ddMMyyyy'),
+            self.to_date_calendar.selectedDate().toString(u'ddMMyyyy'))
+        Settings().setValue(self.plugin.settingsSection + u'/from date', self.from_date_calendar.selectedDate())
+        Settings().setValue(self.plugin.settingsSection + u'/to date', self.to_date_calendar.selectedDate())
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
-            SongUsageItem.usagedate >= self.fromDate.selectedDate().toPyDate(),
-            SongUsageItem.usagedate < self.toDate.selectedDate().toPyDate()),
+            SongUsageItem.usagedate >= self.from_date_calendar.selectedDate().toPyDate(),
+            SongUsageItem.usagedate < self.to_date_calendar.selectedDate().toPyDate()),
             [SongUsageItem.usagedate, SongUsageItem.usagetime])
-        outname = os.path.join(path, filename)
-        fileHandle = None
+        report_file_name = os.path.join(path, file_name)
+        file_handle = None
         try:
-            fileHandle = open(outname, u'w')
+            file_handle = open(report_file_name, u'w')
             for instance in usage:
                 record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
                     u'\"%s\",\"%s\"\n' % (instance.usagedate,
                     instance.usagetime, instance.title, instance.copyright,
                     instance.ccl_number, instance.authors, instance.plugin_name, instance.source)
-                fileHandle.write(record.encode(u'utf-8'))
+                file_handle.write(record.encode(u'utf-8'))
             self.main_window.information_message(
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation'),
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
-                    'has been successfully created. ') % outname
+                    'has been successfully created. ') % report_file_name
             )
         except IOError:
             log.exception(u'Failed to write out song usage records')
         finally:
-            if fileHandle:
-                fileHandle.close()
+            if file_handle:
+                file_handle.close()
         self.close()
 
     def _get_main_window(self):

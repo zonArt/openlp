@@ -412,13 +412,13 @@ class FoilPresenter(object):
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
         verse_count = {
-            VerseType.Tags[VerseType.Verse]: 1,
-            VerseType.Tags[VerseType.Chorus]: 1,
-            VerseType.Tags[VerseType.Bridge]: 1,
-            VerseType.Tags[VerseType.Ending]: 1,
-            VerseType.Tags[VerseType.Other]: 1,
-            VerseType.Tags[VerseType.Intro]: 1,
-            VerseType.Tags[VerseType.PreChorus]: 1
+            VerseType.tags[VerseType.Verse]: 1,
+            VerseType.tags[VerseType.Chorus]: 1,
+            VerseType.tags[VerseType.Bridge]: 1,
+            VerseType.tags[VerseType.Ending]: 1,
+            VerseType.tags[VerseType.Other]: 1,
+            VerseType.tags[VerseType.Intro]: 1,
+            VerseType.tags[VerseType.PreChorus]: 1
         }
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_) if hasattr(strophe, u'text_') else u''
@@ -438,25 +438,25 @@ class FoilPresenter(object):
             temp_verse_name = re.compile(u'[0-9].*').sub(u'', verse_name)
             temp_verse_name = temp_verse_name[:3].lower()
             if temp_verse_name == u'ref':
-                verse_type = VerseType.Tags[VerseType.Chorus]
+                verse_type = VerseType.tags[VerseType.Chorus]
             elif temp_verse_name == u'r':
-                verse_type = VerseType.Tags[VerseType.Chorus]
+                verse_type = VerseType.tags[VerseType.Chorus]
             elif temp_verse_name == u'':
-                verse_type = VerseType.Tags[VerseType.Verse]
+                verse_type = VerseType.tags[VerseType.Verse]
             elif temp_verse_name == u'v':
-                verse_type = VerseType.Tags[VerseType.Verse]
+                verse_type = VerseType.tags[VerseType.Verse]
             elif temp_verse_name == u'bri':
-                verse_type = VerseType.Tags[VerseType.Bridge]
+                verse_type = VerseType.tags[VerseType.Bridge]
             elif temp_verse_name == u'cod':
-                verse_type = VerseType.Tags[VerseType.Ending]
+                verse_type = VerseType.tags[VerseType.Ending]
             elif temp_verse_name == u'sch':
-                verse_type = VerseType.Tags[VerseType.Ending]
+                verse_type = VerseType.tags[VerseType.Ending]
             elif temp_verse_name == u'pre':
-                verse_type = VerseType.Tags[VerseType.PreChorus]
+                verse_type = VerseType.tags[VerseType.PreChorus]
             elif temp_verse_name == u'int':
-                verse_type = VerseType.Tags[VerseType.Intro]
+                verse_type = VerseType.tags[VerseType.Intro]
             else:
-                verse_type = VerseType.Tags[VerseType.Other]
+                verse_type = VerseType.tags[VerseType.Other]
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
@@ -469,7 +469,7 @@ class FoilPresenter(object):
                     if value == u''.join((verse_type, verse_number)):
                         verse_number = unicode(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
-            verse_type = VerseType.Names[verse_type_index]
+            verse_type = VerseType.tags[verse_type_index]
             temp_verse_order[verse_sortnr] = u''.join((verse_type[0],
                 verse_number))
             temp_verse_order_backup.append(u''.join((verse_type[0],

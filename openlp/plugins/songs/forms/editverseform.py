@@ -83,8 +83,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def onInsertButtonClicked(self):
         verse_type_index = self.verseTypeComboBox.currentIndex()
-        self.insertVerse(VerseType.Tags[verse_type_index],
-            self.verseNumberBox.value())
+        self.insertVerse(VerseType.tags[verse_type_index], self.verseNumberBox.value())
 
     def onVerseTypeComboBoxChanged(self):
         self.updateSuggestedVerseNumber()
@@ -94,12 +93,11 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def updateSuggestedVerseNumber(self):
         """
-        Adjusts the verse number SpinBox in regard to the selected verse type
-        and the cursor's position.
+        Adjusts the verse number SpinBox in regard to the selected verse type and the cursor's position.
         """
         position = self.verseTextEdit.textCursor().position()
         text = self.verseTextEdit.toPlainText()
-        verse_name = VerseType.TranslatedNames[
+        verse_name = VerseType.translated_names[
             self.verseTypeComboBox.currentIndex()]
         if not text:
             return
@@ -121,8 +119,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 verse_num = 1
             self.verseNumberBox.setValue(verse_num)
 
-    def setVerse(self, text, single=False,
-        tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
+    def setVerse(self, text, single=False, tag=u'%s1' % VerseType.tags[VerseType.Verse]):
         self.hasSingleVerse = single
         if single:
             verse_type_index = VerseType.from_tag(tag[0], None)
@@ -133,7 +130,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.insertButton.setVisible(False)
         else:
             if not text:
-                text = u'---[%s:1]---\n' % VerseType.TranslatedNames[VerseType.Verse]
+                text = u'---[%s:1]---\n' % VerseType.translated_names[VerseType.Verse]
             self.verseTypeComboBox.setCurrentIndex(0)
             self.verseNumberBox.setValue(1)
             self.insertButton.setVisible(True)
@@ -142,12 +139,12 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         self.verseTextEdit.moveCursor(QtGui.QTextCursor.End)
 
     def getVerse(self):
-        return self.verseTextEdit.toPlainText(), VerseType.Tags[self.verseTypeComboBox.currentIndex()], \
+        return self.verseTextEdit.toPlainText(), VerseType.tags[self.verseTypeComboBox.currentIndex()], \
             unicode(self.verseNumberBox.value())
 
     def getVerseAll(self):
         text = self.verseTextEdit.toPlainText()
         if not text.startswith(u'---['):
-            text = u'---[%s:1]---\n%s' % (VerseType.TranslatedNames[VerseType.Verse], text)
+            text = u'---[%s:1]---\n%s' % (VerseType.translated_names[VerseType.Verse], text)
         return text
 

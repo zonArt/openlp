@@ -152,11 +152,11 @@ class SongShowPlusImport(SongImport):
                 elif block_key == CCLI_NO:
                     self.ccliNumber = int(data)
                 elif block_key == VERSE:
-                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Verse], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
-                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Chorus], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
                 elif block_key == BRIDGE:
-                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Bridge], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
                 elif block_key == TOPIC:
                     self.topics.append(unicode(data, u'cp1252'))
                 elif block_key == COMMENTS:
@@ -192,19 +192,19 @@ class SongShowPlusImport(SongImport):
             verse_number = "1"
         verse_type = verse_type.lower()
         if verse_type == "verse":
-            verse_tag = VerseType.Tags[VerseType.Verse]
+            verse_tag = VerseType.tags[VerseType.Verse]
         elif verse_type == "chorus":
-            verse_tag = VerseType.Tags[VerseType.Chorus]
+            verse_tag = VerseType.tags[VerseType.Chorus]
         elif verse_type == "bridge":
-            verse_tag = VerseType.Tags[VerseType.Bridge]
+            verse_tag = VerseType.tags[VerseType.Bridge]
         elif verse_type == "pre-chorus":
-            verse_tag = VerseType.Tags[VerseType.PreChorus]
+            verse_tag = VerseType.tags[VerseType.PreChorus]
         else:
             if verse_name not in self.otherList:
                 if ignore_unique:
                     return None
                 self.otherCount += 1
                 self.otherList[verse_name] = str(self.otherCount)
-            verse_tag = VerseType.Tags[VerseType.Other]
+            verse_tag = VerseType.tags[VerseType.Other]
             verse_number = self.otherList[verse_name]
         return verse_tag + verse_number
