@@ -374,16 +374,21 @@ class ImageMediaItem(MediaManagerItem):
         if not isinstance(parent_group, ImageGroups):
             return
         # Save the new images in the database
-        for filename in images:
+        self.save_new_images_list(images, group_id=parent_group.id, reload_list=False)
+        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
+            initial_load=initial_load, open_group=parent_group)
+
+    def save_new_images_list(self, images_list, group_id=0, reload_list=True):
+        for filename in images_list:
             if type(filename) is not str and type(filename) is not unicode:
                 continue
             log.debug(u'Adding new image: %s', filename)
             imageFile = ImageFilenames()
-            imageFile.group_id = parent_group.id
+            imageFile.group_id = group_id
             imageFile.filename = unicode(filename)
             self.manager.save_object(imageFile)
-        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
-            initial_load=initial_load, open_group=parent_group)
+        if reload_list:
+            self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
 
     def dnd_move_internal(self, target):
         """

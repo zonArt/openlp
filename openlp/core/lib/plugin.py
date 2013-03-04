@@ -216,6 +216,12 @@ class Plugin(QtCore.QObject):
         if self.mediaItemClass:
             self.mediaItem = self.mediaItemClass(self.main_window.mediaDockManager.media_dock, self, self.icon)
 
+    def upgrade_settings(self, settings):
+        """
+        Upgrade the settings of this plugin.
+        """
+        pass
+
     def addImportMenuItem(self, importMenu):
         """
         Create a menu item and add it to the "Import" menu.

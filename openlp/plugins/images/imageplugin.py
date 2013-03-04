@@ -78,13 +78,16 @@ class ImagePlugin(Plugin):
         files_from_config = Settings().get_files_from_config(self)
         if len(files_from_config) > 0:
             log.debug(u'Importing images list from old config: %s' % files_from_config)
-            for filename in files_from_config:
-                imageFile = ImageFilenames()
-                imageFile.group_id = 0
-                imageFile.filename = unicode(filename)
-                self.manager.save_object(imageFile)
-            self.mediaItem.loadFullList(self.manager.get_all_objects(ImageFilenames,
-                order_by_ref=ImageFilenames.filename))
+            self.mediaItem.save_new_images_list(files_from_config)
+
+    def upgrade_settings(self, settings):
+        """
+        Upgrade the settings of this plugin.
+        """
+        files_from_config = settings.get_files_from_config(self)
+        if len(files_from_config) > 0:
+            log.debug(u'Importing images list from old config: %s' % files_from_config)
+            self.mediaItem.save_new_images_list(files_from_config)
 
     def setPluginTextStrings(self):
         """

@@ -169,6 +169,17 @@ class PluginManager(object):
             if plugin.status is not PluginStatus.Disabled:
                 plugin.addToolsMenuItem(tools_menu)
 
+    def hook_upgrade_plugin_settings(self, settings):
+        """
+        Loop through all the plugins and give them an opportunity to upgrade their settings.
+
+        ``settings``
+            The Settings object containing the old settings.
+        """
+        for plugin in self.plugins:
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.upgrade_settings(settings)
+
     def initialise_plugins(self):
         """
         Loop through all the plugins and give them an opportunity to
