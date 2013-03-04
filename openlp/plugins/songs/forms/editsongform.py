@@ -923,6 +923,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                     self.song.verse_order)
         except:
             log.exception(u'Problem processing song Lyrics \n%s', sxml.dump_xml())
+            raise
 
     def _get_plugin_manager(self):
         """
