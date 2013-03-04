@@ -162,7 +162,6 @@ class MediaController(object):
         """
         Check to see if we have any media Player's available.
         """
-        print "check"
         log.debug(u'_check_available_media_players')
         controller_dir = os.path.join(AppLocation.get_directory(AppLocation.AppDir), u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
