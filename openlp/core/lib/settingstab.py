@@ -123,7 +123,7 @@ class SettingsTab(QtGui.QWidget):
         """
         self.load()
 
-    def postSetUp(self, postUpdate=False):
+    def post_set_up(self, postUpdate=False):
         """
         Changes which need to be made after setup of application
 
