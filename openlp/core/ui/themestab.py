@@ -155,7 +155,7 @@ class ThemesTab(SettingsTab):
         self.renderer.set_theme_level(self.theme_level)
         Registry().execute(u'theme_update_global', self.global_theme)
 
-    def postSetUp(self):
+    def post_set_up(self):
         """
         After setting things up...
         """
