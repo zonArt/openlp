@@ -76,7 +76,8 @@ class Display(QtGui.QGraphicsView):
         # time. We need to investigate more how to use OpenGL properly on Mac OS
         # X.
         if sys.platform != 'darwin':
-            self.setViewport(QtOpenGL.QGLWidget())
+            pass
+            #self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
@@ -353,6 +354,7 @@ class MainDisplay(Display):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
             if self.serviceItem.themedata and self.serviceItem.themedata.display_slide_transition:
+                # FIXME: method does not work.
                 while self.frame.evaluateJavaScript(u'show_text_complete()') == u'false':
                     self.application.process_events()
         # Wait for the webview to update before getting the preview.

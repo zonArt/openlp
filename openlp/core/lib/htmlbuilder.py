@@ -152,10 +152,6 @@ sup {
         text_fade('lyricsmain', newtext);
         text_fade('lyricsoutline', newtext);
         text_fade('lyricsshadow', newtext.replace(match, ''));
-        if(text_opacity() == 1) return;
-        timer = setTimeout(function(){
-            show_text(newtext);
-        }, 100);
     }
 
     function text_fade(id, newtext){
@@ -174,25 +170,18 @@ sup {
             text.innerHTML = newtext;
             return;
         }
-        if(newtext == text.innerHTML){
-            text.style.opacity = parseFloat(text.style.opacity) + 0.3;
-            if(text.style.opacity > 0.7)
-                text.style.opacity = 1;
-        } else {
-            text.style.opacity = parseFloat(text.style.opacity) - 0.3;
-            if(text.style.opacity <= 0.1){
-                text.innerHTML = newtext;
-            }
-        }
+        text.style.opacity = '0';
+        timer = window.setTimeout(function(){bla(text, newtext)}, 1000);
     }
 
-    function text_opacity(){
-        var text = document.getElementById('lyricsmain');
-        return getComputedStyle(text, '').opacity;
+    function bla(text, newtext) {
+        text.innerHTML = newtext;
+        text.style.opacity = '1';
     }
 
     function show_text_complete(){
-        return (text_opacity() == 1);
+        var text = document.getElementById('lyricsmain');
+        return getComputedStyle(text, '').opacity == 1;
     }
 </script>
 </head>
@@ -331,20 +320,25 @@ def build_lyrics_css(item, webkit_ver):
     z-index: 5;
     position: absolute;
     display: table;
+    -webkit-transition: opacity 0.5s linear;
     %s
 }
 .lyricscell {
     display: table-cell;
     word-wrap: break-word;
+    -webkit-transition: opacity 0.5s linear;
     %s
 }
 .lyricsmain {
+-webkit-transition: opacity 0.5s ease-in;
 %s
 }
 .lyricsoutline {
+-webkit-transition: opacity 0.5s ease-in;
 %s
 }
 .lyricsshadow {
+-webkit-transition: opacity 0.5s ease-in;
 %s
 }
     """
