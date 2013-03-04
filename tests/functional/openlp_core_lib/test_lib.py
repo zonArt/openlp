@@ -306,7 +306,7 @@ class TestLib(TestCase):
         with patch(u'openlp.core.lib.FormattingTags.get_html_tags') as mocked_get_tags:
             # GIVEN: Mocked get_html_tags() method.
             mocked_get_tags.return_value = [{
-                u'desc': translate('OpenLP.FormattingTags', 'Black'),
+                u'desc': u'Black',
                 u'start tag': u'{b}',
                 u'start html': u'<span style="-webkit-text-fill-color:black">',
                 u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True,
@@ -314,6 +314,7 @@ class TestLib(TestCase):
             }]
             string_to_pass = u'ASDF<br>foo{br}bar&nbsp;{b}black{/b}'
             wanted_string = u'ASDF\nfoo\nbar black'
+
             # WHEN: Clean the string.
             result_string = clean_tags(string_to_pass)
 
