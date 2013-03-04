@@ -131,7 +131,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             u'review every potential duplicate song before it is deleted. So no songs will be deleted without your '
             u'explicit approval.'))
         self.searching_page.setTitle(translate(u'Wizard', u'Searching for duplicate songs.'))
-        self.searching_page.setSubTitle(translate(u'Wizard', u'The song database is searched for double songs.'))
+        self.searching_page.setSubTitle(translate(u'Wizard', u'Please wait while your songs database is searched.'))
         self.update_review_counter_text()
         self.review_page.setSubTitle(translate(u'Wizard',
             u'Here you can decide which songs to remove and which ones to keep.'))
@@ -186,6 +186,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.button(QtGui.QWizard.FinishButton).show()
         self.button(QtGui.QWizard.FinishButton).setEnabled(True)
         self.button(QtGui.QWizard.NextButton).hide()
+        self.button(QtGui.QWizard.CancelButton).hide()
         QtGui.QMessageBox.information(self, translate(u'Wizard', u'Information'),
             translate(u'Wizard', u'No duplicate songs have been found in the database.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
@@ -340,7 +341,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.button(QtGui.QWizard.FinishButton).show()
             self.button(QtGui.QWizard.FinishButton).setEnabled(True)
             self.button(QtGui.QWizard.NextButton).hide()
-    
+            self.button(QtGui.QWizard.CancelButton).hide()
+
     def _get_main_window(self):
         """
         Adds the main window to the class dynamically.
