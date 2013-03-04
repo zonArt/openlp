@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
-    image_to_byte, check_item_selected, validate_thumb, create_separated_list
+    image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags
 
 class TestLib(TestCase):
 
@@ -299,6 +299,27 @@ class TestLib(TestCase):
             MockedQtGui.QMessageBox.information.assert_called_with(u'parent', u'mocked translate', 'message')
             assert not result, u'The result should be False'
 
+    def clean_tags_test(self):
+        """
+        Test clean_tags() method.
+        """
+        with patch(u'openlp.core.lib.FormattingTags.get_html_tags') as mocked_get_tags:
+            # GIVEN: Mocked get_html_tags() method.
+            mocked_get_tags.return_value = [{
+                u'desc': translate('OpenLP.FormattingTags', 'Black'),
+                u'start tag': u'{b}',
+                u'start html': u'<span style="-webkit-text-fill-color:black">',
+                u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True,
+                u'temporary': False
+            }]
+            string_to_pass = u'ASDF<br>foo{br}bar&nbsp;{b}black{/b}'
+            wanted_string = u'ASDF\nfoo\nbar black'
+            # WHEN: Clean the string.
+            result_string = clean_tags(string_to_pass)
+
+            # THEN:
+            assert result_string == wanted_string, u'The strings should be identical.'
+
     def validate_thumb_file_does_not_exist_test(self):
         """
         Test the validate_thumb() function when the thumbnail does not exist
@@ -372,7 +393,7 @@ class TestLib(TestCase):
             mocked_createSeparatedList.return_value = u'Author 1, Author 2, and Author 3'
             string_list = [u'Author 1', u'Author 2', u'Author 3']
 
-            # WHEN: We get a string build from the entries it the list and a seperator.
+            # WHEN: We get a string build from the entries it the list and a separator.
             string_result = create_separated_list(string_list)
 
             # THEN: We should have "Author 1, Author 2, and Author 3"
@@ -389,7 +410,7 @@ class TestLib(TestCase):
             mocked_qt.qVersion.return_value = u'4.7'
             string_list = []
 
-            # WHEN: We get a string build from the entries it the list and a seperator.
+            # WHEN: We get a string build from the entries it the list and a separator.
             string_result = create_separated_list(string_list)
 
             # THEN: We shoud have an emptry string.
@@ -405,7 +426,7 @@ class TestLib(TestCase):
             mocked_qt.qVersion.return_value = u'4.7'
             string_list = [u'Author 1']
 
-            # WHEN: We get a string build from the entries it the list and a seperator.
+            # WHEN: We get a string build from the entries it the list and a separator.
             string_result = create_separated_list(string_list)
 
             # THEN: We should have "Author 1"
