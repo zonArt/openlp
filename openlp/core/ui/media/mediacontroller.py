@@ -98,6 +98,7 @@ class MediaController(object):
         Constructor
         """
         Registry().register(u'media_controller', self)
+        Registry().register_function(u'bootstrap_initialise', self.check_available_media_players)
         self.mediaPlayers = {}
         self.displayControllers = {}
         self.currentMediaPlayer = {}
@@ -161,10 +162,9 @@ class MediaController(object):
         """
         Check to see if we have any media Player's available.
         """
+        print "check"
         log.debug(u'_check_available_media_players')
-        controller_dir = os.path.join(
-            AppLocation.get_directory(AppLocation.AppDir),
-            u'core', u'ui', u'media')
+        controller_dir = os.path.join(AppLocation.get_directory(AppLocation.AppDir), u'core', u'ui', u'media')
         for filename in os.listdir(controller_dir):
             if filename.endswith(u'player.py') and not filename == 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
@@ -397,7 +397,7 @@ class MediaController(object):
             else:
                 controller.media_info.start_time = serviceItem.start_time
                 controller.media_info.end_time = serviceItem.end_time
-        elif controller.previewDisplay:
+        elif controller.preview_display:
             isValid = self._check_file_type(controller, display, serviceItem)
         if not isValid:
             # Media could not be loaded correctly
@@ -441,7 +441,7 @@ class MediaController(object):
         controller.media_info = MediaInfo()
         controller.media_info.volume = 0
         controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_frame_path())
-        display = controller.previewDisplay
+        display = controller._display
         if not self._check_file_type(controller, display, serviceItem):
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
