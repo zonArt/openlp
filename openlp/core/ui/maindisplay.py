@@ -76,8 +76,7 @@ class Display(QtGui.QGraphicsView):
         # time. We need to investigate more how to use OpenGL properly on Mac OS
         # X.
         if sys.platform != 'darwin':
-            pass
-            #self.setViewport(QtOpenGL.QGLWidget())
+            self.setViewport(QtOpenGL.QGLWidget())
 
     def setup(self):
         """
