@@ -354,8 +354,7 @@ class MainDisplay(Display):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
             if self.serviceItem.themedata and self.serviceItem.themedata.display_slide_transition:
-                # FIXME: method does not work.
-                while self.frame.evaluateJavaScript(u'show_text_complete()') == u'false':
+                while not self.frame.evaluateJavaScript(u'show_text_complete()'):
                     self.application.process_events()
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !

@@ -171,7 +171,7 @@ sup {
             return;
         }
         text.style.opacity = '0';
-        timer = window.setTimeout(function(){_show_text(text, new_text)}, 500);
+        timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
     }
 
     function _show_text(text, new_text) {
@@ -180,11 +180,11 @@ sup {
         */
         text.innerHTML = new_text;
         text.style.opacity = '1';
+        window.setTimeout(function(){timer = null;}, 500);
     }
 
     function show_text_complete(){
-        var text = document.getElementById('lyricsmain');
-        return getComputedStyle(text, '').opacity == 1;
+        return (timer == null);
     }
 </script>
 </head>
@@ -323,25 +323,25 @@ def build_lyrics_css(item, webkit_ver):
     z-index: 5;
     position: absolute;
     display: table;
-    -webkit-transition: opacity 0.5s linear;
+    -webkit-transition: opacity 0.5s ease;
     %s
 }
 .lyricscell {
     display: table-cell;
     word-wrap: break-word;
-    -webkit-transition: opacity 0.5s linear;
+    -webkit-transition: opacity 0.5s ease;
     %s
 }
 .lyricsmain {
--webkit-transition: opacity 0.5s ease-in;
+-webkit-transition: opacity 0.5s ease;
 %s
 }
 .lyricsoutline {
--webkit-transition: opacity 0.5s ease-in;
+-webkit-transition: opacity 0.5s ease;
 %s
 }
 .lyricsshadow {
--webkit-transition: opacity 0.5s ease-in;
+-webkit-transition: opacity 0.5s ease;
 %s
 }
     """
