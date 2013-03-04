@@ -397,16 +397,21 @@ class ImageMediaItem(MediaManagerItem):
         items_to_move = self.listView.selectedItems()
         # Determine group to move images to
         target_group = target
-        if isinstance(target_group.data(0, QtCore.Qt.UserRole), ImageFilenames):
+        if target_group is not None and isinstance(target_group.data(0, QtCore.Qt.UserRole), ImageFilenames):
             target_group = target.parent()
-        # Don't allow moving to the Imported group
-        if target_group.data(0, QtCore.Qt.UserRole) is None:
-            return
+        # Move to toplevel
+        if target_group is None:
+            target_group = self.listView.invisibleRootItem()
+            target_group.setData(0, QtCore.Qt.UserRole, ImageGroups())
+            target_group.data(0, QtCore.Qt.UserRole).id = 0
         # Move images in the treeview
         items_to_save = []
         for item in items_to_move:
             if isinstance(item.data(0, QtCore.Qt.UserRole), ImageFilenames):
-                item.parent().removeChild(item)
+                if isinstance(item.parent(), QtGui.QTreeWidgetItem):
+                    item.parent().removeChild(item)
+                else:
+                    self.listView.invisibleRootItem().removeChild(item)
                 target_group.addChild(item)
                 item.setSelected(True)
                 item_data = item.data(0, QtCore.Qt.UserRole)
