@@ -401,7 +401,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Only continue when we include the song's text.
         if not self.slideTextCheckBox.isChecked():
             return
-        for item in self.service_manager.serviceItems:
+        for item in self.service_manager.service_items:
             # Trigger Audit requests
             Registry().register_function(u'print_service_started', [item[u'service_item']])
 
