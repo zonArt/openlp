@@ -394,7 +394,7 @@ class MainDisplay(Display):
                 # replace the background
                 background = self.image_manager.get_image_bytes(self.override[u'image'], ImageSource.ImagePlugin)
         self.set_transparency(self.serviceItem.themedata.background_type ==
-                              BackgroundType.to_string(BackgroundType.Transparent))
+            BackgroundType.to_string(BackgroundType.Transparent))
         if self.serviceItem.themedata.background_filename:
             self.serviceItem.bg_image_bytes = self.image_manager.get_image_bytes(
                 self.serviceItem.themedata.background_filename, ImageSource.Theme

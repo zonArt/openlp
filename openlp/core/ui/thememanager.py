@@ -280,8 +280,7 @@ class ThemeManager(QtGui.QWidget):
         save_to = None
         save_from = None
         if theme_data.background_type == u'image':
-            save_to = os.path.join(self.path, new_theme_name,
-                os.path.split(unicode(theme_data.background_filename))[1])
+            save_to = os.path.join(self.path, new_theme_name, os.path.split(unicode(theme_data.background_filename))[1])
             save_from = theme_data.background_filename
         theme_data.theme_name = new_theme_name
         theme_data.extend_image_filename(self.path)
@@ -407,7 +406,7 @@ class ThemeManager(QtGui.QWidget):
             theme_file = os.path.join(self.path, theme_file)
             self.unzip_theme(theme_file, self.path)
             delete_file(theme_file)
-        files = AppLocation.get_files(self.settingsSection, u'.otz')
+        files = AppLocation.get_files(self.settingsSection, u'.png')
         # No themes have been found so create one
         if not files:
             theme = ThemeXML()

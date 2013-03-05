@@ -87,6 +87,7 @@ class SlideController(DisplayController):
         Set up the Slide Controller.
         """
         DisplayController.__init__(self, parent, is_live)
+        Registry().register_function(u'bootstrap_post_set_up', self.screenSizeChanged)
         self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / float(self.screens.current[u'size'].height())

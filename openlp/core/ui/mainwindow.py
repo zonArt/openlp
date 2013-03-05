@@ -536,9 +536,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Registry().register_function(u'openlp_version_check', self.version_notice)
         Registry().register_function(u'config_screen_changed', self.screen_changed)
         self.renderer = Renderer()
-        # Create the displays as all necessary components are loaded.
-        self.preview_controller.screenSizeChanged()
-        self.live_controller.screenSizeChanged()
         log.info(u'Load data from Settings')
         if Settings().value(u'advanced/save current plugin'):
             savedPlugin = Settings().value(u'advanced/current media plugin')
