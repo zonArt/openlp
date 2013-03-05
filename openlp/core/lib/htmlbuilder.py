@@ -182,6 +182,7 @@ sup {
         */
         text.innerHTML = new_text;
         text.style.opacity = '1';
+        // Wait until the text is completely visible.
         window.setTimeout(function(){timer = null;}, 400);
     }
 
