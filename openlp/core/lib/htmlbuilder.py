@@ -180,7 +180,7 @@ sup {
         */
         text.innerHTML = new_text;
         text.style.opacity = '1';
-        window.setTimeout(function(){timer = null;}, 500);
+        window.setTimeout(function(){timer = null;}, 350);
     }
 
     function show_text_complete(){
@@ -323,25 +323,25 @@ def build_lyrics_css(item, webkit_ver):
     z-index: 5;
     position: absolute;
     display: table;
-    -webkit-transition: opacity 0.5s ease;
+    -webkit-transition: opacity 0.4s ease;
     %s
 }
 .lyricscell {
     display: table-cell;
     word-wrap: break-word;
-    -webkit-transition: opacity 0.5s ease;
+    -webkit-transition: opacity 0.4s ease;
     %s
 }
 .lyricsmain {
--webkit-transition: opacity 0.5s ease;
+-webkit-transition: opacity 0.4s ease;
 %s
 }
 .lyricsoutline {
--webkit-transition: opacity 0.5s ease;
+-webkit-transition: opacity 0.4s ease;
 %s
 }
 .lyricsshadow {
--webkit-transition: opacity 0.5s ease;
+-webkit-transition: opacity 0.4s ease;
 %s
 }
     """
