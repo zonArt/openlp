@@ -405,7 +405,7 @@ class ThemeManager(QtGui.QWidget):
             theme_file = os.path.join(self.path, theme_file)
             self.unzip_theme(theme_file, self.path)
             delete_file(theme_file)
-        files = AppLocation.get_files(self.settingsSection, u'.otz')
+        files = AppLocation.get_files(self.settingsSection, u'.png')
         # No themes have been found so create one
         if not files:
             theme = ThemeXML()

@@ -309,7 +309,7 @@ class MediaController(object):
 
     def setup_display(self, display, preview):
         """
-        After a new display is configured, all media related widget will be
+        After a new display is configured, all media related widgets will be
         created too
 
         ``display``
