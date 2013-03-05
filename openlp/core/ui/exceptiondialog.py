@@ -85,7 +85,7 @@ class Ui_ExceptionDialog(object):
         self.exceptionLayout.addWidget(self.button_box)
 
         self.retranslateUi(exceptionDialog)
-        QtCore.QObject.connect(self.descriptionTextEdit, QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
+        self.descriptionTextEdit.textChanged.connect(self.onDescriptionUpdated)
 
     def retranslateUi(self, exceptionDialog):
         """

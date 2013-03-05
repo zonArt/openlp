@@ -57,7 +57,7 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
             build_text = u''
         about_text = about_text.replace(u'<revision>', build_text)
         self.about_text_edit.setPlainText(about_text)
-        QtCore.QObject.connect(self.volunteer_button, QtCore.SIGNAL(u'clicked()'), self.on_volunteer_button_clicked)
+        self.volunteer_button.clicked.connect(self.on_volunteer_button_clicked)
 
     def on_volunteer_button_clicked(self):
         """

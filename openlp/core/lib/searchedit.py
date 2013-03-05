@@ -54,8 +54,8 @@ class SearchEdit(QtGui.QLineEdit):
         self.clear_button.setStyleSheet(u'QToolButton { border: none; padding: 0px; }')
         self.clear_button.resize(18, 18)
         self.clear_button.hide()
-        QtCore.QObject.connect(self.clear_button, QtCore.SIGNAL(u'clicked()'), self._on_clear_button_clicked)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'textChanged(const QString&)'), self._on_search_edit_text_changed)
+        self.clear_button.clicked.connect(self._on_clear_button_clicked)
+        self.textChanged.connect(self._on_search_edit_text_changed)
         self._update_style_sheet()
         self.setAcceptDrops(False)
 

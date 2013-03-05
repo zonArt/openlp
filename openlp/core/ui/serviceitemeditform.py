@@ -46,7 +46,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
         self.item_list = []
-        QtCore.QObject.connect(self.list_widget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.on_current_row_changed)
+        self.list_widget.currentRowChanged.connect(self.on_current_row_changed)
 
     def set_service_item(self, item):
         """
@@ -161,3 +161,4 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         return self._main_window
 
     main_window = property(_get_main_window)
+
