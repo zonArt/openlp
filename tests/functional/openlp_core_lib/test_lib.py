@@ -338,7 +338,6 @@ class TestLib(TestCase):
             # THEN: The strings should be identical.
             assert result_string == wanted_string, u'The strings should be identical.'
 
-
     def validate_thumb_file_does_not_exist_test(self):
         """
         Test the validate_thumb() function when the thumbnail does not exist
