@@ -100,14 +100,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.songs_horizontal_scroll_area.setObjectName(u'songs_horizontal_scroll_area')
         self.songs_horizontal_scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.songs_horizontal_scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.songs_horizontal_scroll_area.setFrameStyle(QtGui.QFrame.NoFrame)
         self.songs_horizontal_scroll_area.setWidgetResizable(True)
-        self.songs_horizontal_scroll_area.setStyleSheet(
-            u'QScrollArea#songs_horizontal_scroll_area {background-color:transparent;}')
         self.songs_horizontal_songs_widget = QtGui.QWidget(self.songs_horizontal_scroll_area)
         self.songs_horizontal_songs_widget.setObjectName(u'songs_horizontal_songs_widget')
-        self.songs_horizontal_songs_widget.setStyleSheet(
-            u'QWidget#songs_horizontal_songs_widget {background-color:transparent;}')
         self.songs_horizontal_layout = QtGui.QHBoxLayout(self.songs_horizontal_songs_widget)
         self.songs_horizontal_layout.setObjectName(u'songs_horizontal_layout')
         self.songs_horizontal_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
