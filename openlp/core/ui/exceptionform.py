@@ -113,8 +113,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Show the dialog.
         """
         self.description_text_edit.setPlainText(u'')
-        self.onDescriptionUpdated()
-        self.fileAttachment = None
+        self.on_description_updated()
+        self.file_attachment = None
         return QtGui.QDialog.exec_(self)
 
     def _createReport(self):
@@ -206,11 +206,11 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         mailto_url = QtCore.QUrl(u'mailto:bugs@openlp.org')
         mailto_url.addQueryItem(u'subject', subject)
         mailto_url.addQueryItem(u'body', body % content)
-        if self.fileAttachment:
-            mailto_url.addQueryItem(u'attach', self.fileAttachment)
+        if self.file_attachment:
+            mailto_url.addQueryItem(u'attach', self.file_attachment)
         QtGui.QDesktopServices.openUrl(mailto_url)
 
-    def onDescriptionUpdated(self):
+    def on_description_updated(self):
         """
         Update the minimum number of characters needed in the description.
         """
@@ -232,7 +232,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 Settings().value(self.settings_section + u'/last directory'), u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
-            self.fileAttachment = unicode(files)
+            self.file_attachment = unicode(files)
 
     def __buttonState(self, state):
         """

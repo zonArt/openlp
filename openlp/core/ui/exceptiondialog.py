@@ -85,7 +85,7 @@ class Ui_ExceptionDialog(object):
         self.exception_layout.addWidget(self.button_box)
 
         self.retranslateUi(exception_dialog)
-        self.description_text_edit.textChanged.connect(self.onDescriptionUpdated)
+        self.description_text_edit.textChanged.connect(self.on_description_updated)
 
     def retranslateUi(self, exception_dialog):
         """
