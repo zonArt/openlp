@@ -232,7 +232,7 @@ class PlayerTab(SettingsTab):
             Registry().execute(u'mediaitem_media_rebuild')
             Registry().execute(u'config_screen_changed')
 
-    def postSetUp(self, postUpdate=False):
+    def post_set_up(self):
         """
         Late setup for players as the MediaController has to be initialised
         first.

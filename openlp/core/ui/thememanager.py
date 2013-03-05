@@ -59,6 +59,7 @@ class ThemeManager(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self, parent)
         Registry().register(u'theme_manager', self)
+        Registry().register_function(u'bootstrap_initialise', self.load_first_time_themes)
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm()
@@ -143,18 +144,6 @@ class ThemeManager(QtGui.QWidget):
         self.badV1NameChars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
         self.config_updated()
-
-    def first_time(self):
-        """
-        Import new themes downloaded by the first time wizard
-        """
-        self.application.set_busy_cursor()
-        files = AppLocation.get_files(self.settingsSection, u'.otz')
-        for theme_file in files:
-            theme_file = os.path.join(self.path, theme_file)
-            self.unzip_theme(theme_file, self.path)
-            delete_file(theme_file)
-        self.application.set_normal_cursor()
 
     def config_updated(self):
         """
@@ -291,8 +280,7 @@ class ThemeManager(QtGui.QWidget):
         save_to = None
         save_from = None
         if theme_data.background_type == u'image':
-            save_to = os.path.join(self.path, new_theme_name,
-                os.path.split(unicode(theme_data.background_filename))[1])
+            save_to = os.path.join(self.path, new_theme_name, os.path.split(unicode(theme_data.background_filename))[1])
             save_from = theme_data.background_filename
         theme_data.theme_name = new_theme_name
         theme_data.extend_image_filename(self.path)
@@ -388,7 +376,6 @@ class ThemeManager(QtGui.QWidget):
                     theme_zip.close()
         self.application.set_normal_cursor()
 
-
     def on_import_theme(self):
         """
         Opens a file dialog to select the theme file(s) to import before
@@ -409,9 +396,30 @@ class ThemeManager(QtGui.QWidget):
         self.load_themes()
         self.application.set_normal_cursor()
 
-    def load_themes(self, first_time=False):
+    def load_first_time_themes(self):
         """
-        Loads the theme lists and triggers updates accross the whole system
+        Imports any themes on start up and makes sure there is at least one theme
+        """
+        self.application.set_busy_cursor()
+        files = AppLocation.get_files(self.settingsSection, u'.otz')
+        for theme_file in files:
+            theme_file = os.path.join(self.path, theme_file)
+            self.unzip_theme(theme_file, self.path)
+            delete_file(theme_file)
+        files = AppLocation.get_files(self.settingsSection, u'.png')
+        # No themes have been found so create one
+        if not files:
+            theme = ThemeXML()
+            theme.theme_name = UiStrings().Default
+            self._write_theme(theme, None, None)
+            Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
+            self.config_updated()
+        self.application.set_normal_cursor()
+        self.load_themes()
+
+    def load_themes(self):
+        """
+        Loads the theme lists and triggers updates across the whole system
         using direct calls or core functions and events for the plugins.
         The plugins will call back in to get the real list if they want it.
         """
@@ -419,17 +427,6 @@ class ThemeManager(QtGui.QWidget):
         self.theme_list = []
         self.theme_list_widget.clear()
         files = AppLocation.get_files(self.settingsSection, u'.png')
-        if first_time:
-            self.first_time()
-            files = AppLocation.get_files(self.settingsSection, u'.png')
-            # No themes have been found so create one
-            if not files:
-                theme = ThemeXML()
-                theme.theme_name = UiStrings().Default
-                self._write_theme(theme, None, None)
-                Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
-                self.config_updated()
-                files = AppLocation.get_files(self.settingsSection, u'.png')
         # Sort the themes by its name considering language specific
         files.sort(key=lambda file_name: unicode(file_name), cmp=locale_compare)
         # now process the file list of png files
