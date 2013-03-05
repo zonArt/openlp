@@ -186,7 +186,7 @@ sup {
         window.setTimeout(function(){timer = null;}, 400);
     }
 
-    function show_text_complete(){
+    function show_text_completed(){
         return (timer == null);
     }
 </script>
