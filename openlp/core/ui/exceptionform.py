@@ -117,7 +117,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         self.file_attachment = None
         return QtGui.QDialog.exec_(self)
 
-    def _createReport(self):
+    def _create_report(self):
         """
         Create an exception report.
         """
@@ -146,7 +146,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 system += u'Desktop: GNOME\n'
         return (openlp_version, description, traceback, system, libraries)
 
-    def onSaveReportButtonClicked(self):
+    def on_save_report_button_clicked(self):
         """
         Saving exception log and system information to a file.
         """
@@ -164,7 +164,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         if filename:
             filename = unicode(filename).replace(u'/', os.path.sep)
             Settings().setValue(self.settings_section + u'/last directory', os.path.dirname(filename))
-            report_text = report_text % self._createReport()
+            report_text = report_text % self._create_report()
             try:
                 report_file = open(filename, u'w')
                 try:
@@ -180,7 +180,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             finally:
                 report_file.close()
 
-    def onSendReportButtonClicked(self):
+    def on_send_report_button_clicked(self):
         """
         Opening systems default email client and inserting exception log and
         system informations.
@@ -194,7 +194,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- Library Versions ---\n%s\n',
             'Please add the information that bug reports are favoured written '
             'in English.')
-        content = self._createReport()
+        content = self._create_report()
         source = u''
         exception = u''
         for line in content[2].split(u'\n'):
@@ -217,13 +217,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         count = int(20 - len(self.description_text_edit.toPlainText()))
         if count < 0:
             count = 0
-            self.__buttonState(True)
+            self.__button_state(True)
         else:
-            self.__buttonState(False)
+            self.__button_state(False)
         self.description_word_count.setText(
             translate('OpenLP.ExceptionDialog', 'Description characters to enter : %s') % count)
 
-    def onAttachFileButtonClicked(self):
+    def on_attach_file_button_clicked(self):
         """
         Attache files to the bug report e-mail.
         """
@@ -234,7 +234,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         if files:
             self.file_attachment = unicode(files)
 
-    def __buttonState(self, state):
+    def __button_state(self, state):
         """
         Toggle the button state.
         """

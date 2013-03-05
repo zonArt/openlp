@@ -75,11 +75,11 @@ class Ui_ExceptionDialog(object):
         self.exception_text_edit.setObjectName(u'exception_text_edit')
         self.exception_layout.addWidget(self.exception_text_edit)
         self.send_report_button = create_button(exception_dialog, u'send_report_button',
-            icon=u':/general/general_email.png', click=self.onSendReportButtonClicked)
+            icon=u':/general/general_email.png', click=self.on_send_report_button_clicked)
         self.save_report_button = create_button(exception_dialog, u'save_report_button',
-            icon=u':/general/general_save.png', click=self.onSaveReportButtonClicked)
+            icon=u':/general/general_save.png', click=self.on_save_report_button_clicked)
         self.attach_tile_button = create_button(exception_dialog, u'attach_tile_button',
-            icon=u':/general/general_open.png', click=self.onAttachFileButtonClicked)
+            icon=u':/general/general_open.png', click=self.on_attach_file_button_clicked)
         self.button_box = create_button_box(exception_dialog, u'button_box',
             [u'close'], [self.send_report_button, self.save_report_button, self.attach_tile_button])
         self.exception_layout.addWidget(self.button_box)
