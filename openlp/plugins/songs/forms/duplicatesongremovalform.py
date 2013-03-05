@@ -126,7 +126,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             u'review every potential duplicate song before it is deleted. So no songs will be deleted without your '
             u'explicit approval.'))
         self.searching_page.setTitle(translate(u'Wizard', u'Searching for duplicate songs.'))
-        self.searching_page.setSubTitle(translate(u'Wizard', u'Please wait while your songs database is searched.'))
+        self.searching_page.setSubTitle(translate(u'Wizard', u'Please wait while your songs database is analyzed.'))
         self.update_review_counter_text()
         self.review_page.setSubTitle(translate(u'Wizard',
             u'Here you can decide which songs to remove and which ones to keep.'))
