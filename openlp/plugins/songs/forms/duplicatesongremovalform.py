@@ -148,6 +148,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         # Hide back button.
         self.button(QtGui.QWizard.BackButton).hide()
         if page_id == self.searching_page_id:
+            self.button(QtGui.QWizard.NextButton).hide()
             # Search duplicate songs.
             max_songs = self.plugin.manager.get_object_count(Song)
             if max_songs == 0 or max_songs == 1:
@@ -171,6 +172,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             self.review_total_count = len(self.duplicate_song_list)
             if self.review_total_count == 0:
                 self.notify_no_duplicates()
+            else:
+                self.button(QtGui.QWizard.NextButton).show()
         elif page_id == self.review_page_id:
             self.process_current_duplicate_entry()
 
