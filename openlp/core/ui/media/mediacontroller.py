@@ -99,6 +99,7 @@ class MediaController(object):
         """
         self.mainWindow = parent
         Registry().register(u'media_controller', self)
+        Registry().register_function(u'bootstrap_initialise', self.check_available_media_players)
         self.mediaPlayers = {}
         self.displayControllers = {}
         self.currentMediaPlayer = {}
@@ -308,7 +309,7 @@ class MediaController(object):
 
     def setup_display(self, display, preview):
         """
-        After a new display is configured, all media related widget will be
+        After a new display is configured, all media related widgets will be
         created too
 
         ``display``

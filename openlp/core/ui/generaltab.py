@@ -308,9 +308,9 @@ class GeneralTab(SettingsTab):
         settings.setValue(u'audio repeat list', self.repeatListCheckBox.isChecked())
         settings.endGroup()
         # On save update the screens as well
-        self.postSetUp(True)
+        self.post_set_up(True)
 
-    def postSetUp(self, postUpdate=False):
+    def post_set_up(self, postUpdate=False):
         """
         Apply settings after settings tab has loaded and most of the
         system so must be delayed

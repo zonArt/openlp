@@ -50,6 +50,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Initialise the settings form
         """
         Registry().register(u'settings_form', self)
+        Registry().register_function(u'bootstrap_post_set_up', self.post_set_up)
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
@@ -75,7 +76,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.insertTab(self.advancedTab, 2, PluginStatus.Active)
         self.insertTab(self.playerTab, 3, PluginStatus.Active)
         count = 4
-        for plugin in self.plugins:
+        for plugin in self.plugin_manager.plugins:
             if plugin.settingsTab:
                 self.insertTab(plugin.settingsTab, count, plugin.status)
                 count += 1
@@ -118,17 +119,17 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
-    def postSetUp(self):
+    def post_set_up(self):
         """
         Run any post-setup code for the tabs on the form
         """
-        self.generalTab.postSetUp()
-        self.themesTab.postSetUp()
-        self.advancedTab.postSetUp()
-        self.playerTab.postSetUp()
-        for plugin in self.plugins:
+        self.generalTab.post_set_up()
+        self.themesTab.post_set_up()
+        self.advancedTab.post_set_up()
+        self.playerTab.post_set_up()
+        for plugin in self.plugin_manager.plugins:
             if plugin.settingsTab:
-                plugin.settingsTab.postSetUp()
+                plugin.settingsTab.post_set_up()
 
     def tabChanged(self, tabIndex):
         """
@@ -166,3 +167,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         return self._service_manager
 
     service_manager = property(_get_service_manager)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
