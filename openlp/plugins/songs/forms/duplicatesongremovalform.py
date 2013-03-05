@@ -286,10 +286,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.songs_horizontal_layout.removeWidget(song_review_widget)
         song_review_widget.setParent(None)
         # Check if we only have one duplicate left:
-        # 4 stretches + 1 SongReviewWidget = 5
-        # The SongReviewWidget is then at position 2.
+        # 2 stretches + 1 SongReviewWidget = 3
+        # The SongReviewWidget is then at position 1.
         if len(self.duplicate_song_list[-1]) == 1:
-            self.songs_horizontal_layout.itemAt(2).widget().song_remove_button.setEnabled(False)
+            self.songs_horizontal_layout.itemAt(1).widget().song_remove_button.setEnabled(False)
 
     def proceed_to_next_review(self):
         """
@@ -322,15 +322,12 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.update_review_counter_text()
         # Add song elements to the UI.
         if len(self.duplicate_song_list) > 0:
-            # A stretch doesn't seem to stretch endlessly, so I add two to get enough stetch for 1400x1050.
-            self.songs_horizontal_layout.addStretch()
-            self.songs_horizontal_layout.addStretch()
+            self.songs_horizontal_layout.addStretch(1)
             for duplicate in self.duplicate_song_list[-1]:
                 song_review_widget = SongReviewWidget(self.review_page, duplicate)
                 song_review_widget.song_remove_button_clicked.connect(self.remove_button_clicked)
                 self.songs_horizontal_layout.addWidget(song_review_widget)
-            self.songs_horizontal_layout.addStretch()
-            self.songs_horizontal_layout.addStretch()
+            self.songs_horizontal_layout.addStretch(1)
         # Change next button to finish button on last review.
         if len(self.duplicate_song_list) == 1:
             self.button(QtGui.QWizard.FinishButton).show()
