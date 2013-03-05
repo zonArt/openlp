@@ -182,8 +182,9 @@ sup {
         */
         text.innerHTML = new_text;
         text.style.opacity = '1';
-        // Wait until the text is completely visible.
-        window.setTimeout(function(){timer = null;}, 400);
+        // Wait until the text is completely visible. We want to save the timer id, to be able to call
+        // clearTimeout(timer) when the text has changed before finishing fading.
+        timer = window.setTimeout(function(){timer = null;}, 400);
     }
 
     function show_text_completed(){

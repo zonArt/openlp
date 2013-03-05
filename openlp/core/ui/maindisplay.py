@@ -346,6 +346,7 @@ class MainDisplay(Display):
         """
         Generates a preview of the image displayed.
         """
+        was_visible = self.isVisible()
         log.debug(u'preview for %s', self.isLive)
         self.application.process_events()
         # We must have a service item to preview.
@@ -363,7 +364,8 @@ class MainDisplay(Display):
         if self.isLive:
             if self.hideMode:
                 self.hide_display(self.hideMode)
-            else:
+            # Only continue if the visibility wasn't changed during method call.
+            elif was_visible == self.isVisible():
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
