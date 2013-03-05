@@ -34,6 +34,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import build_icon
 from openlp.plugins.songs.lib.xml import SongXML
 
+
 class SongReviewWidget(QtGui.QWidget):
     """
     A widget representing a song on the duplicate song review page.
@@ -166,9 +167,13 @@ class SongReviewWidget(QtGui.QWidget):
         # Resize table fields to content and table to columns
         self.song_info_verse_list_widget.setColumnWidth(0, self.song_group_box.width())
         self.song_info_verse_list_widget.resizeRowsToContents()
-        # The 6 is a trial and error value to just remove the scrollbar.
-        # TODO: Might be a different value with different skins.
-        self.song_info_verse_list_widget.setFixedHeight(self.song_info_verse_list_widget.verticalHeader().length() + 6)
+        # The 6 is a trial and error value since verticalHeader().length() + offset() is a little bit to small.
+        # It seems there is no clean way to determine the real height of the table contents.
+        # The "correct" value slightly fluctuates depending on the theme used, in the worst case
+        # Some pixels are missing at the bottom of the table, but all themes I tried still allowed
+        # to read the last verse line, so I'll just leave it at that.
+        self.song_info_verse_list_widget.setFixedHeight(self.song_info_verse_list_widget.verticalHeader().length() +
+            self.song_info_verse_list_widget.verticalHeader().offset() + 6)
         self.song_group_box_layout.addWidget(self.song_info_verse_list_widget)
         self.song_group_box_layout.addStretch()
         self.song_vertical_layout.addWidget(self.song_group_box)
@@ -187,6 +192,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_copyright_label.setText(u'Copyright:')
         self.song_comments_label.setText(u'Comments:')
         self.song_authors_label.setText(u'Authors:')
+
     def on_remove_button_clicked(self):
         """
         Signal emitted when the "remove" button is clicked.
