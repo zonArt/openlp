@@ -73,8 +73,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_vertical_layout.setObjectName(u'song_vertical_layout')
         self.song_group_box = QtGui.QGroupBox(self)
         self.song_group_box.setObjectName(u'song_group_box')
-        self.song_group_box.setMinimumWidth(300)
-        self.song_group_box.setMaximumWidth(300)
+        self.song_group_box.setFixedWidth(400)
         self.song_group_box_layout = QtGui.QVBoxLayout(self.song_group_box)
         self.song_group_box_layout.setObjectName(u'song_group_box_layout')
         self.song_info_form_layout = QtGui.QFormLayout()
@@ -143,20 +142,34 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_verse_order_content.setText(self.song.verse_order)
         self.song_verse_order_content.setWordWrap(True)
         self.song_info_form_layout.setWidget(6, QtGui.QFormLayout.FieldRole, self.song_verse_order_content)
-        # Add verses widget.
         self.song_group_box_layout.addLayout(self.song_info_form_layout)
-        self.song_info_verse_group_box = QtGui.QGroupBox(self.song_group_box)
-        self.song_info_verse_group_box.setObjectName(u'song_info_verse_group_box')
-        self.song_info_verse_group_box_layout = QtGui.QFormLayout(self.song_info_verse_group_box)
+        # Add verses widget.
+        self.song_info_verse_list_widget = QtGui.QTableWidget(self.song_group_box)
+        self.song_info_verse_list_widget.setColumnCount(1)
+        self.song_info_verse_list_widget.horizontalHeader().setVisible(False)
+        self.song_info_verse_list_widget.setObjectName(u'song_info_verse_list_widget')
+        self.song_info_verse_list_widget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+        self.song_info_verse_list_widget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.song_info_verse_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.song_info_verse_list_widget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.song_info_verse_list_widget.setAlternatingRowColors(True)
         song_xml = SongXML()
         verses = song_xml.get_verses(self.song.lyrics)
-        for verse in verses:
-            verse_marker = verse[0]['type'] + verse[0]['label']
-            verse_label = QtGui.QLabel(self.song_info_verse_group_box)
-            verse_label.setText(verse[1])
-            verse_label.setWordWrap(True)
-            self.song_info_verse_group_box_layout.addRow(verse_marker, verse_label)
-        self.song_group_box_layout.addWidget(self.song_info_verse_group_box)
+        self.song_info_verse_list_widget.setRowCount(len(verses))
+        song_tags = []
+        for verse_number, verse in enumerate(verses):
+            item = QtGui.QTableWidgetItem()
+            item.setText(verse[1])
+            self.song_info_verse_list_widget.setItem(verse_number, 0, item)
+            song_tags.append(unicode(verse[0]['type'] + verse[0]['label']))
+        self.song_info_verse_list_widget.setVerticalHeaderLabels(song_tags)
+        # Resize table fields to content and table to columns
+        self.song_info_verse_list_widget.setColumnWidth(0, self.song_group_box.width())
+        self.song_info_verse_list_widget.resizeRowsToContents()
+        # The 6 is a trial and error value to just remove the scrollbar.
+        # TODO: Might be a different value with different skins.
+        self.song_info_verse_list_widget.setFixedHeight(self.song_info_verse_list_widget.verticalHeader().length() + 6)
+        self.song_group_box_layout.addWidget(self.song_info_verse_list_widget)
         self.song_group_box_layout.addStretch()
         self.song_vertical_layout.addWidget(self.song_group_box)
         self.song_remove_button = QtGui.QPushButton(self)
@@ -174,8 +187,6 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_copyright_label.setText(u'Copyright:')
         self.song_comments_label.setText(u'Comments:')
         self.song_authors_label.setText(u'Authors:')
-        self.song_info_verse_group_box.setTitle(u'Verses')
-
     def on_remove_button_clicked(self):
         """
         Signal emitted when the "remove" button is clicked.
