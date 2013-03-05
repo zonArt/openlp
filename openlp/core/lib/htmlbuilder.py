@@ -326,7 +326,6 @@ def build_lyrics_css(item, webkit_ver):
     z-index: 5;
     position: absolute;
     display: table;
-    -webkit-transition: opacity 0.4s ease;
     %s
 }
 .lyricscell {
@@ -336,15 +335,12 @@ def build_lyrics_css(item, webkit_ver):
     %s
 }
 .lyricsmain {
--webkit-transition: opacity 0.4s ease;
 %s
 }
 .lyricsoutline {
--webkit-transition: opacity 0.4s ease;
 %s
 }
 .lyricsshadow {
--webkit-transition: opacity 0.4s ease;
 %s
 }
     """
