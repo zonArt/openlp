@@ -346,8 +346,8 @@ class MainDisplay(Display):
         """
         Generates a preview of the image displayed.
         """
-        was_visible = self.isVisible()
         log.debug(u'preview for %s', self.isLive)
+        was_visible = self.isVisible()
         self.application.process_events()
         # We must have a service item to preview.
         if self.isLive and hasattr(self, u'serviceItem'):
