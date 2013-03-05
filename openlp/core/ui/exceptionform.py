@@ -112,7 +112,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Show the dialog.
         """
-        self.descriptionTextEdit.setPlainText(u'')
+        self.description_text_edit.setPlainText(u'')
         self.onDescriptionUpdated()
         self.fileAttachment = None
         return QtGui.QDialog.exec_(self)
@@ -122,8 +122,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         Create an exception report.
         """
         openlp_version = get_application_version()
-        description = self.descriptionTextEdit.toPlainText()
-        traceback = self.exceptionTextEdit.toPlainText()
+        description = self.description_text_edit.toPlainText()
+        traceback = self.exception_text_edit.toPlainText()
         system = translate('OpenLP.ExceptionForm', 'Platform: %s\n') % platform.platform()
         libraries = u'Python: %s\n' % platform.python_version() + \
             u'Qt4: %s\n' % Qt.qVersion() + \
@@ -214,13 +214,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Update the minimum number of characters needed in the description.
         """
-        count = int(20 - len(self.descriptionTextEdit.toPlainText()))
+        count = int(20 - len(self.description_text_edit.toPlainText()))
         if count < 0:
             count = 0
             self.__buttonState(True)
         else:
             self.__buttonState(False)
-        self.descriptionWordCount.setText(
+        self.description_word_count.setText(
             translate('OpenLP.ExceptionDialog', 'Description characters to enter : %s') % count)
 
     def onAttachFileButtonClicked(self):
@@ -238,5 +238,5 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Toggle the button state.
         """
-        self.saveReportButton.setEnabled(state)
-        self.sendReportButton.setEnabled(state)
+        self.save_report_button.setEnabled(state)
+        self.send_report_button.setEnabled(state)
