@@ -156,13 +156,7 @@ sup {
 
     function text_fade(id, new_text){
         /*
-        Using -webkit-transition: opacity 1s linear; would have been preferred
-        but it isn't currently quick enough when animating multiple layers of
-        large areas of large text. Therefore do it manually as best we can.
-        Hopefully in the future we can revisit and do more interesting
-        transitions using -webkit-transition and -webkit-transform.
-        However we need to ensure interrupted transitions (quickly change 2
-        slides) still looks pretty and is zippy.
+        Show the text.
         */
         var text = document.getElementById(id);
         if(text == null) return;
