@@ -213,7 +213,7 @@ class MediaMediaItem(MediaManagerItem):
             u' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
     def display_setup(self):
-        self.media_controller.setup_display(self.display_controller.previewDisplay, False)
+        self.media_controller.setup_display(self.display_controller.preview_display, False)
 
     def populateDisplayTypes(self):
         """
