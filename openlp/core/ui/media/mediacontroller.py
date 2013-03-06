@@ -344,7 +344,7 @@ class MediaController(object):
         if controller.is_live and controller.display:
             if self.current_media_players and value:
                 if self.current_media_players[controller.controller_type] != self.media_players[u'webkit']:
-                    controller.display.setTransparency(False)
+                    controller.display.set_transparency(False)
 
     def resize(self, display, player):
         """
