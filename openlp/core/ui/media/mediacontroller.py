@@ -376,7 +376,7 @@ class MediaController(object):
             Is the video to be played behind text.
         """
         log.debug(u'video')
-        isValid = False
+        is_valid = False
         controller = self.display_controllers[source]
         # stop running videos
         self.media_reset(controller)
@@ -386,7 +386,7 @@ class MediaController(object):
         controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
         display = self._define_display(controller)
         if controller.is_live:
-            isValid = self._check_file_type(controller, display, service_item)
+            is_valid = self._check_file_type(controller, display, service_item)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
             if controller.media_info.is_background:
@@ -397,8 +397,8 @@ class MediaController(object):
                 controller.media_info.start_time = service_item.start_time
                 controller.media_info.end_time = service_item.end_time
         elif controller.preview_display:
-            isValid = self._check_file_type(controller, display, service_item)
-        if not isValid:
+            is_valid = self._check_file_type(controller, display, service_item)
+        if not is_valid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 translate('MediaPlugin.MediaItem', 'Unsupported File'))
