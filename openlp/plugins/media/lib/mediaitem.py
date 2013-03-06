@@ -152,8 +152,7 @@ class MediaMediaItem(MediaManagerItem):
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
-                if self.media_controller.video(DisplayControllerType.Live, service_item,
-                        videoBehindText=True):
+                if self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

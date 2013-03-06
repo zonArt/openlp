@@ -359,7 +359,7 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, source, service_item, hidden=False, videoBehindText=False):
+    def video(self, source, service_item, hidden=False, video_behind_text=False):
         """
         Loads and starts a video to run with the option of sound
 
@@ -372,7 +372,7 @@ class MediaController(object):
         ``hidden``
             The player which is doing the playing
 
-        ``videoBehindText``
+        ``video_behind_text``
             Is the video to be played behind text.
         """
         log.debug(u'video')
@@ -382,7 +382,7 @@ class MediaController(object):
         self.media_reset(controller)
         controller.media_info = MediaInfo()
         controller.media_info.volume = controller.volumeSlider.value()
-        controller.media_info.is_background = videoBehindText
+        controller.media_info.is_background = video_behind_text
         controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
         display = self._define_display(controller)
         if controller.is_live:
