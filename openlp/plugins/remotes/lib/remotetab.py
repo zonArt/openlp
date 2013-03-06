@@ -60,12 +60,12 @@ class RemoteTab(SettingsTab):
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
         self.twelve_hour_check_box.setObjectName(u'twelve_hour_check_box')
         self.server_settings_layout.addRow(self.twelve_hour_check_box)
-        self.portLabel = QtGui.QLabel(self.server_settings_group_box)
-        self.portLabel.setObjectName(u'portLabel')
+        self.port_label = QtGui.QLabel(self.server_settings_group_box)
+        self.port_label.setObjectName(u'port_label')
         self.port_spin_box = QtGui.QSpinBox(self.server_settings_group_box)
         self.port_spin_box.setMaximum(32767)
         self.port_spin_box.setObjectName(u'port_spin_box')
-        self.server_settings_layout.addRow(self.portLabel, self.port_spin_box)
+        self.server_settings_layout.addRow(self.port_label, self.port_spin_box)
         self.remote_url_label = QtGui.QLabel(self.server_settings_group_box)
         self.remote_url_label.setObjectName(u'remote_url_label')
         self.remote_url = QtGui.QLabel(self.server_settings_group_box)
@@ -103,7 +103,7 @@ class RemoteTab(SettingsTab):
     def retranslateUi(self):
         self.server_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Server Settings'))
         self.address_label.setText(translate('RemotePlugin.RemoteTab', 'Serve on IP address:'))
-        self.portLabel.setText(translate('RemotePlugin.RemoteTab', 'Port number:'))
+        self.port_label.setText(translate('RemotePlugin.RemoteTab', 'Port number:'))
         self.remote_url_label.setText(translate('RemotePlugin.RemoteTab', 'Remote URL:'))
         self.stage_url_label.setText(translate('RemotePlugin.RemoteTab', 'Stage view URL:'))
         self.twelve_hour_check_box.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
@@ -114,7 +114,7 @@ class RemoteTab(SettingsTab):
             'Android app from Google Play.'))
 
     def set_urls(self):
-        ipAddress = u'localhost'
+        ip_address = u'localhost'
         if self.address_edit.text() == ZERO_URL:
             interfaces = QtNetwork.QNetworkInterface.allInterfaces()
             for interface in interfaces:
@@ -125,11 +125,11 @@ class RemoteTab(SettingsTab):
                 for address in interface.addressEntries():
                     ip = address.ip()
                     if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ipAddress = ip
+                        ip_address = ip
                         break
         else:
-            ipAddress = self.address_edit.text()
-        url = u'http://%s:%s/' % (ipAddress, self.port_spin_box.value())
+            ip_address = self.address_edit.text()
+        url = u'http://%s:%s/' % (ip_address, self.port_spin_box.value())
         self.remote_url.setText(u'<a href="%s">%s</a>' % (url, url))
         url += u'stage'
         self.stage_url.setText(u'<a href="%s">%s</a>' % (url, url))

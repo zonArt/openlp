@@ -226,11 +226,11 @@ class MediaMediaItem(MediaManagerItem):
         self.displayTypeComboBox.blockSignals(True)
         self.displayTypeComboBox.clear()
         usedPlayers, overridePlayer = get_media_players()
-        mediaPlayers = self.media_controller.mediaPlayers
+        media_players = self.media_controller.media_players
         currentIndex = 0
         for player in usedPlayers:
             # load the drop down selection
-            self.displayTypeComboBox.addItem(mediaPlayers[player].original_name)
+            self.displayTypeComboBox.addItem(media_players[player].original_name)
             if overridePlayer == player:
                 currentIndex = len(self.displayTypeComboBox)
         if self.displayTypeComboBox.count() > 1:
