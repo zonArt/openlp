@@ -224,8 +224,8 @@ class BibleUpgradeForm(OpenLPWizard):
             self.checkBox[number].setText(bible.get_name())
             self.checkBox[number].setCheckState(QtCore.Qt.Checked)
             self.formLayout.addWidget(self.checkBox[number])
-        self.spacerItem = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.formLayout.addItem(self.spacerItem)
+        self.spacer_item = QtGui.QSpacerItem(20, 5, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.formLayout.addItem(self.spacer_item)
         self.scrollArea.setWidget(self.scrollAreaContents)
 
     def clearScrollArea(self):
@@ -235,7 +235,7 @@ class BibleUpgradeForm(OpenLPWizard):
         for number, filename in enumerate(self.files):
             self.formLayout.removeWidget(self.checkBox[number])
             self.checkBox[number].setParent(None)
-        self.formLayout.removeItem(self.spacerItem)
+        self.formLayout.removeItem(self.spacer_item)
 
     def retranslateUi(self):
         """

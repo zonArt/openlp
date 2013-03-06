@@ -69,7 +69,7 @@ class Ui_ShortcutListDialog(object):
         self.shortcutListLayout = QtGui.QVBoxLayout(shortcutListDialog)
         self.shortcutListLayout.setObjectName(u'shortcutListLayout')
         self.descriptionLabel = QtGui.QLabel(shortcutListDialog)
-        self.descriptionLabel.setObjectName(u'descriptionLabel')
+        self.descriptionLabel.setObjectName(u'description_label')
         self.descriptionLabel.setWordWrap(True)
         self.shortcutListLayout.addWidget(self.descriptionLabel)
         self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)

@@ -157,7 +157,7 @@ class SongImportForm(OpenLPWizard):
             combo_box_text = (custom_combo_text if custom_combo_text else format_name)
             self.formatComboBox.setItemText(format, combo_box_text)
             if description_text is not None:
-                self.formatWidgets[format][u'descriptionLabel'].setText(description_text)
+                self.formatWidgets[format][u'description_label'].setText(description_text)
             if select_mode == SongFormatSelect.MultipleFiles:
                 self.formatWidgets[format][u'addButton'].setText(
                     translate('SongsPlugin.ImportWizardForm', 'Add Files...'))
