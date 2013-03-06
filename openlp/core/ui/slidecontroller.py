@@ -293,7 +293,7 @@ class SlideController(DisplayController):
             self.audio_time_label.setObjectName(u'audio_time_label')
             self.toolbar.addToolbarWidget(self.audio_time_label)
             self.toolbar.setWidgetVisible(self.audio_list, False)
-            self.toolbar.setWidgetVisible([u'songMenu'], False)
+            self.toolbar.setWidgetVisible([u'song_menu'], False)
         # Screen preview area
         self.preview_frame = QtGui.QFrame(self.splitter)
         self.preview_frame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -524,7 +524,7 @@ class SlideController(DisplayController):
         self.display.setup()
         if self.is_live:
             self.__addActionsToWidget(self.display)
-            self.display.audioPlayer.connectSlot(QtCore.SIGNAL(u'tick(qint64)'), self.on_audio_time_remaining)
+            self.display.audio_player.connectSlot(QtCore.SIGNAL(u'tick(qint64)'), self.on_audio_time_remaining)
         # The SlidePreview's ratio.
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / float(self.screens.current[u'size'].height())
@@ -639,7 +639,7 @@ class SlideController(DisplayController):
         self.mediabar.hide()
         self.song_menu.hide()
         self.toolbar.setWidgetVisible(self.loop_list, False)
-        self.toolbar.setWidgetVisible([u'songMenu'], False)
+        self.toolbar.setWidgetVisible([u'song_menu'], False)
         # Reset the button
         self.play_slides_once.setChecked(False)
         self.play_slides_once.setIcon(build_icon(u':/media/media_time.png'))
@@ -647,7 +647,7 @@ class SlideController(DisplayController):
         self.play_slides_loop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
             if Settings().value(self.main_window.songsSettingsSection + u'/display songbar') and self.slideList:
-                self.toolbar.setWidgetVisible([u'songMenu'], True)
+                self.toolbar.setWidgetVisible([u'song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.setWidgetVisible(self.loop_list)
         if item.is_media():
@@ -754,25 +754,25 @@ class SlideController(DisplayController):
         self.preview_list_widget.setColumnWidth(0, width)
         if self.is_live:
             self.song_menu.menu().clear()
-            self.display.audioPlayer.reset()
+            self.display.audio_player.reset()
             self.setAudioItemsVisibility(False)
             self.audio_pause_item.setChecked(False)
             # If the current item has background audio
             if self.service_item.is_capable(ItemCapabilities.HasBackgroundAudio):
                 log.debug(u'Starting to play...')
-                self.display.audioPlayer.add_to_playlist(self.service_item.background_audio)
+                self.display.audio_player.add_to_playlist(self.service_item.background_audio)
                 self.trackMenu.clear()
                 for counter in range(len(self.service_item.background_audio)):
                     action = self.trackMenu.addAction(os.path.basename(self.service_item.background_audio[counter]))
                     action.setData(counter)
                     QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), self.onTrackTriggered)
-                self.display.audioPlayer.repeat = Settings().value(
+                self.display.audio_player.repeat = Settings().value(
                     self.main_window.generalSettingsSection + u'/audio repeat list')
                 if Settings().value(self.main_window.generalSettingsSection + u'/audio start paused'):
                     self.audio_pause_item.setChecked(True)
-                    self.display.audioPlayer.pause()
+                    self.display.audio_player.pause()
                 else:
-                    self.display.audioPlayer.play()
+                    self.display.audio_player.play()
                 self.setAudioItemsVisibility(True)
         row = 0
         text = []
@@ -1212,9 +1212,9 @@ class SlideController(DisplayController):
         if not self.audio_pause_item.isVisible():
             return
         if checked:
-            self.display.audioPlayer.pause()
+            self.display.audio_player.pause()
         else:
-            self.display.audioPlayer.play()
+            self.display.audio_player.play()
 
     def timerEvent(self, event):
         """
@@ -1316,13 +1316,13 @@ class SlideController(DisplayController):
         """
         Go to the next track when next is clicked
         """
-        self.display.audioPlayer.next()
+        self.display.audio_player.next()
 
     def on_audio_time_remaining(self, time):
         """
         Update how much time is remaining
         """
-        seconds = self.display.audioPlayer.mediaObject.remainingTime() // 1000
+        seconds = self.display.audio_player.media_object.remainingTime() // 1000
         minutes = seconds // 60
         seconds %= 60
         self.audio_time_label.setText(u' %02d:%02d ' % (minutes, seconds))
@@ -1332,7 +1332,7 @@ class SlideController(DisplayController):
         Start playing a track
         """
         action = self.sender()
-        self.display.audioPlayer.go_to(action.data())
+        self.display.audio_player.go_to(action.data())
 
     def _get_plugin_manager(self):
         """

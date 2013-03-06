@@ -52,7 +52,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.new_push_button.clicked.connect(self.on_new_clicked)
         self.save_push_button.clicked.connect(self.on_saved_clicked)
         self.delete_push_button.clicked.connect(self.on_delete_clicked)
-        self.button_boxrejected.connect(self.close)
+        self.button_box.rejected.connect(self.close)
         self.description_line_edit.textEdited.connect(self.on_text_edited)
         self.tag_line_edit.textEdited.connect(self.on_text_edited)
         self.start_tag_line_edit.textEdited.connect(self.on_text_edited)
