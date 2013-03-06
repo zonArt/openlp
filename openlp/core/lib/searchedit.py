@@ -90,13 +90,13 @@ class SearchEdit(QtGui.QLineEdit):
             size = self.menu_button.size()
             self.menu_button.move(self.rect().left() + frame_width + 2, (self.rect().bottom() + 1 - size.height()) / 2)
 
-    def currentSearchType(self):
+    def current_search_type(self):
         """
         Readonly property to return the current search type.
         """
         return self._current_search_type
 
-    def setCurrentSearchType(self, identifier):
+    def set_current_search_type(self, identifier):
         """
         Set a new current search type.
 
@@ -117,7 +117,7 @@ class SearchEdit(QtGui.QLineEdit):
                 self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), identifier)
                 return True
 
-    def setSearchTypes(self, items):
+    def set_search_types(self, items):
         """
         A list of tuples to be used in the search type menu. The first item in the list will be preselected as the
         default.
@@ -140,7 +140,7 @@ class SearchEdit(QtGui.QLineEdit):
         first = None
         for identifier, icon, title, placeholder in items:
             action = create_widget_action(
-                menu, text=title, icon=icon, data=identifier, triggers=self._onMenuActionTriggered)
+                menu, text=title, icon=icon, data=identifier, triggers=self._on_menu_action_triggered)
             action.placeholder_text = placeholder
             if first is None:
                 first = action
@@ -176,7 +176,7 @@ class SearchEdit(QtGui.QLineEdit):
         self.clear()
         self.emit(QtCore.SIGNAL(u'cleared()'))
 
-    def _onMenuActionTriggered(self):
+    def _on_menu_action_triggered(self):
         """
         Internally implemented slot to react to the select of one of the search types in the menu. Once it has set the
         correct action on the button, and set the current search type (using the list of identifiers provided by the

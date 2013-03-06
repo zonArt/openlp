@@ -304,7 +304,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.plugin.manager.media = self
         self.loadBibles()
-        self.quickSearchEdit.setSearchTypes([
+        self.quickSearchEdit.set_search_types([
             (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
                 translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
                 translate('BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
@@ -312,7 +312,7 @@ class BibleMediaItem(MediaManagerItem):
                 translate('BiblesPlugin.MediaItem', 'Text Search'),
                 translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
-        self.quickSearchEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
+        self.quickSearchEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settingsSection))
         self.config_update()
         log.debug(u'bible manager initialise complete')
 
@@ -432,12 +432,12 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'updateAutoCompleter')
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.quickSearchEdit.currentSearchType())
+        Settings().setValue(u'%s/last search type' % self.settingsSection, self.quickSearchEdit.current_search_type())
         # Save the current bible to the configuration.
         Settings().setValue(self.settingsSection + u'/quick bible', self.quickVersionComboBox.currentText())
         books = []
         # We have to do a 'Reference Search'.
-        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
+        if self.quickSearchEdit.current_search_type() == BibleSearch.Reference:
             bibles = self.plugin.manager.get_bibles()
             bible = self.quickVersionComboBox.currentText()
             if bible:
@@ -653,7 +653,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quickSearchEdit.text()
-        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
+        if self.quickSearchEdit.current_search_type() == BibleSearch.Reference:
             # We are doing a 'Reference Search'.
             self.search_results = self.plugin.manager.get_verses(bible, text)
             if second_bible and self.search_results:

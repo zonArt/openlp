@@ -128,7 +128,7 @@ class SongMediaItem(MediaManagerItem):
             'Maintain the lists of authors, topics and books.'))
 
     def initialise(self):
-        self.searchTextEdit.setSearchTypes([
+        self.searchTextEdit.set_search_types([
             (SongSearch.Entire, u':/songs/song_search_all.png',
                 translate('SongsPlugin.MediaItem', 'Entire Song'),
                 translate('SongsPlugin.MediaItem', 'Search Entire Song...')),
@@ -145,16 +145,16 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
+        self.searchTextEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settingsSection))
         self.config_update()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.currentSearchType())
+        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []
-        search_type = self.searchTextEdit.currentSearchType()
+        search_type = self.searchTextEdit.current_search_type()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
             search_results = self.searchEntire(search_keywords)
@@ -279,9 +279,9 @@ class SongMediaItem(MediaManagerItem):
         """
         if self.searchAsYouType:
             search_length = 1
-            if self.searchTextEdit.currentSearchType() == SongSearch.Entire:
+            if self.searchTextEdit.current_search_type() == SongSearch.Entire:
                 search_length = 4
-            elif self.searchTextEdit.currentSearchType() == SongSearch.Lyrics:
+            elif self.searchTextEdit.current_search_type() == SongSearch.Lyrics:
                 search_length = 3
             if len(text) > search_length:
                 self.onSearchTextButtonClicked()

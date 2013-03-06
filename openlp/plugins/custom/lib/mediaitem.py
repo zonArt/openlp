@@ -86,14 +86,14 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextButton.setText(UiStrings().Search)
 
     def initialise(self):
-        self.searchTextEdit.setSearchTypes([
+        self.searchTextEdit.set_search_types([
             (CustomSearch.Titles, u':/songs/song_search_title.png',
             translate('SongsPlugin.MediaItem', 'Titles'),
             translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection))
+        self.searchTextEdit.set_current_search_type(Settings().value( u'%s/last search type' % self.settingsSection))
         self.config_updated()
 
     def loadList(self, custom_slides):
@@ -207,11 +207,11 @@ class CustomMediaItem(MediaManagerItem):
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.currentSearchType())
+        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = self.searchTextEdit.displayText()
         search_results = []
-        search_type = self.searchTextEdit.currentSearchType()
+        search_type = self.searchTextEdit.current_search_type()
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.plugin.manager.get_all_objects(CustomSlide,

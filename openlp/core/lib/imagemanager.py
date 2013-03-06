@@ -99,7 +99,7 @@ class Priority(object):
 
 class Image(object):
     """
-    This class represents an image. To mark an image as *dirty* call the :class:`ImageManager`'s ``_resetImage`` method
+    This class represents an image. To mark an image as *dirty* call the :class:`ImageManager`'s ``_reset_image`` method
     with the Image instance as argument.
     """
     secondary_priority = 0
