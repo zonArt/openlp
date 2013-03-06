@@ -362,8 +362,9 @@ class SlideController(DisplayController):
         # Signals
         QtCore.QObject.connect(self.previewListWidget, QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
         if self.isLive:
+            # Need to use event as called across threads and UI is updated
+            QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_toggle_display'), self.toggle_display)
             Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
-            Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)
             self.toolbar.setWidgetVisible(self.loopList, False)
             self.toolbar.setWidgetVisible(self.wideMenu, False)
         else:
@@ -867,9 +868,9 @@ class SlideController(DisplayController):
         """
         Go to the requested slide
         """
-        index = int(message[0])
-        if not self.serviceItem:
+        if not self.serviceItem or not message[0]:
             return
+        index = int(message[0])
         if self.serviceItem.is_command():
             Registry().execute(u'%s_slide' % self.serviceItem.name.lower(), [self.serviceItem, self.isLive, index])
             self.updatePreview()

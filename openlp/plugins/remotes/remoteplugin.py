@@ -37,6 +37,11 @@ log = logging.getLogger(__name__)
 __default_settings__ = {
         u'remotes/twelve hour': True,
         u'remotes/port': 4316,
+        u'remotes/https port': 4317,
+        u'remotes/https enabled': False,
+        u'remotes/user id': u'openlp',
+        u'remotes/password': u'password',
+        u'remotes/authentication enabled': False,
         u'remotes/ip address': u'0.0.0.0'
     }
 

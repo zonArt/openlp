@@ -119,40 +119,23 @@ import os
 import re
 import urllib
 import urlparse
+import cherrypy
 
-from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
+from PyQt4 import QtCore
 
 from openlp.core.lib import Registry, Settings, PluginStatus, StringContent
-
 from openlp.core.utils import AppLocation, translate
+from openlp.plugins.remotes.lib.httpauth import AuthController, require_auth
 
 log = logging.getLogger(__name__)
-
-class HttpResponse(object):
-    """
-    A simple object to encapsulate a pseudo-http response.
-    """
-    code = '200 OK'
-    content = ''
-    headers = {
-        'Content-Type': 'text/html; charset="utf-8"\r\n'
-    }
-
-    def __init__(self, content='', headers=None, code=None):
-        if headers is None:
-            headers = {}
-        self.content = content
-        for key, value in headers.iteritems():
-            self.headers[key] = value
-        if code:
-            self.code = code
 
 
 class HttpServer(object):
     """
     Ability to control OpenLP via a web browser.
     """
+
     def __init__(self, plugin):
         """
         Initialise the httpserver, and start the server.
@@ -163,22 +146,28 @@ class HttpServer(object):
         self.connections = []
         self.current_item = None
         self.current_slide = None
-        self.start_tcp()
+        self.conf = {'/files': {u'tools.staticdir.on': True,
+                                u'tools.staticdir.dir': self.html_dir}}
+        self.start_server()
 
-    def start_tcp(self):
+    def start_server(self):
         """
         Start the http server, use the port in the settings default to 4316.
         Listen out for slide and song changes so they can be broadcast to
         clients. Listen out for socket connections.
         """
-        log.debug(u'Start TCP server')
+        log.debug(u'Start CherryPy server')
         port = Settings().value(self.plugin.settingsSection + u'/port')
         address = Settings().value(self.plugin.settingsSection + u'/ip address')
-        self.server = QtNetwork.QTcpServer()
-        self.server.listen(QtNetwork.QHostAddress(address), port)
+        server_config = {u'server.socket_host': str(address),
+                         u'server.socket_port': port}
+        cherrypy.config.update(server_config)
+        cherrypy.config.update({'environment': 'embedded'})
+        cherrypy.config.update({'engine.autoreload_on': False})
+        cherrypy.tree.mount(HttpConnection(self), '/', config=self.conf)
+        cherrypy.engine.start()
         Registry().register_function(u'slidecontroller_live_changed', self.slide_change)
         Registry().register_function(u'slidecontroller_live_started', self.item_change)
-        QtCore.QObject.connect(self.server, QtCore.SIGNAL(u'newConnection()'), self.new_connection)
         log.debug(u'TCP listening on port %d' % port)
 
     def slide_change(self, row):
@@ -193,50 +182,41 @@ class HttpServer(object):
         """
         self.current_item = items[0]
 
-    def new_connection(self):
-        """
-        A new http connection has been made. Create a client object to handle
-        communication.
-        """
-        log.debug(u'new http connection')
-        socket = self.server.nextPendingConnection()
-        if socket:
-            self.connections.append(HttpConnection(self, socket))
-
-    def close_connection(self, connection):
-        """
-        The connection has been closed. Clean up
-        """
-        log.debug(u'close http connection')
-        if connection in self.connections:
-            self.connections.remove(connection)
-
     def close(self):
         """
         Close down the http server.
         """
         log.debug(u'close http server')
-        self.server.close()
+        cherrypy.engine.exit()
+        cherrypy.engine.stop()
 
 
 class HttpConnection(object):
     """
-    A single connection, this handles communication between the server
-    and the client.
+    A single connection, this handles communication between the server and the client.
     """
-    def __init__(self, parent, socket):
+    _cp_config = {
+        'tools.sessions.on': True,
+        'tools.auth.on': True
+    }
+
+    auth = AuthController()
+
+    def __init__(self, parent):
         """
         Initialise the http connection. Listen out for socket signals.
         """
-        log.debug(u'Initialise HttpConnection: %s' % socket.peerAddress())
-        self.socket = socket
+        #log.debug(u'Initialise HttpConnection: %s' % socket.peerAddress())
+        #self.socket = socket
         self.parent = parent
         self.routes = [
             (u'^/$', self.serve_file),
             (u'^/(stage)$', self.serve_file),
             (r'^/files/(.*)$', self.serve_file),
             (r'^/api/poll$', self.poll),
+            (r'^/stage/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
+            (r'^/stage/api/controller/live/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
             (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
             (r'^/api/alert$', self.alert),
@@ -245,17 +225,79 @@ class HttpConnection(object):
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
         ]
-        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'), self.ready_read)
-        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'), self.disconnected)
         self.translate()
 
+    @cherrypy.expose
+    #@require_auth(auth)
+    def default(self, *args, **kwargs):
+        """
+        Handles the requests for the main url.  This is secure depending on settings.
+        """
+        # Loop through the routes we set up earlier and execute them
+        return self._process_http_request(args, kwargs)
+
+    @cherrypy.expose
+    def stage(self, *args, **kwargs):
+        """
+        Handles the requests for the stage url.  This is not secure.
+        """
+        print "Stage"
+        url = urlparse.urlparse(cherrypy.url())
+        self.url_params = urlparse.parse_qs(url.query)
+        print url
+        print [self.url_params]
+        #return self.serve_file(u'stage')
+        return self._process_http_request(args, kwargs)
+
+    @cherrypy.expose
+    def files(self, *args, **kwargs):
+        """
+        Handles the requests for the stage url.  This is not secure.
+        """
+        print "files"
+        url = urlparse.urlparse(cherrypy.url())
+        self.url_params = urlparse.parse_qs(url.query)
+        print url
+        print [self.url_params]
+        print args
+        #return self.serve_file(args)
+        return self._process_http_request(args, kwargs)
+
+    def _process_http_request(self, args, kwargs):
+        """
+        Common function to process HTTP requests where secure or insecure
+        """
+        print "common handler"
+        url = urlparse.urlparse(cherrypy.url())
+        self.url_params = urlparse.parse_qs(url.query)
+        print url
+        print [self.url_params]
+        response = None
+        for route, func in self.routes:
+            match = re.match(route, url.path)
+            if match:
+                print 'Route "%s" matched "%s"', route, url.path
+                log.debug('Route "%s" matched "%s"', route, url.path)
+                args = []
+                for param in match.groups():
+                    args.append(param)
+                response = func(*args)
+                break
+        if response:
+            return response
+        else:
+            return self._http_not_found()
+
     def _get_service_items(self):
+        """
+        Read the service item in use and return the data as a json object
+        """
         service_items = []
         if self.parent.current_item:
             current_unique_identifier = self.parent.current_item.unique_identifier
         else:
             current_unique_identifier = None
-        for item in self.service_manager.serviceItems:
+        for item in self.service_manager.service_items:
             service_item = item[u'service_item']
             service_items.append({
                 u'id': unicode(service_item.unique_identifier),
@@ -296,40 +338,6 @@ class HttpConnection(object):
             'slides': translate('RemotePlugin.Mobile', 'Slides')
         }
 
-    def ready_read(self):
-        """
-        Data has been sent from the client. Respond to it
-        """
-        log.debug(u'ready to read socket')
-        if self.socket.canReadLine():
-            data = str(self.socket.readLine())
-            try:
-                log.debug(u'received: ' + data)
-            except UnicodeDecodeError:
-                # Malicious request containing non-ASCII characters.
-                self.close()
-                return
-            words = data.split(' ')
-            response = None
-            if words[0] == u'GET':
-                url = urlparse.urlparse(words[1])
-                self.url_params = urlparse.parse_qs(url.query)
-                # Loop through the routes we set up earlier and execute them
-                for route, func in self.routes:
-                    match = re.match(route, url.path)
-                    if match:
-                        log.debug('Route "%s" matched "%s"', route, url.path)
-                        args = []
-                        for param in match.groups():
-                            args.append(param)
-                        response = func(*args)
-                        break
-            if response:
-                self.send_response(response)
-            else:
-                self.send_response(HttpResponse(code='404 Not Found'))
-            self.close()
-
     def serve_file(self, filename=None):
         """
         Send a file to the socket. For now, just a subset of file types
@@ -339,6 +347,7 @@ class HttpConnection(object):
         Ultimately for i18n, this could first look for xx/file.html before
         falling back to file.html... where xx is the language, e.g. 'en'
         """
+        print "serve_file", filename
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
@@ -346,7 +355,7 @@ class HttpConnection(object):
             filename = u'stage.html'
         path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
         if not path.startswith(self.parent.html_dir):
-            return HttpResponse(code=u'404 Not Found')
+            return self._http_not_found()
         ext = os.path.splitext(filename)[1]
         html = None
         if ext == u'.html':
@@ -375,11 +384,12 @@ class HttpConnection(object):
                 content = file_handle.read()
         except IOError:
             log.exception(u'Failed to open %s' % path)
-            return HttpResponse(code=u'404 Not Found')
+            return self._http_not_found()
         finally:
             if file_handle:
                 file_handle.close()
-        return HttpResponse(content, {u'Content-Type': mimetype})
+        cherrypy.response.headers['Content-Type'] = mimetype
+        return content
 
     def poll(self):
         """
@@ -389,24 +399,25 @@ class HttpConnection(object):
             u'service': self.service_manager.service_id,
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
-            u'twelve':Settings().value(u'remotes/twelve hour'),
+            u'twelve': Settings().value(u'remotes/twelve hour'),
             u'blank': self.live_controller.blankScreen.isChecked(),
             u'theme': self.live_controller.themeScreen.isChecked(),
             u'display': self.live_controller.desktopScreen.isChecked()
         }
-        return HttpResponse(json.dumps({u'results': result}),
-            {u'Content-Type': u'application/json'})
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': result})
 
     def display(self, action):
         """
         Hide or show the display screen.
+        This is a cross Thread call and UI is updated so Events need to be used.
 
         ``action``
             This is the action, either ``hide`` or ``show``.
         """
-        Registry().execute(u'slidecontroller_toggle_display', action)
-        return HttpResponse(json.dumps({u'results': {u'success': True}}),
-            {u'Content-Type': u'application/json'})
+        self.live_controller.emit(QtCore.SIGNAL(u'slidecontroller_toggle_display'), action)
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': {u'success': True}})
 
     def alert(self):
         """
@@ -417,14 +428,14 @@ class HttpConnection(object):
             try:
                 text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
             except KeyError, ValueError:
-                return HttpResponse(code=u'400 Bad Request')
+                return self._http_bad_request()
             text = urllib.unquote(text)
             Registry().execute(u'alerts_text', [text])
             success = True
         else:
             success = False
-        return HttpResponse(json.dumps({u'results': {u'success': success}}),
-            {u'Content-Type': u'application/json'})
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': {u'success': success}})
 
     def controller(self, type, action):
         """
@@ -465,34 +476,37 @@ class HttpConnection(object):
                 try:
                     data = json.loads(self.url_params[u'data'][0])
                 except KeyError, ValueError:
-                    return HttpResponse(code=u'400 Bad Request')
+                    return self._http_bad_request()
                 log.info(data)
                 # This slot expects an int within a list.
                 id = data[u'request'][u'id']
                 Registry().execute(event, [id])
             else:
-                Registry().execute(event)
+                Registry().execute(event, [0])
             json_data = {u'results': {u'success': True}}
-        return HttpResponse(json.dumps(json_data),
-            {u'Content-Type': u'application/json'})
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps(json_data)
 
     def service(self, action):
+        """
+        List details of the Service and update the UI
+        """
         event = u'servicemanager_%s' % action
         if action == u'list':
-            return HttpResponse(json.dumps({u'results': {u'items': self._get_service_items()}}),
-                {u'Content-Type': u'application/json'})
+            cherrypy.response.headers['Content-Type'] = u'application/json'
+            return json.dumps({u'results': {u'items': self._get_service_items()}})
         else:
             event += u'_item'
         if self.url_params and self.url_params.get(u'data'):
             try:
                 data = json.loads(self.url_params[u'data'][0])
             except KeyError, ValueError:
-                return HttpResponse(code=u'400 Bad Request')
+                return self._http_bad_request()
             Registry().execute(event, data[u'request'][u'id'])
         else:
             Registry().execute(event)
-        return HttpResponse(json.dumps({u'results': {u'success': True}}),
-            {u'Content-Type': u'application/json'})
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': {u'success': True}})
 
     def pluginInfo(self, action):
         """
@@ -507,9 +521,8 @@ class HttpConnection(object):
             for plugin in self.plugin_manager.plugins:
                 if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
                     searches.append([plugin.name, unicode(plugin.textStrings[StringContent.Name][u'plural'])])
-            return HttpResponse(
-                json.dumps({u'results': {u'items': searches}}),
-                {u'Content-Type': u'application/json'})
+            cherrypy.response.headers['Content-Type'] = u'application/json'
+            return json.dumps({u'results': {u'items': searches}})
 
     def search(self, type):
         """
@@ -521,15 +534,15 @@ class HttpConnection(object):
         try:
             text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
         except KeyError, ValueError:
-            return HttpResponse(code=u'400 Bad Request')
+            return self._http_bad_request()
         text = urllib.unquote(text)
         plugin = self.plugin_manager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
             results = plugin.mediaItem.search(text, False)
         else:
             results = []
-        return HttpResponse(json.dumps({u'results': {u'items': results}}),
-            {u'Content-Type': u'application/json'})
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': {u'items': results}})
 
     def go_live(self, type):
         """
@@ -538,11 +551,11 @@ class HttpConnection(object):
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:
-            return HttpResponse(code=u'400 Bad Request')
+            return self._http_bad_request()
         plugin = self.plugin_manager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             plugin.mediaItem.goLive(id, remote=True)
-        return HttpResponse(code=u'200 OK')
+        return self._http_success()
 
     def add_to_service(self, type):
         """
@@ -551,38 +564,22 @@ class HttpConnection(object):
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:
-            return HttpResponse(code=u'400 Bad Request')
+            return self._http_bad_request()
         plugin = self.plugin_manager.get_plugin_by_name(type)
         if plugin.status == PluginStatus.Active and plugin.mediaItem:
             item_id = plugin.mediaItem.createItemFromId(id)
             plugin.mediaItem.addToService(item_id, remote=True)
-        return HttpResponse(code=u'200 OK')
+        self._http_success()
 
-    def send_response(self, response):
-        http = u'HTTP/1.1 %s\r\n' % response.code
-        for header, value in response.headers.iteritems():
-            http += '%s: %s\r\n' % (header, value)
-        http += '\r\n'
-        self.socket.write(http)
-        self.socket.write(response.content)
+    def _http_success(self):
+        cherrypy.response.status = 200
 
-    def disconnected(self):
-        """
-        The client has disconnected. Tidy up
-        """
-        log.debug(u'socket disconnected')
-        self.close()
+    def _http_bad_request(self):
+        cherrypy.response.status = 400
 
-    def close(self):
-        """
-        The server has closed the connection. Tidy up
-        """
-        if not self.socket:
-            return
-        log.debug(u'close socket')
-        self.socket.close()
-        self.socket = None
-        self.parent.close_connection(self)
+    def _http_not_found(self):
+        cherrypy.response.status = 404
+        cherrypy.response.body = ["<html><body>Sorry, an error occured</body></html>"]
 
     def _get_service_manager(self):
         """
