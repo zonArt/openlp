@@ -108,7 +108,7 @@ class VlcPlayer(MediaPlayer):
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
         self.parent = parent
-        self.canFolder = True
+        self.can_folder = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 

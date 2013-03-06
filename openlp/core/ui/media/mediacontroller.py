@@ -488,7 +488,7 @@ class MediaController(object):
         else:
             for title in usedPlayers:
                 player = self.media_players[title]
-                if player.canFolder:
+                if player.can_folder:
                     self.resize(display, player)
                     if player.load(display):
                         self.current_media_players[controller.controller_type] = player
