@@ -84,7 +84,7 @@ class MediaController(object):
     The implementation of the Media Controller. The Media Controller adds an own
     class for every Player. Currently these are QtWebkit, Phonon and Vlc.
 
-    displayControllers are an array of controllers keyed on the
+    display_controllers are an array of controllers keyed on the
     slidecontroller or plugin which built them.  ControllerType is the class
     containing the key values.
 
@@ -100,7 +100,7 @@ class MediaController(object):
         Registry().register(u'media_controller', self)
         Registry().register_function(u'bootstrap_initialise', self.check_available_media_players)
         self.media_players = {}
-        self.displayControllers = {}
+        self.display_controllers = {}
         self.current_media_players = {}
         # Timer for video state
         self.timer = QtCore.QTimer()
@@ -125,9 +125,9 @@ class MediaController(object):
         """
         Set the active players and available media files
         """
-        savedPlayers = get_media_players()[0]
+        saved_players = get_media_players()[0]
         for player in self.media_players.keys():
-            self.media_players[player].isActive = player in savedPlayers
+            self.media_players[player].isActive = player in saved_players
 
     def _generate_extensions_lists(self):
         """
@@ -203,7 +203,7 @@ class MediaController(object):
         else:
             any_active = False
             for source in self.current_media_players.keys():
-                display = self._define_display(self.displayControllers[source])
+                display = self._define_display(self.display_controllers[source])
                 self.current_media_players[source].resize(display)
                 self.current_media_players[source].update_ui(display)
                 if self.current_media_players[source].state == MediaState.Playing:
@@ -214,7 +214,7 @@ class MediaController(object):
         # no players are active anymore
         for source in self.current_media_players.keys():
             if self.current_media_players[source].state != MediaState.Paused:
-                display = self._define_display(self.displayControllers[source])
+                display = self._define_display(self.display_controllers[source])
                 display.controller.seekSlider.setSliderPosition(0)
         self.timer.stop()
 
@@ -255,7 +255,7 @@ class MediaController(object):
         ``controller``
             The controller where a player will be placed
         """
-        self.displayControllers[controller.controller_type] = controller
+        self.display_controllers[controller.controller_type] = controller
         self.setup_generic_controls(controller)
 
     def setup_generic_controls(self, controller):
@@ -359,14 +359,14 @@ class MediaController(object):
         """
         player.resize(display)
 
-    def video(self, source, serviceItem, hidden=False, videoBehindText=False):
+    def video(self, source, service_item, hidden=False, videoBehindText=False):
         """
         Loads and starts a video to run with the option of sound
 
         ``source``
             Where the call originated form
 
-        ``serviceItem``
+        ``service_item``
             The player which is doing the playing
 
         ``hidden``
@@ -377,16 +377,16 @@ class MediaController(object):
         """
         log.debug(u'video')
         isValid = False
-        controller = self.displayControllers[source]
+        controller = self.display_controllers[source]
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
         controller.media_info.volume = controller.volumeSlider.value()
         controller.media_info.is_background = videoBehindText
-        controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_frame_path())
+        controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
         display = self._define_display(controller)
         if controller.is_live:
-            isValid = self._check_file_type(controller, display, serviceItem)
+            isValid = self._check_file_type(controller, display, service_item)
             display.override[u'theme'] = u''
             display.override[u'video'] = True
             if controller.media_info.is_background:
@@ -394,10 +394,10 @@ class MediaController(object):
                 controller.media_info.start_time = 0
                 controller.media_info.end_time = 0
             else:
-                controller.media_info.start_time = serviceItem.start_time
-                controller.media_info.end_time = serviceItem.end_time
+                controller.media_info.start_time = service_item.start_time
+                controller.media_info.end_time = service_item.end_time
         elif controller.preview_display:
-            isValid = self._check_file_type(controller, display, serviceItem)
+            isValid = self._check_file_type(controller, display, service_item)
         if not isValid:
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
@@ -412,7 +412,7 @@ class MediaController(object):
         if not controller.is_live:
             autoplay = True
         # Visible or background requested or Service Item wants to autostart
-        elif not hidden or controller.media_info.is_background or serviceItem.will_auto_start:
+        elif not hidden or controller.media_info.is_background or service_item.will_auto_start:
             autoplay = True
         # Unblank on load set
         elif Settings().value(u'general/auto unblank'):
@@ -426,22 +426,22 @@ class MediaController(object):
         log.debug(u'use %s controller' % self.current_media_players[controller.controller_type])
         return True
 
-    def media_length(self, serviceItem):
+    def media_length(self, service_item):
         """
         Loads and starts a media item to obtain the media length
 
-        ``serviceItem``
+        ``service_item``
             The ServiceItem containing the details to be played.
         """
-        controller = self.displayControllers[DisplayControllerType.Plugin]
+        controller = self.display_controllers[DisplayControllerType.Plugin]
         log.debug(u'media_length')
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
         controller.media_info.volume = 0
-        controller.media_info.file_info = QtCore.QFileInfo(serviceItem.get_frame_path())
+        controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
         display = controller._display
-        if not self._check_file_type(controller, display, serviceItem):
+        if not self._check_file_type(controller, display, service_item):
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 translate('MediaPlugin.MediaItem', 'Unsupported File'))
@@ -450,24 +450,24 @@ class MediaController(object):
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
                 translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
-        serviceItem.set_media_length(controller.media_info.length)
+        service_item.set_media_length(controller.media_info.length)
         self.media_stop(controller)
         log.debug(u'use %s controller' % self.current_media_players[controller.controller_type])
         return True
 
-    def _check_file_type(self, controller, display, serviceItem):
+    def _check_file_type(self, controller, display, service_item):
         """
         Select the correct media Player type from the prioritized Player list
 
         ``controller``
             First element is the controller which should be used
 
-        ``serviceItem``
+        ``service_item``
             The ServiceItem containing the details to be played.
         """
         usedPlayers = get_media_players()[0]
-        if serviceItem.title != UiStrings().Automatic:
-            usedPlayers = [serviceItem.title.lower()]
+        if service_item.title != UiStrings().Automatic:
+            usedPlayers = [service_item.title.lower()]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % controller.media_info.file_info.suffix().lower()
             for title in usedPlayers:
@@ -721,8 +721,8 @@ class MediaController(object):
         Reset all the media controllers when OpenLP shuts down
         """
         self.timer.stop()
-        for controller in self.displayControllers:
-            self.media_reset(self.displayControllers[controller])
+        for controller in self.display_controllers:
+            self.media_reset(self.display_controllers[controller])
 
     def _define_display(self, controller):
         """

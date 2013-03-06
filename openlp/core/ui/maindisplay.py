@@ -220,9 +220,9 @@ class MainDisplay(Display):
                 (self.screen[u'size'].width() - splash_image.width()) / 2,
                 (self.screen[u'size'].height() - splash_image.height()) / 2,
                 splash_image)
-            serviceItem = ServiceItem()
-            serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
-            self.web_view.setHtml(build_html(serviceItem, self.screen, self.is_live, None,
+            service_item = ServiceItem()
+            service_item.bg_image_bytes = image_to_byte(self.initialFrame)
+            self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
                 plugins=self.plugin_manager.plugins))
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
@@ -290,10 +290,10 @@ class MainDisplay(Display):
         API for replacement backgrounds so Images are added directly to cache.
         """
         self.image_manager.add_image(path, ImageSource.ImagePlugin, background)
-        if not hasattr(self, u'serviceItem'):
+        if not hasattr(self, u'service_item'):
             return False
         self.override[u'image'] = path
-        self.override[u'theme'] = self.serviceItem.themedata.background_filename
+        self.override[u'theme'] = self.service_item.themedata.background_filename
         self.image(path)
         # Update the preview frame.
         if self.is_live:
@@ -332,8 +332,8 @@ class MainDisplay(Display):
         image plugin has changed the background.
         """
         log.debug(u'reset_image')
-        if hasattr(self, u'serviceItem'):
-            self.display_image(self.serviceItem.bg_image_bytes)
+        if hasattr(self, u'service_item'):
+            self.display_image(self.service_item.bg_image_bytes)
         else:
             self.display_image(None)
         # clear the cache
@@ -347,10 +347,10 @@ class MainDisplay(Display):
         was_visible = self.isVisible()
         self.application.process_events()
         # We must have a service item to preview.
-        if self.is_live and hasattr(self, u'serviceItem'):
+        if self.is_live and hasattr(self, u'service_item'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
-            if self.serviceItem.themedata and self.serviceItem.themedata.display_slide_transition:
+            if self.service_item.themedata and self.service_item.themedata.display_slide_transition:
                 while not self.frame.evaluateJavaScript(u'show_text_completed()'):
                     self.application.process_events()
         # Wait for the webview to update before getting the preview.
@@ -373,15 +373,15 @@ class MainDisplay(Display):
                     self.setVisible(True)
         return QtGui.QPixmap.grabWidget(self)
 
-    def build_html(self, serviceItem, image_path=u''):
+    def build_html(self, service_item, image_path=u''):
         """
-        Store the serviceItem and build the new HTML from it. Add the
+        Store the service_item and build the new HTML from it. Add the
         HTML to the display
         """
         log.debug(u'build_html')
         self.webLoaded = False
         self.initialFrame = None
-        self.serviceItem = serviceItem
+        self.service_item = service_item
         background = None
         # We have an image override so keep the image till the theme changes.
         if self.override:
@@ -390,31 +390,31 @@ class MainDisplay(Display):
                 Registry().execute(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override[u'theme'] != serviceItem.themedata.background_filename:
+            elif self.override[u'theme'] != service_item.themedata.background_filename:
                 Registry().execute(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
                 background = self.image_manager.get_image_bytes(self.override[u'image'], ImageSource.ImagePlugin)
-        self.set_transparency(self.serviceItem.themedata.background_type ==
+        self.set_transparency(self.service_item.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
-        if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.image_manager.get_image_bytes(
-                self.serviceItem.themedata.background_filename, ImageSource.Theme
+        if self.service_item.themedata.background_filename:
+            self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(
+                self.service_item.themedata.background_filename, ImageSource.Theme
             )
         if image_path:
             image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.is_live, background, image_bytes,
+        html = build_html(self.service_item, self.screen, self.is_live, background, image_bytes,
             plugins=self.plugin_manager.plugins)
         log.debug(u'buildHtml - pre setHtml')
         self.web_view.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
-        if serviceItem.foot_text:
-            self.footer(serviceItem.foot_text)
+        if service_item.foot_text:
+            self.footer(service_item.foot_text)
         # if was hidden keep it hidden
-        if self.hide_mode and self.is_live and not serviceItem.is_media():
+        if self.hide_mode and self.is_live and not service_item.is_media():
             if Settings().value(u'general/auto unblank'):
                 Registry().execute(u'slidecontroller_live_unblank')
             else:

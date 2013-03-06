@@ -215,25 +215,25 @@ class Renderer(object):
         # save value for use in format_slide
         self.force_page = force_page
         # build a service item to generate preview
-        serviceItem = ServiceItem()
+        service_item = ServiceItem()
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
+            service_item.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
-            serviceItem.add_from_text(VERSE)
-        serviceItem.raw_footer = FOOTER
+            service_item.add_from_text(VERSE)
+        service_item.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
             self.image_manager.add_image(
                 theme_data.background_filename, ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
-        serviceItem.themedata = theme_data
-        serviceItem.main = main
-        serviceItem.footer = footer
-        serviceItem.render(True)
+        service_item.themedata = theme_data
+        service_item.main = main
+        service_item.footer = footer
+        service_item.render(True)
         if not self.force_page:
-            self.display.build_html(serviceItem)
-            raw_html = serviceItem.get_rendered_frame(0)
+            self.display.build_html(service_item)
+            raw_html = service_item.get_rendered_frame(0)
             self.display.text(raw_html, False)
             preview = self.display.preview()
             return preview

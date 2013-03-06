@@ -303,9 +303,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self._modified = False
         self._file_name = u''
         self.service_has_all_original_files = True
-        self.serviceNoteForm = ServiceNoteForm()
-        self.serviceItemEditForm = ServiceItemEditForm()
-        self.startTimeForm = StartTimeForm()
+        self.service_note_form = ServiceNoteForm()
+        self.service_item_edit_form = ServiceItemEditForm()
+        self.start_time_form = StartTimeForm()
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
@@ -337,7 +337,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self._file_name = unicode(file_name)
         self.main_window.setServiceModified(self.is_modified(), self.short_file_name())
         Settings().setValue(u'servicemanager/last file', file_name)
-        self._saveLite = self._file_name.endswith(u'.oszl')
+        self._save_lite = self._file_name.endswith(u'.oszl')
 
     def file_name(self):
         """
@@ -505,7 +505,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             if item[u'service_item'].missing_frames():
                 self.service_items.remove(item)
             else:
-                service_item = item[u'service_item'].get_service_repr(self._saveLite)
+                service_item = item[u'service_item'].get_service_repr(self._save_lite)
                 if service_item[u'header'][u'background_audio']:
                     for i, file_name in enumerate(service_item[u'header'][u'background_audio']):
                         new_file = os.path.join(u'audio', item[u'service_item'].unique_identifier, file_name)
@@ -591,7 +591,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.main_window.displayProgressBar(len(self.service_items) + 1)
         for item in self.service_items:
             self.main_window.incrementProgressBar()
-            service_item = item[u'service_item'].get_service_repr(self._saveLite)
+            service_item = item[u'service_item'].get_service_repr(self._save_lite)
             #@todo check for file item on save.
             service.append({u'serviceitem': service_item})
             self.main_window.incrementProgressBar()
@@ -675,7 +675,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         if not self.file_name():
             return self.save_file_as()
-        if self._saveLite:
+        if self._save_lite:
             return self.save_local_file()
         else:
             return self.save_file()
@@ -721,7 +721,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 for item in items:
                     self.main_window.incrementProgressBar()
                     service_item = ServiceItem()
-                    if self._saveLite:
+                    if self._save_lite:
                         service_item.set_from_service(item)
                     else:
                         service_item.set_from_service(item, self.servicePath)
@@ -848,9 +848,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Allow the service note to be edited
         """
         item = self.find_service_item()[0]
-        self.serviceNoteForm.text_edit.setPlainText(self.service_items[item][u'service_item'].notes)
-        if self.serviceNoteForm.exec_():
-            self.service_items[item][u'service_item'].notes = self.serviceNoteForm.text_edit.toPlainText()
+        self.service_note_form.text_edit.setPlainText(self.service_items[item][u'service_item'].notes)
+        if self.service_note_form.exec_():
+            self.service_items[item][u'service_item'].notes = self.service_note_form.text_edit.toPlainText()
             self.repaint_service_list(item, -1)
             self.set_modified()
 
@@ -859,8 +859,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Opens a dialog to type in service item notes.
         """
         item = self.find_service_item()[0]
-        self.startTimeForm.item = self.service_items[item]
-        if self.startTimeForm.exec_():
+        self.start_time_form.item = self.service_items[item]
+        if self.start_time_form.exec_():
             self.repaint_service_list(item, -1)
 
     def toggle_auto_play_slides_once(self):
@@ -931,9 +931,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         display if changes are saved.
         """
         item = self.find_service_item()[0]
-        self.serviceItemEditForm.set_service_item(self.service_items[item][u'service_item'])
-        if self.serviceItemEditForm.exec_():
-            self.add_service_item(self.serviceItemEditForm.get_service_item(),
+        self.service_item_edit_form.set_service_item(self.service_items[item][u'service_item'])
+        if self.service_item_edit_form.exec_():
+            self.add_service_item(self.service_item_edit_form.get_service_item(),
                 replace=True, expand=self.service_items[item][u'expanded'])
 
     def preview_live(self, unique_identifier, row):
@@ -1136,17 +1136,17 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             self.repaint_service_list(item - 1, -1)
             self.set_modified()
 
-    def repaint_service_list(self, serviceItem, serviceItemChild):
+    def repaint_service_list(self, service_item, service_item_child):
         """
         Clear the existing service list and prepaint all the items. This is
         used when moving items as the move takes place in a supporting list,
         and when regenerating all the items due to theme changes.
 
-        ``serviceItem``
+        ``service_item``
             The item which changed. (int)
 
-        ``serviceItemChild``
-            The child of the ``serviceItem``, which will be selected. (int)
+        ``service_item_child``
+            The child of the ``service_item``, which will be selected. (int)
         """
         # Correct order of items in array
         count = 1
@@ -1207,10 +1207,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 text = frame[u'title'].replace(u'\n', u' ')
                 child.setText(0, text[:40])
                 child.setData(0, QtCore.Qt.UserRole, count)
-                if serviceItem == item_count:
-                    if item[u'expanded'] and serviceItemChild == count:
+                if service_item == item_count:
+                    if item[u'expanded'] and service_item_child == count:
                         self.service_manager_list.setCurrentItem(child)
-                    elif serviceItemChild == -1:
+                    elif service_item_child == -1:
                         self.service_manager_list.setCurrentItem(treewidgetitem)
             treewidgetitem.setExpanded(item[u'expanded'])
 
@@ -1443,20 +1443,20 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             (1, 2)
         """
         items = self.service_manager_list.selectedItems()
-        serviceItem = -1
-        serviceItemChild = -1
+        service_item = -1
+        service_item_child = -1
         for item in items:
             parent_item = item.parent()
             if parent_item is None:
-                serviceItem = item.data(0, QtCore.Qt.UserRole)
+                service_item = item.data(0, QtCore.Qt.UserRole)
             else:
-                serviceItem = parent_item.data(0, QtCore.Qt.UserRole)
-                serviceItemChild = item.data(0, QtCore.Qt.UserRole)
+                service_item = parent_item.data(0, QtCore.Qt.UserRole)
+                service_item_child = item.data(0, QtCore.Qt.UserRole)
             # Adjust for zero based arrays.
-            serviceItem -= 1
+            service_item -= 1
             # Only process the first item on the list for this method.
             break
-        return serviceItem, serviceItemChild
+        return service_item, service_item_child
 
     def drop_event(self, event):
         """

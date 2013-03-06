@@ -447,7 +447,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def generateSlideData(self, serviceItem, item=None, xmlVersion=False, remote=False,
+    def generateSlideData(self, service_item, item=None, xmlVersion=False, remote=False,
             context=ServiceItemContext.Live):
         """
         Generate the slide data. Needs to be implemented by the plugin.
@@ -481,10 +481,10 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items to preview.'))
         else:
             log.debug(u'%s Preview requested', self.plugin.name)
-            serviceItem = self.buildServiceItem()
-            if serviceItem:
-                serviceItem.from_plugin = True
-                self.preview_controller.add_service_item(serviceItem)
+            service_item = self.buildServiceItem()
+            if service_item:
+                service_item.from_plugin = True
+                self.preview_controller.add_service_item(service_item)
                 if keepFocus:
                     self.listView.setFocus()
 
@@ -507,13 +507,13 @@ class MediaManagerItem(QtGui.QWidget):
         item = None
         if item_id:
             item = self.createItemFromId(item_id)
-        serviceItem = self.buildServiceItem(item, remote=remote)
-        if serviceItem:
+        service_item = self.buildServiceItem(item, remote=remote)
+        if service_item:
             if not item_id:
-                serviceItem.from_plugin = True
+                service_item.from_plugin = True
             if remote:
-                serviceItem.will_auto_start = True
-            self.live_controller.add_service_item(serviceItem)
+                service_item.will_auto_start = True
+            self.live_controller.add_service_item(service_item)
 
     def createItemFromId(self, item_id):
         """
@@ -545,10 +545,10 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Add this item to the current service.
         """
-        serviceItem = self.buildServiceItem(item, True, remote=remote, context=ServiceItemContext.Service)
-        if serviceItem:
-            serviceItem.from_plugin = False
-            self.service_manager.add_service_item(serviceItem, replace=replace)
+        service_item = self.buildServiceItem(item, True, remote=remote, context=ServiceItemContext.Service)
+        if service_item:
+            service_item.from_plugin = False
+            self.service_manager.add_service_item(service_item, replace=replace)
 
     def onAddEditClick(self):
         """
@@ -559,13 +559,13 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items.'))
         else:
             log.debug(u'%s Add requested', self.plugin.name)
-            serviceItem = self.service_manager.get_service_item()
-            if not serviceItem:
+            service_item = self.service_manager.get_service_item()
+            if not service_item:
                 QtGui.QMessageBox.information(self, UiStrings().NISs,
                     translate('OpenLP.MediaManagerItem', 'You must select an existing service item to add to.'))
-            elif self.plugin.name == serviceItem.name:
-                self.generateSlideData(serviceItem)
-                self.service_manager.add_service_item(serviceItem, replace=True)
+            elif self.plugin.name == service_item.name:
+                self.generateSlideData(service_item)
+                self.service_manager.add_service_item(service_item, replace=True)
             else:
                 # Turn off the remote edit update message indicator
                 QtGui.QMessageBox.information(self, translate('OpenLP.MediaManagerItem', 'Invalid Service Item'),
@@ -575,10 +575,10 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Common method for generating a service item
         """
-        serviceItem = ServiceItem(self.plugin)
-        serviceItem.add_icon(self.plugin.iconPath)
-        if self.generateSlideData(serviceItem, item, xmlVersion, remote, context):
-            return serviceItem
+        service_item = ServiceItem(self.plugin)
+        service_item.add_icon(self.plugin.iconPath)
+        if self.generateSlideData(service_item, item, xmlVersion, remote, context):
+            return service_item
         else:
             return None
 
