@@ -148,7 +148,7 @@ class Plugin(QtCore.QObject):
         QtCore.QObject.__init__(self)
         self.name = name
         self.textStrings = {}
-        self.setPluginTextStrings()
+        self.set_plugin_text_strings()
         self.nameStrings = self.textStrings[StringContent.Name]
         if version:
             self.version = version
@@ -319,7 +319,7 @@ class Plugin(QtCore.QObject):
                 Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
             settings.endGroup()
 
-    def usesTheme(self, theme):
+    def uses_theme(self, theme):
         """
         Called to find out if a plugin is currently using a theme.
 
@@ -327,7 +327,7 @@ class Plugin(QtCore.QObject):
         """
         return False
 
-    def renameTheme(self, oldTheme, newTheme):
+    def rename_theme(self, oldTheme, newTheme):
         """
         Renames a theme a plugin is using making the plugin use the new name.
 

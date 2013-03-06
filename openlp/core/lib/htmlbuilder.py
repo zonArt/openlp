@@ -208,7 +208,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     ``screen``
         Current display information
 
-    ``islive``
+    ``is_live``
         Item is going live, rather than preview/theme building
 
     ``background``
