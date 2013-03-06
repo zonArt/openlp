@@ -126,16 +126,16 @@ class PhononPlayer(MediaPlayer):
         """
         Set up the player widgets
         """
-        display.phononWidget = Phonon.VideoWidget(display)
-        display.phononWidget.resize(display.size())
+        display.phonon_widget = Phonon.VideoWidget(display)
+        display.phonon_widget.resize(display.size())
         display.media_object = Phonon.MediaObject(display)
-        Phonon.createPath(display.media_object, display.phononWidget)
-        if display.hasAudio:
+        Phonon.createPath(display.media_object, display.phonon_widget)
+        if display.has_audio:
             display.audio = Phonon.AudioOutput(Phonon.VideoCategory, display.media_object)
             Phonon.createPath(display.media_object, display.audio)
-        display.phononWidget.raise_()
-        display.phononWidget.hide()
-        self.hasOwnWidget = True
+        display.phonon_widget.raise_()
+        display.phonon_widget.hide()
+        self.has_own_widget = True
 
     def check_available(self):
         """
@@ -177,7 +177,7 @@ class PhononPlayer(MediaPlayer):
         """
         Resize the display
         """
-        display.phononWidget.resize(display.size())
+        display.phonon_widget.resize(display.size())
 
     def play(self, display):
         """
@@ -197,7 +197,7 @@ class PhononPlayer(MediaPlayer):
         controller.media_info.length = int(display.media_object.totalTime() / 1000)
         controller.seekSlider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
-        display.phononWidget.raise_()
+        display.phonon_widget.raise_()
         return True
 
     def pause(self, display):
@@ -221,7 +221,7 @@ class PhononPlayer(MediaPlayer):
         Set the volume
         """
         # 1.0 is the highest value
-        if display.hasAudio:
+        if display.has_audio:
             vol = float(vol) / float(100)
             display.audio.setVolume(vol)
 
@@ -238,15 +238,15 @@ class PhononPlayer(MediaPlayer):
         display.media_object.stop()
         display.media_object.clearQueue()
         self.set_visible(display, False)
-        display.phononWidget.setVisible(False)
+        display.phonon_widget.setVisible(False)
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
         """
         Set the visibility of the widget
         """
-        if self.hasOwnWidget:
-            display.phononWidget.setVisible(status)
+        if self.has_own_widget:
+            display.phonon_widget.setVisible(status)
 
     def update_ui(self, display):
         """

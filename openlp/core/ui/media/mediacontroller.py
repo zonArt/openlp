@@ -319,11 +319,11 @@ class MediaController(object):
         self.finalise()
         # update player status
         self._set_active_players()
-        display.hasAudio = True
+        display.has_audio = True
         if display.is_live and preview:
             return
         if preview:
-            display.hasAudio = False
+            display.has_audio = False
         for player in self.media_players.values():
             if player.isActive:
                 player.setup(display)
@@ -474,7 +474,7 @@ class MediaController(object):
                 player = self.media_players[title]
                 if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or controller.media_info.is_background and \
-                            player.canBackground:
+                            player.can_background:
                         self.resize(display, player)
                         if player.load(display):
                             self.current_media_players[controller.controller_type] = player

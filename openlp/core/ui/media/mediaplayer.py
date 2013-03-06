@@ -47,10 +47,10 @@ class MediaPlayer(object):
         self.name = name
         self.available = self.check_available()
         self.isActive = False
-        self.canBackground = False
+        self.can_background = False
         self.canFolder = False
         self.state = MediaState.Off
-        self.hasOwnWidget = False
+        self.has_own_widget = False
         self.audio_extensions_list = []
         self.video_extensions_list = []
 
