@@ -176,7 +176,7 @@ class SongsPlugin(Plugin):
         return translate('SongsPlugin', '<strong>Songs Plugin</strong>'
             '<br />The songs plugin provides the ability to display and manage songs.')
 
-    def usesTheme(self, theme):
+    def uses_theme(self, theme):
         """
         Called to find out if the song plugin is currently using a theme.
 
@@ -186,7 +186,7 @@ class SongsPlugin(Plugin):
             return True
         return False
 
-    def renameTheme(self, oldTheme, newTheme):
+    def rename_theme(self, oldTheme, newTheme):
         """
         Renames a theme the song plugin is using making the plugin use the new
         name.
@@ -209,7 +209,7 @@ class SongsPlugin(Plugin):
         importer.register(self.mediaItem.importWizard)
         return importer
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """

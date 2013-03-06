@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
-    image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags
+    image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
 
 class TestLib(TestCase):
 
@@ -317,6 +317,45 @@ class TestLib(TestCase):
 
             # WHEN: Clean the string.
             result_string = clean_tags(string_to_pass)
+
+            # THEN: The strings should be identical.
+            assert result_string == wanted_string, u'The strings should be identical.'
+
+    def expand_tags_test(self):
+        """
+        Test the expand_tags() method.
+        """
+        with patch(u'openlp.core.lib.FormattingTags.get_html_tags') as mocked_get_tags:
+            # GIVEN: Mocked get_html_tags() method.
+            mocked_get_tags.return_value = [
+                {
+                    u'desc': u'Black',
+                    u'start tag': u'{b}',
+                    u'start html': u'<span style="-webkit-text-fill-color:black">',
+                    u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True,
+                    u'temporary': False
+                },
+                {
+                    u'desc': u'Yellow',
+                    u'start tag': u'{y}',
+                    u'start html': u'<span style="-webkit-text-fill-color:yellow">',
+                    u'end tag': u'{/y}', u'end html': u'</span>', u'protected': True,
+                    u'temporary': False
+                },
+                {
+                    u'desc': u'Green',
+                    u'start tag': u'{g}',
+                    u'start html': u'<span style="-webkit-text-fill-color:green">',
+                    u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True,
+                    u'temporary': False
+                }
+            ]
+            string_to_pass = u'{b}black{/b}{y}yellow{/y}'
+            wanted_string = u'<span style="-webkit-text-fill-color:black">black</span>' + \
+                '<span style="-webkit-text-fill-color:yellow">yellow</span>'
+
+            # WHEN: Replace the tags.
+            result_string = expand_tags(string_to_pass)
 
             # THEN: The strings should be identical.
             assert result_string == wanted_string, u'The strings should be identical.'
