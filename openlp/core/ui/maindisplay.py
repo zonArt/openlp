@@ -347,13 +347,14 @@ class MainDisplay(Display):
         Generates a preview of the image displayed.
         """
         log.debug(u'preview for %s', self.isLive)
+        was_visible = self.isVisible()
         self.application.process_events()
         # We must have a service item to preview.
         if self.isLive and hasattr(self, u'serviceItem'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
             if self.serviceItem.themedata and self.serviceItem.themedata.display_slide_transition:
-                while self.frame.evaluateJavaScript(u'show_text_complete()') == u'false':
+                while not self.frame.evaluateJavaScript(u'show_text_completed()'):
                     self.application.process_events()
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
@@ -363,7 +364,8 @@ class MainDisplay(Display):
         if self.isLive:
             if self.hideMode:
                 self.hide_display(self.hideMode)
-            else:
+            # Only continue if the visibility wasn't changed during method call.
+            elif was_visible == self.isVisible():
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.

@@ -127,7 +127,7 @@ sup {
         document.getElementById('footer').innerHTML = footertext;
     }
 
-    function show_text(newtext){
+    function show_text(new_text){
         var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
@@ -142,57 +142,47 @@ sup {
             if(outline != null)
                 txt = outline;
             if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
-                newtext = newtext.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
+                new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
                     function(match) {
                         return '</span>' + match + '<span>';
                     });
-                newtext = '<span>' + newtext + '</span>';
+                new_text = '<span>' + new_text + '</span>';
             }
         }
-        text_fade('lyricsmain', newtext);
-        text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext.replace(match, ''));
-        if(text_opacity() == 1) return;
-        timer = setTimeout(function(){
-            show_text(newtext);
-        }, 100);
+        text_fade('lyricsmain', new_text);
+        text_fade('lyricsoutline', new_text);
+        text_fade('lyricsshadow', new_text.replace(match, ''));
     }
 
-    function text_fade(id, newtext){
+    function text_fade(id, new_text){
         /*
-        Using -webkit-transition: opacity 1s linear; would have been preferred
-        but it isn't currently quick enough when animating multiple layers of
-        large areas of large text. Therefore do it manually as best we can.
-        Hopefully in the future we can revisit and do more interesting
-        transitions using -webkit-transition and -webkit-transform.
-        However we need to ensure interrupted transitions (quickly change 2
-        slides) still looks pretty and is zippy.
+        Show the text.
         */
         var text = document.getElementById(id);
         if(text == null) return;
         if(!transition){
-            text.innerHTML = newtext;
+            text.innerHTML = new_text;
             return;
         }
-        if(newtext == text.innerHTML){
-            text.style.opacity = parseFloat(text.style.opacity) + 0.3;
-            if(text.style.opacity > 0.7)
-                text.style.opacity = 1;
-        } else {
-            text.style.opacity = parseFloat(text.style.opacity) - 0.3;
-            if(text.style.opacity <= 0.1){
-                text.innerHTML = newtext;
-            }
-        }
+        // Fade text out. 0.2 to minimize the time "nothing" is shown on the screen.
+        text.style.opacity = '0.2';
+        // Fade new text in after the old text has finished fading out.
+        timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
     }
 
-    function text_opacity(){
-        var text = document.getElementById('lyricsmain');
-        return getComputedStyle(text, '').opacity;
+    function _show_text(text, new_text) {
+        /*
+        Helper function to show the new_text delayed.
+        */
+        text.innerHTML = new_text;
+        text.style.opacity = '1';
+        // Wait until the text is completely visible. We want to save the timer id, to be able to call
+        // clearTimeout(timer) when the text has changed before finishing fading.
+        timer = window.setTimeout(function(){timer = null;}, 400);
     }
 
-    function show_text_complete(){
-        return (text_opacity() == 1);
+    function show_text_completed(){
+        return (timer == null);
     }
 </script>
 </head>
@@ -336,6 +326,7 @@ def build_lyrics_css(item, webkit_ver):
 .lyricscell {
     display: table-cell;
     word-wrap: break-word;
+    -webkit-transition: opacity 0.4s ease;
     %s
 }
 .lyricsmain {
