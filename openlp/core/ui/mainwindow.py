@@ -1287,7 +1287,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadProgressBar.setValue(0)
         self.application.process_events()
 
-    def incrementProgressBar(self):
+    def increment_progress_bar(self):
         """
         Increase the Progress Bar value by 1
         """
