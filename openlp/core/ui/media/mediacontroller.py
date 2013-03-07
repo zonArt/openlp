@@ -49,7 +49,7 @@ class MediaSlider(QtGui.QSlider):
     """
     Allows the mouse events of a slider to be overridden and extra functionality added
     """
-    def __init__(self, direction, manager, controller, parent=None):
+    def __init__(self, direction, manager, controller):
         """
         Constructor
         """

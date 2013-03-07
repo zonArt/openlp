@@ -274,12 +274,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.setWindowTitle(UiStrings().NewTheme)
         return QtGui.QWizard.exec_(self)
 
-    def initializePage(self, id):
+    def initializePage(self, page_id):
         """
         Set up the pages for Initial run through dialog
         """
-        log.debug(u'initializePage %s' % id)
-        wizardPage = self.page(id)
+        log.debug(u'initializePage %s' % page_id)
+        wizardPage = self.page(page_id)
         if wizardPage == self.backgroundPage:
             self.setBackgroundPageValues()
         elif wizardPage == self.mainAreaPage:

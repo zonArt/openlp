@@ -578,9 +578,9 @@ class SlideController(DisplayController):
                 width = self.main_window.controlSplitter.sizes()[self.split]
                 for framenumber in range(len(self.service_item.get_frames())):
                     self.preview_list_widget.setRowHeight(framenumber, width / self.ratio)
-        self.onControllerSizeChanged(self.controller.width(), self.controller.height())
+        self.onControllerSizeChanged(self.controller.width())
 
-    def onControllerSizeChanged(self, width, height):
+    def onControllerSizeChanged(self, width):
         """
         Change layout of display control buttons on controller size change
         """

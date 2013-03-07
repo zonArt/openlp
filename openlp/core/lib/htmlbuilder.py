@@ -244,7 +244,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
             js_additions += plugin.getDisplayJavaScript()
             html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (
-        build_background_css(item, width, height),
+        build_background_css(item, width),
         css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item, webkit_ver),
@@ -269,7 +269,7 @@ def webkit_version():
     return webkit_ver
 
 
-def build_background_css(item, width, height):
+def build_background_css(item, width):
     """
     Build the background css
 
