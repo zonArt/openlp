@@ -191,15 +191,15 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.setPage(FirstTimePage.Defaults, self.defaultsPage)
         # Progress page
         self.progressPage = QtGui.QWizardPage()
-        self.progressPage.setObjectName(u'progressPage')
+        self.progressPage.setObjectName(u'progress_page')
         self.progressLayout = QtGui.QVBoxLayout(self.progressPage)
         self.progressLayout.setMargin(48)
-        self.progressLayout.setObjectName(u'progressLayout')
+        self.progressLayout.setObjectName(u'progress_layout')
         self.progressLabel = QtGui.QLabel(self.progressPage)
-        self.progressLabel.setObjectName(u'progressLabel')
+        self.progressLabel.setObjectName(u'progress_label')
         self.progressLayout.addWidget(self.progressLabel)
         self.progressBar = QtGui.QProgressBar(self.progressPage)
-        self.progressBar.setObjectName(u'progressBar')
+        self.progressBar.setObjectName(u'progress_bar')
         self.progressLayout.addWidget(self.progressBar)
         FirstTimeWizard.setPage(FirstTimePage.Progress, self.progressPage)
         self.retranslateUi(FirstTimeWizard)
@@ -209,9 +209,9 @@ class Ui_FirstTimeWizard(object):
         Translate the UI on the fly
         """
         FirstTimeWizard.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'First Time Wizard'))
-        self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
+        self.title_label.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
             translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
-        self.informationLabel.setText(translate('OpenLP.FirstTimeWizard',
+        self.information_label.setText(translate('OpenLP.FirstTimeWizard',
             'This wizard will help you to configure OpenLP for initial use. Click the next button below to start.'))
         self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
         self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))

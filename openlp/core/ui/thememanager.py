@@ -681,7 +681,7 @@ class ThemeManager(QtGui.QWidget):
         log.debug('update_preview_images')
         self.main_window.displayProgressBar(len(self.theme_list))
         for theme in self.theme_list:
-            self.main_window.incrementProgressBar()
+            self.main_window.increment_progress_bar()
             self.generate_and_save_image(self.path, theme, self.get_theme_data(theme))
         self.main_window.finishedProgressBar()
         self.load_themes()

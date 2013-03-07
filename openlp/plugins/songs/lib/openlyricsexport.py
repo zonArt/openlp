@@ -62,12 +62,12 @@ class OpenLyricsExport(object):
         """
         log.debug(u'started OpenLyricsExport')
         openLyrics = OpenLyrics(self.manager)
-        self.parent.progressBar.setMaximum(len(self.songs))
+        self.parent.progress_bar.setMaximum(len(self.songs))
         for song in self.songs:
             self.application.process_events()
             if self.parent.stop_export_flag:
                 return False
-            self.parent.incrementProgressBar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
+            self.parent.increment_progress_bar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
                 song.title)
             xml = openLyrics.song_to_xml(song)
             tree = etree.ElementTree(etree.fromstring(xml))

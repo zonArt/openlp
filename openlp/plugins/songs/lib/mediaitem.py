@@ -289,9 +289,9 @@ class SongMediaItem(MediaManagerItem):
                 self.onClearTextButtonClick()
 
     def onImportClick(self):
-        if not hasattr(self, u'importWizard'):
-            self.importWizard = SongImportForm(self, self.plugin)
-        self.importWizard.exec_()
+        if not hasattr(self, u'import_wizard'):
+            self.import_wizard = SongImportForm(self, self.plugin)
+        self.import_wizard.exec_()
         # Run song load as list may have been cancelled but some songs loaded
         Registry().execute(u'songs_load_list')
 
@@ -378,7 +378,7 @@ class SongMediaItem(MediaManagerItem):
                 except OSError:
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
             self.main_window.finishedProgressBar()
             self.application.set_normal_cursor()
             self.onSearchTextButtonClicked()

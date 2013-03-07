@@ -40,8 +40,8 @@ log = logging.getLogger(__name__)
 
 class OpenLPToolbar(QtGui.QToolBar):
     """
-    Lots of toolbars around the place, so it makes sense to have a common way
-    to manage them. This is the base toolbar class.
+    Lots of toolbars around the place, so it makes sense to have a common way to manage them. This is the base toolbar
+    class.
     """
     def __init__(self, parent):
         """
@@ -55,10 +55,9 @@ class OpenLPToolbar(QtGui.QToolBar):
 
     def add_toolbar_action(self, name, **kwargs):
         """
-        A method to help developers easily add a button to the toolbar.
-        A new QAction is created by calling ``create_action()``. The action is
-        added to the toolbar and the toolbar is set as parent.
-        For more details please look at openlp.core.lib.ui.create_action()
+        A method to help developers easily add a button to the toolbar. A new QAction is created by calling
+        ``create_action()``. The action is added to the toolbar and the toolbar is set as parent. For more details
+        please look at openlp.core.lib.ui.create_action()
         """
         action = create_widget_action(self, name, **kwargs)
         self.actions[name] = action

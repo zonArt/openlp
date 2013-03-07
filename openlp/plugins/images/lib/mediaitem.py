@@ -105,7 +105,7 @@ class ImageMediaItem(MediaManagerItem):
                 if text:
                     delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
             Settings.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
             self.application.set_normal_cursor()
@@ -134,7 +134,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, imageFile)
             self.listView.addItem(item_name)
             if not initialLoad:
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
         if not initialLoad:
             self.main_window.finishedProgressBar()
         self.application.set_normal_cursor()

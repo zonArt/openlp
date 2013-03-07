@@ -394,9 +394,9 @@ class Ui_ThemeWizard(object):
         Translate the UI on the fly
         """
         themeWizard.setWindowTitle(translate('OpenLP.ThemeWizard', 'Theme Wizard'))
-        self.titleLabel.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
+        self.title_label.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
             translate('OpenLP.ThemeWizard', 'Welcome to the Theme Wizard'))
-        self.informationLabel.setText(
+        self.information_label.setText(
             translate('OpenLP.ThemeWizard', 'This wizard will help you to create and edit your themes. Click the next '
                 'button below to start the process by setting up your background.'))
         self.backgroundPage.setTitle(translate('OpenLP.ThemeWizard', 'Set Up Background'))

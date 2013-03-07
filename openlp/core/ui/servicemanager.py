@@ -500,7 +500,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 return False
         # Check if item contains a missing file.
         for item in list(self.service_items):
-            self.main_window.incrementProgressBar()
+            self.main_window.increment_progress_bar()
             item[u'service_item'].remove_invalid_frames(missing_list)
             if item[u'service_item'].missing_frames():
                 self.service_items.remove(item)
@@ -525,7 +525,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         log.debug(u'ServiceManager.save_file - allowZip64 is %s' % allow_zip_64)
         zip_file = None
         success = True
-        self.main_window.incrementProgressBar()
+        self.main_window.increment_progress_bar()
         try:
             zip_file = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED, allow_zip_64)
             # First we add service contents.
@@ -590,15 +590,15 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         # Number of items + 1 to zip it
         self.main_window.displayProgressBar(len(self.service_items) + 1)
         for item in self.service_items:
-            self.main_window.incrementProgressBar()
+            self.main_window.increment_progress_bar()
             service_item = item[u'service_item'].get_service_repr(self._save_lite)
             #@todo check for file item on save.
             service.append({u'serviceitem': service_item})
-            self.main_window.incrementProgressBar()
+            self.main_window.increment_progress_bar()
         service_content = cPickle.dumps(service)
         zip_file = None
         success = True
-        self.main_window.incrementProgressBar()
+        self.main_window.increment_progress_bar()
         try:
             zip_file = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED,
                 True)
@@ -719,7 +719,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 self.set_file_name(file_name)
                 self.main_window.displayProgressBar(len(items))
                 for item in items:
-                    self.main_window.incrementProgressBar()
+                    self.main_window.increment_progress_bar()
                     service_item = ServiceItem()
                     if self._save_lite:
                         service_item.set_from_service(item)

@@ -47,45 +47,37 @@ class MediaManagerItem(QtGui.QWidget):
     """
     MediaManagerItem is a helper widget for plugins.
 
-    None of the following *need* to be used, feel free to override
-    them completely in your plugin's implementation. Alternatively,
-    call them from your plugin before or after you've done extra
-    things that you need to.
+    None of the following *need* to be used, feel free to override them completely in your plugin's implementation.
+    Alternatively, call them from your plugin before or after you've done extra things that you need to.
 
     **Constructor Parameters**
 
     ``parent``
-        The parent widget. Usually this will be the *Media Manager*
-        itself. This needs to be a class descended from ``QWidget``.
+        The parent widget. Usually this will be the *Media Manager* itself. This needs to be a class descended from
+        ``QWidget``.
 
     ``plugin``
-        The plugin widget. Usually this will be the *Plugin*
-        itself. This needs to be a class descended from ``Plugin``.
+        The plugin widget. Usually this will be the *Plugin* itself. This needs to be a class descended from ``Plugin``.
 
     ``icon``
-        Either a ``QIcon``, a resource path, or a file name. This is
-        the icon which is displayed in the *Media Manager*.
+        Either a ``QIcon``, a resource path, or a file name. This is the icon which is displayed in the *Media Manager*.
 
     **Member Variables**
 
-    When creating a descendant class from this class for your plugin,
-    the following member variables should be set.
+    When creating a descendant class from this class for your plugin, the following member variables should be set.
 
      ``self.onNewPrompt``
 
         Defaults to *'Select Image(s)'*.
 
      ``self.onNewFileMasks``
-        Defaults to *'Images (*.jpg *jpeg *.gif *.png *.bmp)'*. This
-        assumes that the new action is to load a file. If not, you
-        need to override the ``OnNew`` method.
+        Defaults to *'Images (*.jpg *jpeg *.gif *.png *.bmp)'*. This assumes that the new action is to load a file. If
+        not, you need to override the ``OnNew`` method.
 
      ``self.PreviewFunction``
-        This must be a method which returns a QImage to represent the
-        item (usually a preview). No scaling is required, that is
-        performed automatically by OpenLP when necessary. If this
-        method is not defined, a default will be used (treat the
-        filename as an image).
+        This must be a method which returns a QImage to represent the item (usually a preview). No scaling is required,
+        that is performed automatically by OpenLP when necessary. If this method is not defined, a default will be used
+        (treat the filename as an image).
     """
     log.info(u'Media Item loaded')
 
@@ -120,9 +112,8 @@ class MediaManagerItem(QtGui.QWidget):
 
     def requiredIcons(self):
         """
-        This method is called to define the icons for the plugin.
-        It provides a default set and the plugin is able to override
-        the if required.
+        This method is called to define the icons for the plugin. It provides a default set and the plugin is able to
+        override the if required.
         """
         self.hasImportIcon = False
         self.hasNewIcon = True
@@ -133,16 +124,14 @@ class MediaManagerItem(QtGui.QWidget):
 
     def retranslateUi(self):
         """
-        This method is called automatically to provide OpenLP with the
-        opportunity to translate the ``MediaManagerItem`` to another
-        language.
+        This method is called automatically to provide OpenLP with the opportunity to translate the ``MediaManagerItem``
+        to another language.
         """
         pass
 
     def addToolbar(self):
         """
-        A method to help developers easily add a toolbar to the media
-        manager item.
+        A method to help developers easily add a toolbar to the media manager item.
         """
         if self.toolbar is None:
             self.toolbar = OpenLPToolbar(self)
@@ -150,9 +139,8 @@ class MediaManagerItem(QtGui.QWidget):
 
     def setupUi(self):
         """
-        This method sets up the interface on the button. Plugin
-        developers use this to add and create toolbars, and the rest
-        of the interface of the media manager item.
+        This method sets up the interface on the button. Plugin developers use this to add and create toolbars, and the
+        rest of the interface of the media manager item.
         """
         # Add a toolbar
         self.addToolbar()
@@ -447,8 +435,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         pass
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False, remote=False,
-            context=ServiceItemContext.Live):
+    def generateSlideData(self, service_item, item=None, xml_version=False, remote=False,
+        context=ServiceItemContext.Live):
         """
         Generate the slide data. Needs to be implemented by the plugin.
         """
@@ -473,8 +461,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def onPreviewClick(self, keepFocus=False):
         """
-        Preview an item by building a service item then adding that service
-        item to the preview slide controller.
+        Preview an item by building a service item then adding that service item to the preview slide controller.
         """
         if not self.listView.selectedIndexes() and not self.remoteTriggered:
             QtGui.QMessageBox.information(self, UiStrings().NISp,
@@ -490,8 +477,7 @@ class MediaManagerItem(QtGui.QWidget):
 
     def onLiveClick(self):
         """
-        Send an item live by building a service item then adding that service
-        item to the live slide controller.
+        Send an item live by building a service item then adding that service item to the live slide controller.
         """
         if not self.listView.selectedIndexes():
             QtGui.QMessageBox.information(self, UiStrings().NISp,
@@ -584,8 +570,8 @@ class MediaManagerItem(QtGui.QWidget):
 
     def serviceLoad(self, message):
         """
-        Method to add processing when a service has been loaded and
-        individual service items need to be processed by the plugins
+        Method to add processing when a service has been loaded and individual service items need to be processed by the
+        plugins.
         """
         pass
 
