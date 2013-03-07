@@ -90,9 +90,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.title = unicode(visible_title[u'title'])
         Registry().register(self.plugin.name, self)
         self.settingsSection = self.plugin.name
-#        self.icon = None
-#        if icon:
-#            self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
         self.singleServiceItem = True
@@ -158,19 +155,16 @@ class MediaManagerItem(QtGui.QWidget):
         ## Import Button ##
         if self.hasImportIcon:
             toolbar_actions.append([u'Import', StringContent.Import,
-            u':/general/general_import.png', self.onImportClick])
+                u':/general/general_import.png', self.onImportClick])
         ## Load Button ##
         if self.hasFileIcon:
-            toolbar_actions.append([u'Load', StringContent.Load,
-                u':/general/general_open.png', self.onFileClick])
+            toolbar_actions.append([u'Load', StringContent.Load, u':/general/general_open.png', self.onFileClick])
         ## New Button ##
         if self.hasNewIcon:
-            toolbar_actions.append([u'New', StringContent.New,
-                u':/general/general_new.png', self.onNewClick])
+            toolbar_actions.append([u'New', StringContent.New, u':/general/general_new.png', self.onNewClick])
         ## Edit Button ##
         if self.hasEditIcon:
-            toolbar_actions.append([u'Edit', StringContent.Edit,
-                u':/general/general_edit.png', self.onEditClick])
+            toolbar_actions.append([u'Edit', StringContent.Edit, u':/general/general_edit.png', self.onEditClick])
         ## Delete Button ##
         if self.hasDeleteIcon:
             toolbar_actions.append([u'Delete', StringContent.Delete,
@@ -179,11 +173,9 @@ class MediaManagerItem(QtGui.QWidget):
         toolbar_actions.append([u'Preview', StringContent.Preview,
             u':/general/general_preview.png', self.onPreviewClick])
         ## Live Button ##
-        toolbar_actions.append([u'Live', StringContent.Live,
-            u':/general/general_live.png', self.onLiveClick])
+        toolbar_actions.append([u'Live', StringContent.Live, u':/general/general_live.png', self.onLiveClick])
         ## Add to service Button ##
-        toolbar_actions.append([u'Service', StringContent.Service,
-            u':/general/general_add.png', self.onAddClick])
+        toolbar_actions.append([u'Service', StringContent.Service, u':/general/general_add.png', self.onAddClick])
         for action in toolbar_actions:
             if action[0] == StringContent.Preview:
                 self.toolbar.addSeparator()
