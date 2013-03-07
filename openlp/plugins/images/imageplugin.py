@@ -89,7 +89,7 @@ class ImagePlugin(Plugin):
             log.debug(u'Importing images list from old config: %s' % files_from_config)
             self.mediaItem.save_new_images_list(files_from_config)
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """

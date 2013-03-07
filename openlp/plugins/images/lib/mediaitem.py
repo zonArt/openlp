@@ -561,7 +561,7 @@ class ImageMediaItem(MediaManagerItem):
         Called to reset the Live background with the image selected,
         """
         self.resetAction.setVisible(False)
-        self.live_controller.display.resetImage()
+        self.live_controller.display.reset_image()
 
     def live_theme_changed(self):
         """
@@ -582,7 +582,7 @@ class ImageMediaItem(MediaManagerItem):
                 return
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
             if os.path.exists(filename):
-                if self.live_controller.display.directImage(filename, background):
+                if self.live_controller.display.direct_image(filename, background):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

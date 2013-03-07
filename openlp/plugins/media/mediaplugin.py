@@ -66,7 +66,7 @@ class MediaPlugin(Plugin):
             '<br />The media plugin provides playback of audio and video.')
         return about_text
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
