@@ -133,7 +133,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         self.dictionary = enchant.Dict(action.text())
         self.highlighter.spelling_dictionary = self.dictionary
-        self.highlighter.highlight_block(self.toPlainText())
+        self.highlighter.highlightBlock(self.toPlainText())
         self.highlighter.rehighlight()
 
     def correct_word(self, word):
@@ -180,9 +180,9 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         QtGui.QSyntaxHighlighter.__init__(self, *args)
         self.spelling_dictionary = None
 
-    def highlight_block(self, text):
+    def highlightBlock(self, text):
         """
-        Highlight misspelt words in a block of text
+        Highlight misspelt words in a block of text.
         """
         if not self.spelling_dictionary:
             return

@@ -281,7 +281,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.pageLayout.addWidget(self.searchWidget)
         # Signals and slots
         self.searchTextEdit.returnPressed.connect(self.onSearchTextButtonClicked)
-        self.searchTextEdit.clicked.connect(self.onSearchTextButtonClicked)
+        self.searchTextButton.clicked.connect(self.onSearchTextButtonClicked)
         self.searchTextEdit.textChanged.connect(self.onSearchTextEditChanged)
 
     def addCustomContextActions(self):
