@@ -56,7 +56,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.controllers = controllers
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.message_listener = MessageListener(self)
         self.hasSearch = True
         self.singleServiceItem = False

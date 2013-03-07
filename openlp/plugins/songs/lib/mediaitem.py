@@ -65,9 +65,9 @@ class SongMediaItem(MediaManagerItem):
     """
     log.info(u'Song Media Item loaded')
 
-    def __init__(self, parent, plugin, icon):
+    def __init__(self, parent, plugin):
         self.IconPath = u'songs/song'
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.singleServiceItem = False

@@ -45,9 +45,9 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, plugin, icon):
+    def __init__(self, parent, plugin):
         self.IconPath = u'images/image'
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.quickPreviewAllowed = True
         self.hasSearch = True
         Registry().register_function(u'live_theme_changed', self.live_theme_changed)

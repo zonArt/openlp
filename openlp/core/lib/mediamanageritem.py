@@ -59,9 +59,6 @@ class MediaManagerItem(QtGui.QWidget):
     ``plugin``
         The plugin widget. Usually this will be the *Plugin* itself. This needs to be a class descended from ``Plugin``.
 
-    ``icon``
-        Either a ``QIcon``, a resource path, or a file name. This is the icon which is displayed in the *Media Manager*.
-
     **Member Variables**
 
     When creating a descendant class from this class for your plugin, the following member variables should be set.
@@ -81,7 +78,7 @@ class MediaManagerItem(QtGui.QWidget):
     """
     log.info(u'Media Item loaded')
 
-    def __init__(self, parent=None, plugin=None, icon=None):
+    def __init__(self, parent=None, plugin=None):
         """
         Constructor to create the media manager item.
         """
@@ -93,9 +90,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.title = unicode(visible_title[u'title'])
         Registry().register(self.plugin.name, self)
         self.settingsSection = self.plugin.name
-        self.icon = None
-        if icon:
-            self.icon = build_icon(icon)
+#        self.icon = None
+#        if icon:
+#            self.icon = build_icon(icon)
         self.toolbar = None
         self.remoteTriggered = None
         self.singleServiceItem = True
