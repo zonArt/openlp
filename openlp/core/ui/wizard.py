@@ -136,7 +136,7 @@ class OpenLPWizard(QtGui.QWizard):
         # Add a QTextEdit and a copy to file and copy to clipboard button to be
         # able to provide feedback to the user. Hidden by default.
         self.error_report_text_edit = QtGui.QTextEdit(self.progress_page)
-        self.error_report_text_edit.setObjectName(u'progresserrorReportTextEdit')
+        self.error_report_text_edit.setObjectName(u'error_report_text_edit')
         self.error_report_text_edit.setHidden(True)
         self.error_report_text_edit.setReadOnly(True)
         self.progress_layout.addWidget(self.error_report_text_edit)
