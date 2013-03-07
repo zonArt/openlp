@@ -451,6 +451,9 @@ class ImageMediaItem(MediaManagerItem):
                     if isinstance(bitem.child(index).data(0, QtCore.Qt.UserRole), ImageFilenames):
                         items.append(bitem.child(index))
                 items.remove(bitem)
+        # Don't try to display empty groups
+        if not items:
+            return False
         # Find missing files
         for bitem in items:
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
