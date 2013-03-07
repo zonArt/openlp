@@ -85,8 +85,7 @@ class BibleImportForm(OpenLPWizard):
         Set up the UI for the bible wizard.
         """
         OpenLPWizard.setupUi(self, image)
-        QtCore.QObject.connect(self.formatComboBox,QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onCurrentIndexChanged)
+        self.formatComboBoxcurrentIndexChanged.connect(self.onCurrentIndexChanged)
 
     def onCurrentIndexChanged(self, index):
         """
@@ -117,18 +116,12 @@ class BibleImportForm(OpenLPWizard):
         """
         Set up the signals used in the bible importer.
         """
-        QtCore.QObject.connect(self.webSourceComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onWebSourceComboBoxIndexChanged)
-        QtCore.QObject.connect(self.osisBrowseButton, QtCore.SIGNAL(u'clicked()'),
-            self.onOsisBrowseButtonClicked)
-        QtCore.QObject.connect(self.csvBooksButton, QtCore.SIGNAL(u'clicked()'),
-            self.onCsvBooksBrowseButtonClicked)
-        QtCore.QObject.connect(self.csvVersesButton, QtCore.SIGNAL(u'clicked()'),
-            self.onCsvVersesBrowseButtonClicked)
-        QtCore.QObject.connect(self.openSongBrowseButton, QtCore.SIGNAL(u'clicked()'),
-            self.onOpenSongBrowseButtonClicked)
-        QtCore.QObject.connect(self.openlp1BrowseButton, QtCore.SIGNAL(u'clicked()'),
-            self.onOpenlp1BrowseButtonClicked)
+        self.webSourceComboBox.currentIndexChanged.connect(self.onWebSourceComboBoxIndexChanged)
+        self.osisBrowseButton.clicked.connect(self.onOsisBrowseButtonClicked)
+        self.csvBooksButton.clicked.connect(self.onCsvBooksBrowseButtonClicked)
+        self.csvVersesButton.clicked.connect(self.onCsvVersesBrowseButtonClicked)
+        self.openSongBrowseButton.clicked.connect(self.onOpenSongBrowseButtonClicked)
+        self.openlp1BrowseButton.clicked.connect(self.onOpenlp1BrowseButtonClicked)
 
     def addCustomPages(self):
         """

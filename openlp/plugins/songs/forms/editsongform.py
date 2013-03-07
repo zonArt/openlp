@@ -68,41 +68,32 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.width = 400
         self.setupUi(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.authorAddButton, QtCore.SIGNAL(u'clicked()'), self.onAuthorAddButtonClicked)
-        QtCore.QObject.connect(self.authorRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onAuthorRemoveButtonClicked)
-        QtCore.QObject.connect(self.authorsListView, QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
-            self.onAuthorsListViewClicked)
-        QtCore.QObject.connect(self.topicAddButton, QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
-        QtCore.QObject.connect(self.topicRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onTopicRemoveButtonClicked)
-        QtCore.QObject.connect(self.topicsListView, QtCore.SIGNAL(u'itemClicked(QListWidgetItem*)'),
-            self.onTopicListViewClicked)
-        QtCore.QObject.connect(self.copyrightInsertButton, QtCore.SIGNAL(u'clicked()'),
-            self.onCopyrightInsertButtonTriggered)
-        QtCore.QObject.connect(self.verseAddButton, QtCore.SIGNAL(u'clicked()'), self.onVerseAddButtonClicked)
-        QtCore.QObject.connect(self.verseListWidget, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onVerseEditButtonClicked)
-        QtCore.QObject.connect(self.verseEditButton, QtCore.SIGNAL(u'clicked()'), self.onVerseEditButtonClicked)
-        QtCore.QObject.connect(self.verseEditAllButton, QtCore.SIGNAL(u'clicked()'), self.onVerseEditAllButtonClicked)
-        QtCore.QObject.connect(self.verseDeleteButton, QtCore.SIGNAL(u'clicked()'), self.onVerseDeleteButtonClicked)
-        QtCore.QObject.connect(self.verseListWidget, QtCore.SIGNAL(u'itemClicked(QTableWidgetItem*)'),
-            self.onVerseListViewClicked)
-        QtCore.QObject.connect(self.verseOrderEdit, QtCore.SIGNAL(u'textChanged(QString)'),
-            self.onVerseOrderTextChanged)
-        QtCore.QObject.connect(self.themeAddButton, QtCore.SIGNAL(u'clicked()'), self.theme_manager.onAddTheme)
-        QtCore.QObject.connect(self.maintenanceButton, QtCore.SIGNAL(u'clicked()'), self.onMaintenanceButtonClicked)
-        QtCore.QObject.connect(self.audioAddFromFileButton, QtCore.SIGNAL(u'clicked()'),
-            self.onAudioAddFromFileButtonClicked)
-        QtCore.QObject.connect(self.audioAddFromMediaButton, QtCore.SIGNAL(u'clicked()'),
-            self.onAudioAddFromMediaButtonClicked)
-        QtCore.QObject.connect(self.audioRemoveButton, QtCore.SIGNAL(u'clicked()'), self.onAudioRemoveButtonClicked)
-        QtCore.QObject.connect(self.audioRemoveAllButton, QtCore.SIGNAL(u'clicked()'),
-            self.onAudioRemoveAllButtonClicked)
+        self.authorAddButton.clicked.connect(self.onAuthorAddButtonClicked)
+        self.authorRemoveButton.clicked.connect(self.onAuthorRemoveButtonClicked)
+        self.authorsListView.itemClicked.connect(self.onAuthorsListViewClicked)
+        self.topicAddButton.clicked.connect(self.onTopicAddButtonClicked)
+        self.topicRemoveButton.clicked.connect(self.onTopicRemoveButtonClicked)
+        self.topicsListView.itemClicked.connect(self.onTopicListViewClicked)
+        self.copyrightInsertButton.clicked.connect(self.onCopyrightInsertButtonTriggered)
+        self.verseAddButton.clicked.connect(self.onVerseAddButtonClicked)
+        self.verseListWidget.doubleClicked.connect(self.onVerseEditButtonClicked)
+        self.verseEditButton.clicked.connect(self.onVerseEditButtonClicked)
+        self.verseEditAllButton.clicked.connect(self.onVerseEditAllButtonClicked)
+        self.verseDeleteButton.clicked.connect(self.onVerseDeleteButtonClicked)
+        self.verseListWidget.itemClicked.connect(self.onVerseListViewClicked)
+        self.verseOrderEdit.textChanged.connect(self.onVerseOrderTextChanged)
+        self.themeAddButton.clicked.connect(self.theme_manager.onAddTheme)
+        self.maintenanceButton.clicked.connect(self.onMaintenanceButtonClicked)
+        self.audioAddFromFileButton.clicked.connect(self.onAudioAddFromFileButtonClicked)
+        self.audioAddFromMediaButton.clicked.connect(self.onAudioAddFromMediaButtonClicked)
+        self.audioRemoveButton.clicked.connect(self.onAudioRemoveButtonClicked)
+        self.audioRemoveAllButton.clicked.connect(self.onAudioRemoveAllButtonClicked)
         Registry().register_function(u'theme_update_list', self.load_themes)
         self.previewButton = QtGui.QPushButton()
         self.previewButton.setObjectName(u'previewButton')
         self.previewButton.setText(UiStrings().SaveAndPreview)
         self.button_box.addButton(self.previewButton, QtGui.QDialogButtonBox.ActionRole)
-        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'), self.onPreview)
+        self.button_box.clicked.connect(self.onPreview)
         # Create other objects and forms
         self.manager = manager
         self.verseForm = EditVerseForm(self)

@@ -115,8 +115,7 @@ class MediaMediaItem(MediaManagerItem):
         self.displayLayout.addRow(self.displayTypeLabel, self.displayTypeComboBox)
         # Add the Media widget to the page layout
         self.pageLayout.addWidget(self.mediaWidget)
-        QtCore.QObject.connect(self.displayTypeComboBox, QtCore.SIGNAL(u'currentIndexChanged (int)'),
-            self.overridePlayerChanged)
+        self.displayTypeComboBox.currentIndexChanged.connect(self.overridePlayerChanged)
 
     def overridePlayerChanged(self, index):
         player = get_media_players()[0]

@@ -122,8 +122,7 @@ class PlayerTab(SettingsTab):
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
-            self.onbackgroundColorButtonClicked)
+        self.backgroundColorButton.clicked.connect(self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         """
@@ -245,7 +244,7 @@ class PlayerTab(SettingsTab):
             checkbox.setToolTip(player.get_info())
             checkbox.setPlayerName(player.name)
             self.playerCheckBoxes[player.name] = checkbox
-            QtCore.QObject.connect(checkbox, QtCore.SIGNAL(u'stateChanged(int)'), self.onPlayerCheckBoxChanged)
+            checkbox.stateChanged.connect(self.onPlayerCheckBoxChanged)
             self.mediaPlayerLayout.addWidget(checkbox)
             if player.available and player.name in self.usedPlayers:
                 checkbox.setChecked(True)

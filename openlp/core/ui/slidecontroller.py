@@ -353,11 +353,9 @@ class SlideController(DisplayController):
                 context=QtCore.Qt.WidgetWithChildrenShortcut,
                 category=self.category if s.get(u'configurable') else None,
                 triggers=self._slideShortcutActivated) for s in shortcuts])
-            QtCore.QObject.connect(
-                self.shortcutTimer, QtCore.SIGNAL(u'timeout()'),
-                self._slideShortcutActivated)
+            self.shortcutTimer.timeout.connect(self._slideShortcutActivated)
         # Signals
-        QtCore.QObject.connect(self.preview_list_widget, QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+        self.preview_list_widget.clicked.connect(self.onSlideSelected)
         if self.is_live:
             Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
             Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)

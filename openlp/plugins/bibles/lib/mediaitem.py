@@ -166,7 +166,7 @@ class BibleMediaItem(MediaManagerItem):
         layout.addLayout(searchButtonLayout, idx + 3, 1, 1, 2)
         self.pageLayout.addWidget(tab)
         tab.setVisible(False)
-        QtCore.QObject.connect(lockButton, QtCore.SIGNAL(u'toggled(bool)'), self.onLockButtonToggled)
+        lockButton.toggled.connect(self.onLockButtonToggled)
         setattr(self, prefix + u'VersionLabel', versionLabel)
         setattr(self, prefix + u'VersionComboBox', versionComboBox)
         setattr(self, prefix + u'SecondLabel', secondLabel)
@@ -228,29 +228,24 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedToVerse, 4, 2)
         self.addSearchFields(u'advanced', UiStrings().Advanced)
         # Combo Boxes
-        QtCore.QObject.connect(self.quickVersionComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickSecondComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.advancedVersionComboBox,QtCore.SIGNAL(u'activated(int)'),
-            self.onAdvancedVersionComboBox)
-        QtCore.QObject.connect(self.advancedSecondComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onAdvancedSecondComboBox)
-        QtCore.QObject.connect(self.advancedBookComboBox, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedBookComboBox)
-        QtCore.QObject.connect(self.advancedFromChapter, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromChapter)
-        QtCore.QObject.connect(self.advancedFromVerse, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromVerse)
-        QtCore.QObject.connect(self.advancedToChapter, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedToChapter)
+        self.quickVersionComboBox.activated.connect(self.updateAutoCompleter)
+        self.quickSecondComboBox.activated.connect(self.updateAutoCompleter)
+        self.advancedVersionComboBox.activated.connect(self.onAdvancedVersionComboBox)
+        self.advancedSecondComboBox.activated.connect(self.onAdvancedSecondComboBox)
+        self.advancedBookComboBox.activated.connect(self.onAdvancedBookComboBox)
+        self.advancedFromChapter.activated.connect(self.onAdvancedFromChapter)
+        self.advancedFromVerse.activated.connect(self.onAdvancedFromVerse)
+        self.advancedToChapter.activated.connect(self.onAdvancedToChapter)
         QtCore.QObject.connect(self.quickSearchEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickVersionComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onQuickStyleComboBoxChanged)
-        QtCore.QObject.connect( self.advancedStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onAdvancedStyleComboBoxChanged)
+        self.quickVersionComboBox.activated.connect(self.updateAutoCompleter)
+        self.quickStyleComboBox.activated.connect(self.onQuickStyleComboBoxChanged)
+        self.advancedStyleComboBox.activated.connect(self.onAdvancedStyleComboBoxChanged)
         # Buttons
-        QtCore.QObject.connect(self.advancedSearchButton, QtCore.SIGNAL(u'clicked()'), self.onAdvancedSearchButton)
-        QtCore.QObject.connect(self.quickSearchButton, QtCore.SIGNAL(u'clicked()'), self.onQuickSearchButton)
+        self.advancedSearchButton.clicked.connect(self.onAdvancedSearchButton)
+        self.quickSearchButton.clicked.connect(self.onQuickSearchButton)
         # Other stuff
-        QtCore.QObject.connect(self.quickSearchEdit, QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(self.searchTabBar, QtCore.SIGNAL(u'currentChanged(int)'),
-            self.onSearchTabBarCurrentChanged)
+        self.quickSearchEdit.returnPressed.connect(self.onQuickSearchButton)
+        self.searchTabBar.currentChanged.connect(self.onSearchTabBarCurrentChanged)
 
     def onFocus(self):
         if self.quickTab.isVisible():

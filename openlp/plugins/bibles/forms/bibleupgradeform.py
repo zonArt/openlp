@@ -151,8 +151,8 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Set up the signals used in the bible importer.
         """
-        QtCore.QObject.connect(self.backupBrowseButton, QtCore.SIGNAL(u'clicked()'), self.onBackupBrowseButtonClicked)
-        QtCore.QObject.connect(self.noBackupCheckBox, QtCore.SIGNAL(u'toggled(bool)'), self.onNoBackupCheckBoxToggled)
+        self.backupBrowseButton.clicked.connect(self.onBackupBrowseButtonClicked)
+        self.noBackupCheckBox.toggled.connect(self.onNoBackupCheckBoxToggled)
 
     def addCustomPages(self):
         """

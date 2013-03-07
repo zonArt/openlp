@@ -87,13 +87,11 @@ class SongExportForm(OpenLPWizard):
         """
         Song wizard specific signals.
         """
-        QtCore.QObject.connect(self.availableListWidget, QtCore.SIGNAL(u'itemActivated(QListWidgetItem*)'),
-            self.onItemActivated)
-        QtCore.QObject.connect(self.searchLineEdit, QtCore.SIGNAL(u'textEdited(const QString&)'),
-            self.onSearchLineEditChanged)
-        QtCore.QObject.connect(self.uncheckButton, QtCore.SIGNAL(u'clicked()'), self.onUncheckButtonClicked)
-        QtCore.QObject.connect(self.checkButton, QtCore.SIGNAL(u'clicked()'), self.onCheckButtonClicked)
-        QtCore.QObject.connect(self.directoryButton, QtCore.SIGNAL(u'clicked()'), self.onDirectoryButtonClicked)
+        self.availableListWidget.itemActivated.connect(self.onItemActivated)
+        self.searchLineEdit.textEdited.connect(self.onSearchLineEditChanged)
+        self.uncheckButton.clicked.connect(self.onUncheckButtonClicked)
+        self.checkButton.clicked.connect(self.onCheckButtonClicked)
+        self.directoryButton.clicked.connect(self.onDirectoryButtonClicked)
 
     def addCustomPages(self):
         """

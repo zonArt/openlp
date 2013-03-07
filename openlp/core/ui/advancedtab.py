@@ -243,40 +243,23 @@ class AdvancedTab(SettingsTab):
         self.rightLayout.addWidget(self.display_workaround_group_box)
         self.rightLayout.addStretch()
         self.should_update_service_name_example = False
-        QtCore.QObject.connect(self.service_name_check_box, QtCore.SIGNAL(u'toggled(bool)'),
-            self.service_name_check_box_toggled)
-        QtCore.QObject.connect(self.service_name_day, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.on_service_name_day_changed)
-        QtCore.QObject.connect(self.service_name_time, QtCore.SIGNAL(u'timeChanged(QTime)'),
-            self.update_service_name_example)
-        QtCore.QObject.connect(self.service_name_edit, QtCore.SIGNAL(u'textChanged(QString)'),
-            self.update_service_name_example)
-        QtCore.QObject.connect(self.service_name_revert_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_service_name_revert_button_clicked)
-        QtCore.QObject.connect(self.default_color_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_default_color_button_clicked)
-        QtCore.QObject.connect(self.default_browse_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_default_browse_button_clicked)
-        QtCore.QObject.connect(self.default_revert_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_default_revert_button_clicked)
-        QtCore.QObject.connect(self.x11_bypass_check_box, QtCore.SIGNAL(u'toggled(bool)'),
-            self.on_X11_bypass_check_box_toggled)
-        QtCore.QObject.connect(self.alternate_rows_check_box,QtCore.SIGNAL(u'toggled(bool)'),
-            self.on_alternate_rows_check_box_toggled)
-        QtCore.QObject.connect(self.data_directory_browse_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_data_directory_browse_button_clicked)
-        QtCore.QObject.connect(self.data_directory_default_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_data_directory_default_button_clicked)
-        QtCore.QObject.connect(self.data_directory_cancel_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_data_directory_cancel_button_clicked)
-        QtCore.QObject.connect(self.data_directory_copy_check_box, QtCore.SIGNAL(u'toggled(bool)'),
-            self.on_data_directory_copy_check_box_toggled)
-        QtCore.QObject.connect(self.end_slide_radio_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_end_slide_button_clicked)
-        QtCore.QObject.connect(self.wrap_slide_radio_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_wrap_slide_button_clicked)
-        QtCore.QObject.connect(self.next_item_radio_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_next_item_button_clicked)
+        self.service_name_check_box.toggled.connect(self.service_name_check_box_toggled)
+        self.service_name_day.currentIndexChanged.connect(self.on_service_name_day_changed)
+        self.service_name_time.timeChanged.connect(self.update_service_name_example)
+        self.service_name_edit.textChanged.connect(self.update_service_name_example)
+        self.service_name_revert_button.clicked.connect(self.on_service_name_revert_button_clicked)
+        self.default_color_button.clicked.connect(self.on_default_color_button_clicked)
+        self.default_browse_button.clicked.connect(self.on_default_browse_button_clicked)
+        self.default_revert_button.clicked.connect(self.on_default_revert_button_clicked)
+        self.x11_bypass_check_box.toggled.connect(self.on_X11_bypass_check_box_toggled)
+        self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
+        self.data_directory_browse_button.clicked.connect(self.on_data_directory_browse_button_clicked)
+        self.data_directory_default_button.clicked.connect(self.on_data_directory_default_button_clicked)
+        self.data_directory_cancel_button.clicked.connect(self.on_data_directory_cancel_button_clicked)
+        self.data_directory_copy_check_box.toggled.connect(self.on_data_directory_copy_check_box_toggled)
+        self.end_slide_radio_button.clicked.connect(self.on_end_slide_button_clicked)
+        self.wrap_slide_radio_button.clicked.connect(self.on_wrap_slide_button_clicked)
+        self.next_item_radio_button.clicked.connect(self.on_next_item_button_clicked)
 
 
     def retranslateUi(self):

@@ -62,8 +62,7 @@ class ImageTab(SettingsTab):
         self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
-            self.onbackgroundColorButtonClicked)
+        self.backgroundColorButton.clicked.connect(self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)

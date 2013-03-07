@@ -62,21 +62,18 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.booksDeleteButton.setEnabled(False)
         self.booksEditButton.setEnabled(False)
         # Signals
-        QtCore.QObject.connect(self.authorsAddButton, QtCore.SIGNAL(u'clicked()'), self.onAuthorAddButtonClicked)
-        QtCore.QObject.connect(self.topicsAddButton, QtCore.SIGNAL(u'clicked()'), self.onTopicAddButtonClicked)
-        QtCore.QObject.connect(self.booksAddButton, QtCore.SIGNAL(u'clicked()'), self.onBookAddButtonClicked)
-        QtCore.QObject.connect(self.authorsEditButton, QtCore.SIGNAL(u'clicked()'), self.onAuthorEditButtonClicked)
-        QtCore.QObject.connect(self.topicsEditButton, QtCore.SIGNAL(u'clicked()'), self.onTopicEditButtonClicked)
-        QtCore.QObject.connect(self.booksEditButton, QtCore.SIGNAL(u'clicked()'), self.onBookEditButtonClicked)
-        QtCore.QObject.connect(self.authorsDeleteButton, QtCore.SIGNAL(u'clicked()'), self.onAuthorDeleteButtonClicked)
-        QtCore.QObject.connect(self.topicsDeleteButton, QtCore.SIGNAL(u'clicked()'), self.onTopicDeleteButtonClicked)
-        QtCore.QObject.connect(self.booksDeleteButton, QtCore.SIGNAL(u'clicked()'), self.onBookDeleteButtonClicked)
-        QtCore.QObject.connect(self.authorsListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.onAuthorsListRowChanged)
-        QtCore.QObject.connect(self.topicsListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.onTopicsListRowChanged)
-        QtCore.QObject.connect(self.booksListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.onBooksListRowChanged)
+        self.authorsAddButton.clicked.connect(self.onAuthorAddButtonClicked)
+        self.topicsAddButton.clicked.connect(self.onTopicAddButtonClicked)
+        self.booksAddButton.clicked.connect(self.onBookAddButtonClicked)
+        self.authorsEditButton.clicked.connect(self.onAuthorEditButtonClicked)
+        self.topicsEditButton.clicked.connect(self.onTopicEditButtonClicked)
+        self.booksEditButton.clicked.connect(self.onBookEditButtonClicked)
+        self.authorsDeleteButton.clicked.connect(self.onAuthorDeleteButtonClicked)
+        self.topicsDeleteButton.clicked.connect(self.onTopicDeleteButtonClicked)
+        self.booksDeleteButton.clicked.connect(self.onBookDeleteButtonClicked)
+        self.authorsListWidget.currentRowChanged.connect(self.onAuthorsListRowChanged)
+        self.topicsListWidget.currentRowChanged.connect(self.onTopicsListRowChanged)
+        self.booksListWidget.currentRowChanged.connect(self.onBooksListRowChanged)
 
     def exec_(self, fromSongEdit=False):
         """
