@@ -104,9 +104,8 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 lang_menu.addAction(action)
             popupMenu.insertSeparator(popupMenu.actions()[0])
             popupMenu.insertMenu(popupMenu.actions()[0], lang_menu)
-            QtCore.QObject.connect(lang_menu, QtCore.SIGNAL(u'triggered(QAction*)'), self.setLanguage)
-        # Check if the selected word is misspelled and offer spelling
-        # suggestions if it is.
+            lang_menu.triggered.connect(self.setLanguage)
+        # Check if the selected word is misspelled and offer spelling suggestions if it is.
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = self.textCursor().selectedText()
             if not self.dictionary.check(text):
@@ -115,8 +114,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                     action = SpellAction(word, spell_menu)
                     action.correct.connect(self.correctWord)
                     spell_menu.addAction(action)
-                # Only add the spelling suggests to the menu if there are
-                # suggestions.
+                # Only add the spelling suggests to the menu if there are suggestions.
                 if spell_menu.actions():
                     popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
         tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Formatting Tags'))

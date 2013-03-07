@@ -250,12 +250,9 @@ class MediaManagerItem(QtGui.QWidget):
         # Create the context menu and add all actions from the listView.
         self.menu = QtGui.QMenu()
         self.menu.addActions(self.listView.actions())
-        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'doubleClicked(QModelIndex)'),
-            self.onDoubleClicked)
-        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'itemSelectionChanged()'),
-            self.onSelectionChange)
-        QtCore.QObject.connect(self.listView, QtCore.SIGNAL(u'customContextMenuRequested(QPoint)'),
-            self.contextMenu)
+        self.listView.doubleClicked.connect(self.onDoubleClicked)
+        self.listView.itemSelectionChanged.connect(self.onSelectionChange)
+        self.listView.customContextMenuRequested.connect(self.contextMenu)
 
     def addSearchToToolBar(self):
         """
@@ -283,10 +280,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.searchLayout.addLayout(self.searchButtonLayout)
         self.pageLayout.addWidget(self.searchWidget)
         # Signals and slots
-        QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'returnPressed()'), self.onSearchTextButtonClicked)
-        QtCore.QObject.connect(self.searchTextButton, QtCore.SIGNAL(u'clicked()'), self.onSearchTextButtonClicked)
-        QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'textChanged(const QString&)'),
-            self.onSearchTextEditChanged)
+        self.searchTextEdit.returnPressed.connect(self.onSearchTextButtonClicked)
+        self.searchTextEdit.clicked.connect(self.onSearchTextButtonClicked)
+        self.searchTextEdit.textChanged.connect(self.onSearchTextEditChanged)
 
     def addCustomContextActions(self):
         """
