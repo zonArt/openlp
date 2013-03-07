@@ -85,7 +85,7 @@ class BibleImportForm(OpenLPWizard):
         Set up the UI for the bible wizard.
         """
         OpenLPWizard.setupUi(self, image)
-        self.formatComboBoxcurrentIndexChanged.connect(self.onCurrentIndexChanged)
+        self.formatComboBox.currentIndexChanged.connect(self.onCurrentIndexChanged)
 
     def onCurrentIndexChanged(self, index):
         """
