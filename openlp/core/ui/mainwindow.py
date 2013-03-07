@@ -807,9 +807,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             return
         setting_sections = []
         # Add main sections.
-        setting_sections.extend([self.generalSettingsSection, self.advancedSettingsSection, self.uiSettingsSection,
-            self.shortcutsSettingsSection, self.serviceManagerSettingsSection, self.themesSettingsSection,
-            self.playersSettingsSection, self.displayTagsSection, self.headerSection, u'crashreport'])
+        setting_sections.extend([self.generalSettingsSection])
+        setting_sections.extend([self.advancedSettingsSection])
+        setting_sections.extend([self.uiSettingsSection])
+        setting_sections.extend([self.shortcutsSettingsSection])
+        setting_sections.extend([self.serviceManagerSettingsSection])
+        setting_sections.extend([self.themesSettingsSection])
+        setting_sections.extend([self.playersSettingsSection])
+        setting_sections.extend([self.displayTagsSection])
+        setting_sections.extend([self.headerSection])
+        setting_sections.extend([u'crashreport'])
         # Add plugin sections.
         setting_sections.extend([plugin.name for plugin in self.plugin_manager.plugins])
         # Copy the settings file to the tmp dir, because we do not want to change the original one.
