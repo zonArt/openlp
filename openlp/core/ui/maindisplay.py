@@ -113,7 +113,7 @@ class Display(QtGui.QGraphicsView):
         Called by webView event to show display is fully loaded
         """
         log.debug(u'is web loaded')
-        self.webLoaded = True
+        self.web_loaded = True
 
 
 class MainDisplay(Display):
@@ -658,3 +658,4 @@ class AudioPlayer(QtCore.QObject):
         Connect a slot to a signal on the media object.  Used by slidecontroller to connect to audio object.
         """
         QtCore.QObject.connect(self.media_object, signal, slot)
+
