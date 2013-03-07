@@ -440,7 +440,7 @@ class MediaController(object):
         controller.media_info = MediaInfo()
         controller.media_info.volume = 0
         controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
-        display = controller._display
+        display = controller.preview_display
         if not self._check_file_type(controller, display, service_item):
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
