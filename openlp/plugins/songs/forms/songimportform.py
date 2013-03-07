@@ -353,13 +353,13 @@ class SongImportForm(OpenLPWizard):
         importer.doImport()
         self.progress_label.setText(WizardStrings.FinishedImport)
 
-    def onErrorCopyToButtonClicked(self):
+    def on_error_copy_to_button_clicked(self):
         """
         Copy the error report to the clipboard.
         """
         self.clipboard.setText(self.error_report_text_edit.toPlainText())
 
-    def onErrorSaveToButtonClicked(self):
+    def on_error_save_to_button_clicked(self):
         """
         Save the error report to a file.
         """
