@@ -33,7 +33,6 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.plugins.songs.lib import VerseType
-
 from editversedialog import Ui_EditVerseDialog
 
 log = logging.getLogger(__name__)

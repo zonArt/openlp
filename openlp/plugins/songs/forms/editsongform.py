@@ -38,15 +38,14 @@ import shutil
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, PluginStatus, MediaType, translate, create_separated_list, \
-    check_directory_exists, UiStrings
-from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, \
-    find_and_set_in_combo_box
+from openlp.core.lib import Registry, PluginStatus, MediaType, UiStrings, translate, create_separated_list, \
+    check_directory_exists
+from openlp.core.lib.ui import set_case_insensitive_completer, critical_error_message_box, find_and_set_in_combo_box
 from openlp.core.utils import AppLocation
-from openlp.plugins.songs.forms import EditVerseForm, MediaFilesForm
-from openlp.plugins.songs.lib import SongXML, VerseType, clean_song
+from openlp.plugins.songs.lib import VerseType, clean_song
 from openlp.plugins.songs.lib.db import Book, Song, Author, Topic, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
+from openlp.plugins.songs.lib.xml import SongXML
 from openlp.plugins.songs.forms.editsongdialog import Ui_EditSongDialog
 
 log = logging.getLogger(__name__)
@@ -62,6 +61,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Constructor
         """
+        from openlp.plugins.songs.forms.editverseform import EditVerseForm
+        from openlp.plugins.songs.forms.mediafilesform import MediaFilesForm
+
         super(EditSongForm, self).__init__(parent)
         self.mediaitem = mediaitem
         self.song = None

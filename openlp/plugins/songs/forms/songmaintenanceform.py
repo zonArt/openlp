@@ -33,7 +33,9 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import Registry, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
+from openlp.plugins.songs.forms.authorsform import AuthorsForm
+from openlp.plugins.songs.forms.topicsform import TopicsForm
+from openlp.plugins.songs.forms.songbookform import SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 

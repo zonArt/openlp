@@ -39,10 +39,10 @@ from lxml import etree
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib import OpenLyrics
-from openlp.plugins.songs.lib.xml import OpenLyricsError
+from openlp.plugins.songs.lib.xml import OpenLyrics, OpenLyricsError
 
 log = logging.getLogger(__name__)
+
 
 class OpenLyricsImport(SongImport):
     """

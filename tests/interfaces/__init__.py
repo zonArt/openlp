@@ -9,5 +9,5 @@ sip.setapi(u'QVariant', 2)
 
 from PyQt4 import QtGui
 
-# Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" a  QApplication.
+# Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" an QApplication.
 application = QtGui.QApplication([])

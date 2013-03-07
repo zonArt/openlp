@@ -43,11 +43,13 @@ from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
-from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, SongsTab
+from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
+from openlp.plugins.songs.lib.mediaitem import SongMediaItem
+from openlp.plugins.songs.lib.songstab import SongsTab
 
 log = logging.getLogger(__name__)
 __default_settings__ = {
