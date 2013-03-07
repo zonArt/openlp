@@ -92,6 +92,7 @@ OPTIONAL_MODULES = [
     ('MySQLdb', ' (MySQL support)'),
     ('psycopg2', ' (PostgreSQL support)'),
     ('nose', ' (testing framework)'),
+    ('mock',  ' (testing module)'),
 ]
 
 w = sys.stdout.write

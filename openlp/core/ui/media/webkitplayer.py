@@ -307,8 +307,8 @@ class WebkitPlayer(MediaPlayer):
         """
         Set up the player
         """
-        display.webView.resize(display.size())
-        display.webView.raise_()
+        display.web_view.resize(display.size())
+        display.web_view.raise_()
         self.hasOwnWidget = False
 
     def check_available(self):
@@ -333,7 +333,7 @@ class WebkitPlayer(MediaPlayer):
             loop = u'true'
         else:
             loop = u'false'
-        display.webView.setVisible(True)
+        display.web_view.setVisible(True)
         if controller.media_info.file_info.suffix() == u'swf':
             controller.media_info.is_flash = True
             js = u'show_flash("load","%s");' % (path.replace(u'\\', u'\\\\'))
@@ -346,14 +346,14 @@ class WebkitPlayer(MediaPlayer):
         """
         Resize the player
         """
-        display.webView.resize(display.size())
+        display.web_view.resize(display.size())
 
     def play(self, display):
         """
         Play a video
         """
         controller = display.controller
-        display.webLoaded = True
+        display.web_loaded = True
         length = 0
         start_time = 0
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
@@ -368,7 +368,7 @@ class WebkitPlayer(MediaPlayer):
         # TODO add playing check and get the correct media length
         controller.media_info.length = length
         self.state = MediaState.Playing
-        display.webView.raise_()
+        display.web_view.raise_()
         return True
 
     def pause(self, display):

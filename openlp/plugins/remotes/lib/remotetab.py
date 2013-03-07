@@ -56,6 +56,7 @@ class RemoteTab(SettingsTab):
         self.address_label.setObjectName(u'address_label')
         self.address_edit = QtGui.QLineEdit(self.server_settings_group_box)
         self.address_edit.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
+
         self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'), 
             self))
         self.address_edit.setObjectName(u'address_edit')
@@ -63,6 +64,7 @@ class RemoteTab(SettingsTab):
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
         self.twelve_hour_check_box.setObjectName(u'twelve_hour_check_box')
         self.server_settings_layout.addRow(self.twelve_hour_check_box)
+
         self.leftLayout.addWidget(self.server_settings_group_box)
         self.http_settings_group_box = QtGui.QGroupBox(self.leftColumn)
         self.http_settings_group_box.setObjectName(u'http_settings_group_box')
@@ -73,6 +75,7 @@ class RemoteTab(SettingsTab):
         self.port_spin_box = QtGui.QSpinBox(self.http_settings_group_box)
         self.port_spin_box.setMaximum(32767)
         self.port_spin_box.setObjectName(u'port_spin_box')
+
         self.http_setting_layout.addRow(self.port_label, self.port_spin_box)
         self.remote_url_label = QtGui.QLabel(self.http_settings_group_box)
         self.remote_url_label.setObjectName(u'remote_url_label')
@@ -165,9 +168,9 @@ class RemoteTab(SettingsTab):
         self.twelve_hour_check_box.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
         self.qr_description_label.setText(translate('RemotePlugin.RemoteTab',
-                                                    'Scan the QR code or click <a href="https://play.google.com/store/'
-                                                    'apps/details?id=org.openlp.android">download</a> to install the '
-                                                    'Android app from Google Play.'))
+            'Scan the QR code or click <a href="https://play.google.com/store/'
+            'apps/details?id=org.openlp.android">download</a> to install the '
+            'Android app from Google Play.'))
         self.https_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'HTTPS Server'))
         self.https_error_label.setText(translate('RemotePlugin.RemoteTab',
             'Could not find an SSL certificate. The HTTPS server will not be available unless an SSL certificate '
@@ -180,7 +183,7 @@ class RemoteTab(SettingsTab):
         self.password_label.setText(translate('RemotePlugin.RemoteTab', 'Password:'))
 
     def set_urls(self):
-        ipAddress = u'localhost'
+        ip_address = u'localhost'
         if self.address_edit.text() == ZERO_URL:
             interfaces = QtNetwork.QNetworkInterface.allInterfaces()
             for interface in interfaces:
@@ -191,12 +194,12 @@ class RemoteTab(SettingsTab):
                 for address in interface.addressEntries():
                     ip = address.ip()
                     if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ipAddress = ip
+                        ip_address = ip
                         break
         else:
-            ipAddress = self.address_edit.text()
-        http_url = u'http://%s:%s/' % (ipAddress, self.port_spin_box.value())
-        https_url = u'https://%s:%s/' % (ipAddress, self.https_port_spin_box.value())
+            ip_address = self.address_edit.text()
+        http_url = u'http://%s:%s/' % (ip_address, self.port_spin_box.value())
+        https_url = u'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
         self.remote_url.setText(u'<a href="%s">%s</a>' % (http_url, http_url))
         self.remote_https_url.setText(u'<a href="%s">%s</a>' % (https_url, https_url))
         http_url += u'stage'
@@ -242,6 +245,7 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settingsSection + u'/password', self.password.text())
         if changed:
             Registry().register_function(u'remotes_config_updated')
+
 
     def on_twelve_hour_check_box_changed(self, check_state):
         self.twelve_hour = False

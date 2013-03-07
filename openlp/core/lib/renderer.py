@@ -247,7 +247,7 @@ class Renderer(object):
         serviceItem.footer = footer
         serviceItem.render(True)
         if not self.force_page:
-            self.display.buildHtml(serviceItem)
+            self.display.build_html(serviceItem)
             raw_html = serviceItem.get_rendered_frame(0)
             self.display.text(raw_html, False)
             preview = self.display.preview()
@@ -662,4 +662,3 @@ class Renderer(object):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
-

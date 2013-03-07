@@ -55,7 +55,7 @@ class PlayerTab(SettingsTab):
         """
         Constructor
         """
-        self.mediaPlayers = self.media_controller.mediaPlayers
+        self.media_players = self.media_controller.media_players
         self.savedUsedPlayers = None
         self.iconPath = u':/media/multimedia-player.png'
         player_translated = translate('OpenLP.PlayerTab', 'Players')
@@ -171,7 +171,7 @@ class PlayerTab(SettingsTab):
                     self.playerCheckBoxes[u'%s' % player].setEnabled(False)
                 else:
                     self.playerCheckBoxes[u'%s' % player].setEnabled(True)
-                self.playerOrderlistWidget.addItem(self.mediaPlayers[unicode(player)].original_name)
+                self.playerOrderlistWidget.addItem(self.media_players[unicode(player)].original_name)
 
     def onUpButtonClicked(self):
         """
@@ -232,13 +232,13 @@ class PlayerTab(SettingsTab):
             Registry().execute(u'mediaitem_media_rebuild')
             Registry().execute(u'config_screen_changed')
 
-    def postSetUp(self, postUpdate=False):
+    def post_set_up(self):
         """
         Late setup for players as the MediaController has to be initialised
         first.
         """
-        for key, player in self.mediaPlayers.iteritems():
-            player = self.mediaPlayers[key]
+        for key, player in self.media_players.iteritems():
+            player = self.media_players[key]
             checkbox = MediaQCheckBox(self.mediaPlayerGroupBox)
             checkbox.setEnabled(player.available)
             checkbox.setObjectName(player.name + u'CheckBox')
@@ -258,8 +258,8 @@ class PlayerTab(SettingsTab):
         """
         Translations for players is dependent on  their setup as well
          """
-        for key in self.mediaPlayers:
-            player = self.mediaPlayers[key]
+        for key in self.media_players:
+            player = self.media_players[key]
             checkbox = self.playerCheckBoxes[player.name]
             checkbox.setPlayerName(player.name)
             if player.available:

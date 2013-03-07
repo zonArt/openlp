@@ -38,9 +38,8 @@ import re
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ImageSource, OpenLPToolbar, Registry, SettingsManager, Settings, UiStrings, \
-    get_text_file_string, build_icon, translate, check_item_selected, check_directory_exists, create_thumb, \
-    validate_thumb
+from openlp.core.lib import ImageSource, OpenLPToolbar, Registry, Settings, UiStrings, get_text_file_string, \
+    build_icon, translate, check_item_selected, check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.theme import Theme
@@ -60,6 +59,7 @@ class ThemeManager(QtGui.QWidget):
         """
         QtGui.QWidget.__init__(self, parent)
         Registry().register(u'theme_manager', self)
+        Registry().register_function(u'bootstrap_initialise', self.load_first_time_themes)
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm()
@@ -144,18 +144,6 @@ class ThemeManager(QtGui.QWidget):
         self.badV1NameChars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
         self.config_updated()
-
-    def first_time(self):
-        """
-        Import new themes downloaded by the first time wizard
-        """
-        self.application.set_busy_cursor()
-        files = SettingsManager.get_files(self.settingsSection, u'.otz')
-        for theme_file in files:
-            theme_file = os.path.join(self.path, theme_file)
-            self.unzip_theme(theme_file, self.path)
-            delete_file(theme_file)
-        self.application.set_normal_cursor()
 
     def config_updated(self):
         """
@@ -265,8 +253,8 @@ class ThemeManager(QtGui.QWidget):
                     self.cloneThemeData(old_theme_data, new_theme_name)
                     self.delete_theme(old_theme_name)
                     for plugin in self.plugin_manager.plugins:
-                        if plugin.usesTheme(old_theme_name):
-                            plugin.renameTheme(old_theme_name, new_theme_name)
+                        if plugin.uses_theme(old_theme_name):
+                            plugin.rename_theme(old_theme_name, new_theme_name)
                     self.renderer.update_theme(new_theme_name, old_theme_name)
                     self.load_themes()
 
@@ -292,8 +280,7 @@ class ThemeManager(QtGui.QWidget):
         save_to = None
         save_from = None
         if theme_data.background_type == u'image':
-            save_to = os.path.join(self.path, new_theme_name,
-                os.path.split(unicode(theme_data.background_filename))[1])
+            save_to = os.path.join(self.path, new_theme_name, os.path.split(unicode(theme_data.background_filename))[1])
             save_from = theme_data.background_filename
         theme_data.theme_name = new_theme_name
         theme_data.extend_image_filename(self.path)
@@ -389,7 +376,6 @@ class ThemeManager(QtGui.QWidget):
                     theme_zip.close()
         self.application.set_normal_cursor()
 
-
     def on_import_theme(self):
         """
         Opens a file dialog to select the theme file(s) to import before
@@ -410,27 +396,37 @@ class ThemeManager(QtGui.QWidget):
         self.load_themes()
         self.application.set_normal_cursor()
 
-    def load_themes(self, first_time=False):
+    def load_first_time_themes(self):
         """
-        Loads the theme lists and triggers updates accross the whole system
+        Imports any themes on start up and makes sure there is at least one theme
+        """
+        self.application.set_busy_cursor()
+        files = AppLocation.get_files(self.settingsSection, u'.otz')
+        for theme_file in files:
+            theme_file = os.path.join(self.path, theme_file)
+            self.unzip_theme(theme_file, self.path)
+            delete_file(theme_file)
+        files = AppLocation.get_files(self.settingsSection, u'.png')
+        # No themes have been found so create one
+        if not files:
+            theme = ThemeXML()
+            theme.theme_name = UiStrings().Default
+            self._write_theme(theme, None, None)
+            Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
+            self.config_updated()
+        self.application.set_normal_cursor()
+        self.load_themes()
+
+    def load_themes(self):
+        """
+        Loads the theme lists and triggers updates across the whole system
         using direct calls or core functions and events for the plugins.
         The plugins will call back in to get the real list if they want it.
         """
         log.debug(u'Load themes from dir')
         self.theme_list = []
         self.theme_list_widget.clear()
-        files = SettingsManager.get_files(self.settingsSection, u'.png')
-        if first_time:
-            self.first_time()
-            files = SettingsManager.get_files(self.settingsSection, u'.png')
-            # No themes have been found so create one
-            if not files:
-                theme = ThemeXML()
-                theme.theme_name = UiStrings().Default
-                self._write_theme(theme, None, None)
-                Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
-                self.config_updated()
-                files = SettingsManager.get_files(self.settingsSection, u'.png')
+        files = AppLocation.get_files(self.settingsSection, u'.png')
         # Sort the themes by its name considering language specific
         files.sort(key=lambda file_name: unicode(file_name), cmp=locale_compare)
         # now process the file list of png files
@@ -751,7 +747,7 @@ class ThemeManager(QtGui.QWidget):
             # check for use in the system else where.
             if testPlugin:
                 for plugin in self.plugin_manager.plugins:
-                    if plugin.usesTheme(theme):
+                    if plugin.uses_theme(theme):
                         critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
                             translate('OpenLP.ThemeManager', 'Theme %s is used in the %s plugin.') %
                                 (theme, plugin.name))

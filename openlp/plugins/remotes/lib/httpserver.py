@@ -130,7 +130,6 @@ from openlp.plugins.remotes.lib.httpauth import AuthController, require_auth
 
 log = logging.getLogger(__name__)
 
-
 class HttpServer(object):
     """
     Ability to control OpenLP via a web browser.
@@ -400,9 +399,9 @@ class HttpConnection(object):
             u'slide': self.parent.current_slide or 0,
             u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
             u'twelve': Settings().value(u'remotes/twelve hour'),
-            u'blank': self.live_controller.blankScreen.isChecked(),
-            u'theme': self.live_controller.themeScreen.isChecked(),
-            u'display': self.live_controller.desktopScreen.isChecked()
+            u'blank': self.live_controller.blank_screen.isChecked(),
+            u'theme': self.live_controller.theme_screen.isChecked(),
+            u'display': self.live_controller.desktop_screen.isChecked()
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': result})
@@ -437,18 +436,17 @@ class HttpConnection(object):
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': {u'success': success}})
 
-    def controller(self, type, action):
+    def controller(self, display_type, action):
         """
         Perform an action on the slide controller.
 
-        ``type``
-            This is the type of slide controller, either ``preview`` or
-            ``live``.
+        ``display_type``
+            This is the type of slide controller, either ``preview`` or ``live``.
 
         ``action``
             The action to perform.
         """
-        event = u'slidecontroller_%s_%s' % (type, action)
+        event = u'slidecontroller_%s_%s' % (display_type, action)
         if action == u'text':
             current_item = self.parent.current_item
             data = []
@@ -489,7 +487,10 @@ class HttpConnection(object):
 
     def service(self, action):
         """
-        List details of the Service and update the UI
+        Handles requests for service items
+
+        ``action``
+            The action to perform.
         """
         event = u'servicemanager_%s' % action
         if action == u'list':
@@ -524,11 +525,11 @@ class HttpConnection(object):
             cherrypy.response.headers['Content-Type'] = u'application/json'
             return json.dumps({u'results': {u'items': searches}})
 
-    def search(self, type):
+    def search(self, plugin_name):
         """
         Return a list of items that match the search text.
 
-        ``type``
+        ``plugin``
             The plugin name to search in.
         """
         try:
@@ -536,7 +537,7 @@ class HttpConnection(object):
         except KeyError, ValueError:
             return self._http_bad_request()
         text = urllib.unquote(text)
-        plugin = self.plugin_manager.get_plugin_by_name(type)
+        plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
             results = plugin.mediaItem.search(text, False)
         else:
@@ -544,9 +545,9 @@ class HttpConnection(object):
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': {u'items': results}})
 
-    def go_live(self, type):
+    def go_live(self, plugin_name):
         """
-        Go live on an item of type ``type``.
+        Go live on an item of type ``plugin``.
         """
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
@@ -557,9 +558,9 @@ class HttpConnection(object):
             plugin.mediaItem.goLive(id, remote=True)
         return self._http_success()
 
-    def add_to_service(self, type):
+    def add_to_service(self, plugin_name):
         """
-        Add item of type ``type`` to the end of the service.
+        Add item of type ``plugin_name`` to the end of the service.
         """
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']

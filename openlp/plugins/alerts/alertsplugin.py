@@ -150,8 +150,9 @@ class AlertsPlugin(Plugin):
         self.toolsAlertItem = create_action(tools_menu, u'toolsAlertItem',
             text=translate('AlertsPlugin', '&Alert'), icon=u':/plugins/plugin_alerts.png',
             statustip=translate('AlertsPlugin', 'Show an alert message.'),
-            visible=False, shortcuts=[u'F7'], triggers=self.onAlertsTrigger)
-        self.main_window.toolsMenu.addAction(self.toolsAlertItem)
+            visible=False, can_shortcuts=True, triggers=self.onAlertsTrigger)
+        self.main_window.tools_menu.addAction(self.toolsAlertItem)
+
 
     def initialise(self):
         log.info(u'Alerts Initialising')
@@ -184,7 +185,7 @@ class AlertsPlugin(Plugin):
             '<br />The alert plugin controls the displaying of nursery alerts on the display screen.')
         return about_text
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
