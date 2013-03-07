@@ -489,7 +489,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Settings().remove_obsolete_settings()
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
-        self.media_controller = MediaController(self)
+        self.media_controller = MediaController()
         self.settingsForm = SettingsForm(self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)

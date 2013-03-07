@@ -114,7 +114,7 @@ class CustomMediaItem(MediaManagerItem):
         # active trigger it and clean up so it will not update again.
 
     def onNewClick(self):
-        self.edit_custom_form.loadCustom(0)
+        self.edit_custom_form.load_custom(0)
         self.edit_custom_form.exec_()
         self.onClearTextButtonClick()
         self.onSelectionChange()
@@ -128,7 +128,7 @@ class CustomMediaItem(MediaManagerItem):
         custom_id = int(custom_id)
         valid = self.manager.get_object(CustomSlide, custom_id)
         if valid:
-            self.edit_custom_form.loadCustom(custom_id, preview)
+            self.edit_custom_form.load_custom(custom_id, preview)
             if self.edit_custom_form.exec_() == QtGui.QDialog.Accepted:
                 self.remoteTriggered = True
                 self.remoteCustom = custom_id
@@ -148,7 +148,7 @@ class CustomMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
             item_id = item.data(QtCore.Qt.UserRole)
-            self.edit_custom_form.loadCustom(item_id, False)
+            self.edit_custom_form.load_custom(item_id, False)
             self.edit_custom_form.exec_()
             self.autoSelectId = -1
             self.onSearchTextButtonClicked()

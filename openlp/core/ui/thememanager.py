@@ -253,8 +253,8 @@ class ThemeManager(QtGui.QWidget):
                     self.cloneThemeData(old_theme_data, new_theme_name)
                     self.delete_theme(old_theme_name)
                     for plugin in self.plugin_manager.plugins:
-                        if plugin.usesTheme(old_theme_name):
-                            plugin.renameTheme(old_theme_name, new_theme_name)
+                        if plugin.uses_theme(old_theme_name):
+                            plugin.rename_theme(old_theme_name, new_theme_name)
                     self.renderer.update_theme(new_theme_name, old_theme_name)
                     self.load_themes()
 
@@ -747,7 +747,7 @@ class ThemeManager(QtGui.QWidget):
             # check for use in the system else where.
             if testPlugin:
                 for plugin in self.plugin_manager.plugins:
-                    if plugin.usesTheme(theme):
+                    if plugin.uses_theme(theme):
                         critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
                             translate('OpenLP.ThemeManager', 'Theme %s is used in the %s plugin.') %
                                 (theme, plugin.name))
