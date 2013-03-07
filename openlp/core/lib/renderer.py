@@ -45,7 +45,7 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'Get those children out of the muddy, muddy \n' \
     '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
-VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
+VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(100)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 

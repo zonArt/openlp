@@ -84,9 +84,9 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
-        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
+        self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction',
             icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
-        self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
+        self.resetAction = self.toolbar.add_toolbar_action(u'resetAction',
             icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
 
     def onDeleteClick(self):

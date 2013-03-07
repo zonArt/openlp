@@ -99,9 +99,9 @@ class MediaMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
-        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction', icon=u':/slides/slide_blank.png',
+        self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction', icon=u':/slides/slide_blank.png',
             triggers=self.onReplaceClick)
-        self.resetAction = self.toolbar.addToolbarAction(u'resetAction', icon=u':/system/system_close.png',
+        self.resetAction = self.toolbar.add_toolbar_action(u'resetAction', icon=u':/system/system_close.png',
             visible=False, triggers=self.onResetClick)
         self.mediaWidget = QtGui.QWidget(self)
         self.mediaWidget.setObjectName(u'mediaWidget')

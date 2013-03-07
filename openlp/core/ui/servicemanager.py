@@ -111,24 +111,24 @@ class ServiceManagerDialog(object):
         """
         # Create the top toolbar
         self.toolbar = OpenLPToolbar(self)
-        self.toolbar.addToolbarAction(u'newService', text=UiStrings().NewService, icon=u':/general/general_new.png',
+        self.toolbar.add_toolbar_action(u'newService', text=UiStrings().NewService, icon=u':/general/general_new.png',
             tooltip=UiStrings().CreateService, triggers=self.on_new_service_clicked)
-        self.toolbar.addToolbarAction(u'openService', text=UiStrings().OpenService, icon=u':/general/general_open.png',
+        self.toolbar.add_toolbar_action(u'openService', text=UiStrings().OpenService, icon=u':/general/general_open.png',
             tooltip=translate('OpenLP.ServiceManager', 'Load an existing service.'),
             triggers=self.on_load_service_clicked)
-        self.toolbar.addToolbarAction(u'saveService', text=UiStrings().SaveService, icon=u':/general/general_save.png',
+        self.toolbar.add_toolbar_action(u'saveService', text=UiStrings().SaveService, icon=u':/general/general_save.png',
             tooltip=translate('OpenLP.ServiceManager', 'Save this service.'), triggers=self.decide_save_method)
         self.toolbar.addSeparator()
         self.theme_label = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
         self.theme_label.setMargin(3)
         self.theme_label.setObjectName(u'theme_label')
-        self.toolbar.addToolbarWidget(self.theme_label)
+        self.toolbar.add_toolbar_widget(self.theme_label)
         self.theme_combo_box = QtGui.QComboBox(self.toolbar)
         self.theme_combo_box.setToolTip(translate('OpenLP.ServiceManager', 'Select a theme for the service.'))
         self.theme_combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.theme_combo_box.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         self.theme_combo_box.setObjectName(u'theme_combo_box')
-        self.toolbar.addToolbarWidget(self.theme_combo_box)
+        self.toolbar.add_toolbar_widget(self.theme_combo_box)
         self.toolbar.setObjectName(u'toolbar')
         self.layout.addWidget(self.toolbar)
         # Create the service manager list
@@ -153,48 +153,48 @@ class ServiceManagerDialog(object):
         self.order_toolbar = OpenLPToolbar(self)
         action_list = ActionList.get_instance()
         action_list.add_category(UiStrings().Service, CategoryOrder.standard_toolbar)
-        self.service_manager_list.moveTop = self.order_toolbar.addToolbarAction(u'moveTop',
+        self.service_manager_list.moveTop = self.order_toolbar.add_toolbar_action(u'moveTop',
             text=translate('OpenLP.ServiceManager', 'Move to &top'), icon=u':/services/service_top.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item to the top of the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.onServiceTop)
-        self.service_manager_list.moveUp = self.order_toolbar.addToolbarAction(u'moveUp',
+        self.service_manager_list.moveUp = self.order_toolbar.add_toolbar_action(u'moveUp',
             text=translate('OpenLP.ServiceManager', 'Move &up'), icon=u':/services/service_up.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item up one position in the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.onServiceUp)
-        self.service_manager_list.moveDown = self.order_toolbar.addToolbarAction(u'moveDown',
+        self.service_manager_list.moveDown = self.order_toolbar.add_toolbar_action(u'moveDown',
             text=translate('OpenLP.ServiceManager', 'Move &down'), icon=u':/services/service_down.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item down one position in the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.onServiceDown)
-        self.service_manager_list.moveBottom = self.order_toolbar.addToolbarAction(u'moveBottom',
+        self.service_manager_list.moveBottom = self.order_toolbar.add_toolbar_action(u'moveBottom',
             text=translate('OpenLP.ServiceManager', 'Move to &bottom'), icon=u':/services/service_bottom.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item to the end of the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.onServiceEnd)
-        self.service_manager_list.down = self.order_toolbar.addToolbarAction(u'down',
+        self.service_manager_list.down = self.order_toolbar.add_toolbar_action(u'down',
             text=translate('OpenLP.ServiceManager', 'Move &down'), can_shortcuts=True,
             tooltip=translate('OpenLP.ServiceManager', 'Moves the selection down the window.'), visible=False,
             triggers=self.on_move_selection_down)
         action_list.add_action(self.service_manager_list.down)
-        self.service_manager_list.up = self.order_toolbar.addToolbarAction(u'up',
+        self.service_manager_list.up = self.order_toolbar.add_toolbar_action(u'up',
             text=translate('OpenLP.ServiceManager', 'Move up'), can_shortcuts=True,
             tooltip=translate('OpenLP.ServiceManager', 'Moves the selection up the window.'), visible=False,
             triggers=self.on_move_selection_up)
         action_list.add_action(self.service_manager_list.up)
         self.order_toolbar.addSeparator()
-        self.service_manager_list.delete = self.order_toolbar.addToolbarAction(u'delete', can_shortcuts=True,
+        self.service_manager_list.delete = self.order_toolbar.add_toolbar_action(u'delete', can_shortcuts=True,
             text=translate('OpenLP.ServiceManager', '&Delete From Service'), icon=u':/general/general_delete.png',
             tooltip=translate('OpenLP.ServiceManager', 'Delete the selected item from the service.'),
             triggers=self.onDeleteFromService)
         self.order_toolbar.addSeparator()
-        self.service_manager_list.expand = self.order_toolbar.addToolbarAction(u'expand', can_shortcuts=True,
+        self.service_manager_list.expand = self.order_toolbar.add_toolbar_action(u'expand', can_shortcuts=True,
             text=translate('OpenLP.ServiceManager', '&Expand all'), icon=u':/services/service_expand_all.png',
             tooltip=translate('OpenLP.ServiceManager', 'Expand all the service items.'),
             category=UiStrings().Service, triggers=self.onExpandAll)
-        self.service_manager_list.collapse = self.order_toolbar.addToolbarAction(u'collapse', can_shortcuts=True,
+        self.service_manager_list.collapse = self.order_toolbar.add_toolbar_action(u'collapse', can_shortcuts=True,
             text=translate('OpenLP.ServiceManager', '&Collapse all'), icon=u':/services/service_collapse_all.png',
             tooltip=translate('OpenLP.ServiceManager', 'Collapse all the service items.'),
             category=UiStrings().Service, triggers=self.onCollapseAll)
         self.order_toolbar.addSeparator()
-        self.service_manager_list.make_live = self.order_toolbar.addToolbarAction(u'make_live', can_shortcuts=True,
+        self.service_manager_list.make_live = self.order_toolbar.add_toolbar_action(u'make_live', can_shortcuts=True,
             text=translate('OpenLP.ServiceManager', 'Go Live'), icon=u':/general/general_live.png',
             tooltip=translate('OpenLP.ServiceManager', 'Send the selected item to Live.'),
             category=UiStrings().Service,

@@ -268,13 +268,13 @@ class MediaController(object):
         controller.media_info = MediaInfo()
         # Build a Media ToolBar
         controller.mediabar = OpenLPToolbar(controller)
-        controller.mediabar.addToolbarAction(u'playbackPlay', text=u'media_playback_play',
+        controller.mediabar.add_toolbar_action(u'playbackPlay', text=u'media_playback_play',
             icon=u':/slides/media_playback_start.png',
             tooltip=translate('OpenLP.SlideController', 'Start playing media.'), triggers=controller.send_to_plugins)
-        controller.mediabar.addToolbarAction(u'playbackPause', text=u'media_playback_pause',
+        controller.mediabar.add_toolbar_action(u'playbackPause', text=u'media_playback_pause',
             icon=u':/slides/media_playback_pause.png',
             tooltip=translate('OpenLP.SlideController', 'Pause playing media.'), triggers=controller.send_to_plugins)
-        controller.mediabar.addToolbarAction(u'playbackStop', text=u'media_playback_stop',
+        controller.mediabar.add_toolbar_action(u'playbackStop', text=u'media_playback_stop',
             icon=u':/slides/media_playback_stop.png',
             tooltip=translate('OpenLP.SlideController', 'Stop playing media.'), triggers=controller.send_to_plugins)
         # Build the seekSlider.
@@ -285,7 +285,7 @@ class MediaController(object):
         controller.seekSlider.setToolTip(translate('OpenLP.SlideController', 'Video position.'))
         controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
         controller.seekSlider.setObjectName(u'seekSlider')
-        controller.mediabar.addToolbarWidget(controller.seekSlider)
+        controller.mediabar.add_toolbar_widget(controller.seekSlider)
         # Build the volumeSlider.
         controller.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
         controller.volumeSlider.setTickInterval(10)
@@ -297,7 +297,7 @@ class MediaController(object):
         controller.volumeSlider.setValue(controller.media_info.volume)
         controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
         controller.volumeSlider.setObjectName(u'volumeSlider')
-        controller.mediabar.addToolbarWidget(controller.volumeSlider)
+        controller.mediabar.add_toolbar_widget(controller.volumeSlider)
         controller.controller_layout.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals

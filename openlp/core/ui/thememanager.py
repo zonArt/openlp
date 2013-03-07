@@ -70,27 +70,27 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.setObjectName(u'toolbar')
-        self.toolbar.addToolbarAction(u'newTheme',
+        self.toolbar.add_toolbar_action(u'newTheme',
             text=UiStrings().NewTheme, icon=u':/themes/theme_new.png',
             tooltip=translate('OpenLP.ThemeManager', 'Create a new theme.'),
             triggers=self.onAddTheme)
-        self.toolbar.addToolbarAction(u'editTheme',
+        self.toolbar.add_toolbar_action(u'editTheme',
             text=translate('OpenLP.ThemeManager', 'Edit Theme'),
             icon=u':/themes/theme_edit.png',
             tooltip=translate('OpenLP.ThemeManager', 'Edit a theme.'),
             triggers=self.on_edit_theme)
-        self.deleteToolbarAction = self.toolbar.addToolbarAction(u'delete_theme',
+        self.deleteToolbarAction = self.toolbar.add_toolbar_action(u'delete_theme',
             text=translate('OpenLP.ThemeManager', 'Delete Theme'),
             icon=u':/general/general_delete.png',
             tooltip=translate('OpenLP.ThemeManager', 'Delete a theme.'),
             triggers=self.on_delete_theme)
         self.toolbar.addSeparator()
-        self.toolbar.addToolbarAction(u'importTheme',
+        self.toolbar.add_toolbar_action(u'importTheme',
             text=translate('OpenLP.ThemeManager', 'Import Theme'),
             icon=u':/general/general_import.png',
             tooltip=translate('OpenLP.ThemeManager', 'Import a theme.'),
             triggers=self.on_import_theme)
-        self.toolbar.addToolbarAction(u'exportTheme',
+        self.toolbar.add_toolbar_action(u'exportTheme',
             text=translate('OpenLP.ThemeManager', 'Export Theme'),
             icon=u':/general/general_export.png',
             tooltip=translate('OpenLP.ThemeManager', 'Export a theme.'),

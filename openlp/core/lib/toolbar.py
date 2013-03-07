@@ -53,7 +53,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.actions = {}
         log.debug(u'Init done for %s' % parent.__class__.__name__)
 
-    def addToolbarAction(self, name, **kwargs):
+    def add_toolbar_action(self, name, **kwargs):
         """
         A method to help developers easily add a button to the toolbar.
         A new QAction is created by calling ``create_action()``. The action is
@@ -64,14 +64,14 @@ class OpenLPToolbar(QtGui.QToolBar):
         self.actions[name] = action
         return action
 
-    def addToolbarWidget(self, widget):
+    def add_toolbar_widget(self, widget):
         """
         Add a widget and store it's handle under the widgets object name.
         """
         action = self.addWidget(widget)
         self.actions[widget.objectName()] = action
 
-    def setWidgetVisible(self, widgets, visible=True):
+    def set_widget_visible(self, widgets, visible=True):
         """
         Set the visibitity for a widget or a list of widgets.
 

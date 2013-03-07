@@ -202,7 +202,7 @@ class MediaManagerItem(QtGui.QWidget):
         for action in toolbar_actions:
             if action[0] == StringContent.Preview:
                 self.toolbar.addSeparator()
-            self.toolbar.addToolbarAction(u'%s%sAction' % (self.plugin.name, action[0]),
+            self.toolbar.add_toolbar_action(u'%s%sAction' % (self.plugin.name, action[0]),
                 text=self.plugin.getString(action[1])[u'title'], icon=action[2],
                 tooltip=self.plugin.getString(action[1])[u'tooltip'],
                 triggers=action[3])
