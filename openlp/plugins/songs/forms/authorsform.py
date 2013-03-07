@@ -44,10 +44,8 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self._autoDisplayName = False
-        QtCore.QObject.connect(self.firstNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onFirstNameEditTextEdited)
-        QtCore.QObject.connect(self.lastNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onLastNameEditTextEdited)
+        self.firstNameEdit.textEdited.connect(self.onFirstNameEditTextEdited)
+        self.lastNameEdit.textEdited.connect(self.onLastNameEditTextEdited)
 
     def exec_(self, clear=True):
         if clear:

@@ -362,8 +362,7 @@ class SlideController(DisplayController):
             self.toolbar.set_widget_visible(self.loop_list, False)
             self.toolbar.set_widget_visible(self.wide_menu, False)
         else:
-            QtCore.QObject.connect(self.preview_list_widget,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
+            self.preview_list_widget.doubleClicked.connect(self.onGoLiveClick)
             self.toolbar.set_widget_visible([u'editSong'], False)
         if self.is_live:
             self.setLiveHotkeys(self)
@@ -764,7 +763,7 @@ class SlideController(DisplayController):
                 for counter in range(len(self.service_item.background_audio)):
                     action = self.trackMenu.addAction(os.path.basename(self.service_item.background_audio[counter]))
                     action.setData(counter)
-                    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), self.onTrackTriggered)
+                    action.triggered.connect(self.onTrackTriggered)
                 self.display.audio_player.repeat = Settings().value(
                     self.main_window.generalSettingsSection + u'/audio repeat list')
                 if Settings().value(self.main_window.generalSettingsSection + u'/audio start paused'):
