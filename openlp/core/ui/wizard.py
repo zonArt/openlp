@@ -93,9 +93,9 @@ class OpenLPWizard(QtGui.QWizard):
         self.register_fields()
         self.customInit()
         self.customSignals()
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.on_current_id_changed)
-        QtCore.QObject.connect(self.error_copy_to_button, QtCore.SIGNAL(u'clicked()'), self.on_error_copy_to_button_clicked)
-        QtCore.QObject.connect(self.error_save_to_button, QtCore.SIGNAL(u'clicked()'), self.on_error_save_to_button_clicked)
+        self.currentIdChanged.connect(self.on_current_id_changed)
+        self.error_copy_to_button.clicked.connect(self.on_error_copy_to_button_clicked)
+        self.error_save_to_button.clicked.connect(self.on_error_save_to_button_clicked)
 
     def setupUi(self, image):
         """
@@ -192,13 +192,13 @@ class OpenLPWizard(QtGui.QWizard):
 
     def on_error_copy_to_button_clicked(self):
         """
-        Called when the ``on_error_copy_to_button_clicked`` has been clicked.
+        Called when the ``error_copy_to_button`` has been clicked.
         """
         pass
 
     def on_error_save_to_button_clicked(self):
         """
-        Called when the ``on_error_save_to_button_clicked`` has been clicked.
+        Called when the ``error_save_to_button`` has been clicked.
         """
         pass
 
