@@ -57,7 +57,7 @@ __all__ = [u'OpenLP', u'main']
 
 
 log = logging.getLogger()
-NT_REPARI_STYLESHEET = u"""
+NT_REPAIR_STYLESHEET = u"""
 QMainWindow::separator
 {
   border: none;
@@ -123,7 +123,7 @@ class OpenLP(QtGui.QApplication):
                 u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += alternate_rows_repair_stylesheet
         if os.name == u'nt':
-            application_stylesheet += NT_REPARI_STYLESHEET
+            application_stylesheet += NT_REPAIR_STYLESHEET
         if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
         show_splash = Settings().value(u'general/show splash')
