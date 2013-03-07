@@ -140,7 +140,7 @@ class GeneralTab(SettingsTab):
         self.audioGroupBox = QtGui.QGroupBox(self.leftColumn)
         self.audioGroupBox.setObjectName(u'audioGroupBox')
         self.audioLayout = QtGui.QVBoxLayout(self.audioGroupBox)
-        self.audioLayout.setObjectName(u'audio_layout')
+        self.audioLayout.setObjectName(u'audioLayout')
         self.startPausedCheckBox = QtGui.QCheckBox(self.audioGroupBox)
         self.startPausedCheckBox.setObjectName(u'startPausedCheckBox')
         self.audioLayout.addWidget(self.startPausedCheckBox)

@@ -104,7 +104,7 @@ class Ui_PrintServiceDialog(object):
         self.optionsLayout = QtGui.QVBoxLayout(self.optionsWidget)
         self.optionsLayout.setContentsMargins(8, 8, 8, 8)
         self.titleLabel = QtGui.QLabel(self.optionsWidget)
-        self.titleLabel.setObjectName(u'title_label')
+        self.titleLabel.setObjectName(u'titleLabel')
         self.optionsLayout.addWidget(self.titleLabel)
         self.titleLineEdit = QtGui.QLineEdit(self.optionsWidget)
         self.titleLineEdit.setObjectName(u'titleLineEdit')

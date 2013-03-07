@@ -73,7 +73,7 @@ class CustomPlugin(Plugin):
             'the same way songs are. This plugin provides greater freedom over the songs plugin.')
         return about_text
 
-    def usesTheme(self, theme):
+    def uses_theme(self, theme):
         """
         Called to find out if the custom plugin is currently using a theme.
 
@@ -83,7 +83,7 @@ class CustomPlugin(Plugin):
             return True
         return False
 
-    def renameTheme(self, oldTheme, newTheme):
+    def rename_theme(self, oldTheme, newTheme):
         """
         Renames a theme the custom plugin is using making the plugin use the
         new name.
@@ -94,12 +94,12 @@ class CustomPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        customsUsingTheme = self.manager.get_all_objects(CustomSlide, CustomSlide.theme_name == oldTheme)
-        for custom in customsUsingTheme:
+        customs_using_theme = self.manager.get_all_objects(CustomSlide, CustomSlide.theme_name == oldTheme)
+        for custom in customs_using_theme:
             custom.theme_name = newTheme
             self.manager.save_object(custom)
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """

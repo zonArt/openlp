@@ -185,7 +185,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return VerseType.translated_tags[num].upper()
-        if len(VerseType.Names) > default:
+        if len(VerseType.names) > default:
             return VerseType.translated_tags[default].upper()
         else:
             return VerseType.translated_tags[VerseType.Other].upper()
@@ -204,8 +204,8 @@ class VerseType(object):
         verse_tag = verse_tag[0].lower()
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
-                return VerseType.TranslatedNames[num]
-        if len(VerseType.Names) > default:
+                return VerseType.translated_names[num]
+        if len(VerseType.names) > default:
             return VerseType.translated_names[default]
         else:
             return VerseType.translated_names[VerseType.Other]
@@ -225,7 +225,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.Names) > default:
+        if len(VerseType.names) > default:
             return default
         else:
             return VerseType.Other
@@ -245,7 +245,7 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        if len(VerseType.Names) > default:
+        if len(VerseType.names) > default:
             return default
         else:
             return VerseType.Other
@@ -624,7 +624,3 @@ def natcmp(a, b):
             if result != 0:
                 return result
         return 1
-
-from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
-from openlp.plugins.songs.lib.songstab import SongsTab
-from openlp.plugins.songs.lib.mediaitem import SongMediaItem
