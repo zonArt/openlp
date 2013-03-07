@@ -102,7 +102,7 @@ class Ui_CustomEditDialog(object):
             [self.preview_button])
         self.dialog_layout.addWidget(self.button_box)
         self.retranslateUi(custom_edit_dialog)
-        
+
     def retranslateUi(self, custom_edit_dialog):
         custom_edit_dialog.setWindowTitle(translate('CustomPlugin.EditCustomForm', 'Edit Custom Slides'))
         self.title_label.setText(translate('CustomPlugin.EditCustomForm', '&Title:'))
@@ -115,4 +115,3 @@ class Ui_CustomEditDialog(object):
         self.theme_label.setText(translate('CustomPlugin.EditCustomForm', 'The&me:'))
         self.credit_label.setText(translate('CustomPlugin.EditCustomForm', '&Credits:'))
         self.preview_button.setText(UiStrings().SaveAndPreview)
-            
