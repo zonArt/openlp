@@ -330,6 +330,7 @@ class ActionList(object):
         else:
             log.warn(u'Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
                 (shortcuts[0], action.objectName()))
+            shortcuts.remove(shortcuts[0])
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
 
     def remove_action(self, action, category=None):
