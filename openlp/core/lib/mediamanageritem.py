@@ -380,13 +380,11 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Return the current list of files
         """
-        count = 0
         file_list = []
-        while count < self.listView.count():
-            bitem = self.listView.item(count)
+        for index in xrange(self.listView.count()):
+            bitem = self.listView.item(index)
             filename = bitem.data(QtCore.Qt.UserRole)
             file_list.append(filename)
-            count += 1
         return file_list
 
     def loadList(self, list):
