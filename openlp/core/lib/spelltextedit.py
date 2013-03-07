@@ -41,8 +41,7 @@ try:
 except ImportError:
     ENCHANT_AVAILABLE = False
 
-# based on code from
-# http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
+# based on code from http://john.nachtimwald.com/2009/08/22/qplaintextedit-with-in-line-spell-check
 
 from PyQt4 import QtCore, QtGui
 
@@ -56,19 +55,19 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
     """
     Spell checking widget based on QPlanTextEdit.
     """
-    def __init__(self, parent=None, formattingTagsAllowed=True):
+    def __init__(self, parent=None, formatting_tags_allowed=True):
         """
         Constructor.
         """
         global ENCHANT_AVAILABLE
         QtGui.QPlainTextEdit.__init__(self, parent)
-        self.formattingTagsAllowed = formattingTagsAllowed
+        self.formatting_tags_allowed = formatting_tags_allowed
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
             try:
                 self.dictionary = enchant.Dict()
                 self.highlighter = Highlighter(self.document())
-                self.highlighter.spellingDictionary = self.dictionary
+                self.highlighter.spelling_dictionary = self.dictionary
             except (Error, DictNotFoundError):
                 ENCHANT_AVAILABLE = False
                 log.debug(u'Could not load default dictionary')
@@ -78,8 +77,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         Handle mouse clicks within the text edit region.
         """
         if event.button() == QtCore.Qt.RightButton:
-            # Rewrite the mouse event to a left button event so the cursor is
-            # moved to the location of the pointer.
+            # Rewrite the mouse event to a left button event so the cursor is moved to the location of the pointer.
             event = QtGui.QMouseEvent(QtCore.QEvent.MouseButtonPress,
                 event.pos(), QtCore.Qt.LeftButton, QtCore.Qt.LeftButton, QtCore.Qt.NoModifier)
         QtGui.QPlainTextEdit.mousePressEvent(self, event)
@@ -88,7 +86,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         Provide the context menu for the text edit region.
         """
-        popupMenu = self.createStandardContextMenu()
+        popup_menu = self.createStandardContextMenu()
         # Select the word under the cursor.
         cursor = self.textCursor()
         # only select text if not already selected
@@ -97,14 +95,13 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         self.setTextCursor(cursor)
         # Add menu with available languages.
         if ENCHANT_AVAILABLE:
-            lang_menu = QtGui.QMenu(
-                translate('OpenLP.SpellTextEdit', 'Language:'))
+            lang_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Language:'))
             for lang in enchant.list_languages():
                 action = create_action(lang_menu, lang, text=lang, checked=lang == self.dictionary.tag)
                 lang_menu.addAction(action)
-            popupMenu.insertSeparator(popupMenu.actions()[0])
-            popupMenu.insertMenu(popupMenu.actions()[0], lang_menu)
-            lang_menu.triggered.connect(self.setLanguage)
+            popup_menu.insertSeparator(popup_menu.actions()[0])
+            popup_menu.insertMenu(popup_menu.actions()[0], lang_menu)
+            lang_menu.triggered.connect(self.set_language)
         # Check if the selected word is misspelled and offer spelling suggestions if it is.
         if ENCHANT_AVAILABLE and self.textCursor().hasSelection():
             text = self.textCursor().selectedText()
@@ -112,22 +109,22 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 spell_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Spelling Suggestions'))
                 for word in self.dictionary.suggest(text):
                     action = SpellAction(word, spell_menu)
-                    action.correct.connect(self.correctWord)
+                    action.correct.connect(self.correct_word)
                     spell_menu.addAction(action)
                 # Only add the spelling suggests to the menu if there are suggestions.
                 if spell_menu.actions():
-                    popupMenu.insertMenu(popupMenu.actions()[0], spell_menu)
-        tagMenu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Formatting Tags'))
-        if self.formattingTagsAllowed:
+                    popup_menu.insertMenu(popup_menu.actions()[0], spell_menu)
+        tag_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Formatting Tags'))
+        if self.formatting_tags_allowed:
             for html in FormattingTags.get_html_tags():
-                action = SpellAction(html[u'desc'], tagMenu)
-                action.correct.connect(self.htmlTag)
-                tagMenu.addAction(action)
-            popupMenu.insertSeparator(popupMenu.actions()[0])
-            popupMenu.insertMenu(popupMenu.actions()[0], tagMenu)
-        popupMenu.exec_(event.globalPos())
+                action = SpellAction(html[u'desc'], tag_menu)
+                action.correct.connect(self.html_tag)
+                tag_menu.addAction(action)
+            popup_menu.insertSeparator(popup_menu.actions()[0])
+            popup_menu.insertMenu(popup_menu.actions()[0], tag_menu)
+        popup_menu.exec_(event.globalPos())
 
-    def setLanguage(self, action):
+    def set_language(self, action):
         """
         Changes the language for this spelltextedit.
 
@@ -135,11 +132,11 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
             The action.
         """
         self.dictionary = enchant.Dict(action.text())
-        self.highlighter.spellingDictionary = self.dictionary
-        self.highlighter.highlightBlock(self.toPlainText())
+        self.highlighter.spelling_dictionary = self.dictionary
+        self.highlighter.highlight_block(self.toPlainText())
         self.highlighter.rehighlight()
 
-    def correctWord(self, word):
+    def correct_word(self, word):
         """
         Replaces the selected text with word.
         """
@@ -149,7 +146,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         cursor.insertText(word)
         cursor.endEditBlock()
 
-    def htmlTag(self, tag):
+    def html_tag(self, tag):
         """
         Replaces the selected text with word.
         """
@@ -181,22 +178,21 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         Constructor
         """
         QtGui.QSyntaxHighlighter.__init__(self, *args)
-        self.spellingDictionary = None
+        self.spelling_dictionary = None
 
-    def highlightBlock(self, text):
+    def highlight_block(self, text):
         """
         Highlight misspelt words in a block of text
         """
-        if not self.spellingDictionary:
+        if not self.spelling_dictionary:
             return
         text = unicode(text)
-        charFormat = QtGui.QTextCharFormat()
-        charFormat.setUnderlineColor(QtCore.Qt.red)
-        charFormat.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
+        char_format = QtGui.QTextCharFormat()
+        char_format.setUnderlineColor(QtCore.Qt.red)
+        char_format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
         for word_object in re.finditer(self.WORDS, text):
-            if not self.spellingDictionary.check(word_object.group()):
-                self.setFormat(word_object.start(),
-                    word_object.end() - word_object.start(), charFormat)
+            if not self.spelling_dictionary.check(word_object.group()):
+                self.setFormat(word_object.start(), word_object.end() - word_object.start(), char_format)
 
 
 class SpellAction(QtGui.QAction):
