@@ -205,8 +205,6 @@ class HttpConnection(object):
         """
         Initialise the http connection. Listen out for socket signals.
         """
-        #log.debug(u'Initialise HttpConnection: %s' % socket.peerAddress())
-        #self.socket = socket
         self.parent = parent
         self.routes = [
             (u'^/$', self.serve_file),
@@ -215,8 +213,9 @@ class HttpConnection(object):
             (r'^/api/poll$', self.poll),
             (r'^/stage/api/poll$', self.poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
-            (r'^/stage/api/controller/live/(.*)$', self.controller),
+            (r'^/stage/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
+            (r'^/stage/api/service/(.*)$', self.service),
             (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.pluginInfo),
@@ -227,11 +226,15 @@ class HttpConnection(object):
         self.translate()
 
     @cherrypy.expose
-    #@require_auth(auth)
+    @require_auth()
     def default(self, *args, **kwargs):
         """
-        Handles the requests for the main url.  This is secure depending on settings.
+        Handles the requests for the main url.  This is secure depending on settings in config.
         """
+        print "default"
+        url = urlparse.urlparse(cherrypy.url())
+        self.url_params = urlparse.parse_qs(url.query)
+        print url
         # Loop through the routes we set up earlier and execute them
         return self._process_http_request(args, kwargs)
 
@@ -244,22 +247,17 @@ class HttpConnection(object):
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
         print url
-        print [self.url_params]
-        #return self.serve_file(u'stage')
         return self._process_http_request(args, kwargs)
 
     @cherrypy.expose
     def files(self, *args, **kwargs):
         """
-        Handles the requests for the stage url.  This is not secure.
+        Handles the requests for the files url.  This is not secure.
         """
         print "files"
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
         print url
-        print [self.url_params]
-        print args
-        #return self.serve_file(args)
         return self._process_http_request(args, kwargs)
 
     def _process_http_request(self, args, kwargs):
@@ -269,13 +267,11 @@ class HttpConnection(object):
         print "common handler"
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
-        print url
-        print [self.url_params]
         response = None
         for route, func in self.routes:
             match = re.match(route, url.path)
             if match:
-                print 'Route "%s" matched "%s"', route, url.path
+                print 'Route "%s" matched "%s"', route, url.path, func
                 log.debug('Route "%s" matched "%s"', route, url.path)
                 args = []
                 for param in match.groups():
@@ -346,7 +342,6 @@ class HttpConnection(object):
         Ultimately for i18n, this could first look for xx/file.html before
         falling back to file.html... where xx is the language, e.g. 'en'
         """
-        print "serve_file", filename
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
@@ -483,6 +478,7 @@ class HttpConnection(object):
                 Registry().execute(event, [0])
             json_data = {u'results': {u'success': True}}
         cherrypy.response.headers['Content-Type'] = u'application/json'
+        print json.dumps(json_data)
         return json.dumps(json_data)
 
     def service(self, action):
@@ -549,6 +545,7 @@ class HttpConnection(object):
         """
         Go live on an item of type ``plugin``.
         """
+        print "go_live"
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:

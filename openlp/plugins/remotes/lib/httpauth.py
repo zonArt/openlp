@@ -45,6 +45,7 @@ def check_credentials(user_name, password):
     Returns None on success or a string describing the error on failure
     """
     # @todo make from config
+    print "check_credentials"
     if user_name == 'openlp' and password == 'openlp':
         return None
     else:
@@ -59,18 +60,17 @@ def check_auth(*args, **kwargs):
     is not None, a login is required and the entry is evaluated as a list of
     conditions that the user must fulfill
     """
-    print "check"
+    print "check_auth"
     conditions = cherrypy.request.config.get('auth.require', None)
+    print urlparse.urlparse(cherrypy.url()), conditions
     print conditions
-    print args, kwargs
-    print urlparse.urlparse(cherrypy.url())
-    url = urlparse.urlparse(cherrypy.url())
-    print urlparse.parse_qs(url.query)
     if conditions is not None:
         username = cherrypy.session.get(SESSION_KEY)
+        print username
         if username:
             cherrypy.request.login = username
             for condition in conditions:
+                print "c ", condition
                 # A condition is just a callable that returns true or false
                 if not condition():
                     raise cherrypy.HTTPRedirect("/auth/login")
@@ -84,14 +84,15 @@ def require_auth(*conditions):
     """
     A decorator that appends conditions to the auth.require config variable.
     """
-    print conditions
     def decorate(f):
+        """
+        Lets process a decoration.
+        """
         if not hasattr(f, '_cp_config'):
             f._cp_config = dict()
         if 'auth.require' not in f._cp_config:
             f._cp_config['auth.require'] = []
         f._cp_config['auth.require'].extend(conditions)
-        print "a ", [f]
         return f
     return decorate
 
@@ -182,6 +183,9 @@ class AuthController(object):
 
     @cherrypy.expose
     def logout(self, from_page="/"):
+        """
+        Provides the actual logout functions
+        """
         sess = cherrypy.session
         username = sess.get(SESSION_KEY, None)
         sess[SESSION_KEY] = None
