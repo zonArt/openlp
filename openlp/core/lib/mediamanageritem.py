@@ -419,7 +419,7 @@ class MediaManagerItem(QtGui.QWidget):
         pass
 
     def generateSlideData(self, service_item, item=None, xml_version=False, remote=False,
-        context=ServiceItemContext.Live):
+            context=ServiceItemContext.Live):
         """
         Generate the slide data. Needs to be implemented by the plugin.
         """
