@@ -244,7 +244,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
             js_additions += plugin.getDisplayJavaScript()
             html_additions += plugin.getDisplayHtml()
     html = HTMLSRC % (
-        build_background_css(item, width, height),
+        build_background_css(item, width),
         css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item, webkit_ver),
@@ -259,8 +259,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
 
 def webkit_version():
     """
-    Return the Webkit version in use.
-    Note method added relatively recently, so return 0 if prior to this
+    Return the Webkit version in use. Note method added relatively recently, so return 0 if prior to this
     """
     try:
         webkit_ver = float(QtWebKit.qWebKitVersion())
@@ -270,13 +269,12 @@ def webkit_version():
     return webkit_ver
 
 
-def build_background_css(item, width, height):
+def build_background_css(item, width):
     """
     Build the background css
 
     ``item``
         Service Item containing theme and location information
-
     """
     width = int(width) / 2
     theme = item.themedata
@@ -348,21 +346,18 @@ def build_lyrics_css(item, webkit_ver):
     if theme and item.main:
         lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
         lyrics = build_lyrics_format_css(theme, item.main.width(), item.main.height())
-        # For performance reasons we want to show as few DIV's as possible,
-        # especially when animating/transitions.
-        # However some bugs in older versions of qtwebkit mean we need to
-        # perform workarounds and add extra divs. Only do these when needed.
+        # For performance reasons we want to show as few DIV's as possible, especially when animating/transitions.
+        # However some bugs in older versions of qtwebkit mean we need to perform workarounds and add extra divs. Only
+        # do these when needed.
         #
-        # Before 533.3 the webkit-text-fill colour wasn't displayed, only the
-        # stroke (outline) color. So put stroke layer underneath the main text.
+        # Before 533.3 the webkit-text-fill colour wasn't displayed, only the stroke (outline) color. So put stroke
+        # layer underneath the main text.
         #
-        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment
-        # with the fill, or normal text. letter-spacing=1 is workaround
-        # https://bugs.webkit.org/show_bug.cgi?id=44403
+        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment with the fill, or normal text.
+        # letter-spacing=1 is workaround https://bugs.webkit.org/show_bug.cgi?id=44403
         #
-        # Up to 534.3 the text-shadow didn't get displayed when
-        # webkit-text-stroke was used. So use an offset text layer underneath.
-        # https://bugs.webkit.org/show_bug.cgi?id=19728
+        # Up to 534.3 the text-shadow didn't get displayed when webkit-text-stroke was used. So use an offset text
+        # layer underneath. https://bugs.webkit.org/show_bug.cgi?id=19728
         if webkit_ver >= 533.3:
             lyricsmain += build_lyrics_outline_css(theme)
         else:
@@ -371,20 +366,18 @@ def build_lyrics_css(item, webkit_ver):
             if theme.font_main_outline and webkit_ver <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.font_main_shadow_size) + (int(theme.font_main_outline_size) * 2),
-                     theme.font_main_shadow_size)
+                    theme.font_main_shadow_size)
                 shadow += build_lyrics_outline_css(theme, True)
             else:
                 lyricsmain += u' text-shadow: %s %spx %spx;' % \
-                    (theme.font_main_shadow_color, theme.font_main_shadow_size,
-                    theme.font_main_shadow_size)
+                    (theme.font_main_shadow_color, theme.font_main_shadow_size, theme.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
 
 
 def build_lyrics_outline_css(theme, is_shadow=False):
     """
-    Build the css which controls the theme outline
-    Also used by renderer for splitting verses
+    Build the css which controls the theme outline. Also used by renderer for splitting verses
 
     ``theme``
         Object containing theme information
@@ -407,8 +400,7 @@ def build_lyrics_outline_css(theme, is_shadow=False):
 
 def build_lyrics_format_css(theme, width, height):
     """
-    Build the css which controls the theme format
-    Also used by renderer for splitting verses
+    Build the css which controls the theme format. Also used by renderer for splitting verses
 
     ``theme``
         Object containing theme information
@@ -418,7 +410,6 @@ def build_lyrics_format_css(theme, width, height):
 
     ``height``
         Height of the lyrics block
-
     """
     align = HorizontalType.Names[theme.display_horizontal_align]
     valign = VerticalType.Names[theme.display_vertical_align]
@@ -460,22 +451,18 @@ def build_lyrics_html(item, webkitvers):
     ``webkitvers``
         The version of qtwebkit we're using
     """
-    # Bugs in some versions of QtWebKit mean we sometimes need additional
-    # divs for outline and shadow, since the CSS doesn't work.
-    # To support vertical alignment middle and bottom, nested div's using
-    # display:table/display:table-cell are required for each lyric block.
+    # Bugs in some versions of QtWebKit mean we sometimes need additional divs for outline and shadow, since the CSS
+    # doesn't work. To support vertical alignment middle and bottom, nested div's using display:table/display:table-cell
+    #  are required for each lyric block.
     lyrics = u''
     theme = item.themedata
     if webkitvers <= 534.3 and theme and theme.font_main_outline:
-        lyrics += u'<div class="lyricstable">' \
-            u'<div id="lyricsshadow" style="opacity:1" ' \
+        lyrics += u'<div class="lyricstable"><div id="lyricsshadow" style="opacity:1" ' \
             u'class="lyricscell lyricsshadow"></div></div>'
         if webkitvers < 533.3:
-            lyrics += u'<div class="lyricstable">' \
-                u'<div id="lyricsoutline" style="opacity:1" ' \
+            lyrics += u'<div class="lyricstable"><div id="lyricsoutline" style="opacity:1" ' \
                 u'class="lyricscell lyricsoutline"></div></div>'
-    lyrics += u'<div class="lyricstable">' \
-        u'<div id="lyricsmain" style="opacity:1" ' \
+    lyrics += u'<div class="lyricstable"><div id="lyricsmain" style="opacity:1" ' \
         u'class="lyricscell lyricsmain"></div></div>'
     return lyrics
 

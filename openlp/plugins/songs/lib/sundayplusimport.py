@@ -63,8 +63,8 @@ class SundayPlusImport(SongImport):
         self.encoding = u'us-ascii'
 
     def doImport(self):
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for filename in self.importSource:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for filename in self.import_source:
             if self.stop_import_flag:
                 return
             song_file = open(filename)

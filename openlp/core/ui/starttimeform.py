@@ -69,12 +69,9 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         """
         When the dialog succeeds, this is run
         """
-        start = self.hourSpinBox.value() * 3600 + \
-            self.minuteSpinBox.value() * 60 + \
-            self.secondSpinBox.value()
+        start = self.hourSpinBox.value() * 3600 + self.minuteSpinBox.value() * 60 + self.secondSpinBox.value()
         end = self.hourFinishSpinBox.value() * 3600 + \
-            self.minuteFinishSpinBox.value() * 60 + \
-            self.secondFinishSpinBox.value()
+            self.minuteFinishSpinBox.value() * 60 + self.secondFinishSpinBox.value()
         if end > self.item[u'service_item'].media_length:
             critical_error_message_box(title=translate('OpenLP.StartTimeForm', 'Time Validation Error'),
                 message=translate('OpenLP.StartTimeForm', 'Finish time is set after the end of the media item'))

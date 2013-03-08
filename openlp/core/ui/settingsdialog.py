@@ -61,7 +61,7 @@ class Ui_SettingsDialog(object):
         self.button_box = create_button_box(settingsDialog, u'button_box', [u'cancel', u'ok'])
         self.dialogLayout.addWidget(self.button_box, 1, 1, 1, 1)
         self.retranslateUi(settingsDialog)
-        QtCore.QObject.connect(self.settingListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.tabChanged)
+        self.settingListWidget.currentRowChanged.connect(self.tabChanged)
 
     def retranslateUi(self, settingsDialog):
         """

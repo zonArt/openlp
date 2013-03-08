@@ -54,10 +54,8 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.load()
         self._clearDetails()
         # Right, now let's put some signals and slots together!
-        QtCore.QObject.connect(self.pluginListWidget, QtCore.SIGNAL(u'itemSelectionChanged()'),
-            self.onPluginListWidgetSelectionChanged)
-        QtCore.QObject.connect(self.statusComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onStatusComboBoxChanged)
+        self.pluginListWidget.itemSelectionChanged.connect(self.onPluginListWidgetSelectionChanged)
+        self.statusComboBox.currentIndexChanged.connect(self.onStatusComboBoxChanged)
 
     def load(self):
         """

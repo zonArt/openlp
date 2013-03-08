@@ -64,15 +64,15 @@ class EasyWorshipSongImport(SongImport):
 
     def doImport(self):
         # Open the DB and MB files if they exist
-        import_source_mb = self.importSource.replace('.DB', '.MB')
-        if not os.path.isfile(self.importSource):
+        import_source_mb = self.import_source.replace('.DB', '.MB')
+        if not os.path.isfile(self.import_source):
             return
         if not os.path.isfile(import_source_mb):
             return
-        db_size = os.path.getsize(self.importSource)
+        db_size = os.path.getsize(self.import_source)
         if db_size < 0x800:
             return
-        db_file = open(self.importSource, 'rb')
+        db_file = open(self.import_source, 'rb')
         self.memoFile = open(import_source_mb, 'rb')
         # Don't accept files that are clearly not paradox files
         record_size, header_size, block_size, first_block, num_fields = struct.unpack('<hhxb8xh17xh', db_file.read(35))
@@ -110,7 +110,7 @@ class EasyWorshipSongImport(SongImport):
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
-        self.importWizard.progressBar.setMaximum(total_blocks)
+        self.import_wizard.progress_bar.setMaximum(total_blocks)
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
@@ -216,7 +216,7 @@ class EasyWorshipSongImport(SongImport):
                 if self.stop_import_flag:
                     break
                 if not self.finish():
-                    self.logError(self.importSource)
+                    self.logError(self.import_source)
         db_file.close()
         self.memoFile.close()
 
