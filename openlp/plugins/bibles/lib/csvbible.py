@@ -55,7 +55,7 @@ There are two acceptable formats of the verses file.  They are:
         or
         "Genesis",1,2,"And the earth was without form, and void; and...."
 
-All CSV files are expected to use a comma (',') as the delimeter and double
+All CSV files are expected to use a comma (',') as the delimiter and double
 quotes ('"') as the quote symbol.
 """
 import logging

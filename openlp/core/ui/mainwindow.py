@@ -885,7 +885,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             export_file_name += u'.conf'
         temp_file = os.path.join(unicode(gettempdir(),
             get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
-        self.saveSettings()
+        self.save_settings()
         setting_sections = []
         # Add main sections.
         setting_sections.extend([self.generalSettingsSection])
@@ -1051,7 +1051,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.finalise_plugins()
         if save_settings:
             # Save settings
-            self.saveSettings()
+            self.save_settings()
         # Check if we need to change the data directory
         if self.new_data_path:
             self.changeDataDirectory()
@@ -1202,7 +1202,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
-    def saveSettings(self):
+    def save_settings(self):
         """
         Save the main window settings.
         """

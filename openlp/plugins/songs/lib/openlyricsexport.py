@@ -37,9 +37,10 @@ from lxml import etree
 
 from openlp.core.lib import Registry, check_directory_exists, translate
 from openlp.core.utils import clean_filename
-from openlp.plugins.songs.lib import OpenLyrics
+from openlp.plugins.songs.lib.xml import OpenLyrics
 
 log = logging.getLogger(__name__)
+
 
 class OpenLyricsExport(object):
     """
