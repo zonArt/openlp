@@ -39,10 +39,14 @@ from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, Plugin
     UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
 from openlp.core.utils import AppLocation
-from openlp.plugins.songs.forms import EditSongForm, SongMaintenanceForm, SongImportForm, SongExportForm
-from openlp.plugins.songs.lib import OpenLyrics, SongXML, VerseType, clean_string, natcmp
+from openlp.plugins.songs.forms.editsongform import EditSongForm
+from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
+from openlp.plugins.songs.forms.songimportform import SongImportForm
+from openlp.plugins.songs.forms.songexportform import SongExportForm
+from openlp.plugins.songs.lib import VerseType, clean_string, natcmp
 from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
+from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
 
 log = logging.getLogger(__name__)
 
@@ -302,7 +306,7 @@ class SongMediaItem(MediaManagerItem):
 
     def onNewClick(self):
         log.debug(u'onNewClick')
-        self.editSongForm.newSong()
+        self.editSongForm.new_song()
         self.editSongForm.exec_()
         self.onClearTextButtonClick()
         self.onSelectionChange()
@@ -321,7 +325,7 @@ class SongMediaItem(MediaManagerItem):
         song_id = int(song_id)
         valid = self.plugin.manager.get_object(Song, song_id)
         if valid:
-            self.editSongForm.loadSong(song_id, preview)
+            self.editSongForm.load_song(song_id, preview)
             if self.editSongForm.exec_() == QtGui.QDialog.Accepted:
                 self.autoSelectId = -1
                 self.on_song_list_load()
@@ -342,7 +346,7 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             self.editItem = self.listView.currentItem()
             item_id = self.editItem.data(QtCore.Qt.UserRole)
-            self.editSongForm.loadSong(item_id, False)
+            self.editSongForm.load_song(item_id, False)
             self.editSongForm.exec_()
             self.autoSelectId = -1
             self.on_song_list_load()
