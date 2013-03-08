@@ -53,22 +53,21 @@ class ImageTab(SettingsTab):
         self.backgroundColorButton.setObjectName(u'BackgroundColorButton')
         self.colorLayout.addWidget(self.backgroundColorButton)
         self.formLayout.addRow(self.colorLayout)
-        self.informationLabel = QtGui.QLabel(self.bgColorGroupBox)
-        self.informationLabel.setObjectName(u'InformationLabel')
-        self.informationLabel.setWordWrap(True)
-        self.formLayout.addRow(self.informationLabel)
+        self.information_label = QtGui.QLabel(self.bgColorGroupBox)
+        self.information_label.setObjectName(u'information_label')
+        self.information_label.setWordWrap(True)
+        self.formLayout.addRow(self.information_label)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
         self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
-            self.onbackgroundColorButtonClicked)
+        self.backgroundColorButton.clicked.connect(self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
         self.backgroundColorLabel.setText(UiStrings().DefaultColor)
-        self.informationLabel.setText(
+        self.information_label.setText(
             translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 
     def onbackgroundColorButtonClicked(self):

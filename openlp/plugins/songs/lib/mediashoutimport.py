@@ -54,17 +54,17 @@ class MediaShoutImport(SongImport):
         """
         try:
            conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};'
-            u'DBQ=%s;PWD=6NOZ4eHK7k' % self.importSource)
+            u'DBQ=%s;PWD=6NOZ4eHK7k' % self.import_source)
         except:
             # Unfortunately no specific exception type
-            self.logError(self.importSource,
+            self.logError(self.import_source,
                 translate('SongsPlugin.MediaShoutImport', 'Unable to open the MediaShout database.'))
             return
         cursor = conn.cursor()
         cursor.execute(u'SELECT Record, Title, Author, Copyright, '
                        u'SongID, CCLI, Notes FROM Songs ORDER BY Title')
         songs = cursor.fetchall()
-        self.importWizard.progressBar.setMaximum(len(songs))
+        self.import_wizard.progress_bar.setMaximum(len(songs))
         for song in songs:
             if self.stop_import_flag:
                 break
@@ -90,7 +90,7 @@ class MediaShoutImport(SongImport):
         """
         self.setDefaults()
         self.title = song.Title
-        self.parseAuthor(song.Author)
+        self.parse_author(song.Author)
         self.addCopyright(song.Copyright)
         self.comments = song.Notes
         for topic in topics:

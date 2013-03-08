@@ -93,12 +93,11 @@ class AlertsTab(SettingsTab):
         self.rightLayout.addWidget(self.previewGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
-            self.onBackgroundColorButtonClicked)
-        QtCore.QObject.connect(self.fontColorButton, QtCore.SIGNAL(u'clicked()'), self.onFontColorButtonClicked)
-        QtCore.QObject.connect(self.fontComboBox, QtCore.SIGNAL(u'activated(int)'), self.onFontComboBoxClicked)
-        QtCore.QObject.connect(self.timeoutSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.onTimeoutSpinBoxChanged)
-        QtCore.QObject.connect(self.fontSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.onFontSizeSpinBoxChanged)
+        self.backgroundColorButton.clicked.connect(self.onBackgroundColorButtonClicked)
+        self.fontColorButton.clicked.connect(self.onFontColorButtonClicked)
+        self.fontComboBox.activated.connect(self.onFontComboBoxClicked)
+        self.timeoutSpinBox.valueChanged.connect(self.onTimeoutSpinBoxChanged)
+        self.fontSizeSpinBox.valueChanged.connect(self.onFontSizeSpinBoxChanged)
 
     def retranslateUi(self):
         self.fontGroupBox.setTitle(translate('AlertsPlugin.AlertsTab', 'Font'))

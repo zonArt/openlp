@@ -48,8 +48,7 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         self.setupUi(self)
         self.qmList = LanguageManager.get_qm_list()
         self.languageComboBox.addItem(u'Autodetect')
-        for key in sorted(self.qmList.keys()):
-            self.languageComboBox.addItem(key)
+        self.languageComboBox.addItems(sorted(self.qmList.keys()))
 
     def exec_(self):
         """

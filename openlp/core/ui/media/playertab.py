@@ -79,10 +79,10 @@ class PlayerTab(SettingsTab):
         self.backgroundColorButton.setObjectName(u'BackgroundColorButton')
         self.colorLayout.addWidget(self.backgroundColorButton)
         self.formLayout.addRow(self.colorLayout)
-        self.informationLabel = QtGui.QLabel(self.bgColorGroupBox)
-        self.informationLabel.setObjectName(u'InformationLabel')
-        self.informationLabel.setWordWrap(True)
-        self.formLayout.addRow(self.informationLabel)
+        self.information_label = QtGui.QLabel(self.bgColorGroupBox)
+        self.information_label.setObjectName(u'information_label')
+        self.information_label.setWordWrap(True)
+        self.formLayout.addRow(self.information_label)
         self.leftLayout.addWidget(self.bgColorGroupBox)
         self.leftLayout.addStretch()
         self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
@@ -122,8 +122,7 @@ class PlayerTab(SettingsTab):
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.backgroundColorButton, QtCore.SIGNAL(u'clicked()'),
-            self.onbackgroundColorButtonClicked)
+        self.backgroundColorButton.clicked.connect(self.onbackgroundColorButtonClicked)
 
     def retranslateUi(self):
         """
@@ -133,7 +132,7 @@ class PlayerTab(SettingsTab):
         self.playerOrderGroupBox.setTitle(translate('OpenLP.PlayerTab', 'Player Search Order'))
         self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
         self.backgroundColorLabel.setText(UiStrings().DefaultColor)
-        self.informationLabel.setText(translate('OpenLP.PlayerTab',
+        self.information_label.setText(translate('OpenLP.PlayerTab',
             'Visible background for videos with aspect ratio different to screen.'))
         self.retranslatePlayers()
 
@@ -245,7 +244,7 @@ class PlayerTab(SettingsTab):
             checkbox.setToolTip(player.get_info())
             checkbox.setPlayerName(player.name)
             self.playerCheckBoxes[player.name] = checkbox
-            QtCore.QObject.connect(checkbox, QtCore.SIGNAL(u'stateChanged(int)'), self.onPlayerCheckBoxChanged)
+            checkbox.stateChanged.connect(self.onPlayerCheckBoxChanged)
             self.mediaPlayerLayout.addWidget(checkbox)
             if player.available and player.name in self.usedPlayers:
                 checkbox.setChecked(True)

@@ -108,7 +108,7 @@ class VlcPlayer(MediaPlayer):
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
         self.parent = parent
-        self.canFolder = True
+        self.can_folder = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 
@@ -120,7 +120,7 @@ class VlcPlayer(MediaPlayer):
         display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
-        if not display.hasAudio:
+        if not display.has_audio:
             command_line_options += u' --no-audio --no-video-title-show'
         if Settings().value(u'advanced/hide mouse') and display.controller.is_live:
             command_line_options += u' --mouse-hide-timeout=0'
@@ -145,7 +145,7 @@ class VlcPlayer(MediaPlayer):
         else:
             # for Linux using the X Server
             display.vlcMediaPlayer.set_xwindow(win_id)
-        self.hasOwnWidget = True
+        self.has_own_widget = True
 
     def check_available(self):
         """
@@ -238,7 +238,7 @@ class VlcPlayer(MediaPlayer):
         """
         Set the volume
         """
-        if display.hasAudio:
+        if display.has_audio:
             display.vlcMediaPlayer.audio_set_volume(vol)
 
     def seek(self, display, seekVal):
@@ -260,7 +260,7 @@ class VlcPlayer(MediaPlayer):
         """
         Set the visibility
         """
-        if self.hasOwnWidget:
+        if self.has_own_widget:
             display.vlcWidget.setVisible(status)
 
     def update_ui(self, display):

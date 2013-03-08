@@ -191,13 +191,12 @@ class GeneralTab(SettingsTab):
         self.rightLayout.addWidget(self.settingsGroupBox)
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.overrideRadioButton, QtCore.SIGNAL(u'toggled(bool)'),
-            self.onOverrideRadioButtonPressed)
-        QtCore.QObject.connect(self.customHeightValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.customWidthValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.customYValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.customXValueEdit, QtCore.SIGNAL(u'valueChanged(int)'), self.onDisplayChanged)
-        QtCore.QObject.connect(self.monitorComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'), self.onDisplayChanged)
+        self.overrideRadioButton.toggled.connect(self.onOverrideRadioButtonPressed)
+        self.customHeightValueEdit.valueChanged.connect(self.onDisplayChanged)
+        self.customWidthValueEdit.valueChanged.connect(self.onDisplayChanged)
+        self.customYValueEdit.valueChanged.connect(self.onDisplayChanged)
+        self.customXValueEdit.valueChanged.connect(self.onDisplayChanged)
+        self.monitorComboBox.currentIndexChanged.connect(self.onDisplayChanged)
         # Reload the tab, as the screen resolution/count may have changed.
         Registry().register_function(u'config_screen_changed', self.load)
         # Remove for now
@@ -231,8 +230,7 @@ class GeneralTab(SettingsTab):
         self.usernameLabel.setText(translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.passwordLabel.setText(translate('OpenLP.GeneralTab', 'SongSelect password:'))
         # Moved from display tab
-        self.overrideRadioButton.setText(translate('OpenLP.GeneralTab',
-            'Override display position:'))
+        self.overrideRadioButton.setText(translate('OpenLP.GeneralTab', 'Override display position:'))
         self.customXLabel.setText(translate('OpenLP.GeneralTab', 'X'))
         self.customYLabel.setText(translate('OpenLP.GeneralTab', 'Y'))
         self.customHeightLabel.setText(translate('OpenLP.GeneralTab', 'Height'))

@@ -346,7 +346,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(main_window)
         self.mediaToolBox.setCurrentIndex(0)
         # Connect up some signals and slots
-        QtCore.QObject.connect(self.fileMenu, QtCore.SIGNAL(u'aboutToShow()'), self.updateRecentFilesMenu)
+        self.fileMenu.aboutToShow.connect(self.updateRecentFilesMenu)
         # Hide the entry, as it does not have any functionality yet.
         self.toolsAddToolItem.setVisible(False)
         self.importLanguageItem.setVisible(False)
@@ -506,12 +506,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
         # Set up signals and slots
-        QtCore.QObject.connect(self.mediaManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-                               self.viewMediaManagerItem.setChecked)
-        QtCore.QObject.connect(self.serviceManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-                               self.viewServiceManagerItem.setChecked)
-        QtCore.QObject.connect(self.themeManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-                               self.viewThemeManagerItem.setChecked)
+        self.mediaManagerDock.visibilityChanged.connect(self.viewMediaManagerItem.setChecked)
+        self.serviceManagerDock.visibilityChanged.connect(self.viewServiceManagerItem.setChecked)
+        self.themeManagerDock.visibilityChanged.connect(self.viewThemeManagerItem.setChecked)
         self.importThemeItem.triggered.connect(self.themeManagerContents.on_import_theme)
         self.exportThemeItem.triggered.connect(self.themeManagerContents.on_export_theme)
         self.webSiteItem.triggered.connect(self.onHelpWebSiteClicked)
@@ -1290,7 +1287,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadProgressBar.setValue(0)
         self.application.process_events()
 
-    def incrementProgressBar(self):
+    def increment_progress_bar(self):
         """
         Increase the Progress Bar value by 1
         """
