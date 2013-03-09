@@ -33,7 +33,9 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import Registry, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
+from openlp.plugins.songs.forms.authorsform import AuthorsForm
+from openlp.plugins.songs.forms.topicsform import TopicsForm
+from openlp.plugins.songs.forms.songbookform import SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
@@ -206,12 +208,13 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Add an author to the list.
         """
-        self.authorform.setAutoDisplayName(True)
+        self.authorform.auto_display_name = True
         if self.authorform.exec_():
             author = Author.populate(
-                first_name=self.authorform.firstNameEdit.text(),
-                last_name=self.authorform.lastNameEdit.text(),
-                display_name=self.authorform.displayEdit.text())
+                first_name=self.authorform.first_name,
+                last_name=self.authorform.last_name,
+                display_name=self.authorform.display_name
+            )
             if self.checkAuthor(author):
                 if self.manager.save_object(author):
                     self.resetAuthors()
@@ -263,19 +266,19 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         if author_id == -1:
             return
         author = self.manager.get_object(Author, author_id)
-        self.authorform.setAutoDisplayName(False)
-        self.authorform.firstNameEdit.setText(author.first_name)
-        self.authorform.lastNameEdit.setText(author.last_name)
-        self.authorform.displayEdit.setText(author.display_name)
+        self.authorform.auto_display_name = False
+        self.authorform.first_name_edit.setText(author.first_name)
+        self.authorform.last_name_edit.setText(author.last_name)
+        self.authorform.display_edit.setText(author.display_name)
         # Save the author's first and last name as well as the display name
         # for the case that they have to be restored.
         temp_first_name = author.first_name
         temp_last_name = author.last_name
         temp_display_name = author.display_name
         if self.authorform.exec_(False):
-            author.first_name = self.authorform.firstNameEdit.text()
-            author.last_name = self.authorform.lastNameEdit.text()
-            author.display_name = self.authorform.displayEdit.text()
+            author.first_name = self.authorform.first_name_edit.text()
+            author.last_name = self.authorform.last_name_edit.text()
+            author.display_name = self.authorform.display_edit.text()
             if self.checkAuthor(author, True):
                 if self.manager.save_object(author):
                     self.resetAuthors()
