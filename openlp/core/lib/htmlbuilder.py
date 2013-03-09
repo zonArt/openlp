@@ -164,8 +164,8 @@ sup {
             text.innerHTML = new_text;
             return;
         }
-        // Fade text out. 0.2 to minimize the time "nothing" is shown on the screen.
-        text.style.opacity = '0.2';
+        // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
+        text.style.opacity = '0.1';
         // Fade new text in after the old text has finished fading out.
         timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
     }

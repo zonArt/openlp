@@ -82,7 +82,7 @@ VIDEO_JS = u"""
                 break;
             case 'length':
                 return video.duration;
-            case 'currentTime':
+            case 'current_time':
                 return video.currentTime;
             case 'seek':
                 video.currentTime = variable_value;
@@ -154,7 +154,7 @@ FLASH_JS = u"""
                 break;
             case 'length':
                 return flashMovie.TotalFrames();
-            case 'currentTime':
+            case 'current_time':
                 return flashMovie.CurrentFrame();
             case 'seek':
 //                flashMovie.GotoFrame(variable_value);
@@ -385,25 +385,25 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         if controller.media_info.is_flash:
-            currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");')
+            current_time = display.frame.evaluateJavaScript(u'show_flash("current_time");')
             length = display.frame.evaluateJavaScript(u'show_flash("length");')
         else:
             if display.frame.evaluateJavaScript(u'show_video("isEnded");'):
                 self.stop(display)
-            currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
+            current_time = display.frame.evaluateJavaScript(u'show_video("current_time");')
             # check if conversion was ok and value is not 'NaN'
-            if currentTime and currentTime != float('inf'):
-                currentTime = int(currentTime * 1000)
+            if current_time and current_time != float('inf'):
+                current_time = int(current_time * 1000)
             length = display.frame.evaluateJavaScript(u'show_video("length");')
             # check if conversion was ok and value is not 'NaN'
             if length and length != float('inf'):
                 length = int(length * 1000)
-        if currentTime > 0:
+        if current_time > 0:
             controller.media_info.length = length
             controller.seekSlider.setMaximum(length)
             if not controller.seekSlider.isSliderDown():
                 controller.seekSlider.blockSignals(True)
-                controller.seekSlider.setSliderPosition(currentTime)
+                controller.seekSlider.setSliderPosition(current_time)
                 controller.seekSlider.blockSignals(False)
 
     def get_info(self):
