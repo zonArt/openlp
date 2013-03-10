@@ -429,7 +429,7 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.default_file_edit.text())
         settings.setValue(u'slide limits', self.slide_limits)
-        if  self.x11_bypass_check_box.isChecked() != settings.value(u'x11 bypass wm'):
+        if self.x11_bypass_check_box.isChecked() != settings.value(u'x11 bypass wm'):
             settings.setValue(u'x11 bypass wm', self.x11_bypass_check_box.isChecked())
             self.settings_form.register_post_process(u'config_screen_changed')
         self.settings_form.register_post_process(u'slidecontroller_update_slide_limits')
