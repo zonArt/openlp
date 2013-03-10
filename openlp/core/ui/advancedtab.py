@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate, build_icon
+from openlp.core.lib import SettingsTab, Settings, UiStrings, translate, build_icon
 from openlp.core.utils import AppLocation, format_time, get_images_filter
 from openlp.core.lib import SlideLimits
 
@@ -52,7 +52,6 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        self.display_changed = False
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.data_exists = False
@@ -251,7 +250,6 @@ class AdvancedTab(SettingsTab):
         self.default_color_button.clicked.connect(self.on_default_color_button_clicked)
         self.default_browse_button.clicked.connect(self.on_default_browse_button_clicked)
         self.default_revert_button.clicked.connect(self.on_default_revert_button_clicked)
-        self.x11_bypass_check_box.toggled.connect(self.on_X11_bypass_check_box_toggled)
         self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
         self.data_directory_browse_button.clicked.connect(self.on_data_directory_browse_button_clicked)
         self.data_directory_default_button.clicked.connect(self.on_data_directory_default_button_clicked)
@@ -427,16 +425,15 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'expand service item', self.expand_service_item_check_box.isChecked())
         settings.setValue(u'enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue(u'hide mouse', self.hide_mouse_check_box.isChecked())
-        settings.setValue(u'x11 bypass wm', self.x11_bypass_check_box.isChecked())
         settings.setValue(u'alternate rows', self.alternate_rows_check_box.isChecked())
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.default_file_edit.text())
         settings.setValue(u'slide limits', self.slide_limits)
+        if  self.x11_bypass_check_box.isChecked() != settings.value(u'x11 bypass wm'):
+            settings.setValue(u'x11 bypass wm', self.x11_bypass_check_box.isChecked())
+            self.settings_form.register_post_process(u'config_screen_changed')
+        self.settings_form.register_post_process(u'slidecontroller_update_slide_limits')
         settings.endGroup()
-        if self.display_changed:
-            Registry().execute(u'config_screen_changed')
-            self.display_changed = False
-        Registry().execute(u'slidecontroller_update_slide_limits')
 
     def cancel(self):
         """
@@ -516,8 +513,8 @@ class AdvancedTab(SettingsTab):
         Select an image for the default display screen.
         """
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(), UiStrings().AllFiles)
-        filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.AdvancedTab', 'Open File'), '', file_filters)
+        filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.AdvancedTab', 'Open File'), '',
+            file_filters)
         if filename:
             self.default_file_edit.setText(filename)
         self.default_file_edit.setFocus()
@@ -634,15 +631,6 @@ class AdvancedTab(SettingsTab):
         """
         self.default_file_edit.setText(u':/graphics/openlp-splash-screen.png')
         self.default_file_edit.setFocus()
-
-    def on_X11_bypass_check_box_toggled(self, checked):
-        """
-        Toggle X11 bypass flag on maindisplay depending on check box state.
-
-        ``checked``
-            The state of the check box (boolean).
-        """
-        self.display_changed = True
 
     def on_alternate_rows_check_box_toggled(self, checked):
         """

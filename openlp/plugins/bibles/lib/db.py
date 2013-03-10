@@ -365,16 +365,13 @@ class BibleDB(QtCore.QObject, Manager):
             The language selection the user has chosen in the settings
             section of the Bible.
         """
-        log.debug(u'get_book_ref_id_by_localised_name("%s", "%s")',
-            book, language_selection)
-        from openlp.plugins.bibles.lib import LanguageSelection, \
-            BibleStrings
+        log.debug(u'get_book_ref_id_by_localised_name("%s", "%s")', book, language_selection)
+        from openlp.plugins.bibles.lib import LanguageSelection, BibleStrings
         book_names = BibleStrings().BookNames
         # escape reserved characters
         book_escaped = book
         for character in RESERVED_CHARACTERS:
-            book_escaped = book_escaped.replace(
-                character, u'\\' + character)
+            book_escaped = book_escaped.replace(character, u'\\' + character)
         regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
             book_escaped.split()), re.UNICODE | re.IGNORECASE)
         if language_selection == LanguageSelection.Bible:
@@ -382,8 +379,7 @@ class BibleDB(QtCore.QObject, Manager):
             if db_book:
                 return db_book.book_reference_id
         elif language_selection == LanguageSelection.Application:
-            books = filter(lambda key:
-                regex_book.match(unicode(book_names[key])), book_names.keys())
+            books = filter(lambda key: regex_book.match(unicode(book_names[key])), book_names.keys())
             books = filter(None, map(BiblesResourcesDB.get_book, books))
             for value in books:
                 if self.get_book_by_book_ref_id(value[u'id']):
@@ -391,8 +387,7 @@ class BibleDB(QtCore.QObject, Manager):
         elif language_selection == LanguageSelection.English:
             books = BiblesResourcesDB.get_books_like(book)
             if books:
-                book_list = filter(
-                    lambda value: regex_book.match(value[u'name']), books)
+                book_list = filter(lambda value: regex_book.match(value[u'name']), books)
                 if not book_list:
                     book_list = books
                 for value in book_list:

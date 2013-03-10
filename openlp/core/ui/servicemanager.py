@@ -113,10 +113,12 @@ class ServiceManagerDialog(object):
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.add_toolbar_action(u'newService', text=UiStrings().NewService, icon=u':/general/general_new.png',
             tooltip=UiStrings().CreateService, triggers=self.on_new_service_clicked)
-        self.toolbar.add_toolbar_action(u'openService', text=UiStrings().OpenService, icon=u':/general/general_open.png',
+        self.toolbar.add_toolbar_action(u'openService', text=UiStrings().OpenService,
+            icon=u':/general/general_open.png',
             tooltip=translate('OpenLP.ServiceManager', 'Load an existing service.'),
             triggers=self.on_load_service_clicked)
-        self.toolbar.add_toolbar_action(u'saveService', text=UiStrings().SaveService, icon=u':/general/general_save.png',
+        self.toolbar.add_toolbar_action(u'saveService', text=UiStrings().SaveService,
+            icon=u':/general/general_save.png',
             tooltip=translate('OpenLP.ServiceManager', 'Save this service.'), triggers=self.decide_save_method)
         self.toolbar.addSeparator()
         self.theme_label = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
@@ -268,6 +270,8 @@ class ServiceManagerDialog(object):
         Registry().register_function(u'config_updated', self.config_updated)
         Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
         Registry().register_function(u'theme_update_global', self.theme_change)
+        Registry().register_function(u'mediaitem_suffix_reset', self.reset_supported_suffixes)
+        Registry().register_function(u'servicemanager_set_item', self.on_set_item)
 
     def drag_enter_event(self, event):
         """

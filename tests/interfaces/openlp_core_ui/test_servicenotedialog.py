@@ -10,7 +10,6 @@ from openlp.core.lib import Registry
 from openlp.core.ui import servicenoteform
 
 
-
 class TestStartNoteDialog(TestCase):
 
     def setUp(self):

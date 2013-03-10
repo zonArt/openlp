@@ -184,8 +184,7 @@ class ThemeManager(QtGui.QWidget):
 
     def change_global_from_tab(self, theme_name):
         """
-        Change the global theme when it is changed through the Themes settings
-        tab
+        Change the global theme when it is changed through the Themes settings tab
         """
         log.debug(u'change_global_from_tab %s', theme_name)
         for count in range(0, self.theme_list_widget.count()):

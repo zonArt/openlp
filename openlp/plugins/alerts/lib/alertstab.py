@@ -27,10 +27,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab, Settings, UiStrings, translate
 from openlp.core.lib.ui import create_valign_selection_widgets
+
 
 class AlertsTab(SettingsTab):
     """
@@ -173,7 +174,7 @@ class AlertsTab(SettingsTab):
         settings.setValue(u'location', self.location)
         settings.endGroup()
         if self.changed:
-            Registry().execute(u'update_display_css')
+            self.settings_form.register_post_process(u'update_display_css')
         self.changed = False
 
     def updateDisplay(self):
@@ -184,4 +185,3 @@ class AlertsTab(SettingsTab):
         self.fontPreview.setFont(font)
         self.fontPreview.setStyleSheet(u'background-color: %s; color: %s' % (self.bg_color, self.font_color))
         self.changed = True
-

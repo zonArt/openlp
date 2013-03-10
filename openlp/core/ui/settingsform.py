@@ -52,15 +52,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Registry().register(u'settings_form', self)
         Registry().register_function(u'bootstrap_post_set_up', self.post_set_up)
         QtGui.QDialog.__init__(self, parent)
+        self.processes = []
         self.setupUi(self)
-        # General tab
-        self.generalTab = GeneralTab(self)
-        # Themes tab
-        self.themesTab = ThemesTab(self)
-        # Advanced tab
-        self.advancedTab = AdvancedTab(self)
-        # Advanced tab
-        self.playerTab = PlayerTab(self)
 
     def exec_(self):
         """
@@ -108,6 +101,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).save()
         # Must go after all settings are save
+        while self.processes:
+            Registry().execute(self.processes.pop(0))
         Registry().execute(u'config_updated')
         return QtGui.QDialog.accept(self)
 
@@ -115,6 +110,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
+        self.processes = []
         for tabIndex in range(self.stackedLayout.count()):
             self.stackedLayout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
@@ -123,6 +119,14 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Run any post-setup code for the tabs on the form
         """
+        # General tab
+        self.generalTab = GeneralTab(self)
+        # Themes tab
+        self.themesTab = ThemesTab(self)
+        # Advanced tab
+        self.advancedTab = AdvancedTab(self)
+        # Advanced tab
+        self.playerTab = PlayerTab(self)
         self.generalTab.post_set_up()
         self.themesTab.post_set_up()
         self.advancedTab.post_set_up()
@@ -138,15 +142,15 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.stackedLayout.setCurrentIndex(tabIndex)
         self.stackedLayout.currentWidget().tabVisible()
 
-    def resetSupportedSuffixes(self):
+    def register_post_process(self, function):
         """
-        Control the resetting of the serviceManager suffix list as can be
-        called by a number of settings tab and only needs to be called once
-        per save.
+        Register for updates to be done on save removing duplicate functions
+
+        ``function``
+            The function to be called
         """
-        if self.resetSuffixes:
-            self.service_manager.reset_supported_suffixes()
-            self.resetSuffixes = False
+        if not function in self.processes:
+            self.processes.append(function)
 
     def _get_main_window(self):
         """
