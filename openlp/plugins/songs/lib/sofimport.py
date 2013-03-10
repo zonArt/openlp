@@ -261,7 +261,7 @@ class SofImport(OooImport):
         if title.endswith(u','):
             title = title[:-1]
         self.title = title
-        self.importWizard.incrementProgressBar(u'Processing song ' + title, 0)
+        self.import_wizard.increment_progress_bar(u'Processing song ' + title, 0)
 
     def addSofAuthor(self, text):
         """
@@ -271,7 +271,7 @@ class SofImport(OooImport):
         "Mr Smith" and "Mrs Smith".
         """
         text = text.replace(u' and ', u' & ')
-        self.parseAuthor(text)
+        self.parse_author(text)
 
     def addVerseLine(self, text):
         """

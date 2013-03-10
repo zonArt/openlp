@@ -279,7 +279,7 @@ class WebkitPlayer(MediaPlayer):
         self.original_name = u'WebKit'
         self.display_name = u'&WebKit'
         self.parent = parent
-        self.canBackground = True
+        self.can_background = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 
@@ -309,7 +309,7 @@ class WebkitPlayer(MediaPlayer):
         """
         display.web_view.resize(display.size())
         display.web_view.raise_()
-        self.hasOwnWidget = False
+        self.has_own_widget = False
 
     def check_available(self):
         """
@@ -323,7 +323,7 @@ class WebkitPlayer(MediaPlayer):
         """
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
-        if display.hasAudio and not controller.media_info.is_background:
+        if display.has_audio and not controller.media_info.is_background:
             volume = controller.media_info.volume
             vol = float(volume) / float(100)
         else:
@@ -399,7 +399,7 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         # 1.0 is the highest value
-        if display.hasAudio:
+        if display.has_audio:
             vol = float(vol) / float(100)
             if not controller.media_info.is_flash:
                 display.frame.evaluateJavaScript(u'show_video(null, null, %s);' % str(vol))

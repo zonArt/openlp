@@ -52,14 +52,3 @@ This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
 them separate from the functionality, so that it is easier to recreate the GUI
 from the .ui files later if necessary.
 """
-
-from mediafilesform import MediaFilesForm
-from authorsform import AuthorsForm
-from topicsform import TopicsForm
-from songbookform import SongBookForm
-from editverseform import EditVerseForm
-from editsongform import EditSongForm
-from songmaintenanceform import SongMaintenanceForm
-from songimportform import SongImportForm
-from songexportform import SongExportForm
-

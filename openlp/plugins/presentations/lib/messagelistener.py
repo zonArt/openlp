@@ -306,7 +306,7 @@ class MessageListener(object):
         Registry().register_function(u'presentations_unblank', self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
+        self.timer.timeout.connect(self.timeout)
 
     def startup(self, message):
         """

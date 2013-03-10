@@ -200,12 +200,10 @@ class VerticalType(object):
     Names = [u'top', u'middle', u'bottom']
 
 
-BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow',
-    u'slide_transition']
+BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow', u'slide_transition']
 
-INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y',
-    u'width', u'shadow_size', u'outline_size', u'horizontal_align',
-    u'vertical_align', u'wrap_style']
+INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y', u'width', u'shadow_size', u'outline_size',
+    u'horizontal_align', u'vertical_align', u'wrap_style']
 
 
 class ThemeXML(object):
@@ -234,8 +232,7 @@ class ThemeXML(object):
             if self.background_filename and path:
                 self.theme_name = self.theme_name.strip()
                 self.background_filename = self.background_filename.strip()
-                self.background_filename = os.path.join(path, self.theme_name,
-                    self.background_filename)
+                self.background_filename = os.path.join(path, self.theme_name, self.background_filename)
 
     def _new_document(self, name):
         """
@@ -308,11 +305,9 @@ class ThemeXML(object):
         # Create endColor element
         self.child_element(background, u'borderColor', unicode(borderColor))
 
-    def add_font(self, name, color, size, override, fonttype=u'main',
-        bold=u'False', italics=u'False', line_adjustment=0,
-        xpos=0, ypos=0, width=0, height=0, outline=u'False',
-        outline_color=u'#ffffff', outline_pixel=2, shadow=u'False',
-        shadow_color=u'#ffffff', shadow_pixel=5):
+    def add_font(self, name, color, size, override, fonttype=u'main', bold=u'False', italics=u'False',
+        line_adjustment=0, xpos=0, ypos=0, width=0, height=0, outline=u'False', outline_color=u'#ffffff',
+        outline_pixel=2, shadow=u'False', shadow_color=u'#ffffff', shadow_pixel=5):
         """
         Add a Font.
 

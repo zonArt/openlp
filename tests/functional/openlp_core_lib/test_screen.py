@@ -23,11 +23,17 @@ class TestScreenList(TestCase):
         """
         Set up the components need for all tests.
         """
+        # Mocked out desktop object
+        self.desktop = MagicMock()
+        self.desktop.primaryScreen.return_value = SCREEN[u'primary']
+        self.desktop.screenCount.return_value = SCREEN[u'number']
+        self.desktop.screenGeometry.return_value = SCREEN[u'size']
+
         self.application = QtGui.QApplication.instance()
         Registry.create()
         self.application.setOrganizationName(u'OpenLP-tests')
         self.application.setOrganizationDomain(u'openlp.org')
-        self.screens = ScreenList.create(self.application.desktop())
+        self.screens = ScreenList.create(self.desktop)
 
     def tearDown(self):
         """
@@ -38,21 +44,16 @@ class TestScreenList(TestCase):
 
     def add_desktop_test(self):
         """
-        Test the ScreenList class' - screen_count_changed method to check if new monitors are detected by OpenLP.
+        Test the ScreenList.screen_count_changed method to check if new monitors are detected by OpenLP.
         """
-        # GIVEN: The screen list.
-        old_screens = copy.deepcopy(self.screens.screen_list)
-        # Mock the attributes.
-        self.screens.desktop.primaryScreen = MagicMock(return_value=SCREEN[u'primary'])
-        self.screens.desktop.screenCount = MagicMock(return_value=SCREEN[u'number'] + 1)
-        self.screens.desktop.screenGeometry = MagicMock(return_value=SCREEN[u'size'])
+        # GIVEN: The screen list at its current size
+        old_screen_count = len(self.screens.screen_list)
 
-        # WHEN: Add a new screen.
-        self.screens.screen_count_changed(len(old_screens))
+        # WHEN: We add a new screen
+        self.desktop.screenCount.return_value = SCREEN[u'number'] + 1
+        self.screens.screen_count_changed(old_screen_count)
 
-        # THEN: The screen should have been added.
-        new_screens = self.screens.screen_list
-        assert len(old_screens) + 1 == len(new_screens), u'The new_screens list should be bigger.'
-
-        # THEN: The screens should be identical.
-        assert SCREEN == new_screens.pop(), u'The new screen should be identical to the screen defined above.'
+        # THEN: The screen should have been added and the screens should be identical
+        new_screen_count = len(self.screens.screen_list)
+        assert old_screen_count + 1 == new_screen_count, u'The new_screens list should be bigger'
+        assert SCREEN == self.screens.screen_list.pop(), u'The 2nd screen should be identical to the first screen'

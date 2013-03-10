@@ -56,7 +56,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.controllers = controllers
         self.IconPath = u'presentations/presentation'
         self.Automatic = u''
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.message_listener = MessageListener(self)
         self.hasSearch = True
         self.singleServiceItem = False
@@ -157,7 +157,7 @@ class PresentationMediaItem(MediaManagerItem):
             key=lambda filename: os.path.split(unicode(filename))[1])
         for file in files:
             if not initialLoad:
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -224,7 +224,7 @@ class PresentationMediaItem(MediaManagerItem):
                     doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
             self.main_window.finishedProgressBar()
             self.application.set_busy_cursor()
             for row in row_list:

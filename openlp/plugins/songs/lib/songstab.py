@@ -61,14 +61,10 @@ class SongsTab(SettingsTab):
         self.leftLayout.addWidget(self.modeGroupBox)
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
-        QtCore.QObject.connect(self.searchAsTypeCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onSearchAsTypeCheckBoxChanged)
-        QtCore.QObject.connect(self.toolBarActiveCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onToolBarActiveCheckBoxChanged)
-        QtCore.QObject.connect(self.updateOnEditCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onUpdateOnEditCheckBoxChanged)
-        QtCore.QObject.connect(self.addFromServiceCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onAddFromServiceCheckBoxChanged)
+        self.searchAsTypeCheckBox.stateChanged.connect(self.onSearchAsTypeCheckBoxChanged)
+        self.toolBarActiveCheckBox.stateChanged.connect(self.onToolBarActiveCheckBoxChanged)
+        self.updateOnEditCheckBox.stateChanged.connect(self.onUpdateOnEditCheckBoxChanged)
+        self.addFromServiceCheckBox.stateChanged.connect(self.onAddFromServiceCheckBoxChanged)
 
     def retranslateUi(self):
         self.modeGroupBox.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))

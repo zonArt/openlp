@@ -134,43 +134,25 @@ class BiblesTab(SettingsTab):
         self.leftLayout.addStretch()
         self.rightLayout.addStretch()
         # Signals and slots
-        QtCore.QObject.connect(self.newChaptersCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onNewChaptersCheckBoxChanged)
-        QtCore.QObject.connect(self.displayStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onDisplayStyleComboBoxChanged)
-        QtCore.QObject.connect(self.bibleThemeComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onBibleThemeComboBoxChanged)
-        QtCore.QObject.connect(self.layoutStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onLayoutStyleComboBoxChanged)
-        QtCore.QObject.connect(self.bibleSecondCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onBibleSecondCheckBox)
-        QtCore.QObject.connect(self.verseSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onVerseSeparatorCheckBoxClicked)
-        QtCore.QObject.connect(self.verseSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onVerseSeparatorLineEditEdited)
-        QtCore.QObject.connect(self.verseSeparatorLineEdit, QtCore.SIGNAL(u'editingFinished()'),
-            self.onVerseSeparatorLineEditFinished)
-        QtCore.QObject.connect(self.rangeSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onRangeSeparatorCheckBoxClicked)
-        QtCore.QObject.connect(self.rangeSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onRangeSeparatorLineEditEdited)
-        QtCore.QObject.connect(self.rangeSeparatorLineEdit, QtCore.SIGNAL(u'editingFinished()'),
-            self.onRangeSeparatorLineEditFinished)
-        QtCore.QObject.connect(self.listSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onListSeparatorCheckBoxClicked)
-        QtCore.QObject.connect(self.listSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onListSeparatorLineEditEdited)
-        QtCore.QObject.connect(self.listSeparatorLineEdit, QtCore.SIGNAL(u'editingFinished()'),
-            self.onListSeparatorLineEditFinished)
-        QtCore.QObject.connect(self.endSeparatorCheckBox, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onEndSeparatorCheckBoxClicked)
-        QtCore.QObject.connect(self.endSeparatorLineEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onEndSeparatorLineEditEdited)
-        QtCore.QObject.connect(self.endSeparatorLineEdit, QtCore.SIGNAL(u'editingFinished()'),
-            self.onEndSeparatorLineEditFinished)
+        self.newChaptersCheckBox.stateChanged.connect(self.onNewChaptersCheckBoxChanged)
+        self.displayStyleComboBox.activated.connect(self.onDisplayStyleComboBoxChanged)
+        self.bibleThemeComboBox.activated.connect(self.onBibleThemeComboBoxChanged)
+        self.layoutStyleComboBox.activated.connect(self.onLayoutStyleComboBoxChanged)
+        self.bibleSecondCheckBox.stateChanged.connect(self.onBibleSecondCheckBox)
+        self.verseSeparatorCheckBox.clicked.connect(self.onVerseSeparatorCheckBoxClicked)
+        self.verseSeparatorLineEdit.textEdited.connect(self.onVerseSeparatorLineEditEdited)
+        self.verseSeparatorLineEdit.editingFinished.connect(self.onVerseSeparatorLineEditFinished)
+        self.rangeSeparatorCheckBox.clicked.connect(self.onRangeSeparatorCheckBoxClicked)
+        self.rangeSeparatorLineEdit.textEdited.connect(self.onRangeSeparatorLineEditEdited)
+        self.rangeSeparatorLineEdit.editingFinished.connect(self.onRangeSeparatorLineEditFinished)
+        self.listSeparatorCheckBox.clicked.connect(self.onListSeparatorCheckBoxClicked)
+        self.listSeparatorLineEdit.textEdited.connect(self.onListSeparatorLineEditEdited)
+        self.listSeparatorLineEdit.editingFinished.connect(self.onListSeparatorLineEditFinished)
+        self.endSeparatorCheckBox.clicked.connect(self.onEndSeparatorCheckBoxClicked)
+        self.endSeparatorLineEdit.textEdited.connect(self.onEndSeparatorLineEditEdited)
+        self.endSeparatorLineEdit.editingFinished.connect(self.onEndSeparatorLineEditFinished)
         Registry().register_function(u'theme_update_list', self.update_theme_list)
-        QtCore.QObject.connect(self.languageSelectionComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onLanguageSelectionComboBoxChanged)
+        self.languageSelectionComboBox.activated.connect(self.onLanguageSelectionComboBoxChanged)
 
     def retranslateUi(self):
         self.verseDisplayGroupBox.setTitle(translate('BiblesPlugin.BiblesTab', 'Verse Display'))

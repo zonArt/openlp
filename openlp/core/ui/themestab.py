@@ -98,12 +98,10 @@ class ThemesTab(SettingsTab):
             label.setWordWrap(True)
         self.rightLayout.addWidget(self.LevelGroupBox)
         self.rightLayout.addStretch()
-        QtCore.QObject.connect(self.SongLevelRadioButton, QtCore.SIGNAL(u'clicked()'), self.onSongLevelButtonClicked)
-        QtCore.QObject.connect(self.ServiceLevelRadioButton, QtCore.SIGNAL(u'clicked()'),
-            self.onServiceLevelButtonClicked)
-        QtCore.QObject.connect(self.GlobalLevelRadioButton, QtCore.SIGNAL(u'clicked()'),
-            self.onGlobalLevelButtonClicked)
-        QtCore.QObject.connect(self.DefaultComboBox, QtCore.SIGNAL(u'activated(int)'), self.onDefaultComboBoxChanged)
+        self.SongLevelRadioButton.clicked.connect(self.onSongLevelButtonClicked)
+        self.ServiceLevelRadioButton.clicked.connect(self.onServiceLevelButtonClicked)
+        self.GlobalLevelRadioButton.clicked.connect(self.onGlobalLevelButtonClicked)
+        self.DefaultComboBox.activated.connect(self.onDefaultComboBoxChanged)
         Registry().register_function(u'theme_update_list', self.update_theme_list)
 
     def retranslateUi(self):

@@ -62,8 +62,8 @@ class CCLIFileImport(SongImport):
         Import either a ``.usr`` or a ``.txt`` SongSelect file.
         """
         log.debug(u'Starting CCLI File Import')
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for filename in self.importSource:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for filename in self.import_source:
             filename = unicode(filename)
             log.debug(u'Importing CCLI File: %s', filename)
             lines = []
