@@ -561,6 +561,7 @@ class ImageMediaItem(MediaManagerItem):
                 if self.manager.save_object(new_group):
                     self.loadFullList(self.manager.get_all_objects(ImageFilenames,
                         order_by_ref=ImageFilenames.filename))
+                    self.expand_group(new_group.id)
                     self.fill_groups_combobox(self.choose_group_form.group_combobox)
                     self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
                 else:
