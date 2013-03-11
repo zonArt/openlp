@@ -653,11 +653,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.activePlugin.app_startup()
                 else:
                     self.activePlugin.toggleStatus(PluginStatus.Inactive)
-        self.themeManagerContents.config_updated()
+        self.themeManagerContents.change_global_from_tab()
         self.themeManagerContents.load_themes(True)
         Registry().execute(u'theme_update_global', self.themeManagerContents.global_theme)
-        # Check if any Bibles downloaded.  If there are, they will be
-        # processed.
+        # Check if any Bibles downloaded.  If there are, they will be processed.
         Registry().execute(u'bibles_load_list', True)
         self.application.set_normal_cursor()
 
@@ -1105,11 +1104,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.statusBar.showMessage(message)
 
-    def default_theme_changed(self, theme):
+    def default_theme_changed(self):
         """
         Update the default theme indicator in the status bar
         """
-        self.defaultThemeLabel.setText(translate('OpenLP.MainWindow', 'Default Theme: %s') % theme)
+        self.defaultThemeLabel.setText(translate('OpenLP.MainWindow', 'Default Theme: %s') %
+            Settings().value(u'themes/global theme'))
 
     def toggleMediaManager(self):
         """

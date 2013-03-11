@@ -132,7 +132,6 @@ class ThemeManager(QtGui.QWidget):
         self.theme_list_widget.doubleClicked.connect(self.change_global_from_screen)
         self.theme_list_widget.currentItemChanged.connect(self.check_list_state)
         Registry().register_function(u'theme_update_global', self.change_global_from_tab)
-        Registry().register_function(u'config_updated', self.config_updated)
         # Variables
         self.theme_list = []
         self.path = AppLocation.get_section_data_path(self.settingsSection)
@@ -143,14 +142,7 @@ class ThemeManager(QtGui.QWidget):
         self.oldBackgroundImage = None
         self.badV1NameChars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
-        self.config_updated()
-
-    def config_updated(self):
-        """
-        Triggered when Config dialog is updated.
-        """
-        log.debug(u'config_updated')
-        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
+        self.change_global_from_tab()
 
     def check_list_state(self, item):
         """
@@ -182,11 +174,12 @@ class ThemeManager(QtGui.QWidget):
         self.global_action.setVisible(visible)
         self.menu.exec_(self.theme_list_widget.mapToGlobal(point))
 
-    def change_global_from_tab(self, theme_name):
+    def change_global_from_tab(self):
         """
         Change the global theme when it is changed through the Themes settings tab
         """
-        log.debug(u'change_global_from_tab %s', theme_name)
+        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
+        log.debug(u'change_global_from_tab %s', self.global_theme)
         for count in range(0, self.theme_list_widget.count()):
             # reset the old name
             item = self.theme_list_widget.item(count)
@@ -195,7 +188,7 @@ class ThemeManager(QtGui.QWidget):
             if old_name != new_name:
                 self.theme_list_widget.item(count).setText(new_name)
             # Set the new name
-            if theme_name == new_name:
+            if self.global_theme == new_name:
                 name = translate('OpenLP.ThemeManager', '%s (default)') % new_name
                 self.theme_list_widget.item(count).setText(name)
                 self.deleteToolbarAction.setVisible(item not in self.theme_list_widget.selectedItems())
@@ -219,7 +212,7 @@ class ThemeManager(QtGui.QWidget):
                 name = translate('OpenLP.ThemeManager', '%s (default)') % self.global_theme
                 self.theme_list_widget.item(count).setText(name)
                 Settings().setValue(self.settingsSection + u'/global theme', self.global_theme)
-                Registry().execute(u'theme_update_global', self.global_theme)
+                Registry().execute(u'theme_update_global')
                 self._push_themes()
 
     def onAddTheme(self):
