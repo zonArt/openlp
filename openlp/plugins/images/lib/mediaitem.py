@@ -330,6 +330,8 @@ class ImageMediaItem(MediaManagerItem):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
         """
+        self.application.set_busy_cursor()
+        self.main_window.displayProgressBar(len(images))
         if target_group is None:
             # Find out if a group must be pre-selected
             preselect_group = None
@@ -400,6 +402,7 @@ class ImageMediaItem(MediaManagerItem):
             imageFile.group_id = group_id
             imageFile.filename = unicode(filename)
             self.manager.save_object(imageFile)
+            self.main_window.incrementProgressBar()
         if reload_list:
             self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
 
@@ -431,9 +434,20 @@ class ImageMediaItem(MediaManagerItem):
                 item_data.group_id = target_group.data(0, QtCore.Qt.UserRole).id
                 items_to_save.append(item_data)
         target_group.setExpanded(True)
-        target_group.sortChildren(0, QtCore.Qt.AscendingOrder)
         # Update the group ID's of the images in the database
         self.manager.save_objects(items_to_save)
+        # Sort the target group
+        group_items = []
+        image_items = []
+        for item in target_group.takeChildren():
+            if isinstance(item.data(0, QtCore.Qt.UserRole), ImageGroups):
+                group_items.append(item)
+            if isinstance(item.data(0, QtCore.Qt.UserRole), ImageFilenames):
+                image_items.append(item)
+        group_items.sort(cmp=locale_compare, key=lambda item: item.text(0))
+        target_group.addChildren(group_items)
+        image_items.sort(cmp=locale_compare, key=lambda item: item.text(0))
+        target_group.addChildren(image_items)
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
