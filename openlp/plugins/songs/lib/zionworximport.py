@@ -82,7 +82,7 @@ class ZionWorxImport(SongImport):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """
-        with open(self.importSource, 'rb') as songs_file:
+        with open(self.import_source, 'rb') as songs_file:
             field_names = [u'SongNum', u'Title1', u'Title2', u'Lyrics', u'Writer', u'Copyright', u'Keywords',
                 u'DefaultStyle']
             songs_reader = csv.DictReader(songs_file, field_names)
@@ -94,7 +94,7 @@ class ZionWorxImport(SongImport):
                 return
             num_records = len(records)
             log.info(u'%s records found in CSV file' % num_records)
-            self.importWizard.progressBar.setMaximum(num_records)
+            self.import_wizard.progress_bar.setMaximum(num_records)
             for index, record in enumerate(records, 1):
                 if self.stop_import_flag:
                     return
@@ -102,8 +102,8 @@ class ZionWorxImport(SongImport):
                 try:
                     self.title = self._decode(record[u'Title1'])
                     if record[u'Title2']:
-                        self.alternateTitle = self._decode(record[u'Title2'])
-                    self.parseAuthor(self._decode(record[u'Writer']))
+                        self.alternate_title = self._decode(record[u'Title2'])
+                    self.parse_author(self._decode(record[u'Writer']))
                     self.addCopyright(self._decode(record[u'Copyright']))
                     lyrics = self._decode(record[u'Lyrics'])
                 except UnicodeDecodeError, e:

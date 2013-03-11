@@ -111,8 +111,8 @@ class OpenSongImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
 
     def doImport(self):
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for filename in self.importSource:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for filename in self.import_source:
             if self.stop_import_flag:
                 return
             song_file = open(filename)
@@ -139,7 +139,7 @@ class OpenSongImport(SongImport):
         decode = {
             u'copyright': self.addCopyright,
             u'ccli': u'ccli_number',
-            u'author': self.parseAuthor,
+            u'author': self.parse_author,
             u'title': u'title',
             u'aka': u'alternate_title',
             u'hymn_number': u'song_number'

@@ -68,10 +68,10 @@ class Ui_ShortcutListDialog(object):
         shortcutListDialog.resize(500, 438)
         self.shortcutListLayout = QtGui.QVBoxLayout(shortcutListDialog)
         self.shortcutListLayout.setObjectName(u'shortcutListLayout')
-        self.descriptionLabel = QtGui.QLabel(shortcutListDialog)
-        self.descriptionLabel.setObjectName(u'descriptionLabel')
-        self.descriptionLabel.setWordWrap(True)
-        self.shortcutListLayout.addWidget(self.descriptionLabel)
+        self.description_label = QtGui.QLabel(shortcutListDialog)
+        self.description_label.setObjectName(u'description_label')
+        self.description_label.setWordWrap(True)
+        self.shortcutListLayout.addWidget(self.description_label)
         self.treeWidget = QtGui.QTreeWidget(shortcutListDialog)
         self.treeWidget.setObjectName(u'treeWidget')
         self.treeWidget.setAlternatingRowColors(True)
@@ -129,7 +129,7 @@ class Ui_ShortcutListDialog(object):
         Translate the UI on the fly
         """
         shortcutListDialog.setWindowTitle(translate('OpenLP.ShortcutListDialog', 'Configure Shortcuts'))
-        self.descriptionLabel.setText(
+        self.description_label.setText(
             translate('OpenLP.ShortcutListDialog', 'Select an action and click one of the buttons below to start '
                 'capturing a new primary or alternate shortcut, respectively.'))
         self.treeWidget.setHeaderLabels([translate('OpenLP.ShortcutListDialog', 'Action'),

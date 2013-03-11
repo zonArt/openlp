@@ -70,7 +70,7 @@ class ItemCapabilities(object):
              reordered.
 
     ``RequiresMedia``
-            Determines is the serviceItem needs a Media Player
+            Determines is the service_item needs a Media Player
 
     ``CanLoop``
             The capability to allow the SlideController to allow the loop

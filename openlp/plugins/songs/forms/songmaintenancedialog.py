@@ -134,8 +134,7 @@ class Ui_SongMaintenanceDialog(object):
         self.dialogLayout.addWidget(self.button_box, 1, 0, 1, 2)
         self.retranslateUi(songMaintenanceDialog)
         self.stackedLayout.setCurrentIndex(0)
-        QtCore.QObject.connect(self.typeListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.stackedLayout.setCurrentIndex)
+        self.typeListWidget.currentRowChanged.connect(self.stackedLayout.setCurrentIndex)
 
     def retranslateUi(self, songMaintenanceDialog):
         songMaintenanceDialog.setWindowTitle(SongStrings.SongMaintenance)

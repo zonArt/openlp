@@ -102,10 +102,10 @@ class SongBeamerImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        if not isinstance(self.importSource, list):
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        if not isinstance(self.import_source, list):
             return
-        for file in self.importSource:
+        for file in self.import_source:
             # TODO: check that it is a valid SongBeamer file
             if self.stop_import_flag:
                 return
@@ -177,7 +177,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#AddCopyrightInfo':
             pass
         elif tag_val[0] == u'#Author':
-            self.parseAuthor(tag_val[1])
+            self.parse_author(tag_val[1])
         elif tag_val[0] == u'#BackgroundImage':
             pass
         elif tag_val[0] == u'#Bible':
@@ -217,7 +217,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#LangCount':
             pass
         elif tag_val[0] == u'#Melody':
-            self.parseAuthor(tag_val[1])
+            self.parse_author(tag_val[1])
         elif tag_val[0] == u'#NatCopyright':
             pass
         elif tag_val[0] == u'#OTitle':
