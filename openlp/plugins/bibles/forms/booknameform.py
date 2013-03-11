@@ -65,12 +65,9 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         Set up the signals used in the booknameform.
         """
-        QtCore.QObject.connect(self.oldTestamentCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onCheckBoxIndexChanged)
-        QtCore.QObject.connect(self.newTestamentCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onCheckBoxIndexChanged)
-        QtCore.QObject.connect(self.apocryphaCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onCheckBoxIndexChanged)
+        self.oldTestamentCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.newTestamentCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.apocryphaCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
 
     def onCheckBoxIndexChanged(self, index):
         """

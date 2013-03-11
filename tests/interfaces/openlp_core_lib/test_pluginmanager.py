@@ -3,7 +3,8 @@ Package to test the openlp.core.lib.pluginmanager package.
 """
 import os
 import sys
-from tempfile import mkstemp
+import shutil
+from tempfile import mkstemp, mkdtemp
 from unittest import TestCase
 
 from mock import MagicMock
@@ -23,7 +24,9 @@ class TestPluginManager(TestCase):
         Some pre-test setup required.
         """
         fd, self.ini_file = mkstemp(u'.ini')
+        self.temp_dir = mkdtemp(u'openlp')
         Settings().set_filename(self.ini_file)
+        Settings().setValue(u'advanced/data path', self.temp_dir)
         Registry.create()
         Registry().register(u'service_list', MagicMock())
         self.app = QtGui.QApplication.instance()
@@ -31,9 +34,11 @@ class TestPluginManager(TestCase):
         Registry().register(u'main_window', self.main_window)
 
     def tearDown(self):
-        os.unlink(self.ini_file)
         del self.app
         del self.main_window
+        Settings().remove(u'advanced/data path')
+        shutil.rmtree(self.temp_dir)
+        os.unlink(self.ini_file)
 
     def find_plugins_test(self):
         """

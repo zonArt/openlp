@@ -195,7 +195,7 @@ class SlideController(DisplayController):
             self.hide_menu.setText(translate('OpenLP.SlideController', 'Hide'))
             self.hide_menu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
             self.hide_menu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Hide'), self.toolbar))
-            self.toolbar.addToolbarWidget(self.hide_menu)
+            self.toolbar.add_toolbar_widget(self.hide_menu)
             self.blank_screen = create_action(self, u'blankScreen',
                 text=translate('OpenLP.SlideController', 'Blank Screen'), icon=u':/slides/slide_blank.png',
                 checked=False, can_shortcuts=True, category=self.category, triggers=self.onBlankDisplay)
@@ -214,24 +214,24 @@ class SlideController(DisplayController):
             # Wide menu of display control buttons.
             self.blank_screen_button = QtGui.QToolButton(self.toolbar)
             self.blank_screen_button.setObjectName(u'blank_screen_button')
-            self.toolbar.addToolbarWidget(self.blank_screen_button)
+            self.toolbar.add_toolbar_widget(self.blank_screen_button)
             self.blank_screen_button.setDefaultAction(self.blank_screen)
             self.theme_screen_button = QtGui.QToolButton(self.toolbar)
             self.theme_screen_button.setObjectName(u'theme_screen_button')
-            self.toolbar.addToolbarWidget(self.theme_screen_button)
+            self.toolbar.add_toolbar_widget(self.theme_screen_button)
             self.theme_screen_button.setDefaultAction(self.theme_screen)
             self.desktop_screen_button = QtGui.QToolButton(self.toolbar)
             self.desktop_screen_button.setObjectName(u'desktop_screen_button')
-            self.toolbar.addToolbarWidget(self.desktop_screen_button)
+            self.toolbar.add_toolbar_widget(self.desktop_screen_button)
             self.desktop_screen_button.setDefaultAction(self.desktop_screen)
-            self.toolbar.addToolbarAction(u'loop_separator', separator=True)
+            self.toolbar.add_toolbar_action(u'loop_separator', separator=True)
             # Play Slides Menu
             self.play_slides_menu = QtGui.QToolButton(self.toolbar)
             self.play_slides_menu.setObjectName(u'play_slides_menu')
             self.play_slides_menu.setText(translate('OpenLP.SlideController', 'Play Slides'))
             self.play_slides_menu.setPopupMode(QtGui.QToolButton.MenuButtonPopup)
             self.play_slides_menu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Play Slides'), self.toolbar))
-            self.toolbar.addToolbarWidget(self.play_slides_menu)
+            self.toolbar.add_toolbar_widget(self.play_slides_menu)
             self.play_slides_loop = create_action(self, u'playSlidesLoop', text=UiStrings().PlaySlidesInLoop,
                 icon=u':/media/media_time.png', checked=False, can_shortcuts=True,
                 category=self.category, triggers=self.onPlaySlidesLoop)
@@ -250,14 +250,14 @@ class SlideController(DisplayController):
             self.delay_spin_box.setRange(1, 180)
             self.delay_spin_box.setSuffix(UiStrings().Seconds)
             self.delay_spin_box.setToolTip(translate('OpenLP.SlideController', 'Delay between slides in seconds.'))
-            self.toolbar.addToolbarWidget(self.delay_spin_box)
+            self.toolbar.add_toolbar_widget(self.delay_spin_box)
         else:
-            self.toolbar.addToolbarAction(u'goLive', icon=u':/general/general_live.png',
+            self.toolbar.add_toolbar_action(u'goLive', icon=u':/general/general_live.png',
                 tooltip=translate('OpenLP.SlideController', 'Move to live.'), triggers=self.onGoLive)
-            self.toolbar.addToolbarAction(u'addToService', icon=u':/general/general_add.png',
+            self.toolbar.add_toolbar_action(u'addToService', icon=u':/general/general_add.png',
                 tooltip=translate('OpenLP.SlideController', 'Add to Service.'), triggers=self.onPreviewAddToService)
             self.toolbar.addSeparator()
-            self.toolbar.addToolbarAction(u'editSong', icon=u':/general/general_edit.png',
+            self.toolbar.add_toolbar_action(u'editSong', icon=u':/general/general_edit.png',
                 tooltip=translate('OpenLP.SlideController', 'Edit and reload song preview.'), triggers=self.onEditSong)
         self.controller_layout.addWidget(self.toolbar)
         # Build the Media Toolbar
@@ -269,15 +269,16 @@ class SlideController(DisplayController):
             self.song_menu.setText(translate('OpenLP.SlideController', 'Go To'))
             self.song_menu.setPopupMode(QtGui.QToolButton.InstantPopup)
             self.song_menu.setMenu(QtGui.QMenu(translate('OpenLP.SlideController', 'Go To'), self.toolbar))
-            self.toolbar.addToolbarWidget(self.song_menu)
+            self.toolbar.add_toolbar_widget(self.song_menu)
             # Stuff for items with background audio.
-            self.audio_pause_item = self.toolbar.addToolbarAction(u'audioPauseItem',
+            # FIXME: object name should be changed. But this requires that we migrate the shortcut.
+            self.audio_pause_item = self.toolbar.add_toolbar_action(u'audioPauseItem',
                 icon=u':/slides/media_playback_pause.png', text=translate('OpenLP.SlideController', 'Pause Audio'),
                 tooltip=translate('OpenLP.SlideController', 'Pause audio.'),
                 checked=False, visible=False, category=self.category, context=QtCore.Qt.WindowShortcut,
                 can_shortcuts=True, triggers=self.onAudioPauseClicked)
-            self.audioMenu = QtGui.QMenu(translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)
-            self.audio_pause_item.setMenu(self.audioMenu)
+            self.audio_menu = QtGui.QMenu(translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)
+            self.audio_pause_item.setMenu(self.audio_menu)
             self.audio_pause_item.setParent(self.toolbar)
             self.toolbar.widgetForAction(self.audio_pause_item).setPopupMode(
                 QtGui.QToolButton.MenuButtonPopup)
@@ -285,15 +286,15 @@ class SlideController(DisplayController):
                 icon=u':/slides/media_playback_next.png',
                 tooltip=translate('OpenLP.SlideController', 'Go to next audio track.'),
                 category=self.category, can_shortcuts=True, triggers=self.onNextTrackClicked)
-            self.audioMenu.addAction(self.nextTrackItem)
-            self.trackMenu = self.audioMenu.addMenu(translate('OpenLP.SlideController', 'Tracks'))
+            self.audio_menu.addAction(self.nextTrackItem)
+            self.trackMenu = self.audio_menu.addMenu(translate('OpenLP.SlideController', 'Tracks'))
             self.audio_time_label = QtGui.QLabel(u' 00:00 ', self.toolbar)
             self.audio_time_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignHCenter)
             self.audio_time_label.setStyleSheet(AUDIO_TIME_LABEL_STYLESHEET)
             self.audio_time_label.setObjectName(u'audio_time_label')
-            self.toolbar.addToolbarWidget(self.audio_time_label)
-            self.toolbar.setWidgetVisible(self.audio_list, False)
-            self.toolbar.setWidgetVisible([u'songMenu'], False)
+            self.toolbar.add_toolbar_widget(self.audio_time_label)
+            self.toolbar.set_widget_visible(self.audio_list, False)
+            self.toolbar.set_widget_visible([u'song_menu'], False)
         # Screen preview area
         self.preview_frame = QtGui.QFrame(self.splitter)
         self.preview_frame.setGeometry(QtCore.QRect(0, 0, 300, 300 * self.ratio))
@@ -352,20 +353,17 @@ class SlideController(DisplayController):
                 context=QtCore.Qt.WidgetWithChildrenShortcut,
                 category=self.category if s.get(u'configurable') else None,
                 triggers=self._slideShortcutActivated) for s in shortcuts])
-            QtCore.QObject.connect(
-                self.shortcutTimer, QtCore.SIGNAL(u'timeout()'),
-                self._slideShortcutActivated)
+            self.shortcutTimer.timeout.connect(self._slideShortcutActivated)
         # Signals
-        QtCore.QObject.connect(self.preview_list_widget, QtCore.SIGNAL(u'clicked(QModelIndex)'), self.onSlideSelected)
+        self.preview_list_widget.clicked.connect(self.onSlideSelected)
         if self.is_live:
             Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
             Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)
-            self.toolbar.setWidgetVisible(self.loop_list, False)
-            self.toolbar.setWidgetVisible(self.wide_menu, False)
+            self.toolbar.set_widget_visible(self.loop_list, False)
+            self.toolbar.set_widget_visible(self.wide_menu, False)
         else:
-            QtCore.QObject.connect(self.preview_list_widget,
-                QtCore.SIGNAL(u'doubleClicked(QModelIndex)'), self.onGoLiveClick)
-            self.toolbar.setWidgetVisible([u'editSong'], False)
+            self.preview_list_widget.doubleClicked.connect(self.onGoLiveClick)
+            self.toolbar.set_widget_visible([u'editSong'], False)
         if self.is_live:
             self.setLiveHotkeys(self)
             self.__addActionsToWidget(self.preview_list_widget)
@@ -524,7 +522,7 @@ class SlideController(DisplayController):
         self.display.setup()
         if self.is_live:
             self.__addActionsToWidget(self.display)
-            self.display.audioPlayer.connectSlot(QtCore.SIGNAL(u'tick(qint64)'), self.on_audio_time_remaining)
+            self.display.audio_player.connectSlot(QtCore.SIGNAL(u'tick(qint64)'), self.on_audio_time_remaining)
         # The SlidePreview's ratio.
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / float(self.screens.current[u'size'].height())
@@ -580,9 +578,9 @@ class SlideController(DisplayController):
                 width = self.main_window.controlSplitter.sizes()[self.split]
                 for framenumber in range(len(self.service_item.get_frames())):
                     self.preview_list_widget.setRowHeight(framenumber, width / self.ratio)
-        self.onControllerSizeChanged(self.controller.width(), self.controller.height())
+        self.onControllerSizeChanged(self.controller.width())
 
-    def onControllerSizeChanged(self, width, height):
+    def onControllerSizeChanged(self, width):
         """
         Change layout of display control buttons on controller size change
         """
@@ -591,12 +589,12 @@ class SlideController(DisplayController):
             used_space = self.toolbar.size().width() + self.hide_menu.size().width()
             # The + 40 is needed to prevent flickering. This can be considered a "buffer".
             if width > used_space + 40 and self.hide_menu.isVisible():
-                self.toolbar.setWidgetVisible(self.narrow_menu, False)
-                self.toolbar.setWidgetVisible(self.wide_menu)
+                self.toolbar.set_widget_visible(self.narrow_menu, False)
+                self.toolbar.set_widget_visible(self.wide_menu)
             # The - 40 is needed to prevent flickering. This can be considered a "buffer".
             elif width < used_space - 40 and not self.hide_menu.isVisible():
-                self.toolbar.setWidgetVisible(self.wide_menu, False)
-                self.toolbar.setWidgetVisible(self.narrow_menu)
+                self.toolbar.set_widget_visible(self.wide_menu, False)
+                self.toolbar.set_widget_visible(self.narrow_menu)
 
     def onSongBarHandler(self):
         """
@@ -638,8 +636,8 @@ class SlideController(DisplayController):
         self.toolbar.hide()
         self.mediabar.hide()
         self.song_menu.hide()
-        self.toolbar.setWidgetVisible(self.loop_list, False)
-        self.toolbar.setWidgetVisible([u'songMenu'], False)
+        self.toolbar.set_widget_visible(self.loop_list, False)
+        self.toolbar.set_widget_visible([u'song_menu'], False)
         # Reset the button
         self.play_slides_once.setChecked(False)
         self.play_slides_once.setIcon(build_icon(u':/media/media_time.png'))
@@ -647,9 +645,9 @@ class SlideController(DisplayController):
         self.play_slides_loop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
             if Settings().value(self.main_window.songsSettingsSection + u'/display songbar') and self.slideList:
-                self.toolbar.setWidgetVisible([u'songMenu'], True)
+                self.toolbar.set_widget_visible([u'song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
-            self.toolbar.setWidgetVisible(self.loop_list)
+            self.toolbar.set_widget_visible(self.loop_list)
         if item.is_media():
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
@@ -666,9 +664,9 @@ class SlideController(DisplayController):
         # See bug #791050
         self.toolbar.hide()
         self.mediabar.hide()
-        self.toolbar.setWidgetVisible([u'editSong'], False)
+        self.toolbar.set_widget_visible([u'editSong'], False)
         if item.is_capable(ItemCapabilities.CanEdit) and item.from_plugin:
-            self.toolbar.setWidgetVisible([u'editSong'])
+            self.toolbar.set_widget_visible([u'editSong'])
         elif item.is_media():
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
@@ -754,25 +752,25 @@ class SlideController(DisplayController):
         self.preview_list_widget.setColumnWidth(0, width)
         if self.is_live:
             self.song_menu.menu().clear()
-            self.display.audioPlayer.reset()
+            self.display.audio_player.reset()
             self.setAudioItemsVisibility(False)
             self.audio_pause_item.setChecked(False)
             # If the current item has background audio
             if self.service_item.is_capable(ItemCapabilities.HasBackgroundAudio):
                 log.debug(u'Starting to play...')
-                self.display.audioPlayer.add_to_playlist(self.service_item.background_audio)
+                self.display.audio_player.add_to_playlist(self.service_item.background_audio)
                 self.trackMenu.clear()
                 for counter in range(len(self.service_item.background_audio)):
                     action = self.trackMenu.addAction(os.path.basename(self.service_item.background_audio[counter]))
                     action.setData(counter)
-                    QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'), self.onTrackTriggered)
-                self.display.audioPlayer.repeat = Settings().value(
+                    action.triggered.connect(self.onTrackTriggered)
+                self.display.audio_player.repeat = Settings().value(
                     self.main_window.generalSettingsSection + u'/audio repeat list')
                 if Settings().value(self.main_window.generalSettingsSection + u'/audio start paused'):
                     self.audio_pause_item.setChecked(True)
-                    self.display.audioPlayer.pause()
+                    self.display.audio_player.pause()
                 else:
-                    self.display.audioPlayer.play()
+                    self.display.audio_player.play()
                 self.setAudioItemsVisibility(True)
         row = 0
         text = []
@@ -1203,7 +1201,7 @@ class SlideController(DisplayController):
         """
         Set the visibility of the audio stuff
         """
-        self.toolbar.setWidgetVisible(self.audio_list, visible)
+        self.toolbar.set_widget_visible(self.audio_list, visible)
 
     def onAudioPauseClicked(self, checked):
         """
@@ -1212,9 +1210,9 @@ class SlideController(DisplayController):
         if not self.audio_pause_item.isVisible():
             return
         if checked:
-            self.display.audioPlayer.pause()
+            self.display.audio_player.pause()
         else:
-            self.display.audioPlayer.play()
+            self.display.audio_player.play()
 
     def timerEvent(self, event):
         """
@@ -1316,13 +1314,13 @@ class SlideController(DisplayController):
         """
         Go to the next track when next is clicked
         """
-        self.display.audioPlayer.next()
+        self.display.audio_player.next()
 
     def on_audio_time_remaining(self, time):
         """
         Update how much time is remaining
         """
-        seconds = self.display.audioPlayer.mediaObject.remainingTime() // 1000
+        seconds = self.display.audio_player.media_object.remainingTime() // 1000
         minutes = seconds // 60
         seconds %= 60
         self.audio_time_label.setText(u' %02d:%02d ' % (minutes, seconds))
@@ -1332,7 +1330,7 @@ class SlideController(DisplayController):
         Start playing a track
         """
         action = self.sender()
-        self.display.audioPlayer.go_to(action.data())
+        self.display.audio_player.go_to(action.data())
 
     def _get_plugin_manager(self):
         """

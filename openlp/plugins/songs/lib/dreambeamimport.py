@@ -87,9 +87,9 @@ class DreamBeamImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        if isinstance(self.importSource, list):
-            self.importWizard.progressBar.setMaximum(len(self.importSource))
-            for file in self.importSource:
+        if isinstance(self.import_source, list):
+            self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+            for file in self.import_source:
                 if self.stop_import_flag:
                     return
                 self.setDefaults()
@@ -148,6 +148,6 @@ class DreamBeamImport(SongImport):
                         unicode(SongStrings.CopyrightSymbol)) >= 0:
                         self.addCopyright(author_copyright)
                     else:
-                        self.parseAuthor(author_copyright)
+                        self.parse_author(author_copyright)
                 if not self.finish():
                     self.logError(file)

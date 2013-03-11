@@ -58,11 +58,11 @@ class BibleMediaItem(MediaManagerItem):
     """
     log.info(u'Bible Media Item loaded')
 
-    def __init__(self, parent, plugin, icon):
+    def __init__(self, parent, plugin):
         self.IconPath = u'songs/song'
         self.lockIcon = build_icon(u':/bibles/bibles_search_lock.png')
         self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settingsTab
         self.quickPreviewAllowed = True
@@ -166,7 +166,7 @@ class BibleMediaItem(MediaManagerItem):
         layout.addLayout(searchButtonLayout, idx + 3, 1, 1, 2)
         self.pageLayout.addWidget(tab)
         tab.setVisible(False)
-        QtCore.QObject.connect(lockButton, QtCore.SIGNAL(u'toggled(bool)'), self.onLockButtonToggled)
+        lockButton.toggled.connect(self.onLockButtonToggled)
         setattr(self, prefix + u'VersionLabel', versionLabel)
         setattr(self, prefix + u'VersionComboBox', versionComboBox)
         setattr(self, prefix + u'SecondLabel', secondLabel)
@@ -228,29 +228,24 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedLayout.addWidget(self.advancedToVerse, 4, 2)
         self.addSearchFields(u'advanced', UiStrings().Advanced)
         # Combo Boxes
-        QtCore.QObject.connect(self.quickVersionComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickSecondComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.advancedVersionComboBox,QtCore.SIGNAL(u'activated(int)'),
-            self.onAdvancedVersionComboBox)
-        QtCore.QObject.connect(self.advancedSecondComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onAdvancedSecondComboBox)
-        QtCore.QObject.connect(self.advancedBookComboBox, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedBookComboBox)
-        QtCore.QObject.connect(self.advancedFromChapter, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromChapter)
-        QtCore.QObject.connect(self.advancedFromVerse, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedFromVerse)
-        QtCore.QObject.connect(self.advancedToChapter, QtCore.SIGNAL(u'activated(int)'), self.onAdvancedToChapter)
+        self.quickVersionComboBox.activated.connect(self.updateAutoCompleter)
+        self.quickSecondComboBox.activated.connect(self.updateAutoCompleter)
+        self.advancedVersionComboBox.activated.connect(self.onAdvancedVersionComboBox)
+        self.advancedSecondComboBox.activated.connect(self.onAdvancedSecondComboBox)
+        self.advancedBookComboBox.activated.connect(self.onAdvancedBookComboBox)
+        self.advancedFromChapter.activated.connect(self.onAdvancedFromChapter)
+        self.advancedFromVerse.activated.connect(self.onAdvancedFromVerse)
+        self.advancedToChapter.activated.connect(self.onAdvancedToChapter)
         QtCore.QObject.connect(self.quickSearchEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickVersionComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onQuickStyleComboBoxChanged)
-        QtCore.QObject.connect( self.advancedStyleComboBox, QtCore.SIGNAL(u'activated(int)'),
-            self.onAdvancedStyleComboBoxChanged)
+        self.quickVersionComboBox.activated.connect(self.updateAutoCompleter)
+        self.quickStyleComboBox.activated.connect(self.onQuickStyleComboBoxChanged)
+        self.advancedStyleComboBox.activated.connect(self.onAdvancedStyleComboBoxChanged)
         # Buttons
-        QtCore.QObject.connect(self.advancedSearchButton, QtCore.SIGNAL(u'clicked()'), self.onAdvancedSearchButton)
-        QtCore.QObject.connect(self.quickSearchButton, QtCore.SIGNAL(u'clicked()'), self.onQuickSearchButton)
+        self.advancedSearchButton.clicked.connect(self.onAdvancedSearchButton)
+        self.quickSearchButton.clicked.connect(self.onQuickSearchButton)
         # Other stuff
-        QtCore.QObject.connect(self.quickSearchEdit, QtCore.SIGNAL(u'returnPressed()'), self.onQuickSearchButton)
-        QtCore.QObject.connect(self.searchTabBar, QtCore.SIGNAL(u'currentChanged(int)'),
-            self.onSearchTabBarCurrentChanged)
+        self.quickSearchEdit.returnPressed.connect(self.onQuickSearchButton)
+        self.searchTabBar.currentChanged.connect(self.onSearchTabBarCurrentChanged)
 
     def onFocus(self):
         if self.quickTab.isVisible():
@@ -304,7 +299,7 @@ class BibleMediaItem(MediaManagerItem):
         log.debug(u'bible manager initialise')
         self.plugin.manager.media = self
         self.loadBibles()
-        self.quickSearchEdit.setSearchTypes([
+        self.quickSearchEdit.set_search_types([
             (BibleSearch.Reference, u':/bibles/bibles_search_reference.png',
                 translate('BiblesPlugin.MediaItem', 'Scripture Reference'),
                 translate('BiblesPlugin.MediaItem', 'Search Scripture Reference...')),
@@ -312,7 +307,7 @@ class BibleMediaItem(MediaManagerItem):
                 translate('BiblesPlugin.MediaItem', 'Text Search'),
                 translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
-        self.quickSearchEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
+        self.quickSearchEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settingsSection))
         self.config_update()
         log.debug(u'bible manager initialise complete')
 
@@ -432,12 +427,12 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'updateAutoCompleter')
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.quickSearchEdit.currentSearchType())
+        Settings().setValue(u'%s/last search type' % self.settingsSection, self.quickSearchEdit.current_search_type())
         # Save the current bible to the configuration.
         Settings().setValue(self.settingsSection + u'/quick bible', self.quickVersionComboBox.currentText())
         books = []
         # We have to do a 'Reference Search'.
-        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
+        if self.quickSearchEdit.current_search_type() == BibleSearch.Reference:
             bibles = self.plugin.manager.get_bibles()
             bible = self.quickVersionComboBox.currentText()
             if bible:
@@ -653,7 +648,7 @@ class BibleMediaItem(MediaManagerItem):
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quickSearchEdit.text()
-        if self.quickSearchEdit.currentSearchType() == BibleSearch.Reference:
+        if self.quickSearchEdit.current_search_type() == BibleSearch.Reference:
             # We are doing a 'Reference Search'.
             self.search_results = self.plugin.manager.get_verses(bible, text)
             if second_bible and self.search_results:

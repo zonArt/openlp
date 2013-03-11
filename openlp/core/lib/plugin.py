@@ -214,7 +214,7 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into OpenLP.
         """
         if self.mediaItemClass:
-            self.mediaItem = self.mediaItemClass(self.main_window.mediaDockManager.media_dock, self, self.icon)
+            self.mediaItem = self.mediaItemClass(self.main_window.mediaDockManager.media_dock, self)
 
     def upgrade_settings(self, settings):
         """

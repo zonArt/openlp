@@ -70,27 +70,27 @@ class ThemeManager(QtGui.QWidget):
         self.layout.setObjectName(u'layout')
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.setObjectName(u'toolbar')
-        self.toolbar.addToolbarAction(u'newTheme',
+        self.toolbar.add_toolbar_action(u'newTheme',
             text=UiStrings().NewTheme, icon=u':/themes/theme_new.png',
             tooltip=translate('OpenLP.ThemeManager', 'Create a new theme.'),
             triggers=self.onAddTheme)
-        self.toolbar.addToolbarAction(u'editTheme',
+        self.toolbar.add_toolbar_action(u'editTheme',
             text=translate('OpenLP.ThemeManager', 'Edit Theme'),
             icon=u':/themes/theme_edit.png',
             tooltip=translate('OpenLP.ThemeManager', 'Edit a theme.'),
             triggers=self.on_edit_theme)
-        self.deleteToolbarAction = self.toolbar.addToolbarAction(u'delete_theme',
+        self.deleteToolbarAction = self.toolbar.add_toolbar_action(u'delete_theme',
             text=translate('OpenLP.ThemeManager', 'Delete Theme'),
             icon=u':/general/general_delete.png',
             tooltip=translate('OpenLP.ThemeManager', 'Delete a theme.'),
             triggers=self.on_delete_theme)
         self.toolbar.addSeparator()
-        self.toolbar.addToolbarAction(u'importTheme',
+        self.toolbar.add_toolbar_action(u'importTheme',
             text=translate('OpenLP.ThemeManager', 'Import Theme'),
             icon=u':/general/general_import.png',
             tooltip=translate('OpenLP.ThemeManager', 'Import a theme.'),
             triggers=self.on_import_theme)
-        self.toolbar.addToolbarAction(u'exportTheme',
+        self.toolbar.add_toolbar_action(u'exportTheme',
             text=translate('OpenLP.ThemeManager', 'Export Theme'),
             icon=u':/general/general_export.png',
             tooltip=translate('OpenLP.ThemeManager', 'Export a theme.'),
@@ -243,9 +243,9 @@ class ThemeManager(QtGui.QWidget):
                 translate('OpenLP.ThemeManager', 'Rename %s theme?'), False, False):
             item = self.theme_list_widget.currentItem()
             old_theme_name = item.data(QtCore.Qt.UserRole)
-            self.fileRenameForm.fileNameEdit.setText(old_theme_name)
+            self.fileRenameForm.file_name_edit.setText(old_theme_name)
             if self.fileRenameForm.exec_():
-                new_theme_name = self.fileRenameForm.fileNameEdit.text()
+                new_theme_name = self.fileRenameForm.file_name_edit.text()
                 if old_theme_name == new_theme_name:
                     return
                 if self.check_if_theme_exists(new_theme_name):
@@ -264,10 +264,10 @@ class ThemeManager(QtGui.QWidget):
         """
         item = self.theme_list_widget.currentItem()
         old_theme_name = item.data(QtCore.Qt.UserRole)
-        self.fileRenameForm.fileNameEdit.setText(translate('OpenLP.ThemeManager',
+        self.fileRenameForm.file_name_edit.setText(translate('OpenLP.ThemeManager',
             'Copy of %s', 'Copy of <theme name>') % old_theme_name)
         if self.fileRenameForm.exec_(True):
-            new_theme_name = self.fileRenameForm.fileNameEdit.text()
+            new_theme_name = self.fileRenameForm.file_name_edit.text()
             if self.check_if_theme_exists(new_theme_name):
                 theme_data = self.get_theme_data(old_theme_name)
                 self.cloneThemeData(theme_data, new_theme_name)
@@ -361,8 +361,7 @@ class ThemeManager(QtGui.QWidget):
                 for files in os.walk(source):
                     for name in files[2]:
                         theme_zip.write(
-                            os.path.join(source, name).encode(u'utf-8'),
-                            os.path.join(theme, name).encode(u'utf-8')
+                            os.path.join(source, name).encode(u'utf-8'), os.path.join(theme, name).encode(u'utf-8')
                         )
                 QtGui.QMessageBox.information(self,
                     translate('OpenLP.ThemeManager', 'Theme Exported'),
@@ -682,7 +681,7 @@ class ThemeManager(QtGui.QWidget):
         log.debug('update_preview_images')
         self.main_window.displayProgressBar(len(self.theme_list))
         for theme in self.theme_list:
-            self.main_window.incrementProgressBar()
+            self.main_window.increment_progress_bar()
             self.generate_and_save_image(self.path, theme, self.get_theme_data(theme))
         self.main_window.finishedProgressBar()
         self.load_themes()
@@ -768,20 +767,20 @@ class ThemeManager(QtGui.QWidget):
         theme = Theme(xml_data)
         new_theme = ThemeXML()
         new_theme.theme_name = self.badV1NameChars.sub(u'', theme.Name)
-        if theme.BackgroundType == 0:
+        if theme.BackgroundType == BackgroundType.Solid:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Solid)
             new_theme.background_color = unicode(theme.BackgroundParameter1.name())
-        elif theme.BackgroundType == 1:
+        elif theme.BackgroundType == BackgroundType.Horizontal:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Gradient)
             new_theme.background_direction = BackgroundGradientType.to_string(BackgroundGradientType.Horizontal)
             if theme.BackgroundParameter3.name() == 1:
                 new_theme.background_direction = BackgroundGradientType.to_string(BackgroundGradientType.Horizontal)
             new_theme.background_start_color = unicode(theme.BackgroundParameter1.name())
             new_theme.background_end_color = unicode(theme.BackgroundParameter2.name())
-        elif theme.BackgroundType == 2:
+        elif theme.BackgroundType == BackgroundType.Image:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Image)
             new_theme.background_filename = unicode(theme.BackgroundParameter1)
-        elif theme.BackgroundType == 3:
+        elif theme.BackgroundType == BackgroundType.Transparent:
             new_theme.background_type = BackgroundType.to_string(BackgroundType.Transparent)
         new_theme.font_main_name = theme.FontName
         new_theme.font_main_color = unicode(theme.FontColor.name())

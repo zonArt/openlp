@@ -57,7 +57,7 @@ class Ui_SongMaintenanceDialog(object):
         self.authorsPage = QtGui.QWidget(songMaintenanceDialog)
         self.authorsPage.setObjectName(u'authorsPage')
         self.authorsLayout = QtGui.QVBoxLayout(self.authorsPage)
-        self.authorsLayout.setObjectName(u'authorsLayout')
+        self.authorsLayout.setObjectName(u'authors_layout')
         self.authorsListWidget = QtGui.QListWidget(self.authorsPage)
         self.authorsListWidget.setObjectName(u'authorsListWidget')
         self.authorsLayout.addWidget(self.authorsListWidget)
@@ -82,7 +82,7 @@ class Ui_SongMaintenanceDialog(object):
         self.topicsPage = QtGui.QWidget(songMaintenanceDialog)
         self.topicsPage.setObjectName(u'topicsPage')
         self.topicsLayout = QtGui.QVBoxLayout(self.topicsPage)
-        self.topicsLayout.setObjectName(u'topicsLayout')
+        self.topicsLayout.setObjectName(u'topics_layout')
         self.topicsListWidget = QtGui.QListWidget(self.topicsPage)
         self.topicsListWidget.setObjectName(u'topicsListWidget')
         self.topicsLayout.addWidget(self.topicsListWidget)
@@ -134,8 +134,7 @@ class Ui_SongMaintenanceDialog(object):
         self.dialogLayout.addWidget(self.button_box, 1, 0, 1, 2)
         self.retranslateUi(songMaintenanceDialog)
         self.stackedLayout.setCurrentIndex(0)
-        QtCore.QObject.connect(self.typeListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.stackedLayout.setCurrentIndex)
+        self.typeListWidget.currentRowChanged.connect(self.stackedLayout.setCurrentIndex)
 
     def retranslateUi(self, songMaintenanceDialog):
         songMaintenanceDialog.setWindowTitle(SongStrings.SongMaintenance)

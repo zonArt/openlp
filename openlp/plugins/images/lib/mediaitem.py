@@ -49,9 +49,9 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, plugin, icon):
+    def __init__(self, parent, plugin):
         self.IconPath = u'images/image'
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.quickPreviewAllowed = True
         self.hasSearch = True
         self.manager = plugin.manager
@@ -163,16 +163,16 @@ class ImageMediaItem(MediaManagerItem):
             triggers=self.onFileClick)
 
     def addStartHeaderBar(self):
-        self.addGroupAction = self.toolbar.addToolbarAction(u'addGroupAction',
+        self.addGroupAction = self.toolbar.add_toolbar_action(u'addGroupAction',
             icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
 
     def addEndHeaderBar(self):
-        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
+        self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction',
             icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
-        self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
+        self.resetAction = self.toolbar.add_toolbar_action(u'resetAction',
             icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
 
-    def recursivelyDeleteGroup(self, image_group):
+    def recursively_delete_group(self, image_group):
         """
         Recursively deletes a group and all groups and images in it
         """
@@ -182,7 +182,7 @@ class ImageMediaItem(MediaManagerItem):
             self.manager.delete_object(ImageFilenames, image.id)
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == image_group.id)
         for group in image_groups:
-            self.recursivelyDeleteGroup(group)
+            self.recursively_delete_group(group)
             self.manager.delete_object(ImageGroups, group.id)
 
     def onDeleteClick(self):
@@ -213,7 +213,7 @@ class ImageMediaItem(MediaManagerItem):
                             'Are you sure you want to remove "%s" and everything in it?') % item_data.group_name,
                             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
                             QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
-                            self.recursivelyDeleteGroup(item_data)
+                            self.recursively_delete_group(item_data)
                             self.manager.delete_object(ImageGroups, row_item.data(0, QtCore.Qt.UserRole).id)
                             if item_data.parent_id is 0:
                                 self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
@@ -221,7 +221,7 @@ class ImageMediaItem(MediaManagerItem):
                                 row_item.parent().removeChild(row_item)
                             self.fill_groups_combobox(self.choose_group_form.group_combobox)
                             self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
             self.main_window.finishedProgressBar()
             self.application.set_normal_cursor()
         self.listView.blockSignals(False)
@@ -309,7 +309,7 @@ class ImageMediaItem(MediaManagerItem):
             else:
                 group_items[imageFile.group_id].addChild(item_name)
             if not initial_load:
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
         if not initial_load:
             self.main_window.finishedProgressBar()
         self.application.set_normal_cursor()
@@ -402,7 +402,7 @@ class ImageMediaItem(MediaManagerItem):
             imageFile.group_id = group_id
             imageFile.filename = unicode(filename)
             self.manager.save_object(imageFile)
-            self.main_window.incrementProgressBar()
+            self.main_window.increment_progress_bar()
         if reload_list:
             self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
 
