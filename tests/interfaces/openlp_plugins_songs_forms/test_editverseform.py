@@ -39,7 +39,7 @@ class TestEditVerseForm(TestCase):
 
     def insert_verse_test(self):
         """
-        Test that inserting a verse works as it should.
+        Test that clicking the insert button inserts the correct verse marker
         """
         # GIVEN: An instance of the EditVerseForm
         # WHEN: The Insert button is clicked
@@ -47,4 +47,17 @@ class TestEditVerseForm(TestCase):
 
         # THEN: The verse text edit should have a Verse:1 in it
         self.assertIn(u'---[Verse:1]---', self.form.verse_text_edit.toPlainText(),
-                      u'The verse text edit should have a verse identifier')
+                      u'The verse text edit should have a verse marker')
+
+    def insert_verse_2_test(self):
+        """
+        Test that clicking the up button on the spin box and then clicking the insert button inserts the correct marker
+        """
+        # GIVEN: An instance of the EditVerseForm
+        # WHEN: The spin button and then the Insert button are clicked
+        QtTest.QTest.keyClick(self.form.verse_number_box, QtCore.Qt.Key_Up)
+        QtTest.QTest.mouseClick(self.form.insert_button, QtCore.Qt.LeftButton)
+
+        # THEN: The verse text edit should have a Verse:1 in it
+        self.assertIn(u'---[Verse:2]---', self.form.verse_text_edit.toPlainText(),
+                      u'The verse text edit should have a "Verse 2" marker')
