@@ -34,9 +34,13 @@ http://tools.cherrypy.org/wiki/AuthenticationAndAccessRestrictions
 """
 
 import cherrypy
-import urlparse
+import logging
+
+from openlp.core.lib import Settings
 
 SESSION_KEY = '_cp_openlp'
+
+log = logging.getLogger(__name__)
 
 
 def check_credentials(user_name, password):
@@ -44,14 +48,10 @@ def check_credentials(user_name, password):
     Verifies credentials for username and password.
     Returns None on success or a string describing the error on failure
     """
-    # @todo make from config
-    print "check_credentials"
-    if user_name == 'openlp' and password == 'openlp':
+    if user_name == Settings().value(u'remotes/user id') and password == Settings().value(u'remotes/password'):
         return None
     else:
         return u"Incorrect username or password."
-    # if u.password != md5.new(password).hexdigest():
-    #     return u"Incorrect password"
 
 
 def check_auth(*args, **kwargs):
@@ -60,17 +60,14 @@ def check_auth(*args, **kwargs):
     is not None, a login is required and the entry is evaluated as a list of
     conditions that the user must fulfill
     """
-    print "check_auth"
     conditions = cherrypy.request.config.get('auth.require', None)
-    print urlparse.urlparse(cherrypy.url()), conditions
-    print conditions
+    if not Settings().value(u'remotes/authentication enabled'):
+        return None
     if conditions is not None:
         username = cherrypy.session.get(SESSION_KEY)
-        print username
         if username:
             cherrypy.request.login = username
             for condition in conditions:
-                print "c ", condition
                 # A condition is just a callable that returns true or false
                 if not condition():
                     raise cherrypy.HTTPRedirect("/auth/login")
@@ -97,49 +94,6 @@ def require_auth(*conditions):
     return decorate
 
 
-# Conditions are callables that return True
-# if the user fulfills the conditions they define, False otherwise
-#
-# They can access the current username as cherrypy.request.login
-#
-# Define those at will however suits the application.
-
-#def member_of(groupname):
-#    def check():
-#        # replace with actual check if <username> is in <groupname>
-#        return cherrypy.request.login == 'joe' and groupname == 'admin'
-#    return check
-
-
-#def name_is(reqd_username):
-#    return lambda: reqd_username == cherrypy.request.login
-
-#def any_of(*conditions):
-#    """
-#    Returns True if any of the conditions match
-#    """
-#    def check():
-#        for c in conditions:
-#            if c():
-#                return True
-#        return False
-#    return check
-
-# By default all conditions are required, but this might still be
-# needed if you want to use it inside of an any_of(...) condition
-#def all_of(*conditions):
-#    """
-#    Returns True if all of the conditions match
-#    """
-#    def check():
-#        for c in conditions:
-#            if not c():
-#                return False
-#        return True
-#    return check
-# Controller to provide login and logout actions
-
-
 class AuthController(object):
 
     def on_login(self, username):
@@ -156,14 +110,26 @@ class AuthController(object):
         """
         Provides a login form
         """
-        return """<html><body>
-            <form method="post" action="/auth/login">
-            <input type="hidden" name="from_page" value="%(from_page)s" />
-            %(msg)s<br />
-            Username: <input type="text" name="username" value="%(username)s" /><br />
-            Password: <input type="password" name="password" /><br />
-            <input type="submit" value="Log in" />
-        </body></html>""" % locals()
+        return """<html>
+            <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
+                <title>User Login</title>
+                <link rel="stylesheet" href="/files/jquery.mobile.css" />
+                <link rel="stylesheet" href="/files/openlp.css" />
+                <link rel="shortcut icon" type="image/x-icon" href="/files/images/favicon.ico">
+                <script type="text/javascript" src="/files/jquery.js"></script>
+                <script type="text/javascript" src="/files/openlp.js"></script>
+                <script type="text/javascript" src="/files/jquery.mobile.js"></script>
+            </head>
+            <body>
+                <form method="post" action="/auth/login">
+                <input type="hidden" name="from_page" value="%(from_page)s" />
+                %(msg)s<br/>
+                Username: <input type="text" name="username" value="%(username)s" /><br />
+                Password: <input type="password" name="password" /><br />
+                <input type="submit" value="Log in" />
+            </body></html>""" % locals()
 
     @cherrypy.expose
     def login(self, username=None, password=None, from_page="/"):

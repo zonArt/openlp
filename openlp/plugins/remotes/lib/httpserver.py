@@ -130,6 +130,7 @@ from openlp.plugins.remotes.lib.httpauth import AuthController, require_auth
 
 log = logging.getLogger(__name__)
 
+
 class HttpServer(object):
     """
     Ability to control OpenLP via a web browser.
@@ -156,10 +157,19 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start CherryPy server')
-        port = Settings().value(self.plugin.settingsSection + u'/port')
-        address = Settings().value(self.plugin.settingsSection + u'/ip address')
-        server_config = {u'server.socket_host': str(address),
-                         u'server.socket_port': port}
+        if Settings().value(self.plugin.settingsSection + u'/https enabled'):
+            port = Settings().value(self.plugin.settingsSection + u'/https port')
+            address = Settings().value(self.plugin.settingsSection + u'/ip address')
+            shared_data = AppLocation.get_directory(AppLocation.SharedData)
+            server_config = {u'server.socket_host': str(address),
+                             u'server.socket_port': port,
+                             u'server.ssl_certificate': os.path.join(shared_data, u'openlp.crt'),
+                             u'server.ssl_private_key': os.path.join(shared_data, u'openlp.key')}
+        else:
+            port = Settings().value(self.plugin.settingsSection + u'/port')
+            address = Settings().value(self.plugin.settingsSection + u'/ip address')
+            server_config = {u'server.socket_host': str(address),
+                             u'server.socket_port': port}
         cherrypy.config.update(server_config)
         cherrypy.config.update({'environment': 'embedded'})
         cherrypy.config.update({'engine.autoreload_on': False})
@@ -231,10 +241,8 @@ class HttpConnection(object):
         """
         Handles the requests for the main url.  This is secure depending on settings in config.
         """
-        print "default"
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
-        print url
         # Loop through the routes we set up earlier and execute them
         return self._process_http_request(args, kwargs)
 
@@ -243,10 +251,8 @@ class HttpConnection(object):
         """
         Handles the requests for the stage url.  This is not secure.
         """
-        print "Stage"
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
-        print url
         return self._process_http_request(args, kwargs)
 
     @cherrypy.expose
@@ -254,24 +260,20 @@ class HttpConnection(object):
         """
         Handles the requests for the files url.  This is not secure.
         """
-        print "files"
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
-        print url
         return self._process_http_request(args, kwargs)
 
     def _process_http_request(self, args, kwargs):
         """
         Common function to process HTTP requests where secure or insecure
         """
-        print "common handler"
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
         response = None
         for route, func in self.routes:
             match = re.match(route, url.path)
             if match:
-                print 'Route "%s" matched "%s"', route, url.path, func
                 log.debug('Route "%s" matched "%s"', route, url.path)
                 args = []
                 for param in match.groups():
@@ -474,11 +476,8 @@ class HttpConnection(object):
                 # This slot expects an int within a list.
                 id = data[u'request'][u'id']
                 Registry().execute(event, [id])
-            else:
-                Registry().execute(event, [0])
             json_data = {u'results': {u'success': True}}
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        print json.dumps(json_data)
         return json.dumps(json_data)
 
     def service(self, action):
@@ -545,7 +544,6 @@ class HttpConnection(object):
         """
         Go live on an item of type ``plugin``.
         """
-        print "go_live"
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:
@@ -577,7 +575,7 @@ class HttpConnection(object):
 
     def _http_not_found(self):
         cherrypy.response.status = 404
-        cherrypy.response.body = ["<html><body>Sorry, an error occured</body></html>"]
+        cherrypy.response.body = ["<html><body>Sorry, an error occurred </body></html>"]
 
     def _get_service_manager(self):
         """

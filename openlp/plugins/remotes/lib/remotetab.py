@@ -56,15 +56,13 @@ class RemoteTab(SettingsTab):
         self.address_label.setObjectName(u'address_label')
         self.address_edit = QtGui.QLineEdit(self.server_settings_group_box)
         self.address_edit.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-
-        self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'), 
+        self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'),
             self))
         self.address_edit.setObjectName(u'address_edit')
         self.server_settings_layout.addRow(self.address_label, self.address_edit)
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
         self.twelve_hour_check_box.setObjectName(u'twelve_hour_check_box')
         self.server_settings_layout.addRow(self.twelve_hour_check_box)
-
         self.leftLayout.addWidget(self.server_settings_group_box)
         self.http_settings_group_box = QtGui.QGroupBox(self.leftColumn)
         self.http_settings_group_box.setObjectName(u'http_settings_group_box')
@@ -75,7 +73,6 @@ class RemoteTab(SettingsTab):
         self.port_spin_box = QtGui.QSpinBox(self.http_settings_group_box)
         self.port_spin_box.setMaximum(32767)
         self.port_spin_box.setObjectName(u'port_spin_box')
-
         self.http_setting_layout.addRow(self.port_label, self.port_spin_box)
         self.remote_url_label = QtGui.QLabel(self.http_settings_group_box)
         self.remote_url_label.setObjectName(u'remote_url_label')
@@ -244,7 +241,7 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settingsSection + u'/user id', self.user_id.text())
         Settings().setValue(self.settingsSection + u'/password', self.password.text())
         if changed:
-            Registry().register_function(u'remotes_config_updated')
+            Registry().execute(u'remotes_config_updated')
 
 
     def on_twelve_hour_check_box_changed(self, check_state):

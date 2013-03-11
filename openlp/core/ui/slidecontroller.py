@@ -860,8 +860,6 @@ class SlideController(DisplayController):
         """
         Go to the requested slide
         """
-        if not self.service_item or not message[0]:
-            return
         index = int(message[0])
         if not self.service_item:
             return

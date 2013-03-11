@@ -36,6 +36,7 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import Registry
 
+
 class SettingsTab(QtGui.QWidget):
     """
     SettingsTab is a helper widget for plugins to define Tabs for the settings
