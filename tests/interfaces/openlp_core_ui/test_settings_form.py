@@ -82,7 +82,7 @@ class TestSettingsForm(TestCase):
             QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
             # THEN the processing stack should be empty
-            assert len(self.form.processes) == 0, u'he one requested process should have been added to the stack'
+            assert len(self.form.processes) == 0, u'The one requested process should have been added to the stack'
 
     def register_multiple_functions_test(self):
         """
