@@ -40,8 +40,8 @@ class TestStartNoteDialog(TestCase):
         # WHEN displaying the UI and pressing enter
         with patch(u'PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
-        okWidget = self.form.button_box.button(self.form.button_box.Save)
-        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+        ok_widget = self.form.button_box.button(self.form.button_box.Save)
+        QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following input text is returned
         self.assertEqual(self.form.text_edit.toPlainText(), u'', u'The returned text should be empty')
@@ -51,8 +51,8 @@ class TestStartNoteDialog(TestCase):
         self.form.text_edit.setPlainText(text)
         with patch(u'PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
-        okWidget = self.form.button_box.button(self.form.button_box.Save)
-        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+        ok_widget = self.form.button_box.button(self.form.button_box.Save)
+        QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following text is returned
         self.assertEqual(self.form.text_edit.toPlainText(), text, u'The text originally entered should still be there')
