@@ -82,7 +82,7 @@ class TestSettingsForm(TestCase):
             QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
             # THEN the processing stack should be empty
-            assert len(self.form.processes) == 0, u'The defined processes have been called'
+            assert len(self.form.processes) == 0, u'he one requested process should have been added to the stack'
 
     def register_multiple_functions_test(self):
         """
@@ -93,18 +93,18 @@ class TestSettingsForm(TestCase):
 
         # WHEN testing the processing stack
         # THEN the processing stack should have one item
-        assert len(self.form.processes) == 1, u'The one defined process is ready to be called'
+        assert len(self.form.processes) == 1, u'The one requested process should have been added to the stack'
 
         # GIVEN: Registering a new function
         self.form.register_post_process(u'function2')
 
         # WHEN testing the processing stack
         # THEN the processing stack should have two items
-        assert len(self.form.processes) == 2, u'The two defined processes is ready to be called'
+        assert len(self.form.processes) == 2, u'The two requested processes should have been added to the stack'
 
         # GIVEN: Registering a process for the second time
         self.form.register_post_process(u'function1')
 
         # WHEN testing the processing stack
         # THEN the processing stack should still have two items
-        assert len(self.form.processes) == 2, u'No new processes have been added to the stack'
+        assert len(self.form.processes) == 2, u'No new processes should have been added to the stack'

@@ -1127,9 +1127,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         item = self.find_service_item()[0]
         if item != -1:
-            print self.service_items
             self.service_items.remove(self.service_items[item])
-            print self.service_items
             self.repaint_service_list(item - 1, -1)
             self.set_modified()
 
