@@ -36,6 +36,7 @@ from mediafilesdialog import Ui_MediaFilesDialog
 
 log = logging.getLogger(__name__)
 
+
 class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
     """
     Class to show a list of files from the

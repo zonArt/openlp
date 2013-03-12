@@ -45,9 +45,9 @@ class ImageMediaItem(MediaManagerItem):
     """
     log.info(u'Image Media Item loaded')
 
-    def __init__(self, parent, plugin, icon):
+    def __init__(self, parent, plugin):
         self.IconPath = u'images/image'
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.quickPreviewAllowed = True
         self.hasSearch = True
         Registry().register_function(u'live_theme_changed', self.live_theme_changed)
@@ -84,9 +84,9 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.addAction(self.replaceAction)
 
     def addEndHeaderBar(self):
-        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction',
+        self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction',
             icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
-        self.resetAction = self.toolbar.addToolbarAction(u'resetAction',
+        self.resetAction = self.toolbar.add_toolbar_action(u'resetAction',
             icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
 
     def onDeleteClick(self):
@@ -105,7 +105,7 @@ class ImageMediaItem(MediaManagerItem):
                 if text:
                     delete_file(os.path.join(self.servicePath, text.text()))
                 self.listView.takeItem(row)
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
             Settings.setValue(self.settingsSection + u'/images files', self.getFileList())
             self.main_window.finishedProgressBar()
             self.application.set_normal_cursor()
@@ -134,7 +134,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setData(QtCore.Qt.UserRole, imageFile)
             self.listView.addItem(item_name)
             if not initialLoad:
-                self.main_window.incrementProgressBar()
+                self.main_window.increment_progress_bar()
         if not initialLoad:
             self.main_window.finishedProgressBar()
         self.application.set_normal_cursor()
@@ -191,7 +191,7 @@ class ImageMediaItem(MediaManagerItem):
         Called to reset the Live background with the image selected,
         """
         self.resetAction.setVisible(False)
-        self.live_controller.display.resetImage()
+        self.live_controller.display.reset_image()
 
     def live_theme_changed(self):
         """
@@ -210,7 +210,7 @@ class ImageMediaItem(MediaManagerItem):
             bitem = self.listView.item(item.row())
             filename = bitem.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
-                if self.live_controller.display.directImage(filename, background):
+                if self.live_controller.display.direct_image(filename, background):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

@@ -54,9 +54,9 @@ class CustomMediaItem(MediaManagerItem):
     """
     log.info(u'Custom Media Item loaded')
 
-    def __init__(self, parent, plugin, icon):
+    def __init__(self, parent, plugin):
         self.IconPath = u'custom/custom'
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
@@ -86,14 +86,14 @@ class CustomMediaItem(MediaManagerItem):
         self.searchTextButton.setText(UiStrings().Search)
 
     def initialise(self):
-        self.searchTextEdit.setSearchTypes([
+        self.searchTextEdit.set_search_types([
             (CustomSearch.Titles, u':/songs/song_search_title.png',
             translate('SongsPlugin.MediaItem', 'Titles'),
             translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection))
+        self.searchTextEdit.set_current_search_type(Settings().value( u'%s/last search type' % self.settingsSection))
         self.config_updated()
 
     def loadList(self, custom_slides):
@@ -114,7 +114,7 @@ class CustomMediaItem(MediaManagerItem):
         # active trigger it and clean up so it will not update again.
 
     def onNewClick(self):
-        self.edit_custom_form.loadCustom(0)
+        self.edit_custom_form.load_custom(0)
         self.edit_custom_form.exec_()
         self.onClearTextButtonClick()
         self.onSelectionChange()
@@ -128,7 +128,7 @@ class CustomMediaItem(MediaManagerItem):
         custom_id = int(custom_id)
         valid = self.manager.get_object(CustomSlide, custom_id)
         if valid:
-            self.edit_custom_form.loadCustom(custom_id, preview)
+            self.edit_custom_form.load_custom(custom_id, preview)
             if self.edit_custom_form.exec_() == QtGui.QDialog.Accepted:
                 self.remoteTriggered = True
                 self.remoteCustom = custom_id
@@ -148,7 +148,7 @@ class CustomMediaItem(MediaManagerItem):
         if check_item_selected(self.listView, UiStrings().SelectEdit):
             item = self.listView.currentItem()
             item_id = item.data(QtCore.Qt.UserRole)
-            self.edit_custom_form.loadCustom(item_id, False)
+            self.edit_custom_form.load_custom(item_id, False)
             self.edit_custom_form.exec_()
             self.autoSelectId = -1
             self.onSearchTextButtonClicked()
@@ -207,11 +207,11 @@ class CustomMediaItem(MediaManagerItem):
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.currentSearchType())
+        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = self.searchTextEdit.displayText()
         search_results = []
-        search_type = self.searchTextEdit.currentSearchType()
+        search_type = self.searchTextEdit.current_search_type()
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.plugin.manager.get_all_objects(CustomSlide,

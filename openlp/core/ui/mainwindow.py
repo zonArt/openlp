@@ -346,7 +346,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(main_window)
         self.mediaToolBox.setCurrentIndex(0)
         # Connect up some signals and slots
-        QtCore.QObject.connect(self.fileMenu, QtCore.SIGNAL(u'aboutToShow()'), self.updateRecentFilesMenu)
+        self.fileMenu.aboutToShow.connect(self.updateRecentFilesMenu)
         # Hide the entry, as it does not have any functionality yet.
         self.toolsAddToolItem.setVisible(False)
         self.importLanguageItem.setVisible(False)
@@ -489,7 +489,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Settings().remove_obsolete_settings()
         self.serviceNotSaved = False
         self.aboutForm = AboutForm(self)
-        self.media_controller = MediaController(self)
+        self.media_controller = MediaController()
         self.settingsForm = SettingsForm(self)
         self.formattingTagForm = FormattingTagForm(self)
         self.shortcutForm = ShortcutListForm(self)
@@ -506,12 +506,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.updateRecentFilesMenu()
         self.pluginForm = PluginForm(self)
         # Set up signals and slots
-        QtCore.QObject.connect(self.mediaManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-                               self.viewMediaManagerItem.setChecked)
-        QtCore.QObject.connect(self.serviceManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-                               self.viewServiceManagerItem.setChecked)
-        QtCore.QObject.connect(self.themeManagerDock, QtCore.SIGNAL(u'visibilityChanged(bool)'),
-                               self.viewThemeManagerItem.setChecked)
+        self.mediaManagerDock.visibilityChanged.connect(self.viewMediaManagerItem.setChecked)
+        self.serviceManagerDock.visibilityChanged.connect(self.viewServiceManagerItem.setChecked)
+        self.themeManagerDock.visibilityChanged.connect(self.viewThemeManagerItem.setChecked)
         self.importThemeItem.triggered.connect(self.themeManagerContents.on_import_theme)
         self.exportThemeItem.triggered.connect(self.themeManagerContents.on_export_theme)
         self.webSiteItem.triggered.connect(self.onHelpWebSiteClicked)
@@ -888,7 +885,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             export_file_name += u'.conf'
         temp_file = os.path.join(unicode(gettempdir(),
             get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
-        self.saveSettings()
+        self.save_settings()
         setting_sections = []
         # Add main sections.
         setting_sections.extend([self.generalSettingsSection])
@@ -1054,7 +1051,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_manager.finalise_plugins()
         if save_settings:
             # Save settings
-            self.saveSettings()
+            self.save_settings()
         # Check if we need to change the data directory
         if self.new_data_path:
             self.changeDataDirectory()
@@ -1205,7 +1202,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
-    def saveSettings(self):
+    def save_settings(self):
         """
         Save the main window settings.
         """
@@ -1290,7 +1287,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.loadProgressBar.setValue(0)
         self.application.process_events()
 
-    def incrementProgressBar(self):
+    def increment_progress_bar(self):
         """
         Increase the Progress Bar value by 1
         """

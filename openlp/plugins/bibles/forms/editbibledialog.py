@@ -65,7 +65,7 @@ class Ui_EditBibleDialog(object):
         self.copyrightLabel = QtGui.QLabel(self.licenseDetailsGroupBox)
         self.copyrightLabel.setObjectName(u'copyrightLabel')
         self.copyrightEdit = QtGui.QLineEdit(self.licenseDetailsGroupBox)
-        self.copyrightEdit.setObjectName(u'copyrightEdit')
+        self.copyrightEdit.setObjectName(u'copyright_edit')
         self.copyrightLabel.setBuddy(self.copyrightEdit)
         self.licenseDetailsLayout.addRow(self.copyrightLabel, self.copyrightEdit)
         self.permissionsLabel = QtGui.QLabel(self.licenseDetailsGroupBox)

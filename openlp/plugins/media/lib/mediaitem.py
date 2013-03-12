@@ -53,24 +53,24 @@ class MediaMediaItem(MediaManagerItem):
     """
     log.info(u'%s MediaMediaItem loaded', __name__)
 
-    def __init__(self, parent, plugin, icon):
+    def __init__(self, parent, plugin):
         self.iconPath = u'images/image'
         self.background = False
         self.automatic = u''
-        MediaManagerItem.__init__(self, parent, plugin, icon)
+        MediaManagerItem.__init__(self, parent, plugin)
         self.singleServiceItem = False
         self.hasSearch = True
-        self.mediaObject = None
-        self.displayController = DisplayController(parent)
-        self.displayController.controllerLayout = QtGui.QVBoxLayout()
-        self.media_controller.register_controller(self.displayController)
-        self.media_controller.set_controls_visible(self.displayController, False)
-        self.displayController.previewDisplay = Display(self.displayController, False, self.displayController)
-        self.displayController.previewDisplay.hide()
-        self.displayController.previewDisplay.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.displayController.previewDisplay.screen = {u'size':self.displayController.previewDisplay.geometry()}
-        self.displayController.previewDisplay.setup()
-        self.media_controller.setup_display(self.displayController.previewDisplay, False)
+        self.media_object = None
+        self.display_controller = DisplayController(parent)
+        self.display_controller.controller_layout = QtGui.QVBoxLayout()
+        self.media_controller.register_controller(self.display_controller)
+        self.media_controller.set_controls_visible(self.display_controller, False)
+        self.display_controller.preview_display = Display(self.display_controller, False, self.display_controller)
+        self.display_controller.preview_display.hide()
+        self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
+        self.display_controller.preview_display.screen = {u'size': self.display_controller.preview_display.geometry()}
+        self.display_controller.preview_display.setup()
+        self.media_controller.setup_display(self.display_controller.preview_display, False)
         Registry().register_function(u'video_background_replaced', self.video_background_replaced)
         Registry().register_function(u'mediaitem_media_rebuild', self.rebuild_players)
         Registry().register_function(u'config_screen_changed', self.display_setup)
@@ -99,9 +99,9 @@ class MediaMediaItem(MediaManagerItem):
 
     def addEndHeaderBar(self):
         # Replace backgrounds do not work at present so remove functionality.
-        self.replaceAction = self.toolbar.addToolbarAction(u'replaceAction', icon=u':/slides/slide_blank.png',
+        self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction', icon=u':/slides/slide_blank.png',
             triggers=self.onReplaceClick)
-        self.resetAction = self.toolbar.addToolbarAction(u'resetAction', icon=u':/system/system_close.png',
+        self.resetAction = self.toolbar.add_toolbar_action(u'resetAction', icon=u':/system/system_close.png',
             visible=False, triggers=self.onResetClick)
         self.mediaWidget = QtGui.QWidget(self)
         self.mediaWidget.setObjectName(u'mediaWidget')
@@ -115,8 +115,7 @@ class MediaMediaItem(MediaManagerItem):
         self.displayLayout.addRow(self.displayTypeLabel, self.displayTypeComboBox)
         # Add the Media widget to the page layout
         self.pageLayout.addWidget(self.mediaWidget)
-        QtCore.QObject.connect(self.displayTypeComboBox, QtCore.SIGNAL(u'currentIndexChanged (int)'),
-            self.overridePlayerChanged)
+        self.displayTypeComboBox.currentIndexChanged.connect(self.overridePlayerChanged)
 
     def overridePlayerChanged(self, index):
         player = get_media_players()[0]
@@ -152,8 +151,7 @@ class MediaMediaItem(MediaManagerItem):
                 service_item.shortname = service_item.title
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
-                if self.media_controller.video(DisplayControllerType.Live, service_item,
-                        videoBehindText=True):
+                if self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True):
                     self.resetAction.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
@@ -214,7 +212,7 @@ class MediaMediaItem(MediaManagerItem):
             u' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
     def display_setup(self):
-        self.media_controller.setup_display(self.displayController.previewDisplay, False)
+        self.media_controller.setup_display(self.display_controller.preview_display, False)
 
     def populateDisplayTypes(self):
         """
@@ -226,11 +224,11 @@ class MediaMediaItem(MediaManagerItem):
         self.displayTypeComboBox.blockSignals(True)
         self.displayTypeComboBox.clear()
         usedPlayers, overridePlayer = get_media_players()
-        mediaPlayers = self.media_controller.mediaPlayers
+        media_players = self.media_controller.media_players
         currentIndex = 0
         for player in usedPlayers:
             # load the drop down selection
-            self.displayTypeComboBox.addItem(mediaPlayers[player].original_name)
+            self.displayTypeComboBox.addItem(media_players[player].original_name)
             if overridePlayer == player:
                 currentIndex = len(self.displayTypeComboBox)
         if self.displayTypeComboBox.count() > 1:

@@ -71,15 +71,15 @@ class SongImport(QtCore.QObject):
         self.manager = manager
         QtCore.QObject.__init__(self)
         if u'filename' in kwargs:
-            self.importSource = kwargs[u'filename']
+            self.import_source = kwargs[u'filename']
         elif u'filenames' in kwargs:
-            self.importSource = kwargs[u'filenames']
+            self.import_source = kwargs[u'filenames']
         elif u'folder' in kwargs:
-            self.importSource = kwargs[u'folder']
+            self.import_source = kwargs[u'folder']
         else:
             raise KeyError(u'Keyword arguments "filename[s]" or "folder" not supplied.')
-        log.debug(self.importSource)
-        self.importWizard = None
+        log.debug(self.import_source)
+        self.import_wizard = None
         self.song = None
         self.stop_import_flag = False
         self.setDefaults()
@@ -92,7 +92,7 @@ class SongImport(QtCore.QObject):
         """
         self.title = u''
         self.songNumber = u''
-        self.alternateTitle = u''
+        self.alternate_title = u''
         self.copyright = u''
         self.comments = u''
         self.themeName = u''
@@ -114,7 +114,7 @@ class SongImport(QtCore.QObject):
         This should be called, when a song could not be imported.
 
         ``filepath``
-            This should be the file path if ``self.importSource`` is a list
+            This should be the file path if ``self.import_source`` is a list
             with different files. If it is not a list, but a single file (for
             instance a database), then this should be the song's title.
 
@@ -123,15 +123,15 @@ class SongImport(QtCore.QObject):
             informative as possible.
         """
         self.setDefaults()
-        if self.importWizard is None:
+        if self.import_wizard is None:
             return
-        if self.importWizard.errorReportTextEdit.isHidden():
-            self.importWizard.errorReportTextEdit.setText(translate('SongsPlugin.SongImport',
+        if self.import_wizard.error_report_text_edit.isHidden():
+            self.import_wizard.error_report_text_edit.setText(translate('SongsPlugin.SongImport',
                 'The following songs could not be imported:'))
-            self.importWizard.errorReportTextEdit.setVisible(True)
-            self.importWizard.errorCopyToButton.setVisible(True)
-            self.importWizard.errorSaveToButton.setVisible(True)
-        self.importWizard.errorReportTextEdit.append(u'- %s (%s)' % (filepath, reason))
+            self.import_wizard.error_report_text_edit.setVisible(True)
+            self.import_wizard.error_copy_to_button.setVisible(True)
+            self.import_wizard.error_save_to_button.setVisible(True)
+        self.import_wizard.error_report_text_edit.append(u'- %s (%s)' % (filepath, reason))
 
     def stop_import(self):
         """
@@ -141,7 +141,7 @@ class SongImport(QtCore.QObject):
         self.stop_import_flag = True
 
     def register(self, import_wizard):
-        self.importWizard = import_wizard
+        self.import_wizard = import_wizard
 
     def tidyText(self, text):
         """
@@ -177,10 +177,10 @@ class SongImport(QtCore.QObject):
                     copyright_found = True
                     self.addCopyright(line)
                 else:
-                    self.parseAuthor(line)
+                    self.parse_author(line)
             return
         if len(lines) == 1:
-            self.parseAuthor(lines[0])
+            self.parse_author(lines[0])
             return
         if not self.title:
             self.title = lines[0]
@@ -196,7 +196,7 @@ class SongImport(QtCore.QObject):
             self.copyright += ' '
         self.copyright += copyright
 
-    def parseAuthor(self, text):
+    def parse_author(self, text):
         """
         Add the author. OpenLP stores them individually so split by 'and', '&'
         and comma. However need to check for 'Mr and Mrs Smith' and turn it to
@@ -291,9 +291,9 @@ class SongImport(QtCore.QObject):
         log.info(u'committing song %s to database', self.title)
         song = Song()
         song.title = self.title
-        if self.importWizard is not None:
-            self.importWizard.incrementProgressBar(WizardStrings.ImportingType % song.title)
-        song.alternate_title = self.alternateTitle
+        if self.import_wizard is not None:
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % song.title)
+        song.alternate_title = self.alternate_title
         # Values will be set when cleaning the song.
         song.search_title = u''
         song.search_lyrics = u''
@@ -366,7 +366,7 @@ class SongImport(QtCore.QObject):
             The file to copy.
         """
         if not hasattr(self, u'save_path'):
-            self.save_path = os.path.join(AppLocation.get_section_data_path(self.importWizard.plugin.name),
+            self.save_path = os.path.join(AppLocation.get_section_data_path(self.import_wizard.plugin.name),
                 'audio', str(song_id))
         check_directory_exists(self.save_path)
         if not filename.startswith(self.save_path):

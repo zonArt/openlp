@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.songs.lib` module contains a number of library functions and classes used in the Songs plugin.
+"""
 import re
 
 from PyQt4 import QtGui
@@ -182,8 +185,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return VerseType.translated_tags[num].upper()
-        if default in VerseType.translated_tags:
+        if len(VerseType.names) > default:
             return VerseType.translated_tags[default].upper()
+        else:
+            return VerseType.translated_tags[VerseType.Other].upper()
 
     @staticmethod
     def translated_name(verse_tag, default=Other):
@@ -200,8 +205,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return VerseType.translated_names[num]
-        if default in VerseType.translated_names:
+        if len(VerseType.names) > default:
             return VerseType.translated_names[default]
+        else:
+            return VerseType.translated_names[VerseType.Other]
 
     @staticmethod
     def from_tag(verse_tag, default=Other):
@@ -218,7 +225,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        return default
+        if len(VerseType.names) > default:
+            return default
+        else:
+            return VerseType.Other
 
     @staticmethod
     def from_translated_tag(verse_tag, default=Other):
@@ -235,7 +245,10 @@ class VerseType(object):
         for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        return default
+        if len(VerseType.names) > default:
+            return default
+        else:
+            return VerseType.Other
 
     @staticmethod
     def from_string(verse_name, default=Other):
@@ -611,7 +624,3 @@ def natcmp(a, b):
             if result != 0:
                 return result
         return 1
-
-from xml import OpenLyrics, SongXML
-from songstab import SongsTab
-from mediaitem import SongMediaItem

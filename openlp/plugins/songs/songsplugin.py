@@ -43,11 +43,13 @@ from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
-from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, SongsTab
+from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
 from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
+from openlp.plugins.songs.lib.mediaitem import SongMediaItem
+from openlp.plugins.songs.lib.songstab import SongsTab
 
 log = logging.getLogger(__name__)
 __default_settings__ = {
@@ -176,7 +178,7 @@ class SongsPlugin(Plugin):
         return translate('SongsPlugin', '<strong>Songs Plugin</strong>'
             '<br />The songs plugin provides the ability to display and manage songs.')
 
-    def usesTheme(self, theme):
+    def uses_theme(self, theme):
         """
         Called to find out if the song plugin is currently using a theme.
 
@@ -186,7 +188,7 @@ class SongsPlugin(Plugin):
             return True
         return False
 
-    def renameTheme(self, oldTheme, newTheme):
+    def rename_theme(self, oldTheme, newTheme):
         """
         Renames a theme the song plugin is using making the plugin use the new
         name.
@@ -204,12 +206,11 @@ class SongsPlugin(Plugin):
 
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get(format, u'class')
-        kwargs[u'plugin'] = self
         importer = class_(self.manager, **kwargs)
-        importer.register(self.mediaItem.importWizard)
+        importer.register(self.mediaItem.import_wizard)
         return importer
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """

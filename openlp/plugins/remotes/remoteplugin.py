@@ -38,7 +38,7 @@ __default_settings__ = {
         u'remotes/twelve hour': True,
         u'remotes/port': 4316,
         u'remotes/ip address': u'0.0.0.0'
-    }
+}
 
 
 class RemotesPlugin(Plugin):
@@ -81,7 +81,7 @@ class RemotesPlugin(Plugin):
             'browser or through the remote API.')
         return about_text
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """

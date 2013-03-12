@@ -33,12 +33,12 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.plugins.songs.lib import VerseType
-
 from editversedialog import Ui_EditVerseDialog
 
 log = logging.getLogger(__name__)
 
 VERSE_REGEX = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
+
 
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
@@ -50,14 +50,11 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.verseTextEdit, QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
-            self.contextMenu)
-        QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
-        QtCore.QObject.connect(self.splitButton, QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
-        QtCore.QObject.connect(self.verseTextEdit, QtCore.SIGNAL(u'cursorPositionChanged()'),
-            self.onCursorPositionChanged)
-        QtCore.QObject.connect(self.verseTypeComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onVerseTypeComboBoxChanged)
+        self.verseTextEdit.customContextMenuRequested.connect(self.contextMenu)
+        self.insertButton.clicked.connect(self.onInsertButtonClicked)
+        self.splitButton.clicked.connect(self.onSplitButtonClicked)
+        self.verseTextEdit.cursorPositionChanged.connect(self.onCursorPositionChanged)
+        self.verseTypeComboBox.currentIndexChanged.connect(self.onVerseTypeComboBoxChanged)
 
     def contextMenu(self, point):
         item = self.serviceManagerList.itemAt(point)
