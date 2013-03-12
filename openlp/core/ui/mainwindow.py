@@ -653,9 +653,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                     self.activePlugin.app_startup()
                 else:
                     self.activePlugin.toggleStatus(PluginStatus.Inactive)
-        self.themeManagerContents.change_global_from_tab()
-        self.themeManagerContents.load_themes(True)
+        # Set global theme and
         Registry().execute(u'theme_update_global', self.themeManagerContents.global_theme)
+        self.themeManagerContents.load_first_time_themes()
         # Check if any Bibles downloaded.  If there are, they will be processed.
         Registry().execute(u'bibles_load_list', True)
         self.application.set_normal_cursor()

@@ -60,6 +60,7 @@ class ThemeManager(QtGui.QWidget):
         QtGui.QWidget.__init__(self, parent)
         Registry().register(u'theme_manager', self)
         Registry().register_function(u'bootstrap_initialise', self.load_first_time_themes)
+        Registry().register_function(u'bootstrap_post_set_up', self._push_themes)
         self.settingsSection = u'themes'
         self.themeForm = ThemeForm(self)
         self.fileRenameForm = FileRenameForm()
@@ -142,7 +143,7 @@ class ThemeManager(QtGui.QWidget):
         self.oldBackgroundImage = None
         self.badV1NameChars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
-        self.change_global_from_tab()
+        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
 
     def check_list_state(self, item):
         """
