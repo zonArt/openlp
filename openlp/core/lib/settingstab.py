@@ -190,3 +190,12 @@ class SettingsTab(QtGui.QWidget):
 
     media_controller = property(_get_media_controller)
 
+    def _get_settings_form(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_settings_form'):
+            self._settings_form = Registry().get(u'settings_form')
+        return self._settings_form
+
+    settings_form = property(_get_settings_form)

@@ -179,27 +179,13 @@ class BiblesTab(SettingsTab):
         self.rangeSeparatorCheckBox.setText(translate('BiblesPlugin.BiblesTab', 'Range Separator:'))
         self.listSeparatorCheckBox.setText(translate('BiblesPlugin.BiblesTab', 'List Separator:'))
         self.endSeparatorCheckBox.setText(translate('BiblesPlugin.BiblesTab', 'End Mark:'))
-        #@todo these are common so move to StringsUI and reuse.
-        self.verseSeparatorLineEdit.setToolTip(
-            translate('BiblesPlugin.BiblesTab', 'Multiple alternative '
-                'verse separators may be defined.\nThey have to be separated '
-                'by a vertical bar "|".\nPlease clear this edit line to use '
-                'the default value.'))
-        self.rangeSeparatorLineEdit.setToolTip(
-            translate('BiblesPlugin.BiblesTab', 'Multiple alternative '
-                'range separators may be defined.\nThey have to be separated '
-                'by a vertical bar "|".\nPlease clear this edit line to use '
-                'the default value.'))
-        self.listSeparatorLineEdit.setToolTip(
-            translate('BiblesPlugin.BiblesTab', 'Multiple alternative '
-                'list separators may be defined.\nThey have to be separated '
-                'by a vertical bar "|".\nPlease clear this edit line to use '
-                'the default value.'))
-        self.endSeparatorLineEdit.setToolTip(
-            translate('BiblesPlugin.BiblesTab', 'Multiple alternative '
-                'end marks may be defined.\nThey have to be separated by a '
-                'vertical bar "|".\nPlease clear this edit line to use the '
-                'default value.'))
+        tip_text = translate('BiblesPlugin.BiblesTab',
+            'Multiple alternative verse separators may be defined.\nThey have to be separated by a vertical bar "|".'
+            '\nPlease clear this edit line to use the default value.')
+        self.verseSeparatorLineEdit.setToolTip(tip_text)
+        self.rangeSeparatorLineEdit.setToolTip(tip_text)
+        self.listSeparatorLineEdit.setToolTip(tip_text)
+        self.endSeparatorLineEdit.setToolTip(tip_text)
         self.languageSelectionGroupBox.setTitle(translate('BiblesPlugin.BiblesTab', 'Default Bible Language'))
         self.languageSelectionLabel.setText(translate('BiblesPlugin.BiblesTab',
             'Book name language in search field,\nsearch results and on display:'))
@@ -368,7 +354,6 @@ class BiblesTab(SettingsTab):
         settings.setValue(u'display new chapter', self.show_new_chapters)
         settings.setValue(u'display brackets', self.display_style)
         settings.setValue(u'verse layout style', self.layout_style)
-        settings.setValue(u'book name language', self.language_selection)
         settings.setValue(u'second bibles', self.second_bibles)
         settings.setValue(u'bible theme', self.bible_theme)
         if self.verseSeparatorCheckBox.isChecked():
@@ -388,7 +373,10 @@ class BiblesTab(SettingsTab):
         else:
             settings.remove(u'end separator')
         update_reference_separators()
-        Registry().execute(u'bibles_load_list')
+        if self.language_selection != settings.value(u'book name language'):
+            settings.setValue(u'book name language', self.language_selection)
+            self.settings_form.register_post_process(u'bibles_load_list',
+                translate('OpenLP.BibleTab', 'Bibles Lists updating.'))
         settings.endGroup()
 
     def update_theme_list(self, theme_list):

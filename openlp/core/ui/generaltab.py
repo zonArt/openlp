@@ -313,7 +313,7 @@ class GeneralTab(SettingsTab):
         Apply settings after settings tab has loaded and most of the
         system so must be delayed
         """
-        Registry().execute(u'slidecontroller_live_spin_delay', self.timeoutSpinBox.value())
+        self.settings_form.register_post_process(u'slidecontroller_live_spin_delay')
         # Do not continue on start up.
         if not postUpdate:
             return
@@ -329,7 +329,7 @@ class GeneralTab(SettingsTab):
         else:
             self.screens.reset_current_display()
         if self.display_changed:
-            Registry().execute(u'config_screen_changed')
+            self.settings_form.register_post_process(u'config_screen_changed')
         self.display_changed = False
 
     def onOverrideRadioButtonPressed(self, checked):

@@ -29,7 +29,7 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, Settings, SettingsTab, UiStrings, translate
+from openlp.core.lib import Settings, SettingsTab, UiStrings, translate
 
 class PresentationTab(SettingsTab):
     """
@@ -129,9 +129,9 @@ class PresentationTab(SettingsTab):
             Settings().setValue(setting_key, self.OverrideAppCheckBox.checkState())
             changed = True
         if changed:
-            self.parent.reset_supported_suffixes()
-            Registry().execute(u'mediaitem_presentation_rebuild')
-            Registry().execute(u'mediaitem_suffixes')
+            self.settings_form.register_post_process(u'mediaitem_suffix_reset')
+            self.settings_form.register_post_process(u'mediaitem_presentation_rebuild')
+            self.settings_form.register_post_process(u'mediaitem_suffixes')
 
     def tabVisible(self):
         """

@@ -153,7 +153,6 @@ class AlertsPlugin(Plugin):
             visible=False, can_shortcuts=True, triggers=self.onAlertsTrigger)
         self.main_window.tools_menu.addAction(self.toolsAlertItem)
 
-
     def initialise(self):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)

@@ -113,10 +113,12 @@ class ServiceManagerDialog(object):
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.add_toolbar_action(u'newService', text=UiStrings().NewService, icon=u':/general/general_new.png',
             tooltip=UiStrings().CreateService, triggers=self.on_new_service_clicked)
-        self.toolbar.add_toolbar_action(u'openService', text=UiStrings().OpenService, icon=u':/general/general_open.png',
+        self.toolbar.add_toolbar_action(u'openService', text=UiStrings().OpenService,
+            icon=u':/general/general_open.png',
             tooltip=translate('OpenLP.ServiceManager', 'Load an existing service.'),
             triggers=self.on_load_service_clicked)
-        self.toolbar.add_toolbar_action(u'saveService', text=UiStrings().SaveService, icon=u':/general/general_save.png',
+        self.toolbar.add_toolbar_action(u'saveService', text=UiStrings().SaveService,
+            icon=u':/general/general_save.png',
             tooltip=translate('OpenLP.ServiceManager', 'Save this service.'), triggers=self.decide_save_method)
         self.toolbar.addSeparator()
         self.theme_label = QtGui.QLabel(u'%s:' % UiStrings().Theme, self)
@@ -265,9 +267,10 @@ class ServiceManagerDialog(object):
              self.service_manager_list.collapse
             ])
         Registry().register_function(u'theme_update_list', self.update_theme_list)
-        Registry().register_function(u'config_updated', self.config_updated)
         Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
         Registry().register_function(u'theme_update_global', self.theme_change)
+        Registry().register_function(u'mediaitem_suffix_reset', self.reset_supported_suffixes)
+        Registry().register_function(u'servicemanager_set_item', self.on_set_item)
 
     def drag_enter_event(self, event):
         """
@@ -297,7 +300,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.service_items = []
         self.suffixes = []
         self.drop_position = 0
-        self.expand_tabs = False
         self.service_id = 0
         # is a new service and has not been saved
         self._modified = False
@@ -311,7 +313,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.setup_ui(self)
-        self.config_updated()
 
     def set_modified(self, modified=True):
         """
@@ -350,12 +351,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Return the current file name, excluding the path.
         """
         return split_filename(self._file_name)[1]
-
-    def config_updated(self):
-        """
-        Triggered when Config dialog is updated.
-        """
-        self.expand_tabs = Settings().value(u'advanced/expand service item')
 
     def reset_supported_suffixes(self):
         """
@@ -1158,6 +1153,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 self.service_has_all_original_files = False
         # Repaint the screen
         self.service_manager_list.clear()
+        self.service_manager_list.clearSelection()
         for item_count, item in enumerate(self.service_items):
             serviceitem = item[u'service_item']
             treewidgetitem = QtGui.QTreeWidgetItem(self.service_manager_list)
@@ -1319,7 +1315,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         # if not passed set to config value
         if expand is None:
-            expand = self.expand_tabs
+            expand = Settings().value(u'advanced/expand service item')
         item.from_service = True
         if replace:
             sitem, child = self.find_service_item()

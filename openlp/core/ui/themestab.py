@@ -151,13 +151,13 @@ class ThemesTab(SettingsTab):
         settings.endGroup()
         self.renderer.set_global_theme(self.global_theme)
         self.renderer.set_theme_level(self.theme_level)
-        Registry().execute(u'theme_update_global', self.global_theme)
+        self.settings_form.register_post_process(u'theme_update_global')
 
     def post_set_up(self):
         """
         After setting things up...
         """
-        Registry().execute(u'theme_update_global', self.global_theme)
+        Registry().execute(u'theme_update_global')
 
     def onSongLevelButtonClicked(self):
         """
