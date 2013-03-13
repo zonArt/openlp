@@ -29,7 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, Settings, SettingsTab, UiStrings, translate
+from openlp.core.lib import Settings, SettingsTab, UiStrings, translate
+
 
 class MediaQCheckBox(QtGui.QCheckBox):
     """
@@ -74,15 +75,12 @@ class MediaTab(SettingsTab):
         self.autoStartCheckBox.setChecked(Settings().value(self.settingsSection + u'/media auto start'))
 
     def save(self):
-        override_changed = False
         setting_key = self.settingsSection + u'/override player'
         if Settings().value(setting_key) != self.overridePlayerCheckBox.checkState():
             Settings().setValue(setting_key, self.overridePlayerCheckBox.checkState())
-            override_changed = True
+            self.settings_form.register_post_process(u'mediaitem_suffix_reset')
+            self.settings_form.register_post_process(u'mediaitem_media_rebuild')
+            self.settings_form.register_post_process(u'mediaitem_suffixes')
         setting_key = self.settingsSection + u'/media auto start'
         if Settings().value(setting_key) != self.autoStartCheckBox.checkState():
             Settings().setValue(setting_key, self.autoStartCheckBox.checkState())
-        if override_changed:
-            self.parent.reset_supported_suffixes()
-            Registry().execute(u'mediaitem_media_rebuild')
-            Registry().execute(u'mediaitem_suffixes')
