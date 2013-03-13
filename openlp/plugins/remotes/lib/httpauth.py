@@ -56,7 +56,7 @@ def check_credentials(user_name, password):
     if user_name == Settings().value(u'remotes/user id') and password == Settings().value(u'remotes/password'):
         return None
     else:
-        return u"Incorrect username or password."
+        return translate('RemotePlugin.Mobile', 'Incorrect username or password.')
 
 
 def check_auth(*args, **kwargs):
