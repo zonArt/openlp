@@ -174,6 +174,8 @@ class HttpServer(object):
         cherrypy.config.update({'environment': 'embedded'})
         cherrypy.config.update({'engine.autoreload_on': False})
         cherrypy.tree.mount(HttpConnection(self), '/', config=self.conf)
+        # Turn off the flood of access messages cause by poll
+        cherrypy.log.access_log.propagate = False
         cherrypy.engine.start()
         Registry().register_function(u'slidecontroller_live_changed', self.slide_change)
         Registry().register_function(u'slidecontroller_live_started', self.item_change)

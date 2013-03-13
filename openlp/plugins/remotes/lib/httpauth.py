@@ -35,8 +35,12 @@ http://tools.cherrypy.org/wiki/AuthenticationAndAccessRestrictions
 
 import cherrypy
 import logging
+import os
+
+from mako.template import Template
 
 from openlp.core.lib import Settings
+from openlp.core.utils import AppLocation, translate
 
 SESSION_KEY = '_cp_openlp'
 
@@ -48,6 +52,7 @@ def check_credentials(user_name, password):
     Verifies credentials for username and password.
     Returns None on success or a string describing the error on failure
     """
+    print "check"
     if user_name == Settings().value(u'remotes/user id') and password == Settings().value(u'remotes/password'):
         return None
     else:
@@ -70,9 +75,12 @@ def check_auth(*args, **kwargs):
             for condition in conditions:
                 # A condition is just a callable that returns true or false
                 if not condition():
+                    print "r1"
                     raise cherrypy.HTTPRedirect("/auth/login")
         else:
+            print "r2"
             raise cherrypy.HTTPRedirect("/auth/login")
+        print "r3"
 
 cherrypy.tools.auth = cherrypy.Tool('before_handler', check_auth)
 
@@ -100,36 +108,31 @@ class AuthController(object):
         """
         Called on successful login
         """
+        pass
 
     def on_logout(self, username):
         """
         Called on logout
         """
+        pass
 
-    def get_loginform(self, username, msg="Enter login information", from_page="/"):
+    def get_login_form(self, username, message=None, from_page="/"):
         """
         Provides a login form
         """
-        return """<html>
-            <head>
-                <meta charset="utf-8" />
-                <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1" />
-                <title>User Login</title>
-                <link rel="stylesheet" href="/files/jquery.mobile.css" />
-                <link rel="stylesheet" href="/files/openlp.css" />
-                <link rel="shortcut icon" type="image/x-icon" href="/files/images/favicon.ico">
-                <script type="text/javascript" src="/files/jquery.js"></script>
-                <script type="text/javascript" src="/files/openlp.js"></script>
-                <script type="text/javascript" src="/files/jquery.mobile.js"></script>
-            </head>
-            <body>
-                <form method="post" action="/auth/login">
-                <input type="hidden" name="from_page" value="%(from_page)s" />
-                %(msg)s<br/>
-                Username: <input type="text" name="username" value="%(username)s" /><br />
-                Password: <input type="password" name="password" /><br />
-                <input type="submit" value="Log in" />
-            </body></html>""" % locals()
+        if not message:
+            message = translate('RemotePlugin.Mobile', 'Enter login information')
+        variables = {
+            'title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 User Login'),
+            'from_page': from_page,
+            'message': message,
+            'username': username
+        }
+        directory = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'remotes', u'html')
+        login_html = os.path.normpath(os.path.join(directory, u'login.html'))
+        html = Template(filename=login_html, input_encoding=u'utf-8', output_encoding=u'utf-8').render(**variables)
+        cherrypy.response.headers['Content-Type'] = u'text/html'
+        return html
 
     @cherrypy.expose
     def login(self, username=None, password=None, from_page="/"):
@@ -137,14 +140,14 @@ class AuthController(object):
         Provides the actual login control
         """
         if username is None or password is None:
-            return self.get_loginform("", from_page=from_page)
-
+            return self.get_login_form("", from_page=from_page)
         error_msg = check_credentials(username, password)
         if error_msg:
-            return self.get_loginform(username, error_msg, from_page)
+            return self.get_login_form(username, from_page, error_msg,)
         else:
             cherrypy.session[SESSION_KEY] = cherrypy.request.login = username
             self.on_login(username)
+            print from_page
             raise cherrypy.HTTPRedirect(from_page or "/")
 
     @cherrypy.expose

@@ -36,3 +36,11 @@
 .ui-li .ui-btn-text a.ui-link-inherit{
   white-space: normal;
 }
+
+.ui-page{
+    padding: 100px 100px 100px 100px;
+    width: 300px;
+}
+.ui-input-text{
+    width: 30px;
+}
