@@ -797,7 +797,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Free up autocompletion memory on dialog exit
         """
-        log.debug (u'SongEditForm.clearCaches')
+        log.debug(u'SongEditForm.clearCaches')
         self.authors = []
         self.themes = []
         self.books = []
