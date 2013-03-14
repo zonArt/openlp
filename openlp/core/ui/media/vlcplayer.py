@@ -63,7 +63,7 @@ if VLC_AVAILABLE:
         VERSION = u'0.0.0'
     if LooseVersion(VERSION) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
-        log.debug(u'VLC could not be loaded, because the vlc version is to old: %s' % VERSION)
+        log.debug(u'VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
 
 AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
 
