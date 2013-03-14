@@ -450,7 +450,7 @@ class WebkitPlayer(MediaPlayer):
             currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");')
             length = display.frame.evaluateJavaScript(u'show_flash("length");')
         else:
-            if display.frame.evaluateJavaScript(u'show_video("isEnded");') == 'true':
+            if display.frame.evaluateJavaScript(u'show_video("isEnded");'):
                 self.stop(display)
             currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
             # check if conversion was ok and value is not 'NaN'

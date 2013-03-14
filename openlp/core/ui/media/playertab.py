@@ -216,7 +216,6 @@ class PlayerTab(SettingsTab):
         """
         Save the settings
         """
-        player_string_changed = False
         settings = Settings()
         settings.beginGroup(self.settingsSection)
         settings.setValue(u'background color', self.bg_color)
@@ -225,16 +224,13 @@ class PlayerTab(SettingsTab):
         if self.usedPlayers != old_players:
             # clean old Media stuff
             set_media_players(self.usedPlayers, override_player)
-            player_string_changed = True
-        if player_string_changed:
-            self.service_manager.reset_supported_suffixes()
-            Registry().execute(u'mediaitem_media_rebuild')
-            Registry().execute(u'config_screen_changed')
+            self.settings_form.register_post_process(u'mediaitem_suffix_reset')
+            self.settings_form.register_post_process(u'mediaitem_media_rebuild')
+            self.settings_form.register_post_process(u'config_screen_changed')
 
     def post_set_up(self):
         """
-        Late setup for players as the MediaController has to be initialised
-        first.
+        Late setup for players as the MediaController has to be initialised first.
         """
         for key, player in self.media_players.iteritems():
             player = self.media_players[key]
@@ -257,7 +253,7 @@ class PlayerTab(SettingsTab):
         """
         Translations for players is dependent on  their setup as well
          """
-        for key in self.media_players:
+        for key in self.media_players and self.playerCheckBoxes:
             player = self.media_players[key]
             checkbox = self.playerCheckBoxes[player.name]
             checkbox.setPlayerName(player.name)

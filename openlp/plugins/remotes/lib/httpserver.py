@@ -162,8 +162,6 @@ class HttpServer(object):
         self.plugin = plugin
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'remotes', u'html')
         self.connections = []
-        self.current_item = None
-        self.current_slide = None
         self.start_tcp()
 
     def start_tcp(self):
@@ -177,22 +175,8 @@ class HttpServer(object):
         address = Settings().value(self.plugin.settingsSection + u'/ip address')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
-        Registry().register_function(u'slidecontroller_live_changed', self.slide_change)
-        Registry().register_function(u'slidecontroller_live_started', self.item_change)
         self.server.newConnection.connect(self.new_connection)
         log.debug(u'TCP listening on port %d' % port)
-
-    def slide_change(self, row):
-        """
-        Slide change listener. Store the item and tell the clients.
-        """
-        self.current_slide = row
-
-    def item_change(self, items):
-        """
-        Item (song) change listener. Store the slide and tell the clients.
-        """
-        self.current_item = items[0]
 
     def new_connection(self):
         """
@@ -252,8 +236,8 @@ class HttpConnection(object):
 
     def _get_service_items(self):
         service_items = []
-        if self.parent.current_item:
-            current_unique_identifier = self.parent.current_item.unique_identifier
+        if self.live_controller.service_item:
+            current_unique_identifier = self.live_controller.service_item.unique_identifier
         else:
             current_unique_identifier = None
         for item in self.service_manager.service_items:
@@ -388,8 +372,8 @@ class HttpConnection(object):
         """
         result = {
             u'service': self.service_manager.service_id,
-            u'slide': self.parent.current_slide or 0,
-            u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
+            u'slide': self.live_controller.selected_row or 0,
+            u'item': self.live_controller.service_item.unique_identifier if self.live_controller.service_item else u'',
             u'twelve': Settings().value(u'remotes/twelve hour'),
             u'blank': self.live_controller.blank_screen.isChecked(),
             u'theme': self.live_controller.theme_screen.isChecked(),
@@ -438,7 +422,7 @@ class HttpConnection(object):
         """
         event = u'slidecontroller_%s_%s' % (display_type, action)
         if action == u'text':
-            current_item = self.parent.current_item
+            current_item = self.live_controller.service_item
             data = []
             if current_item:
                 for index, frame in enumerate(current_item.get_frames()):
@@ -454,11 +438,11 @@ class HttpConnection(object):
                         item[u'tag'] = unicode(index + 1)
                         item[u'text'] = unicode(frame[u'title'])
                         item[u'html'] = unicode(frame[u'title'])
-                    item[u'selected'] = (self.parent.current_slide == index)
+                    item[u'selected'] = (self.live_controller.selected_row == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
             if current_item:
-                json_data[u'results'][u'item'] = self.parent.current_item.unique_identifier
+                json_data[u'results'][u'item'] = self.live_controller.service_item.unique_identifier
         else:
             if self.url_params and self.url_params.get(u'data'):
                 try:

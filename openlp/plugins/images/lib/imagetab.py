@@ -91,4 +91,4 @@ class ImageTab(SettingsTab):
         settings.setValue(u'background color', self.bg_color)
         settings.endGroup()
         if self.initial_color != self.bg_color:
-            Registry().execute(u'image_updated')
+            self.settings_form.register_post_process(u'image_updated')
