@@ -8,6 +8,7 @@ from openlp.core.lib import Registry
 from openlp.core.ui import filerenameform
 from PyQt4 import QtGui, QtTest
 
+
 class TestStartFileRenameForm(TestCase):
 
     def setUp(self):

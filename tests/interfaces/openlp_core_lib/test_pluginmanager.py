@@ -42,7 +42,7 @@ class TestPluginManager(TestCase):
 
     def find_plugins_test(self):
         """
-        Test the find_plugins() method to ensure it imports the correct plugins.
+        Test the find_plugins() method to ensure it imports the correct plugins
         """
         # GIVEN: A plugin manager
         plugin_manager = PluginManager()
