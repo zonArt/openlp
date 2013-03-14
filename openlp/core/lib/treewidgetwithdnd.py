@@ -64,9 +64,11 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
 
     def mouseMoveEvent(self, event):
         """
-        Drag and drop event does not care what data is selected
-        as the recipient will use events to request the data move
-        just tell it what plugin to call
+        Drag and drop event does not care what data is selected as the recipient will use events to request the data
+        move just tell it what plugin to call
+
+        ``event``
+            The event that occurred
         """
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
@@ -81,6 +83,12 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         drag.start(QtCore.Qt.CopyAction)
 
     def dragEnterEvent(self, event):
+        """
+        Receive drag enter event, check if it is a file or internal object and allow it if it is.
+
+        ``event``
+            The event that occurred
+        """
         if event.mimeData().hasUrls():
             event.accept()
         elif self.allow_internal_dnd:
@@ -89,6 +97,12 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
             event.ignore()
 
     def dragMoveEvent(self, event):
+        """
+        Receive drag move event, check if it is a file or internal object and allow it if it is.
+
+        ``event``
+            The event that occurred
+        """
         QtGui.QTreeWidget.dragMoveEvent(self, event)
         if event.mimeData().hasUrls():
             event.setDropAction(QtCore.Qt.CopyAction)

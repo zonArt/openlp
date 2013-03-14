@@ -315,8 +315,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Turn file from Drag and Drop into an array so the Validate code can run it.
 
-        ``files``
-            The list of files to be loaded
+        ``data``
+            A dictionary containing the list of files to be loaded and the target
         """
         new_files = []
         error_shown = False
@@ -335,6 +335,9 @@ class MediaManagerItem(QtGui.QWidget):
     def dnd_move_internal(self, target):
         """
         Handle internal moving of media manager items
+
+        ``target``
+            The target of the DnD action
         """
         pass
 
@@ -345,6 +348,9 @@ class MediaManagerItem(QtGui.QWidget):
 
         ``files``
             The files to be loaded.
+
+        ``target_group``
+            The QTreeWidgetItem of the group that will be the parent of the added files
         """
         names = []
         full_list = []

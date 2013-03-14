@@ -219,6 +219,9 @@ class Plugin(QtCore.QObject):
     def upgrade_settings(self, settings):
         """
         Upgrade the settings of this plugin.
+
+        ``settings``
+            The Settings object containing the old settings.
         """
         pass
 
