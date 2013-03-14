@@ -44,6 +44,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
+
 class BookNameForm(QDialog, Ui_BookNameDialog):
     """
     Class to manage a dialog which help the user to refer a book name a
@@ -57,11 +58,11 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.customSignals()
+        self.custom_signals()
         self.book_names = BibleStrings().BookNames
         self.book_id = False
 
-    def customSignals(self):
+    def custom_signals(self):
         """
         Set up the signals used in the booknameform.
         """

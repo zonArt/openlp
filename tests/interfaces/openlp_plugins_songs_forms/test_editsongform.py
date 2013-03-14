@@ -11,12 +11,16 @@ from openlp.plugins.songs.forms.editsongform import EditSongForm
 
 
 class TestEditSongForm(TestCase):
+    """
+    Test the EditSongForm class
+    """
+
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         Registry().register(u'theme_manager', MagicMock())

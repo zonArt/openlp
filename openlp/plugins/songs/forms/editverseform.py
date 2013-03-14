@@ -144,4 +144,3 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         if not text.startswith(u'---['):
             text = u'---[%s:1]---\n%s' % (VerseType.translated_names[VerseType.Verse], text)
         return text
-

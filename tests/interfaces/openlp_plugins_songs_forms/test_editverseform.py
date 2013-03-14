@@ -8,19 +8,18 @@ from PyQt4 import QtCore, QtGui, QtTest
 from openlp.core.lib import Registry
 from openlp.plugins.songs.forms.editverseform import EditVerseForm
 
-VERSE_TEXT = u"""The Lord told Noah to build Him an arky arky,
-Lord told Noah to build Him an arky arky,
-Build it out of gopher barky barky,
-Children of the Lord."""
-
 
 class TestEditVerseForm(TestCase):
+    """
+    Test the EditVerseForm class
+    """
+
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = EditVerseForm()
@@ -46,12 +45,14 @@ class TestEditVerseForm(TestCase):
         """
         Test that typing into the verse text edit box returns the correct text
         """
-        # GIVEN: An instance of the EditVerseForm
+        # GIVEN: An instance of the EditVerseForm and some text to type
+        text = 'Amazing Grace, how sweet the sound!'
+
         # WHEN: Some verse text is typed into the text edit
-        QtTest.QTest.keyClicks(self.form.verse_text_edit, VERSE_TEXT)
+        QtTest.QTest.keyClicks(self.form.verse_text_edit, text)
 
         # THEN: The verse text edit should have the verse text in it
-        self.assertEqual(VERSE_TEXT, self.form.verse_text_edit.toPlainText(),
+        self.assertEqual(text, self.form.verse_text_edit.toPlainText(),
                          u'The verse text edit should have the typed out verse')
 
     def insert_verse_test(self):
