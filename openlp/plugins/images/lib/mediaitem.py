@@ -152,6 +152,9 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.addAction(self.replaceAction)
 
     def addCustomContextActions(self):
+        """
+        Add custom actions to the context menu
+        """
         create_widget_action(self.listView, separator=True)
         create_widget_action(self.listView,
             text=UiStrings().AddGroup,
@@ -163,10 +166,16 @@ class ImageMediaItem(MediaManagerItem):
             triggers=self.onFileClick)
 
     def addStartHeaderBar(self):
+        """
+        Add custom buttons to the start of the toolbar
+        """
         self.addGroupAction = self.toolbar.add_toolbar_action(u'addGroupAction',
             icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
 
     def addEndHeaderBar(self):
+        """
+        Add custom buttons to the end of the toolbar
+        """
         self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction',
             icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
         self.resetAction = self.toolbar.add_toolbar_action(u'resetAction',
@@ -175,6 +184,9 @@ class ImageMediaItem(MediaManagerItem):
     def recursively_delete_group(self, image_group):
         """
         Recursively deletes a group and all groups and images in it
+
+        ``image_group``
+            The ImageGroups instance of the group that will be deleted
         """
         images = self.manager.get_all_objects(ImageFilenames, ImageFilenames.group_id == image_group.id)
         for image in images:
@@ -229,6 +241,12 @@ class ImageMediaItem(MediaManagerItem):
     def add_sub_groups(self, group_list, parent_group_id):
         """
         Recursively add subgroups to the given parent group in a QTreeWidget
+
+        ``group_list``
+            The List object that contains all QTreeWidgetItems
+
+        ``parent_group_id``
+            The ID of the group that will be added recursively
         """
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
         image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
@@ -248,6 +266,15 @@ class ImageMediaItem(MediaManagerItem):
     def fill_groups_combobox(self, combobox, parent_group_id=0, prefix=''):
         """
         Recursively add groups to the combobox in the 'Add group' dialog
+
+        ``combobox``
+            The QComboBox to add the options to
+
+        ``parent_group_id``
+            The ID of the group that will be added
+
+        ``prefix``
+            A string containing the prefix that will be added in front of the groupname for each level of the tree
         """
         if parent_group_id is 0:
             combobox.clear()
@@ -259,6 +286,15 @@ class ImageMediaItem(MediaManagerItem):
             self.fill_groups_combobox(combobox, image_group.id, prefix + '   ')
 
     def expand_group(self, group_id, root_item=None):
+        """
+        Expand groups in the widget recursively
+
+        ``group_id``
+            The ID of the group that will be expanded
+
+        ``root_item``
+            This option is only used for recursion purposes
+        """
         return_value = False
         if root_item is None:
             root_item = self.listView.invisibleRootItem()
@@ -275,6 +311,15 @@ class ImageMediaItem(MediaManagerItem):
     def loadFullList(self, images, initial_load=False, open_group=None):
         """
         Replace the list of images and groups in the interface.
+
+        ``images``
+            A List of ImageFilenames objects that will be used to reload the mediamanager list
+
+        ``initial_load``
+            When set to False, the busy cursor and progressbar will be shown while loading images
+
+        ``open_group``
+            ImageGroups object of the group that must be expanded after reloading the list in the interface
         """
         if not initial_load:
             self.application.set_busy_cursor()
@@ -316,11 +361,14 @@ class ImageMediaItem(MediaManagerItem):
 
     def validateAndLoad(self, files, target_group=None):
         """
-        Process a list for files either from the File Dialog or from Drag and
-        Drop. This method is overloaded from MediaManagerItem.
+        Process a list for files either from the File Dialog or from Drag and Drop.
+        This method is overloaded from MediaManagerItem.
 
         ``files``
-            The files to be loaded.
+            A List of strings containing the filenames of the files to be loaded
+
+        ``target_group``
+            The QTreeWidgetItem of the group that will be the parent of the added files
         """
         self.loadList(files, target_group)
         last_dir = os.path.split(unicode(files[0]))[0]
@@ -329,6 +377,15 @@ class ImageMediaItem(MediaManagerItem):
     def loadList(self, images, target_group=None, initial_load=False):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
+
+        ``images``
+            A List of strings containing the filenames of the files to be loaded
+
+        ``target_group``
+            The QTreeWidgetItem of the group that will be the parent of the added files
+
+        ``initial_load``
+            When set to False, the busy cursor and progressbar will be shown while loading images
         """
         self.application.set_busy_cursor()
         self.main_window.displayProgressBar(len(images))
@@ -392,8 +449,21 @@ class ImageMediaItem(MediaManagerItem):
         self.save_new_images_list(images, group_id=parent_group.id, reload_list=False)
         self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
             initial_load=initial_load, open_group=parent_group)
+        self.application.set_normal_cursor()
 
     def save_new_images_list(self, images_list, group_id=0, reload_list=True):
+        """
+        Convert a list of image filenames to ImageFilenames objects and save them in the database.
+
+        ``images_list``
+            A List of strings containing image filenames
+
+        ``group_id``
+            The ID of the group to save the images in
+
+        ``reload_list``
+            This boolean is set to True when the list in the interface should be reloaded after saving the new images
+        """
         for filename in images_list:
             if type(filename) is not str and type(filename) is not unicode:
                 continue
@@ -409,6 +479,9 @@ class ImageMediaItem(MediaManagerItem):
     def dnd_move_internal(self, target):
         """
         Handle drag-and-drop moving of images within the media manager
+
+        ``target``
+            This contains the QTreeWidget that is the target of the DnD action
         """
         items_to_move = self.listView.selectedItems()
         # Determine group to move images to

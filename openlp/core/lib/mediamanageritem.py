@@ -359,7 +359,7 @@ class MediaManagerItem(QtGui.QWidget):
                 duplicates_found = True
             else:
                 files_added = True
-                full_list.append(file)
+                full_list.append(filename)
         if full_list and files_added:
             if target_group is None:
                 self.listView.clear()
