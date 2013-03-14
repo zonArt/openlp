@@ -58,12 +58,12 @@ except OSError, e:
 
 if VLC_AVAILABLE:
     try:
-        version = vlc.libvlc_get_version()
+        VERSION = vlc.libvlc_get_version()
     except:
-        version = u'0.0.0'
-    if LooseVersion(version) < LooseVersion('1.1.0'):
+        VERSION = u'0.0.0'
+    if LooseVersion(VERSION) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
-        log.debug(u'VLC could not be loaded: %s' % version)
+        log.debug(u'VLC could not be loaded, because the vlc version is to old: %s' % VERSION)
 
 AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
 
