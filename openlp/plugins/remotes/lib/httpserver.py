@@ -144,8 +144,6 @@ class HttpServer(object):
         self.plugin = plugin
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'remotes', u'html')
         self.connections = []
-        self.current_item = None
-        self.current_slide = None
         self.conf = {'/files': {u'tools.staticdir.on': True,
                                 u'tools.staticdir.dir': self.html_dir}}
         self.start_server()
@@ -177,8 +175,6 @@ class HttpServer(object):
         # Turn off the flood of access messages cause by poll
         cherrypy.log.access_log.propagate = False
         cherrypy.engine.start()
-        Registry().register_function(u'slidecontroller_live_changed', self.slide_change)
-        Registry().register_function(u'slidecontroller_live_started', self.item_change)
         log.debug(u'TCP listening on port %d' % port)
 
     def close(self):
@@ -481,8 +477,7 @@ class HttpConnection(object):
         if action == u'list':
             cherrypy.response.headers['Content-Type'] = u'application/json'
             return json.dumps({u'results': {u'items': self._get_service_items()}})
-        else:
-            event += u'_item'
+        event += u'_item'
         if self.url_params and self.url_params.get(u'data'):
             try:
                 data = json.loads(self.url_params[u'data'][0])
