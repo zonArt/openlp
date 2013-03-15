@@ -606,11 +606,11 @@ class SlideController(DisplayController):
         self.__updatePreviewSelection(slide_no)
         self.slideSelected()
 
-    def receive_spin_delay(self, value):
+    def receive_spin_delay(self):
         """
         Adjusts the value of the ``delay_spin_box`` to the given one.
         """
-        self.delay_spin_box.setValue(int(value))
+        self.delay_spin_box.setValue(Settings().value(u'general/loop delay'))
 
     def update_slide_limits(self):
         """

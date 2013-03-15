@@ -1231,7 +1231,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Settings().setValue(self.main_window.serviceManagerSettingsSection + u'/service theme', self.service_theme)
         self.regenerate_service_Items(True)
 
-    def theme_change(self, global_theme):
+    def theme_change(self):
         """
         The theme may have changed in the settings dialog so make
         sure the theme combo box is in the correct state.

@@ -149,7 +149,6 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'theme level', self.theme_level)
         settings.setValue(u'global theme', self.global_theme)
         settings.endGroup()
-        self.renderer.set_global_theme(self.global_theme)
         self.renderer.set_theme_level(self.theme_level)
         self.settings_form.register_post_process(u'theme_update_global')
 
@@ -182,7 +181,7 @@ class ThemesTab(SettingsTab):
         Set the global default theme
         """
         self.global_theme = self.DefaultComboBox.currentText()
-        self.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_global_theme()
         self.__previewGlobalTheme()
 
     def update_theme_list(self, theme_list):
@@ -199,7 +198,7 @@ class ThemesTab(SettingsTab):
         self.DefaultComboBox.clear()
         self.DefaultComboBox.addItems(theme_list)
         find_and_set_in_combo_box(self.DefaultComboBox, self.global_theme)
-        self.renderer.set_global_theme(self.global_theme)
+        self.renderer.set_global_theme()
         self.renderer.set_theme_level(self.theme_level)
         if self.global_theme is not u'':
             self.__previewGlobalTheme()
