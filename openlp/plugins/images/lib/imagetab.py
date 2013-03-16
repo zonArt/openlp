@@ -41,40 +41,40 @@ class ImageTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'ImagesTab')
         SettingsTab.setupUi(self)
-        self.bgColorGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.bgColorGroupBox.setObjectName(u'FontGroupBox')
-        self.formLayout = QtGui.QFormLayout(self.bgColorGroupBox)
-        self.formLayout.setObjectName(u'FormLayout')
-        self.colorLayout = QtGui.QHBoxLayout()
-        self.backgroundColorLabel = QtGui.QLabel(self.bgColorGroupBox)
-        self.backgroundColorLabel.setObjectName(u'BackgroundColorLabel')
-        self.colorLayout.addWidget(self.backgroundColorLabel)
-        self.backgroundColorButton = QtGui.QPushButton(self.bgColorGroupBox)
-        self.backgroundColorButton.setObjectName(u'BackgroundColorButton')
-        self.colorLayout.addWidget(self.backgroundColorButton)
-        self.formLayout.addRow(self.colorLayout)
-        self.information_label = QtGui.QLabel(self.bgColorGroupBox)
+        self.background_color_group_box = QtGui.QGroupBox(self.left_column)
+        self.background_color_group_box.setObjectName(u'FontGroupBox')
+        self.form_layout = QtGui.QForm_layout(self.background_color_group_box)
+        self.form_layout.setObjectName(u'Form_layout')
+        self.color_layout = QtGui.QHBox_layout()
+        self.background_color_label = QtGui.QLabel(self.background_color_group_box)
+        self.background_color_label.setObjectName(u'BackgroundColor_label')
+        self.color_layout.addWidget(self.background_color_label)
+        self.background_color_button = QtGui.QPushButton(self.background_color_group_box)
+        self.background_color_button.setObjectName(u'BackgroundColor_button')
+        self.color_layout.addWidget(self.background_color_button)
+        self.form_layout.addRow(self.color_layout)
+        self.information_label = QtGui.QLabel(self.background_color_group_box)
         self.information_label.setObjectName(u'information_label')
         self.information_label.setWordWrap(True)
-        self.formLayout.addRow(self.information_label)
-        self.leftLayout.addWidget(self.bgColorGroupBox)
-        self.leftLayout.addStretch()
-        self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
-        self.rightLayout.addStretch()
+        self.form_layout.addRow(self.information_label)
+        self.left_layout.addWidget(self.background_color_group_box)
+        self.left_layout.addStretch()
+        self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.right_layout.addStretch()
         # Signals and slots
-        self.backgroundColorButton.clicked.connect(self.onbackgroundColorButtonClicked)
+        self.background_color_button.clicked.connect(self.on_background_color_button_clicked)
 
     def retranslateUi(self):
-        self.bgColorGroupBox.setTitle(UiStrings().BackgroundColor)
-        self.backgroundColorLabel.setText(UiStrings().DefaultColor)
+        self.background_color_group_box.setTitle(UiStrings().BackgroundColor)
+        self.background_color_label.setText(UiStrings().DefaultColor)
         self.information_label.setText(
             translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 
-    def onbackgroundColorButtonClicked(self):
+    def on_background_color_button_licked(self):
         new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.bg_color), self)
         if new_color.isValid():
             self.bg_color = new_color.name()
-            self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
+            self.background_color_button.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def load(self):
         settings = Settings()
@@ -82,7 +82,7 @@ class ImageTab(SettingsTab):
         self.bg_color = settings.value(u'background color')
         self.initial_color = self.bg_color
         settings.endGroup()
-        self.backgroundColorButton.setStyleSheet(u'background-color: %s' % self.bg_color)
+        self.background_color_button.setStyleSheet(u'background-color: %s' % self.bg_color)
 
     def save(self):
         settings = Settings()

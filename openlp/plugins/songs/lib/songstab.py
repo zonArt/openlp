@@ -42,67 +42,67 @@ class SongsTab(SettingsTab):
         """
         self.setObjectName(u'SongsTab')
         SettingsTab.setupUi(self)
-        self.modeGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.modeGroupBox.setObjectName(u'modeGroupBox')
-        self.modeLayout = QtGui.QVBoxLayout(self.modeGroupBox)
-        self.modeLayout.setObjectName(u'modeLayout')
-        self.searchAsTypeCheckBox = QtGui.QCheckBox(self.modeGroupBox)
-        self.searchAsTypeCheckBox.setObjectName(u'SearchAsTypeCheckBox')
-        self.modeLayout.addWidget(self.searchAsTypeCheckBox)
-        self.toolBarActiveCheckBox = QtGui.QCheckBox(self.modeGroupBox)
-        self.toolBarActiveCheckBox.setObjectName(u'toolBarActiveCheckBox')
-        self.modeLayout.addWidget(self.toolBarActiveCheckBox)
-        self.updateOnEditCheckBox = QtGui.QCheckBox(self.modeGroupBox)
-        self.updateOnEditCheckBox.setObjectName(u'updateOnEditCheckBox')
-        self.modeLayout.addWidget(self.updateOnEditCheckBox)
-        self.addFromServiceCheckBox = QtGui.QCheckBox(self.modeGroupBox)
-        self.addFromServiceCheckBox.setObjectName(u'addFromServiceCheckBox')
-        self.modeLayout.addWidget(self.addFromServiceCheckBox)
-        self.leftLayout.addWidget(self.modeGroupBox)
-        self.leftLayout.addStretch()
-        self.rightLayout.addStretch()
-        self.searchAsTypeCheckBox.stateChanged.connect(self.onSearchAsTypeCheckBoxChanged)
-        self.toolBarActiveCheckBox.stateChanged.connect(self.onToolBarActiveCheckBoxChanged)
-        self.updateOnEditCheckBox.stateChanged.connect(self.onUpdateOnEditCheckBoxChanged)
-        self.addFromServiceCheckBox.stateChanged.connect(self.onAddFromServiceCheckBoxChanged)
+        self.mode_group_box = QtGui.QGroupBox(self.left_column)
+        self.mode_group_box.setObjectName(u'mode_group_box')
+        self.mode_layout = QtGui.QVBoxLayout(self.mode_group_box)
+        self.mode_layout.setObjectName(u'mode_layout')
+        self.search_as_type_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.search_as_type_check_box.setObjectName(u'SearchAsType_check_box')
+        self.mode_layout.addWidget(self.search_as_type_check_box)
+        self.tool_bar_active_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.tool_bar_active_check_box.setObjectName(u'tool_bar_active_check_box')
+        self.mode_layout.addWidget(self.tool_bar_active_check_box)
+        self.update_on_edit_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.update_on_edit_check_box.setObjectName(u'update_on_edit_check_box')
+        self.mode_layout.addWidget(self.update_on_edit_check_box)
+        self.add_from_service_check_box = QtGui.QCheckBox(self.mode_group_box)
+        self.add_from_service_check_box.setObjectName(u'add_from_service_check_box')
+        self.mode_layout.addWidget(self.add_from_service_check_box)
+        self.left_layout.addWidget(self.mode_group_box)
+        self.left_layout.addStretch()
+        self.right_layout.addStretch()
+        self.search_as_type_check_box.stateChanged.connect(self.on_search_as_type_check_box_changed)
+        self.tool_bar_active_check_box.stateChanged.connect(self.on_tool_bar_active_check_box_changed)
+        self.update_on_edit_check_box.stateChanged.connect(self.on_update_on_edit_check_box_changed)
+        self.add_from_service_check_box.stateChanged.connect(self.on_add_from_service_check_box_changed)
 
     def retranslateUi(self):
-        self.modeGroupBox.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
-        self.searchAsTypeCheckBox.setText(translate('SongsPlugin.SongsTab', 'Enable search as you type'))
-        self.toolBarActiveCheckBox.setText(translate('SongsPlugin.SongsTab',
+        self.mode_group_box.setTitle(translate('SongsPlugin.SongsTab', 'Songs Mode'))
+        self.search_as_type_check_box.setText(translate('SongsPlugin.SongsTab', 'Enable search as you type'))
+        self.tool_bar_active_check_box.setText(translate('SongsPlugin.SongsTab',
             'Display verses on live tool bar'))
-        self.updateOnEditCheckBox.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
-        self.addFromServiceCheckBox.setText(translate('SongsPlugin.SongsTab',
+        self.update_on_edit_check_box.setText(translate('SongsPlugin.SongsTab', 'Update service from song edit'))
+        self.add_from_service_check_box.setText(translate('SongsPlugin.SongsTab',
             'Import missing songs from service files'))
 
-    def onSearchAsTypeCheckBoxChanged(self, check_state):
+    def on_search_as_type_check_box_changed(self, check_state):
         self.song_search = (check_state == QtCore.Qt.Checked)
 
-    def onToolBarActiveCheckBoxChanged(self, check_state):
+    def on_tool_bar_active_check_box_changed(self, check_state):
         self.tool_bar = (check_state == QtCore.Qt.Checked)
 
-    def onUpdateOnEditCheckBoxChanged(self, check_state):
+    def on_update_on_edit_check_box_changed(self, check_state):
         self.update_edit = (check_state == QtCore.Qt.Checked)
 
-    def onAddFromServiceCheckBoxChanged(self, check_state):
+    def on_add_from_service_check_box_changed(self, check_state):
         self.update_load = (check_state == QtCore.Qt.Checked)
 
     def load(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.song_search = settings.value(u'search as type')
         self.tool_bar = settings.value(u'display songbar')
         self.update_edit = settings.value(u'update service on edit')
         self.update_load = settings.value(u'add song from service')
-        self.searchAsTypeCheckBox.setChecked(self.song_search)
-        self.toolBarActiveCheckBox.setChecked(self.tool_bar)
-        self.updateOnEditCheckBox.setChecked(self.update_edit)
-        self.addFromServiceCheckBox.setChecked(self.update_load)
+        self.search_as_type_check_box.setChecked(self.song_search)
+        self.tool_bar_active_check_box.setChecked(self.tool_bar)
+        self.update_on_edit_check_box.setChecked(self.update_edit)
+        self.add_from_service_check_box.setChecked(self.update_load)
         settings.endGroup()
 
     def save(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'search as type', self.song_search)
         settings.setValue(u'display songbar', self.tool_bar)
         settings.setValue(u'update service on edit', self.update_edit)

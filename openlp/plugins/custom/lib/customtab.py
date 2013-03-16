@@ -45,7 +45,7 @@ class CustomTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'CustomTab')
         SettingsTab.setupUi(self)
-        self.custom_mode_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.custom_mode_group_box = QtGui.QGroupBox(self.left_column)
         self.custom_mode_group_box.setObjectName(u'custom_mode_group_box')
         self.custom_mode_layout = QtGui.QFormLayout(self.custom_mode_group_box)
         self.custom_mode_layout.setObjectName(u'custom_mode_layout')
@@ -55,9 +55,9 @@ class CustomTab(SettingsTab):
         self.add_from_service_checkbox = QtGui.QCheckBox(self.custom_mode_group_box)
         self.add_from_service_checkbox.setObjectName(u'add_from_service_checkbox')
         self.custom_mode_layout.addRow(self.add_from_service_checkbox)
-        self.leftLayout.addWidget(self.custom_mode_group_box)
-        self.leftLayout.addStretch()
-        self.rightLayout.addStretch()
+        self.left_layout.addWidget(self.custom_mode_group_box)
+        self.left_layout.addStretch()
+        self.right_layout.addStretch()
         self.display_footer_check_box.stateChanged.connect(self.on_display_footer_check_box_changed)
         self.add_from_service_checkbox.stateChanged.connect(self.on_add_from_service_check_box_changed)
 
