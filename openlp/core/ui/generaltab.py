@@ -47,7 +47,7 @@ class GeneralTab(SettingsTab):
         Initialise the general settings tab
         """
         self.screens = ScreenList()
-        self.iconPath = u':/icon/openlp-logo-16x16.png'
+        self.icon_path = u':/icon/openlp-logo-16x16.png'
         general_translated = translate('OpenLP.GeneralTab', 'General')
         SettingsTab.__init__(self, parent, u'General', general_translated)
 
@@ -57,7 +57,7 @@ class GeneralTab(SettingsTab):
         """
         self.setObjectName(u'GeneralTab')
         SettingsTab.setupUi(self)
-        self.tabLayout.setStretch(1, 1)
+        self.tab_layout.setStretch(1, 1)
         # Monitors
         self.monitor_group_box = QtGui.QGroupBox(self.left_column)
         self.monitor_group_box.setObjectName(u'monitor_group_box')
@@ -226,7 +226,7 @@ class GeneralTab(SettingsTab):
         self.timeout_label.setText(translate('OpenLP.GeneralTab', 'Timed slide interval:'))
         self.timeout_spin_box.setSuffix(translate('OpenLP.GeneralTab', ' sec'))
         self.ccli_group_box.setTitle(translate('OpenLP.GeneralTab', 'CCLI Details'))
-        self.number_label.setText(UiStrings().CCLInumber_label)
+        self.number_label.setText(UiStrings().CCLINumberLabel)
         self.username_label.setText(translate('OpenLP.GeneralTab', 'SongSelect username:'))
         self.password_label.setText(translate('OpenLP.GeneralTab', 'SongSelect password:'))
         # Moved from display tab
@@ -244,7 +244,7 @@ class GeneralTab(SettingsTab):
         Load the settings to populate the form
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.monitor_combo_box.clear()
         self.monitor_combo_box.addItems(self.screens.get_screen_list())
         monitorNumber = settings.value(u'monitor')
@@ -276,14 +276,13 @@ class GeneralTab(SettingsTab):
         self.custom_height_value_edit.setEnabled(self.override_radio_button.isChecked())
         self.custom_width_value_edit.setEnabled(self.override_radio_button.isChecked())
         self.display_changed = False
-        settings.beginGroup(self.settingsSection)
 
     def save(self):
         """
         Save the settings from the form
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'monitor', self.monitor_combo_box.currentIndex())
         settings.setValue(u'display on monitor', self.display_on_monitor_check.isChecked())
         settings.setValue(u'blank warning', self.warning_check_box.isChecked())

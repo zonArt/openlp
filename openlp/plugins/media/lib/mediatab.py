@@ -32,7 +32,7 @@ from PyQt4 import QtGui
 from openlp.core.lib import Settings, SettingsTab, UiStrings, translate
 
 
-class MediaQ_check_box(QtGui.Q_check_box):
+class MediaQ_check_box(QtGui.QCheckBox):
     """
     MediaQ_check_box adds an extra property, playerName to the Q_check_box class.
     """
@@ -51,7 +51,7 @@ class MediaTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
-        self.advanced_group_box = QtGui.QGroupBbox(self.leftColumn)
+        self.advanced_group_box = QtGui.QGroupBox(self.left_column)
         self.advanced_group_box.setObjectName(u'advanced_group_box')
         self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
         self.advanced_layout.setObjectName(u'advanced_layout')
@@ -71,11 +71,11 @@ class MediaTab(SettingsTab):
         self.auto_start_check_box.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
 
     def load(self):
-        self.override_player_check_box.setChecked(Settings().value(self.settingsSection + u'/override player'))
-        self.auto_start_check_box.setChecked(Settings().value(self.settingsSection + u'/media auto start'))
+        self.override_player_check_box.setChecked(Settings().value(self.settings_section + u'/override player'))
+        self.auto_start_check_box.setChecked(Settings().value(self.settings_section + u'/media auto start'))
 
     def save(self):
-        setting_key = self.settingsSection + u'/override player'
+        setting_key = self.settings_section + u'/override player'
         if Settings().value(setting_key) != self.override_player_check_box.checkState():
             Settings().setValue(setting_key, self.override_player_check_box.checkState())
             self.settings_form.register_post_process(u'mediaitem_suffix_reset')

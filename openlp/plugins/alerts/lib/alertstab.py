@@ -43,7 +43,7 @@ class AlertsTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
         SettingsTab.setupUi(self)
-        self.font_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.font_group_box = QtGui.QGroupBox(self.left_column)
         self.font_group_box.setObjectName(u'font_group_box')
         self.font_layout = QtGui.QFormLayout(self.font_group_box)
         self.font_layout.setObjectName(u'font_layout')
@@ -84,7 +84,7 @@ class AlertsTab(SettingsTab):
         self.font_layout.addRow(self.vertical_label, self.vertical_combo_box)
         self.left_layout.addWidget(self.font_group_box)
         self.left_layout.addStretch()
-        self.preview_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.preview_group_box = QtGui.QGroupBox(self.right_column)
         self.preview_group_box.setObjectName(u'preview_group_box')
         self.preview_layout = QtGui.QVBoxLayout(self.preview_group_box)
         self.preview_layout.setObjectName(u'preview_layout')
@@ -95,10 +95,10 @@ class AlertsTab(SettingsTab):
         self.right_layout.addStretch()
         # Signals and slots
         self.background_color_button.clicked.connect(self.on_background_color_button_clicked)
-        self.font_color_button.clicked.connect(self.onFontColor_button_clicked)
-        self.font_combo_box.activated.connect(self.onFontcombo_box_clicked)
-        self.timeout_spin_box.valueChanged.connect(self.onTimeout_spin_box_changed)
-        self.font_size_spin_box.valueChanged.connect(self.onfont_size_spin_box_changed)
+        self.font_color_button.clicked.connect(self.on_font_color_button_clicked)
+        self.font_combo_box.activated.connect(self.on_font_combo_box_clicked)
+        self.timeout_spin_box.valueChanged.connect(self.on_timeout_spin_box_changed)
+        self.font_size_spin_box.valueChanged.connect(self.on_font_size_spin_box_changed)
 
     def retranslateUi(self):
         self.font_group_box.setTitle(translate('AlertsPlugin.AlertsTab', 'Font'))
@@ -106,7 +106,7 @@ class AlertsTab(SettingsTab):
         self.font_color_label.setText(translate('AlertsPlugin.AlertsTab', 'Font color:'))
         self.background_color_label.setText(translate('AlertsPlugin.AlertsTab', 'Background color:'))
         self.font_size_label.setText(translate('AlertsPlugin.AlertsTab', 'Font size:'))
-        self.font_size_spin_box.setSuffix(UiStrings().font_sizePtUnit)
+        self.font_size_spin_box.setSuffix(UiStrings().FontSizePtUnit)
         self.timeout_label.setText(translate('AlertsPlugin.AlertsTab', 'Alert timeout:'))
         self.timeout_spin_box.setSuffix(UiStrings().Seconds)
         self.preview_group_box.setTitle(UiStrings().Preview)
@@ -139,7 +139,7 @@ class AlertsTab(SettingsTab):
 
     def load(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.timeout = settings.value(u'timeout')
         self.font_color = settings.value(u'font color')
         self.font_size = settings.value(u'font size')
@@ -160,7 +160,7 @@ class AlertsTab(SettingsTab):
 
     def save(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         # Check value has changed as no event handles this field
         if settings.value(u'location') != self.vertical_combo_box.currentIndex():
             self.changed = True

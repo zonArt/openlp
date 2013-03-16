@@ -44,9 +44,9 @@ class ThemesTab(SettingsTab):
         """
         Constructor
         """
+        self.icon_path = u':/themes/theme_new.png'
         theme_translated = translate('OpenLP.ThemesTab', 'Themes')
         SettingsTab._init_(self, parent, u'Themes', theme_translated)
-        self.icon_path = u':/themes/theme_new.png'
 
     def setupUi(self):
         """

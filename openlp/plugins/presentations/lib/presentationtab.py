@@ -63,7 +63,7 @@ class PresentationTab(SettingsTab):
             self.presenter_check_boxes[controller.name] = checkbox
             self.controllers_layout.addWidget(checkbox)
         self.left_layout.addWidget(self.controllers_group_box)
-        self.advanced_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.advanced_group_box = QtGui.QGroupBox(self.left_column)
         self.advanced_group_box.setObjectName(u'advanced_group_box')
         self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
         self.advanced_layout.setObjectName(u'advanced_layout')

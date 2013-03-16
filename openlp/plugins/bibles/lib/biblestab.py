@@ -123,14 +123,14 @@ class BiblesTab(SettingsTab):
         self.language_selection_group_box = QtGui.QGroupBox(self.right_column)
         self.language_selection_group_box.setObjectName(u'language_selection_group_box')
         self.language_selection_layout = QtGui.QVBoxLayout(self.language_selection_group_box)
-        self.language_selection_label = QtGui.QLabel(self.language_selectiongroup_box)
+        self.language_selection_label = QtGui.QLabel(self.language_selection_group_box)
         self.language_selection_label.setObjectName(u'language_selection_label')
         self.language_selection_combo_box = QtGui.QComboBox(self.language_selection_group_box)
         self.language_selection_combo_box.setObjectName(u'language_selection_combo_box')
         self.language_selection_combo_box.addItems([u'', u'', u''])
         self.language_selection_layout.addWidget(self.language_selection_label)
         self.language_selection_layout.addWidget(self.language_selection_combo_box)
-        self.right_layout.addWidget(self.language_selectiongroup_box)
+        self.right_layout.addWidget(self.language_selection_group_box)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         # Signals and slots
@@ -152,12 +152,12 @@ class BiblesTab(SettingsTab):
         self.end_separator_line_edit.textEdited.connect(self.on_end_separator_line_edit_edited)
         self.end_separator_line_edit.editingFinished.connect(self.on_end_separator_line_edit_finished)
         Registry().register_function(u'theme_update_list', self.update_theme_list)
-        self.language_selectioncombo_box.activated.connect(self.on_language_selection_combo_box_changed)
+        self.language_selection_combo_box.activated.connect(self.on_language_selection_combo_box_changed)
 
     def retranslateUi(self):
         self.verse_display_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Verse Display'))
         self.new_chapters_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Only show new chapter numbers'))
-        self.layout_style_label.setText(UiStrings()._layout_style_)
+        self.layout_style_label.setText(UiStrings().LayoutStyle)
         self.display_style_label.setText(UiStrings().DisplayStyle)
         self.bible_theme_label.setText(translate('BiblesPlugin.BiblesTab', 'Bible theme:'))
         self.layout_style_combo_box.setItemText(LayoutStyle.VersePerSlide, UiStrings().VersePerSlide)
@@ -186,14 +186,14 @@ class BiblesTab(SettingsTab):
         self.range_separator_line_edit.setToolTip(tip_text)
         self.list_separator_line_edit.setToolTip(tip_text)
         self.end_separator_line_edit.setToolTip(tip_text)
-        self.language_selectiongroup_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Default Bible Language'))
+        self.language_selection_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Default Bible Language'))
         self.language_selection_label.setText(translate('BiblesPlugin.BiblesTab',
             'Book name language in search field,\nsearch results and on display:'))
-        self.language_selectioncombo_box.setItemText(LanguageSelection.Bible,
+        self.language_selection_combo_box.setItemText(LanguageSelection.Bible,
             translate('BiblesPlugin.BiblesTab', 'Bible Language'))
-        self.language_selectioncombo_box.setItemText(LanguageSelection.Application,
+        self.language_selection_combo_box.setItemText(LanguageSelection.Application,
             translate('BiblesPlugin.BiblesTab', 'Application Language'))
-        self.language_selectioncombo_box.setItemText(LanguageSelection.English,
+        self.language_selection_combo_box.setItemText(LanguageSelection.English,
             translate('BiblesPlugin.BiblesTab', 'English'))
 
     def on_bible_theme_combo_box_changed(self):
@@ -298,7 +298,7 @@ class BiblesTab(SettingsTab):
 
     def load(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.show_new_chapters = settings.value(u'display new chapter')
         self.display_style = settings.value(u'display brackets')
         self.layout_style = settings.value(u'verse layout style')
@@ -345,7 +345,7 @@ class BiblesTab(SettingsTab):
             self.end_separator_line_edit.setPalette(self.getGreyTextPalette(False))
             self.end_separator_check_box.setChecked(True)
         self.language_selection = settings.value(u'book name language')
-        self.language_selectioncombo_box.setCurrentIndex(self.language_selection)
+        self.language_selection_combo_box.setCurrentIndex(self.language_selection)
         settings.endGroup()
 
     def save(self):

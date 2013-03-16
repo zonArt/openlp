@@ -36,7 +36,7 @@ from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
 
-class MediaQ_check_box(QtGui.Q_check_box):
+class MediaQ_check_box(QtGui.QCheckBox):
     """
     MediaQ_check_box adds an extra property, playerName to the Q_check_box class.
     """

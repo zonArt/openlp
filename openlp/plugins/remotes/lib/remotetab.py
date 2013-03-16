@@ -135,20 +135,20 @@ class RemoteTab(SettingsTab):
         self.stage_url.setText(u'<a href="%s">%s</a>' % (url, url))
 
     def load(self):
-        self.port_spin_box.setValue(Settings().value(self.settingsSection + u'/port'))
-        self.address_edit.setText(Settings().value(self.settingsSection + u'/ip address'))
-        self.twelve_hour = Settings().value(self.settingsSection + u'/twelve hour')
+        self.port_spin_box.setValue(Settings().value(self.settings_section + u'/port'))
+        self.address_edit.setText(Settings().value(self.settings_section + u'/ip address'))
+        self.twelve_hour = Settings().value(self.settings_section + u'/twelve hour')
         self.twelve_hour_check_box.setChecked(self.twelve_hour)
         self.set_urls()
 
     def save(self):
         changed = False
-        if Settings().value(self.settingsSection + u'/ip address') != self.address_edit.text() or \
-                Settings().value(self.settingsSection + u'/port') != self.port_spin_box.value():
+        if Settings().value(self.settings_section + u'/ip address') != self.address_edit.text() or \
+                Settings().value(self.settings_section + u'/port') != self.port_spin_box.value():
             changed = True
-        Settings().setValue(self.settingsSection + u'/port', self.port_spin_box.value())
-        Settings().setValue(self.settingsSection + u'/ip address', self.address_edit.text())
-        Settings().setValue(self.settingsSection + u'/twelve hour', self.twelve_hour)
+        Settings().setValue(self.settings_section + u'/port', self.port_spin_box.value())
+        Settings().setValue(self.settings_section + u'/ip address', self.address_edit.text())
+        Settings().setValue(self.settings_section + u'/twelve hour', self.twelve_hour)
         if changed:
             Registry().register_function(u'remotes_config_updated')
 

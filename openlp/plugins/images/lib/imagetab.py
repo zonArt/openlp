@@ -27,9 +27,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, Registry, Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab, Settings, UiStrings, translate
+
 
 class ImageTab(SettingsTab):
     """
@@ -42,15 +43,15 @@ class ImageTab(SettingsTab):
         self.setObjectName(u'ImagesTab')
         SettingsTab.setupUi(self)
         self.background_color_group_box = QtGui.QGroupBox(self.left_column)
-        self.background_color_group_box.setObjectName(u'FontGroupBox')
-        self.form_layout = QtGui.QForm_layout(self.background_color_group_box)
-        self.form_layout.setObjectName(u'Form_layout')
-        self.color_layout = QtGui.QHBox_layout()
+        self.background_color_group_box.setObjectName(u'background_color_group_box')
+        self.form_layout = QtGui.QFormLayout(self.background_color_group_box)
+        self.form_layout.setObjectName(u'form_layout')
+        self.color_layout = QtGui.QHBoxLayout()
         self.background_color_label = QtGui.QLabel(self.background_color_group_box)
-        self.background_color_label.setObjectName(u'BackgroundColor_label')
+        self.background_color_label.setObjectName(u'background_color_label')
         self.color_layout.addWidget(self.background_color_label)
         self.background_color_button = QtGui.QPushButton(self.background_color_group_box)
-        self.background_color_button.setObjectName(u'BackgroundColor_button')
+        self.background_color_button.setObjectName(u'background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.form_layout.addRow(self.color_layout)
         self.information_label = QtGui.QLabel(self.background_color_group_box)
@@ -70,24 +71,24 @@ class ImageTab(SettingsTab):
         self.information_label.setText(
             translate('ImagesPlugin.ImageTab', 'Visible background for images with aspect ratio different to screen.'))
 
-    def on_background_color_button_licked(self):
-        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.bg_color), self)
+    def on_background_color_button_clicked(self):
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.background_color), self)
         if new_color.isValid():
-            self.bg_color = new_color.name()
-            self.background_color_button.setStyleSheet(u'background-color: %s' % self.bg_color)
+            self.background_color = new_color.name()
+            self.background_color_button.setStyleSheet(u'background-color: %s' % self.background_color)
 
     def load(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
-        self.bg_color = settings.value(u'background color')
-        self.initial_color = self.bg_color
+        settings.beginGroup(self.settings_section)
+        self.background_color = settings.value(u'background color')
+        self.initial_color = self.background_color
         settings.endGroup()
-        self.background_color_button.setStyleSheet(u'background-color: %s' % self.bg_color)
+        self.background_color_button.setStyleSheet(u'background-color: %s' % self.background_color)
 
     def save(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
-        settings.setValue(u'background color', self.bg_color)
+        settings.beginGroup(self.setting_sSection)
+        settings.setValue(u'background color', self.background_color)
         settings.endGroup()
-        if self.initial_color != self.bg_color:
+        if self.initial_color != self.background_color:
             self.settings_form.register_post_process(u'image_updated')

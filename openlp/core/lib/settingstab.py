@@ -39,8 +39,7 @@ from openlp.core.lib import Registry
 
 class SettingsTab(QtGui.QWidget):
     """
-    SettingsTab is a helper widget for plugins to define Tabs for the settings
-    dialog.
+    SettingsTab is a helper widget for plugins to define Tabs for the settings dialog.
     """
     def __init__(self, parent, title, visible_title=None, icon_path=None):
         """
