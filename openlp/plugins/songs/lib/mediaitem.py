@@ -366,7 +366,7 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             self.application.set_busy_cursor()
-            self.main_window.displayProgressBar(len(items))
+            self.main_window.display_progress_bar(len(items))
             for item in items:
                 item_id = item.data(QtCore.Qt.UserRole)
                 media_files = self.plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == item_id)
@@ -383,7 +383,7 @@ class SongMediaItem(MediaManagerItem):
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
                 self.main_window.increment_progress_bar()
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
             self.application.set_normal_cursor()
             self.onSearchTextButtonClicked()
 

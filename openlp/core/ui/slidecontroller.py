@@ -238,7 +238,7 @@ class SlideController(DisplayController):
             self.play_slides_once = create_action(self, u'playSlidesOnce', text=UiStrings().PlaySlidesToEnd,
                 icon=u':/media/media_time.png', checked=False, can_shortcuts=True,
                 category=self.category, triggers=self.onPlaySlidesOnce)
-            if Settings().value(self.main_window.advancedSettingsSection + u'/slide limits') == SlideLimits.Wrap:
+            if Settings().value(self.main_window.advanced_settings_section + u'/slide limits') == SlideLimits.Wrap:
                 self.play_slides_menu.setDefaultAction(self.play_slides_loop)
             else:
                 self.play_slides_menu.setDefaultAction(self.play_slides_once)
@@ -615,7 +615,7 @@ class SlideController(DisplayController):
         """
         Updates the Slide Limits variable from the settings.
         """
-        self.slide_limits = Settings().value(self.main_window.advancedSettingsSection + u'/slide limits')
+        self.slide_limits = Settings().value(self.main_window.advanced_settings_section + u'/slide limits')
 
     def enableToolBar(self, item):
         """
@@ -874,7 +874,7 @@ class SlideController(DisplayController):
         Allow the main display to blank the main display at startup time
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.is_live)
-        display_type = Settings().value(self.main_window.generalSettingsSection + u'/screen blank')
+        display_type = Settings().value(self.main_window.general_settings_section + u'/screen blank')
         if self.screens.which_screen(self.window()) != self.screens.which_screen(self.display):
             # Order done to handle initial conversion
             if display_type == u'themed':
