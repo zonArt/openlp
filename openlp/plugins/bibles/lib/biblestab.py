@@ -350,7 +350,7 @@ class BiblesTab(SettingsTab):
 
     def save(self):
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'display new chapter', self.show_new_chapters)
         settings.setValue(u'display brackets', self.display_style)
         settings.setValue(u'verse layout style', self.layout_style)

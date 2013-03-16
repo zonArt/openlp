@@ -40,13 +40,13 @@ class ThemesTab(SettingsTab):
     """
     ThemesTab is the theme settings tab in the settings dialog.
     """
-    def _init_(self, parent):
+    def __init__(self, parent):
         """
         Constructor
         """
         self.icon_path = u':/themes/theme_new.png'
         theme_translated = translate('OpenLP.ThemesTab', 'Themes')
-        SettingsTab._init_(self, parent, u'Themes', theme_translated)
+        SettingsTab.__init__(self, parent, u'Themes', theme_translated)
 
     def setupUi(self):
         """
@@ -71,20 +71,20 @@ class ThemesTab(SettingsTab):
         self.level_group_box = QtGui.QGroupBox(self.right_column)
         self.level_group_box.setObjectName(u'level_group_box')
         self.level_layout = QtGui.QFormLayout(self.level_group_box)
-        self.level_layout.set_labelAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.level_layout.setLabelAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.level_layout.setFormAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.level_layout.setObjectName(u'level_layout')
-        self.song_level_radio_button = QtGui.Q_radio_button(self.level_group_box)
+        self.song_level_radio_button = QtGui.QRadioButton(self.level_group_box)
         self.song_level_radio_button.setObjectName(u'song_level_radio_button')
         self.song_level_label = QtGui.QLabel(self.level_group_box)
         self.song_level_label.setObjectName(u'song_level_label')
         self.level_layout.addRow(self.song_level_radio_button, self.song_level_label)
-        self.service_level_radio_button = QtGui.Q_radio_button(self.level_group_box)
+        self.service_level_radio_button = QtGui.QRadioButton(self.level_group_box)
         self.service_level_radio_button.setObjectName(u'service_level_radio_button')
         self.service_level_label = QtGui.QLabel(self.level_group_box)
         self.service_level_label.setObjectName(u'service_level_label')
         self.level_layout.addRow(self.service_level_radio_button, self.service_level_label)
-        self.global_level_radio_button = QtGui.Q_radio_button(self.level_group_box)
+        self.global_level_radio_button = QtGui.QRadioButton(self.level_group_box)
         self.global_level_radio_button.setObjectName(u'global_level_radio_button')
         self.global_level_label = QtGui.QLabel(self.level_group_box)
         self.global_level_label.setObjectName(u'global_level_label')
@@ -99,8 +99,8 @@ class ThemesTab(SettingsTab):
         self.right_layout.addWidget(self.level_group_box)
         self.right_layout.addStretch()
         self.song_level_radio_button.clicked.connect(self.on_song_level_button_clicked)
-        self.service_level_radio_button.clicked.connect(self.on_service_level_button_Clicked)
-        self.global_level_radio_button.clicked.connect(self.on_global_level_buttonClicked)
+        self.service_level_radio_button.clicked.connect(self.on_service_level_button_clicked)
+        self.global_level_radio_button.clicked.connect(self.on_global_level_button_clicked)
         self.default_combo_box.activated.connect(self.on_default_combo_box_changed)
         Registry().register_function(u'theme_update_list', self.update_theme_list)
 
@@ -129,7 +129,7 @@ class ThemesTab(SettingsTab):
         Load the theme settings into the tab
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.theme_level = settings.value(u'theme level')
         self.global_theme = settings.value(u'global theme')
         settings.endGroup()
@@ -145,7 +145,7 @@ class ThemesTab(SettingsTab):
         Save the settings
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'theme level', self.theme_level)
         settings.setValue(u'global theme', self.global_theme)
         settings.endGroup()
@@ -158,19 +158,19 @@ class ThemesTab(SettingsTab):
         """
         Registry().execute(u'theme_update_global')
 
-    def on_song_level_Button_clicked(self):
+    def on_song_level_button_clicked(self):
         """
         Set the theme level
         """
         self.theme_level = ThemeLevel.Song
 
-    def on_service_levelButton_clicked(self):
+    def on_service_level_button_clicked(self):
         """
         Set the theme level
         """
         self.theme_level = ThemeLevel.Service
 
-    def on_global_levelButton_clicked(self):
+    def on_global_level_button_clicked(self):
         """
         Set the theme level
         """

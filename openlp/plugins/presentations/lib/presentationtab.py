@@ -142,4 +142,4 @@ class PresentationTab(SettingsTab):
             controller = self.controllers[key]
             checkbox = self.presenter_check_boxes[controller.name]
             checkbox.setEnabled(controller.is_available())
-            self.setControllerText(checkbox, controller)
+            self.set_controller_text(checkbox, controller)

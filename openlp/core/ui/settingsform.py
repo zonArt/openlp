@@ -139,7 +139,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         A different settings tab is selected
         """
         self.stacked_layout.setCurrentIndex(tabIndex)
-        self.stacked_layout.currentWidget().tabVisible()
+        self.stacked_layout.currentWidget().tab_visible()
 
     def register_post_process(self, function):
         """

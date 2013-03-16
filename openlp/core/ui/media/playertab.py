@@ -36,7 +36,7 @@ from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 
 
-class MediaQ_check_box(QtGui.QCheckBox):
+class MediaQCheckBox(QtGui.QCheckBox):
     """
     MediaQ_check_box adds an extra property, playerName to the Q_check_box class.
     """
@@ -57,7 +57,7 @@ class PlayerTab(SettingsTab):
         """
         self.media_players = self.media_controller.media_players
         self.saved_used_players = None
-        self.iconPath = u':/media/multimedia-player.png'
+        self.icon_path = u':/media/multimedia-player.png'
         player_translated = translate('OpenLP.PlayerTab', 'Players')
         SettingsTab.__init__(self, parent, u'Players', player_translated)
 
@@ -67,33 +67,33 @@ class PlayerTab(SettingsTab):
         """
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
-        self.background_Color_group_box = QtGui.QGroupBox(self.leftColumn)
-        self.background_Color_group_box.setObjectName(u'Font_group_box')
-        self.form_layout = QtGui.QFormLayout(self.background_Color_group_box)
-        self.form_layout.setObjectName(u'Form_layout')
+        self.background_color_group_box = QtGui.QGroupBox(self.left_column)
+        self.background_color_group_box.setObjectName(u'background_color_group_box')
+        self.form_layout = QtGui.QFormLayout(self.background_color_group_box)
+        self.form_layout.setObjectName(u'form_layout')
         self.color_layout = QtGui.QHBoxLayout()
-        self.background_color_label = QtGui.QLabel(self.background_Color_group_box)
-        self.background_color_label.setObjectName(u'BackgroundColor_label')
+        self.background_color_label = QtGui.QLabel(self.background_color_group_box)
+        self.background_color_label.setObjectName(u'background_color_label')
         self.color_layout.addWidget(self.background_color_label)
-        self.background_color_button = QtGui.QPushButton(self.background_Color_group_box)
-        self.background_color_button.setObjectName(u'BackgroundColor_button')
+        self.background_color_button = QtGui.QPushButton(self.background_color_group_box)
+        self.background_color_button.setObjectName(u'background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.form_layout.addRow(self.color_layout)
-        self.information_label = QtGui.QLabel(self.background_Color_group_box)
+        self.information_label = QtGui.QLabel(self.background_color_group_box)
         self.information_label.setObjectName(u'information_label')
         self.information_label.setWordWrap(True)
         self.form_layout.addRow(self.information_label)
-        self.left_layout.addWidget(self.background_Color_group_box)
+        self.left_layout.addWidget(self.background_color_group_box)
         self.left_layout.addStretch()
-        self.rightColumn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.right_layout.addStretch()
-        self.media_player_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.media_player_group_box = QtGui.QGroupBox(self.left_column)
         self.media_player_group_box.setObjectName(u'media_player_group_box')
         self.media_player_layout = QtGui.QVBoxLayout(self.media_player_group_box)
         self.media_player_layout.setObjectName(u'media_player_layout')
         self.player_check_boxes = {}
         self.left_layout.addWidget(self.media_player_group_box)
-        self.player_order_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.player_order_group_box = QtGui.QGroupBox(self.left_column)
         self.player_order_group_box.setObjectName(u'player_order_group_box')
         self.player_order_layout = QtGui.QHBoxLayout(self.player_order_group_box)
         self.player_order_layout.setObjectName(u'player_order_layout')
@@ -118,12 +118,12 @@ class PlayerTab(SettingsTab):
         self.ordering_button_layout.addWidget(self.ordering_up_button)
         self.ordering_button_layout.addWidget(self.ordering_down_button)
         self.ordering_button_layout.addStretch(1)
-        self.player_order_layout.add_layout(self.ordering_button_layout)
+        self.player_order_layout.addLayout(self.ordering_button_layout)
         self.left_layout.addWidget(self.player_order_group_box)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         # Signals and slots
-        self.background_color_button.clicked.connect(self.on_background_color_button_Clicked)
+        self.background_color_button.clicked.connect(self.on_background_color_button_clicked)
 
     def retranslateUi(self):
         """
@@ -131,7 +131,7 @@ class PlayerTab(SettingsTab):
         """
         self.media_player_group_box.setTitle(translate('OpenLP.PlayerTab', 'Available Media Players'))
         self.player_order_group_box.setTitle(translate('OpenLP.PlayerTab', 'Player Search Order'))
-        self.background_Color_group_box.setTitle(UiStrings().BackgroundColor)
+        self.background_color_group_box.setTitle(UiStrings().BackgroundColor)
         self.background_color_label.setText(UiStrings().DefaultColor)
         self.information_label.setText(translate('OpenLP.PlayerTab',
             'Visible background for videos with aspect ratio different to screen.'))
@@ -206,7 +206,7 @@ class PlayerTab(SettingsTab):
         self.used_players = get_media_players()[0]
         self.saved_used_players = self.used_players
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         self.update_player_list()
         self.background_color = settings.value(u'background color')
         self.initial_color = self.background_color
@@ -218,7 +218,7 @@ class PlayerTab(SettingsTab):
         Save the settings
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'background color', self.background_color)
         settings.endGroup()
         old_players, override_player = get_media_players()
@@ -235,7 +235,7 @@ class PlayerTab(SettingsTab):
         """
         for key, player in self.media_players.iteritems():
             player = self.media_players[key]
-            checkbox = MediaQ_check_box(self.media_player_group_box)
+            checkbox = MediaQCheckBox(self.media_player_group_box)
             checkbox.setEnabled(player.available)
             checkbox.setObjectName(player.name + u'_check_box')
             checkbox.setToolTip(player.get_info())
