@@ -248,13 +248,13 @@ class Ui_MainWindow(object):
             main_window, u'modeSetupItem', checked=False, category=UiStrings().ViewMode, can_shortcuts=True)
         self.mode_live_item = create_action(
             main_window, u'modeLiveItem', checked=True, category=UiStrings().ViewMode, can_shortcuts=True)
-        self.modeGroup = QtGui.QActionGroup(main_window)
-        self.modeGroup.addAction(self.mode_default_Item)
-        self.modeGroup.addAction(self.mode_setup_item)
-        self.modeGroup.addAction(self.mode_live_item)
+        self.mode_group = QtGui.QActionGroup(main_window)
+        self.mode_group.addAction(self.mode_default_Item)
+        self.mode_group.addAction(self.mode_setup_item)
+        self.mode_group.addAction(self.mode_live_item)
         self.mode_default_Item.setChecked(True)
         action_list.add_category(UiStrings().Tools, CategoryOrder.standard_menu)
-        self.tools_add_Tool_Item = create_action(main_window,
+        self.tools_add_tool_item = create_action(main_window,
             u'toolsAddToolItem', icon=u':/tools/tools_add.png', category=UiStrings().Tools, can_shortcuts=True)
         self.tools_open_data_folder = create_action(main_window,
             u'toolsOpenDataFolder', icon=u':/general/general_open.png', category=UiStrings().Tools, can_shortcuts=True)
@@ -333,7 +333,7 @@ class Ui_MainWindow(object):
         else:
             add_actions(self.settings_menu, (self.settingsPluginListItem, self.settings_language_menu.menuAction(),
                 None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
-        add_actions(self.tools_menu, (self.tools_add_Tool_Item, None))
+        add_actions(self.tools_menu, (self.tools_add_tool_item, None))
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))
         add_actions(self.tools_menu, [self.update_theme_images])
@@ -350,7 +350,7 @@ class Ui_MainWindow(object):
         # Connect up some signals and slots
         self.file_menu.aboutToShow.connect(self.update_recent_files_menu)
         # Hide the entry, as it does not have any functionality yet.
-        self.tools_add_Tool_Item.setVisible(False)
+        self.tools_add_tool_item.setVisible(False)
         self.import_language_item.setVisible(False)
         self.export_language_item.setVisible(False)
         self.set_lock_panel(panel_locked)
@@ -439,8 +439,8 @@ class Ui_MainWindow(object):
             item.setStatusTip(translate('OpenLP.MainWindow', 'Set the interface language to %s') % item.objectName())
         self.auto_language_item.setText(translate('OpenLP.MainWindow', '&Autodetect'))
         self.auto_language_item.setStatusTip(translate('OpenLP.MainWindow', 'Use the system language, if available.'))
-        self.tools_add_Tool_Item.setText(translate('OpenLP.MainWindow', 'Add &Tool...'))
-        self.tools_add_Tool_Item.setStatusTip(translate('OpenLP.MainWindow', 
+        self.tools_add_tool_item.setText(translate('OpenLP.MainWindow', 'Add &Tool...'))
+        self.tools_add_tool_item.setStatusTip(translate('OpenLP.MainWindow',
             'Add an application to the list of tools.'))
         self.tools_open_data_folder.setText(translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.tools_open_data_folder.setStatusTip(translate('OpenLP.MainWindow',

@@ -38,9 +38,9 @@ from openlp.core.ui.media import get_media_players, set_media_players
 
 class MediaQCheckBox(QtGui.QCheckBox):
     """
-    MediaQ_check_box adds an extra property, playerName to the Q_check_box class.
+    MediaQCheckBox adds an extra property, playerName to the QCheckBox class.
     """
-    def setPlayerName(self, name):
+    def set_player_name(self, name):
         """
         Set the player name
         """
@@ -239,7 +239,7 @@ class PlayerTab(SettingsTab):
             checkbox.setEnabled(player.available)
             checkbox.setObjectName(player.name + u'_check_box')
             checkbox.setToolTip(player.get_info())
-            checkbox.setPlayerName(player.name)
+            checkbox.set_player_name(player.name)
             self.player_check_boxes[player.name] = checkbox
             checkbox.stateChanged.connect(self.on_player_check_box_changed)
             self.media_player_layout.addWidget(checkbox)
@@ -257,7 +257,7 @@ class PlayerTab(SettingsTab):
         for key in self.media_players and self.player_check_boxes:
             player = self.media_players[key]
             checkbox = self.player_check_boxes[player.name]
-            checkbox.setPlayerName(player.name)
+            checkbox.set_player_name(player.name)
             if player.available:
                 checkbox.setText(player.display_name)
             else:

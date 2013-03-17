@@ -644,7 +644,7 @@ class SlideController(DisplayController):
         self.play_slides_loop.setChecked(False)
         self.play_slides_loop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
-            if Settings().value(self.main_window.songsSettingsSection + u'/display songbar') and self.slideList:
+            if Settings().value(self.main_window.songs_settings_section + u'/display songbar') and self.slideList:
                 self.toolbar.set_widget_visible([u'song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.set_widget_visible(self.loop_list)
@@ -765,8 +765,8 @@ class SlideController(DisplayController):
                     action.setData(counter)
                     action.triggered.connect(self.onTrackTriggered)
                 self.display.audio_player.repeat = Settings().value(
-                    self.main_window.generalSettingsSection + u'/audio repeat list')
-                if Settings().value(self.main_window.generalSettingsSection + u'/audio start paused'):
+                    self.main_window.general_settings_section + u'/audio repeat list')
+                if Settings().value(self.main_window.general_settings_section + u'/audio start paused'):
                     self.audio_pause_item.setChecked(True)
                     self.display.audio_player.pause()
                 else:
