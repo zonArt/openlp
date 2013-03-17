@@ -44,6 +44,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
+
 class BibleSearch(object):
     """
     Enumeration class for the different search methods for the "quick search".

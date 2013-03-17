@@ -375,10 +375,11 @@ class BiblesTab(SettingsTab):
         update_reference_separators()
         if self.language_selection != settings.value(u'book name language'):
             settings.setValue(u'book name language', self.language_selection)
-            self.settings_form.register_post_process(u'bibles_load_list',
-                translate('OpenLP.BibleTab', 'Bibles Lists updating.'))
+            self.settings_form.register_post_process(u'bibles_load_list')
         settings.endGroup()
-        self.settings_form.register_post_process(u'bibles_config_updated')
+        if self.tab_visited:
+            self.settings_form.register_post_process(u'bibles_config_updated')
+        self.tab_visited = False
 
     def update_theme_list(self, theme_list):
         """
