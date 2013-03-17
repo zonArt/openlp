@@ -295,7 +295,7 @@ class Ui_MainWindow(object):
             main_window, u'settingsExportItem', category=UiStrings().Export, can_shortcuts=True)
         action_list.add_category(UiStrings().Help, CategoryOrder.standard_menu)
         self.about_item = create_action(main_window, u'aboutItem', icon=u':/system/system_about.png',
-            can_shortcuts=True, category=UiStrings().Help, triggers=self.onAboutItemClicked)
+            can_shortcuts=True, category=UiStrings().Help, triggers=self.on_about_item_clicked)
         # Give QT Extra Hint that this is an About Menu Item
         self.about_item.setMenuRole(QtGui.QAction.AboutRole)
         if os.name == u'nt':
@@ -304,11 +304,11 @@ class Ui_MainWindow(object):
             self.offlineHelpItem = create_action(main_window, u'offlineHelpItem',
                 icon=u':/system/system_help_contents.png',
                 can_shortcuts=True,
-                category=UiStrings().Help, triggers=self.onOfflineHelpClicked)
+                category=UiStrings().Help, triggers=self.on_offline_help_clicked)
         self.on_line_help_item = create_action(main_window, u'onlineHelpItem',
             icon=u':/system/system_online_help.png',
             can_shortcuts=True,
-            category=UiStrings().Help, triggers=self.onOnlineHelpClicked)
+            category=UiStrings().Help, triggers=self.on_online_help_clicked)
         self.web_site_item = create_action(main_window, u'webSiteItem', can_shortcuts=True, category=UiStrings().Help)
         add_actions(self.file_import_menu, (self.settings_import_item, None, self.import_theme_item,
             self.import_language_item))
@@ -516,22 +516,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.theme_manager_dock.visibilityChanged.connect(self.view_theme_manager_item.setChecked)
         self.import_theme_item.triggered.connect(self.theme_manager_contents.on_import_theme)
         self.export_theme_item.triggered.connect(self.theme_manager_contents.on_export_theme)
-        self.web_site_item.triggered.connect(self.onHelpWebSiteClicked)
-        self.tools_open_data_folder.triggered.connect(self.onToolsOpenDataFolderClicked)
-        self.tools_first_time_wizard.triggered.connect(self.onFirstTimeWizardClicked)
-        self.update_theme_images.triggered.connect(self.onUpdateThemeImages)
-        self.formatting_tag_item.triggered.connect(self.onFormattingTagItemClicked)
-        self.settings_configure_item.triggered.connect(self.onSettingsConfigureItemClicked)
-        self.settings_shortcuts_item.triggered.connect(self.onSettingsShortcutsItemClicked)
-        self.settings_import_item.triggered.connect(self.onSettingsImportItemClicked)
-        self.settings_export_item.triggered.connect(self.onSettingsExportItemClicked)
+        self.web_site_item.triggered.connect(self.on_help_web_site_clicked)
+        self.tools_open_data_folder.triggered.connect(self.on_tools_open_data_folder_clicked)
+        self.tools_first_time_wizard.triggered.connect(self.on_first_time_wzard_clicked)
+        self.update_theme_images.triggered.connect(self.on_update_theme_images)
+        self.formatting_tag_item.triggered.connect(self.on_formatting_tag_item_clicked)
+        self.settings_configure_item.triggered.connect(self.on_settings_configure_iem_clicked)
+        self.settings_shortcuts_item.triggered.connect(self.on_settings_shortcuts_item_clicked)
+        self.settings_import_item.triggered.connect(self.on_settings_import_item_clicked)
+        self.settings_export_item.triggered.connect(self.on_settings_export_item_clicked)
         # i18n set signals for languages
         self.language_group.triggered.connect(LanguageManager.set_language)
-        self.mode_default_Item.triggered.connect(self.onModeDefaultItemClicked)
-        self.mode_setup_item.triggered.connect(self.onModeSetupItemClicked)
-        self.mode_live_item.triggered.connect(self.onModeLiveItemClicked)
+        self.mode_default_Item.triggered.connect(self.on_mode_default_item_clicked)
+        self.mode_setup_item.triggered.connect(self.on_mode_setup_item_clicked)
+        self.mode_live_item.triggered.connect(self.on_mode_live_item_clicked)
         # Media Manager
-        self.media_tool_box.currentChanged.connect(self.onMediaToolBoxChanged)
+        self.media_tool_box.currentChanged.connect(self.on_media_tool_box_changed)
         self.application.set_busy_cursor()
         # Simple message boxes
         Registry().register_function(u'theme_update_global', self.default_theme_changed)
@@ -554,7 +554,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         LanguageManager.auto_language = value
         LanguageManager.set_language(self.language_group.checkedAction())
 
-    def onMediaToolBoxChanged(self, index):
+    def on_media_tool_box_changed(self, index):
         """
         Focus a widget when the media toolbox changes.
         """
@@ -624,7 +624,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         temp_dir = os.path.join(unicode(gettempdir()), u'openlp')
         shutil.rmtree(temp_dir, True)
 
-    def onFirstTimeWizardClicked(self):
+    def on_first_time_wzard_clicked(self):
         """
         Re-run the first time wizard.  Prompts the user for run confirmation
         If wizard is run, songs, bibles and themes are imported.  The default
@@ -715,27 +715,27 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.application.splash.close()
         QtGui.QMessageBox.information(self, title, message)
 
-    def onHelpWebSiteClicked(self):
+    def on_help_web_site_clicked(self):
         """
         Load the OpenLP website
         """
         import webbrowser
         webbrowser.open_new(u'http://openlp.org/')
 
-    def onOfflineHelpClicked(self):
+    def on_offline_help_clicked(self):
         """
         Load the local OpenLP help file
         """
         os.startfile(self.localHelpFile)
 
-    def onOnlineHelpClicked(self):
+    def on_online_help_clicked(self):
         """
         Load the online OpenLP manual
         """
         import webbrowser
         webbrowser.open_new(u'http://manual.openlp.org/')
 
-    def onAboutItemClicked(self):
+    def on_about_item_clicked(self):
         """
         Show the About form
         """
@@ -748,26 +748,26 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.plugin_form.load()
         self.plugin_form.exec_()
 
-    def onToolsOpenDataFolderClicked(self):
+    def on_tools_open_data_folder_clicked(self):
         """
         Open data folder
         """
         path = AppLocation.get_data_path()
         QtGui.QDesktopServices.openUrl(QtCore.QUrl("file:///" + path))
 
-    def onUpdateThemeImages(self):
+    def on_update_theme_images(self):
         """
         Updates the new theme preview images.
         """
         self.theme_manager_contents.update_preview_images()
 
-    def onFormattingTagItemClicked(self):
+    def on_formatting_tag_item_clicked(self):
         """
         Show the Settings dialog
         """
         self.formatting_tag_form.exec_()
 
-    def onSettingsConfigureItemClicked(self):
+    def on_settings_configure_iem_clicked(self):
         """
         Show the Settings dialog
         """
@@ -780,14 +780,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.preview_controller.previewSizeChanged()
         self.live_controller.previewSizeChanged()
 
-    def onSettingsShortcutsItemClicked(self):
+    def on_settings_shortcuts_item_clicked(self):
         """
         Show the shortcuts dialog
         """
         if self.shortcut_form.exec_():
             self.shortcut_form.save()
 
-    def onSettingsImportItemClicked(self):
+    def on_settings_import_item_clicked(self):
         """
         Import settings from an export INI file
         """
@@ -875,7 +875,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.clean_up()
         QtCore.QCoreApplication.exit()
 
-    def onSettingsExportItemClicked(self):
+    def on_settings_export_item_clicked(self):
         """
         Export settings to a .conf file in INI format
         """
@@ -887,8 +887,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
             export_file_name += u'.conf'
-        temp_file = os.path.join(unicode(gettempdir(),
-            get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
+        temp_file = os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
         self.save_settings()
         setting_sections = []
         # Add main sections.
@@ -947,19 +946,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         export_conf.close()
         os.remove(temp_file)
 
-    def onModeDefaultItemClicked(self):
+    def on_mode_default_item_clicked(self):
         """
         Put OpenLP into "Default" view mode.
         """
         self.setViewMode(True, True, True, True, True, u'default')
 
-    def onModeSetupItemClicked(self):
+    def on_mode_setup_item_clicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
         self.setViewMode(True, True, False, True, False, u'setup')
 
-    def onModeLiveItemClicked(self):
+    def on_mode_live_item_clicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
