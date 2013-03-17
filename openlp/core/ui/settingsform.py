@@ -60,50 +60,50 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Execute the form
         """
         # load all the settings
-        self.settingListWidget.clear()
-        while self.stackedLayout.count():
+        self.setting_list_widget.clear()
+        while self.stacked_layout.count():
             # take at 0 and the rest shuffle up.
-            self.stackedLayout.takeAt(0)
-        self.insertTab(self.generalTab, 0, PluginStatus.Active)
-        self.insertTab(self.themesTab, 1, PluginStatus.Active)
-        self.insertTab(self.advancedTab, 2, PluginStatus.Active)
-        self.insertTab(self.playerTab, 3, PluginStatus.Active)
+            self.stacked_layout.takeAt(0)
+        self.insert_tab(self.general_tab, 0, PluginStatus.Active)
+        self.insert_tab(self.themes_tab, 1, PluginStatus.Active)
+        self.insert_tab(self.advanced_tab, 2, PluginStatus.Active)
+        self.insert_tab(self.player_tab, 3, PluginStatus.Active)
         count = 4
         for plugin in self.plugin_manager.plugins:
             if plugin.settingsTab:
-                self.insertTab(plugin.settingsTab, count, plugin.status)
+                self.insert_tab(plugin.settingsTab, count, plugin.status)
                 count += 1
-        self.settingListWidget.setCurrentRow(0)
+        self.setting_list_widget.setCurrentRow(0)
         return QtGui.QDialog.exec_(self)
 
-    def insertTab(self, tab, location, is_active):
+    def insert_tab(self, tab, location, is_active):
         """
         Add a tab to the form at a specific location
         """
-        log.debug(u'Inserting %s tab' % tab.tabTitle)
+        log.debug(u'Inserting %s tab' % tab.tab_title)
         # add the tab to get it to display in the correct part of the screen
-        pos = self.stackedLayout.addWidget(tab)
+        pos = self.stacked_layout.addWidget(tab)
         if is_active:
-            item_name = QtGui.QListWidgetItem(tab.tabTitleVisible)
-            icon = build_icon(tab.iconPath)
+            item_name = QtGui.QListWidgetItem(tab.tab_title_visible)
+            icon = build_icon(tab.icon_path)
             item_name.setIcon(icon)
-            self.settingListWidget.insertItem(location, item_name)
+            self.setting_list_widget.insertItem(location, item_name)
         else:
-            # then remove tab to stop the UI displaying it even if
-            # it is not required.
-            self.stackedLayout.takeAt(pos)
+            # then remove tab to stop the UI displaying it even if it is not required.
+            self.stacked_layout.takeAt(pos)
 
     def accept(self):
         """
         Process the form saving the settings
         """
-        self.resetSuffixes = True
-        for tabIndex in range(self.stackedLayout.count()):
-            self.stackedLayout.widget(tabIndex).save()
-        # Must go after all settings are save
+        for tabIndex in range(self.stacked_layout.count()):
+            self.stacked_layout.widget(tabIndex).save()
+        # if the display of image background are changing we need to regenerate the image cache
+        if u'images_config_updated' in self.processes or u'config_screen_changed' in self.processes:
+            self.register_post_process(u'images_regenerate')
+        # Now lets process all the post save handlers
         while self.processes:
             Registry().execute(self.processes.pop(0))
-        Registry().execute(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def reject(self):
@@ -111,8 +111,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Process the form saving the settings
         """
         self.processes = []
-        for tabIndex in range(self.stackedLayout.count()):
-            self.stackedLayout.widget(tabIndex).cancel()
+        for tabIndex in range(self.stacked_layout.count()):
+            self.stacked_layout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
     def post_set_up(self):
@@ -120,27 +120,27 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Run any post-setup code for the tabs on the form
         """
         # General tab
-        self.generalTab = GeneralTab(self)
+        self.general_tab = GeneralTab(self)
         # Themes tab
-        self.themesTab = ThemesTab(self)
+        self.themes_tab = ThemesTab(self)
         # Advanced tab
-        self.advancedTab = AdvancedTab(self)
+        self.advanced_tab = AdvancedTab(self)
         # Advanced tab
-        self.playerTab = PlayerTab(self)
-        self.generalTab.post_set_up()
-        self.themesTab.post_set_up()
-        self.advancedTab.post_set_up()
-        self.playerTab.post_set_up()
+        self.player_tab = PlayerTab(self)
+        self.general_tab.post_set_up()
+        self.themes_tab.post_set_up()
+        self.advanced_tab.post_set_up()
+        self.player_tab.post_set_up()
         for plugin in self.plugin_manager.plugins:
             if plugin.settingsTab:
                 plugin.settingsTab.post_set_up()
 
-    def tabChanged(self, tabIndex):
+    def tab_changed(self, tabIndex):
         """
         A different settings tab is selected
         """
-        self.stackedLayout.setCurrentIndex(tabIndex)
-        self.stackedLayout.currentWidget().tabVisible()
+        self.stacked_layout.setCurrentIndex(tabIndex)
+        self.stacked_layout.currentWidget().tab_visible()
 
     def register_post_process(self, function):
         """

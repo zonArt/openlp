@@ -55,7 +55,7 @@ class AdvancedTab(SettingsTab):
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.data_exists = False
-        self.iconPath = u':/system/system_settings.png'
+        self.icon_path = u':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
         SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
 
@@ -65,7 +65,7 @@ class AdvancedTab(SettingsTab):
         """
         self.setObjectName(u'AdvancedTab')
         SettingsTab.setupUi(self)
-        self.ui_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.ui_group_box = QtGui.QGroupBox(self.left_column)
         self.ui_group_box.setObjectName(u'ui_group_box')
         self.ui_layout = QtGui.QFormLayout(self.ui_group_box)
         self.ui_layout.setObjectName(u'ui_layout')
@@ -90,9 +90,9 @@ class AdvancedTab(SettingsTab):
         self.enable_auto_close_check_box = QtGui.QCheckBox(self.ui_group_box)
         self.enable_auto_close_check_box.setObjectName(u'enable_auto_close_check_box')
         self.ui_layout.addRow(self.enable_auto_close_check_box)
-        self.leftLayout.addWidget(self.ui_group_box)
+        self.left_layout.addWidget(self.ui_group_box)
         # Default service name
-        self.service_name_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.service_name_group_box = QtGui.QGroupBox(self.left_column)
         self.service_name_group_box.setObjectName(u'service_name_group_box')
         self.service_name_layout = QtGui.QFormLayout(self.service_name_group_box)
         self.service_name_check_box = QtGui.QCheckBox(self.service_name_group_box)
@@ -129,9 +129,9 @@ class AdvancedTab(SettingsTab):
         self.service_name_example = QtGui.QLabel(self.service_name_group_box)
         self.service_name_example.setObjectName(u'service_name_example')
         self.service_name_layout.addRow(self.service_name_example_label, self.service_name_example)
-        self.leftLayout.addWidget(self.service_name_group_box)
+        self.left_layout.addWidget(self.service_name_group_box)
         # Data Directory
-        self.data_directory_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.data_directory_group_box = QtGui.QGroupBox(self.left_column)
         self.data_directory_group_box.setObjectName(u'data_directory_group_box')
         self.data_directory_layout = QtGui.QFormLayout(self.data_directory_group_box)
         self.data_directory_layout.setObjectName(u'data_directory_layout')
@@ -172,10 +172,10 @@ class AdvancedTab(SettingsTab):
         self.data_directory_layout.addRow(self.data_directory_new_label, self.new_data_directory_label_layout)
         self.data_directory_layout.addRow(self.data_directory_copy_check_layout)
         self.data_directory_layout.addRow(self.new_data_directory_has_files_label)
-        self.leftLayout.addWidget(self.data_directory_group_box)
-        self.leftLayout.addStretch()
+        self.left_layout.addWidget(self.data_directory_group_box)
+        self.left_layout.addStretch()
         # Default Image
-        self.default_image_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.default_image_group_box = QtGui.QGroupBox(self.right_column)
         self.default_image_group_box.setObjectName(u'default_image_group_box')
         self.default_image_layout = QtGui.QFormLayout(self.default_image_group_box)
         self.default_image_layout.setObjectName(u'default_image_layout')
@@ -200,18 +200,18 @@ class AdvancedTab(SettingsTab):
         self.default_file_layout.addWidget(self.default_browse_button)
         self.default_file_layout.addWidget(self.default_revert_button)
         self.default_image_layout.addRow(self.default_file_label, self.default_file_layout)
-        self.rightLayout.addWidget(self.default_image_group_box)
+        self.right_layout.addWidget(self.default_image_group_box)
         # Hide mouse
-        self.hide_mouse_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.hide_mouse_group_box = QtGui.QGroupBox(self.right_column)
         self.hide_mouse_group_box.setObjectName(u'hide_mouse_group_box')
         self.hide_mouse_layout = QtGui.QVBoxLayout(self.hide_mouse_group_box)
         self.hide_mouse_layout.setObjectName(u'hide_mouse_layout')
         self.hide_mouse_check_box = QtGui.QCheckBox(self.hide_mouse_group_box)
         self.hide_mouse_check_box.setObjectName(u'hide_mouse_check_box')
         self.hide_mouse_layout.addWidget(self.hide_mouse_check_box)
-        self.rightLayout.addWidget(self.hide_mouse_group_box)
+        self.right_layout.addWidget(self.hide_mouse_group_box)
         # Service Item Slide Limits
-        self.slide_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.slide_group_box = QtGui.QGroupBox(self.right_column)
         self.slide_group_box.setObjectName(u'slide_group_box')
         self.slide_layout = QtGui.QVBoxLayout(self.slide_group_box)
         self.slide_layout.setObjectName(u'slide_layout')
@@ -227,9 +227,9 @@ class AdvancedTab(SettingsTab):
         self.next_item_radio_button = QtGui.QRadioButton(self.slide_group_box)
         self.next_item_radio_button.setObjectName(u'next_item_radio_button')
         self.slide_layout.addWidget(self.next_item_radio_button)
-        self.rightLayout.addWidget(self.slide_group_box)
+        self.right_layout.addWidget(self.slide_group_box)
         # Display Workarounds
-        self.display_workaround_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.display_workaround_group_box = QtGui.QGroupBox(self.left_column)
         self.display_workaround_group_box.setObjectName(u'display_workaround_group_box')
         self.display_workaround_layout = QtGui.QVBoxLayout(self.display_workaround_group_box)
         self.display_workaround_layout.setObjectName(u'display_workaround_layout')
@@ -239,8 +239,8 @@ class AdvancedTab(SettingsTab):
         self.alternate_rows_check_box = QtGui.QCheckBox(self.display_workaround_group_box)
         self.alternate_rows_check_box.setObjectName(u'alternate_rows_check_box')
         self.display_workaround_layout.addWidget(self.alternate_rows_check_box)
-        self.rightLayout.addWidget(self.display_workaround_group_box)
-        self.rightLayout.addStretch()
+        self.right_layout.addWidget(self.display_workaround_group_box)
+        self.right_layout.addStretch()
         self.should_update_service_name_example = False
         self.service_name_check_box.toggled.connect(self.service_name_check_box_toggled)
         self.service_name_day.currentIndexChanged.connect(self.on_service_name_day_changed)
@@ -258,7 +258,6 @@ class AdvancedTab(SettingsTab):
         self.end_slide_radio_button.clicked.connect(self.on_end_slide_button_clicked)
         self.wrap_slide_radio_button.clicked.connect(self.on_wrap_slide_button_clicked)
         self.next_item_radio_button.clicked.connect(self.on_next_item_button_clicked)
-
 
     def retranslateUi(self):
         """
@@ -334,7 +333,7 @@ class AdvancedTab(SettingsTab):
         Load settings from disk.
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         # The max recent files value does not have an interface and so never
         # gets actually stored in the settings therefore the default value of
         # 20 will always be used.
@@ -406,7 +405,7 @@ class AdvancedTab(SettingsTab):
         Save settings to disk.
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'default service enabled', self.service_name_check_box.isChecked())
         service_name = self.service_name_edit.text()
         preset_is_valid = self.generate_service_name_example()[0]
