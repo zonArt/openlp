@@ -108,3 +108,50 @@ class TestSettingsForm(TestCase):
         # WHEN testing the processing stack
         # THEN the processing stack should still have two items
         assert len(self.form.processes) == 2, u'No new processes should have been added to the stack'
+
+    def register_multiple_functions_test(self):
+        """
+        Test running the settings form and adding multiple functions
+        """
+        # GIVEN: Three functions registered to be call
+        dummy1 = MagicMock()
+        dummy2 = MagicMock()
+        dummy3 = MagicMock()
+
+        Registry().register_function(u'images_config_updated', dummy1)
+        Registry().register_function(u'config_screen_changed', dummy2)
+        Registry().register_function(u'images_regenerate', dummy3)
+
+        # WHEN: The Images have been changed and the form sumbitted
+        self.form.register_post_process(u'images_config_updated')
+        self.form.accept()
+
+        # THEN Images_regenerate should have been called.
+        assert dummy1.call_count == 1, u'dummy1 should have been called once'
+        assert dummy2.call_count == 0, u'dummy2 should not have been called once'
+        assert dummy3.call_count == 1, u'dummy3 should have been called once'
+
+        # WHEN: The Images have been changed and the form submitted
+        dummy1.reset_mock()
+        dummy2.reset_mock()
+        dummy3.reset_mock()
+        self.form.register_post_process(u'config_screen_changed')
+        self.form.accept()
+
+        # THEN Images_regenerate should have been called.
+        assert dummy1.call_count == 0, u'dummy1 should not have been called once'
+        assert dummy2.call_count == 1, u'dummy2 should have been called once'
+        assert dummy3.call_count == 1, u'dummy3 should have been called once'
+
+        # WHEN: The Images have been changed and the form submitted
+        dummy1.reset_mock()
+        dummy2.reset_mock()
+        dummy3.reset_mock()
+        self.form.register_post_process(u'config_screen_changed')
+        self.form.register_post_process(u'images_config_updated')
+        self.form.accept()
+
+        # THEN Images_regenerate should have been called.
+        assert dummy1.call_count == 1, u'dummy1 should have been called once'
+        assert dummy2.call_count == 1, u'dummy2 should have been called once'
+        assert dummy3.call_count == 1, u'dummy3 should have been called once'

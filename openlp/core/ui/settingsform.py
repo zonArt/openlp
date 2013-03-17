@@ -100,7 +100,6 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             self.stacked_layout.widget(tabIndex).save()
         # if the display of image background are changing we need to regenerate the image cache
         if u'images_config_updated' in self.processes or u'config_screen_changed' in self.processes:
-            print "found"
             self.register_post_process(u'images_regenerate')
         # Now lets process all the post save handlers
         while self.processes:
