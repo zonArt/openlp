@@ -199,7 +199,7 @@ class HttpConnection(object):
 
     def __init__(self, parent):
         """
-        Initialise the http connection. Listen out for socket signals.
+        Initialise the CherryPy Server
         """
         self.parent = parent
         self.routes = [
@@ -229,6 +229,9 @@ class HttpConnection(object):
         """
         url = urlparse.urlparse(cherrypy.url())
         self.url_params = urlparse.parse_qs(url.query)
+        self.request_data = None
+        if isinstance(kwargs, dict):
+            self.request_data = kwargs.get(u'data', None)
         # Loop through the routes we set up earlier and execute them
         return self._process_http_request(args, kwargs)
 
@@ -255,7 +258,7 @@ class HttpConnection(object):
         Common function to process HTTP requests where secure or insecure
         """
         url = urlparse.urlparse(cherrypy.url())
-        self.url_params = urlparse.parse_qs(url.query)
+        self.url_params = kwargs
         response = None
         for route, func in self.routes:
             match = re.match(route, url.path)
@@ -478,13 +481,15 @@ class HttpConnection(object):
             cherrypy.response.headers['Content-Type'] = u'application/json'
             return json.dumps({u'results': {u'items': self._get_service_items()}})
         event += u'_item'
-        if self.url_params and self.url_params.get(u'data'):
+        if self.request_data:
             try:
-                data = json.loads(self.url_params[u'data'][0])
-            except KeyError, ValueError:
+                data = json.loads(self.request_data)[u'request'][u'id']
+            except KeyError:
                 return self._http_bad_request()
-            Registry().execute(event, data[u'request'][u'id'])
+            print "A", event , data
+            self.service_manager.emit(QtCore.SIGNAL(event, data))
         else:
+            print "B", event
             Registry().execute(event)
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': {u'success': True}})

@@ -147,7 +147,7 @@ window.OpenLP = {
   },
   pollServer: function () {
     $.getJSON(
-      "/api/poll",
+      "/stage/api/poll",
       function (data, status) {
         var prevItem = OpenLP.currentItem;
         OpenLP.currentSlide = data.results.slide;
@@ -359,5 +359,5 @@ $.ajaxSetup({cache: false});
 $("#search").live("pageinit", function (event) {
   OpenLP.getSearchablePlugins();
 });
-setInterval("OpenLP.pollServer();", 5000);
+setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();

@@ -99,7 +99,7 @@ class SlideController(DisplayController):
             u'delay_spin_box'
         ]
         self.audio_list = [
-            u'audio_pause_item',
+            u'audioPauseItem',
             u'audio_time_label'
         ]
         self.wide_menu = [
