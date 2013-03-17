@@ -108,3 +108,6 @@ class SongsTab(SettingsTab):
         settings.setValue(u'update service on edit', self.update_edit)
         settings.setValue(u'add song from service', self.update_load)
         settings.endGroup()
+        if self.tab_visited:
+            self.settings_form.register_post_process(u'songs_config_updated')
+        self.tab_visited = False

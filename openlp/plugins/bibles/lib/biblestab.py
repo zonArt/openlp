@@ -378,6 +378,7 @@ class BiblesTab(SettingsTab):
             self.settings_form.register_post_process(u'bibles_load_list',
                 translate('OpenLP.BibleTab', 'Bibles Lists updating.'))
         settings.endGroup()
+        self.settings_form.register_post_process(u'bibles_config_updated')
 
     def update_theme_list(self, theme_list):
         """

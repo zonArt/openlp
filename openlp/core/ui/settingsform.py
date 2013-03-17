@@ -89,8 +89,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             item_name.setIcon(icon)
             self.setting_list_widget.insertItem(location, item_name)
         else:
-            # then remove tab to stop the UI displaying it even if
-            # it is not required.
+            # then remove tab to stop the UI displaying it even if it is not required.
             self.stacked_layout.takeAt(pos)
 
     def accept(self):
@@ -99,10 +98,13 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         for tabIndex in range(self.stacked_layout.count()):
             self.stacked_layout.widget(tabIndex).save()
-        # Must go after all settings are save
+        # if the display of image background are changing we need to regenerate the image cache
+        if u'images_config_updated' in self.processes or u'config_screen_changed' in self.processes:
+            print "found"
+            self.register_post_process(u'images_regenerate')
+        # Now lets process all the post save handlers
         while self.processes:
             Registry().execute(self.processes.pop(0))
-        Registry().execute(u'config_updated')
         return QtGui.QDialog.accept(self)
 
     def reject(self):

@@ -404,7 +404,6 @@ class ThemeManager(QtGui.QWidget):
             theme.theme_name = UiStrings().Default
             self._write_theme(theme, None, None)
             Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
-            self.config_updated()
         self.application.set_normal_cursor()
         self.load_themes()
 

@@ -104,7 +104,6 @@ class SongMediaItem(MediaManagerItem):
         self.addSearchToToolBar()
         # Signals and slots
         Registry().register_function(u'songs_load_list', self.on_song_list_load)
-        Registry().register_function(u'config_updated', self.config_update)
         Registry().register_function(u'songs_preview', self.onPreviewClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
@@ -120,6 +119,10 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def config_update(self):
+        """
+        IS triggered when the songs config is updated
+        """
+        log.debug(u'config_updated')
         self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type')
         self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit')
         self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service',)

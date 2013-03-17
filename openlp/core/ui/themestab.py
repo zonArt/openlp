@@ -150,7 +150,9 @@ class ThemesTab(SettingsTab):
         settings.setValue(u'global theme', self.global_theme)
         settings.endGroup()
         self.renderer.set_theme_level(self.theme_level)
-        self.settings_form.register_post_process(u'theme_update_global')
+        if self.tab_visited:
+            self.settings_form.register_post_process(u'theme_update_global')
+        self.tab_visited = False
 
     def post_set_up(self):
         """

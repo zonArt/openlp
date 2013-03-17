@@ -29,7 +29,7 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, Settings, UiStrings, translate
+from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate
 
 
 class ImageTab(SettingsTab):
@@ -87,8 +87,8 @@ class ImageTab(SettingsTab):
 
     def save(self):
         settings = Settings()
-        settings.beginGroup(self.setting_sSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'background color', self.background_color)
         settings.endGroup()
         if self.initial_color != self.background_color:
-            self.settings_form.register_post_process(u'image_updated')
+            self.settings_form.register_post_process(u'images_config_updated')

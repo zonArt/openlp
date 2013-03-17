@@ -309,8 +309,7 @@ class GeneralTab(SettingsTab):
 
     def post_set_up(self, postUpdate=False):
         """
-        Apply settings after settings tab has loaded and most of the
-        system so must be delayed
+        Apply settings after settings tab has loaded and most of the system so must be delayed
         """
         self.settings_form.register_post_process(u'slidecontroller_live_spin_delay')
         # Do not continue on start up.

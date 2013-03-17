@@ -403,9 +403,11 @@ class Plugin(QtCore.QObject):
 
     def config_update(self):
         """
-        The plugin's config has changed
+        Called when Config is changed to restart values dependent on configuration.
         """
-        pass
+        log.info(u'config update processed')
+        if self.mediaItem:
+            self.mediaItem.config_update()
 
     def new_service_created(self):
         """

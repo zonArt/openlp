@@ -36,7 +36,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
-    ServiceItemContext, Settings, Registry, UiStrings, build_icon, translate
+    ServiceItemContext, Settings, Registry, UiStrings, translate
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 

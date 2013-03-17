@@ -35,6 +35,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import SettingsTab, Settings, translate
 
+
 class CustomTab(SettingsTab):
     """
     CustomTab is the Custom settings tab in the settings dialog.
@@ -94,3 +95,6 @@ class CustomTab(SettingsTab):
         settings.setValue(u'display footer', self.display_footer)
         settings.setValue(u'add custom from service', self.update_load)
         settings.endGroup()
+        if self.tab_visited:
+            self.settings_form.register_post_process(u'custom_config_updated')
+        self.tab_visited = False

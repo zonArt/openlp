@@ -55,6 +55,7 @@ class SettingsTab(QtGui.QWidget):
         self.tab_title = title
         self.tab_title_visible = visible_title
         self.settings_section = self.tab_title.lower()
+        self.tab_visited = False
         if icon_path:
             self.icon_path = icon_path
         self.setupUi()
@@ -137,7 +138,7 @@ class SettingsTab(QtGui.QWidget):
         """
         Tab has just been made visible to the user
         """
-        pass
+        self.tab_visited = True
 
     def _get_service_manager(self):
         """

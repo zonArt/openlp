@@ -81,6 +81,6 @@ class MediaTab(SettingsTab):
             self.settings_form.register_post_process(u'mediaitem_suffix_reset')
             self.settings_form.register_post_process(u'mediaitem_media_rebuild')
             self.settings_form.register_post_process(u'mediaitem_suffixes')
-        setting_key = self.settingsSection + u'/media auto start'
+        setting_key = self.settings_section + u'/media auto start'
         if Settings().value(setting_key) != self.auto_start_check_box.checkState():
             Settings().setValue(setting_key, self.auto_start_check_box.checkState())
