@@ -210,7 +210,7 @@ class AlertsPlugin(Plugin):
         """
         align = VerticalType.Names[self.settingsTab.location]
         return CSS % (align, self.settingsTab.font_face, self.settingsTab.font_size, self.settingsTab.font_color,
-            self.settingsTab.bg_color)
+            self.settingsTab.background_color)
 
     def getDisplayHtml(self):
         """
@@ -228,4 +228,4 @@ class AlertsPlugin(Plugin):
         align = VerticalType.Names[self.settingsTab.location]
         frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
             (align, self.settingsTab.font_face, self.settingsTab.font_size,
-            self.settingsTab.font_color, self.settingsTab.bg_color))
+            self.settingsTab.font_color, self.settingsTab.background_color))

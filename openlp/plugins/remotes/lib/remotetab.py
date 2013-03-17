@@ -48,7 +48,7 @@ class RemoteTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
         SettingsTab.setupUi(self)
-        self.server_settings_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.server_settings_group_box = QtGui.QGroupBox(self.left_column)
         self.server_settings_group_box.setObjectName(u'server_settings_group_box')
         self.server_settings_layout = QtGui.QFormLayout(self.server_settings_group_box)
         self.server_settings_layout.setObjectName(u'server_settings_layout')
@@ -63,8 +63,8 @@ class RemoteTab(SettingsTab):
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
         self.twelve_hour_check_box.setObjectName(u'twelve_hour_check_box')
         self.server_settings_layout.addRow(self.twelve_hour_check_box)
-        self.leftLayout.addWidget(self.server_settings_group_box)
-        self.http_settings_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.left_layout.addWidget(self.server_settings_group_box)
+        self.http_settings_group_box = QtGui.QGroupBox(self.left_column)
         self.http_settings_group_box.setObjectName(u'http_settings_group_box')
         self.http_setting_layout = QtGui.QFormLayout(self.http_settings_group_box)
         self.http_setting_layout.setObjectName(u'http_setting_layout')
@@ -86,8 +86,8 @@ class RemoteTab(SettingsTab):
         self.stage_url.setObjectName(u'stage_url')
         self.stage_url.setOpenExternalLinks(True)
         self.http_setting_layout.addRow(self.stage_url_label, self.stage_url)
-        self.leftLayout.addWidget(self.http_settings_group_box)
-        self.https_settings_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.left_layout.addWidget(self.http_settings_group_box)
+        self.https_settings_group_box = QtGui.QGroupBox(self.left_column)
         self.https_settings_group_box.setCheckable(True)
         self.https_settings_group_box.setChecked(False)
         self.https_settings_group_box.setObjectName(u'https_settings_group_box')
@@ -116,8 +116,8 @@ class RemoteTab(SettingsTab):
         self.stage_https_url.setObjectName(u'stage_https_url')
         self.stage_https_url.setOpenExternalLinks(True)
         self.https_settings_layout.addRow(self.stage_https_url_label, self.stage_https_url)
-        self.leftLayout.addWidget(self.https_settings_group_box)
-        self.user_login_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.left_layout.addWidget(self.https_settings_group_box)
+        self.user_login_group_box = QtGui.QGroupBox(self.left_column)
         self.user_login_group_box.setCheckable(True)
         self.user_login_group_box.setChecked(False)
         self.user_login_group_box.setObjectName(u'user_login_group_box')
@@ -133,10 +133,10 @@ class RemoteTab(SettingsTab):
         self.password = QtGui.QLineEdit(self.user_login_group_box)
         self.password.setObjectName(u'password')
         self.user_login_layout.addRow(self.password_label, self.password)
-        self.leftLayout.addWidget(self.user_login_group_box)
-        self.android_app_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.left_layout.addWidget(self.user_login_group_box)
+        self.android_app_group_box = QtGui.QGroupBox(self.right_column)
         self.android_app_group_box.setObjectName(u'android_app_group_box')
-        self.rightLayout.addWidget(self.android_app_group_box)
+        self.right_layout.addWidget(self.android_app_group_box)
         self.qr_layout = QtGui.QVBoxLayout(self.android_app_group_box)
         self.qr_layout.setObjectName(u'qr_layout')
         self.qr_code_label = QtGui.QLabel(self.android_app_group_box)
@@ -149,8 +149,8 @@ class RemoteTab(SettingsTab):
         self.qr_description_label.setOpenExternalLinks(True)
         self.qr_description_label.setWordWrap(True)
         self.qr_layout.addWidget(self.qr_description_label)
-        self.leftLayout.addStretch()
-        self.rightLayout.addStretch()
+        self.left_layout.addStretch()
+        self.right_layout.addStretch()
         self.twelve_hour_check_box.stateChanged.connect(self.on_twelve_hour_check_box_changed)
         self.address_edit.textChanged.connect(self.set_urls)
         self.port_spin_box.valueChanged.connect(self.set_urls)
@@ -205,10 +205,10 @@ class RemoteTab(SettingsTab):
         self.stage_https_url.setText(u'<a href="%s">%s</a>' % (https_url, https_url))
 
     def load(self):
-        self.port_spin_box.setValue(Settings().value(self.settingsSection + u'/port'))
-        self.https_port_spin_box.setValue(Settings().value(self.settingsSection + u'/https port'))
-        self.address_edit.setText(Settings().value(self.settingsSection + u'/ip address'))
-        self.twelve_hour = Settings().value(self.settingsSection + u'/twelve hour')
+        self.port_spin_box.setValue(Settings().value(self.settings_section + u'/port'))
+        self.https_port_spin_box.setValue(Settings().value(self.settings_section + u'/https port'))
+        self.address_edit.setText(Settings().value(self.settings_section + u'/ip address'))
+        self.twelve_hour = Settings().value(self.settings_section + u'/twelve hour')
         self.twelve_hour_check_box.setChecked(self.twelve_hour)
         shared_data = AppLocation.get_directory(AppLocation.SharedData)
         if not os.path.exists(os.path.join(shared_data, u'openlp.crt')) or \
@@ -217,29 +217,30 @@ class RemoteTab(SettingsTab):
             self.https_settings_group_box.setEnabled(False)
             self.https_error_label.setVisible(True)
         else:
-            self.https_settings_group_box.setChecked(Settings().value(self.settingsSection + u'/https enabled'))
+            self.https_settings_group_box.setChecked(Settings().value(self.settings_section + u'/https enabled'))
             self.https_settings_group_box.setEnabled(True)
             self.https_error_label.setVisible(False)
-        self.user_login_group_box.setChecked(Settings().value(self.settingsSection + u'/authentication enabled'))
-        self.user_id.setText(Settings().value(self.settingsSection + u'/user id'))
-        self.password.setText(Settings().value(self.settingsSection + u'/password'))
+        self.user_login_group_box.setChecked(Settings().value(self.settings_section + u'/authentication enabled'))
+        self.user_id.setText(Settings().value(self.settings_section + u'/user id'))
+        self.password.setText(Settings().value(self.settings_section + u'/password'))
         self.set_urls()
 
     def save(self):
         changed = False
-        if Settings().value(self.settingsSection + u'/ip address') != self.address_edit.text() or \
-                Settings().value(self.settingsSection + u'/port') != self.port_spin_box.value() or \
-                Settings().value(self.settingsSection + u'/https port') != self.https_port_spin_box.value() or \
-                Settings().value(self.settingsSection + u'/https enabled') != self.https_settings_group_box.isChecked():
+        if Settings().value(self.settings_section + u'/ip address') != self.address_edit.text() or \
+                Settings().value(self.settings_section + u'/port') != self.port_spin_box.value() or \
+                Settings().value(self.settings_section + u'/https port') != self.https_port_spin_box.value() or \
+                Settings().value(self.settings_section + u'/https enabled') != \
+                        self.https_settings_group_box.isChecked():
             changed = True
-        Settings().setValue(self.settingsSection + u'/port', self.port_spin_box.value())
-        Settings().setValue(self.settingsSection + u'/https port', self.https_port_spin_box.value())
-        Settings().setValue(self.settingsSection + u'/https enabled', self.https_settings_group_box.isChecked())
-        Settings().setValue(self.settingsSection + u'/ip address', self.address_edit.text())
-        Settings().setValue(self.settingsSection + u'/twelve hour', self.twelve_hour)
-        Settings().setValue(self.settingsSection + u'/authentication enabled', self.user_login_group_box.isChecked())
-        Settings().setValue(self.settingsSection + u'/user id', self.user_id.text())
-        Settings().setValue(self.settingsSection + u'/password', self.password.text())
+        Settings().setValue(self.settings_section + u'/port', self.port_spin_box.value())
+        Settings().setValue(self.settings_section + u'/https port', self.https_port_spin_box.value())
+        Settings().setValue(self.settings_section + u'/https enabled', self.https_settings_group_box.isChecked())
+        Settings().setValue(self.settings_section + u'/ip address', self.address_edit.text())
+        Settings().setValue(self.settings_section + u'/twelve hour', self.twelve_hour)
+        Settings().setValue(self.settings_section + u'/authentication enabled', self.user_login_group_box.isChecked())
+        Settings().setValue(self.settings_section + u'/user id', self.user_id.text())
+        Settings().setValue(self.settings_section + u'/password', self.password.text())
         if changed:
             Registry().execute(u'remotes_config_updated')
 

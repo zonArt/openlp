@@ -32,9 +32,9 @@ from PyQt4 import QtGui
 from openlp.core.lib import Settings, SettingsTab, UiStrings, translate
 
 
-class MediaQCheckBox(QtGui.QCheckBox):
+class MediaQ_check_box(QtGui.QCheckBox):
     """
-    MediaQCheckBox adds an extra property, playerName to the QCheckBox class.
+    MediaQ_check_box adds an extra property, playerName to the Q_check_box class.
     """
     def setPlayerName(self, name):
         self.playerName = name
@@ -51,36 +51,36 @@ class MediaTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'MediaTab')
         SettingsTab.setupUi(self)
-        self.advancedGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.advancedGroupBox.setObjectName(u'advancedGroupBox')
-        self.advancedLayout = QtGui.QVBoxLayout(self.advancedGroupBox)
-        self.advancedLayout.setObjectName(u'advancedLayout')
-        self.overridePlayerCheckBox = QtGui.QCheckBox(self.advancedGroupBox)
-        self.overridePlayerCheckBox.setObjectName(u'overridePlayerCheckBox')
-        self.advancedLayout.addWidget(self.overridePlayerCheckBox)
-        self.autoStartCheckBox = QtGui.QCheckBox(self.advancedGroupBox)
-        self.autoStartCheckBox.setObjectName(u'autoStartCheckBox')
-        self.advancedLayout.addWidget(self.autoStartCheckBox)
-        self.leftLayout.addWidget(self.advancedGroupBox)
-        self.leftLayout.addStretch()
-        self.rightLayout.addStretch()
+        self.advanced_group_box = QtGui.QGroupBox(self.left_column)
+        self.advanced_group_box.setObjectName(u'advanced_group_box')
+        self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
+        self.advanced_layout.setObjectName(u'advanced_layout')
+        self.override_player_check_box = QtGui.QCheckBox(self.advanced_group_box)
+        self.override_player_check_box.setObjectName(u'override_player_check_box')
+        self.advanced_layout.addWidget(self.override_player_check_box)
+        self.auto_start_check_box = QtGui.QCheckBox(self.advanced_group_box)
+        self.auto_start_check_box.setObjectName(u'auto_start_check_box')
+        self.advanced_layout.addWidget(self.auto_start_check_box)
+        self.left_layout.addWidget(self.advanced_group_box)
+        self.left_layout.addStretch()
+        self.right_layout.addStretch()
 
     def retranslateUi(self):
-        self.advancedGroupBox.setTitle(UiStrings().Advanced)
-        self.overridePlayerCheckBox.setText(translate('MediaPlugin.MediaTab', 'Allow media player to be overridden'))
-        self.autoStartCheckBox.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
+        self.advanced_group_box.setTitle(UiStrings().Advanced)
+        self.override_player_check_box.setText(translate('MediaPlugin.MediaTab', 'Allow media player to be overridden'))
+        self.auto_start_check_box.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
 
     def load(self):
-        self.overridePlayerCheckBox.setChecked(Settings().value(self.settingsSection + u'/override player'))
-        self.autoStartCheckBox.setChecked(Settings().value(self.settingsSection + u'/media auto start'))
+        self.override_player_check_box.setChecked(Settings().value(self.settings_section + u'/override player'))
+        self.auto_start_check_box.setChecked(Settings().value(self.settings_section + u'/media auto start'))
 
     def save(self):
-        setting_key = self.settingsSection + u'/override player'
-        if Settings().value(setting_key) != self.overridePlayerCheckBox.checkState():
-            Settings().setValue(setting_key, self.overridePlayerCheckBox.checkState())
+        setting_key = self.settings_section + u'/override player'
+        if Settings().value(setting_key) != self.override_player_check_box.checkState():
+            Settings().setValue(setting_key, self.override_player_check_box.checkState())
             self.settings_form.register_post_process(u'mediaitem_suffix_reset')
             self.settings_form.register_post_process(u'mediaitem_media_rebuild')
             self.settings_form.register_post_process(u'mediaitem_suffixes')
-        setting_key = self.settingsSection + u'/media auto start'
-        if Settings().value(setting_key) != self.autoStartCheckBox.checkState():
-            Settings().setValue(setting_key, self.autoStartCheckBox.checkState())
+        setting_key = self.settings_section + u'/media auto start'
+        if Settings().value(setting_key) != self.auto_start_check_box.checkState():
+            Settings().setValue(setting_key, self.auto_start_check_box.checkState())

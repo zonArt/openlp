@@ -99,7 +99,7 @@ class ImageMediaItem(MediaManagerItem):
             row_list = [item.row() for item in self.listView.selectedIndexes()]
             row_list.sort(reverse=True)
             self.application.set_busy_cursor()
-            self.main_window.displayProgressBar(len(row_list))
+            self.main_window.display_progress_bar(len(row_list))
             for row in row_list:
                 text = self.listView.item(row)
                 if text:
@@ -107,14 +107,14 @@ class ImageMediaItem(MediaManagerItem):
                 self.listView.takeItem(row)
                 self.main_window.increment_progress_bar()
             Settings.setValue(self.settingsSection + u'/images files', self.getFileList())
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
             self.application.set_normal_cursor()
         self.listView.blockSignals(False)
 
     def loadList(self, images, initialLoad=False):
         self.application.set_busy_cursor()
         if not initialLoad:
-            self.main_window.displayProgressBar(len(images))
+            self.main_window.display_progress_bar(len(images))
         # Sort the images by its filename considering language specific
         # characters.
         images.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
@@ -136,7 +136,7 @@ class ImageMediaItem(MediaManagerItem):
             if not initialLoad:
                 self.main_window.increment_progress_bar()
         if not initialLoad:
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
         self.application.set_normal_cursor()
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,

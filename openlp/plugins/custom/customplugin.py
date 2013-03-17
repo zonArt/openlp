@@ -46,7 +46,7 @@ __default_settings__ = {
         u'custom/last search type':  CustomSearch.Titles,
         u'custom/display footer': True,
         u'custom/add custom from service': True
-    }
+}
 
 
 class CustomPlugin(Plugin):
