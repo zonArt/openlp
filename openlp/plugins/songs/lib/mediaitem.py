@@ -104,7 +104,6 @@ class SongMediaItem(MediaManagerItem):
         self.addSearchToToolBar()
         # Signals and slots
         Registry().register_function(u'songs_load_list', self.on_song_list_load)
-        Registry().register_function(u'config_updated', self.config_update)
         Registry().register_function(u'songs_preview', self.onPreviewClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
@@ -120,6 +119,10 @@ class SongMediaItem(MediaManagerItem):
         self.searchTextEdit.setFocus()
 
     def config_update(self):
+        """
+        IS triggered when the songs config is updated
+        """
+        log.debug(u'config_updated')
         self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type')
         self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit')
         self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service',)
@@ -366,7 +369,7 @@ class SongMediaItem(MediaManagerItem):
                 QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             self.application.set_busy_cursor()
-            self.main_window.displayProgressBar(len(items))
+            self.main_window.display_progress_bar(len(items))
             for item in items:
                 item_id = item.data(QtCore.Qt.UserRole)
                 media_files = self.plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == item_id)
@@ -383,7 +386,7 @@ class SongMediaItem(MediaManagerItem):
                     log.exception(u'Could not remove directory: %s', save_path)
                 self.plugin.manager.delete_object(Song, item_id)
                 self.main_window.increment_progress_bar()
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
             self.application.set_normal_cursor()
             self.onSearchTextButtonClicked()
 

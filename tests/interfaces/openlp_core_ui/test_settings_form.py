@@ -27,6 +27,9 @@ class TestSettingsForm(TestCase):
         """
         Some pre-test setup required.
         """
+        self.dummy1 = MagicMock()
+        self.dummy2 = MagicMock()
+        self.dummy3 = MagicMock()
         self.desktop = MagicMock()
         self.desktop.primaryScreen.return_value = SCREEN[u'primary']
         self.desktop.screenCount.return_value = SCREEN[u'number']
@@ -108,3 +111,59 @@ class TestSettingsForm(TestCase):
         # WHEN testing the processing stack
         # THEN the processing stack should still have two items
         assert len(self.form.processes) == 2, u'No new processes should have been added to the stack'
+
+    def register_image_manager_trigger_test_one(self):
+        """
+        Test the triggering of the image manager rebuild event from image background change
+        """
+        # GIVEN: Three functions registered to be call
+        Registry().register_function(u'images_config_updated', self.dummy1)
+        Registry().register_function(u'config_screen_changed', self.dummy2)
+        Registry().register_function(u'images_regenerate', self.dummy3)
+
+        # WHEN: The Images have been changed and the form submitted
+        self.form.register_post_process(u'images_config_updated')
+        self.form.accept()
+
+        # THEN: images_regenerate should have been added.
+        assert self.dummy1.call_count == 1, u'dummy1 should have been called once'
+        assert self.dummy2.call_count == 0, u'dummy2 should not have been called at all'
+        assert self.dummy3.call_count == 1, u'dummy3 should have been called once'
+
+    def register_image_manager_trigger_test_two(self):
+        """
+        Test the triggering of the image manager rebuild event from screen dimension change
+        """
+        # GIVEN: Three functions registered to be call
+        Registry().register_function(u'images_config_updated', self.dummy1)
+        Registry().register_function(u'config_screen_changed', self.dummy2)
+        Registry().register_function(u'images_regenerate', self.dummy3)
+
+        # WHEN: The Images have been changed and the form submitted
+        self.form.register_post_process(u'config_screen_changed')
+        self.form.accept()
+
+        # THEN: images_regenerate should have been added.
+        assert self.dummy1.call_count == 0, u'dummy1 should not have been called at all'
+        assert self.dummy2.call_count == 1, u'dummy2 should have been called once'
+        assert self.dummy3.call_count == 1, u'dummy3 should have been called once'
+
+    def register_image_manager_trigger_test_three(self):
+        """
+        Test the triggering of the image manager rebuild event from image background change and a change to the
+        screen dimension.
+        """
+        # GIVEN: Three functions registered to be call
+        Registry().register_function(u'images_config_updated', self.dummy1)
+        Registry().register_function(u'config_screen_changed', self.dummy2)
+        Registry().register_function(u'images_regenerate', self.dummy3)
+
+        # WHEN: The Images have been changed and the form submitted
+        self.form.register_post_process(u'config_screen_changed')
+        self.form.register_post_process(u'images_config_updated')
+        self.form.accept()
+
+        # THEN: Images_regenerate should have been added.
+        assert self.dummy1.call_count == 1, u'dummy1 should have been called once'
+        assert self.dummy2.call_count == 1, u'dummy2 should have been called once'
+        assert self.dummy3.call_count == 1, u'dummy3 should have been called once'

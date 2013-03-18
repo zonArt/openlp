@@ -207,7 +207,7 @@ class ImageMediaItem(MediaManagerItem):
             'You must select an image or group to delete.')):
             item_list = self.listView.selectedItems()
             self.application.set_busy_cursor()
-            self.main_window.displayProgressBar(len(item_list))
+            self.main_window.display_progress_bar(len(item_list))
             for row_item in item_list:
                 if row_item:
                     item_data = row_item.data(0, QtCore.Qt.UserRole)
@@ -234,7 +234,7 @@ class ImageMediaItem(MediaManagerItem):
                             self.fill_groups_combobox(self.choose_group_form.group_combobox)
                             self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
                 self.main_window.increment_progress_bar()
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
             self.application.set_normal_cursor()
         self.listView.blockSignals(False)
 
@@ -323,7 +323,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         if not initial_load:
             self.application.set_busy_cursor()
-            self.main_window.displayProgressBar(len(images))
+            self.main_window.display_progress_bar(len(images))
         self.listView.clear()
         # Load the list of groups and add them to the treeView
         group_items = {}
@@ -356,7 +356,7 @@ class ImageMediaItem(MediaManagerItem):
             if not initial_load:
                 self.main_window.increment_progress_bar()
         if not initial_load:
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
         self.application.set_normal_cursor()
 
     def validateAndLoad(self, files, target_group=None):
@@ -446,7 +446,7 @@ class ImageMediaItem(MediaManagerItem):
             return
         # Initialize busy cursor and progress bar
         self.application.set_busy_cursor()
-        self.main_window.displayProgressBar(len(images))
+        self.main_window.display_progress_bar(len(images))
         # Save the new images in the database
         self.save_new_images_list(images, group_id=parent_group.id, reload_list=False)
         self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),

@@ -191,7 +191,7 @@ class ImageManager(QtCore.QObject):
         self.image_thread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
         self.stop_manager = False
-        Registry().register_function(u'config_updated', self.process_updates)
+        Registry().register_function(u'images_regenerate', self.process_updates)
 
     def update_display(self):
         """

@@ -214,7 +214,7 @@ class Plugin(QtCore.QObject):
         you need, and return it for integration into OpenLP.
         """
         if self.mediaItemClass:
-            self.mediaItem = self.mediaItemClass(self.main_window.mediaDockManager.media_dock, self)
+            self.mediaItem = self.mediaItemClass(self.main_window.media_dock_manager.media_dock, self)
 
     def upgrade_settings(self, settings):
         """
@@ -293,14 +293,14 @@ class Plugin(QtCore.QObject):
         """
         if self.mediaItem:
             self.mediaItem.initialise()
-            self.main_window.mediaDockManager.insert_dock(self.mediaItem, self.icon, self.weight)
+            self.main_window.media_dock_manager.insert_dock(self.mediaItem, self.icon, self.weight)
 
     def finalise(self):
         """
         Called by the plugin Manager to cleanup things.
         """
         if self.mediaItem:
-            self.main_window.mediaDockManager.remove_dock(self.mediaItem)
+            self.main_window.media_dock_manager.remove_dock(self.mediaItem)
 
     def app_startup(self):
         """
@@ -398,9 +398,11 @@ class Plugin(QtCore.QObject):
 
     def config_update(self):
         """
-        The plugin's config has changed
+        Called when Config is changed to restart values dependent on configuration.
         """
-        pass
+        log.info(u'config update processed')
+        if self.mediaItem:
+            self.mediaItem.config_update()
 
     def new_service_created(self):
         """

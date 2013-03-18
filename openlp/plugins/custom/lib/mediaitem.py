@@ -75,10 +75,13 @@ class CustomMediaItem(MediaManagerItem):
             self.onSearchTextButtonClicked)
         Registry().register_function(u'custom_load_list', self.loadList)
         Registry().register_function(u'custom_preview', self.onPreviewClick)
-        Registry().register_function(u'config_updated', self.config_updated)
         Registry().register_function(u'custom_create_from_service', self.create_from_service_item)
 
-    def config_updated(self):
+    def config_update(self):
+        """
+        Config has been updated so reload values
+        """
+        log.debug(u'Config loaded')
         self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service')
 
     def retranslateUi(self):
@@ -92,9 +95,9 @@ class CustomMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
+        self.searchTextEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settingsSection))
         self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.set_current_search_type(Settings().value( u'%s/last search type' % self.settingsSection))
-        self.config_updated()
+        self.config_update()
 
     def loadList(self, custom_slides, target_group=None):
         # Sort out what custom we want to select after loading the list.
