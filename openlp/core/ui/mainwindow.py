@@ -681,7 +681,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``message``
             The message to be displayed.
         """
-        self.application.splash.close()
+        if hasattr(self.application, u'splash'):
+            self.application.splash.close()
         QtGui.QMessageBox.critical(self, title, message)
 
     def warning_message(self, title, message):
@@ -694,7 +695,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``message``
             The message to be displayed.
         """
-        self.application.splash.close()
+        if hasattr(self.application, u'splash'):
+            self.application.splash.close()
         QtGui.QMessageBox.warning(self, title, message)
 
     def information_message(self, title, message):
@@ -707,7 +709,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``message``
             The message to be displayed.
         """
-        self.application.splash.close()
+        if hasattr(self.application, u'splash'):
+            self.application.splash.close()
         QtGui.QMessageBox.information(self, title, message)
 
     def onHelpWebSiteClicked(self):
