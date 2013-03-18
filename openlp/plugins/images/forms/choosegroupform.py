@@ -34,7 +34,7 @@ from openlp.plugins.images.forms.choosegroupdialog import Ui_ChooseGroupDialog
 
 class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
     """
-    Class documentation goes here.
+    This class implements the 'Choose group' form for the Images plugin.
     """
     def __init__(self, parent=None):
         """
@@ -44,6 +44,12 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         self.setupUi(self)
 
     def exec_(self, selected_group=None):
+        """
+        Show the form
+
+        ``selected_group``
+            The ID of the group that should be selected by default when showing the dialog
+        """
         if selected_group is not None:
             for i in range(self.group_combobox.count()):
                 if self.group_combobox.itemData(i) == selected_group:

@@ -36,7 +36,7 @@ from openlp.plugins.images.forms.addgroupdialog import Ui_AddGroupDialog
 
 class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
     """
-    Class documentation goes here.
+    This class implements the 'Add group' form for the Images plugin.
     """
     def __init__(self, parent=None):
         """
@@ -46,6 +46,18 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
         self.setupUi(self)
 
     def exec_(self, clear=True, show_top_level_group=False, selected_group=None):
+        """
+        Show the form
+
+        ``clear``
+            Set to False if the text input box should not be cleared when showing the dialog (default: True)
+
+        ``show_top_level_group``
+            Set to True when "-- Top level group --" should be showed as first item (default: False)
+
+        ``selected_group``
+            The ID of the group that should be selected by default when showing the dialog
+        """
         if clear:
             self.name_edit.clear()
         self.name_edit.setFocus()
@@ -59,6 +71,9 @@ class AddGroupForm(QtGui.QDialog, Ui_AddGroupDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
+        """
+        Override the accept() method from QDialog to make sure something is entered in the text input box
+        """
         if not self.name_edit.text():
             critical_error_message_box(message=translate('ImagePlugin.AddGroupForm',
                 'You need to type in a group name.'))
