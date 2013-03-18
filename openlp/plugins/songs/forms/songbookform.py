@@ -56,19 +56,19 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
             Clear the fields on the form before displaying it.
         """
         if clear:
-            self.nameEdit.clear()
-            self.publisherEdit.clear()
-        self.nameEdit.setFocus()
+            self.name_edit.clear()
+            self.publisher_edit.clear()
+        self.name_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
         """
         Override the inherited method to check that the name of the book has been typed in.
         """
-        if not self.nameEdit.text():
+        if not self.name_edit.text():
             critical_error_message_box(
                 message=translate('SongsPlugin.SongBookForm', 'You need to type in a name for the book.'))
-            self.nameEdit.setFocus()
+            self.name_edit.setFocus()
             return False
         else:
             return QtGui.QDialog.accept(self)

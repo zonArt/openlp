@@ -10,13 +10,16 @@ from openlp.plugins.songs.forms.authorsform import AuthorsForm
 
 
 class TestAuthorsForm(TestCase):
+    """
+    Test the AuthorsForm class
+    """
 
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = AuthorsForm()

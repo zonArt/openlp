@@ -53,18 +53,32 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         Execute the dialog.
         """
         if clear:
-            self.nameEdit.clear()
-        self.nameEdit.setFocus()
+            self.name_edit.clear()
+        self.name_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
         """
         Override the inherited method to check before we close.
         """
-        if not self.nameEdit.text():
+        if not self.name_edit.text():
             critical_error_message_box(message=translate('SongsPlugin.TopicsForm',
                 'You need to type in a topic name.'))
-            self.nameEdit.setFocus()
+            self.name_edit.setFocus()
             return False
         else:
             return QtGui.QDialog.accept(self)
+
+    def _get_name(self):
+        """
+        Return the name of the topic.
+        """
+        return self.name_edit.text()
+
+    def _set_name(self, value):
+        """
+        Set the topic name.
+        """
+        self.name_edit.setText(value)
+
+    name = property(_get_name, _set_name)

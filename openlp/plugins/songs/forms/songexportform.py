@@ -43,6 +43,7 @@ from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
 
 log = logging.getLogger(__name__)
 
+
 class SongExportForm(OpenLPWizard):
     """
     This is the Song Export Wizard, which allows easy exporting of Songs to the
@@ -60,7 +61,7 @@ class SongExportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard', u':/wizards/wizard_exportsong.bmp')
+        OpenLPWizard.__init__(self, parent, plugin, u'song_export_wizard', u':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
         Registry().register_function(u'openlp_stop_wizard', self.stop_export)
 
@@ -77,13 +78,7 @@ class SongExportForm(OpenLPWizard):
         """
         OpenLPWizard.setupUi(self, image)
 
-    def customInit(self):
-        """
-        Song wizard specific initialisation.
-        """
-        pass
-
-    def customSignals(self):
+    def custom_signals(self):
         """
         Song wizard specific signals.
         """
@@ -93,7 +88,7 @@ class SongExportForm(OpenLPWizard):
         self.checkButton.clicked.connect(self.onCheckButtonClicked)
         self.directoryButton.clicked.connect(self.onDirectoryButtonClicked)
 
-    def addCustomPages(self):
+    def add_custom_pages(self):
         """
         Add song wizard specific pages.
         """
