@@ -106,12 +106,12 @@ class SongUsagePlugin(Plugin):
         self.song_usage_menu.addSeparator()
         self.song_usage_menu.addAction(self.song_usage_report)
         self.song_usage_menu.addAction(self.song_usage_delete)
-        self.song_usage_active_button = QtGui.QToolButton(self.main_window.statusBar)
+        self.song_usage_active_button = QtGui.QToolButton(self.main_window.status_bar)
         self.song_usage_active_button.setCheckable(True)
         self.song_usage_active_button.setAutoRaise(True)
         self.song_usage_active_button.setStatusTip(translate('SongUsagePlugin', 'Toggle the tracking of song usage.'))
         self.song_usage_active_button.setObjectName(u'song_usage_active_button')
-        self.main_window.statusBar.insertPermanentWidget(1, self.song_usage_active_button)
+        self.main_window.status_bar.insertPermanentWidget(1, self.song_usage_active_button)
         self.song_usage_active_button.hide()
         # Signals and slots
         QtCore.QObject.connect(self.song_usage_status, QtCore.SIGNAL(u'visibilityChanged(bool)'),

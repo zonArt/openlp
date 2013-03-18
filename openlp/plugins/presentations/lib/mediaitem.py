@@ -151,7 +151,7 @@ class PresentationMediaItem(MediaManagerItem):
         titles = [os.path.split(file)[1] for file in currlist]
         self.application.set_busy_cursor()
         if not initialLoad:
-            self.main_window.displayProgressBar(len(files))
+            self.main_window.display_progress_bar(len(files))
         # Sort the presentations by its filename considering language specific characters.
         files.sort(cmp=locale_compare,
             key=lambda filename: os.path.split(unicode(filename))[1])
@@ -205,7 +205,7 @@ class PresentationMediaItem(MediaManagerItem):
                 item_name.setToolTip(file)
                 self.listView.addItem(item_name)
         if not initialLoad:
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
         self.application.set_normal_cursor()
 
     def onDeleteClick(self):
@@ -217,7 +217,7 @@ class PresentationMediaItem(MediaManagerItem):
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
             self.application.set_busy_cursor()
-            self.main_window.displayProgressBar(len(row_list))
+            self.main_window.display_progress_bar(len(row_list))
             for item in items:
                 filepath = unicode(item.data(QtCore.Qt.UserRole))
                 for cidx in self.controllers:
@@ -225,7 +225,7 @@ class PresentationMediaItem(MediaManagerItem):
                     doc.presentation_deleted()
                     doc.close_presentation()
                 self.main_window.increment_progress_bar()
-            self.main_window.finishedProgressBar()
+            self.main_window.finished_progress_bar()
             self.application.set_busy_cursor()
             for row in row_list:
                 self.listView.takeItem(row)

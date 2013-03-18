@@ -342,8 +342,7 @@ class Manager(object):
                 if try_count >= 2:
                     raise
 
-    def get_all_objects(self, object_class, filter_clause=None,
-        order_by_ref=None):
+    def get_all_objects(self, object_class, filter_clause=None, order_by_ref=None):
         """
         Returns all the objects from the database
 

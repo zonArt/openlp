@@ -49,7 +49,6 @@ class ImagePlugin(Plugin):
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)
-        Registry().execute(u'image_updated', self.image_updated)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -90,12 +89,12 @@ class ImagePlugin(Plugin):
         }
         self.setPluginUiTextStrings(tooltips)
 
-    def image_updated(self):
+    def config_update(self):
         """
-        Triggered by saving and changing the image border.  Sets the images in
-        image manager to require updates.  Actual update is triggered by the
-        last part of saving the config.
+        Triggered by saving and changing the image border.  Sets the images in image manager to require updates.
+        Actual update is triggered by the last part of saving the config.
         """
+        log.info(u'Images config_update')
         background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
         self.image_manager.update_images_border(ImageSource.ImagePlugin, background)
 

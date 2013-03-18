@@ -84,7 +84,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_delete_button.clicked.connect(self.on_verse_delete_button_clicked)
         self.verse_list_widget.itemClicked.connect(self.on_verse_list_view_clicked)
         self.verse_order_edit.textChanged.connect(self.on_verse_order_text_changed)
-        self.theme_add_button.clicked.connect(self.theme_manager.onAddTheme)
+        self.theme_add_button.clicked.connect(self.theme_manager.on_add_theme)
         self.maintenance_button.clicked.connect(self.on_maintenance_button_clicked)
         self.from_file_button.clicked.connect(self.on_audio_add_from_file_button_clicked)
         self.from_media_button.clicked.connect(self.on_audio_add_from_media_button_clicked)

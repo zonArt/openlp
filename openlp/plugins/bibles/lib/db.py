@@ -353,8 +353,7 @@ class BibleDB(QtCore.QObject, Manager):
                     book, book_id, language_id)
         return book_id
 
-    def get_book_ref_id_by_localised_name(self, book,
-        language_selection):
+    def get_book_ref_id_by_localised_name(self, book, language_selection):
         """
         Return the id of a named book.
 
@@ -362,19 +361,15 @@ class BibleDB(QtCore.QObject, Manager):
             The name of the book, according to the selected language.
 
         ``language_selection``
-            The language selection the user has chosen in the settings
-            section of the Bible.
+            The language selection the user has chosen in the settings section of the Bible.
         """
-        log.debug(u'get_book_ref_id_by_localised_name("%s", "%s")',
-            book, language_selection)
-        from openlp.plugins.bibles.lib import LanguageSelection, \
-            BibleStrings
+        log.debug(u'get_book_ref_id_by_localised_name("%s", "%s")', book, language_selection)
+        from openlp.plugins.bibles.lib import LanguageSelection, BibleStrings
         book_names = BibleStrings().BookNames
         # escape reserved characters
         book_escaped = book
         for character in RESERVED_CHARACTERS:
-            book_escaped = book_escaped.replace(
-                character, u'\\' + character)
+            book_escaped = book_escaped.replace(character, u'\\' + character)
         regex_book = re.compile(u'\s*%s\s*' % u'\s*'.join(
             book_escaped.split()), re.UNICODE | re.IGNORECASE)
         if language_selection == LanguageSelection.Bible:
@@ -382,8 +377,7 @@ class BibleDB(QtCore.QObject, Manager):
             if db_book:
                 return db_book.book_reference_id
         elif language_selection == LanguageSelection.Application:
-            books = filter(lambda key:
-                regex_book.match(unicode(book_names[key])), book_names.keys())
+            books = filter(lambda key: regex_book.match(unicode(book_names[key])), book_names.keys())
             books = filter(None, map(BiblesResourcesDB.get_book, books))
             for value in books:
                 if self.get_book_by_book_ref_id(value[u'id']):
@@ -391,8 +385,7 @@ class BibleDB(QtCore.QObject, Manager):
         elif language_selection == LanguageSelection.English:
             books = BiblesResourcesDB.get_books_like(book)
             if books:
-                book_list = filter(
-                    lambda value: regex_book.match(value[u'name']), books)
+                book_list = filter(lambda value: regex_book.match(value[u'name']), books)
                 if not book_list:
                     book_list = books
                 for value in book_list:
@@ -428,12 +421,12 @@ class BibleDB(QtCore.QObject, Manager):
                 log.debug(u'Book name corrected to "%s"', db_book.name)
                 if end_verse == -1:
                     end_verse = self.get_verse_count(book_id, chapter)
-                verses = self.session.query(Verse)\
-                    .filter_by(book_id=db_book.id)\
-                    .filter_by(chapter=chapter)\
-                    .filter(Verse.verse >= start_verse)\
-                    .filter(Verse.verse <= end_verse)\
-                    .order_by(Verse.verse)\
+                verses = self.session.query(Verse) \
+                    .filter_by(book_id=db_book.id) \
+                    .filter_by(chapter=chapter) \
+                    .filter(Verse.verse >= start_verse) \
+                    .filter(Verse.verse <= end_verse) \
+                    .order_by(Verse.verse) \
                     .all()
                 verse_list.extend(verses)
             else:
@@ -496,9 +489,9 @@ class BibleDB(QtCore.QObject, Manager):
             The chapter to get the verse count for.
         """
         log.debug(u'BibleDB.get_verse_count("%s", "%s")', book_ref_id, chapter)
-        count = self.session.query(func.max(Verse.verse)).join(Book)\
-            .filter(Book.book_reference_id==book_ref_id)\
-            .filter(Verse.chapter==chapter)\
+        count = self.session.query(func.max(Verse.verse)).join(Book) \
+            .filter(Book.book_reference_id == book_ref_id) \
+            .filter(Verse.chapter == chapter) \
             .scalar()
         if not count:
             return 0

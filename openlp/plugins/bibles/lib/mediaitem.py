@@ -44,6 +44,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
+
 class BibleSearch(object):
     """
     Enumeration class for the different search methods for the "quick search".
@@ -71,7 +72,6 @@ class BibleMediaItem(MediaManagerItem):
         self.second_search_results = {}
         self.checkSearchResult()
         Registry().register_function(u'bibles_load_list', self.reload_bibles)
-        Registry().register_function(u'config_updated', self.config_update)
 
     def __checkSecondBible(self, bible, second_bible):
         """

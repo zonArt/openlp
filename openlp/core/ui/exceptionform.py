@@ -86,6 +86,11 @@ try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
     WEBKIT_VERSION = u'-'
+try:
+    from openlp.core.ui.media.vlcplayer import VERSION
+    VLC_VERSION = VERSION
+except ImportError:
+    VLC_VERSION = u'-'
 
 
 from openlp.core.lib import UiStrings, Settings, translate
@@ -138,12 +143,15 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
             u'PySQLite: %s\n' % SQLITE_VERSION + \
             u'Mako: %s\n' % MAKO_VERSION + \
-            u'pyUNO bridge: %s\n' % UNO_VERSION
+            u'pyUNO bridge: %s\n' % UNO_VERSION + \
+            u'VLC: %s\n' % VLC_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system += u'Desktop: KDE SC\n'
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
                 system += u'Desktop: GNOME\n'
+            elif os.environ.get(u'DESKTOP_SESSION') == u'xfce':
+                system += u'Desktop: Xfce\n'
         return (openlp_version, description, traceback, system, libraries)
 
     def on_save_report_button_clicked(self):
@@ -182,8 +190,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def on_send_report_button_clicked(self):
         """
-        Opening systems default email client and inserting exception log and
-        system informations.
+        Opening systems default email client and inserting exception log and system information.
         """
         body = translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'

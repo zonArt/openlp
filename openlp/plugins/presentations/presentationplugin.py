@@ -110,7 +110,7 @@ class PresentationPlugin(Plugin):
         Create the Media Manager List
         """
         self.mediaItem = PresentationMediaItem(
-            self.main_window.mediaDockManager.media_dock, self, self.icon, self.controllers)
+            self.main_window.media_dock_manager.media_dock, self, self.icon, self.controllers)
 
     def registerControllers(self, controller):
         """
@@ -132,13 +132,12 @@ class PresentationPlugin(Plugin):
             if filename.endswith(u'controller.py') and not filename == 'presentationcontroller.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
-                    modulename = u'openlp.plugins.presentations.lib.' + os.path.splitext(filename)[0]
-                    log.debug(u'Importing controller %s', modulename)
+                    module_name = u'openlp.plugins.presentations.lib.' + os.path.splitext(filename)[0]
+                    log.debug(u'Importing controller %s', module_name)
                     try:
-                        __import__(modulename, globals(), locals(), [])
+                        __import__(module_name, globals(), locals(), [])
                     except ImportError:
-                        log.warn(u'Failed to import %s on path %s',
-                            modulename, path)
+                        log.warn(u'Failed to import %s on path %s', module_name, path)
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)
