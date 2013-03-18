@@ -370,6 +370,7 @@ class ImageMediaItem(MediaManagerItem):
         ``target_group``
             The QTreeWidgetItem of the group that will be the parent of the added files
         """
+        self.application.set_normal_cursor()
         self.loadList(files, target_group)
         last_dir = os.path.split(unicode(files[0]))[0]
         Settings().setValue(self.settingsSection + u'/last directory', last_dir)
@@ -387,8 +388,6 @@ class ImageMediaItem(MediaManagerItem):
         ``initial_load``
             When set to False, the busy cursor and progressbar will be shown while loading images
         """
-        self.application.set_busy_cursor()
-        self.main_window.displayProgressBar(len(images))
         if target_group is None:
             # Find out if a group must be pre-selected
             preselect_group = None
@@ -445,6 +444,9 @@ class ImageMediaItem(MediaManagerItem):
         # If no valid parent group is found, do nothing
         if not isinstance(parent_group, ImageGroups):
             return
+        # Initialize busy cursor and progress bar
+        self.application.set_busy_cursor()
+        self.main_window.displayProgressBar(len(images))
         # Save the new images in the database
         self.save_new_images_list(images, group_id=parent_group.id, reload_list=False)
         self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
@@ -584,32 +586,18 @@ class ImageMediaItem(MediaManagerItem):
             service_item.add_from_image(filename, name, background)
         return True
 
-    def __checkObject(self, objects, newObject, edit):
+    def check_group_exists(self, new_group):
         """
-        Utility method to check for an existing object.
+        Returns *True* if the given Group already exists in the database, otherwise *False*.
 
-        ``edit``
-            If we edit an item, this should be *True*.
+        ``new_group``
+            The ImageGroups object that contains the name of the group that will be checked
         """
-        if objects:
-            # If we edit an existing object, we need to make sure that we do
-            # not return False when nothing has changed.
-            if edit:
-                for object in objects:
-                    if object.id != newObject.id:
-                        return False
-                return True
-            else:
-                return False
-        else:
+        groups = self.manager.get_all_objects(ImageGroups, ImageGroups.group_name == new_group.group_name)
+        if groups:
             return True
-
-    def checkGroupName(self, newGroup, edit=False):
-        """
-        Returns *False* if the given Group already exists, otherwise *True*.
-        """
-        groups = self.manager.get_all_objects(ImageGroups, ImageGroups.group_name == newGroup.group_name)
-        return self.__checkObject(groups, newGroup, edit)
+        else:
+            return False
 
     def onAddGroupClick(self):
         """
@@ -630,7 +618,7 @@ class ImageMediaItem(MediaManagerItem):
             new_group = ImageGroups.populate(parent_id=self.add_group_form.parent_group_combobox.itemData(
                 self.add_group_form.parent_group_combobox.currentIndex(), QtCore.Qt.UserRole),
                 group_name=self.add_group_form.name_edit.text())
-            if self.checkGroupName(new_group):
+            if not self.check_group_exists(new_group):
                 if self.manager.save_object(new_group):
                     self.loadFullList(self.manager.get_all_objects(ImageFilenames,
                         order_by_ref=ImageFilenames.filename))
