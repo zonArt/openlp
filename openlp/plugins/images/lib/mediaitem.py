@@ -227,7 +227,7 @@ class ImageMediaItem(MediaManagerItem):
                             QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
                             self.recursively_delete_group(item_data)
                             self.manager.delete_object(ImageGroups, row_item.data(0, QtCore.Qt.UserRole).id)
-                            if item_data.parent_id is 0:
+                            if item_data.parent_id == 0:
                                 self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
                             else:
                                 row_item.parent().removeChild(row_item)
@@ -256,7 +256,7 @@ class ImageMediaItem(MediaManagerItem):
             group.setText(0, image_group.group_name)
             group.setData(0, QtCore.Qt.UserRole, image_group)
             group.setIcon(0, folder_icon)
-            if parent_group_id is 0:
+            if parent_group_id == 0:
                 self.listView.addTopLevelItem(group)
             else:
                 group_list[parent_group_id].addChild(group)
@@ -276,7 +276,7 @@ class ImageMediaItem(MediaManagerItem):
         ``prefix``
             A string containing the prefix that will be added in front of the groupname for each level of the tree
         """
-        if parent_group_id is 0:
+        if parent_group_id == 0:
             combobox.clear()
             combobox.top_level_group_added = False
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
@@ -349,7 +349,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setIcon(0, icon)
             item_name.setToolTip(0, imageFile.filename)
             item_name.setData(0, QtCore.Qt.UserRole, imageFile)
-            if imageFile.group_id is 0:
+            if imageFile.group_id == 0:
                 self.listView.addTopLevelItem(item_name)
             else:
                 group_items[imageFile.group_id].addChild(item_name)
@@ -392,7 +392,7 @@ class ImageMediaItem(MediaManagerItem):
             # Find out if a group must be pre-selected
             preselect_group = None
             selected_items = self.listView.selectedItems()
-            if len(selected_items) > 0:
+            if selected_items:
                 selected_item = selected_items[0]
                 if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
                     selected_item = selected_item.parent()
@@ -475,7 +475,7 @@ class ImageMediaItem(MediaManagerItem):
             imageFile.filename = unicode(filename)
             self.manager.save_object(imageFile)
             self.main_window.increment_progress_bar()
-        if reload_list:
+        if reload_list and images_list:
             self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
 
     def dnd_move_internal(self, target):
@@ -606,7 +606,7 @@ class ImageMediaItem(MediaManagerItem):
         # Find out if a group must be pre-selected
         preselect_group = 0
         selected_items = self.listView.selectedItems()
-        if len(selected_items) > 0:
+        if selected_items:
             selected_item = selected_items[0]
             if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
                 selected_item = selected_item.parent()

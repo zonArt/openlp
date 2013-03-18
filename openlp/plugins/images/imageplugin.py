@@ -75,7 +75,7 @@ class ImagePlugin(Plugin):
         Plugin.app_startup(self)
         # Convert old settings-based image list to the database
         files_from_config = Settings().get_files_from_config(self)
-        if len(files_from_config) > 0:
+        if files_from_config:
             log.debug(u'Importing images list from old config: %s' % files_from_config)
             self.mediaItem.save_new_images_list(files_from_config)
 
@@ -87,7 +87,7 @@ class ImagePlugin(Plugin):
             The Settings object containing the old settings.
         """
         files_from_config = settings.get_files_from_config(self)
-        if len(files_from_config) > 0:
+        if files_from_config:
             log.debug(u'Importing images list from old config: %s' % files_from_config)
             self.mediaItem.save_new_images_list(files_from_config)
 
