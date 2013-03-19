@@ -52,7 +52,7 @@ class ImageMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = u'images/image'
         MediaManagerItem.__init__(self, parent, plugin)
-        self.quickPreviewAllowed = True
+        self.quick_preview_allowed = True
         self.hasSearch = True
         self.manager = plugin.manager
         self.choose_group_form = ChooseGroupForm(self)
@@ -61,13 +61,13 @@ class ImageMediaItem(MediaManagerItem):
         self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
         Registry().register_function(u'live_theme_changed', self.live_theme_changed)
         # Allow DnD from the desktop
-        self.listView.activateDnD()
+        self.list_view.activateDnD()
 
     def retranslateUi(self):
-        self.onNewPrompt = translate('ImagePlugin.MediaItem',
+        self.on_new_prompt = translate('ImagePlugin.MediaItem',
             'Select Image(s)')
         file_formats = get_images_filter()
-        self.onNewFileMasks = u'%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
+        self.on_new_file_masks = u'%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
         self.addGroupAction.setText(UiStrings().AddGroup)
         self.addGroupAction.setToolTip(UiStrings().AddGroup)
         self.replaceAction.setText(UiStrings().ReplaceBG)
@@ -75,104 +75,107 @@ class ImageMediaItem(MediaManagerItem):
         self.resetAction.setText(UiStrings().ResetBG)
         self.resetAction.setToolTip(UiStrings().ResetLiveBG)
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-        self.hasFileIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = False
-        self.addToServiceItem = True
+    def required_icons(self):
+        """
+        Set which icons the media manager tab should show
+        """
+        MediaManagerItem.required_icons(self)
+        self.has_file_icon = True
+        self.has_new_icon = False
+        self.has_edit_icon = False
+        self.add_to_service_item = True
 
     def initialise(self):
         log.debug(u'initialise')
-        self.listView.clear()
-        self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.listView.setIndentation(self.listView.defaultIndentation)
-        self.listView.allow_internal_dnd = True
+        self.list_view.clear()
+        self.list_view.setIconSize(QtCore.QSize(88, 50))
+        self.list_view.setIndentation(self.list_view.defaultIndentation)
+        self.list_view.allow_internal_dnd = True
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Load images from the database
         self.loadFullList(
             self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename), initial_load=True)
 
-    def addListViewToToolBar(self):
+    def add_list_view_to_toolbar(self):
         """
         Creates the main widget for listing items the media item is tracking.
-        This method overloads MediaManagerItem.addListViewToToolBar
+        This method overloads MediaManagerItem.add_list_view_to_toolbar
         """
         # Add the List widget
-        self.listView = TreeWidgetWithDnD(self, self.plugin.name)
-        self.listView.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.listView.setAlternatingRowColors(True)
-        self.listView.setObjectName(u'%sTreeView' % self.plugin.name)
+        self.list_view = TreeWidgetWithDnD(self, self.plugin.name)
+        self.list_view.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.list_view.setAlternatingRowColors(True)
+        self.list_view.setObjectName(u'%sTreeView' % self.plugin.name)
         # Add to pageLayout
-        self.pageLayout.addWidget(self.listView)
+        self.page_layout.addWidget(self.list_view)
         # define and add the context menu
-        self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        if self.hasEditIcon:
-            create_widget_action(self.listView,
+        self.list_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        if self.has_edit_icon:
+            create_widget_action(self.list_view,
                 text=self.plugin.get_string(StringContent.Edit)[u'title'],
                 icon=u':/general/general_edit.png',
-                triggers=self.onEditClick)
-            create_widget_action(self.listView, separator=True)
-        if self.hasDeleteIcon:
-            create_widget_action(self.listView,
+                triggers=self.on_edit_click)
+            create_widget_action(self.list_view, separator=True)
+        if self.has_delete_icon:
+            create_widget_action(self.list_view,
                 text=self.plugin.get_string(StringContent.Delete)[u'title'],
                 icon=u':/general/general_delete.png',
-                shortcuts=[QtCore.Qt.Key_Delete], triggers=self.onDeleteClick)
-            create_widget_action(self.listView, separator=True)
-        create_widget_action(self.listView,
+                shortcuts=[QtCore.Qt.Key_Delete], triggers=self.on_delete_click)
+            create_widget_action(self.list_view, separator=True)
+        create_widget_action(self.list_view,
             text=self.plugin.get_string(StringContent.Preview)[u'title'],
             icon=u':/general/general_preview.png',
             shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
-            triggers=self.onPreviewClick)
-        create_widget_action(self.listView,
+            triggers=self.on_preview_click)
+        create_widget_action(self.list_view,
             text=self.plugin.get_string(StringContent.Live)[u'title'],
             icon=u':/general/general_live.png',
             shortcuts=[QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter,
             QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return],
-            triggers=self.onLiveClick)
-        create_widget_action(self.listView,
+            triggers=self.on_live_click)
+        create_widget_action(self.list_view,
             text=self.plugin.get_string(StringContent.Service)[u'title'],
             icon=u':/general/general_add.png',
             shortcuts=[QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
-            triggers=self.onAddClick)
-        if self.addToServiceItem:
-            create_widget_action(self.listView, separator=True)
-            create_widget_action(self.listView,
+            triggers=self.on_add_click)
+        if self.add_to_service_item:
+            create_widget_action(self.list_view, separator=True)
+            create_widget_action(self.list_view,
                 text=translate('OpenLP.MediaManagerItem', '&Add to selected Service Item'),
                 icon=u':/general/general_add.png',
-                triggers=self.onAddEditClick)
-        self.addCustomContextActions()
-        # Create the context menu and add all actions from the listView.
+                triggers=self.on_add_edit_click)
+        self.add_custom_context_actions()
+        # Create the context menu and add all actions from the list_view.
         self.menu = QtGui.QMenu()
-        self.menu.addActions(self.listView.actions())
-        self.listView.doubleClicked.connect(self.onDoubleClicked)
-        self.listView.itemSelectionChanged.connect(self.onSelectionChange)
-        self.listView.customContextMenuRequested.connect(self.contextMenu)
-        self.listView.addAction(self.replaceAction)
+        self.menu.addActions(self.list_view.actions())
+        self.list_view.doubleClicked.connect(self.on_double_clicked)
+        self.list_view.itemSelectionChanged.connect(self.on_selection_change)
+        self.list_view.customContextMenuRequested.connect(self.context_menu)
+        self.list_view.addAction(self.replaceAction)
 
-    def addCustomContextActions(self):
+    def add_custom_context_actions(self):
         """
         Add custom actions to the context menu
         """
-        create_widget_action(self.listView, separator=True)
-        create_widget_action(self.listView,
+        create_widget_action(self.list_view, separator=True)
+        create_widget_action(self.list_view,
             text=UiStrings().AddGroup,
             icon=u':/images/image_new_group.png',
             triggers=self.onAddGroupClick)
-        create_widget_action(self.listView,
+        create_widget_action(self.list_view,
             text=self.plugin.get_string(StringContent.Load)[u'tooltip'],
             icon=u':/general/general_open.png',
-            triggers=self.onFileClick)
+            triggers=self.on_file_click)
 
-    def addStartHeaderBar(self):
+    def add_start_header_bar(self):
         """
         Add custom buttons to the start of the toolbar
         """
         self.addGroupAction = self.toolbar.add_toolbar_action(u'addGroupAction',
             icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
 
-    def addEndHeaderBar(self):
+    def add_end_header_bar(self):
         """
         Add custom buttons to the end of the toolbar
         """
@@ -197,15 +200,15 @@ class ImageMediaItem(MediaManagerItem):
             self.recursively_delete_group(group)
             self.manager.delete_object(ImageGroups, group.id)
 
-    def onDeleteClick(self):
+    def on_delete_click(self):
         """
         Remove an image item from the list
         """
         # Turn off auto preview triggers.
-        self.listView.blockSignals(True)
-        if check_item_selected(self.listView, translate('ImagePlugin.MediaItem',
+        self.list_view.blockSignals(True)
+        if check_item_selected(self.list_view, translate('ImagePlugin.MediaItem',
             'You must select an image or group to delete.')):
-            item_list = self.listView.selectedItems()
+            item_list = self.list_view.selectedItems()
             self.application.set_busy_cursor()
             self.main_window.display_progress_bar(len(item_list))
             for row_item in item_list:
@@ -214,12 +217,12 @@ class ImageMediaItem(MediaManagerItem):
                     if isinstance(item_data, ImageFilenames):
                         delete_file(os.path.join(self.servicePath, row_item.text(0)))
                         if item_data.group_id == 0:
-                            self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
+                            self.list_view.takeTopLevelItem(self.list_view.indexOfTopLevelItem(row_item))
                         else:
                             row_item.parent().removeChild(row_item)
                         self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
                     elif isinstance(item_data, ImageGroups):
-                        if QtGui.QMessageBox.question(self.listView.parent(),
+                        if QtGui.QMessageBox.question(self.list_view.parent(),
                             translate('ImagePlugin.MediaItem', 'Remove group'),
                             translate('ImagePlugin.MediaItem',
                             'Are you sure you want to remove "%s" and everything in it?') % item_data.group_name,
@@ -228,7 +231,7 @@ class ImageMediaItem(MediaManagerItem):
                             self.recursively_delete_group(item_data)
                             self.manager.delete_object(ImageGroups, row_item.data(0, QtCore.Qt.UserRole).id)
                             if item_data.parent_id == 0:
-                                self.listView.takeTopLevelItem(self.listView.indexOfTopLevelItem(row_item))
+                                self.list_view.takeTopLevelItem(self.list_view.indexOfTopLevelItem(row_item))
                             else:
                                 row_item.parent().removeChild(row_item)
                             self.fill_groups_combobox(self.choose_group_form.group_combobox)
@@ -236,7 +239,7 @@ class ImageMediaItem(MediaManagerItem):
                 self.main_window.increment_progress_bar()
             self.main_window.finished_progress_bar()
             self.application.set_normal_cursor()
-        self.listView.blockSignals(False)
+        self.list_view.blockSignals(False)
 
     def add_sub_groups(self, group_list, parent_group_id):
         """
@@ -257,7 +260,7 @@ class ImageMediaItem(MediaManagerItem):
             group.setData(0, QtCore.Qt.UserRole, image_group)
             group.setIcon(0, folder_icon)
             if parent_group_id == 0:
-                self.listView.addTopLevelItem(group)
+                self.list_view.addTopLevelItem(group)
             else:
                 group_list[parent_group_id].addChild(group)
             group_list[image_group.id] = group
@@ -297,7 +300,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         return_value = False
         if root_item is None:
-            root_item = self.listView.invisibleRootItem()
+            root_item = self.list_view.invisibleRootItem()
         for i in range(root_item.childCount()):
             child = root_item.child(i)
             if self.expand_group(group_id, child):
@@ -324,7 +327,7 @@ class ImageMediaItem(MediaManagerItem):
         if not initial_load:
             self.application.set_busy_cursor()
             self.main_window.display_progress_bar(len(images))
-        self.listView.clear()
+        self.list_view.clear()
         # Load the list of groups and add them to the treeView
         group_items = {}
         self.add_sub_groups(group_items, parent_group_id=0)
@@ -350,7 +353,7 @@ class ImageMediaItem(MediaManagerItem):
             item_name.setToolTip(0, imageFile.filename)
             item_name.setData(0, QtCore.Qt.UserRole, imageFile)
             if imageFile.group_id == 0:
-                self.listView.addTopLevelItem(item_name)
+                self.list_view.addTopLevelItem(item_name)
             else:
                 group_items[imageFile.group_id].addChild(item_name)
             if not initial_load:
@@ -359,7 +362,7 @@ class ImageMediaItem(MediaManagerItem):
             self.main_window.finished_progress_bar()
         self.application.set_normal_cursor()
 
-    def validateAndLoad(self, files, target_group=None):
+    def validate_and_load(self, files, target_group=None):
         """
         Process a list for files either from the File Dialog or from Drag and Drop.
         This method is overloaded from MediaManagerItem.
@@ -371,11 +374,11 @@ class ImageMediaItem(MediaManagerItem):
             The QTreeWidgetItem of the group that will be the parent of the added files
         """
         self.application.set_normal_cursor()
-        self.loadList(files, target_group)
+        self.load_list(files, target_group)
         last_dir = os.path.split(unicode(files[0]))[0]
         Settings().setValue(self.settings_section + u'/last directory', last_dir)
 
-    def loadList(self, images, target_group=None, initial_load=False):
+    def load_list(self, images, target_group=None, initial_load=False):
         """
         Add new images to the database. This method is called when adding images using the Add button or DnD.
 
@@ -391,7 +394,7 @@ class ImageMediaItem(MediaManagerItem):
         if target_group is None:
             # Find out if a group must be pre-selected
             preselect_group = None
-            selected_items = self.listView.selectedItems()
+            selected_items = self.list_view.selectedItems()
             if selected_items:
                 selected_item = selected_items[0]
                 if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
@@ -485,14 +488,14 @@ class ImageMediaItem(MediaManagerItem):
         ``target``
             This contains the QTreeWidget that is the target of the DnD action
         """
-        items_to_move = self.listView.selectedItems()
+        items_to_move = self.list_view.selectedItems()
         # Determine group to move images to
         target_group = target
         if target_group is not None and isinstance(target_group.data(0, QtCore.Qt.UserRole), ImageFilenames):
             target_group = target.parent()
         # Move to toplevel
         if target_group is None:
-            target_group = self.listView.invisibleRootItem()
+            target_group = self.list_view.invisibleRootItem()
             target_group.setData(0, QtCore.Qt.UserRole, ImageGroups())
             target_group.data(0, QtCore.Qt.UserRole).id = 0
         # Move images in the treeview
@@ -502,7 +505,7 @@ class ImageMediaItem(MediaManagerItem):
                 if isinstance(item.parent(), QtGui.QTreeWidgetItem):
                     item.parent().removeChild(item)
                 else:
-                    self.listView.invisibleRootItem().removeChild(item)
+                    self.list_view.invisibleRootItem().removeChild(item)
                 target_group.addChild(item)
                 item.setSelected(True)
                 item_data = item.data(0, QtCore.Qt.UserRole)
@@ -524,13 +527,16 @@ class ImageMediaItem(MediaManagerItem):
         image_items.sort(cmp=locale_compare, key=lambda item: item.text(0))
         target_group.addChildren(image_items)
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+    def generate_slide_data(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
+        """
+        Generate the slide data. Needs to be implemented by the plugin.
+        """
         background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))
         if item:
             items = [item]
         else:
-            items = self.listView.selectedItems()
+            items = self.list_view.selectedItems()
             if not items:
                 return False
         # Determine service item title
@@ -605,7 +611,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         # Find out if a group must be pre-selected
         preselect_group = 0
-        selected_items = self.listView.selectedItems()
+        selected_items = self.list_view.selectedItems()
         if selected_items:
             selected_item = selected_items[0]
             if isinstance(selected_item.data(0, QtCore.Qt.UserRole), ImageFilenames):
@@ -649,10 +655,10 @@ class ImageMediaItem(MediaManagerItem):
         """
         Called to replace Live backgound with the image selected.
         """
-        if check_item_selected(self.listView,
+        if check_item_selected(self.list_view,
                 translate('ImagePlugin.MediaItem', 'You must select an image to replace the background with.')):
             background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))
-            bitem = self.listView.selectedItems()[0]
+            bitem = self.list_view.selectedItems()[0]
             if not isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageFilenames):
                 # Only continue when an image is selected
                 return

@@ -525,7 +525,7 @@ class HttpConnection(object):
             return HttpResponse(code=u'400 Bad Request')
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
-            plugin.media_item.goLive(id, remote=True)
+            plugin.media_item.go_live(id, remote=True)
         return HttpResponse(code=u'200 OK')
 
     def add_to_service(self, plugin_name):
@@ -539,7 +539,7 @@ class HttpConnection(object):
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
             item_id = plugin.media_item.createItemFromId(id)
-            plugin.media_item.addToService(item_id, remote=True)
+            plugin.media_item.add_to_service(item_id, remote=True)
         return HttpResponse(code=u'200 OK')
 
     def send_response(self, response):

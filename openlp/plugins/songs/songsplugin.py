@@ -167,7 +167,7 @@ class SongsPlugin(Plugin):
             clean_song(self.manager, song)
             progress_dialog.setValue(number + 1)
         self.manager.save_objects(songs)
-        self.media_item.onSearchTextButtonClicked()
+        self.media_item.on_search_text_button_clicked()
 
     def on_song_import_item_clicked(self):
         if self.media_item:
@@ -275,7 +275,7 @@ class SongsPlugin(Plugin):
             importer.doImport(progress)
             self.application.process_events()
         progress.setValue(song_count)
-        self.media_item.onSearchTextButtonClicked()
+        self.media_item.on_search_text_button_clicked()
 
     def finalise(self):
         """

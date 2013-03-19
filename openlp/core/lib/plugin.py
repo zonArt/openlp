@@ -276,9 +276,9 @@ class Plugin(QtCore.QObject):
         """
         log.debug(u'process_add_service_event event called for plugin %s' % self.name)
         if replace:
-            self.media_item.onAddEditClick()
+            self.media_item.on_add_edit_click()
         else:
-            self.media_item.onAddClick()
+            self.media_item.on_add_click()
 
     def about(self):
         """

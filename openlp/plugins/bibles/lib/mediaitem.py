@@ -66,21 +66,21 @@ class BibleMediaItem(MediaManagerItem):
         MediaManagerItem.__init__(self, parent, plugin)
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
-        self.quickPreviewAllowed = True
+        self.quick_preview_allowed = True
         self.hasSearch = True
         self.search_results = {}
         self.second_search_results = {}
-        self.checkSearchResult()
+        self.check_search_result()
         Registry().register_function(u'bibles_load_list', self.reload_bibles)
 
     def __checkSecondBible(self, bible, second_bible):
         """
         Check if the first item is a second bible item or not.
         """
-        bitem = self.listView.item(0)
+        bitem = self.list_view.item(0)
         if not bitem.flags() & QtCore.Qt.ItemIsSelectable:
             # The item is the "No Search Results" item.
-            self.listView.clear()
+            self.list_view.clear()
             self.displayResults(bible, second_bible)
             return
         else:
@@ -92,7 +92,7 @@ class BibleMediaItem(MediaManagerItem):
                 'You cannot combine single and dual Bible verse search results. '
                 'Do you want to delete your search results and start a new search?'),
             parent=self, question=True) == QtGui.QMessageBox.Yes:
-            self.listView.clear()
+            self.list_view.clear()
             self.displayResults(bible, second_bible)
 
     def _decodeQtObject(self, bitem, key):
@@ -100,13 +100,16 @@ class BibleMediaItem(MediaManagerItem):
         obj = reference[unicode(key)]
         return unicode(obj).strip()
 
-    def requiredIcons(self):
-        MediaManagerItem.requiredIcons(self)
-        self.hasImportIcon = True
-        self.hasNewIcon = False
-        self.hasEditIcon = True
-        self.hasDeleteIcon = True
-        self.addToServiceItem = False
+    def required_icons(self):
+        """
+        Set which icons the media manager tab should show
+        """
+        MediaManagerItem.required_icons(self)
+        self.has_import_icon = True
+        self.has_new_icon = False
+        self.has_edit_icon = True
+        self.has_delete_icon = True
+        self.add_to_service_item = False
 
     def addSearchTab(self, prefix, name):
         self.searchTabBar.addTab(name)
@@ -152,19 +155,19 @@ class BibleMediaItem(MediaManagerItem):
         styleComboBox = create_horizontal_adjusting_combo_box(tab, prefix + u'StyleComboBox')
         styleComboBox.addItems([u'', u'', u''])
         layout.addWidget(styleComboBox, idx + 2, 1, 1, 2)
-        searchButtonLayout = QtGui.QHBoxLayout()
-        searchButtonLayout.setObjectName(prefix + u'SearchButtonLayout')
-        searchButtonLayout.addStretch()
+        search_button_layout = QtGui.QHBoxLayout()
+        search_button_layout.setObjectName(prefix + u'search_button_layout')
+        search_button_layout.addStretch()
         lockButton = QtGui.QToolButton(tab)
         lockButton.setIcon(self.unlockIcon)
         lockButton.setCheckable(True)
         lockButton.setObjectName(prefix + u'LockButton')
-        searchButtonLayout.addWidget(lockButton)
+        search_button_layout.addWidget(lockButton)
         searchButton = QtGui.QPushButton(tab)
         searchButton.setObjectName(prefix + u'SearchButton')
-        searchButtonLayout.addWidget(searchButton)
-        layout.addLayout(searchButtonLayout, idx + 3, 1, 1, 2)
-        self.pageLayout.addWidget(tab)
+        search_button_layout.addWidget(searchButton)
+        layout.addLayout(search_button_layout, idx + 3, 1, 1, 2)
+        self.page_layout.addWidget(tab)
         tab.setVisible(False)
         lockButton.toggled.connect(self.onLockButtonToggled)
         setattr(self, prefix + u'VersionLabel', versionLabel)
@@ -174,14 +177,14 @@ class BibleMediaItem(MediaManagerItem):
         setattr(self, prefix + u'StyleLabel', styleLabel)
         setattr(self, prefix + u'StyleComboBox', styleComboBox)
         setattr(self, prefix + u'LockButton', lockButton)
-        setattr(self, prefix + u'SearchButtonLayout', searchButtonLayout)
+        setattr(self, prefix + u'SearchButtonLayout', search_button_layout)
         setattr(self, prefix + u'SearchButton', searchButton)
 
-    def addEndHeaderBar(self):
+    def add_end_header_bar(self):
         self.searchTabBar = QtGui.QTabBar(self)
         self.searchTabBar.setExpanding(False)
         self.searchTabBar.setObjectName(u'searchTabBar')
-        self.pageLayout.addWidget(self.searchTabBar)
+        self.page_layout.addWidget(self.searchTabBar)
         # Add the Quick Search tab.
         self.addSearchTab(u'quick', translate('BiblesPlugin.MediaItem', 'Quick'))
         self.quickSearchLabel = QtGui.QLabel(self.quickTab)
@@ -468,7 +471,7 @@ class BibleMediaItem(MediaManagerItem):
         if self.import_wizard.exec_():
             self.reload_bibles()
 
-    def onEditClick(self):
+    def on_edit_click(self):
         if self.quickTab.isVisible():
             bible = self.quickVersionComboBox.currentText()
         elif self.advancedTab.isVisible():
@@ -479,7 +482,7 @@ class BibleMediaItem(MediaManagerItem):
             if self.editBibleForm.exec_():
                 self.reload_bibles()
 
-    def onDeleteClick(self):
+    def on_delete_click(self):
         if self.quickTab.isVisible():
             bible = self.quickVersionComboBox.currentText()
         elif self.advancedTab.isVisible():
@@ -628,13 +631,13 @@ class BibleMediaItem(MediaManagerItem):
         if second_bible:
             self.second_search_results = self.plugin.manager.get_verses(second_bible, versetext, book_ref_id)
         if not self.advancedLockButton.isChecked():
-            self.listView.clear()
-        if self.listView.count() != 0:
+            self.list_view.clear()
+        if self.list_view.count() != 0:
             self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
-        self.checkSearchResult()
+        self.check_search_result()
         self.application.set_normal_cursor()
 
     def onQuickSearchButton(self):
@@ -684,13 +687,13 @@ class BibleMediaItem(MediaManagerItem):
                 self.search_results = new_search_results
                 self.second_search_results = bibles[second_bible].get_verses(text)
         if not self.quickLockButton.isChecked():
-            self.listView.clear()
-        if self.listView.count() != 0 and self.search_results:
+            self.list_view.clear()
+        if self.list_view.count() != 0 and self.search_results:
             self.__checkSecondBible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
-        self.checkSearchResult()
+        self.check_search_result()
         self.application.set_normal_cursor()
 
     def displayResults(self, bible, second_bible=u''):
@@ -700,8 +703,8 @@ class BibleMediaItem(MediaManagerItem):
         """
         items = self.buildDisplayResults(bible, second_bible, self.search_results)
         for bible_verse in items:
-            self.listView.addItem(bible_verse)
-        self.listView.selectAll()
+            self.list_view.addItem(bible_verse)
+        self.list_view.selectAll()
         self.search_results = {}
         self.second_search_results = {}
 
@@ -764,7 +767,7 @@ class BibleMediaItem(MediaManagerItem):
             items.append(bible_verse)
         return items
 
-    def generateSlideData(self, service_item, item=None, xmlVersion=False,
+    def generate_slide_data(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
         """
         Generates and formats the slides for the service item as well as the
@@ -774,7 +777,7 @@ class BibleMediaItem(MediaManagerItem):
         if item:
             items = item
         else:
-            items = self.listView.selectedItems()
+            items = self.list_view.selectedItems()
         if not items:
             return False
         bible_text = u''
@@ -963,7 +966,10 @@ class BibleMediaItem(MediaManagerItem):
             return [[string, versetext]]
         return []
 
-    def createItemFromId(self, item_id):
+    def create_item_from_id(self, item_id):
+        """
+        Create a media item from an item id.
+        """
         item = QtGui.QListWidgetItem()
         bible = self.quickVersionComboBox.currentText()
         search_results = self.plugin.manager.get_verses(bible, item_id, False)
