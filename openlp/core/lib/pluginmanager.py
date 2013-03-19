@@ -129,7 +129,7 @@ class PluginManager(object):
                 log.exception(u'Failed to load plugin %s', unicode(p))
         plugins_list = sorted(plugin_objects, key=lambda plugin: plugin.weight)
         for plugin in plugins_list:
-            if plugin.checkPreConditions():
+            if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
                 plugin.set_status()
             else:
@@ -153,7 +153,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.createSettingsTab(self.settings_form)
+                plugin.create_settings_Tab(self.settings_form)
 
     def hook_import_menu(self):
         """
@@ -163,7 +163,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addImportMenuItem(self.main_window.file_import_menu)
+                plugin.add_import_menu_item(self.main_window.file_import_menu)
 
     def hook_export_menu(self):
         """
@@ -172,7 +172,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addExportMenuItem(self.main_window.file_export_menu)
+                plugin.add_export_menu_Item(self.main_window.file_export_menu)
 
     def hook_tools_menu(self):
         """
@@ -181,7 +181,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addToolsMenuItem(self.main_window.tools_menu)
+                plugin.add_tools_menu_item(self.main_window.tools_menu)
 
     def hook_upgrade_plugin_settings(self, settings):
         """

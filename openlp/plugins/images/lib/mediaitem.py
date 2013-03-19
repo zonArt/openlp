@@ -88,7 +88,7 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.setIconSize(QtCore.QSize(88, 50))
         self.listView.setIndentation(self.listView.defaultIndentation)
         self.listView.allow_internal_dnd = True
-        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
+        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Load images from the database
         self.loadFullList(
@@ -110,29 +110,29 @@ class ImageMediaItem(MediaManagerItem):
         self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if self.hasEditIcon:
             create_widget_action(self.listView,
-                text=self.plugin.getString(StringContent.Edit)[u'title'],
+                text=self.plugin.get_string(StringContent.Edit)[u'title'],
                 icon=u':/general/general_edit.png',
                 triggers=self.onEditClick)
             create_widget_action(self.listView, separator=True)
         if self.hasDeleteIcon:
             create_widget_action(self.listView,
-                text=self.plugin.getString(StringContent.Delete)[u'title'],
+                text=self.plugin.get_string(StringContent.Delete)[u'title'],
                 icon=u':/general/general_delete.png',
                 shortcuts=[QtCore.Qt.Key_Delete], triggers=self.onDeleteClick)
             create_widget_action(self.listView, separator=True)
         create_widget_action(self.listView,
-            text=self.plugin.getString(StringContent.Preview)[u'title'],
+            text=self.plugin.get_string(StringContent.Preview)[u'title'],
             icon=u':/general/general_preview.png',
             shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
             triggers=self.onPreviewClick)
         create_widget_action(self.listView,
-            text=self.plugin.getString(StringContent.Live)[u'title'],
+            text=self.plugin.get_string(StringContent.Live)[u'title'],
             icon=u':/general/general_live.png',
             shortcuts=[QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter,
             QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return],
             triggers=self.onLiveClick)
         create_widget_action(self.listView,
-            text=self.plugin.getString(StringContent.Service)[u'title'],
+            text=self.plugin.get_string(StringContent.Service)[u'title'],
             icon=u':/general/general_add.png',
             shortcuts=[QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
             triggers=self.onAddClick)
@@ -161,7 +161,7 @@ class ImageMediaItem(MediaManagerItem):
             icon=u':/images/image_new_group.png',
             triggers=self.onAddGroupClick)
         create_widget_action(self.listView,
-            text=self.plugin.getString(StringContent.Load)[u'tooltip'],
+            text=self.plugin.get_string(StringContent.Load)[u'tooltip'],
             icon=u':/general/general_open.png',
             triggers=self.onFileClick)
 
@@ -373,7 +373,7 @@ class ImageMediaItem(MediaManagerItem):
         self.application.set_normal_cursor()
         self.loadList(files, target_group)
         last_dir = os.path.split(unicode(files[0]))[0]
-        Settings().setValue(self.settingsSection + u'/last directory', last_dir)
+        Settings().setValue(self.settings_section + u'/last directory', last_dir)
 
     def loadList(self, images, target_group=None, initial_load=False):
         """
@@ -526,7 +526,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
-        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
+        background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))
         if item:
             items = [item]
         else:
@@ -651,7 +651,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         if check_item_selected(self.listView,
                 translate('ImagePlugin.MediaItem', 'You must select an image to replace the background with.')):
-            background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
+            background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))
             bitem = self.listView.selectedItems()[0]
             if not isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageFilenames):
                 # Only continue when an image is selected

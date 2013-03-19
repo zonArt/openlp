@@ -69,8 +69,8 @@ class BibleUpgradeForm(OpenLPWizard):
         self.manager = manager
         self.mediaItem = bibleplugin.mediaItem
         self.suffix = u'.sqlite'
-        self.settingsSection = u'bibles'
-        self.path = AppLocation.get_section_data_path(self.settingsSection)
+        self.settings_section = u'bibles'
+        self.path = AppLocation.get_section_data_path(self.settings_section)
         self.temp_dir = os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
         self.files = self.manager.old_bible_databases
         self.success = {}
@@ -313,7 +313,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         log.debug(u'BibleUpgrade setDefaults')
         settings = Settings()
-        settings.beginGroup(self.plugin.settingsSection)
+        settings.beginGroup(self.plugin.settings_section)
         self.stop_import_flag = False
         self.success.clear()
         self.newbibles.clear()

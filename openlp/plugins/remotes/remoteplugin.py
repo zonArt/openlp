@@ -49,8 +49,8 @@ class RemotesPlugin(Plugin):
         remotes constructor
         """
         Plugin.__init__(self, u'remotes', __default_settings__, settings_tab_class=RemoteTab)
-        self.iconPath = u':/plugins/plugin_remote.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_remote.png'
+        self.icon = build_icon(self.icon_path)
         self.weight = -1
         self.server = None
 
@@ -86,12 +86,12 @@ class RemotesPlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('RemotePlugin', 'Remote', 'name singular'),
             u'plural': translate('RemotePlugin', 'Remotes', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('RemotePlugin', 'Remote', 'container title')
         }
 

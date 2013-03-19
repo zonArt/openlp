@@ -51,8 +51,8 @@ class ImagePlugin(Plugin):
         Plugin.__init__(self, u'images', __default_settings__, ImageMediaItem, ImageTab)
         self.manager = Manager(u'images', init_schema)
         self.weight = -7
-        self.iconPath = u':/plugins/plugin_images.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_images.png'
+        self.icon = build_icon(self.icon_path)
 
     def about(self):
         about_text = translate('ImagePlugin', '<strong>Image Plugin</strong>'
@@ -77,7 +77,7 @@ class ImagePlugin(Plugin):
         files_from_config = Settings().get_files_from_config(self)
         if files_from_config:
             log.debug(u'Importing images list from old config: %s' % files_from_config)
-            self.mediaItem.save_new_images_list(files_from_config)
+            self.media_item.save_new_images_list(files_from_config)
 
     def upgrade_settings(self, settings):
         """
@@ -89,19 +89,19 @@ class ImagePlugin(Plugin):
         files_from_config = settings.get_files_from_config(self)
         if files_from_config:
             log.debug(u'Importing images list from old config: %s' % files_from_config)
-            self.mediaItem.save_new_images_list(files_from_config)
+            self.media_item.save_new_images_list(files_from_config)
 
     def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('ImagePlugin', 'Image', 'name singular'),
             u'plural': translate('ImagePlugin', 'Images', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {u'title': translate('ImagePlugin', 'Images', 'container title')}
+        self.text_strings[StringContent.VisibleName] = {u'title': translate('ImagePlugin', 'Images', 'container title')}
         # Middle Header Bar
         tooltips = {
             u'load': translate('ImagePlugin', 'Load a new image.'),
@@ -113,7 +113,7 @@ class ImagePlugin(Plugin):
             u'live': translate('ImagePlugin', 'Send the selected image live.'),
             u'service': translate('ImagePlugin', 'Add the selected image to the service.')
         }
-        self.setPluginUiTextStrings(tooltips)
+        self.set_plugin_ui_text_strings(tooltips)
 
     def config_update(self):
         """
@@ -121,7 +121,7 @@ class ImagePlugin(Plugin):
         Actual update is triggered by the last part of saving the config.
         """
         log.info(u'Images config_update')
-        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
+        background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))
         self.image_manager.update_images_border(ImageSource.ImagePlugin, background)
 
     def _get_image_manager(self):

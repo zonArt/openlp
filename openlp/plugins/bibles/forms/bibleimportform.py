@@ -515,7 +515,7 @@ class BibleImportForm(OpenLPWizard):
         Set default values for the wizard pages.
         """
         settings = Settings()
-        settings.beginGroup(self.plugin.settingsSection)
+        settings.beginGroup(self.plugin.settings_section)
         self.restart()
         self.finish_button.setVisible(False)
         self.cancel_button.setVisible(True)
@@ -634,4 +634,4 @@ class BibleImportForm(OpenLPWizard):
         else:
             self.progress_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             del self.manager.db_cache[importer.name]
-            delete_database(self.plugin.settingsSection, importer.file)
+            delete_database(self.plugin.settings_section, importer.file)

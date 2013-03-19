@@ -119,7 +119,7 @@ class PresentationMediaItem(MediaManagerItem):
         Populate the media manager tab
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        files = Settings().value(self.settingsSection + u'/presentations files')
+        files = Settings().value(self.settings_section + u'/presentations files')
         self.loadList(files, initialLoad=True)
         self.populate_display_types()
 
@@ -136,7 +136,7 @@ class PresentationMediaItem(MediaManagerItem):
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
-        if Settings().value(self.settingsSection + u'/override app') == QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + u'/override app') == QtCore.Qt.Checked:
             self.presentationWidget.show()
         else:
             self.presentationWidget.hide()
@@ -229,7 +229,7 @@ class PresentationMediaItem(MediaManagerItem):
             self.application.set_busy_cursor()
             for row in row_list:
                 self.listView.takeItem(row)
-            Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())
+            Settings().setValue(self.settings_section + u'/presentations files', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
@@ -308,7 +308,7 @@ class PresentationMediaItem(MediaManagerItem):
         return None
 
     def search(self, string, showError):
-        files = Settings().value(self.settingsSection + u'/presentations files')
+        files = Settings().value(self.settings_section + u'/presentations files')
         results = []
         string = string.lower()
         for file in files:

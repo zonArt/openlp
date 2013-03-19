@@ -171,8 +171,8 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
-        port = Settings().value(self.plugin.settingsSection + u'/port')
-        address = Settings().value(self.plugin.settingsSection + u'/ip address')
+        port = Settings().value(self.plugin.settings_section + u'/port')
+        address = Settings().value(self.plugin.settings_section + u'/ip address')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
         self.server.newConnection.connect(self.new_connection)

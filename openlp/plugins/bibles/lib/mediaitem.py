@@ -65,7 +65,7 @@ class BibleMediaItem(MediaManagerItem):
         self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
         # Place to store the search results for both bibles.
-        self.settings = self.plugin.settingsTab
+        self.settings = self.plugin.settings_tab
         self.quickPreviewAllowed = True
         self.hasSearch = True
         self.search_results = {}
@@ -255,7 +255,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def config_update(self):
         log.debug(u'config_update')
-        if Settings().value(self.settingsSection + u'/second bibles'):
+        if Settings().value(self.settings_section + u'/second bibles'):
             self.advancedSecondLabel.setVisible(True)
             self.advancedSecondComboBox.setVisible(True)
             self.quickSecondLabel.setVisible(True)
@@ -307,7 +307,7 @@ class BibleMediaItem(MediaManagerItem):
                 translate('BiblesPlugin.MediaItem', 'Text Search'),
                 translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
-        self.quickSearchEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settingsSection))
+        self.quickSearchEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settings_section))
         self.config_update()
         log.debug(u'bible manager initialise complete')
 
@@ -329,13 +329,13 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedVersionComboBox.addItems(bibles)
         self.advancedSecondComboBox.addItems(bibles)
         # set the default value
-        bible = Settings().value(self.settingsSection + u'/advanced bible')
+        bible = Settings().value(self.settings_section + u'/advanced bible')
         if bible in bibles:
             find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
             self.initialiseAdvancedBible(unicode(bible))
         elif bibles:
             self.initialiseAdvancedBible(bibles[0])
-        bible = Settings().value(self.settingsSection + u'/quick bible')
+        bible = Settings().value(self.settings_section + u'/quick bible')
         find_and_set_in_combo_box(self.quickVersionComboBox, bible)
 
     def reload_bibles(self, process=False):
@@ -427,9 +427,9 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'updateAutoCompleter')
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.quickSearchEdit.current_search_type())
+        Settings().setValue(u'%s/last search type' % self.settings_section, self.quickSearchEdit.current_search_type())
         # Save the current bible to the configuration.
-        Settings().setValue(self.settingsSection + u'/quick bible', self.quickVersionComboBox.currentText())
+        Settings().setValue(self.settings_section + u'/quick bible', self.quickVersionComboBox.currentText())
         books = []
         # We have to do a 'Reference Search'.
         if self.quickSearchEdit.current_search_type() == BibleSearch.Reference:
@@ -514,16 +514,16 @@ class BibleMediaItem(MediaManagerItem):
         self.settings.layout_style = self.quickStyleComboBox.currentIndex()
         self.advancedStyleComboBox.setCurrentIndex(self.settings.layout_style)
         self.settings.layoutStyleComboBox.setCurrentIndex(self.settings.layout_style)
-        Settings().setValue(self.settingsSection + u'/verse layout style', self.settings.layout_style)
+        Settings().setValue(self.settings_section + u'/verse layout style', self.settings.layout_style)
 
     def onAdvancedStyleComboBoxChanged(self):
         self.settings.layout_style = self.advancedStyleComboBox.currentIndex()
         self.quickStyleComboBox.setCurrentIndex(self.settings.layout_style)
         self.settings.layoutStyleComboBox.setCurrentIndex(self.settings.layout_style)
-        Settings().setValue(self.settingsSection + u'/verse layout style', self.settings.layout_style)
+        Settings().setValue(self.settings_section + u'/verse layout style', self.settings.layout_style)
 
     def onAdvancedVersionComboBox(self):
-        Settings().setValue(self.settingsSection + u'/advanced bible', self.advancedVersionComboBox.currentText())
+        Settings().setValue(self.settings_section + u'/advanced bible', self.advancedVersionComboBox.currentText())
         self.initialiseAdvancedBible(self.advancedVersionComboBox.currentText(),
             self.advancedBookComboBox.itemData(int(self.advancedBookComboBox.currentIndex())))
 

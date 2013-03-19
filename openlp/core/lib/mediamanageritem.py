@@ -86,10 +86,10 @@ class MediaManagerItem(QtGui.QWidget):
         self.hide()
         self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
         self.plugin = plugin
-        visible_title = self.plugin.getString(StringContent.VisibleName)
+        visible_title = self.plugin.get_string(StringContent.VisibleName)
         self.title = unicode(visible_title[u'title'])
         Registry().register(self.plugin.name, self)
-        self.settingsSection = self.plugin.name
+        self.settings_section = self.plugin.name
         self.toolbar = None
         self.remoteTriggered = None
         self.singleServiceItem = True
@@ -180,8 +180,8 @@ class MediaManagerItem(QtGui.QWidget):
             if action[0] == StringContent.Preview:
                 self.toolbar.addSeparator()
             self.toolbar.add_toolbar_action(u'%s%sAction' % (self.plugin.name, action[0]),
-                text=self.plugin.getString(action[1])[u'title'], icon=action[2],
-                tooltip=self.plugin.getString(action[1])[u'tooltip'],
+                text=self.plugin.get_string(action[1])[u'title'], icon=action[2],
+                tooltip=self.plugin.get_string(action[1])[u'tooltip'],
                 triggers=action[3])
 
     def addListViewToToolBar(self):
@@ -200,33 +200,33 @@ class MediaManagerItem(QtGui.QWidget):
         self.listView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if self.hasEditIcon:
             create_widget_action(self.listView,
-                text=self.plugin.getString(StringContent.Edit)[u'title'],
+                text=self.plugin.get_string(StringContent.Edit)[u'title'],
                 icon=u':/general/general_edit.png',
                 triggers=self.onEditClick)
             create_widget_action(self.listView, separator=True)
         if self.hasDeleteIcon:
             create_widget_action(self.listView,
                 u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
-                text=self.plugin.getString(StringContent.Delete)[u'title'],
+                text=self.plugin.get_string(StringContent.Delete)[u'title'],
                 icon=u':/general/general_delete.png',
                 can_shortcuts=True, triggers=self.onDeleteClick)
             create_widget_action(self.listView, separator=True)
         create_widget_action(self.listView,
             u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
-            text=self.plugin.getString(StringContent.Preview)[u'title'],
+            text=self.plugin.get_string(StringContent.Preview)[u'title'],
             icon=u':/general/general_preview.png',
             can_shortcuts=True,
             triggers=self.onPreviewClick)
         create_widget_action(self.listView,
             u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Live.title()),
-            text=self.plugin.getString(StringContent.Live)[u'title'],
+            text=self.plugin.get_string(StringContent.Live)[u'title'],
             icon=u':/general/general_live.png',
             can_shortcuts=True,
             triggers=self.onLiveClick)
         create_widget_action(self.listView,
             u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Service.title()),
             can_shortcuts=True,
-            text=self.plugin.getString(StringContent.Service)[u'title'],
+            text=self.plugin.get_string(StringContent.Service)[u'title'],
             icon=u':/general/general_add.png',
             triggers=self.onAddClick)
         if self.addToServiceItem:
@@ -304,7 +304,7 @@ class MediaManagerItem(QtGui.QWidget):
         Add a file to the list widget to make it available for showing
         """
         files = QtGui.QFileDialog.getOpenFileNames(self, self.onNewPrompt,
-            Settings().value(self.settingsSection + u'/last directory'), self.onNewFileMasks)
+            Settings().value(self.settings_section + u'/last directory'), self.onNewFileMasks)
         log.info(u'New files(s) %s', files)
         if files:
             self.application.set_busy_cursor()
@@ -371,8 +371,8 @@ class MediaManagerItem(QtGui.QWidget):
                 self.listView.clear()
             self.loadList(full_list, target_group)
             last_dir = os.path.split(unicode(files[0]))[0]
-            Settings().setValue(self.settingsSection + u'/last directory', last_dir)
-            Settings().setValue(u'%s/%s files' % (self.settingsSection, self.settingsSection), self.getFileList())
+            Settings().setValue(self.settings_section + u'/last directory', last_dir)
+            Settings().setValue(u'%s/%s files' % (self.settings_section, self.settings_section), self.getFileList())
         if duplicates_found:
             critical_error_message_box(UiStrings().Duplicate,
                 translate('OpenLP.MediaManagerItem', 'Duplicate files were found on import and were ignored.'))

@@ -187,7 +187,7 @@ class MediaMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
-        if Settings().value(self.settingsSection + u'/media auto start') == QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + u'/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
@@ -196,9 +196,9 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.listView.clear()
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settingsSection), u'thumbnails')
+        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         check_directory_exists(self.servicePath)
-        self.loadList(Settings().value(self.settingsSection + u'/media files'))
+        self.loadList(Settings().value(self.settings_section + u'/media files'))
         self.populateDisplayTypes()
 
     def rebuild_players(self):
@@ -250,7 +250,7 @@ class MediaMediaItem(MediaManagerItem):
             row_list.sort(reverse=True)
             for row in row_list:
                 self.listView.takeItem(row)
-            Settings().setValue(self.settingsSection + u'/media files', self.getFileList())
+            Settings().setValue(self.settings_section + u'/media files', self.getFileList())
 
     def loadList(self, media, target_group=None):
         # Sort the media by its filename considering language specific
@@ -280,7 +280,7 @@ class MediaMediaItem(MediaManagerItem):
             self.listView.addItem(item_name)
 
     def getList(self, type=MediaType.Audio):
-        media = Settings().value(self.settingsSection + u'/media files')
+        media = Settings().value(self.settings_section + u'/media files')
         media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
         ext = []
         if type == MediaType.Audio:
@@ -292,7 +292,7 @@ class MediaMediaItem(MediaManagerItem):
         return media
 
     def search(self, string, showError):
-        files = Settings().value(self.settingsSection + u'/media files')
+        files = Settings().value(self.settings_section + u'/media files')
         results = []
         string = string.lower()
         for file in files:

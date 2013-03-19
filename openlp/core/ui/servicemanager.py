@@ -896,7 +896,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         service_item = self.service_items[item][u'service_item']
         if service_item.timed_slide_interval == 0:
-            timed_slide_interval = Settings().value(self.mainwindow.generalSettingsSection + u'/loop delay')
+            timed_slide_interval = Settings().value(self.main_window.general_settings_section + u'/loop delay')
         else:
             timed_slide_interval = service_item.timed_slide_interval
         timed_slide_interval, ok = QtGui.QInputDialog.getInteger(self, translate('OpenLP.ServiceManager',

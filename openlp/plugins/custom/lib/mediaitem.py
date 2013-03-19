@@ -82,7 +82,7 @@ class CustomMediaItem(MediaManagerItem):
         Config has been updated so reload values
         """
         log.debug(u'Config loaded')
-        self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service')
+        self.add_custom_from_service = Settings().value(self.settings_section + u'/add custom from service')
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -95,7 +95,7 @@ class CustomMediaItem(MediaManagerItem):
             translate('SongsPlugin.MediaItem', 'Search Titles...')),
             (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settingsSection))
+        self.searchTextEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settings_section))
         self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
         self.config_update()
 
@@ -202,7 +202,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide)
-        if Settings().value(self.settingsSection + u'/display footer') or credit:
+        if Settings().value(self.settings_section + u'/display footer') or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))
         else:
             service_item.raw_footer.append(u'')
@@ -210,7 +210,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.current_search_type())
+        Settings().setValue(u'%s/last search type' % self.settings_section, self.searchTextEdit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = self.searchTextEdit.displayText()
         search_results = []

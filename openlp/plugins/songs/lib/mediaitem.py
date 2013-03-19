@@ -123,9 +123,9 @@ class SongMediaItem(MediaManagerItem):
         IS triggered when the songs config is updated
         """
         log.debug(u'config_updated')
-        self.searchAsYouType = Settings().value(self.settingsSection + u'/search as type')
-        self.updateServiceOnEdit = Settings().value(self.settingsSection + u'/update service on edit')
-        self.addSongFromService = Settings().value(self.settingsSection + u'/add song from service',)
+        self.searchAsYouType = Settings().value(self.settings_section + u'/search as type')
+        self.updateServiceOnEdit = Settings().value(self.settings_section + u'/update service on edit')
+        self.addSongFromService = Settings().value(self.settings_section + u'/add song from service',)
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -152,12 +152,12 @@ class SongMediaItem(MediaManagerItem):
             (SongSearch.Themes, u':/slides/slide_theme.png',
             UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.searchTextEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settingsSection))
+        self.searchTextEdit.set_current_search_type(Settings().value(u'%s/last search type' % self.settings_section))
         self.config_update()
 
     def onSearchTextButtonClicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settingsSection, self.searchTextEdit.current_search_type())
+        Settings().setValue(u'%s/last search type' % self.settings_section, self.searchTextEdit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = unicode(self.searchTextEdit.displayText())
         search_results = []

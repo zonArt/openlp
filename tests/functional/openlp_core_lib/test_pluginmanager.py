@@ -74,7 +74,7 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_settings_tabs()
         plugin_manager.hook_settings_tabs()
 
-        # THEN: The createSettingsTab() method should have been called
+        # THEN: The create_settings_Tab() method should have been called
         assert mocked_plugin.create_media_manager_item.call_count == 0, \
             u'The create_media_manager_item() method should not have been called.'
 
@@ -94,8 +94,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_settings_tabs()
         plugin_manager.hook_settings_tabs()
 
-        # THEN: The createSettingsTab() method should not have been called, but the plugins lists should be the same
-        assert mocked_plugin.createSettingsTab.call_count == 0, \
+        # THEN: The create_settings_Tab() method should not have been called, but the plugins lists should be the same
+        assert mocked_plugin.create_settings_Tab.call_count == 0, \
             u'The create_media_manager_item() method should not have been called.'
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
             u'The plugins on the settings form should be the same as the plugins in the plugin manager')
@@ -117,7 +117,7 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The create_media_manager_item() method should have been called with the mocked settings form
-        assert mocked_plugin.createSettingsTab.call_count == 1, \
+        assert mocked_plugin.create_settings_Tab.call_count == 1, \
             u'The create_media_manager_item() method should have been called once.'
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
              u'The plugins on the settings form should be the same as the plugins in the plugin manager')
@@ -135,8 +135,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_settings_tabs()
         plugin_manager.hook_settings_tabs()
 
-        # THEN: The createSettingsTab() method should have been called
-        mocked_plugin.createSettingsTab.assert_called_with(self.mocked_settings_form)
+        # THEN: The create_settings_Tab() method should have been called
+        mocked_plugin.create_settings_Tab.assert_called_with(self.mocked_settings_form)
 
     def hook_import_menu_with_disabled_plugin_test(self):
         """
@@ -152,8 +152,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_import_menu()
 
         # THEN: The create_media_manager_item() method should have been called
-        assert mocked_plugin.addImportMenuItem.call_count == 0, \
-            u'The addImportMenuItem() method should not have been called.'
+        assert mocked_plugin.add_import_menu_item.call_count == 0, \
+            u'The add_import_menu_item() method should not have been called.'
 
     def hook_import_menu_with_active_plugin_test(self):
         """
@@ -168,8 +168,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_import_menu()
         plugin_manager.hook_import_menu()
 
-        # THEN: The addImportMenuItem() method should have been called
-        mocked_plugin.addImportMenuItem.assert_called_with(self.mocked_main_window.file_import_menu)
+        # THEN: The add_import_menu_item() method should have been called
+        mocked_plugin.add_import_menu_item.assert_called_with(self.mocked_main_window.file_import_menu)
 
     def hook_export_menu_with_disabled_plugin_test(self):
         """
@@ -184,9 +184,9 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_export_menu()
         plugin_manager.hook_export_menu()
 
-        # THEN: The addExportMenuItem() method should not have been called
-        assert mocked_plugin.addExportMenuItem.call_count == 0, \
-            u'The addExportMenuItem() method should not have been called.'
+        # THEN: The add_export_menu_Item() method should not have been called
+        assert mocked_plugin.add_export_menu_Item.call_count == 0, \
+            u'The add_export_menu_Item() method should not have been called.'
 
     def hook_export_menu_with_active_plugin_test(self):
         """
@@ -201,8 +201,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_export_menu()
         plugin_manager.hook_export_menu()
 
-        # THEN: The addExportMenuItem() method should have been called
-        mocked_plugin.addExportMenuItem.assert_called_with(self.mocked_main_window.file_export_menu)
+        # THEN: The add_export_menu_Item() method should have been called
+        mocked_plugin.add_export_menu_Item.assert_called_with(self.mocked_main_window.file_export_menu)
 
     def hook_upgrade_plugin_settings_with_disabled_plugin_test(self):
         """
@@ -236,7 +236,7 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_upgrade_plugin_settings()
         plugin_manager.hook_upgrade_plugin_settings(settings)
 
-        # THEN: The addExportMenuItem() method should have been called
+        # THEN: The add_export_menu_Item() method should have been called
         mocked_plugin.upgrade_settings.assert_called_with(settings)
 
     def hook_tools_menu_with_disabled_plugin_test(self):
@@ -252,9 +252,9 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_tools_menu()
         plugin_manager.hook_tools_menu()
 
-        # THEN: The addToolsMenuItem() method should have been called
-        assert mocked_plugin.addToolsMenuItem.call_count == 0, \
-            u'The addToolsMenuItem() method should not have been called.'
+        # THEN: The add_tools_menu_item() method should have been called
+        assert mocked_plugin.add_tools_menu_item.call_count == 0, \
+            u'The add_tools_menu_item() method should not have been called.'
 
     def hook_tools_menu_with_active_plugin_test(self):
         """
@@ -269,8 +269,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_tools_menu()
         plugin_manager.hook_tools_menu()
 
-        # THEN: The addToolsMenuItem() method should have been called
-        mocked_plugin.addToolsMenuItem.assert_called_with(self.mocked_main_window.tools_menu)
+        # THEN: The add_tools_menu_item() method should have been called
+        mocked_plugin.add_tools_menu_item.assert_called_with(self.mocked_main_window.tools_menu)
 
     def initialise_plugins_with_disabled_plugin_test(self):
         """

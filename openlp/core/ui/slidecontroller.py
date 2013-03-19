@@ -912,9 +912,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(False)
         self.desktop_screen.setChecked(False)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'blanked')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'blanked')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
         self.onToggleLoop()
@@ -931,9 +931,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(checked)
         self.desktop_screen.setChecked(False)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'themed')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'themed')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
         self.onToggleLoop()
@@ -950,9 +950,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(False)
         self.desktop_screen.setChecked(checked)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'hidden')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'hidden')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
         self.onToggleLoop()
