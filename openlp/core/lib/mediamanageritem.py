@@ -155,7 +155,7 @@ class MediaManagerItem(QtGui.QWidget):
         ## Import Button ##
         if self.hasImportIcon:
             toolbar_actions.append([u'Import', StringContent.Import,
-                u':/general/general_import.png', self.onImportClick])
+                u':/general/general_import.png', self.on_import_click])
         ## Load Button ##
         if self.hasFileIcon:
             toolbar_actions.append([u'Load', StringContent.Load, u':/general/general_open.png', self.onFileClick])
@@ -558,7 +558,7 @@ class MediaManagerItem(QtGui.QWidget):
         Common method for generating a service item
         """
         service_item = ServiceItem(self.plugin)
-        service_item.add_icon(self.plugin.iconPath)
+        service_item.add_icon(self.plugin.icon_path)
         if self.generateSlideData(service_item, item, xmlVersion, remote, context):
             return service_item
         else:

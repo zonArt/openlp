@@ -54,7 +54,7 @@ class PresentationMediaItem(MediaManagerItem):
         Constructor. Setup defaults
         """
         self.controllers = controllers
-        self.IconPath = u'presentations/presentation'
+        self.icon_path = u'presentations/presentation'
         self.Automatic = u''
         MediaManagerItem.__init__(self, parent, plugin)
         self.message_listener = MessageListener(self)

@@ -156,7 +156,7 @@ class BiblePlugin(Plugin):
 
     def on_bible_import_click(self):
         if self.media_item:
-            self.media_item.onImportClick()
+            self.media_item.on_import_click()
 
     def about(self):
         about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'

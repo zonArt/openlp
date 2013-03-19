@@ -70,7 +70,7 @@ class SongMediaItem(MediaManagerItem):
     log.info(u'Song Media Item loaded')
 
     def __init__(self, parent, plugin):
-        self.IconPath = u'songs/song'
+        self.icon_path = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin)
         self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
@@ -295,14 +295,14 @@ class SongMediaItem(MediaManagerItem):
             elif not text:
                 self.onClearTextButtonClick()
 
-    def onImportClick(self):
+    def on_import_click(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = SongImportForm(self, self.plugin)
         self.import_wizard.exec_()
         # Run song load as list may have been cancelled but some songs loaded
         Registry().execute(u'songs_load_list')
 
-    def onExportClick(self):
+    def on_export_click(self):
         if not hasattr(self, u'exportWizard'):
             self.exportWizard = SongExportForm(self, self.plugin)
         self.exportWizard.exec_()

@@ -49,8 +49,8 @@ class MediaPlugin(Plugin):
     def __init__(self):
         Plugin.__init__(self, u'media', __default_settings__, MediaMediaItem)
         self.weight = -6
-        self.iconPath = u':/plugins/plugin_media.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_media.png'
+        self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
 
@@ -59,7 +59,7 @@ class MediaPlugin(Plugin):
         Create the settings Tab
         """
         visible_name = self.get_string(StringContent.VisibleName)
-        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'], self.iconPath)
+        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'], self.icon_path)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'

@@ -210,7 +210,7 @@ class SongsPlugin(Plugin):
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get(format, u'class')
         importer = class_(self.manager, **kwargs)
-        importer.register(self.mediaItem.import_wizard)
+        importer.register(self.media_item.import_wizard)
         return importer
 
     def set_plugin_text_strings(self):
@@ -275,7 +275,7 @@ class SongsPlugin(Plugin):
             importer.doImport(progress)
             self.application.process_events()
         progress.setValue(song_count)
-        self.mediaItem.onSearchTextButtonClicked()
+        self.media_item.onSearchTextButtonClicked()
 
     def finalise(self):
         """

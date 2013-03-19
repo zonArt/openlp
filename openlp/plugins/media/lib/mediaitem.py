@@ -54,7 +54,7 @@ class MediaMediaItem(MediaManagerItem):
     log.info(u'%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, plugin):
-        self.iconPath = u'images/image'
+        self.icon_path = u'images/image'
         self.background = False
         self.automatic = u''
         MediaManagerItem.__init__(self, parent, plugin)

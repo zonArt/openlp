@@ -60,7 +60,7 @@ class BibleMediaItem(MediaManagerItem):
     log.info(u'Bible Media Item loaded')
 
     def __init__(self, parent, plugin):
-        self.IconPath = u'songs/song'
+        self.icon_path = u'songs/song'
         self.lockIcon = build_icon(u':/bibles/bibles_search_lock.png')
         self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
@@ -461,7 +461,7 @@ class BibleMediaItem(MediaManagerItem):
                 books.sort(cmp=locale_compare)
         set_case_insensitive_completer(books, self.quickSearchEdit)
 
-    def onImportClick(self):
+    def on_import_click(self):
         if not hasattr(self, u'import_wizard'):
             self.import_wizard = BibleImportForm(self, self.plugin.manager, self.plugin)
         # If the import was not cancelled then reload.

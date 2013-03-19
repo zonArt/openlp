@@ -55,7 +55,7 @@ class CustomMediaItem(MediaManagerItem):
     log.info(u'Custom Media Item loaded')
 
     def __init__(self, parent, plugin):
-        self.IconPath = u'custom/custom'
+        self.icon_path = u'custom/custom'
         MediaManagerItem.__init__(self, parent, plugin)
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.singleServiceItem = False

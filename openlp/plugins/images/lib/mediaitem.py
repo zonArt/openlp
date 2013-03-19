@@ -50,7 +50,7 @@ class ImageMediaItem(MediaManagerItem):
     log.info(u'Image Media Item loaded')
 
     def __init__(self, parent, plugin):
-        self.IconPath = u'images/image'
+        self.icon_path = u'images/image'
         MediaManagerItem.__init__(self, parent, plugin)
         self.quickPreviewAllowed = True
         self.hasSearch = True
@@ -537,7 +537,7 @@ class ImageMediaItem(MediaManagerItem):
         if isinstance(items[0].data(0, QtCore.Qt.UserRole), ImageGroups):
             service_item.title = items[0].text(0)
         else:
-            service_item.title = unicode(self.plugin.nameStrings[u'plural'])
+            service_item.title = unicode(self.plugin.name_strings[u'plural'])
         service_item.add_capability(ItemCapabilities.CanMaintain)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)

@@ -27,7 +27,7 @@ class TestImageMediaItem(TestCase):
         mocked_plugin = MagicMock()
         with patch(u'openlp.plugins.images.lib.mediaitem.ImageMediaItem.__init__') as mocked_init:
             mocked_init.return_value = None
-            self.mediaitem = ImageMediaItem(mocked_parent, mocked_plugin)
+            self.media_item = ImageMediaItem(mocked_parent, mocked_plugin)
 
     def save_new_images_list_empty_list_test(self):
         """
@@ -36,13 +36,13 @@ class TestImageMediaItem(TestCase):
         # GIVEN: An empty image_list
         image_list = []
         with patch(u'openlp.plugins.images.lib.mediaitem.ImageMediaItem.loadFullList') as mocked_loadFullList:
-            self.mediaitem.manager = MagicMock()
+            self.media_item.manager = MagicMock()
 
             # WHEN: We run save_new_images_list with the empty list
-            self.mediaitem.save_new_images_list(image_list)
+            self.media_item.save_new_images_list(image_list)
 
             # THEN: The save_object() method should not have been called
-            assert self.mediaitem.manager.save_object.call_count == 0, \
+            assert self.media_item.manager.save_object.call_count == 0, \
                 u'The save_object() method should not have been called'
 
     def save_new_images_list_single_image_with_reload_test(self):
@@ -53,10 +53,10 @@ class TestImageMediaItem(TestCase):
         image_list = [ u'test_image.jpg' ]
         with patch(u'openlp.plugins.images.lib.mediaitem.ImageMediaItem.loadFullList') as mocked_loadFullList:
             ImageFilenames.filename = ''
-            self.mediaitem.manager = MagicMock()
+            self.media_item.manager = MagicMock()
 
             # WHEN: We run save_new_images_list with reload_list=True
-            self.mediaitem.save_new_images_list(image_list, reload_list=True)
+            self.media_item.save_new_images_list(image_list, reload_list=True)
 
             # THEN: loadFullList() should have been called
             assert mocked_loadFullList.call_count == 1, u'loadFullList() should have been called'
@@ -71,10 +71,10 @@ class TestImageMediaItem(TestCase):
         # GIVEN: A list with 1 image
         image_list = [ u'test_image.jpg' ]
         with patch(u'openlp.plugins.images.lib.mediaitem.ImageMediaItem.loadFullList') as mocked_loadFullList:
-            self.mediaitem.manager = MagicMock()
+            self.media_item.manager = MagicMock()
 
             # WHEN: We run save_new_images_list with reload_list=False
-            self.mediaitem.save_new_images_list(image_list, reload_list=False)
+            self.media_item.save_new_images_list(image_list, reload_list=False)
 
             # THEN: loadFullList() should not have been called
             assert mocked_loadFullList.call_count == 0, u'loadFullList() should not have been called'
@@ -86,13 +86,13 @@ class TestImageMediaItem(TestCase):
         # GIVEN: A list with 3 images
         image_list = [ u'test_image_1.jpg', u'test_image_2.jpg', u'test_image_3.jpg' ]
         with patch(u'openlp.plugins.images.lib.mediaitem.ImageMediaItem.loadFullList') as mocked_loadFullList:
-            self.mediaitem.manager = MagicMock()
+            self.media_item.manager = MagicMock()
 
             # WHEN: We run save_new_images_list with the list of 3 images
-            self.mediaitem.save_new_images_list(image_list, reload_list=False)
+            self.media_item.save_new_images_list(image_list, reload_list=False)
 
             # THEN: loadFullList() should not have been called
-            assert self.mediaitem.manager.save_object.call_count == 3, \
+            assert self.media_item.manager.save_object.call_count == 3, \
                 u'loadFullList() should have been called three times'
 
     def save_new_images_list_other_objects_in_list_test(self):
@@ -102,11 +102,11 @@ class TestImageMediaItem(TestCase):
         # GIVEN: A list with images and objects
         image_list = [ u'test_image_1.jpg', None, True, ImageFilenames(), 'test_image_2.jpg' ]
         with patch(u'openlp.plugins.images.lib.mediaitem.ImageMediaItem.loadFullList') as mocked_loadFullList:
-            self.mediaitem.manager = MagicMock()
+            self.media_item.manager = MagicMock()
 
             # WHEN: We run save_new_images_list with the list of images and objects
-            self.mediaitem.save_new_images_list(image_list, reload_list=False)
+            self.media_item.save_new_images_list(image_list, reload_list=False)
 
             # THEN: loadFullList() should not have been called
-            assert self.mediaitem.manager.save_object.call_count == 2, \
+            assert self.media_item.manager.save_object.call_count == 2, \
                 u'loadFullList() should have been called only once'
