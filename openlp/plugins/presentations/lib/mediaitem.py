@@ -120,7 +120,7 @@ class PresentationMediaItem(MediaManagerItem):
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
         files = Settings().value(self.settingsSection + u'/presentations files')
-        self.loadList(files, True)
+        self.loadList(files, initialLoad=True)
         self.populate_display_types()
 
     def populate_display_types(self):
@@ -141,7 +141,7 @@ class PresentationMediaItem(MediaManagerItem):
         else:
             self.presentationWidget.hide()
 
-    def loadList(self, files, initialLoad=False):
+    def loadList(self, files, target_group=None, initialLoad=False):
         """
         Add presentations into the media manager
         This is called both on initial load of the plugin to populate with

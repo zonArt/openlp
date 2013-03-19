@@ -252,7 +252,7 @@ class MediaMediaItem(MediaManagerItem):
                 self.listView.takeItem(row)
             Settings().setValue(self.settingsSection + u'/media files', self.getFileList())
 
-    def loadList(self, media):
+    def loadList(self, media, target_group=None):
         # Sort the media by its filename considering language specific
         # characters.
         media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])

@@ -99,7 +99,7 @@ class CustomMediaItem(MediaManagerItem):
         self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
         self.config_update()
 
-    def loadList(self, custom_slides):
+    def loadList(self, custom_slides, target_group=None):
         # Sort out what custom we want to select after loading the list.
         self.saveAutoSelectId()
         self.listView.clear()
