@@ -311,16 +311,16 @@ class MediaManagerItem(QtGui.QWidget):
             self.validateAndLoad(files)
         self.application.set_normal_cursor()
 
-    def loadFile(self, files):
+    def loadFile(self, data):
         """
         Turn file from Drag and Drop into an array so the Validate code can run it.
 
-        ``files``
-            The list of files to be loaded
+        ``data``
+            A dictionary containing the list of files to be loaded and the target
         """
         new_files = []
         error_shown = False
-        for file_name in files:
+        for file_name in data['files']:
             file_type = file_name.split(u'.')[-1]
             if file_type.lower() not in self.onNewFileMasks:
                 if not error_shown:
@@ -330,15 +330,27 @@ class MediaManagerItem(QtGui.QWidget):
             else:
                 new_files.append(file_name)
         if new_files:
-            self.validateAndLoad(new_files)
+            self.validateAndLoad(new_files, data['target'])
 
-    def validateAndLoad(self, files):
+    def dnd_move_internal(self, target):
+        """
+        Handle internal moving of media manager items
+
+        ``target``
+            The target of the DnD action
+        """
+        pass
+
+    def validateAndLoad(self, files, target_group=None):
         """
         Process a list for files either from the File Dialog or from Drag and
         Drop
 
         ``files``
             The files to be loaded.
+
+        ``target_group``
+            The QTreeWidgetItem of the group that will be the parent of the added files
         """
         names = []
         full_list = []
@@ -347,16 +359,17 @@ class MediaManagerItem(QtGui.QWidget):
             full_list.append(self.listView.item(count).data(QtCore.Qt.UserRole))
         duplicates_found = False
         files_added = False
-        for file in files:
-            filename = os.path.split(unicode(file))[1]
+        for file_path in files:
+            filename = os.path.split(unicode(file_path))[1]
             if filename in names:
                 duplicates_found = True
             else:
                 files_added = True
-                full_list.append(file)
+                full_list.append(filename)
         if full_list and files_added:
-            self.listView.clear()
-            self.loadList(full_list)
+            if target_group is None:
+                self.listView.clear()
+            self.loadList(full_list, target_group)
             last_dir = os.path.split(unicode(files[0]))[0]
             Settings().setValue(self.settingsSection + u'/last directory', last_dir)
             Settings().setValue(u'%s/%s files' % (self.settingsSection, self.settingsSection), self.getFileList())
@@ -387,7 +400,7 @@ class MediaManagerItem(QtGui.QWidget):
             file_list.append(filename)
         return file_list
 
-    def loadList(self, list):
+    def loadList(self, list, target_group):
         """
         Load a list. Needs to be implemented by the plugin.
         """

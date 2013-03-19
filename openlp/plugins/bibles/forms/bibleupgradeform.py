@@ -107,7 +107,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.page(pageId) == self.progress_page:
             self.preWizard()
             self.performWizard()
-            self.postWizard()
+            self.post_wizard()
         elif self.page(pageId) == self.selectPage and not self.files:
             self.next()
 
@@ -140,21 +140,21 @@ class BibleUpgradeForm(OpenLPWizard):
                 success = False
         return success
 
-    def customInit(self):
+    def custom_init(self):
         """
         Perform any custom initialisation for bible upgrading.
         """
         self.manager.set_process_dialog(self)
         self.restart()
 
-    def customSignals(self):
+    def custom_signals(self):
         """
         Set up the signals used in the bible importer.
         """
         self.backupBrowseButton.clicked.connect(self.onBackupBrowseButtonClicked)
         self.noBackupCheckBox.toggled.connect(self.onNoBackupCheckBoxToggled)
 
-    def addCustomPages(self):
+    def add_custom_pages(self):
         """
         Add the bible import specific wizard pages.
         """
@@ -170,7 +170,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.backupInfoLabel.setObjectName(u'backupInfoLabel')
         self.backupLayout.addWidget(self.backupInfoLabel)
         self.selectLabel = QtGui.QLabel(self.backupPage)
-        self.selectLabel.setObjectName(u'selectLabel')
+        self.selectLabel.setObjectName(u'select_label')
         self.backupLayout.addWidget(self.selectLabel)
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setMargin(0)
@@ -528,7 +528,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if old_bible is not None:
             old_bible.close_connection()
 
-    def postWizard(self):
+    def post_wizard(self):
         """
         Clean up the UI after the import has finished.
         """
@@ -559,4 +559,4 @@ class BibleUpgradeForm(OpenLPWizard):
             self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
         # Remove temp directory.
         shutil.rmtree(self.temp_dir, True)
-        OpenLPWizard.postWizard(self)
+        OpenLPWizard.post_wizard(self)

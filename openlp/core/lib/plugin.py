@@ -216,6 +216,15 @@ class Plugin(QtCore.QObject):
         if self.mediaItemClass:
             self.mediaItem = self.mediaItemClass(self.main_window.media_dock_manager.media_dock, self)
 
+    def upgrade_settings(self, settings):
+        """
+        Upgrade the settings of this plugin.
+
+        ``settings``
+            The Settings object containing the old settings.
+        """
+        pass
+
     def addImportMenuItem(self, importMenu):
         """
         Create a menu item and add it to the "Import" menu.
@@ -300,24 +309,10 @@ class Plugin(QtCore.QObject):
         # FIXME: Remove after 2.2 release.
         # This is needed to load the list of images/media/presentation from the config saved
         # before the settings rewrite.
-        if self.mediaItemClass is not None:
-            # We need QSettings instead of Settings here to bypass our central settings dict.
-            # Do NOT do this anywhere else!
-            settings = QtCore.QSettings()
-            settings.beginGroup(self.settingsSection)
-            if settings.contains(u'%s count' % self.name):
-                list_count = int(settings.value(u'%s count' % self.name, 0))
-                loaded_list = []
-                if list_count:
-                    for counter in range(list_count):
-                        item = settings.value(u'%s %d' % (self.name, counter), u'')
-                        if item:
-                            loaded_list.append(item)
-                        settings.remove(u'%s %d' % (self.name, counter))
-                settings.remove(u'%s count' % self.name)
-                # Now save the list to the config using our Settings class.
-                Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
-            settings.endGroup()
+        if self.mediaItemClass is not None and self.name != u'images':
+            loaded_list = Settings().get_files_from_config(self)
+            # Now save the list to the config using our Settings class.
+            Settings().setValue(u'%s/%s files' % (self.settingsSection, self.name), loaded_list)
 
     def uses_theme(self, theme):
         """

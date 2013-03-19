@@ -32,13 +32,16 @@ from PyQt4 import QtGui
 import logging
 
 from openlp.core.lib import Plugin, StringContent, Registry, ImageSource, Settings, build_icon, translate
+from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
+from openlp.plugins.images.lib.db import init_schema, ImageFilenames
 
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        u'images/images files': []
-    }
+    u'images/db type': u'sqlite',
+    u'images/background color': u'#000000',
+}
 
 
 class ImagePlugin(Plugin):
@@ -46,6 +49,7 @@ class ImagePlugin(Plugin):
 
     def __init__(self):
         Plugin.__init__(self, u'images', __default_settings__, ImageMediaItem, ImageTab)
+        self.manager = Manager(u'images', init_schema)
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)
@@ -64,6 +68,29 @@ class ImagePlugin(Plugin):
             'provided by the theme.')
         return about_text
 
+    def app_startup(self):
+        """
+        Perform tasks on application startup
+        """
+        Plugin.app_startup(self)
+        # Convert old settings-based image list to the database
+        files_from_config = Settings().get_files_from_config(self)
+        if files_from_config:
+            log.debug(u'Importing images list from old config: %s' % files_from_config)
+            self.mediaItem.save_new_images_list(files_from_config)
+
+    def upgrade_settings(self, settings):
+        """
+        Upgrade the settings of this plugin.
+
+        ``settings``
+            The Settings object containing the old settings.
+        """
+        files_from_config = settings.get_files_from_config(self)
+        if files_from_config:
+            log.debug(u'Importing images list from old config: %s' % files_from_config)
+            self.mediaItem.save_new_images_list(files_from_config)
+
     def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
@@ -74,8 +101,7 @@ class ImagePlugin(Plugin):
             u'plural': translate('ImagePlugin', 'Images', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {u'title': translate('ImagePlugin', 'Images', 'container title')
-        }
+        self.textStrings[StringContent.VisibleName] = {u'title': translate('ImagePlugin', 'Images', 'container title')}
         # Middle Header Bar
         tooltips = {
             u'load': translate('ImagePlugin', 'Load a new image.'),

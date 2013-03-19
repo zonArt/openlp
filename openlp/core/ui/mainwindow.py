@@ -686,7 +686,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``message``
             The message to be displayed.
         """
-        self.application.splash.close()
+        if hasattr(self.application, u'splash'):
+            self.application.splash.close()
         QtGui.QMessageBox.critical(self, title, message)
 
     def warning_message(self, title, message):
@@ -699,7 +700,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``message``
             The message to be displayed.
         """
-        self.application.splash.close()
+        if hasattr(self.application, u'splash'):
+            self.application.splash.close()
         QtGui.QMessageBox.warning(self, title, message)
 
     def information_message(self, title, message):
@@ -712,7 +714,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         ``message``
             The message to be displayed.
         """
-        self.application.splash.close()
+        if hasattr(self.application, u'splash'):
+            self.application.splash.close()
         QtGui.QMessageBox.information(self, title, message)
 
     def on_help_web_site_clicked(self):
@@ -816,8 +819,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         setting_sections.extend([self.header_section])
         setting_sections.extend([u'crashreport'])
         # Add plugin sections.
-        for plugin in self.plugin_manager.plugins:
-            setting_sections.extend([plugin.name])
+        setting_sections.extend([plugin.name for plugin in self.plugin_manager.plugins])
         # Copy the settings file to the tmp dir, because we do not want to change the original one.
         temp_directory = os.path.join(unicode(gettempdir()), u'openlp')
         check_directory_exists(temp_directory)
@@ -825,11 +827,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         shutil.copyfile(import_file_name, temp_config)
         settings = Settings()
         import_settings = Settings(temp_config, Settings.IniFormat)
+        # Convert image files
+        log.info(u'hook upgrade_plugin_settings')
+        self.plugin_manager.hook_upgrade_plugin_settings(import_settings)
         # Remove/rename old settings to prepare the import.
         import_settings.remove_obsolete_settings()
-        # Lets do a basic sanity check. If it contains this string we can
-        # assume it was created by OpenLP and so we'll load what we can
-        # from it, and just silently ignore anything we don't recognise
+        # Lets do a basic sanity check. If it contains this string we can assume it was created by OpenLP and so we'll
+        # load what we can from it, and just silently ignore anything we don't recognise.
         if import_settings.value(u'SettingsImport/type') != u'OpenLP_settings_export':
             QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
                 translate('OpenLP.MainWindow', 'The file you have selected does not appear to be a valid OpenLP '
@@ -864,9 +868,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'file_date_imported', now.strftime("%Y-%m-%d %H:%M"))
         settings.endGroup()
         settings.sync()
-        # We must do an immediate restart or current configuration will
-        # overwrite what was just imported when application terminates
-        # normally.   We need to exit without saving configuration.
+        # We must do an immediate restart or current configuration will overwrite what was just imported when
+        # application terminates normally.   We need to exit without saving configuration.
         QtGui.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
             translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
                 'be applied the next time you start OpenLP.'),

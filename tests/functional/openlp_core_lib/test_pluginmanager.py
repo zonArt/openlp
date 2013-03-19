@@ -6,7 +6,7 @@ from unittest import TestCase
 from mock import MagicMock
 
 from openlp.core.lib.pluginmanager import PluginManager
-from openlp.core.lib import Registry, PluginStatus
+from openlp.core.lib import Settings, Registry, PluginStatus
 
 
 class TestPluginManager(TestCase):
@@ -184,7 +184,7 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_export_menu()
         plugin_manager.hook_export_menu()
 
-        # THEN: The addExportMenuItem() method should have been called
+        # THEN: The addExportMenuItem() method should not have been called
         assert mocked_plugin.addExportMenuItem.call_count == 0, \
             u'The addExportMenuItem() method should not have been called.'
 
@@ -203,6 +203,41 @@ class TestPluginManager(TestCase):
 
         # THEN: The addExportMenuItem() method should have been called
         mocked_plugin.addExportMenuItem.assert_called_with(self.mocked_main_window.file_export_menu)
+
+    def hook_upgrade_plugin_settings_with_disabled_plugin_test(self):
+        """
+        Test running the hook_upgrade_plugin_settings() method with a disabled plugin
+        """
+        # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Disabled
+        mocked_plugin = MagicMock()
+        mocked_plugin.status = PluginStatus.Disabled
+        plugin_manager = PluginManager()
+        plugin_manager.plugins = [mocked_plugin]
+        settings = Settings()
+
+        # WHEN: We run hook_upgrade_plugin_settings()
+        plugin_manager.hook_upgrade_plugin_settings(settings)
+
+        # THEN: The upgrade_settings() method should not have been called
+        assert mocked_plugin.upgrade_settings.call_count == 0, \
+            u'The upgrade_settings() method should not have been called.'
+
+    def hook_upgrade_plugin_settings_with_active_plugin_test(self):
+        """
+        Test running the hook_upgrade_plugin_settings() method with an active plugin
+        """
+        # GIVEN: A PluginManager instance and a list with a mocked up plugin whose status is set to Active
+        mocked_plugin = MagicMock()
+        mocked_plugin.status = PluginStatus.Active
+        plugin_manager = PluginManager()
+        plugin_manager.plugins = [mocked_plugin]
+        settings = Settings()
+
+        # WHEN: We run hook_upgrade_plugin_settings()
+        plugin_manager.hook_upgrade_plugin_settings(settings)
+
+        # THEN: The addExportMenuItem() method should have been called
+        mocked_plugin.upgrade_settings.assert_called_with(settings)
 
     def hook_tools_menu_with_disabled_plugin_test(self):
         """

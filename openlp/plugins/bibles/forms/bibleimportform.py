@@ -97,7 +97,7 @@ class BibleImportForm(OpenLPWizard):
         next_button = self.button(QtGui.QWizard.NextButton)
         next_button.setEnabled(BibleFormat.get_availability(index))
 
-    def customInit(self):
+    def custom_init(self):
         """
         Perform any custom initialisation for bible importing.
         """
@@ -112,7 +112,7 @@ class BibleImportForm(OpenLPWizard):
         self.restart()
         self.selectStack.setCurrentIndex(0)
 
-    def customSignals(self):
+    def custom_signals(self):
         """
         Set up the signals used in the bible importer.
         """
@@ -123,7 +123,7 @@ class BibleImportForm(OpenLPWizard):
         self.openSongBrowseButton.clicked.connect(self.onOpenSongBrowseButtonClicked)
         self.openlp1BrowseButton.clicked.connect(self.onOpenlp1BrowseButtonClicked)
 
-    def addCustomPages(self):
+    def add_custom_pages(self):
         """
         Add the bible import specific wizard pages.
         """
