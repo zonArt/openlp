@@ -29,7 +29,7 @@ class TestPluginManager(TestCase):
         Settings().setValue(u'advanced/data path', self.temp_dir)
         Registry.create()
         Registry().register(u'service_list', MagicMock())
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
 
@@ -42,7 +42,7 @@ class TestPluginManager(TestCase):
 
     def find_plugins_test(self):
         """
-        Test the find_plugins() method to ensure it imports the correct plugins.
+        Test the find_plugins() method to ensure it imports the correct plugins
         """
         # GIVEN: A plugin manager
         plugin_manager = PluginManager()

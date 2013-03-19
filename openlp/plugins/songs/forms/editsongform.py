@@ -578,9 +578,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_delete_button.setEnabled(True)
 
     def on_verse_add_button_clicked(self):
-        self.verse_form.setVerse(u'', True)
+        self.verse_form.set_verse(u'', True)
         if self.verse_form.exec_():
-            after_text, verse_tag, verse_num = self.verse_form.getVerse()
+            after_text, verse_tag, verse_num = self.verse_form.get_verse()
             verse_def = u'%s%s' % (verse_tag, verse_num)
             item = QtGui.QTableWidgetItem(after_text)
             item.setData(QtCore.Qt.UserRole, verse_def)
@@ -596,9 +596,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             temp_text = item.text()
             verse_id = item.data(QtCore.Qt.UserRole)
-            self.verse_form.setVerse(temp_text, True, verse_id)
+            self.verse_form.set_verse(temp_text, True, verse_id)
             if self.verse_form.exec_():
-                after_text, verse_tag, verse_num = self.verse_form.getVerse()
+                after_text, verse_tag, verse_num = self.verse_form.get_verse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 item.setText(after_text)
@@ -630,12 +630,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_list += u'---[%s:%s]---\n' % (verse_tag, verse_num)
                 verse_list += item.text()
                 verse_list += u'\n'
-            self.verse_form.setVerse(verse_list)
+            self.verse_form.set_verse(verse_list)
         else:
-            self.verse_form.setVerse(u'')
+            self.verse_form.set_verse(u'')
         if not self.verse_form.exec_():
             return
-        verse_list = self.verse_form.getVerseAll()
+        verse_list = self.verse_form.get_all_verses()
         verse_list = unicode(verse_list.replace(u'\r\n', u'\n'))
         self.verse_list_widget.clear()
         self.verse_list_widget.setRowCount(0)
@@ -797,7 +797,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Free up autocompletion memory on dialog exit
         """
-        log.debug (u'SongEditForm.clearCaches')
+        log.debug(u'SongEditForm.clearCaches')
         self.authors = []
         self.themes = []
         self.books = []
