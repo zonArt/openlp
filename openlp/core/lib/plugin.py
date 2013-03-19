@@ -90,10 +90,10 @@ class Plugin(QtCore.QObject):
 
     **Hook Functions**
 
-    ``checkPreConditions()``
+    ``check_pre_conditions()``
         Provides the Plugin with a handle to check if it can be loaded.
 
-    ``createMediaManagerItem()``
+    ``create_media_manager_item()``
         Creates a new instance of MediaManagerItem to be used in the Media
         Manager.
 
@@ -174,7 +174,7 @@ class Plugin(QtCore.QObject):
         Registry().register_function(u'%s_add_service_item' % self.name, self.processAddServiceEvent)
         Registry().register_function(u'%s_config_updated' % self.name, self.config_update)
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
         """
         Provides the Plugin with a handle to check if it can be loaded.
         Failing Preconditions does not stop a settings Tab being created
@@ -183,13 +183,13 @@ class Plugin(QtCore.QObject):
         """
         return True
 
-    def setStatus(self):
+    def set_status(self):
         """
         Sets the status of the plugin
         """
         self.status = Settings().value(self.settingsSection + u'/status')
 
-    def toggleStatus(self, new_status):
+    def toggle_status(self, new_status):
         """
         Changes the status of the plugin and remembers it
         """
@@ -200,7 +200,7 @@ class Plugin(QtCore.QObject):
         elif new_status == PluginStatus.Inactive:
             self.finalise()
 
-    def isActive(self):
+    def is_active(self):
         """
         Indicates if the plugin is active
 
@@ -208,7 +208,7 @@ class Plugin(QtCore.QObject):
         """
         return self.status == PluginStatus.Active
 
-    def createMediaManagerItem(self):
+    def create_media_manager_item(self):
         """
         Construct a MediaManagerItem object with all the buttons and things
         you need, and return it for integration into OpenLP.

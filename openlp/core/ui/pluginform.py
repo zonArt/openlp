@@ -139,11 +139,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             return
         if status == PluginStatus.Inactive:
             self.application.set_busy_cursor()
-            self.activePlugin.toggleStatus(PluginStatus.Active)
+            self.activePlugin.toggle_status(PluginStatus.Active)
             self.application.set_normal_cursor()
             self.activePlugin.app_startup()
         else:
-            self.activePlugin.toggleStatus(PluginStatus.Inactive)
+            self.activePlugin.toggle_status(PluginStatus.Inactive)
         status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
         if self.activePlugin.status == PluginStatus.Active:
             status_text = translate('OpenLP.PluginForm', '%s (Active)')

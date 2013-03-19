@@ -85,7 +85,10 @@ class SongsPlugin(Plugin):
         self.iconPath = u':/plugins/plugin_songs.png'
         self.icon = build_icon(self.iconPath)
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
+        """
+        Check the plugin can run.
+        """
         return self.manager.session is not None
 
     def initialise(self):

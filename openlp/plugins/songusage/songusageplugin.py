@@ -68,7 +68,10 @@ class SongUsagePlugin(Plugin):
         self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
         self.song_usage_active = False
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
+        """
+        Check the plugin can run.
+        """
         return self.manager.session is not None
 
     def addToolsMenuItem(self, tools_menu):

@@ -131,7 +131,7 @@ class PluginManager(object):
         for plugin in plugins_list:
             if plugin.checkPreConditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.setStatus()
+                plugin.set_status()
             else:
                 plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
@@ -142,7 +142,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.createMediaManagerItem()
+                plugin.create_media_manager_item()
 
     def hook_settings_tabs(self):
         """
@@ -190,8 +190,8 @@ class PluginManager(object):
         """
         log.info(u'Initialise Plugins - Started')
         for plugin in self.plugins:
-            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.isActive()))
-            if plugin.isActive():
+            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.is_active()))
+            if plugin.is_active():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
         log.info(u'Initialise Plugins - Finished')
@@ -203,7 +203,7 @@ class PluginManager(object):
         """
         log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.isActive():
+            if plugin.is_active():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)
 
@@ -222,7 +222,7 @@ class PluginManager(object):
         """
         log.info(u'plugins - new service created')
         for plugin in self.plugins:
-            if plugin.isActive():
+            if plugin.is_active():
                 plugin.new_service_created()
 
     def _get_settings_form(self):

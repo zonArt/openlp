@@ -137,7 +137,7 @@ class MediaPlugin(Plugin):
                 if players:
                     new_players = [player for player in players if player != u'phonon']
                 new_players.insert(0, u'phonon')
-                self.media_controller.mediaPlayers[u'phonon'].isActive = True
+                self.media_controller.mediaPlayers[u'phonon'].is_active = True
                 settings.setValue(u'players', u','.join(new_players))
                 self.settingsTab.load()
             settings.remove(u'use phonon')

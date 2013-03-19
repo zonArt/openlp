@@ -105,7 +105,7 @@ class PresentationPlugin(Plugin):
                 controller.kill()
         Plugin.finalise(self)
 
-    def createMediaManagerItem(self):
+    def create_media_manager_item(self):
         """
         Create the Media Manager List
         """
@@ -114,17 +114,16 @@ class PresentationPlugin(Plugin):
 
     def registerControllers(self, controller):
         """
-        Register each presentation controller (Impress, PPT etc) and
-        store for later use
+        Register each presentation controller (Impress, PPT etc) and store for later use
         """
         self.controllers[controller.name] = controller
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
         """
         Check to see if we have any presentation software available
         If Not do not install the plugin.
         """
-        log.debug(u'checkPreConditions')
+        log.debug(u'check_pre_conditions')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir),
             u'presentations', u'lib')

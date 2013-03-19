@@ -46,7 +46,7 @@ class MediaPlayer(object):
         self.parent = parent
         self.name = name
         self.available = self.check_available()
-        self.isActive = False
+        self.is_active = False
         self.can_background = False
         self.can_folder = False
         self.state = MediaState.Off
