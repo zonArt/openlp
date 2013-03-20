@@ -119,25 +119,28 @@ class ImageMediaItem(MediaManagerItem):
             create_widget_action(self.list_view, separator=True)
         if self.has_delete_icon:
             create_widget_action(self.list_view,
+                u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
                 text=self.plugin.get_string(StringContent.Delete)[u'title'],
                 icon=u':/general/general_delete.png',
-                shortcuts=[QtCore.Qt.Key_Delete], triggers=self.on_delete_click)
+                can_shortcuts=True, triggers=self.on_delete_click)
             create_widget_action(self.list_view, separator=True)
         create_widget_action(self.list_view,
+            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
             text=self.plugin.get_string(StringContent.Preview)[u'title'],
             icon=u':/general/general_preview.png',
-            shortcuts=[QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return],
+            can_shortcuts=True,
             triggers=self.on_preview_click)
         create_widget_action(self.list_view,
+            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Live.title()),
             text=self.plugin.get_string(StringContent.Live)[u'title'],
             icon=u':/general/general_live.png',
-            shortcuts=[QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Enter,
-            QtCore.Qt.ShiftModifier | QtCore.Qt.Key_Return],
+            can_shortcuts=True,
             triggers=self.on_live_click)
         create_widget_action(self.list_view,
+            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Service.title()),
+            can_shortcuts=True,
             text=self.plugin.get_string(StringContent.Service)[u'title'],
             icon=u':/general/general_add.png',
-            shortcuts=[QtCore.Qt.Key_Plus, QtCore.Qt.Key_Equal],
             triggers=self.on_add_click)
         if self.add_to_service_item:
             create_widget_action(self.list_view, separator=True)
