@@ -101,7 +101,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.required_icons()
         self.setupUi()
         self.retranslateUi()
-        self.autoSelectId = -1
+        self.auto_select_id = -1
         Registry().register_function(u'%s_service_load' % self.plugin.name, self.service_load)
 
     def required_icons(self):
@@ -452,10 +452,10 @@ class MediaManagerItem(QtGui.QWidget):
         Allows the change of current item in the list to be actioned
         """
         if Settings().value(u'advanced/single click preview') and self.quick_preview_allowed \
-            and self.list_view.selectedIndexes() and self.autoSelectId == -1:
+            and self.list_view.selectedIndexes() and self.auto_select_id == -1:
             self.on_preview_click(True)
 
-    def on_preview_click(self, keepFocus=False):
+    def on_preview_click(self, keep_focus=False):
         """
         Preview an item by building a service item then adding that service item to the preview slide controller.
         """
@@ -468,7 +468,7 @@ class MediaManagerItem(QtGui.QWidget):
             if service_item:
                 service_item.from_plugin = True
                 self.preview_controller.add_service_item(service_item)
-                if keepFocus:
+                if keep_focus:
                     self.list_view.setFocus()
 
     def on_live_click(self):
@@ -553,13 +553,13 @@ class MediaManagerItem(QtGui.QWidget):
                 QtGui.QMessageBox.information(self, translate('OpenLP.MediaManagerItem', 'Invalid Service Item'),
                     translate('OpenLP.MediaManagerItem', 'You must select a %s service item.') % self.title)
 
-    def build_service_item(self, item=None, xmlVersion=False, remote=False, context=ServiceItemContext.Live):
+    def build_service_item(self, item=None, xml_version=False, remote=False, context=ServiceItemContext.Live):
         """
         Common method for generating a service item
         """
         service_item = ServiceItem(self.plugin)
         service_item.add_icon(self.plugin.icon_path)
-        if self.generate_slide_data(service_item, item, xmlVersion, remote, context):
+        if self.generate_slide_data(service_item, item, xml_version, remote, context):
             return service_item
         else:
             return None
@@ -585,14 +585,14 @@ class MediaManagerItem(QtGui.QWidget):
         item.setFont(font)
         self.list_view.addItem(item)
 
-    def _get_id_of_item_to_generate(self, item, remoteItem):
+    def _get_id_of_item_to_generate(self, item, remote_item):
         """
         Utility method to check items being submitted for slide generation.
 
         ``item``
             The item to check.
 
-        ``remoteItem``
+        ``remote_item``
             The id to assign if the slide generation was remotely triggered.
         """
         if item is None:
@@ -602,7 +602,7 @@ class MediaManagerItem(QtGui.QWidget):
                     return False
                 item_id = item.data(QtCore.Qt.UserRole)
             else:
-                item_id = remoteItem
+                item_id = remote_item
         else:
             item_id = item.data(QtCore.Qt.UserRole)
         return item_id
@@ -612,12 +612,12 @@ class MediaManagerItem(QtGui.QWidget):
         Sorts out, what item to select after loading a list.
         """
         # The item to select has not been set.
-        if self.autoSelectId == -1:
+        if self.auto_select_id == -1:
             item = self.list_view.currentItem()
             if item:
-                self.autoSelectId = item.data(QtCore.Qt.UserRole)
+                self.auto_select_id = item.data(QtCore.Qt.UserRole)
 
-    def search(self, string, showError=True):
+    def search(self, string, show_error=True):
         """
         Performs a plugin specific search for items containing ``string``
         """

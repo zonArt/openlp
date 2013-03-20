@@ -237,9 +237,9 @@ class SongMediaItem(MediaManagerItem):
             song_name.setData(QtCore.Qt.UserRole, song.id)
             self.list_view.addItem(song_name)
             # Auto-select the item if name has been set
-            if song.id == self.autoSelectId:
+            if song.id == self.auto_select_id:
                 self.list_view.setCurrentItem(song_name)
-        self.autoSelectId = -1
+        self.auto_select_id = -1
 
     def displayResultsAuthor(self, searchresults):
         log.debug(u'display results Author')
@@ -313,7 +313,7 @@ class SongMediaItem(MediaManagerItem):
         self.editSongForm.exec_()
         self.onClearTextButtonClick()
         self.on_selection_change()
-        self.autoSelectId = -1
+        self.auto_select_id = -1
 
     def onSongMaintenanceClick(self):
         self.songMaintenanceForm.exec_()
@@ -330,7 +330,7 @@ class SongMediaItem(MediaManagerItem):
         if valid:
             self.editSongForm.load_song(song_id, preview)
             if self.editSongForm.exec_() == QtGui.QDialog.Accepted:
-                self.autoSelectId = -1
+                self.auto_select_id = -1
                 self.on_song_list_load()
                 self.remoteSong = song_id
                 self.remote_triggered = True
@@ -351,7 +351,7 @@ class SongMediaItem(MediaManagerItem):
             item_id = self.editItem.data(QtCore.Qt.UserRole)
             self.editSongForm.load_song(item_id, False)
             self.editSongForm.exec_()
-            self.autoSelectId = -1
+            self.auto_select_id = -1
             self.on_song_list_load()
         self.editItem = None
 

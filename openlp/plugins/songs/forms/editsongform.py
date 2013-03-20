@@ -914,7 +914,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 log.exception(u'Could not remove directory: %s', save_path)
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        self.media_item.autoSelectId = self.song.id
+        self.media_item.auto_select_id = self.song.id
 
     def _get_plugin_manager(self):
         """

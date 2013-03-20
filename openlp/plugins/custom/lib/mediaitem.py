@@ -109,9 +109,9 @@ class CustomMediaItem(MediaManagerItem):
             custom_name.setData(QtCore.Qt.UserRole, custom_slide.id)
             self.list_view.addItem(custom_name)
             # Auto-select the custom.
-            if custom_slide.id == self.autoSelectId:
+            if custom_slide.id == self.auto_select_id:
                 self.list_view.setCurrentItem(custom_name)
-        self.autoSelectId = -1
+        self.auto_select_id = -1
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
@@ -135,7 +135,7 @@ class CustomMediaItem(MediaManagerItem):
             if self.edit_custom_form.exec_() == QtGui.QDialog.Accepted:
                 self.remote_triggered = True
                 self.remoteCustom = custom_id
-                self.autoSelectId = -1
+                self.auto_select_id = -1
                 self.on_search_text_button_clicked()
                 item = self.build_service_item(remote=True)
                 self.remote_triggered = None
@@ -153,7 +153,7 @@ class CustomMediaItem(MediaManagerItem):
             item_id = item.data(QtCore.Qt.UserRole)
             self.edit_custom_form.load_custom(item_id, False)
             self.edit_custom_form.exec_()
-            self.autoSelectId = -1
+            self.auto_select_id = -1
             self.on_search_text_button_clicked()
 
     def on_delete_click(self):
