@@ -155,17 +155,17 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start CherryPy server')
-        if Settings().value(self.plugin.settingsSection + u'/https enabled'):
-            port = Settings().value(self.plugin.settingsSection + u'/https port')
-            address = Settings().value(self.plugin.settingsSection + u'/ip address')
+        if Settings().value(self.plugin.settings_section + u'/https enabled'):
+            port = Settings().value(self.plugin.settings_section + u'/https port')
+            address = Settings().value(self.plugin.settings_section + u'/ip address')
             shared_data = AppLocation.get_directory(AppLocation.SharedData)
             server_config = {u'server.socket_host': str(address),
                              u'server.socket_port': port,
                              u'server.ssl_certificate': os.path.join(shared_data, u'openlp.crt'),
                              u'server.ssl_private_key': os.path.join(shared_data, u'openlp.key')}
         else:
-            port = Settings().value(self.plugin.settingsSection + u'/port')
-            address = Settings().value(self.plugin.settingsSection + u'/ip address')
+            port = Settings().value(self.plugin.settings_section + u'/port')
+            address = Settings().value(self.plugin.settings_section + u'/ip address')
             server_config = {u'server.socket_host': str(address),
                              u'server.socket_port': port}
         cherrypy.config.update(server_config)
@@ -214,7 +214,7 @@ class HttpConnection(object):
             (r'^/stage/api/service/(.*)$', self.service),
             (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
             (r'^/api/alert$', self.alert),
-            (r'^/api/plugin/(search)$', self.pluginInfo),
+            (r'^/api/plugin/(search)$', self.plugin_info),
             (r'^/api/(.*)/search$', self.search),
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
@@ -456,9 +456,9 @@ class HttpConnection(object):
             if current_item:
                 json_data[u'results'][u'item'] = self.live_controller.service_item.unique_identifier
         else:
-            if self.url_params and self.url_params.get(u'data'):
+            if self.request_data:
                 try:
-                    data = json.loads(self.url_params[u'data'][0])
+                    data = json.loads(self.request_data)[u'request'][u'id']
                 except KeyError, ValueError:
                     return self._http_bad_request()
                 log.info(data)
@@ -486,15 +486,13 @@ class HttpConnection(object):
                 data = json.loads(self.request_data)[u'request'][u'id']
             except KeyError:
                 return self._http_bad_request()
-            print "A", event , data
-            self.service_manager.emit(QtCore.SIGNAL(event, data))
+            self.service_manager.emit(QtCore.SIGNAL(event), data)
         else:
-            print "B", event
             Registry().execute(event)
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': {u'success': True}})
 
-    def pluginInfo(self, action):
+    def plugin_info(self, action):
         """
         Return plugin related information, based on the action.
 
@@ -505,8 +503,8 @@ class HttpConnection(object):
         if action == u'search':
             searches = []
             for plugin in self.plugin_manager.plugins:
-                if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
-                    searches.append([plugin.name, unicode(plugin.textStrings[StringContent.Name][u'plural'])])
+                if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.hasSearch:
+                    searches.append([plugin.name, unicode(plugin.text_strings[StringContent.Name][u'plural'])])
             cherrypy.response.headers['Content-Type'] = u'application/json'
             return json.dumps({u'results': {u'items': searches}})
 
@@ -523,8 +521,8 @@ class HttpConnection(object):
             return self._http_bad_request()
         text = urllib.unquote(text)
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results = plugin.mediaItem.search(text, False)
+        if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
+            results = plugin.media_item.search(text, False)
         else:
             results = []
         cherrypy.response.headers['Content-Type'] = u'application/json'
@@ -539,8 +537,8 @@ class HttpConnection(object):
         except KeyError, ValueError:
             return self._http_bad_request()
         plugin = self.plugin_manager.get_plugin_by_name(type)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            plugin.mediaItem.goLive(id, remote=True)
+        if plugin.status == PluginStatus.Active and plugin.media_item:
+            plugin.media_item.go_live(id, remote=True)
         return self._http_success()
 
     def add_to_service(self, plugin_name):
@@ -552,9 +550,9 @@ class HttpConnection(object):
         except KeyError, ValueError:
             return self._http_bad_request()
         plugin = self.plugin_manager.get_plugin_by_name(type)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            item_id = plugin.mediaItem.createItemFromId(id)
-            plugin.mediaItem.addToService(item_id, remote=True)
+        if plugin.status == PluginStatus.Active and plugin.media_item:
+            item_id = plugin.media_item.create_item_from_id(id)
+            plugin.media_item.add_to_service(item_id, remote=True)
         self._http_success()
 
     def _http_success(self):

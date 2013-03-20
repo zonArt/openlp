@@ -1008,7 +1008,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_set_item(self, message):
         """
-        Called by a signal to select a specific item.
+        Called by a signal to select a specific item and make it live usually from remote.
         """
         print "hello", message
         self.set_item(int(message))
