@@ -277,10 +277,10 @@ class OpenLPWizard(QtGui.QWizard):
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(Settings().value(self.plugin.settingsSection + u'/' + setting_name)), filters)
+            os.path.dirname(Settings().value(self.plugin.settings_section + u'/' + setting_name)), filters)
         if filename:
             editbox.setText(filename)
-        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, filename)
+        Settings().setValue(self.plugin.settings_section + u'/' + setting_name, filename)
 
     def get_folder(self, title, editbox, setting_name):
         """
@@ -296,10 +296,10 @@ class OpenLPWizard(QtGui.QWizard):
             The place where to save the last opened directory.
         """
         folder = QtGui.QFileDialog.getExistingDirectory(self, title,
-            Settings().value(self.plugin.settingsSection + u'/' + setting_name), QtGui.QFileDialog.ShowDirsOnly)
+            Settings().value(self.plugin.settings_section + u'/' + setting_name), QtGui.QFileDialog.ShowDirsOnly)
         if folder:
             editbox.setText(folder)
-        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)
+        Settings().setValue(self.plugin.settings_section + u'/' + setting_name, folder)
 
     def _get_application(self):
         """

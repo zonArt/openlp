@@ -59,12 +59,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     log.info(u'%s EditSongForm loaded', __name__)
 
-    def __init__(self, mediaitem, parent, manager):
+    def __init__(self, media_item, parent, manager):
         """
         Constructor
         """
         super(EditSongForm, self).__init__(parent)
-        self.mediaitem = mediaitem
+        self.media_item = media_item
         self.song = None
         # can this be automated?
         self.width = 400
@@ -320,7 +320,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for plugin in self.plugin_manager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.from_media_button.setVisible(True)
-                self.media_form.populateFiles(plugin.mediaItem.getList(MediaType.Audio))
+                self.media_form.populateFiles(plugin.media_item.getList(MediaType.Audio))
                 break
 
     def new_song(self):
@@ -714,7 +714,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = self.song_book_combo_box.currentText()
         if item == 0 and text:
             temp_song_book = text
-        self.mediaitem.songMaintenanceForm.exec_(True)
+        self.media_item.songMaintenanceForm.exec_(True)
         self.load_authors()
         self.load_books()
         self.load_topics()
@@ -884,7 +884,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.manager.save_object(self.song)
         audio_files = map(lambda a: a.file_name, self.song.media_files)
         log.debug(audio_files)
-        save_path = os.path.join(AppLocation.get_section_data_path(self.mediaitem.plugin.name), 'audio',
+        save_path = os.path.join(AppLocation.get_section_data_path(self.media_item.plugin.name), 'audio',
             str(self.song.id))
         check_directory_exists(save_path)
         self.song.media_files = []
@@ -914,7 +914,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 log.exception(u'Could not remove directory: %s', save_path)
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        self.mediaitem.autoSelectId = self.song.id
+        self.media_item.auto_select_id = self.song.id
 
     def _get_plugin_manager(self):
         """

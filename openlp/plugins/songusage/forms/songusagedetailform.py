@@ -58,9 +58,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         We need to set up the screen
         """
-        self.from_date_calendar.setSelectedDate(Settings().value(self.plugin.settingsSection + u'/from date'))
-        self.to_date_calendar.setSelectedDate(Settings().value(self.plugin.settingsSection + u'/to date'))
-        self.file_line_edit.setText(Settings().value(self.plugin.settingsSection + u'/last directory export'))
+        self.from_date_calendar.setSelectedDate(Settings().value(self.plugin.settings_section + u'/from date'))
+        self.to_date_calendar.setSelectedDate(Settings().value(self.plugin.settings_section + u'/to date'))
+        self.file_line_edit.setText(Settings().value(self.plugin.settings_section + u'/last directory export'))
 
     def define_output_location(self):
         """
@@ -68,9 +68,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
-            Settings().value(self.plugin.settingsSection + u'/last directory export'))
+            Settings().value(self.plugin.settings_section + u'/last directory export'))
         if path:
-            Settings().setValue(self.plugin.settingsSection + u'/last directory export', path)
+            Settings().setValue(self.plugin.settings_section + u'/last directory export', path)
             self.file_line_edit.setText(path)
 
     def accept(self):
@@ -90,8 +90,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         file_name = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % (
             self.from_date_calendar.selectedDate().toString(u'ddMMyyyy'),
             self.to_date_calendar.selectedDate().toString(u'ddMMyyyy'))
-        Settings().setValue(self.plugin.settingsSection + u'/from date', self.from_date_calendar.selectedDate())
-        Settings().setValue(self.plugin.settingsSection + u'/to date', self.to_date_calendar.selectedDate())
+        Settings().setValue(self.plugin.settings_section + u'/from date', self.from_date_calendar.selectedDate())
+        Settings().setValue(self.plugin.settings_section + u'/to date', self.to_date_calendar.selectedDate())
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
             SongUsageItem.usagedate >= self.from_date_calendar.selectedDate().toPyDate(),

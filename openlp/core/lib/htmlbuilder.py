@@ -240,9 +240,9 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     html_additions = u''
     if plugins:
         for plugin in plugins:
-            css_additions += plugin.getDisplayCss()
-            js_additions += plugin.getDisplayJavaScript()
-            html_additions += plugin.getDisplayHtml()
+            css_additions += plugin.get_display_css()
+            js_additions += plugin.get_display_javascript()
+            html_additions += plugin.get_display_html()
     html = HTMLSRC % (
         build_background_css(item, width),
         css_additions,

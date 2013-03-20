@@ -454,7 +454,7 @@ class Settings(QtCore.QSettings):
         # We need QSettings instead of Settings here to bypass our central settings dict.
         # Do NOT do this anywhere else!
         settings = QtCore.QSettings(self.fileName(), Settings.IniFormat)
-        settings.beginGroup(plugin.settingsSection)
+        settings.beginGroup(plugin.settings_section)
         if settings.contains(u'%s count' % plugin.name):
             # Get the count.
             list_count = int(settings.value(u'%s count' % plugin.name, 0))

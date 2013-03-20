@@ -607,7 +607,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.application.process_events()
         for plugin in self.plugin_manager.plugins:
-            if plugin.isActive():
+            if plugin.is_active():
                 plugin.app_startup()
                 self.application.process_events()
 
@@ -654,10 +654,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.activePlugin.setStatus()
             if oldStatus != self.activePlugin.status:
                 if self.activePlugin.status == PluginStatus.Active:
-                    self.activePlugin.toggleStatus(PluginStatus.Active)
+                    self.activePlugin.toggle_status(PluginStatus.Active)
                     self.activePlugin.app_startup()
                 else:
-                    self.activePlugin.toggleStatus(PluginStatus.Inactive)
+                    self.activePlugin.toggle_status(PluginStatus.Inactive)
         # Set global theme and
         Registry().execute(u'theme_update_global', self.theme_manager_contents.global_theme)
         self.theme_manager_contents.load_first_time_themes()

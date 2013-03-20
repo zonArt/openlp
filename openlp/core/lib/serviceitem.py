@@ -419,8 +419,8 @@ class ServiceItem(object):
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            settingsSection = serviceitem[u'serviceitem'][u'header'][u'name']
-            background = QtGui.QColor(Settings().value(settingsSection + u'/background color'))
+            settings_section = serviceitem[u'serviceitem'][u'header'][u'name']
+            background = QtGui.QColor(Settings().value(settings_section + u'/background color'))
             if path:
                 self.has_original_files = False
                 for text_image in serviceitem[u'serviceitem'][u'data']:

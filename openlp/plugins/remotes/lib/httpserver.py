@@ -171,8 +171,8 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
-        port = Settings().value(self.plugin.settingsSection + u'/port')
-        address = Settings().value(self.plugin.settingsSection + u'/ip address')
+        port = Settings().value(self.plugin.settings_section + u'/port')
+        address = Settings().value(self.plugin.settings_section + u'/ip address')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
         self.server.newConnection.connect(self.new_connection)
@@ -492,7 +492,7 @@ class HttpConnection(object):
         if action == u'search':
             searches = []
             for plugin in self.plugin_manager.plugins:
-                if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
+                if plugin.status == PluginStatus.Active and plugin.media_item and plugin.mediaItem.hasSearch:
                     searches.append([plugin.name, unicode(plugin.textStrings[StringContent.Name][u'plural'])])
             return HttpResponse(json.dumps({u'results': {u'items': searches}}), {u'Content-Type': u'application/json'})
 
@@ -509,8 +509,8 @@ class HttpConnection(object):
             return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results = plugin.mediaItem.search(text, False)
+        if plugin.status == PluginStatus.Active and plugin.media_item and plugin.mediaItem.hasSearch:
+            results = plugin.media_item.search(text, False)
         else:
             results = []
         return HttpResponse(json.dumps({u'results': {u'items': results}}), {u'Content-Type': u'application/json'})
@@ -524,8 +524,8 @@ class HttpConnection(object):
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            plugin.mediaItem.goLive(id, remote=True)
+        if plugin.status == PluginStatus.Active and plugin.media_item:
+            plugin.media_item.go_live(id, remote=True)
         return HttpResponse(code=u'200 OK')
 
     def add_to_service(self, plugin_name):
@@ -537,9 +537,9 @@ class HttpConnection(object):
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            item_id = plugin.mediaItem.createItemFromId(id)
-            plugin.mediaItem.addToService(item_id, remote=True)
+        if plugin.status == PluginStatus.Active and plugin.media_item:
+            item_id = plugin.media_item.createItemFromId(id)
+            plugin.media_item.add_to_service(item_id, remote=True)
         return HttpResponse(code=u'200 OK')
 
     def send_response(self, response):

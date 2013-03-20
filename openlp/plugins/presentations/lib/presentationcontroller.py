@@ -375,7 +375,7 @@ class PresentationController(object):
         self.plugin = plugin
         self.name = name
         self.document_class = document_class
-        self.settings_section = self.plugin.settingsSection
+        self.settings_section = self.plugin.settings_section
         self.available = None
         self.temp_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), name)
         self.thumbnail_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')

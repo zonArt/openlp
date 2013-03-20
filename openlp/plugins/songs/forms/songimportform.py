@@ -245,10 +245,10 @@ class SongImportForm(OpenLPWizard):
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
         filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
-            Settings().value(self.plugin.settingsSection + u'/last directory import'), filters)
+            Settings().value(self.plugin.settings_section + u'/last directory import'), filters)
         if filenames:
             listbox.addItems(filenames)
-            Settings().setValue(self.plugin.settingsSection + u'/last directory import',
+            Settings().setValue(self.plugin.settings_section + u'/last directory import',
                 os.path.split(unicode(filenames[0]))[0])
 
     def get_list_of_files(self, listbox):
@@ -364,7 +364,7 @@ class SongImportForm(OpenLPWizard):
         Save the error report to a file.
         """
         filename = QtGui.QFileDialog.getSaveFileName(self,
-            Settings().value(self.plugin.settingsSection + u'/last directory import'))
+            Settings().value(self.plugin.settings_section + u'/last directory import'))
         if not filename:
             return
         report_file = codecs.open(filename, u'w', u'utf-8')

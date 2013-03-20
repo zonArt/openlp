@@ -70,8 +70,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.insert_tab(self.player_tab, 3, PluginStatus.Active)
         count = 4
         for plugin in self.plugin_manager.plugins:
-            if plugin.settingsTab:
-                self.insert_tab(plugin.settingsTab, count, plugin.status)
+            if plugin.settings_tab:
+                self.insert_tab(plugin.settings_tab, count, plugin.status)
                 count += 1
         self.setting_list_widget.setCurrentRow(0)
         return QtGui.QDialog.exec_(self)
@@ -132,8 +132,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         self.advanced_tab.post_set_up()
         self.player_tab.post_set_up()
         for plugin in self.plugin_manager.plugins:
-            if plugin.settingsTab:
-                plugin.settingsTab.post_set_up()
+            if plugin.settings_tab:
+                plugin.settings_tab.post_set_up()
 
     def tab_changed(self, tabIndex):
         """
