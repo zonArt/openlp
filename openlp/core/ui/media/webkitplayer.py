@@ -279,7 +279,7 @@ class WebkitPlayer(MediaPlayer):
         self.original_name = u'WebKit'
         self.display_name = u'&WebKit'
         self.parent = parent
-        self.canBackground = True
+        self.can_background = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 
@@ -307,9 +307,9 @@ class WebkitPlayer(MediaPlayer):
         """
         Set up the player
         """
-        display.webView.resize(display.size())
-        display.webView.raise_()
-        self.hasOwnWidget = False
+        display.web_view.resize(display.size())
+        display.web_view.raise_()
+        self.has_own_widget = False
 
     def check_available(self):
         """
@@ -323,7 +323,7 @@ class WebkitPlayer(MediaPlayer):
         """
         log.debug(u'load vid in Webkit Controller')
         controller = display.controller
-        if display.hasAudio and not controller.media_info.is_background:
+        if display.has_audio and not controller.media_info.is_background:
             volume = controller.media_info.volume
             vol = float(volume) / float(100)
         else:
@@ -333,7 +333,7 @@ class WebkitPlayer(MediaPlayer):
             loop = u'true'
         else:
             loop = u'false'
-        display.webView.setVisible(True)
+        display.web_view.setVisible(True)
         if controller.media_info.file_info.suffix() == u'swf':
             controller.media_info.is_flash = True
             js = u'show_flash("load","%s");' % (path.replace(u'\\', u'\\\\'))
@@ -346,14 +346,14 @@ class WebkitPlayer(MediaPlayer):
         """
         Resize the player
         """
-        display.webView.resize(display.size())
+        display.web_view.resize(display.size())
 
     def play(self, display):
         """
         Play a video
         """
         controller = display.controller
-        display.webLoaded = True
+        display.web_loaded = True
         length = 0
         start_time = 0
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
@@ -368,7 +368,7 @@ class WebkitPlayer(MediaPlayer):
         # TODO add playing check and get the correct media length
         controller.media_info.length = length
         self.state = MediaState.Playing
-        display.webView.raise_()
+        display.web_view.raise_()
         return True
 
     def pause(self, display):
@@ -399,7 +399,7 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         # 1.0 is the highest value
-        if display.hasAudio:
+        if display.has_audio:
             vol = float(vol) / float(100)
             if not controller.media_info.is_flash:
                 display.frame.evaluateJavaScript(u'show_video(null, null, %s);' % str(vol))
@@ -450,7 +450,7 @@ class WebkitPlayer(MediaPlayer):
             currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");')
             length = display.frame.evaluateJavaScript(u'show_flash("length");')
         else:
-            if display.frame.evaluateJavaScript(u'show_video("isEnded");') == 'true':
+            if display.frame.evaluateJavaScript(u'show_video("isEnded");'):
                 self.stop(display)
             currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
             # check if conversion was ok and value is not 'NaN'

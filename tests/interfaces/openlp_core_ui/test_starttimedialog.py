@@ -1,12 +1,15 @@
 """
-    Package to test the openlp.core.ui package.
+Package to test the openlp.core.ui package.
 """
 from unittest import TestCase
-
 from mock import MagicMock, patch
+
+from PyQt4 import QtCore, QtGui, QtTest
+
 from openlp.core.lib import Registry
 from openlp.core.ui import starttimeform
-from PyQt4 import QtCore, QtGui, QtTest
+
+
 
 class TestStartTimeDialog(TestCase):
 
@@ -69,8 +72,8 @@ class TestStartTimeDialog(TestCase):
         self.form.item = {u'service_item': mocked_serviceitem}
         with patch(u'PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
-        okWidget = self.form.button_box.button(self.form.button_box.Ok)
-        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+        ok_widget = self.form.button_box.button(self.form.button_box.Ok)
+        QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following input values are returned
         self.assertEqual(self.form.hourSpinBox.value(), 0)
@@ -84,8 +87,8 @@ class TestStartTimeDialog(TestCase):
             self.form.exec_()
         self.form.minuteSpinBox.setValue(2)
         self.form.secondSpinBox.setValue(3)
-        okWidget = self.form.button_box.button(self.form.button_box.Ok)
-        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+        ok_widget = self.form.button_box.button(self.form.button_box.Ok)
+        QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following values are returned
         self.assertEqual(self.form.hourSpinBox.value(), 0)

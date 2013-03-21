@@ -124,9 +124,11 @@ from PyQt4 import QtCore, QtNetwork
 from mako.template import Template
 
 from openlp.core.lib import Registry, Settings, PluginStatus, StringContent
+
 from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
+
 
 class HttpResponse(object):
     """
@@ -160,8 +162,6 @@ class HttpServer(object):
         self.plugin = plugin
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'remotes', u'html')
         self.connections = []
-        self.current_item = None
-        self.current_slide = None
         self.start_tcp()
 
     def start_tcp(self):
@@ -171,26 +171,12 @@ class HttpServer(object):
         clients. Listen out for socket connections.
         """
         log.debug(u'Start TCP server')
-        port = Settings().value(self.plugin.settingsSection + u'/port')
-        address = Settings().value(self.plugin.settingsSection + u'/ip address')
+        port = Settings().value(self.plugin.settings_section + u'/port')
+        address = Settings().value(self.plugin.settings_section + u'/ip address')
         self.server = QtNetwork.QTcpServer()
         self.server.listen(QtNetwork.QHostAddress(address), port)
-        Registry().register_function(u'slidecontroller_live_changed', self.slide_change)
-        Registry().register_function(u'slidecontroller_live_started', self.item_change)
-        QtCore.QObject.connect(self.server, QtCore.SIGNAL(u'newConnection()'), self.new_connection)
+        self.server.newConnection.connect(self.new_connection)
         log.debug(u'TCP listening on port %d' % port)
-
-    def slide_change(self, row):
-        """
-        Slide change listener. Store the item and tell the clients.
-        """
-        self.current_slide = row
-
-    def item_change(self, items):
-        """
-        Item (song) change listener. Store the slide and tell the clients.
-        """
-        self.current_item = items[0]
 
     def new_connection(self):
         """
@@ -244,18 +230,17 @@ class HttpConnection(object):
             (r'^/api/(.*)/live$', self.go_live),
             (r'^/api/(.*)/add$', self.add_to_service)
         ]
-        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'readyRead()'), self.ready_read)
-        QtCore.QObject.connect(self.socket, QtCore.SIGNAL(u'disconnected()'), self.disconnected)
+        self.socket.readyRead.connect(self.ready_read)
+        self.socket.disconnected.connect(self.disconnected)
         self.translate()
 
     def _get_service_items(self):
         service_items = []
-        service_manager = self.parent.plugin.serviceManager
-        if self.parent.current_item:
-            current_unique_identifier = self.parent.current_item.unique_identifier
+        if self.live_controller.service_item:
+            current_unique_identifier = self.live_controller.service_item.unique_identifier
         else:
             current_unique_identifier = None
-        for item in service_manager.serviceItems:
+        for item in self.service_manager.service_items:
             service_item = item[u'service_item']
             service_items.append({
                 u'id': unicode(service_item.unique_identifier),
@@ -386,16 +371,15 @@ class HttpConnection(object):
         Poll OpenLP to determine the current slide number and item name.
         """
         result = {
-            u'service': self.parent.plugin.serviceManager.service_id,
-            u'slide': self.parent.current_slide or 0,
-            u'item': self.parent.current_item.unique_identifier if self.parent.current_item else u'',
-            u'twelve':Settings().value(u'remotes/twelve hour'),
-            u'blank': self.parent.plugin.liveController.blankScreen.isChecked(),
-            u'theme': self.parent.plugin.liveController.themeScreen.isChecked(),
-            u'display': self.parent.plugin.liveController.desktopScreen.isChecked()
+            u'service': self.service_manager.service_id,
+            u'slide': self.live_controller.selected_row or 0,
+            u'item': self.live_controller.service_item.unique_identifier if self.live_controller.service_item else u'',
+            u'twelve': Settings().value(u'remotes/twelve hour'),
+            u'blank': self.live_controller.blank_screen.isChecked(),
+            u'theme': self.live_controller.theme_screen.isChecked(),
+            u'display': self.live_controller.desktop_screen.isChecked()
         }
-        return HttpResponse(json.dumps({u'results': result}),
-            {u'Content-Type': u'application/json'})
+        return HttpResponse(json.dumps({u'results': result}), {u'Content-Type': u'application/json'})
 
     def display(self, action):
         """
@@ -412,7 +396,7 @@ class HttpConnection(object):
         """
         Send an alert.
         """
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name("alerts")
+        plugin = self.plugin_manager.get_plugin_by_name("alerts")
         if plugin.status == PluginStatus.Active:
             try:
                 text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
@@ -426,20 +410,19 @@ class HttpConnection(object):
         return HttpResponse(json.dumps({u'results': {u'success': success}}),
             {u'Content-Type': u'application/json'})
 
-    def controller(self, type, action):
+    def controller(self, display_type, action):
         """
         Perform an action on the slide controller.
 
-        ``type``
-            This is the type of slide controller, either ``preview`` or
-            ``live``.
+        ``display_type``
+            This is the type of slide controller, either ``preview`` or ``live``.
 
         ``action``
             The action to perform.
         """
-        event = u'slidecontroller_%s_%s' % (type, action)
+        event = u'slidecontroller_%s_%s' % (display_type, action)
         if action == u'text':
-            current_item = self.parent.current_item
+            current_item = self.live_controller.service_item
             data = []
             if current_item:
                 for index, frame in enumerate(current_item.get_frames()):
@@ -455,11 +438,11 @@ class HttpConnection(object):
                         item[u'tag'] = unicode(index + 1)
                         item[u'text'] = unicode(frame[u'title'])
                         item[u'html'] = unicode(frame[u'title'])
-                    item[u'selected'] = (self.parent.current_slide == index)
+                    item[u'selected'] = (self.live_controller.selected_row == index)
                     data.append(item)
             json_data = {u'results': {u'slides': data}}
             if current_item:
-                json_data[u'results'][u'item'] = self.parent.current_item.unique_identifier
+                json_data[u'results'][u'item'] = self.live_controller.service_item.unique_identifier
         else:
             if self.url_params and self.url_params.get(u'data'):
                 try:
@@ -473,10 +456,15 @@ class HttpConnection(object):
             else:
                 Registry().execute(event)
             json_data = {u'results': {u'success': True}}
-        return HttpResponse(json.dumps(json_data),
-            {u'Content-Type': u'application/json'})
+        return HttpResponse(json.dumps(json_data), {u'Content-Type': u'application/json'})
 
     def service(self, action):
+        """
+        Handles requests for service items
+
+        ``action``
+            The action to perform.
+        """
         event = u'servicemanager_%s' % action
         if action == u'list':
             return HttpResponse(json.dumps({u'results': {u'items': self._get_service_items()}}),
@@ -491,8 +479,7 @@ class HttpConnection(object):
             Registry().execute(event, data[u'request'][u'id'])
         else:
             Registry().execute(event)
-        return HttpResponse(json.dumps({u'results': {u'success': True}}),
-            {u'Content-Type': u'application/json'})
+        return HttpResponse(json.dumps({u'results': {u'success': True}}), {u'Content-Type': u'application/json'})
 
     def pluginInfo(self, action):
         """
@@ -504,18 +491,16 @@ class HttpConnection(object):
         """
         if action == u'search':
             searches = []
-            for plugin in self.parent.plugin.pluginManager.plugins:
-                if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
+            for plugin in self.plugin_manager.plugins:
+                if plugin.status == PluginStatus.Active and plugin.media_item and plugin.mediaItem.hasSearch:
                     searches.append([plugin.name, unicode(plugin.textStrings[StringContent.Name][u'plural'])])
-            return HttpResponse(
-                json.dumps({u'results': {u'items': searches}}),
-                {u'Content-Type': u'application/json'})
+            return HttpResponse(json.dumps({u'results': {u'items': searches}}), {u'Content-Type': u'application/json'})
 
-    def search(self, type):
+    def search(self, plugin_name):
         """
         Return a list of items that match the search text.
 
-        ``type``
+        ``plugin``
             The plugin name to search in.
         """
         try:
@@ -523,39 +508,38 @@ class HttpConnection(object):
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem and plugin.mediaItem.hasSearch:
-            results = plugin.mediaItem.search(text, False)
+        plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
+        if plugin.status == PluginStatus.Active and plugin.media_item and plugin.mediaItem.hasSearch:
+            results = plugin.media_item.search(text, False)
         else:
             results = []
-        return HttpResponse(json.dumps({u'results': {u'items': results}}),
-            {u'Content-Type': u'application/json'})
+        return HttpResponse(json.dumps({u'results': {u'items': results}}), {u'Content-Type': u'application/json'})
 
-    def go_live(self, type):
+    def go_live(self, plugin_name):
         """
-        Go live on an item of type ``type``.
+        Go live on an item of type ``plugin``.
         """
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            plugin.mediaItem.goLive(id, remote=True)
+        plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
+        if plugin.status == PluginStatus.Active and plugin.media_item:
+            plugin.media_item.go_live(id, remote=True)
         return HttpResponse(code=u'200 OK')
 
-    def add_to_service(self, type):
+    def add_to_service(self, plugin_name):
         """
-        Add item of type ``type`` to the end of the service.
+        Add item of type ``plugin_name`` to the end of the service.
         """
         try:
             id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
         except KeyError, ValueError:
             return HttpResponse(code=u'400 Bad Request')
-        plugin = self.parent.plugin.pluginManager.get_plugin_by_name(type)
-        if plugin.status == PluginStatus.Active and plugin.mediaItem:
-            item_id = plugin.mediaItem.createItemFromId(id)
-            plugin.mediaItem.addToService(item_id, remote=True)
+        plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
+        if plugin.status == PluginStatus.Active and plugin.media_item:
+            item_id = plugin.media_item.createItemFromId(id)
+            plugin.media_item.add_to_service(item_id, remote=True)
         return HttpResponse(code=u'200 OK')
 
     def send_response(self, response):
@@ -583,3 +567,33 @@ class HttpConnection(object):
         self.socket.close()
         self.socket = None
         self.parent.close_connection(self)
+
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)

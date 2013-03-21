@@ -58,12 +58,12 @@ except OSError, e:
 
 if VLC_AVAILABLE:
     try:
-        version = vlc.libvlc_get_version()
+        VERSION = vlc.libvlc_get_version()
     except:
-        version = u'0.0.0'
-    if LooseVersion(version) < LooseVersion('1.1.0'):
+        VERSION = u'0.0.0'
+    if LooseVersion(VERSION) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
-        log.debug(u'VLC could not be loaded: %s' % version)
+        log.debug(u'VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
 
 AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
 
@@ -108,7 +108,7 @@ class VlcPlayer(MediaPlayer):
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
         self.parent = parent
-        self.canFolder = True
+        self.can_folder = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 
@@ -120,12 +120,11 @@ class VlcPlayer(MediaPlayer):
         display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
-        if not display.hasAudio:
+        if not display.has_audio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse') and display.controller.isLive:
+        if Settings().value(u'advanced/hide mouse') and display.controller.is_live:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
-        display.vlcInstance.set_log_verbosity(2)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()
         display.vlcWidget.resize(display.size())
@@ -146,7 +145,7 @@ class VlcPlayer(MediaPlayer):
         else:
             # for Linux using the X Server
             display.vlcMediaPlayer.set_xwindow(win_id)
-        self.hasOwnWidget = True
+        self.has_own_widget = True
 
     def check_available(self):
         """
@@ -239,7 +238,7 @@ class VlcPlayer(MediaPlayer):
         """
         Set the volume
         """
-        if display.hasAudio:
+        if display.has_audio:
             display.vlcMediaPlayer.audio_set_volume(vol)
 
     def seek(self, display, seekVal):
@@ -261,7 +260,7 @@ class VlcPlayer(MediaPlayer):
         """
         Set the visibility
         """
-        if self.hasOwnWidget:
+        if self.has_own_widget:
             display.vlcWidget.setVisible(status)
 
     def update_ui(self, display):

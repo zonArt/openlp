@@ -288,9 +288,9 @@ class MessageListener(object):
     """
     log.info(u'Message Listener loaded')
 
-    def __init__(self, mediaitem):
-        self.controllers = mediaitem.controllers
-        self.mediaitem = mediaitem
+    def __init__(self, media_item):
+        self.controllers = media_item.controllers
+        self.media_item = media_item
         self.preview_handler = Controller(False)
         self.live_handler = Controller(True)
         # messages are sent from core.ui.slidecontroller
@@ -306,7 +306,7 @@ class MessageListener(object):
         Registry().register_function(u'presentations_unblank', self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
+        self.timer.timeout.connect(self.timeout)
 
     def startup(self, message):
         """
@@ -319,8 +319,8 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.title
-        if self.handler == self.mediaitem.Automatic:
-            self.handler = self.mediaitem.findControllerByType(file)
+        if self.handler == self.media_item.Automatic:
+            self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
                 return
         if is_live:

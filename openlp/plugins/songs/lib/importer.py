@@ -140,7 +140,7 @@ class SongFormat(object):
     """
     # Song formats (ordered alphabetically after Generic)
     # * Numerical order of song formats is significant as it determines the
-    #   order used by formatComboBox.
+    #   order used by format_combo_box.
     Unknown = -1
     OpenLyrics = 0
     OpenLP2 = 1

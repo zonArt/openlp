@@ -62,8 +62,8 @@ class CCLIFileImport(SongImport):
         Import either a ``.usr`` or a ``.txt`` SongSelect file.
         """
         log.debug(u'Starting CCLI File Import')
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for filename in self.importSource:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for filename in self.import_source:
             filename = unicode(filename)
             log.debug(u'Importing CCLI File: %s', filename)
             lines = []
@@ -188,13 +188,13 @@ class CCLIFileImport(SongImport):
         words_list = song_words.split(u'/t')
         for counter in range(len(field_list)):
             if field_list[counter].startswith(u'Ver'):
-                verse_type = VerseType.Tags[VerseType.Verse]
+                verse_type = VerseType.tags[VerseType.Verse]
             elif field_list[counter].startswith(u'Ch'):
-                verse_type = VerseType.Tags[VerseType.Chorus]
+                verse_type = VerseType.tags[VerseType.Chorus]
             elif field_list[counter].startswith(u'Br'):
-                verse_type = VerseType.Tags[VerseType.Bridge]
+                verse_type = VerseType.tags[VerseType.Bridge]
             else:
-                verse_type = VerseType.Tags[VerseType.Other]
+                verse_type = VerseType.tags[VerseType.Other]
                 check_first_verse_line = True
             verse_text = unicode(words_list[counter])
             verse_text = verse_text.replace(u'/n', u'\n')
@@ -202,15 +202,15 @@ class CCLIFileImport(SongImport):
             verse_lines = verse_text.split(u'\n', 1)
             if check_first_verse_line:
                 if verse_lines[0].startswith(u'(PRE-CHORUS'):
-                    verse_type = VerseType.Tags[VerseType.PreChorus]
+                    verse_type = VerseType.tags[VerseType.PreChorus]
                     log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0])
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'(BRIDGE'):
-                    verse_type = VerseType.Tags[VerseType.Bridge]
+                    verse_type = VerseType.tags[VerseType.Bridge]
                     log.debug(u'USR verse BRIDGE')
                     verse_text = verse_lines[1]
                 elif verse_lines[0].startswith(u'('):
-                    verse_type = VerseType.Tags[VerseType.Other]
+                    verse_type = VerseType.tags[VerseType.Other]
                     verse_text = verse_lines[1]
             if verse_text:
                 self.addVerse(verse_text, verse_type)
@@ -292,31 +292,31 @@ class CCLIFileImport(SongImport):
                         verse_desc_parts = clean_line.split(u' ')
                         if len(verse_desc_parts) == 2:
                             if verse_desc_parts[0].startswith(u'Ver'):
-                                verse_type = VerseType.Tags[VerseType.Verse]
+                                verse_type = VerseType.tags[VerseType.Verse]
                             elif verse_desc_parts[0].startswith(u'Ch'):
-                                verse_type = VerseType.Tags[VerseType.Chorus]
+                                verse_type = VerseType.tags[VerseType.Chorus]
                             elif verse_desc_parts[0].startswith(u'Br'):
-                                verse_type = VerseType.Tags[VerseType.Bridge]
+                                verse_type = VerseType.tags[VerseType.Bridge]
                             else:
                                 # we need to analyse the next line for
                                 # verse type, so set flag
-                                verse_type = VerseType.Tags[VerseType.Other]
+                                verse_type = VerseType.tags[VerseType.Other]
                                 check_first_verse_line = True
                             verse_number = verse_desc_parts[1]
                         else:
-                            verse_type = VerseType.Tags[VerseType.Other]
+                            verse_type = VerseType.tags[VerseType.Other]
                             verse_number = 1
                         verse_start = True
                     else:
                         # check first line for verse type
                         if check_first_verse_line:
                             if line.startswith(u'(PRE-CHORUS'):
-                                verse_type = VerseType.Tags[VerseType.PreChorus]
+                                verse_type = VerseType.tags[VerseType.PreChorus]
                             elif line.startswith(u'(BRIDGE'):
-                                verse_type = VerseType.Tags[VerseType.Bridge]
+                                verse_type = VerseType.tags[VerseType.Bridge]
                             # Handle all other misc types
                             elif line.startswith(u'('):
-                                verse_type = VerseType.Tags[VerseType.Other]
+                                verse_type = VerseType.tags[VerseType.Other]
                             else:
                                 verse_text = verse_text + line
                             check_first_verse_line = False

@@ -32,8 +32,10 @@ Provide plugin management
 import os
 import sys
 import logging
+import imp
 
 from openlp.core.lib import Plugin, PluginStatus, Registry
+from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
@@ -45,65 +47,77 @@ class PluginManager(object):
     """
     log.info(u'Plugin manager loaded')
 
-    def __init__(self, plugin_dir):
+    def __init__(self):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
-
-        ``plugin_dir``
-            The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
         Registry().register(u'plugin_manager', self)
-        if not plugin_dir in sys.path:
-            log.debug(u'Inserting %s into sys.path', plugin_dir)
-            sys.path.insert(0, plugin_dir)
-        self.basepath = os.path.abspath(plugin_dir)
-        log.debug(u'Base path %s ', self.basepath)
+        Registry().register_function(u'bootstrap_initialise', self.bootstrap_initialise)
+        self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
+        log.debug(u'Base path %s ', self.base_path)
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, plugin_dir):
+    def bootstrap_initialise(self):
         """
-        Scan the directory ``plugin_dir`` for objects inheriting from the
-        ``Plugin`` class.
+        Bootstrap all the plugin manager functions
+        """
+        log.info(u'bootstrap_initialise')
+        self.find_plugins()
+        # hook methods have to happen after find_plugins. Find plugins needs
+        # the controllers hence the hooks have moved from setupUI() to here
+        # Find and insert settings tabs
+        log.info(u'hook settings')
+        self.hook_settings_tabs()
+        # Find and insert media manager items
+        log.info(u'hook media')
+        self.hook_media_manager()
+        # Call the hook method to pull in import menus.
+        log.info(u'hook menus')
+        self.hook_import_menu()
+        # Call the hook method to pull in export menus.
+        self.hook_export_menu()
+        # Call the hook method to pull in tools menus.
+        self.hook_tools_menu()
+        # Call the initialise method to setup plugins.
+        log.info(u'initialise plugins')
+        self.initialise_plugins()
 
-        ``plugin_dir``
-            The directory to scan.
-
+    def find_plugins(self):
+        """
+        Scan a directory for objects inheriting from the ``Plugin`` class.
         """
         log.info(u'Finding plugins')
-        startdepth = len(os.path.abspath(plugin_dir).split(os.sep))
-        log.debug(u'finding plugins in %s at depth %d',
-            unicode(plugin_dir), startdepth)
-        for root, dirs, files in os.walk(plugin_dir):
-            # TODO Presentation plugin is not yet working on Mac OS X.
-            # For now just ignore it. The following code will hide it
-            # in settings dialog.
-            if sys.platform == 'darwin':
-                present_plugin_dir = os.path.join(plugin_dir, 'presentations')
-                # Ignore files from the presentation plugin directory.
-                if root.startswith(present_plugin_dir):
-                    continue
+        start_depth = len(os.path.abspath(self.base_path).split(os.sep))
+        present_plugin_dir = os.path.join(self.base_path, 'presentations')
+        log.debug(u'finding plugins in %s at depth %d', unicode(self.base_path), start_depth)
+        for root, dirs, files in os.walk(self.base_path):
+            if sys.platform == 'darwin' and root.startswith(present_plugin_dir):
+                # TODO Presentation plugin is not yet working on Mac OS X.
+                # For now just ignore it. The following code will ignore files from the presentation plugin directory
+                # and thereby never import the plugin.
+                continue
             for name in files:
                 if name.endswith(u'.py') and not name.startswith(u'__'):
                     path = os.path.abspath(os.path.join(root, name))
-                    thisdepth = len(path.split(os.sep))
-                    if thisdepth - startdepth > 2:
+                    this_depth = len(path.split(os.sep))
+                    if this_depth - start_depth > 2:
                         # skip anything lower down
                         break
-                    modulename = os.path.splitext(path)[0]
-                    prefix = os.path.commonprefix([self.basepath, path])
-                    # hack off the plugin base path
-                    modulename = modulename[len(prefix) + 1:]
-                    modulename = modulename.replace(os.path.sep, '.')
+                    module_name = name[:-3]
                     # import the modules
-                    log.debug(u'Importing %s from %s. Depth %d', modulename, path, thisdepth)
+                    log.debug(u'Importing %s from %s. Depth %d', module_name, root, this_depth)
                     try:
-                        __import__(modulename, globals(), locals(), [])
+                        # Use the "imp" library to try to get around a problem with the PyUNO library which
+                        # monkey-patches the __import__ function to do some magic. This causes issues with our tests.
+                        # First, try to find the module we want to import, searching the directory in root
+                        fp, path_name, description = imp.find_module(module_name, [root])
+                        # Then load the module (do the actual import) using the details from find_module()
+                        imp.load_module(module_name, fp, path_name, description)
                     except ImportError, e:
-                        log.exception(u'Failed to import module %s on path %s for reason %s',
-                            modulename, path, e.args[0])
+                        log.exception(u'Failed to import module %s on path %s: %s', module_name, path, e.args[0])
         plugin_classes = Plugin.__subclasses__()
         plugin_objects = []
         for p in plugin_classes:
@@ -115,9 +129,9 @@ class PluginManager(object):
                 log.exception(u'Failed to load plugin %s', unicode(p))
         plugins_list = sorted(plugin_objects, key=lambda plugin: plugin.weight)
         for plugin in plugins_list:
-            if plugin.checkPreConditions():
+            if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.setStatus()
+                plugin.set_status()
             else:
                 plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
@@ -128,57 +142,57 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.createMediaManagerItem()
+                plugin.create_media_manager_item()
 
-    def hook_settings_tabs(self, settings_form=None):
+    def hook_settings_tabs(self):
         """
         Loop through all the plugins. If a plugin has a valid settings tab
         item, add it to the settings tab.
         Tabs are set for all plugins not just Active ones
 
-        ``settings_form``
-            Defaults to *None*. The settings form to add tabs to.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.createSettingsTab(settings_form)
-        settings_form.plugins = self.plugins
+                plugin.create_settings_Tab(self.settings_form)
 
-    def hook_import_menu(self, import_menu):
+    def hook_import_menu(self):
         """
         Loop through all the plugins and give them an opportunity to add an
         item to the import menu.
 
-        ``import_menu``
-            The Import menu.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addImportMenuItem(import_menu)
+                plugin.add_import_menu_item(self.main_window.file_import_menu)
 
-    def hook_export_menu(self, export_menu):
+    def hook_export_menu(self):
         """
         Loop through all the plugins and give them an opportunity to add an
         item to the export menu.
-
-        ``export_menu``
-            The Export menu.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addExportMenuItem(export_menu)
+                plugin.add_export_menu_Item(self.main_window.file_export_menu)
 
-    def hook_tools_menu(self, tools_menu):
+    def hook_tools_menu(self):
         """
         Loop through all the plugins and give them an opportunity to add an
         item to the tools menu.
-
-        ``tools_menu``
-            The Tools menu.
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addToolsMenuItem(tools_menu)
+                plugin.add_tools_menu_item(self.main_window.tools_menu)
+
+    def hook_upgrade_plugin_settings(self, settings):
+        """
+        Loop through all the plugins and give them an opportunity to upgrade their settings.
+
+        ``settings``
+            The Settings object containing the old settings.
+        """
+        for plugin in self.plugins:
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.upgrade_settings(settings)
 
     def initialise_plugins(self):
         """
@@ -187,8 +201,8 @@ class PluginManager(object):
         """
         log.info(u'Initialise Plugins - Started')
         for plugin in self.plugins:
-            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.isActive()))
-            if plugin.isActive():
+            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.is_active()))
+            if plugin.is_active():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
         log.info(u'Initialise Plugins - Finished')
@@ -200,7 +214,7 @@ class PluginManager(object):
         """
         log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.isActive():
+            if plugin.is_active():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)
 
@@ -219,6 +233,26 @@ class PluginManager(object):
         """
         log.info(u'plugins - new service created')
         for plugin in self.plugins:
-            if plugin.isActive():
+            if plugin.is_active():
                 plugin.new_service_created()
+
+    def _get_settings_form(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_settings_form'):
+            self._settings_form = Registry().get(u'settings_form')
+        return self._settings_form
+
+    settings_form = property(_get_settings_form)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
 

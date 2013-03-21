@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from mock import MagicMock, patch
 
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
-    image_to_byte, check_item_selected, validate_thumb
+    image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
 
 class TestLib(TestCase):
 
@@ -299,6 +299,67 @@ class TestLib(TestCase):
             MockedQtGui.QMessageBox.information.assert_called_with(u'parent', u'mocked translate', 'message')
             assert not result, u'The result should be False'
 
+    def clean_tags_test(self):
+        """
+        Test clean_tags() method.
+        """
+        with patch(u'openlp.core.lib.FormattingTags.get_html_tags') as mocked_get_tags:
+            # GIVEN: Mocked get_html_tags() method.
+            mocked_get_tags.return_value = [{
+                u'desc': u'Black',
+                u'start tag': u'{b}',
+                u'start html': u'<span style="-webkit-text-fill-color:black">',
+                u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True,
+                u'temporary': False
+            }]
+            string_to_pass = u'ASDF<br>foo{br}bar&nbsp;{b}black{/b}'
+            wanted_string = u'ASDF\nfoo\nbar black'
+
+            # WHEN: Clean the string.
+            result_string = clean_tags(string_to_pass)
+
+            # THEN: The strings should be identical.
+            assert result_string == wanted_string, u'The strings should be identical.'
+
+    def expand_tags_test(self):
+        """
+        Test the expand_tags() method.
+        """
+        with patch(u'openlp.core.lib.FormattingTags.get_html_tags') as mocked_get_tags:
+            # GIVEN: Mocked get_html_tags() method.
+            mocked_get_tags.return_value = [
+                {
+                    u'desc': u'Black',
+                    u'start tag': u'{b}',
+                    u'start html': u'<span style="-webkit-text-fill-color:black">',
+                    u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True,
+                    u'temporary': False
+                },
+                {
+                    u'desc': u'Yellow',
+                    u'start tag': u'{y}',
+                    u'start html': u'<span style="-webkit-text-fill-color:yellow">',
+                    u'end tag': u'{/y}', u'end html': u'</span>', u'protected': True,
+                    u'temporary': False
+                },
+                {
+                    u'desc': u'Green',
+                    u'start tag': u'{g}',
+                    u'start html': u'<span style="-webkit-text-fill-color:green">',
+                    u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True,
+                    u'temporary': False
+                }
+            ]
+            string_to_pass = u'{b}black{/b}{y}yellow{/y}'
+            wanted_string = u'<span style="-webkit-text-fill-color:black">black</span>' + \
+                '<span style="-webkit-text-fill-color:yellow">yellow</span>'
+
+            # WHEN: Replace the tags.
+            result_string = expand_tags(string_to_pass)
+
+            # THEN: The strings should be identical.
+            assert result_string == wanted_string, u'The strings should be identical.'
+
     def validate_thumb_file_does_not_exist_test(self):
         """
         Test the validate_thumb() function when the thumbnail does not exist
@@ -308,14 +369,14 @@ class TestLib(TestCase):
             file_path = u'path/to/file'
             thumb_path = u'path/to/thumb'
             mocked_os.path.exists.return_value = False
-            
+
             # WHEN: we run the validate_thumb() function
             result = validate_thumb(file_path, thumb_path)
-            
+
             # THEN: we should have called a few functions, and the result should be False
             mocked_os.path.exists.assert_called_with(thumb_path)
             assert result is False, u'The result should be False'
-            
+
     def validate_thumb_file_exists_and_newer_test(self):
         """
         Test the validate_thumb() function when the thumbnail exists and has a newer timestamp than the file
@@ -350,7 +411,7 @@ class TestLib(TestCase):
             thumb_mocked_stat.st_mtime = datetime.now() - timedelta(seconds=10)
             mocked_os.path.exists.return_value = True
             mocked_os.stat.side_effect = lambda fname: file_mocked_stat if fname == file_path else thumb_mocked_stat
-                
+
             # WHEN: we run the validate_thumb() function
             result = validate_thumb(file_path, thumb_path)
 
@@ -359,3 +420,90 @@ class TestLib(TestCase):
             mocked_os.stat.assert_any_call(file_path)
             mocked_os.stat.assert_any_call(thumb_path)
             assert result is False, u'The result should be False'
+
+    def create_separated_list_qlocate_test(self):
+        """
+        Test the create_separated_list function using the Qt provided method.
+        """
+        with patch(u'openlp.core.lib.Qt') as mocked_qt, \
+                patch(u'openlp.core.lib.QtCore.QLocale.createSeparatedList') as mocked_createSeparatedList:
+            # GIVEN: A list of strings and the mocked Qt module.
+            mocked_qt.PYQT_VERSION_STR = u'4.9'
+            mocked_qt.qVersion.return_value = u'4.8'
+            mocked_createSeparatedList.return_value = u'Author 1, Author 2, and Author 3'
+            string_list = [u'Author 1', u'Author 2', u'Author 3']
+
+            # WHEN: We get a string build from the entries it the list and a separator.
+            string_result = create_separated_list(string_list)
+
+            # THEN: We should have "Author 1, Author 2, and Author 3"
+            assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
+                'Author 2, and Author 3\'.'
+
+    def create_separated_list_empty_list_test(self):
+        """
+        Test the create_separated_list function with an empty list.
+        """
+        with patch(u'openlp.core.lib.Qt') as mocked_qt:
+            # GIVEN: An empty list and the mocked Qt module.
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
+            string_list = []
+
+            # WHEN: We get a string build from the entries it the list and a separator.
+            string_result = create_separated_list(string_list)
+
+            # THEN: We shoud have an emptry string.
+            assert string_result == u'', u'The string sould be empty.'
+
+    def create_separated_list_with_one_item_test(self):
+        """
+        Test the create_separated_list function with a list consisting of only one entry.
+        """
+        with patch(u'openlp.core.lib.Qt') as mocked_qt:
+            # GIVEN: A list with a string and the mocked Qt module.
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
+            string_list = [u'Author 1']
+
+            # WHEN: We get a string build from the entries it the list and a separator.
+            string_result = create_separated_list(string_list)
+
+            # THEN: We should have "Author 1"
+            assert string_result == u'Author 1', u'The string should be u\'Author 1\'.'
+
+    def create_separated_list_with_two_items_test(self):
+        """
+        Test the create_separated_list function with a list of two entries.
+        """
+        with patch(u'openlp.core.lib.Qt') as mocked_qt, patch(u'openlp.core.lib.translate') as mocked_translate:
+            # GIVEN: A list of strings and the mocked Qt module.
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
+            mocked_translate.return_value = u'%s and %s'
+            string_list = [u'Author 1', u'Author 2']
+
+            # WHEN: We get a string build from the entries it the list and a seperator.
+            string_result = create_separated_list(string_list)
+
+            # THEN: We should have "Author 1 and Author 2"
+            assert string_result == u'Author 1 and Author 2', u'The string should be u\'Author 1 and Author 2\'.'
+
+    def create_separated_list_with_three_items_test(self):
+        """
+        Test the create_separated_list function with a list of three items.
+        """
+        with patch(u'openlp.core.lib.Qt') as mocked_qt, patch(u'openlp.core.lib.translate') as mocked_translate:
+            # GIVEN: A list with a string and the mocked Qt module.
+            mocked_qt.PYQT_VERSION_STR = u'4.8'
+            mocked_qt.qVersion.return_value = u'4.7'
+            # Always return the untranslated string.
+            mocked_translate.side_effect = lambda module, string_to_translate, comment: string_to_translate
+            string_list = [u'Author 1', u'Author 2', u'Author 3']
+
+            # WHEN: We get a string build from the entries it the list and a seperator.
+            string_result = create_separated_list(string_list)
+
+            # THEN: We should have "Author 1, Author 2, and Author 3"
+            assert string_result == u'Author 1, Author 2, and Author 3', u'The string should be u\'Author 1, ' \
+                'Author 2, and Author 3\'.'

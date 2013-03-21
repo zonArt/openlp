@@ -85,8 +85,7 @@ class BibleImportForm(OpenLPWizard):
         Set up the UI for the bible wizard.
         """
         OpenLPWizard.setupUi(self, image)
-        QtCore.QObject.connect(self.formatComboBox,QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onCurrentIndexChanged)
+        self.formatComboBox.currentIndexChanged.connect(self.onCurrentIndexChanged)
 
     def onCurrentIndexChanged(self, index):
         """
@@ -98,7 +97,7 @@ class BibleImportForm(OpenLPWizard):
         next_button = self.button(QtGui.QWizard.NextButton)
         next_button.setEnabled(BibleFormat.get_availability(index))
 
-    def customInit(self):
+    def custom_init(self):
         """
         Perform any custom initialisation for bible importing.
         """
@@ -113,24 +112,18 @@ class BibleImportForm(OpenLPWizard):
         self.restart()
         self.selectStack.setCurrentIndex(0)
 
-    def customSignals(self):
+    def custom_signals(self):
         """
         Set up the signals used in the bible importer.
         """
-        QtCore.QObject.connect(self.webSourceComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onWebSourceComboBoxIndexChanged)
-        QtCore.QObject.connect(self.osisBrowseButton, QtCore.SIGNAL(u'clicked()'),
-            self.onOsisBrowseButtonClicked)
-        QtCore.QObject.connect(self.csvBooksButton, QtCore.SIGNAL(u'clicked()'),
-            self.onCsvBooksBrowseButtonClicked)
-        QtCore.QObject.connect(self.csvVersesButton, QtCore.SIGNAL(u'clicked()'),
-            self.onCsvVersesBrowseButtonClicked)
-        QtCore.QObject.connect(self.openSongBrowseButton, QtCore.SIGNAL(u'clicked()'),
-            self.onOpenSongBrowseButtonClicked)
-        QtCore.QObject.connect(self.openlp1BrowseButton, QtCore.SIGNAL(u'clicked()'),
-            self.onOpenlp1BrowseButtonClicked)
+        self.webSourceComboBox.currentIndexChanged.connect(self.onWebSourceComboBoxIndexChanged)
+        self.osisBrowseButton.clicked.connect(self.onOsisBrowseButtonClicked)
+        self.csvBooksButton.clicked.connect(self.onCsvBooksBrowseButtonClicked)
+        self.csvVersesButton.clicked.connect(self.onCsvVersesBrowseButtonClicked)
+        self.openSongBrowseButton.clicked.connect(self.onOpenSongBrowseButtonClicked)
+        self.openlp1BrowseButton.clicked.connect(self.onOpenlp1BrowseButtonClicked)
 
-    def addCustomPages(self):
+    def add_custom_pages(self):
         """
         Add the bible import specific wizard pages.
         """
@@ -165,7 +158,7 @@ class BibleImportForm(OpenLPWizard):
         self.osisFileEdit.setObjectName(u'OsisFileEdit')
         self.osisFileLayout.addWidget(self.osisFileEdit)
         self.osisBrowseButton = QtGui.QToolButton(self.osisWidget)
-        self.osisBrowseButton.setIcon(self.openIcon)
+        self.osisBrowseButton.setIcon(self.open_icon)
         self.osisBrowseButton.setObjectName(u'OsisBrowseButton')
         self.osisFileLayout.addWidget(self.osisBrowseButton)
         self.osisLayout.addRow(self.osisFileLabel, self.osisFileLayout)
@@ -184,7 +177,7 @@ class BibleImportForm(OpenLPWizard):
         self.csvBooksEdit.setObjectName(u'CsvBooksEdit')
         self.csvBooksLayout.addWidget(self.csvBooksEdit)
         self.csvBooksButton = QtGui.QToolButton(self.csvWidget)
-        self.csvBooksButton.setIcon(self.openIcon)
+        self.csvBooksButton.setIcon(self.open_icon)
         self.csvBooksButton.setObjectName(u'CsvBooksButton')
         self.csvBooksLayout.addWidget(self.csvBooksButton)
         self.csvLayout.addRow(self.csvBooksLabel, self.csvBooksLayout)
@@ -196,7 +189,7 @@ class BibleImportForm(OpenLPWizard):
         self.csvVersesEdit.setObjectName(u'CsvVersesEdit')
         self.csvVersesLayout.addWidget(self.csvVersesEdit)
         self.csvVersesButton = QtGui.QToolButton(self.csvWidget)
-        self.csvVersesButton.setIcon(self.openIcon)
+        self.csvVersesButton.setIcon(self.open_icon)
         self.csvVersesButton.setObjectName(u'CsvVersesButton')
         self.csvVersesLayout.addWidget(self.csvVersesButton)
         self.csvLayout.addRow(self.csvVersesLabel, self.csvVersesLayout)
@@ -215,7 +208,7 @@ class BibleImportForm(OpenLPWizard):
         self.openSongFileEdit.setObjectName(u'OpenSongFileEdit')
         self.openSongFileLayout.addWidget(self.openSongFileEdit)
         self.openSongBrowseButton = QtGui.QToolButton(self.openSongWidget)
-        self.openSongBrowseButton.setIcon(self.openIcon)
+        self.openSongBrowseButton.setIcon(self.open_icon)
         self.openSongBrowseButton.setObjectName(u'OpenSongBrowseButton')
         self.openSongFileLayout.addWidget(self.openSongBrowseButton)
         self.openSongLayout.addRow(self.openSongFileLabel, self.openSongFileLayout)
@@ -279,7 +272,7 @@ class BibleImportForm(OpenLPWizard):
         self.openlp1FileEdit.setObjectName(u'Openlp1FileEdit')
         self.openlp1FileLayout.addWidget(self.openlp1FileEdit)
         self.openlp1BrowseButton = QtGui.QToolButton(self.openlp1Widget)
-        self.openlp1BrowseButton.setIcon(self.openIcon)
+        self.openlp1BrowseButton.setIcon(self.open_icon)
         self.openlp1BrowseButton.setObjectName(u'Openlp1BrowseButton')
         self.openlp1FileLayout.addWidget(self.openlp1BrowseButton)
         self.openlp1Layout.addRow(self.openlp1FileLabel, self.openlp1FileLayout)
@@ -322,9 +315,9 @@ class BibleImportForm(OpenLPWizard):
         Allow for localisation of the bible import wizard.
         """
         self.setWindowTitle(translate('BiblesPlugin.ImportWizardForm', 'Bible Import Wizard'))
-        self.titleLabel.setText(WizardStrings.HeaderStyle %
+        self.title_label.setText(WizardStrings.HeaderStyle %
             translate('OpenLP.Ui', 'Welcome to the Bible Import Wizard'))
-        self.informationLabel.setText(
+        self.information_label.setText(
             translate('BiblesPlugin.ImportWizardForm',
             'This wizard will help you to import Bibles from a variety of '
             'formats. Click the next button below to start the process by '
@@ -366,11 +359,11 @@ class BibleImportForm(OpenLPWizard):
         self.versionNameLabel.setText(translate('BiblesPlugin.ImportWizardForm', 'Version name:'))
         self.copyrightLabel.setText(translate('BiblesPlugin.ImportWizardForm', 'Copyright:'))
         self.permissionsLabel.setText(translate('BiblesPlugin.ImportWizardForm', 'Permissions:'))
-        self.progressPage.setTitle(WizardStrings.Importing)
-        self.progressPage.setSubTitle(translate('BiblesPlugin.ImportWizardForm',
+        self.progress_page.setTitle(WizardStrings.Importing)
+        self.progress_page.setSubTitle(translate('BiblesPlugin.ImportWizardForm',
             'Please wait while your Bible is imported.'))
-        self.progressLabel.setText(WizardStrings.Ready)
-        self.progressBar.setFormat(u'%p%')
+        self.progress_label.setText(WizardStrings.Ready)
+        self.progress_bar.setFormat(u'%p%')
         self.openlp1DisabledLabel.setText(WizardStrings.NoSqlite)
         # Align all QFormLayouts towards each other.
         labelWidth = max(self.formatLabel.minimumSizeHint().width(),
@@ -385,7 +378,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Validate the current page before moving on to the next page.
         """
-        if self.currentPage() == self.welcomePage:
+        if self.currentPage() == self.welcome_page:
             return True
         elif self.currentPage() == self.selectPage:
             if self.field(u'source_format') == BibleFormat.OSIS:
@@ -449,7 +442,7 @@ class BibleImportForm(OpenLPWizard):
                 self.versionNameEdit.setFocus()
                 return False
             return True
-        if self.currentPage() == self.progressPage:
+        if self.currentPage() == self.progress_page:
             return True
 
     def onWebSourceComboBoxIndexChanged(self, index):
@@ -469,36 +462,36 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the OSIS file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit, u'last directory import')
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit, u'last directory import')
 
     def onCsvBooksBrowseButtonClicked(self):
         """
         Show the file open dialog for the books CSV file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, u'last directory import',
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, u'last directory import',
             u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onCsvVersesBrowseButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, u'last directory import',
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, u'last directory import',
             u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
         Show the file open dialog for the OpenSong file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit, u'last directory import')
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit, u'last directory import')
 
     def onOpenlp1BrowseButtonClicked(self):
         """
         Show the file open dialog for the openlp.org 1.x file.
         """
-        self.getFileName(WizardStrings.OpenTypeFile % UiStrings().OLPV1, self.openlp1FileEdit, u'last directory import',
+        self.get_file_name(WizardStrings.OpenTypeFile % UiStrings().OLPV1, self.openlp1FileEdit, u'last directory import',
             u'%s (*.bible)' % translate('BiblesPlugin.ImportWizardForm', 'openlp.org 1.x Bible Files'))
 
-    def registerFields(self):
+    def register_fields(self):
         """
         Register the bible import wizard fields.
         """
@@ -522,10 +515,10 @@ class BibleImportForm(OpenLPWizard):
         Set default values for the wizard pages.
         """
         settings = Settings()
-        settings.beginGroup(self.plugin.settingsSection)
+        settings.beginGroup(self.plugin.settings_section)
         self.restart()
-        self.finishButton.setVisible(False)
-        self.cancelButton.setVisible(True)
+        self.finish_button.setVisible(False)
+        self.cancel_button.setVisible(True)
         self.setField(u'source_format', 0)
         self.setField(u'osis_location', '')
         self.setField(u'csv_booksfile', '')
@@ -572,12 +565,12 @@ class BibleImportForm(OpenLPWizard):
         """
         Prepare the UI for the import.
         """
-        OpenLPWizard.preWizard(self)
+        OpenLPWizard.pre_wizard(self)
         bible_type = self.field(u'source_format')
         if bible_type == BibleFormat.WebDownload:
-            self.progressLabel.setText(translate('BiblesPlugin.ImportWizardForm', 'Registering Bible...'))
+            self.progress_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Registering Bible...'))
         else:
-            self.progressLabel.setText(WizardStrings.StartingImport)
+            self.progress_label.setText(WizardStrings.StartingImport)
         self.application.process_events()
 
     def performWizard(self):
@@ -610,7 +603,7 @@ class BibleImportForm(OpenLPWizard):
             )
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web.
-            self.progressBar.setMaximum(1)
+            self.progress_bar.setMaximum(1)
             download_location = self.field(u'web_location')
             bible_version = self.webTranslationComboBox.currentText()
             bible = self.web_bible_list[download_location][bible_version]
@@ -633,12 +626,12 @@ class BibleImportForm(OpenLPWizard):
                 license_copyright, license_permissions)
             self.manager.reload_bibles()
             if bible_type == BibleFormat.WebDownload:
-                self.progressLabel.setText(
+                self.progress_label.setText(
                     translate('BiblesPlugin.ImportWizardForm', 'Registered Bible. Please note, that verses will be '
                     'downloaded on\ndemand and thus an internet connection is required.'))
             else:
-                self.progressLabel.setText(WizardStrings.FinishedImport)
+                self.progress_label.setText(WizardStrings.FinishedImport)
         else:
-            self.progressLabel.setText(translate('BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
+            self.progress_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Your Bible import failed.'))
             del self.manager.db_cache[importer.name]
-            delete_database(self.plugin.settingsSection, importer.file)
+            delete_database(self.plugin.settings_section, importer.file)

@@ -40,7 +40,13 @@ import os
 import sys
 from distutils.version import LooseVersion
 
-is_win = sys.platform.startswith('win')
+# If we try to import uno before nose this will create a warning. Just try to import nose first to suppress the warning.
+try:
+    import nose
+except ImportError:
+    pass
+
+IS_WIN = sys.platform.startswith('win')
 
 VERS = {
     'Python': '2.6',
@@ -48,7 +54,7 @@ VERS = {
     'Qt4': '4.6',
     'sqlalchemy': '0.5',
     # pyenchant 1.6 required on Windows
-    'enchant': '1.6' if is_win else '1.3'
+    'enchant': '1.6' if IS_WIN else '1.3'
 }
 
 # pywin32
@@ -84,7 +90,8 @@ OPTIONAL_MODULES = [
     ('sqlite', ' (SQLite 2 support)'),
     ('MySQLdb', ' (MySQL support)'),
     ('psycopg2', ' (PostgreSQL support)'),
-    ('pytest', ' (testing framework)'),
+    ('nose', ' (testing framework)'),
+    ('mock',  ' (testing module)'),
 ]
 
 w = sys.stdout.write
@@ -176,7 +183,7 @@ def main():
     for m in OPTIONAL_MODULES:
         check_module(m[0], text=m[1])
 
-    if is_win:
+    if IS_WIN:
         print('Checking for Windows specific modules...')
         for m in WIN32_MODULES:
             check_module(m)
