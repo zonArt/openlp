@@ -425,7 +425,7 @@ class Manager(object):
     def delete_all_objects(self, object_class, filter_clause=None):
         """
         Delete all object records. This method should only be used for simple tables and **not** ones with
-        relationships.  The relationships are not deleted from the database and this will lead to database corruptions.
+        relationships. The relationships are not deleted from the database and this will lead to database corruptions.
 
         ``object_class``
             The type of object to delete
