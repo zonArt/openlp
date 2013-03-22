@@ -56,7 +56,7 @@ class MediaDockManager(object):
         ``icon``
             An icon for this dock item
         """
-        visible_title = media_item.plugin.getString(StringContent.VisibleName)
+        visible_title = media_item.plugin.get_string(StringContent.VisibleName)
         log.info(u'Adding %s dock' % visible_title)
         self.media_dock.addItem(media_item, icon, visible_title[u'title'])
 
@@ -66,11 +66,11 @@ class MediaDockManager(object):
         This does not work as it gives a Segmentation error.
         For now add at end of stack if not present
         """
-        visible_title = media_item.plugin.getString(StringContent.VisibleName)
+        visible_title = media_item.plugin.get_string(StringContent.VisibleName)
         log.debug(u'Inserting %s dock' % visible_title[u'title'])
         match = False
         for dock_index in range(self.media_dock.count()):
-            if self.media_dock.widget(dock_index).settingsSection == media_item.plugin.name:
+            if self.media_dock.widget(dock_index).settings_section == media_item.plugin.name:
                 match = True
                 break
         if not match:
@@ -83,10 +83,10 @@ class MediaDockManager(object):
         ``media_item``
             The item to add to the dock
         """
-        visible_title = media_item.plugin.getString(StringContent.VisibleName)
+        visible_title = media_item.plugin.get_string(StringContent.VisibleName)
         log.debug(u'remove %s dock' % visible_title[u'title'])
         for dock_index in range(self.media_dock.count()):
             if self.media_dock.widget(dock_index):
-                if self.media_dock.widget(dock_index).settingsSection == media_item.plugin.name:
+                if self.media_dock.widget(dock_index).settings_section == media_item.plugin.name:
                     self.media_dock.widget(dock_index).setVisible(False)
                     self.media_dock.removeItem(dock_index)

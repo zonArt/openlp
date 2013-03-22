@@ -371,13 +371,16 @@ class SlideController(DisplayController):
         else:
             self.preview_list_widget.addActions([self.nextItem, self.previous_item])
         Registry().register_function(u'slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
-        Registry().register_function(u'slidecontroller_%s_next' % self.type_prefix, self.on_slide_selected_next)
-        Registry().register_function(u'slidecontroller_%s_previous' % self.type_prefix, self.on_slide_selected_previous)
         Registry().register_function(u'slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
-        Registry().register_function(u'slidecontroller_%s_set' % self.type_prefix, self.on_slide_selected_index)
         Registry().register_function(u'slidecontroller_%s_blank' % self.type_prefix, self.on_slide_blank)
         Registry().register_function(u'slidecontroller_%s_unblank' % self.type_prefix, self.on_slide_unblank)
         Registry().register_function(u'slidecontroller_update_slide_limits', self.update_slide_limits)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix),
+            self.on_slide_selected_index)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix),
+            self.on_slide_selected_next)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix),
+            self.on_slide_selected_previous)
 
     def _slideShortcutActivated(self):
         """
@@ -913,9 +916,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(False)
         self.desktop_screen.setChecked(False)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'blanked')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'blanked')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
         self.onToggleLoop()
@@ -932,9 +935,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(checked)
         self.desktop_screen.setChecked(False)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'themed')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'themed')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
         self.onToggleLoop()
@@ -951,9 +954,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(False)
         self.desktop_screen.setChecked(checked)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'hidden')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'hidden')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
         self.onToggleLoop()
@@ -1077,6 +1080,7 @@ class SlideController(DisplayController):
         """
         Go to the next slide.
         """
+        print "next"
         if not self.service_item:
             return
         Registry().execute(u'%s_next' % self.service_item.name.lower(), [self.service_item, self.is_live])
@@ -1104,6 +1108,7 @@ class SlideController(DisplayController):
         """
         Go to the previous slide.
         """
+        print "prev"
         if not self.service_item:
             return
         Registry().execute(u'%s_previous' % self.service_item.name.lower(), [self.service_item, self.is_live])

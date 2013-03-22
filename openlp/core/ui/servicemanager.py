@@ -313,7 +313,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.layout.setMargin(0)
         self.setup_ui(self)
         # Need to use event as called across threads and UI is updated
-        print self
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'servicemanager_set_item'), self.on_set_item)
 
     def set_modified(self, modified=True):
@@ -898,7 +897,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         service_item = self.service_items[item][u'service_item']
         if service_item.timed_slide_interval == 0:
-            timed_slide_interval = Settings().value(self.mainwindow.generalSettingsSection + u'/loop delay')
+            timed_slide_interval = Settings().value(self.main_window.general_settings_section + u'/loop delay')
         else:
             timed_slide_interval = service_item.timed_slide_interval
         timed_slide_interval, ok = QtGui.QInputDialog.getInteger(self, translate('OpenLP.ServiceManager',
@@ -1010,7 +1009,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Called by a signal to select a specific item and make it live usually from remote.
         """
-        print "hello", message
         self.set_item(int(message))
 
     def set_item(self, index):

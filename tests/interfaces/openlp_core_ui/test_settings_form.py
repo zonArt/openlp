@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import MagicMock, patch
 
-from PyQt4 import QtCore, QtTest
+from PyQt4 import QtCore, QtTest, QtGui
 
 from openlp.core.ui import settingsform
 from openlp.core.lib import Registry, ScreenList
@@ -31,6 +31,7 @@ class TestSettingsForm(TestCase):
         self.dummy2 = MagicMock()
         self.dummy3 = MagicMock()
         self.desktop = MagicMock()
+        self.app = QtGui.QApplication([])
         self.desktop.primaryScreen.return_value = SCREEN[u'primary']
         self.desktop.screenCount.return_value = SCREEN[u'number']
         self.desktop.screenGeometry.return_value = SCREEN[u'size']
@@ -43,6 +44,7 @@ class TestSettingsForm(TestCase):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         del self.form
+        del self.app
 
     def basic_cancel_test(self):
         """

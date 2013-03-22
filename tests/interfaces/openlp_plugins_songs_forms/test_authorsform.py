@@ -10,13 +10,16 @@ from openlp.plugins.songs.forms.authorsform import AuthorsForm
 
 
 class TestAuthorsForm(TestCase):
+    """
+    Test the AuthorsForm class
+    """
 
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = AuthorsForm()
@@ -39,7 +42,7 @@ class TestAuthorsForm(TestCase):
 
     def get_first_name_property_test(self):
         """
-        Test that getting the first name property on the AuthorForm works correctly.
+        Test that getting the first name property on the AuthorForm works correctly
         """
         # GIVEN: A first name to set
         first_name = u'John'
@@ -52,7 +55,7 @@ class TestAuthorsForm(TestCase):
 
     def set_first_name_property_test(self):
         """
-        Test that setting the first name property on the AuthorForm works correctly.
+        Test that setting the first name property on the AuthorForm works correctly
         """
         # GIVEN: A first name to set
         first_name = u'James'
@@ -65,7 +68,7 @@ class TestAuthorsForm(TestCase):
 
     def get_last_name_property_test(self):
         """
-        Test that getting the last name property on the AuthorForm works correctly.
+        Test that getting the last name property on the AuthorForm works correctly
         """
         # GIVEN: A last name to set
         last_name = u'Smith'
@@ -78,7 +81,7 @@ class TestAuthorsForm(TestCase):
 
     def set_last_name_property_test(self):
         """
-        Test that setting the last name property on the AuthorForm works correctly.
+        Test that setting the last name property on the AuthorForm works correctly
         """
         # GIVEN: A last name to set
         last_name = u'Potter'
@@ -91,7 +94,7 @@ class TestAuthorsForm(TestCase):
 
     def get_display_name_property_test(self):
         """
-        Test that getting the display name property on the AuthorForm works correctly.
+        Test that getting the display name property on the AuthorForm works correctly
         """
         # GIVEN: A display name to set
         display_name = u'John'
@@ -104,7 +107,7 @@ class TestAuthorsForm(TestCase):
 
     def set_display_name_property_test(self):
         """
-        Test that setting the display name property on the AuthorForm works correctly.
+        Test that setting the display name property on the AuthorForm works correctly
         """
         # GIVEN: A display name to set
         display_name = u'John'

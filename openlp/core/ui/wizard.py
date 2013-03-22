@@ -91,8 +91,8 @@ class OpenLPWizard(QtGui.QWizard):
         self.cancel_button = self.button(QtGui.QWizard.CancelButton)
         self.setupUi(image)
         self.register_fields()
-        self.customInit()
-        self.customSignals()
+        self.custom_init()
+        self.custom_signals()
         self.currentIdChanged.connect(self.on_current_id_changed)
         self.error_copy_to_button.clicked.connect(self.on_error_copy_to_button_clicked)
         self.error_save_to_button.clicked.connect(self.on_error_save_to_button_clicked)
@@ -106,8 +106,8 @@ class OpenLPWizard(QtGui.QWizard):
         self.setOptions(QtGui.QWizard.IndependentPages |
             QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
         add_welcome_page(self, image)
-        self.addCustomPages()
-        self.addProgressPage()
+        self.add_custom_pages()
+        self.add_progress_page()
         self.retranslateUi()
 
     def register_fields(self):
@@ -116,7 +116,25 @@ class OpenLPWizard(QtGui.QWizard):
         """
         pass
 
-    def addProgressPage(self):
+    def custom_init(self):
+        """
+        Hook method for custom initialisation
+        """
+        pass
+
+    def custom_signals(self):
+        """
+        Hook method for adding custom signals
+        """
+        pass
+
+    def add_custom_pages(self):
+        """
+        Hook method for wizards to add extra pages
+        """
+        pass
+
+    def add_progress_page(self):
         """
         Add the progress page for the wizard. This page informs the user how
         the wizard is progressing with its task.
@@ -180,7 +198,7 @@ class OpenLPWizard(QtGui.QWizard):
         if self.page(pageId) == self.progress_page:
             self.pre_wizard()
             self.performWizard()
-            self.postWizard()
+            self.post_wizard()
         else:
             self.custom_cage_changed(pageId)
 
@@ -227,7 +245,7 @@ class OpenLPWizard(QtGui.QWizard):
         self.progress_bar.setMaximum(1188)
         self.progress_bar.setValue(0)
 
-    def postWizard(self):
+    def post_wizard(self):
         """
         Clean up the UI after the import has finished.
         """
@@ -259,10 +277,10 @@ class OpenLPWizard(QtGui.QWizard):
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(Settings().value(self.plugin.settingsSection + u'/' + setting_name)), filters)
+            os.path.dirname(Settings().value(self.plugin.settings_section + u'/' + setting_name)), filters)
         if filename:
             editbox.setText(filename)
-        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, filename)
+        Settings().setValue(self.plugin.settings_section + u'/' + setting_name, filename)
 
     def get_folder(self, title, editbox, setting_name):
         """
@@ -278,10 +296,10 @@ class OpenLPWizard(QtGui.QWizard):
             The place where to save the last opened directory.
         """
         folder = QtGui.QFileDialog.getExistingDirectory(self, title,
-            Settings().value(self.plugin.settingsSection + u'/' + setting_name), QtGui.QFileDialog.ShowDirsOnly)
+            Settings().value(self.plugin.settings_section + u'/' + setting_name), QtGui.QFileDialog.ShowDirsOnly)
         if folder:
             editbox.setText(folder)
-        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)
+        Settings().setValue(self.plugin.settings_section + u'/' + setting_name, folder)
 
     def _get_application(self):
         """

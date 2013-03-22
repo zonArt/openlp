@@ -49,10 +49,12 @@ class AlertsManager(QtCore.QObject):
 
     def __init__(self, parent):
         QtCore.QObject.__init__(self, parent)
+        Registry().register(u'alerts_manager', self)
         self.timer_id = 0
         self.alert_list = []
         Registry().register_function(u'live_display_active', self.generate_alert)
         Registry().register_function(u'alerts_text', self.alert_text)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'alerts_text'), self.alert_text)
 
     def alert_text(self, message):
         """
@@ -87,11 +89,11 @@ class AlertsManager(QtCore.QObject):
         if not self.alert_list:
             return
         text = self.alert_list.pop(0)
-        alertTab = self.parent().settingsTab
-        self.live_controller.display.alert(text, alertTab.location)
+        alert_tab = self.parent().settings_tab
+        self.live_controller.display.alert(text, alert_tab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
-            self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
+            self.timer_id = self.startTimer(int(alert_tab.timeout) * 1000)
 
     def timerEvent(self, event):
         """
@@ -103,7 +105,7 @@ class AlertsManager(QtCore.QObject):
         """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
-            alertTab = self.parent().settingsTab
+            alertTab = self.parent().settings_tab
             self.live_controller.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0

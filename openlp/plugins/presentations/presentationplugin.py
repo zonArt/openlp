@@ -66,15 +66,16 @@ class PresentationPlugin(Plugin):
         self.controllers = {}
         Plugin.__init__(self, u'presentations', __default_settings__, __default_settings__)
         self.weight = -8
-        self.iconPath = u':/plugins/plugin_presentations.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_presentations.png'
+        self.icon = build_icon(self.icon_path)
 
-    def createSettingsTab(self, parent):
+    def create_settings_Tab(self, parent):
         """
         Create the settings Tab
         """
-        visible_name = self.getString(StringContent.VisibleName)
-        self.settingsTab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers, self.iconPath)
+        visible_name = self.get_string(StringContent.VisibleName)
+        self.settings_tab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers,
+                                             self.icon_path)
 
     def initialise(self):
         """
@@ -90,7 +91,7 @@ class PresentationPlugin(Plugin):
                 except Exception:
                     log.warn(u'Failed to start controller process')
                     self.controllers[controller].available = False
-        self.mediaItem.build_file_mask_string()
+        self.media_item.build_file_mask_string()
 
     def finalise(self):
         """
@@ -105,26 +106,25 @@ class PresentationPlugin(Plugin):
                 controller.kill()
         Plugin.finalise(self)
 
-    def createMediaManagerItem(self):
+    def create_media_manager_item(self):
         """
         Create the Media Manager List
         """
-        self.mediaItem = PresentationMediaItem(
+        self.media_item = PresentationMediaItem(
             self.main_window.media_dock_manager.media_dock, self, self.icon, self.controllers)
 
-    def registerControllers(self, controller):
+    def register_controllers(self, controller):
         """
-        Register each presentation controller (Impress, PPT etc) and
-        store for later use
+        Register each presentation controller (Impress, PPT etc) and store for later use
         """
         self.controllers[controller.name] = controller
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
         """
         Check to see if we have any presentation software available
         If Not do not install the plugin.
         """
-        log.debug(u'checkPreConditions')
+        log.debug(u'check_pre_conditions')
         controller_dir = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir),
             u'presentations', u'lib')
@@ -141,7 +141,7 @@ class PresentationPlugin(Plugin):
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)
-            self.registerControllers(controller)
+            self.register_controllers(controller)
         return bool(self.controllers)
 
     def about(self):
@@ -160,12 +160,12 @@ class PresentationPlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('PresentationPlugin', 'Presentation', 'name singular'),
             u'plural': translate('PresentationPlugin', 'Presentations', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('PresentationPlugin', 'Presentations', 'container title')
         }
         # Middle Header Bar
@@ -179,4 +179,4 @@ class PresentationPlugin(Plugin):
             u'live': translate('PresentationPlugin', 'Send the selected presentation live.'),
             u'service': translate('PresentationPlugin', 'Add the selected presentation to the service.')
         }
-        self.setPluginUiTextStrings(tooltips)
+        self.set_plugin_ui_text_strings(tooltips)

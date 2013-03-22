@@ -61,7 +61,7 @@ class ThemeManager(QtGui.QWidget):
         Registry().register(u'theme_manager', self)
         Registry().register_function(u'bootstrap_initialise', self.load_first_time_themes)
         Registry().register_function(u'bootstrap_post_set_up', self._push_themes)
-        self.settingsSection = u'themes'
+        self.settings_section = u'themes'
         self.theme_form = ThemeForm(self)
         self.file_rename_form = FileRenameForm()
         # start with the layout
@@ -135,7 +135,7 @@ class ThemeManager(QtGui.QWidget):
         Registry().register_function(u'theme_update_global', self.change_global_from_tab)
         # Variables
         self.theme_list = []
-        self.path = AppLocation.get_section_data_path(self.settingsSection)
+        self.path = AppLocation.get_section_data_path(self.settings_section)
         check_directory_exists(self.path)
         self.thumb_path = os.path.join(self.path, u'thumbnails')
         check_directory_exists(self.thumb_path)
@@ -143,7 +143,7 @@ class ThemeManager(QtGui.QWidget):
         self.old_background_image = None
         self.bad_v1_name_chars = re.compile(r'[%+\[\]]')
         # Last little bits of setting up
-        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
+        self.global_theme = Settings().value(self.settings_section + u'/global theme')
 
     def check_list_state(self, item):
         """
@@ -179,7 +179,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Change the global theme when it is changed through the Themes settings tab
         """
-        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
+        self.global_theme = Settings().value(self.settings_section + u'/global theme')
         log.debug(u'change_global_from_tab %s', self.global_theme)
         for count in range(0, self.theme_list_widget.count()):
             # reset the old name
@@ -212,7 +212,7 @@ class ThemeManager(QtGui.QWidget):
                 self.global_theme = self.theme_list_widget.item(count).text()
                 name = translate('OpenLP.ThemeManager', '%s (default)') % self.global_theme
                 self.theme_list_widget.item(count).setText(name)
-                Settings().setValue(self.settingsSection + u'/global theme', self.global_theme)
+                Settings().setValue(self.settings_section + u'/global theme', self.global_theme)
                 Registry().execute(u'theme_update_global')
                 self._push_themes()
 
@@ -342,10 +342,10 @@ class ThemeManager(QtGui.QWidget):
         theme = item.data(QtCore.Qt.UserRole)
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
-            Settings().value(self.settingsSection + u'/last directory export'))
+            Settings().value(self.settings_section + u'/last directory export'))
         self.application.set_busy_cursor()
         if path:
-            Settings().setValue(self.settingsSection + u'/last directory export', path)
+            Settings().setValue(self.settings_section + u'/last directory export', path)
             theme_path = os.path.join(path, theme + u'.otz')
             theme_zip = None
             try:
@@ -375,14 +375,14 @@ class ThemeManager(QtGui.QWidget):
         """
         files = QtGui.QFileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
-            Settings().value(self.settingsSection + u'/last directory import'),
+            Settings().value(self.settings_section + u'/last directory import'),
             translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
         log.info(u'New Themes %s', unicode(files))
         if not files:
             return
         self.application.set_busy_cursor()
         for file_name in files:
-            Settings().setValue(self.settingsSection + u'/last directory import', unicode(file_name))
+            Settings().setValue(self.settings_section + u'/last directory import', unicode(file_name))
             self.unzip_theme(file_name, self.path)
         self.load_themes()
         self.application.set_normal_cursor()
@@ -392,18 +392,18 @@ class ThemeManager(QtGui.QWidget):
         Imports any themes on start up and makes sure there is at least one theme
         """
         self.application.set_busy_cursor()
-        files = AppLocation.get_files(self.settingsSection, u'.otz')
+        files = AppLocation.get_files(self.settings_section, u'.otz')
         for theme_file in files:
             theme_file = os.path.join(self.path, theme_file)
             self.unzip_theme(theme_file, self.path)
             delete_file(theme_file)
-        files = AppLocation.get_files(self.settingsSection, u'.png')
+        files = AppLocation.get_files(self.settings_section, u'.png')
         # No themes have been found so create one
         if not files:
             theme = ThemeXML()
             theme.theme_name = UiStrings().Default
             self._write_theme(theme, None, None)
-            Settings().setValue(self.settingsSection + u'/global theme', theme.theme_name)
+            Settings().setValue(self.settings_section + u'/global theme', theme.theme_name)
         self.application.set_normal_cursor()
         self.load_themes()
 
@@ -416,7 +416,7 @@ class ThemeManager(QtGui.QWidget):
         log.debug(u'Load themes from dir')
         self.theme_list = []
         self.theme_list_widget.clear()
-        files = AppLocation.get_files(self.settingsSection, u'.png')
+        files = AppLocation.get_files(self.settings_section, u'.png')
         # Sort the themes by its name considering language specific
         files.sort(key=lambda file_name: unicode(file_name), cmp=locale_compare)
         # now process the file list of png files
@@ -718,7 +718,7 @@ class ThemeManager(QtGui.QWidget):
         Check to see if theme has been selected and the destructive action
         is allowed.
         """
-        self.global_theme = Settings().value(self.settingsSection + u'/global theme')
+        self.global_theme = Settings().value(self.settings_section + u'/global theme')
         if check_item_selected(self.theme_list_widget, select_text):
             item = self.theme_list_widget.currentItem()
             theme = item.text()

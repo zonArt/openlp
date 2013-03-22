@@ -227,8 +227,8 @@ class HttpConnection(object):
         """
         Handles the requests for the main url.  This is secure depending on settings in config.
         """
-        url = urlparse.urlparse(cherrypy.url())
-        self.url_params = urlparse.parse_qs(url.query)
+        #url = urlparse.urlparse(cherrypy.url())
+        #self.url_params = urlparse.parse_qs(url.query)
         self.request_data = None
         if isinstance(kwargs, dict):
             self.request_data = kwargs.get(u'data', None)
@@ -240,8 +240,8 @@ class HttpConnection(object):
         """
         Handles the requests for the stage url.  This is not secure.
         """
-        url = urlparse.urlparse(cherrypy.url())
-        self.url_params = urlparse.parse_qs(url.query)
+        #url = urlparse.urlparse(cherrypy.url())
+        #self.url_params = urlparse.parse_qs(url.query)
         return self._process_http_request(args, kwargs)
 
     @cherrypy.expose
@@ -249,8 +249,8 @@ class HttpConnection(object):
         """
         Handles the requests for the files url.  This is not secure.
         """
-        url = urlparse.urlparse(cherrypy.url())
-        self.url_params = urlparse.parse_qs(url.query)
+        #url = urlparse.urlparse(cherrypy.url())
+        #self.url_params = urlparse.parse_qs(url.query)
         return self._process_http_request(args, kwargs)
 
     def _process_http_request(self, args, kwargs):
@@ -258,7 +258,7 @@ class HttpConnection(object):
         Common function to process HTTP requests where secure or insecure
         """
         url = urlparse.urlparse(cherrypy.url())
-        self.url_params = kwargs
+        #self.url_params = kwargs
         response = None
         for route, func in self.routes:
             match = re.match(route, url.path)
@@ -411,11 +411,11 @@ class HttpConnection(object):
         plugin = self.plugin_manager.get_plugin_by_name("alerts")
         if plugin.status == PluginStatus.Active:
             try:
-                text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+                text = json.loads(self.request_data)[u'request'][u'text']
             except KeyError, ValueError:
                 return self._http_bad_request()
             text = urllib.unquote(text)
-            Registry().execute(u'alerts_text', [text])
+            self.alerts_manager.emit(QtCore.SIGNAL(u'alerts_text'), [text])
             success = True
         else:
             success = False
@@ -456,6 +456,7 @@ class HttpConnection(object):
             if current_item:
                 json_data[u'results'][u'item'] = self.live_controller.service_item.unique_identifier
         else:
+            print event
             if self.request_data:
                 try:
                     data = json.loads(self.request_data)[u'request'][u'id']
@@ -463,15 +464,16 @@ class HttpConnection(object):
                     return self._http_bad_request()
                 log.info(data)
                 # This slot expects an int within a list.
-                id = data[u'request'][u'id']
-                Registry().execute(event, [id])
+                self.live_controller.emit(QtCore.SIGNAL(event), [data])
+            else:
+                self.live_controller.emit(QtCore.SIGNAL(event))
             json_data = {u'results': {u'success': True}}
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps(json_data)
 
     def service(self, action):
         """
-        Handles requests for service items
+        Handles requests for service items in the service manager
 
         ``action``
             The action to perform.
@@ -503,7 +505,7 @@ class HttpConnection(object):
         if action == u'search':
             searches = []
             for plugin in self.plugin_manager.plugins:
-                if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.hasSearch:
+                if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
                     searches.append([plugin.name, unicode(plugin.text_strings[StringContent.Name][u'plural'])])
             cherrypy.response.headers['Content-Type'] = u'application/json'
             return json.dumps({u'results': {u'items': searches}})
@@ -516,7 +518,7 @@ class HttpConnection(object):
             The plugin name to search in.
         """
         try:
-            text = json.loads(self.url_params[u'data'][0])[u'request'][u'text']
+            text = json.loads(self.request_data)[u'request'][u'text']
         except KeyError, ValueError:
             return self._http_bad_request()
         text = urllib.unquote(text)
@@ -533,12 +535,12 @@ class HttpConnection(object):
         Go live on an item of type ``plugin``.
         """
         try:
-            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+            id = json.loads(self.request_data)[u'request'][u'id']
         except KeyError, ValueError:
             return self._http_bad_request()
-        plugin = self.plugin_manager.get_plugin_by_name(type)
+        plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
-            plugin.media_item.go_live(id, remote=True)
+            plugin.media_item.emit(QtCore.SIGNAL(u'%s_go_live' % plugin_name), [id, True])
         return self._http_success()
 
     def add_to_service(self, plugin_name):
@@ -546,13 +548,13 @@ class HttpConnection(object):
         Add item of type ``plugin_name`` to the end of the service.
         """
         try:
-            id = json.loads(self.url_params[u'data'][0])[u'request'][u'id']
+            id = json.loads(self.request_data)[u'request'][u'id']
         except KeyError, ValueError:
             return self._http_bad_request()
-        plugin = self.plugin_manager.get_plugin_by_name(type)
+        plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
             item_id = plugin.media_item.create_item_from_id(id)
-            plugin.media_item.add_to_service(item_id, remote=True)
+            plugin.media_item.emit(QtCore.SIGNAL(u'%s_add_to_service' % plugin_name), [item_id, True])
         self._http_success()
 
     def _http_success(self):
@@ -594,3 +596,13 @@ class HttpConnection(object):
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)
+
+    def _get_alerts_manager(self):
+        """
+        Adds the alerts manager to the class dynamically
+        """
+        if not hasattr(self, u'_alerts_manager'):
+            self._alerts_manager = Registry().get(u'alerts_manager')
+        return self._alerts_manager
+
+    alerts_manager = property(_get_alerts_manager)
