@@ -377,6 +377,7 @@ from uistrings import UiStrings
 from screen import ScreenList
 from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
+from treewidgetwithdnd import TreeWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
 from plugin import PluginStatus, StringContent, Plugin

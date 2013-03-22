@@ -11,12 +11,16 @@ from openlp.plugins.songs.forms.editsongform import EditSongForm
 
 
 class TestEditSongForm(TestCase):
+    """
+    Test the EditSongForm class
+    """
+
     def setUp(self):
         """
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         Registry().register(u'theme_manager', MagicMock())
@@ -38,3 +42,6 @@ class TestEditSongForm(TestCase):
         self.assertFalse(self.form.verse_delete_button.isEnabled(), u'The verse delete button should not be enabled')
         self.assertFalse(self.form.author_remove_button.isEnabled(), u'The author remove button should not be enabled')
         self.assertFalse(self.form.topic_remove_button.isEnabled(), u'The topic remove button should not be enabled')
+
+    def is_verse_edit_form_executed_test(self):
+        pass

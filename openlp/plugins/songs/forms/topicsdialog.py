@@ -32,26 +32,36 @@ from PyQt4 import QtGui
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
-class Ui_TopicsDialog(object):
-    def setupUi(self, topicsDialog):
-        topicsDialog.setObjectName(u'topicsDialog')
-        topicsDialog.resize(300, 10)
-        self.dialogLayout = QtGui.QVBoxLayout(topicsDialog)
-        self.dialogLayout.setObjectName(u'dialog_layout')
-        self.nameLayout = QtGui.QFormLayout()
-        self.nameLayout.setObjectName(u'nameLayout')
-        self.nameLabel = QtGui.QLabel(topicsDialog)
-        self.nameLabel.setObjectName(u'nameLabel')
-        self.nameEdit = QtGui.QLineEdit(topicsDialog)
-        self.nameEdit.setObjectName(u'nameEdit')
-        self.nameLabel.setBuddy(self.nameEdit)
-        self.nameLayout.addRow(self.nameLabel, self.nameEdit)
-        self.dialogLayout.addLayout(self.nameLayout)
-        self.button_box = create_button_box(topicsDialog, u'button_box', [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.button_box)
-        self.retranslateUi(topicsDialog)
-        topicsDialog.setMaximumHeight(topicsDialog.sizeHint().height())
 
-    def retranslateUi(self, topicsDialog):
-        topicsDialog.setWindowTitle(translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
-        self.nameLabel.setText(translate('SongsPlugin.TopicsForm', 'Topic name:'))
+class Ui_TopicsDialog(object):
+    """
+    The user interface for the topics dialog.
+    """
+    def setupUi(self, topics_dialog):
+        """
+        Set up the user interface for the topics dialog.
+        """
+        topics_dialog.setObjectName(u'topics_dialog')
+        topics_dialog.resize(300, 10)
+        self.dialog_layout = QtGui.QVBoxLayout(topics_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.name_layout = QtGui.QFormLayout()
+        self.name_layout.setObjectName(u'name_layout')
+        self.name_label = QtGui.QLabel(topics_dialog)
+        self.name_label.setObjectName(u'name_label')
+        self.name_edit = QtGui.QLineEdit(topics_dialog)
+        self.name_edit.setObjectName(u'name_edit')
+        self.name_label.setBuddy(self.name_edit)
+        self.name_layout.addRow(self.name_label, self.name_edit)
+        self.dialog_layout.addLayout(self.name_layout)
+        self.button_box = create_button_box(topics_dialog, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box)
+        self.retranslateUi(topics_dialog)
+        topics_dialog.setMaximumHeight(topics_dialog.sizeHint().height())
+
+    def retranslateUi(self, topics_dialog):
+        """
+        Translate the UI on the fly.
+        """
+        topics_dialog.setWindowTitle(translate('SongsPlugin.TopicsForm', 'Topic Maintenance'))
+        self.name_label.setText(translate('SongsPlugin.TopicsForm', 'Topic name:'))

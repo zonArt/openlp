@@ -53,7 +53,7 @@ class BibleUpgradeForm(OpenLPWizard):
     """
     log.info(u'BibleUpgradeForm loaded')
 
-    def __init__(self, parent, manager, bibleplugin):
+    def __init__(self, parent, manager, bible_plugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
@@ -67,15 +67,15 @@ class BibleUpgradeForm(OpenLPWizard):
             The Bible plugin.
         """
         self.manager = manager
-        self.mediaItem = bibleplugin.mediaItem
+        self.media_item = bible_plugin.media_item
         self.suffix = u'.sqlite'
-        self.settingsSection = u'bibles'
-        self.path = AppLocation.get_section_data_path(self.settingsSection)
+        self.settings_section = u'bibles'
+        self.path = AppLocation.get_section_data_path(self.settings_section)
         self.temp_dir = os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.newbibles = {}
-        OpenLPWizard.__init__(self, parent, bibleplugin, u'bibleUpgradeWizard', u':/wizards/wizard_importbible.bmp')
+        OpenLPWizard.__init__(self, parent, bible_plugin, u'bibleUpgradeWizard', u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """
@@ -107,7 +107,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if self.page(pageId) == self.progress_page:
             self.preWizard()
             self.performWizard()
-            self.postWizard()
+            self.post_wizard()
         elif self.page(pageId) == self.selectPage and not self.files:
             self.next()
 
@@ -140,21 +140,21 @@ class BibleUpgradeForm(OpenLPWizard):
                 success = False
         return success
 
-    def customInit(self):
+    def custom_init(self):
         """
         Perform any custom initialisation for bible upgrading.
         """
         self.manager.set_process_dialog(self)
         self.restart()
 
-    def customSignals(self):
+    def custom_signals(self):
         """
         Set up the signals used in the bible importer.
         """
         self.backupBrowseButton.clicked.connect(self.onBackupBrowseButtonClicked)
         self.noBackupCheckBox.toggled.connect(self.onNoBackupCheckBoxToggled)
 
-    def addCustomPages(self):
+    def add_custom_pages(self):
         """
         Add the bible import specific wizard pages.
         """
@@ -170,7 +170,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.backupInfoLabel.setObjectName(u'backupInfoLabel')
         self.backupLayout.addWidget(self.backupInfoLabel)
         self.selectLabel = QtGui.QLabel(self.backupPage)
-        self.selectLabel.setObjectName(u'selectLabel')
+        self.selectLabel.setObjectName(u'select_label')
         self.backupLayout.addWidget(self.selectLabel)
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setMargin(0)
@@ -218,7 +218,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         self.checkBox = {}
         for number, filename in enumerate(self.files):
-            bible = OldBibleDB(self.mediaItem, path=self.path, file=filename[0])
+            bible = OldBibleDB(self.media_item, path=self.path, file=filename[0])
             self.checkBox[number] = QtGui.QCheckBox(self.scrollAreaContents)
             self.checkBox[number].setObjectName(u'checkBox[%d]' % number)
             self.checkBox[number].setText(bible.get_name())
@@ -313,7 +313,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         log.debug(u'BibleUpgrade setDefaults')
         settings = Settings()
-        settings.beginGroup(self.plugin.settingsSection)
+        settings.beginGroup(self.plugin.settings_section)
         self.stop_import_flag = False
         self.success.clear()
         self.newbibles.clear()
@@ -367,12 +367,12 @@ class BibleUpgradeForm(OpenLPWizard):
                 self.success[number] = False
                 continue
             self.progress_bar.reset()
-            old_bible = OldBibleDB(self.mediaItem, path=self.temp_dir,
+            old_bible = OldBibleDB(self.media_item, path=self.temp_dir,
                 file=filename[0])
             name = filename[1]
             self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm',
                 'Upgrading Bible %s of %s: "%s"\nUpgrading ...') % (number + 1, max_bibles, name))
-            self.newbibles[number] = BibleDB(self.mediaItem, path=self.path, name=name, file=filename[0])
+            self.newbibles[number] = BibleDB(self.media_item, path=self.path, name=name, file=filename[0])
             self.newbibles[number].register(self.plugin.upgrade_wizard)
             metadata = old_bible.get_metadata()
             web_bible = False
@@ -528,7 +528,7 @@ class BibleUpgradeForm(OpenLPWizard):
         if old_bible is not None:
             old_bible.close_connection()
 
-    def postWizard(self):
+    def post_wizard(self):
         """
         Clean up the UI after the import has finished.
         """
@@ -559,4 +559,4 @@ class BibleUpgradeForm(OpenLPWizard):
             self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
         # Remove temp directory.
         shutil.rmtree(self.temp_dir, True)
-        OpenLPWizard.postWizard(self)
+        OpenLPWizard.post_wizard(self)

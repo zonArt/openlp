@@ -39,32 +39,32 @@ class Ui_SettingsDialog(object):
     """
     The UI widgets of the settings dialog.
     """
-    def setupUi(self, settingsDialog):
+    def setupUi(self, settings_dialog):
         """
         Set up the UI
         """
-        settingsDialog.setObjectName(u'settingsDialog')
-        settingsDialog.resize(800, 500)
-        settingsDialog.setWindowIcon(build_icon(u':/system/system_settings.png'))
-        self.dialogLayout = QtGui.QGridLayout(settingsDialog)
-        self.dialogLayout.setObjectName(u'dialog_layout')
-        self.dialogLayout.setMargin(8)
-        self.settingListWidget = QtGui.QListWidget(settingsDialog)
-        self.settingListWidget.setUniformItemSizes(True)
-        self.settingListWidget.setMinimumSize(QtCore.QSize(150, 0))
-        self.settingListWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.settingListWidget.setObjectName(u'settingListWidget')
-        self.dialogLayout.addWidget(self.settingListWidget, 0, 0, 1, 1)
-        self.stackedLayout = QtGui.QStackedLayout()
-        self.stackedLayout.setObjectName(u'stackedLayout')
-        self.dialogLayout.addLayout(self.stackedLayout, 0, 1, 1, 1)
-        self.button_box = create_button_box(settingsDialog, u'button_box', [u'cancel', u'ok'])
-        self.dialogLayout.addWidget(self.button_box, 1, 1, 1, 1)
-        self.retranslateUi(settingsDialog)
-        self.settingListWidget.currentRowChanged.connect(self.tabChanged)
+        settings_dialog.setObjectName(u'settings_dialog')
+        settings_dialog.resize(800, 500)
+        settings_dialog.setWindowIcon(build_icon(u':/system/system_settings.png'))
+        self.dialog_layout = QtGui.QGridLayout(settings_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.dialog_layout.setMargin(8)
+        self.setting_list_widget = QtGui.QListWidget(settings_dialog)
+        self.setting_list_widget.setUniformItemSizes(True)
+        self.setting_list_widget.setMinimumSize(QtCore.QSize(150, 0))
+        self.setting_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setting_list_widget.setObjectName(u'setting_list_widget')
+        self.dialog_layout.addWidget(self.setting_list_widget, 0, 0, 1, 1)
+        self.stacked_layout = QtGui.QStackedLayout()
+        self.stacked_layout.setObjectName(u'stacked_layout')
+        self.dialog_layout.addLayout(self.stacked_layout, 0, 1, 1, 1)
+        self.button_box = create_button_box(settings_dialog, u'button_box', [u'cancel', u'ok'])
+        self.dialog_layout.addWidget(self.button_box, 1, 1, 1, 1)
+        self.retranslateUi(settings_dialog)
+        self.setting_list_widget.currentRowChanged.connect(self.tab_changed)
 
-    def retranslateUi(self, settingsDialog):
+    def retranslateUi(self, settings_dialog):
         """
         Translate the UI on the fly
         """
-        settingsDialog.setWindowTitle(translate('OpenLP.SettingsForm', 'Configure OpenLP'))
+        settings_dialog.setWindowTitle(translate('OpenLP.SettingsForm', 'Configure OpenLP'))

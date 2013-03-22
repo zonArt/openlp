@@ -82,24 +82,27 @@ class SongsPlugin(Plugin):
         Plugin.__init__(self, u'songs', __default_settings__, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
-        self.iconPath = u':/plugins/plugin_songs.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_songs.png'
+        self.icon = build_icon(self.icon_path)
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
+        """
+        Check the plugin can run.
+        """
         return self.manager.session is not None
 
     def initialise(self):
         log.info(u'Songs Initialising')
         Plugin.initialise(self)
-        self.songImportItem.setVisible(True)
-        self.songExportItem.setVisible(True)
-        self.toolsReindexItem.setVisible(True)
+        self.song_import_item.setVisible(True)
+        self.song_export_item.setVisible(True)
+        self.tools_reindex_item.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.songImportItem, UiStrings().Import)
-        action_list.add_action(self.songExportItem, UiStrings().Export)
-        action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.add_action(self.song_import_item, UiStrings().Import)
+        action_list.add_action(self.song_export_item, UiStrings().Export)
+        action_list.add_action(self.tools_reindex_item, UiStrings().Tools)
 
-    def addImportMenuItem(self, import_menu):
+    def add_import_menu_item(self, import_menu):
         """
         Give the Songs plugin the opportunity to add items to the
         **Import** menu.
@@ -109,13 +112,13 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.songImportItem = create_action(import_menu, u'songImportItem',
+        self.song_import_item = create_action(import_menu, u'songImportItem',
             text=translate('SongsPlugin', '&Song'),
             tooltip=translate('SongsPlugin', 'Import songs using the import wizard.'),
-            triggers=self.onSongImportItemClicked)
-        import_menu.addAction(self.songImportItem)
+            triggers=self.on_song_import_item_clicked)
+        import_menu.addAction(self.song_import_item)
 
-    def addExportMenuItem(self, export_menu):
+    def add_export_menu_Item(self, export_menu):
         """
         Give the Songs plugin the opportunity to add items to the
         **Export** menu.
@@ -125,13 +128,13 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.songExportItem = create_action(export_menu, u'songExportItem',
+        self.song_export_item = create_action(export_menu, u'songExportItem',
             text=translate('SongsPlugin', '&Song'),
             tooltip=translate('SongsPlugin', 'Exports songs using the export wizard.'),
-            triggers=self.onSongExportItemClicked)
-        export_menu.addAction(self.songExportItem)
+            triggers=self.on_song_export_item_clicked)
+        export_menu.addAction(self.song_export_item)
 
-    def addToolsMenuItem(self, tools_menu):
+    def add_tools_menu_item(self, tools_menu):
         """
         Give the alerts plugin the opportunity to add items to the
         **Tools** menu.
@@ -141,38 +144,38 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsReindexItem = create_action(tools_menu, u'toolsReindexItem',
+        self.tools_reindex_item = create_action(tools_menu, u'toolsReindexItem',
             text=translate('SongsPlugin', '&Re-index Songs'),
             icon=u':/plugins/plugin_songs.png',
             statustip=translate('SongsPlugin', 'Re-index the songs database to improve searching and ordering.'),
-            visible=False, triggers=self.onToolsReindexItemTriggered)
-        tools_menu.addAction(self.toolsReindexItem)
+            visible=False, triggers=self.on_tools_reindex_item_triggered)
+        tools_menu.addAction(self.tools_reindex_item)
 
-    def onToolsReindexItemTriggered(self):
+    def on_tools_reindex_item_triggered(self):
         """
         Rebuild each song.
         """
         maxSongs = self.manager.get_object_count(Song)
         if maxSongs == 0:
             return
-        progressDialog = QtGui.QProgressDialog(translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
+        progress_dialog = QtGui.QProgressDialog(translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
             0, maxSongs, self.main_window)
-        progressDialog.setWindowTitle(translate('SongsPlugin', 'Reindexing songs'))
-        progressDialog.setWindowModality(QtCore.Qt.WindowModal)
+        progress_dialog.setWindowTitle(translate('SongsPlugin', 'Reindexing songs'))
+        progress_dialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
         for number, song in enumerate(songs):
             clean_song(self.manager, song)
-            progressDialog.setValue(number + 1)
+            progress_dialog.setValue(number + 1)
         self.manager.save_objects(songs)
-        self.mediaItem.onSearchTextButtonClicked()
+        self.media_item.on_search_text_button_clicked()
 
-    def onSongImportItemClicked(self):
-        if self.mediaItem:
-            self.mediaItem.onImportClick()
+    def on_song_import_item_clicked(self):
+        if self.media_item:
+            self.media_item.on_import_click()
 
-    def onSongExportItemClicked(self):
-        if self.mediaItem:
-            self.mediaItem.onExportClick()
+    def on_song_export_item_clicked(self):
+        if self.media_item:
+            self.media_item.on_export_click()
 
     def about(self):
         return translate('SongsPlugin', '<strong>Songs Plugin</strong>'
@@ -207,7 +210,7 @@ class SongsPlugin(Plugin):
     def importSongs(self, format, **kwargs):
         class_ = SongFormat.get(format, u'class')
         importer = class_(self.manager, **kwargs)
-        importer.register(self.mediaItem.import_wizard)
+        importer.register(self.media_item.import_wizard)
         return importer
 
     def set_plugin_text_strings(self):
@@ -215,12 +218,12 @@ class SongsPlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('SongsPlugin', 'Song', 'name singular'),
             u'plural': translate('SongsPlugin', 'Songs', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
@@ -235,7 +238,7 @@ class SongsPlugin(Plugin):
             u'service': translate('SongsPlugin',
                 'Add the selected song to the service.')
         }
-        self.setPluginUiTextStrings(tooltips)
+        self.set_plugin_ui_text_strings(tooltips)
 
     def first_time(self):
         """
@@ -243,7 +246,7 @@ class SongsPlugin(Plugin):
         new songs into the database.
         """
         self.application.process_events()
-        self.onToolsReindexItemTriggered()
+        self.on_tools_reindex_item_triggered()
         self.application.process_events()
         db_dir = unicode(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         if not os.path.exists(db_dir):
@@ -272,7 +275,7 @@ class SongsPlugin(Plugin):
             importer.doImport(progress)
             self.application.process_events()
         progress.setValue(song_count)
-        self.mediaItem.onSearchTextButtonClicked()
+        self.media_item.on_search_text_button_clicked()
 
     def finalise(self):
         """
@@ -282,13 +285,13 @@ class SongsPlugin(Plugin):
         self.new_service_created()
         # Clean up files and connections
         self.manager.finalise()
-        self.songImportItem.setVisible(False)
-        self.songExportItem.setVisible(False)
-        self.toolsReindexItem.setVisible(False)
+        self.song_import_item.setVisible(False)
+        self.song_export_item.setVisible(False)
+        self.tools_reindex_item.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.songImportItem, UiStrings().Import)
-        action_list.remove_action(self.songExportItem, UiStrings().Export)
-        action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
+        action_list.remove_action(self.song_import_item, UiStrings().Import)
+        action_list.remove_action(self.song_export_item, UiStrings().Export)
+        action_list.remove_action(self.tools_reindex_item, UiStrings().Tools)
         Plugin.finalise(self)
 
     def new_service_created(self):

@@ -127,7 +127,7 @@ class MediaController(object):
         """
         saved_players = get_media_players()[0]
         for player in self.media_players.keys():
-            self.media_players[player].isActive = player in saved_players
+            self.media_players[player].is_active = player in saved_players
 
     def _generate_extensions_lists(self):
         """
@@ -135,14 +135,14 @@ class MediaController(object):
         """
         self.audio_extensions_list = []
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 for item in player.audio_extensions_list:
                     if not item in self.audio_extensions_list:
                         self.audio_extensions_list.append(item)
                         self.service_manager.supported_suffixes(item[2:])
         self.video_extensions_list = []
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 for item in player.video_extensions_list:
                     if item not in self.video_extensions_list:
                         self.video_extensions_list.extend(item)
@@ -224,7 +224,7 @@ class MediaController(object):
         """
         css = u''
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 css += player.get_media_display_css()
         return css
 
@@ -234,7 +234,7 @@ class MediaController(object):
         """
         js = u''
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 js += player.get_media_display_javascript()
         return js
 
@@ -244,7 +244,7 @@ class MediaController(object):
         """
         html = u''
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 html += player.get_media_display_html()
         return html
 
@@ -325,7 +325,7 @@ class MediaController(object):
         if preview:
             display.has_audio = False
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 player.setup(display)
 
     def set_controls_visible(self, controller, value):
@@ -440,7 +440,7 @@ class MediaController(object):
         controller.media_info = MediaInfo()
         controller.media_info.volume = 0
         controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
-        display = controller._display
+        display = controller.preview_display
         if not self._check_file_type(controller, display, service_item):
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),

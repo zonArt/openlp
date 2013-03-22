@@ -164,8 +164,8 @@ sup {
             text.innerHTML = new_text;
             return;
         }
-        // Fade text out. 0.2 to minimize the time "nothing" is shown on the screen.
-        text.style.opacity = '0.2';
+        // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
+        text.style.opacity = '0.1';
         // Fade new text in after the old text has finished fading out.
         timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
     }
@@ -240,9 +240,9 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     html_additions = u''
     if plugins:
         for plugin in plugins:
-            css_additions += plugin.getDisplayCss()
-            js_additions += plugin.getDisplayJavaScript()
-            html_additions += plugin.getDisplayHtml()
+            css_additions += plugin.get_display_css()
+            js_additions += plugin.get_display_javascript()
+            html_additions += plugin.get_display_html()
     html = HTMLSRC % (
         build_background_css(item, width),
         css_additions,

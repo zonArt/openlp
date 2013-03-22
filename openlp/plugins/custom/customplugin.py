@@ -46,7 +46,7 @@ __default_settings__ = {
         u'custom/last search type':  CustomSearch.Titles,
         u'custom/display footer': True,
         u'custom/add custom from service': True
-    }
+}
 
 
 class CustomPlugin(Plugin):
@@ -64,8 +64,8 @@ class CustomPlugin(Plugin):
         Plugin.__init__(self, u'custom', __default_settings__, CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
-        self.iconPath = u':/plugins/plugin_custom.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_custom.png'
+        self.icon = build_icon(self.icon_path)
 
     def about(self):
         about_text = translate('CustomPlugin', '<strong>Custom Slide Plugin </strong><br />The custom slide plugin '
@@ -104,12 +104,12 @@ class CustomPlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('CustomPlugin', 'Custom Slide', 'name singular'),
             u'plural': translate('CustomPlugin', 'Custom Slides', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('CustomPlugin', 'Custom Slides', 'container title')
         }
         # Middle Header Bar
@@ -123,7 +123,7 @@ class CustomPlugin(Plugin):
             u'live': translate('CustomPlugin', 'Send the selected custom slide live.'),
             u'service': translate('CustomPlugin', 'Add the selected custom slide to the service.')
         }
-        self.setPluginUiTextStrings(tooltips)
+        self.set_plugin_ui_text_strings(tooltips)
 
     def finalise(self):
         """

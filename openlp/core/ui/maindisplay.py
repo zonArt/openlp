@@ -158,7 +158,6 @@ class MainDisplay(Display):
             Registry().register_function(u'live_display_hide', self.hide_display)
             Registry().register_function(u'live_display_show', self.show_display)
             Registry().register_function(u'update_display_css', self.css_changed)
-            Registry().register_function(u'config_updated', self.config_changed)
 
     def set_transparency(self, enabled):
         """
@@ -173,19 +172,10 @@ class MainDisplay(Display):
 
     def css_changed(self):
         """
-        We may need to rebuild the CSS on the live display.
+        We need to rebuild the CSS on the live display.
         """
-        self.rebuild_css = True
-
-    def config_changed(self):
-        """
-        Call the plugins to rebuild the Live display CSS as the screen has
-        not been rebuild on exit of config.
-        """
-        if self.rebuild_css and self.plugin_manager.plugins:
-            for plugin in self.plugin_manager.plugins:
-                plugin.refreshCss(self.frame)
-        self.rebuild_css = False
+        for plugin in self.plugin_manager.plugins:
+            plugin.refreshCss(self.frame)
 
     def retranslateUi(self):
         """
