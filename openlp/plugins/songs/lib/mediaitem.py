@@ -81,7 +81,7 @@ class SongMediaItem(MediaManagerItem):
         self.remoteSong = -1
         self.editItem = None
         self.quick_preview_allowed = True
-        self.hasSearch = True
+        self.has_search = True
 
     def _updateBackgroundAudio(self, song, item):
         song.media_files = []

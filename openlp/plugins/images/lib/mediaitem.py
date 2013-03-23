@@ -53,7 +53,7 @@ class ImageMediaItem(MediaManagerItem):
         self.icon_path = u'images/image'
         MediaManagerItem.__init__(self, parent, plugin)
         self.quick_preview_allowed = True
-        self.hasSearch = True
+        self.has_search = True
         self.manager = plugin.manager
         self.choose_group_form = ChooseGroupForm(self)
         self.add_group_form = AddGroupForm(self)
