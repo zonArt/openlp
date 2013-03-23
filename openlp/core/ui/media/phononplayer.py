@@ -259,7 +259,7 @@ class PhononPlayer(MediaPlayer):
             if display.media_object.currentTime() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
-        if not controller._slider.isSliderDown():
+        if not controller.seek_slider.isSliderDown():
             controller.seek_slider.blockSignals(True)
             controller.seek_slider.setSliderPosition(display.media_object.currentTime())
             controller.seek_slider.blockSignals(False)
