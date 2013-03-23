@@ -195,7 +195,7 @@ class PhononPlayer(MediaPlayer):
             self.seek(display, controller.media_info.start_time * 1000)
         self.volume(display, controller.media_info.volume)
         controller.media_info.length = int(display.media_object.totalTime() / 1000)
-        controller.seekSlider.setMaximum(controller.media_info.length * 1000)
+        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
         display.phonon_widget.raise_()
         return True
@@ -225,11 +225,11 @@ class PhononPlayer(MediaPlayer):
             vol = float(vol) / float(100)
             display.audio.setVolume(vol)
 
-    def seek(self, display, seekVal):
+    def seek(self, display, seek_value):
         """
         Go to a particular point in the current media item
         """
-        display.media_object.seek(seekVal)
+        display.media_object.seek(seek_value)
 
     def reset(self, display):
         """
@@ -259,10 +259,10 @@ class PhononPlayer(MediaPlayer):
             if display.media_object.currentTime() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
-        if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.blockSignals(True)
-            controller.seekSlider.setSliderPosition(display.media_object.currentTime())
-            controller.seekSlider.blockSignals(False)
+        if not controller._slider.isSliderDown():
+            controller.seek_slider.blockSignals(True)
+            controller.seek_slider.setSliderPosition(display.media_object.currentTime())
+            controller.seek_slider.blockSignals(False)
 
     def get_media_display_css(self):
         """

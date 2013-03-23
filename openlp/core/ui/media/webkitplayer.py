@@ -462,11 +462,11 @@ class WebkitPlayer(MediaPlayer):
                 length = int(length * 1000)
         if currentTime > 0:
             controller.media_info.length = length
-            controller.seekSlider.setMaximum(length)
-            if not controller.seekSlider.isSliderDown():
-                controller.seekSlider.blockSignals(True)
-                controller.seekSlider.setSliderPosition(currentTime)
-                controller.seekSlider.blockSignals(False)
+            controller.seek_slider.setMaximum(length)
+            if not controller.seek_slider.isSliderDown():
+                controller.seek_slider.blockSignals(True)
+                controller.seek_slider.setSliderPosition(currentTime)
+                controller.seek_slider.blockSignals(False)
 
     def get_info(self):
         """
