@@ -177,13 +177,13 @@ class VlcPlayer(MediaPlayer):
         controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         return True
 
-    def media_state_wait(self, display, mediaState):
+    def media_state_wait(self, display, media_state):
         """
         Wait for the video to change its state
         Wait no longer than 60 seconds. (loading an iso file needs a long time)
         """
         start = datetime.now()
-        while not mediaState == display.vlcMedia.get_state():
+        while not media_state == display.vlcMedia.get_state():
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
             self.application.process_events()
