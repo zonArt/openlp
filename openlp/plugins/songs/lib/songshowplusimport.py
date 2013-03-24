@@ -57,31 +57,24 @@ log = logging.getLogger(__name__)
 
 class SongShowPlusImport(SongImport):
     """
-    The :class:`SongShowPlusImport` class provides the ability to import song
-    files from SongShow Plus.
+    The :class:`SongShowPlusImport` class provides the ability to import song files from SongShow Plus.
 
     **SongShow Plus Song File Format:**
 
     The SongShow Plus song file format is as follows:
 
-    * Each piece of data in the song file has some information that precedes
-    it.
+    * Each piece of data in the song file has some information that precedes it.
     * The general format of this data is as follows:
-    4 Bytes, forming a 32 bit number, a key if you will, this describes what
-    the data is (see blockKey below)
-    4 Bytes, forming a 32 bit number, which is the number of bytes until the
-    next block starts
+    4 Bytes, forming a 32 bit number, a key if you will, this describes what the data is (see blockKey below)
+    4 Bytes, forming a 32 bit number, which is the number of bytes until the next block starts
     1 Byte, which tells how many bytes follows
-    1 or 4 Bytes, describes how long the string is, if its 1 byte, the string
-    is less than 255
+    1 or 4 Bytes, describes how long the string is, if its 1 byte, the string is less than 255
     The next bytes are the actual data.
     The next block of data follows on.
 
-    This description does differ for verses. Which includes extra bytes
-    stating the verse type or number. In some cases a "custom" verse is used,
-    in that case, this block will in include 2 strings, with the associated
-    string length descriptors. The first string is the name of the verse, the
-    second is the verse content.
+    This description does differ for verses. Which includes extra bytes stating the verse type or number. In some cases
+    a "custom" verse is used, in that case, this block will in include 2 strings, with the associated string length
+    descriptors. The first string is the name of the verse, the second is the verse content.
 
     The file is ended with four null bytes.
 
@@ -109,7 +102,7 @@ class SongShowPlusImport(SongImport):
         for file in self.import_source:
             if self.stop_import_flag:
                 return
-            self.sspVerseOrderList = []
+            self.ssp_verse_order_list = []
             self.other_count = 0
             self.other_list = {}
             file_name = os.path.split(file)[1]
@@ -164,27 +157,27 @@ class SongShowPlusImport(SongImport):
                 elif block_key == COMMENTS:
                     self.comments = unicode(data, u'cp1252')
                 elif block_key == VERSE_ORDER:
-                    verse_tag = self.toOpenLPVerseTag(data, True)
+                    verse_tag = self.to_openlp_verse_tag(data, True)
                     if verse_tag:
                         if not isinstance(verse_tag, unicode):
                             verse_tag = unicode(verse_tag, u'cp1252')
-                        self.sspVerseOrderList.append(verse_tag)
+                        self.ssp_verse_order_list.append(verse_tag)
                 elif block_key == SONG_BOOK:
                     self.songBookName = unicode(data, u'cp1252')
                 elif block_key == SONG_NUMBER:
                     self.songNumber = ord(data)
                 elif block_key == CUSTOM_VERSE:
-                    verse_tag = self.toOpenLPVerseTag(verse_name)
+                    verse_tag = self.to_openlp_verse_tag(verse_name)
                     self.addVerse(unicode(data, u'cp1252'), verse_tag)
                 else:
                     log.debug("Unrecognised blockKey: %s, data: %s" % (block_key, data))
                     song_data.seek(next_block_starts)
-            self.verseOrderList = self.sspVerseOrderList
+            self.verseOrderList = self.ssp_verse_order_list
             song_data.close()
             if not self.finish():
                 self.logError(file)
 
-    def toOpenLPVerseTag(self, verse_name, ignore_unique=False):
+    def to_openlp_verse_tag(self, verse_name, ignore_unique=False):
         # Have we got any digits? If so, verse number is everything from the digits to the end (OpenLP does not have
         # concept of part verses, so just ignore any non integers on the end (including floats))
         match = re.match(u'(\D*)(\d+)', verse_name)

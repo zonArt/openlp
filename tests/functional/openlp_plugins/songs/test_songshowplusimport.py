@@ -109,7 +109,7 @@ class TestSongShowPlusImport(TestCase):
 
     def toOpenLPVerseTag_test(self):
         """
-        Test toOpenLPVerseTag method
+        Test to_openlp_verse_tag method
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
@@ -130,8 +130,8 @@ class TestSongShowPlusImport(TestCase):
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
-                self.assertEquals(importer.toOpenLPVerseTag(original_tag), openlp_tag,
-                    u'SongShowPlusImport.toOpenLPVerseTag should return "%s" when called with "%s"'
+                self.assertEquals(importer.to_openlp_verse_tag(original_tag), openlp_tag,
+                    u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))
 
             # WHEN: Supplied with the following arguments replicating a verse order being added
@@ -149,8 +149,8 @@ class TestSongShowPlusImport(TestCase):
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
-                self.assertEquals(importer.toOpenLPVerseTag(original_tag, ignore_unique=True), openlp_tag,
-                    u'SongShowPlusImport.toOpenLPVerseTag should return "%s" when called with "%s"'
+                self.assertEquals(importer.to_openlp_verse_tag(original_tag, ignore_unique=True), openlp_tag,
+                    u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))
 
     def file_import_test(self):
@@ -218,4 +218,3 @@ class TestSongShowPlusImport(TestCase):
                     self.assertEquals(importer.verseOrderList, [], u'verseOrderList for %s should be %s'
                         % (song_file, verse_order_list))
                 mocked_finish.assert_called_with()
-                
