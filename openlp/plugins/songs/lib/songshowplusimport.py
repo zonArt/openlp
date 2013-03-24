@@ -89,8 +89,9 @@ class SongShowPlusImport(SongImport):
 
     * .sbsong
     """
-    otherList = {}
-    otherCount = 0
+
+    other_count = 0
+    other_list = {}
 
     def __init__(self, manager, **kwargs):
         """
@@ -109,8 +110,8 @@ class SongShowPlusImport(SongImport):
             if self.stop_import_flag:
                 return
             self.sspVerseOrderList = []
-            other_count = 0
-            other_list = {}
+            self.other_count = 0
+            self.other_list = {}
             file_name = os.path.split(file)[1]
             self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % file_name, 0)
             song_data = open(file, 'rb')
@@ -204,11 +205,11 @@ class SongShowPlusImport(SongImport):
         elif verse_type == "pre-chorus":
             verse_tag = VerseType.tags[VerseType.PreChorus]
         else:
-            if verse_name not in self.otherList:
+            if verse_name not in self.other_list:
                 if ignore_unique:
                     return None
-                self.otherCount += 1
-                self.otherList[verse_name] = str(self.otherCount)
+                self.other_count += 1
+                self.other_list[verse_name] = str(self.other_count)
             verse_tag = VerseType.tags[VerseType.Other]
-            verse_number = self.otherList[verse_name]
+            verse_number = self.other_list[verse_name]
         return verse_tag + verse_number
