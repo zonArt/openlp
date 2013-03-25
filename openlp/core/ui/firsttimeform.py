@@ -221,7 +221,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             time.sleep(0.2)
             self._preWizard()
             self._performWizard()
-            self._postWizard()
+            self._post_wizard()
             self.application.set_normal_cursor()
 
     def update_screen_list_combo(self):
@@ -380,7 +380,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # Try to give the wizard a chance to repaint itself
         time.sleep(0.1)
 
-    def _postWizard(self):
+    def _post_wizard(self):
         """
         Clean up the UI after the process has finished.
         """

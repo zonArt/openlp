@@ -36,10 +36,10 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import Registry
 
+
 class SettingsTab(QtGui.QWidget):
     """
-    SettingsTab is a helper widget for plugins to define Tabs for the settings
-    dialog.
+    SettingsTab is a helper widget for plugins to define Tabs for the settings dialog.
     """
     def __init__(self, parent, title, visible_title=None, icon_path=None):
         """
@@ -52,11 +52,12 @@ class SettingsTab(QtGui.QWidget):
             The title of the tab, which is usually displayed on the tab.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.tabTitle = title
-        self.tabTitleVisible = visible_title
-        self.settingsSection = self.tabTitle.lower()
+        self.tab_title = title
+        self.tab_title_visible = visible_title
+        self.settings_section = self.tab_title.lower()
+        self.tab_visited = False
         if icon_path:
-            self.iconPath = icon_path
+            self.icon_path = icon_path
         self.setupUi()
         self.retranslateUi()
         self.initialise()
@@ -66,20 +67,20 @@ class SettingsTab(QtGui.QWidget):
         """
         Setup the tab's interface.
         """
-        self.tabLayout = QtGui.QHBoxLayout(self)
-        self.tabLayout.setObjectName(u'tabLayout')
-        self.leftColumn = QtGui.QWidget(self)
-        self.leftColumn.setObjectName(u'leftColumn')
-        self.leftLayout = QtGui.QVBoxLayout(self.leftColumn)
-        self.leftLayout.setMargin(0)
-        self.leftLayout.setObjectName(u'leftLayout')
-        self.tabLayout.addWidget(self.leftColumn)
-        self.rightColumn = QtGui.QWidget(self)
-        self.rightColumn.setObjectName(u'rightColumn')
-        self.rightLayout = QtGui.QVBoxLayout(self.rightColumn)
-        self.rightLayout.setMargin(0)
-        self.rightLayout.setObjectName(u'rightLayout')
-        self.tabLayout.addWidget(self.rightColumn)
+        self.tab_layout = QtGui.QHBoxLayout(self)
+        self.tab_layout.setObjectName(u'tab_layout')
+        self.left_column = QtGui.QWidget(self)
+        self.left_column.setObjectName(u'left_column')
+        self.left_layout = QtGui.QVBoxLayout(self.left_column)
+        self.left_layout.setMargin(0)
+        self.left_layout.setObjectName(u'left_layout')
+        self.tab_layout.addWidget(self.left_column)
+        self.right_column = QtGui.QWidget(self)
+        self.right_column.setObjectName(u'right_column')
+        self.right_layout = QtGui.QVBoxLayout(self.right_column)
+        self.right_layout.setMargin(0)
+        self.right_layout.setObjectName(u'right_layout')
+        self.tab_layout.addWidget(self.right_column)
 
     def resizeEvent(self, event=None):
         """
@@ -87,11 +88,11 @@ class SettingsTab(QtGui.QWidget):
         """
         if event:
             QtGui.QWidget.resizeEvent(self, event)
-        width = self.width() - self.tabLayout.spacing() - \
-            self.tabLayout.contentsMargins().left() - self.tabLayout.contentsMargins().right()
-        left_width = min(width - self.rightColumn.minimumSizeHint().width(), width / 2)
-        left_width = max(left_width, self.leftColumn.minimumSizeHint().width())
-        self.leftColumn.setFixedWidth(left_width)
+        width = self.width() - self.tab_layout.spacing() - \
+            self.tab_layout.contentsMargins().left() - self.tab_layout.contentsMargins().right()
+        left_width = min(width - self.right_column.minimumSizeHint().width(), width / 2)
+        left_width = max(left_width, self.left_column.minimumSizeHint().width())
+        self.left_column.setFixedWidth(left_width)
 
     def retranslateUi(self):
         """
@@ -133,11 +134,11 @@ class SettingsTab(QtGui.QWidget):
         """
         pass
 
-    def tabVisible(self):
+    def tab_visible(self):
         """
         Tab has just been made visible to the user
         """
-        pass
+        self.tab_visited = True
 
     def _get_service_manager(self):
         """
@@ -189,3 +190,12 @@ class SettingsTab(QtGui.QWidget):
 
     media_controller = property(_get_media_controller)
 
+    def _get_settings_form(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_settings_form'):
+            self._settings_form = Registry().get(u'settings_form')
+        return self._settings_form
+
+    settings_form = property(_get_settings_form)

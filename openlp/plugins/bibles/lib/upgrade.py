@@ -37,6 +37,7 @@ from sqlalchemy import Table, func, select, insert
 __version__ = 1
 log = logging.getLogger(__name__)
 
+
 def upgrade_setup(metadata):
     """
     Set up the latest revision all tables, with reflection, needed for the
@@ -56,7 +57,7 @@ def upgrade_1(session, metadata, tables):
     """
     Version 1 upgrade.
 
-    This upgrade renames a number of keys to a single naming convention..
+    This upgrade renames a number of keys to a single naming convention.
     """
     metadata_table = metadata.tables[u'metadata']
     # Copy "Version" to "name" ("version" used by upgrade system)

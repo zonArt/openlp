@@ -62,7 +62,7 @@ __default_settings__ = {
         u'bibles/list separator': u'',
         u'bibles/end separator': u'',
         u'bibles/last directory import': u''
-    }
+}
 
 
 class BiblePlugin(Plugin):
@@ -71,8 +71,8 @@ class BiblePlugin(Plugin):
     def __init__(self):
         Plugin.__init__(self, u'bibles', __default_settings__, BibleMediaItem, BiblesTab)
         self.weight = -9
-        self.iconPath = u':/plugins/plugin_bibles.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_bibles.png'
+        self.icon = build_icon(self.icon_path)
         self.manager = None
 
     def initialise(self):
@@ -80,14 +80,14 @@ class BiblePlugin(Plugin):
         if self.manager is None:
             self.manager = BibleManager(self)
         Plugin.initialise(self)
-        self.importBibleItem.setVisible(True)
+        self.import_bible_item.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.importBibleItem, UiStrings().Import)
+        action_list.add_action(self.import_bible_item, UiStrings().Import)
         # Do not add the action to the list yet.
-        #action_list.add_action(self.exportBibleItem, UiStrings().Export)
+        #action_list.add_action(self.export_bible_item, UiStrings().Export)
         # Set to invisible until we can export bibles
-        self.exportBibleItem.setVisible(False)
-        self.toolsUpgradeItem.setVisible(bool(self.manager.old_bible_databases))
+        self.export_bible_item.setVisible(False)
+        self.tools_upgrade_item.setVisible(bool(self.manager.old_bible_databases))
 
     def finalise(self):
         """
@@ -97,10 +97,10 @@ class BiblePlugin(Plugin):
         self.manager.finalise()
         Plugin.finalise(self)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.importBibleItem, UiStrings().Import)
-        self.importBibleItem.setVisible(False)
-        #action_list.remove_action(self.exportBibleItem, UiStrings().Export)
-        self.exportBibleItem.setVisible(False)
+        action_list.remove_action(self.import_bible_item, UiStrings().Import)
+        self.import_bible_item.setVisible(False)
+        #action_list.remove_action(self.export_bible_item, UiStrings().Export)
+        self.export_bible_item.setVisible(False)
 
     def app_startup(self):
         """
@@ -114,21 +114,21 @@ class BiblePlugin(Plugin):
                     'Should OpenLP upgrade now?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == \
                     QtGui.QMessageBox.Yes:
-                self.onToolsUpgradeItemTriggered()
+                self.on_tools_upgrade_Item_triggered()
 
-    def addImportMenuItem(self, import_menu):
-        self.importBibleItem = create_action(import_menu, u'importBibleItem',
+    def add_import_menu_item(self, import_menu):
+        self.import_bible_item = create_action(import_menu, u'importBibleItem',
             text=translate('BiblesPlugin', '&Bible'), visible=False,
-            triggers=self.onBibleImportClick)
-        import_menu.addAction(self.importBibleItem)
+            triggers=self.on_bible_import_click)
+        import_menu.addAction(self.import_bible_item)
 
-    def addExportMenuItem(self, export_menu):
-        self.exportBibleItem = create_action(export_menu, u'exportBibleItem',
+    def add_export_menu_Item(self, export_menu):
+        self.export_bible_item = create_action(export_menu, u'exportBibleItem',
             text=translate('BiblesPlugin', '&Bible'),
             visible=False)
-        export_menu.addAction(self.exportBibleItem)
+        export_menu.addAction(self.export_bible_item)
 
-    def addToolsMenuItem(self, tools_menu):
+    def add_tools_menu_item(self, tools_menu):
         """
         Give the bible plugin the opportunity to add items to the
         **Tools** menu.
@@ -138,13 +138,13 @@ class BiblePlugin(Plugin):
             use it as their parent.
         """
         log.debug(u'add tools menu')
-        self.toolsUpgradeItem = create_action(tools_menu, u'toolsUpgradeItem',
+        self.tools_upgrade_item = create_action(tools_menu, u'toolsUpgradeItem',
             text=translate('BiblesPlugin', '&Upgrade older Bibles'),
             statustip=translate('BiblesPlugin', 'Upgrade the Bible databases to the latest format.'),
-            visible=False, triggers=self.onToolsUpgradeItemTriggered)
-        tools_menu.addAction(self.toolsUpgradeItem)
+            visible=False, triggers=self.on_tools_upgrade_Item_triggered)
+        tools_menu.addAction(self.tools_upgrade_item)
 
-    def onToolsUpgradeItemTriggered(self):
+    def on_tools_upgrade_Item_triggered(self):
         """
         Upgrade older bible databases.
         """
@@ -152,11 +152,11 @@ class BiblePlugin(Plugin):
             self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
-            self.mediaItem.reloadBibles()
+            self.media_item.reloadBibles()
 
-    def onBibleImportClick(self):
-        if self.mediaItem:
-            self.mediaItem.onImportClick()
+    def on_bible_import_click(self):
+        if self.media_item:
+            self.media_item.on_import_click()
 
     def about(self):
         about_text = translate('BiblesPlugin', '<strong>Bible Plugin</strong>'
@@ -170,7 +170,7 @@ class BiblePlugin(Plugin):
         Returns ``True`` if the theme is being used, otherwise returns
         ``False``.
         """
-        return unicode(self.settingsTab.bible_theme) == theme
+        return unicode(self.settings_tab.bible_theme) == theme
 
     def rename_theme(self, oldTheme, newTheme):
         """
@@ -184,20 +184,20 @@ class BiblePlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        self.settingsTab.bible_theme = newTheme
-        self.settingsTab.save()
+        self.settings_tab.bible_theme = newTheme
+        self.settings_tab.save()
 
     def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('BiblesPlugin', 'Bible', 'name singular'),
             u'plural': translate('BiblesPlugin', 'Bibles', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('BiblesPlugin', 'Bibles', 'container title')
         }
         # Middle Header Bar
@@ -212,4 +212,4 @@ class BiblePlugin(Plugin):
             u'live': translate('BiblesPlugin', 'Send the selected Bible live.'),
             u'service': translate('BiblesPlugin', 'Add the selected Bible to the service.')
         }
-        self.setPluginUiTextStrings(tooltips)
+        self.set_plugin_ui_text_strings(tooltips)
