@@ -36,6 +36,7 @@ from mediafilesdialog import Ui_MediaFilesDialog
 
 log = logging.getLogger(__name__)
 
+
 class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
     """
     Class to show a list of files from the
@@ -47,13 +48,13 @@ class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
         self.setupUi(self)
 
     def populateFiles(self, files):
-        self.fileListWidget.clear()
+        self.file_list_widget.clear()
         for file in files:
             item = QtGui.QListWidgetItem(os.path.split(file)[1])
             item.setData(QtCore.Qt.UserRole, file)
-            self.fileListWidget.addItem(item)
+            self.file_list_widget.addItem(item)
 
     def getSelectedFiles(self):
         return map(lambda item: item.data(QtCore.Qt.UserRole),
-            self.fileListWidget.selectedItems())
+            self.file_list_widget.selectedItems())
 

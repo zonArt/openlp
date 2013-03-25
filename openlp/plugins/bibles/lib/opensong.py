@@ -126,7 +126,7 @@ class OpenSongBible(BibleDB):
                             chapter_number,
                             verse_number,
                             self.get_text(verse))
-                    self.wizard.incrementProgressBar(translate('BiblesPlugin.Opensong', 'Importing %s %s...',
+                    self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) % (db_book.name, chapter_number)
                 self.session.commit()
             self.application.process_events()

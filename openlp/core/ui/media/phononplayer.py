@@ -126,16 +126,16 @@ class PhononPlayer(MediaPlayer):
         """
         Set up the player widgets
         """
-        display.phononWidget = Phonon.VideoWidget(display)
-        display.phononWidget.resize(display.size())
-        display.mediaObject = Phonon.MediaObject(display)
-        Phonon.createPath(display.mediaObject, display.phononWidget)
-        if display.hasAudio:
-            display.audio = Phonon.AudioOutput(Phonon.VideoCategory, display.mediaObject)
-            Phonon.createPath(display.mediaObject, display.audio)
-        display.phononWidget.raise_()
-        display.phononWidget.hide()
-        self.hasOwnWidget = True
+        display.phonon_widget = Phonon.VideoWidget(display)
+        display.phonon_widget.resize(display.size())
+        display.media_object = Phonon.MediaObject(display)
+        Phonon.createPath(display.media_object, display.phonon_widget)
+        if display.has_audio:
+            display.audio = Phonon.AudioOutput(Phonon.VideoCategory, display.media_object)
+            Phonon.createPath(display.media_object, display.audio)
+        display.phonon_widget.raise_()
+        display.phonon_widget.hide()
+        self.has_own_widget = True
 
     def check_available(self):
         """
@@ -151,7 +151,7 @@ class PhononPlayer(MediaPlayer):
         controller = display.controller
         volume = controller.media_info.volume
         path = controller.media_info.file_info.absoluteFilePath()
-        display.mediaObject.setCurrentSource(Phonon.MediaSource(path))
+        display.media_object.setCurrentSource(Phonon.MediaSource(path))
         if not self.media_state_wait(display, Phonon.StoppedState):
             return False
         self.volume(display, volume)
@@ -163,9 +163,9 @@ class PhononPlayer(MediaPlayer):
         Wait no longer than 5 seconds.
         """
         start = datetime.now()
-        current_state = display.mediaObject.state()
+        current_state = display.media_object.state()
         while current_state != mediaState:
-            current_state = display.mediaObject.state()
+            current_state = display.media_object.state()
             if current_state == Phonon.ErrorState:
                 return False
             self.application.process_events()
@@ -177,7 +177,7 @@ class PhononPlayer(MediaPlayer):
         """
         Resize the display
         """
-        display.phononWidget.resize(display.size())
+        display.phonon_widget.resize(display.size())
 
     def play(self, display):
         """
@@ -185,26 +185,26 @@ class PhononPlayer(MediaPlayer):
         """
         controller = display.controller
         start_time = 0
-        if display.mediaObject.state() != Phonon.PausedState and \
+        if display.media_object.state() != Phonon.PausedState and \
             controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
-        display.mediaObject.play()
+        display.media_object.play()
         if not self.media_state_wait(display, Phonon.PlayingState):
             return False
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         self.volume(display, controller.media_info.volume)
-        controller.media_info.length = int(display.mediaObject.totalTime() / 1000)
+        controller.media_info.length = int(display.media_object.totalTime() / 1000)
         controller.seekSlider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
-        display.phononWidget.raise_()
+        display.phonon_widget.raise_()
         return True
 
     def pause(self, display):
         """
         Pause the current media item
         """
-        display.mediaObject.pause()
+        display.media_object.pause()
         if self.media_state_wait(display, Phonon.PausedState):
             self.state = MediaState.Paused
 
@@ -212,7 +212,7 @@ class PhononPlayer(MediaPlayer):
         """
         Stop the current media item
         """
-        display.mediaObject.stop()
+        display.media_object.stop()
         self.set_visible(display, False)
         self.state = MediaState.Stopped
 
@@ -221,7 +221,7 @@ class PhononPlayer(MediaPlayer):
         Set the volume
         """
         # 1.0 is the highest value
-        if display.hasAudio:
+        if display.has_audio:
             vol = float(vol) / float(100)
             display.audio.setVolume(vol)
 
@@ -229,39 +229,39 @@ class PhononPlayer(MediaPlayer):
         """
         Go to a particular point in the current media item
         """
-        display.mediaObject.seek(seekVal)
+        display.media_object.seek(seekVal)
 
     def reset(self, display):
         """
         Reset the media player
         """
-        display.mediaObject.stop()
-        display.mediaObject.clearQueue()
+        display.media_object.stop()
+        display.media_object.clearQueue()
         self.set_visible(display, False)
-        display.phononWidget.setVisible(False)
+        display.phonon_widget.setVisible(False)
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
         """
         Set the visibility of the widget
         """
-        if self.hasOwnWidget:
-            display.phononWidget.setVisible(status)
+        if self.has_own_widget:
+            display.phonon_widget.setVisible(status)
 
     def update_ui(self, display):
         """
         Update the UI
         """
-        if display.mediaObject.state() == Phonon.PausedState and self.state != MediaState.Paused:
+        if display.media_object.state() == Phonon.PausedState and self.state != MediaState.Paused:
             self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
-            if display.mediaObject.currentTime() > controller.media_info.end_time * 1000:
+            if display.media_object.currentTime() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
             controller.seekSlider.blockSignals(True)
-            controller.seekSlider.setSliderPosition(display.mediaObject.currentTime())
+            controller.seekSlider.setSliderPosition(display.media_object.currentTime())
             controller.seekSlider.blockSignals(False)
 
     def get_media_display_css(self):

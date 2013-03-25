@@ -37,8 +37,8 @@ log = logging.getLogger(__name__)
 
 class Registry(object):
     """
-    This is the Component Registry.  It is a singleton object and is used to provide a
-    look up service for common objects.
+    This is the Component Registry.  It is a singleton object and is used to provide a look up service for common
+    objects.
     """
     log.info(u'Registry loaded')
     __instance__ = None
@@ -97,8 +97,8 @@ class Registry(object):
 
     def remove(self, key):
         """
-        Removes the registry value from the list based on the key passed in
-        (Only valid and active for testing framework).
+        Removes the registry value from the list based on the key passed in (Only valid and active for testing
+        framework).
 
         ``key``
             The service to be deleted.
@@ -114,9 +114,9 @@ class Registry(object):
         Register an event and associated function to be called
 
         ``event``
-            The function description like "config_updated" or "live_display_hide" where a number of places in the
-            code will/may need to respond to a single action and the caller does not need to understand or know about
-            the recipients.
+            The function description like "live_display_hide" where a number of places in the code
+            will/may need to respond to a single action and the caller does not need to understand or know about the
+            recipients.
 
         ``function``
             The function to be called when the event happens.

@@ -46,12 +46,12 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
     """
     log.info(u'%s EditBibleForm loaded', __name__)
 
-    def __init__(self, mediaitem, parent, manager):
+    def __init__(self, media_item, parent, manager):
         """
         Constructor
         """
         QtGui.QDialog.__init__(self, parent)
-        self.mediaitem = mediaitem
+        self.media_item = media_item
         self.book_names = BibleStrings().BookNames
         self.setupUi(self)
         self.manager = manager

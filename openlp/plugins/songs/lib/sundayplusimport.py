@@ -52,8 +52,7 @@ class SundayPlusImport(SongImport):
     """
     Import Sunday Plus songs
 
-    The format examples can be found attached to bug report at
-    <http://support.openlp.org/issues/395>
+    The format examples can be found attached to bug report at <http://support.openlp.org/issues/395>
     """
 
     def __init__(self, manager, **kwargs):
@@ -64,8 +63,8 @@ class SundayPlusImport(SongImport):
         self.encoding = u'us-ascii'
 
     def doImport(self):
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for filename in self.importSource:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for filename in self.import_source:
             if self.stop_import_flag:
                 return
             song_file = open(filename)
@@ -90,7 +89,7 @@ class SundayPlusImport(SongImport):
             self.logError(u'File is malformed')
             return False
         i = 1
-        verse_type = VerseType.Tags[VerseType.Verse]
+        verse_type = VerseType.tags[VerseType.Verse]
         while i < len(data):
             # Data is held as #name: value pairs inside groups marked as [].
             # Now we are looking for the name.
@@ -137,8 +136,7 @@ class SundayPlusImport(SongImport):
                     if name == 'MARKER_NAME':
                         value = value.strip()
                         if len(value):
-                            verse_type = VerseType.Tags[
-                                VerseType.from_loose_input(value[0])]
+                            verse_type = VerseType.tags[VerseType.from_loose_input(value[0])]
                             if len(value) >= 2 and value[-1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
                                 verse_type = "%s%s" % (verse_type, value[-1])
                     elif name == 'Hotkey':
@@ -168,8 +166,7 @@ class SundayPlusImport(SongImport):
                                 self.copyright = u'Public Domain'
                                 continue
                             processed_lines.append(line)
-                        self.addVerse('\n'.join(processed_lines).strip(),
-                            verse_type)
+                        self.addVerse('\n'.join(processed_lines).strip(), verse_type)
                 if end == -1:
                     break
                 i = end + 1

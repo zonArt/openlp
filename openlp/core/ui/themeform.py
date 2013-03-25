@@ -64,38 +64,31 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.updateThemeAllowed = True
         self.temp_background_filename = u''
         self.themeLayoutForm = ThemeLayoutForm(self)
-        QtCore.QObject.connect(self.backgroundComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onBackgroundComboBoxCurrentIndexChanged)
-        QtCore.QObject.connect(self.gradientComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onGradientComboBoxCurrentIndexChanged)
-        QtCore.QObject.connect(self.colorButton, QtCore.SIGNAL(u'clicked()'), self.onColorButtonClicked)
-        QtCore.QObject.connect(self.imageColorButton, QtCore.SIGNAL(u'clicked()'), self.onImageColorButtonClicked)
-        QtCore.QObject.connect(self.gradientStartButton, QtCore.SIGNAL(u'clicked()'),
-            self.onGradientStartButtonClicked)
-        QtCore.QObject.connect(self.gradientEndButton, QtCore.SIGNAL(u'clicked()'), self.onGradientEndButtonClicked)
-        QtCore.QObject.connect(self.imageBrowseButton, QtCore.SIGNAL(u'clicked()'), self.onImageBrowseButtonClicked)
-        QtCore.QObject.connect(self.mainColorButton, QtCore.SIGNAL(u'clicked()'), self.onMainColorButtonClicked)
-        QtCore.QObject.connect(self.outlineColorButton, QtCore.SIGNAL(u'clicked()'), self.onOutlineColorButtonClicked)
-        QtCore.QObject.connect(self.shadowColorButton, QtCore.SIGNAL(u'clicked()'), self.onShadowColorButtonClicked)
-        QtCore.QObject.connect(self.outlineCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onOutlineCheckCheckBoxStateChanged)
-        QtCore.QObject.connect(self.shadowCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onShadowCheckCheckBoxStateChanged)
-        QtCore.QObject.connect(self.footerColorButton, QtCore.SIGNAL(u'clicked()'), self.onFooterColorButtonClicked)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'customButtonClicked(int)'), self.onCustom1ButtonClicked)
-        QtCore.QObject.connect(self.mainPositionCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onMainPositionCheckBoxStateChanged)
-        QtCore.QObject.connect(self.footerPositionCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onFooterPositionCheckBoxStateChanged)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
+        self.backgroundComboBox.currentIndexChanged.connect(self.onBackgroundComboBoxCurrentIndexChanged)
+        self.gradientComboBox.currentIndexChanged.connect(self.onGradientComboBoxCurrentIndexChanged)
+        self.colorButton.clicked.connect(self.onColorButtonClicked)
+        self.imageColorButton.clicked.connect(self.onImageColorButtonClicked)
+        self.gradientStartButton.clicked.connect(self.onGradientStartButtonClicked)
+        self.gradientEndButton.clicked.connect(self.onGradientEndButtonClicked)
+        self.imageBrowseButton.clicked.connect(self.onImageBrowseButtonClicked)
+        self.mainColorButton.clicked.connect(self.onMainColorButtonClicked)
+        self.outlineColorButton.clicked.connect(self.onOutlineColorButtonClicked)
+        self.shadowColorButton.clicked.connect(self.onShadowColorButtonClicked)
+        self.outlineCheckBox.stateChanged.connect(self.onOutlineCheckCheckBoxStateChanged)
+        self.shadowCheckBox.stateChanged.connect(self.onShadowCheckCheckBoxStateChanged)
+        self.footerColorButton.clicked.connect(self.onFooterColorButtonClicked)
+        self.customButtonClicked.connect(self.onCustom1ButtonClicked)
+        self.mainPositionCheckBox.stateChanged.connect(self.onMainPositionCheckBoxStateChanged)
+        self.footerPositionCheckBox.stateChanged.connect(self.onFooterPositionCheckBoxStateChanged)
+        self.currentIdChanged.connect(self.onCurrentIdChanged)
         Registry().register_function(u'theme_line_count', self.updateLinesText)
-        QtCore.QObject.connect(self.mainSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
-        QtCore.QObject.connect(self.lineSpacingSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
-        QtCore.QObject.connect(self.outlineSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
-        QtCore.QObject.connect(self.shadowSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.calculateLines)
-        QtCore.QObject.connect(self.mainFontComboBox, QtCore.SIGNAL(u'activated(int)'), self.calculateLines)
-        QtCore.QObject.connect(self.footerFontComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateTheme)
-        QtCore.QObject.connect(self.footerSizeSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.updateTheme)
+        self.mainSizeSpinBox.valueChanged.connect(self.calculateLines)
+        self.lineSpacingSpinBox.valueChanged.connect(self.calculateLines)
+        self.outlineSizeSpinBox.valueChanged.connect(self.calculateLines)
+        self.shadowSizeSpinBox.valueChanged.connect(self.calculateLines)
+        self.mainFontComboBox.activated.connect(self.calculateLines)
+        self.footerFontComboBox.activated.connect(self.updateTheme)
+        self.footerSizeSpinBox.valueChanged.connect(self.updateTheme)
 
     def setDefaults(self):
         """
@@ -149,7 +142,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Calculate the number of lines on a page by rendering text
         """
         # Do not trigger on start up
-        if self.currentPage != self.welcomePage:
+        if self.currentPage != self.welcome_page:
             self.updateTheme()
             self.theme_manager.generate_image(self.theme, True)
 
@@ -281,12 +274,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
             self.setWindowTitle(UiStrings().NewTheme)
         return QtGui.QWizard.exec_(self)
 
-    def initializePage(self, id):
+    def initializePage(self, page_id):
         """
         Set up the pages for Initial run through dialog
         """
-        log.debug(u'initializePage %s' % id)
-        wizardPage = self.page(id)
+        log.debug(u'initializePage %s' % page_id)
+        wizardPage = self.page(page_id)
         if wizardPage == self.backgroundPage:
             self.setBackgroundPageValues()
         elif wizardPage == self.mainAreaPage:

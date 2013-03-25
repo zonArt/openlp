@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, ServiceItem, \
-    expand_tags, build_lyrics_format_css, build_lyrics_outline_css
+from openlp.core.lib import Settings, FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, \
+    ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
@@ -45,28 +45,20 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n' \
     'Get those children out of the muddy, muddy \n' \
     '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
-VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(50)))
+VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(100)))
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
 
 
 class Renderer(object):
     """
-    Class to pull all Renderer interactions into one place. The plugins will
-    call helper methods to do the rendering but this class will provide
-    display defense code.
+    Class to pull all Renderer interactions into one place. The plugins will call helper methods to do the rendering but
+    this class will provide display defense code.
     """
     log.info(u'Renderer Loaded')
 
     def __init__(self):
         """
         Initialise the renderer.
-
-        ``image_manager``
-            A image_manager instance which takes care of e. g. caching and
-            resizing images.
-
-        ``theme_manager``
-            The theme_manager instance, used to get the current theme details.
         """
         log.debug(u'Initialisation started')
         self.screens = ScreenList()
@@ -99,19 +91,17 @@ class Renderer(object):
 
     def update_theme(self, theme_name, old_theme_name=None, only_delete=False):
         """
-        This method updates the theme in ``_theme_dimensions`` when a theme
-        has been edited or renamed.
+        This method updates the theme in ``_theme_dimensions`` when a theme has been edited or renamed.
 
         ``theme_name``
             The current theme name.
 
         ``old_theme_name``
-            The old theme name. Has only to be passed, when the theme has been
-            renamed. Defaults to *None*.
+            The old theme name. Has only to be passed, when the theme has been renamed. Defaults to *None*.
 
         ``only_delete``
-            Only remove the given ``theme_name`` from the ``_theme_dimensions``
-            list. This can be used when a theme is permanently deleted.
+            Only remove the given ``theme_name`` from the ``_theme_dimensions`` list. This can be used when a theme is
+            permanently deleted.
         """
         if old_theme_name is not None and old_theme_name in self._theme_dimensions:
             del self._theme_dimensions[old_theme_name]
@@ -144,20 +134,17 @@ class Renderer(object):
         Set up the theme to be used before rendering an item.
 
         ``override_theme_data``
-            The theme data should be passed, when we want to use our own theme
-            data, regardless of the theme level. This should for example be used
-            in the theme manager. **Note**, this is **not** to be mixed up with
-            the ``set_item_theme`` method.
+            The theme data should be passed, when we want to use our own theme data, regardless of the theme level. This
+            should for example be used in the theme manager. **Note**, this is **not** to be mixed up with the
+            ``set_item_theme`` method.
         """
         # Just assume we use the global theme.
         theme_to_use = self.global_theme_name
-        # The theme level is either set to Service or Item. Use the service
-        # theme if one is set. We also have to use the service theme, even when
-        # the theme level is set to Item, because the item does not necessarily
-        # have to have a theme.
+        # The theme level is either set to Service or Item. Use the service theme if one is set. We also have to use the
+        # service theme, even when the theme level is set to Item, because the item does not necessarily have to have a
+        # theme.
         if self.theme_level != ThemeLevel.Global:
-            # When the theme level is at Service and we actually have a service
-            # theme then use it.
+            # When the theme level is at Service and we actually have a service theme then use it.
             if self.service_theme_name:
                 theme_to_use = self.service_theme_name
         # If we have Item level and have an item theme then use it.
@@ -184,13 +171,14 @@ class Renderer(object):
         """
         self.theme_level = theme_level
 
-    def set_global_theme(self, global_theme_name):
+    def set_global_theme(self):
         """
         Set the global-level theme name.
 
         ``global_theme_name``
             The global-level theme's name.
         """
+        global_theme_name = Settings().value(u'themes/global theme')
         self._set_theme(global_theme_name)
         self.global_theme_name = global_theme_name
 
@@ -206,8 +194,7 @@ class Renderer(object):
 
     def set_item_theme(self, item_theme_name):
         """
-        Set the item-level theme. **Note**, this has to be done for each item we
-        are rendering.
+        Set the item-level theme. **Note**, this has to be done for each item we are rendering.
 
         ``item_theme_name``
             The item theme's name.
@@ -229,26 +216,25 @@ class Renderer(object):
         # save value for use in format_slide
         self.force_page = force_page
         # build a service item to generate preview
-        serviceItem = ServiceItem()
+        service_item = ServiceItem()
         if self.force_page:
             # make big page for theme edit dialog to get line count
-            serviceItem.add_from_text(VERSE_FOR_LINE_COUNT)
+            service_item.add_from_text(VERSE_FOR_LINE_COUNT)
         else:
-            serviceItem.add_from_text(VERSE)
-        serviceItem.raw_footer = FOOTER
+            service_item.add_from_text(VERSE)
+        service_item.raw_footer = FOOTER
         # if No file do not update cache
         if theme_data.background_filename:
-            self.image_manager.add_image(theme_data.background_filename,
-                ImageSource.Theme,
-                QtGui.QColor(theme_data.background_border_color))
+            self.image_manager.add_image(
+                theme_data.background_filename, ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
-        serviceItem.themedata = theme_data
-        serviceItem.main = main
-        serviceItem.footer = footer
-        serviceItem.render(True)
+        service_item.themedata = theme_data
+        service_item.main = main
+        service_item.footer = footer
+        service_item.render(True)
         if not self.force_page:
-            self.display.buildHtml(serviceItem)
-            raw_html = serviceItem.get_rendered_frame(0)
+            self.display.build_html(service_item)
+            raw_html = service_item.get_rendered_frame(0)
             self.display.text(raw_html, False)
             preview = self.display.preview()
             return preview
@@ -278,22 +264,21 @@ class Renderer(object):
             if u'[---]' in text:
                 while True:
                     slides = text.split(u'\n[---]\n', 2)
-                    # If there are (at least) two occurrences of [---] we use
-                    # the first two slides (and neglect the last for now).
+                    # If there are (at least) two occurrences of [---] we use the first two slides (and neglect the last
+                    # for now).
                     if len(slides) == 3:
                         html_text = expand_tags(u'\n'.join(slides[:2]))
-                    # We check both slides to determine if the optional split is
-                    # needed (there is only one optional split).
+                    # We check both slides to determine if the optional split is needed (there is only one optional
+                    # split).
                     else:
                         html_text = expand_tags(u'\n'.join(slides))
                     html_text = html_text.replace(u'\n', u'<br>')
                     if self._text_fits_on_slide(html_text):
-                        # The first two optional slides fit (as a whole) on one
-                        # slide. Replace the first occurrence of [---].
+                        # The first two optional slides fit (as a whole) on one slide. Replace the first occurrence
+                        # of [---].
                         text = text.replace(u'\n[---]', u'', 1)
                     else:
-                        # The first optional slide fits, which means we have to
-                        # render the first optional slide.
+                        # The first optional slide fits, which means we have to render the first optional slide.
                         text_contains_split = u'[---]' in text
                         if text_contains_split:
                             try:
@@ -343,8 +328,7 @@ class Renderer(object):
         self.width = screen_size.width()
         self.height = screen_size.height()
         self.screen_ratio = float(self.height) / float(self.width)
-        log.debug(u'_calculate default %s, %f' % (screen_size,
-            self.screen_ratio))
+        log.debug(u'_calculate default %s, %f' % (screen_size, self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
@@ -369,12 +353,10 @@ class Renderer(object):
             The theme data.
         """
         if not theme_data.font_footer_override:
-            return QtCore.QRect(10, self.footer_start, self.width - 20,
-                self.height - self.footer_start)
+            return QtCore.QRect(10, self.footer_start, self.width - 20, self.height - self.footer_start)
         else:
             return QtCore.QRect(theme_data.font_footer_x,
-                theme_data.font_footer_y, theme_data.font_footer_width - 1,
-                theme_data.font_footer_height - 1)
+                theme_data.font_footer_y, theme_data.font_footer_width - 1, theme_data.font_footer_height - 1)
 
     def _set_text_rectangle(self, theme_data, rect_main, rect_footer):
         """
@@ -397,9 +379,8 @@ class Renderer(object):
         if theme_data.font_main_shadow:
             self.page_width -= int(theme_data.font_main_shadow_size)
             self.page_height -= int(theme_data.font_main_shadow_size)
-        # For the life of my I don't know why we have to completely kill the
-        # QWebView in order for the display to work properly, but we do. See
-        # bug #1041366 for an example of what happens if we take this out.
+        # For the life of my I don't know why we have to completely kill the QWebView in order for the display to work
+        # properly, but we do. See bug #1041366 for an example of what happens if we take this out.
         self.web = None
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
@@ -425,10 +406,9 @@ class Renderer(object):
 
     def _paginate_slide(self, lines, line_end):
         """
-        Figure out how much text can appear on a slide, using the current
-        theme settings.
-        **Note:** The smallest possible "unit" of text for a slide is one line.
-        If the line is too long it will be cut off when displayed.
+        Figure out how much text can appear on a slide, using the current theme settings.
+        **Note:** The smallest possible "unit" of text for a slide is one line. If the line is too long it will be cut
+        off when displayed.
 
         ``lines``
             The text to be fitted on the slide split into lines.
@@ -444,8 +424,8 @@ class Renderer(object):
         html_lines = map(expand_tags, lines)
         # Text too long so go to next page.
         if not self._text_fits_on_slide(separator.join(html_lines)):
-            html_text, previous_raw = self._binary_chop(formatted,
-                previous_html, previous_raw, html_lines, lines, separator, u'')
+            html_text, previous_raw = self._binary_chop(
+                formatted, previous_html, previous_raw, html_lines, lines, separator, u'')
         else:
             previous_raw = separator.join(lines)
         formatted.append(previous_raw)
@@ -454,18 +434,15 @@ class Renderer(object):
 
     def _paginate_slide_words(self, lines, line_end):
         """
-        Figure out how much text can appear on a slide, using the current
-        theme settings.
-        **Note:** The smallest possible "unit" of text for a slide is one word.
-        If one line is too long it will be processed word by word. This is
-        sometimes need for **bible** verses.
+        Figure out how much text can appear on a slide, using the current theme settings.
+        **Note:** The smallest possible "unit" of text for a slide is one word. If one line is too long it will be
+        processed word by word. This is sometimes need for **bible** verses.
 
         ``lines``
             The text to be fitted on the slide split into lines.
 
         ``line_end``
-            The text added after each line. Either ``u' '`` or ``u'<br>``.
-            This is needed for **bibles**.
+            The text added after each line. Either ``u' '`` or ``u'<br>``. This is needed for **bibles**.
         """
         log.debug(u'_paginate_slide_words - Start')
         formatted = []
@@ -476,22 +453,19 @@ class Renderer(object):
             html_line = expand_tags(line)
             # Text too long so go to next page.
             if not self._text_fits_on_slide(previous_html + html_line):
-                # Check if there was a verse before the current one and append
-                # it, when it fits on the page.
+                # Check if there was a verse before the current one and append it, when it fits on the page.
                 if previous_html:
                     if self._text_fits_on_slide(previous_html):
                         formatted.append(previous_raw)
                         previous_html = u''
                         previous_raw = u''
-                        # Now check if the current verse will fit, if it does
-                        # not we have to start to process the verse word by
-                        # word.
+                        # Now check if the current verse will fit, if it does not we have to start to process the verse
+                        # word by word.
                         if self._text_fits_on_slide(html_line):
                             previous_html = html_line + line_end
                             previous_raw = line + line_end
                             continue
-                # Figure out how many words of the line will fit on screen as
-                # the line will not fit as a whole.
+                # Figure out how many words of the line will fit on screen as the line will not fit as a whole.
                 raw_words = self._words_split(line)
                 html_words = map(expand_tags, raw_words)
                 previous_html, previous_raw = \
@@ -505,19 +479,15 @@ class Renderer(object):
 
     def _get_start_tags(self, raw_text):
         """
-        Tests the given text for not closed formatting tags and returns a tuple
-        consisting of three unicode strings::
+        Tests the given text for not closed formatting tags and returns a tuple consisting of three unicode strings::
 
-            (u'{st}{r}Text text text{/r}{/st}', u'{st}{r}', u'<strong>
-            <span style="-webkit-text-fill-color:red">')
+            (u'{st}{r}Text text text{/r}{/st}', u'{st}{r}', u'<strong><span style="-webkit-text-fill-color:red">')
 
-        The first unicode string is the text, with correct closing tags. The
-        second unicode string are OpenLP's opening formatting tags and the third
-        unicode string the html opening formatting tags.
+        The first unicode string is the text, with correct closing tags. The second unicode string are OpenLP's opening
+        formatting tags and the third unicode string the html opening formatting tags.
 
         ``raw_text``
-            The text to test. The text must **not** contain html tags, only
-            OpenLP formatting tags are allowed::
+            The text to test. The text must **not** contain html tags, only OpenLP formatting tags are allowed::
 
                 {st}{r}Text text text
         """
@@ -529,9 +499,8 @@ class Renderer(object):
             if raw_text.count(tag[u'start tag']) != raw_text.count(tag[u'end tag']):
                 raw_tags.append((raw_text.find(tag[u'start tag']), tag[u'start tag'], tag[u'end tag']))
                 html_tags.append((raw_text.find(tag[u'start tag']), tag[u'start html']))
-        # Sort the lists, so that the tags which were opened first on the first
-        # slide (the text we are checking) will be opened first on the next
-        # slide as well.
+        # Sort the lists, so that the tags which were opened first on the first slide (the text we are checking) will be
+        # opened first on the next slide as well.
         raw_tags.sort(key=lambda tag: tag[0])
         html_tags.sort(key=lambda tag: tag[0])
         # Create a list with closing tags for the raw_text.
@@ -547,46 +516,40 @@ class Renderer(object):
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list, raw_list, separator, line_end):
         """
-        This implements the binary chop algorithm for faster rendering. This
-        algorithm works line based (line by line) and word based (word by word).
-        It is assumed that this method is **only** called, when the lines/words
-        to be rendered do **not** fit as a whole.
+        This implements the binary chop algorithm for faster rendering. This algorithm works line based (line by line)
+        and word based (word by word). It is assumed that this method is **only** called, when the lines/words to be
+        rendered do **not** fit as a whole.
 
         ``formatted``
             The list to append any slides.
 
         ``previous_html``
-            The html text which is know to fit on a slide, but is not yet added
-            to the list of slides. (unicode string)
+            The html text which is know to fit on a slide, but is not yet added to the list of slides. (unicode string)
 
         ``previous_raw``
-            The raw text (with formatting tags) which is know to fit on a slide,
-            but is not yet added to the list of slides. (unicode string)
+            The raw text (with formatting tags) which is know to fit on a slide, but is not yet added to the list of
+            slides. (unicode string)
 
         ``html_list``
-            The elements which do not fit on a slide and needs to be processed
-            using the binary chop. The text contains html.
+            The elements which do not fit on a slide and needs to be processed using the binary chop. The text contains
+            html.
 
         ``raw_list``
-            The elements which do not fit on a slide and needs to be processed
-            using the binary chop. The elements can contain formatting tags.
+            The elements which do not fit on a slide and needs to be processed using the binary chop. The elements can
+            contain formatting tags.
 
         ``separator``
-            The separator for the elements. For lines this is ``u'<br>'`` and
-            for words this is ``u' '``.
+            The separator for the elements. For lines this is ``u'<br>'`` and for words this is ``u' '``.
 
         ``line_end``
-            The text added after each "element line". Either ``u' '`` or
-            ``u'<br>``. This is needed for bibles.
+            The text added after each "element line". Either ``u' '`` or ``u'<br>``. This is needed for bibles.
         """
         smallest_index = 0
         highest_index = len(html_list) - 1
         index = int(highest_index / 2)
         while True:
-            if not self._text_fits_on_slide(
-                previous_html + separator.join(html_list[:index + 1]).strip()):
-                # We know that it does not fit, so change/calculate the
-                # new index and highest_index accordingly.
+            if not self._text_fits_on_slide(previous_html + separator.join(html_list[:index + 1]).strip()):
+                # We know that it does not fit, so change/calculate the new index and highest_index accordingly.
                 highest_index = index
                 index = int(index - (index - smallest_index) / 2)
             else:
@@ -607,14 +570,12 @@ class Renderer(object):
             else:
                 continue
             # Check if the remaining elements fit on the slide.
-            if self._text_fits_on_slide(
-                    html_tags + separator.join(html_list[index + 1:]).strip()):
+            if self._text_fits_on_slide(html_tags + separator.join(html_list[index + 1:]).strip()):
                 previous_html = html_tags + separator.join(html_list[index + 1:]).strip() + line_end
                 previous_raw = raw_tags + separator.join(raw_list[index + 1:]).strip() + line_end
                 break
             else:
-                # The remaining elements do not fit, thus reset the indexes,
-                # create a new list and continue.
+                # The remaining elements do not fit, thus reset the indexes, create a new list and continue.
                 raw_list = raw_list[index + 1:]
                 raw_list[0] = raw_tags + raw_list[0]
                 html_list = html_list[index + 1:]
@@ -626,8 +587,7 @@ class Renderer(object):
 
     def _text_fits_on_slide(self, text):
         """
-        Checks if the given ``text`` fits on a slide. If it does ``True`` is
-        returned, otherwise ``False``.
+        Checks if the given ``text`` fits on a slide. If it does ``True`` is returned, otherwise ``False``.
 
         ``text``
             The text to check. It may contain HTML tags.
@@ -662,4 +622,3 @@ class Renderer(object):
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
-

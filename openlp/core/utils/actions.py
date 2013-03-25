@@ -30,9 +30,14 @@
 The :mod:`~openlp.core.utils.actions` module provides action list classes used
 by the shortcuts system.
 """
+import logging
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Settings
+
+
+log = logging.getLogger(__name__)
 
 
 class ActionCategory(object):
@@ -312,6 +317,8 @@ class ActionList(object):
                 actions.append(action)
                 ActionList.shortcut_map[shortcuts[1]] = actions
             else:
+                log.warn(u'Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
+                    (shortcuts[1], action.objectName()))
                 shortcuts.remove(shortcuts[1])
         # Check the primary shortcut.
         existing_actions = ActionList.shortcut_map.get(shortcuts[0], [])
@@ -321,6 +328,8 @@ class ActionList(object):
             actions.append(action)
             ActionList.shortcut_map[shortcuts[0]] = actions
         else:
+            log.warn(u'Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
+                (shortcuts[0], action.objectName()))
             shortcuts.remove(shortcuts[0])
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
 
@@ -411,7 +420,7 @@ class ActionList(object):
         for existing_action in existing_actions:
             if action is existing_action:
                 continue
-            if not global_context or existing_action in affected_actions:
+            if existing_action in affected_actions:
                 return False
             if existing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                 return False

@@ -32,32 +32,42 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
 
-class Ui_MediaFilesDialog(object):
-    def setupUi(self, mediaFilesDialog):
-        mediaFilesDialog.setObjectName(u'mediaFilesDialog')
-        mediaFilesDialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        mediaFilesDialog.resize(400, 300)
-        mediaFilesDialog.setModal(True)
-        mediaFilesDialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
-        self.filesVerticalLayout = QtGui.QVBoxLayout(mediaFilesDialog)
-        self.filesVerticalLayout.setSpacing(8)
-        self.filesVerticalLayout.setMargin(8)
-        self.filesVerticalLayout.setObjectName(u'filesVerticalLayout')
-        self.selectLabel = QtGui.QLabel(mediaFilesDialog)
-        self.selectLabel.setWordWrap(True)
-        self.selectLabel.setObjectName(u'selectLabel')
-        self.filesVerticalLayout.addWidget(self.selectLabel)
-        self.fileListWidget = QtGui.QListWidget(mediaFilesDialog)
-        self.fileListWidget.setAlternatingRowColors(True)
-        self.fileListWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        self.fileListWidget.setObjectName(u'fileListWidget')
-        self.filesVerticalLayout.addWidget(self.fileListWidget)
-        self.button_box = create_button_box(mediaFilesDialog, u'button_box', [u'cancel', u'ok'])
-        self.filesVerticalLayout.addWidget(self.button_box)
-        self.retranslateUi(mediaFilesDialog)
 
-    def retranslateUi(self, mediaFilesDialog):
-        mediaFilesDialog.setWindowTitle(translate('SongsPlugin.MediaFilesForm', 'Select Media File(s)'))
-        self.selectLabel.setText(translate('SongsPlugin.MediaFilesForm',
+class Ui_MediaFilesDialog(object):
+    """
+    The user interface for the media files dialog.
+    """
+    def setupUi(self, media_files_dialog):
+        """
+        Set up the user interface.
+        """
+        media_files_dialog.setObjectName(u'media_files_dialog')
+        media_files_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        media_files_dialog.resize(400, 300)
+        media_files_dialog.setModal(True)
+        media_files_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        self.files_vertical_layout = QtGui.QVBoxLayout(media_files_dialog)
+        self.files_vertical_layout.setSpacing(8)
+        self.files_vertical_layout.setMargin(8)
+        self.files_vertical_layout.setObjectName(u'files_vertical_layout')
+        self.select_label = QtGui.QLabel(media_files_dialog)
+        self.select_label.setWordWrap(True)
+        self.select_label.setObjectName(u'select_label')
+        self.files_vertical_layout.addWidget(self.select_label)
+        self.file_list_widget = QtGui.QListWidget(media_files_dialog)
+        self.file_list_widget.setAlternatingRowColors(True)
+        self.file_list_widget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.file_list_widget.setObjectName(u'file_list_widget')
+        self.files_vertical_layout.addWidget(self.file_list_widget)
+        self.button_box = create_button_box(media_files_dialog, u'button_box', [u'cancel', u'ok'])
+        self.files_vertical_layout.addWidget(self.button_box)
+        self.retranslateUi(media_files_dialog)
+
+    def retranslateUi(self, media_files_dialog):
+        """
+        Translate the UI on the fly.
+        """
+        media_files_dialog.setWindowTitle(translate('SongsPlugin.MediaFilesForm', 'Select Media File(s)'))
+        self.select_label.setText(translate('SongsPlugin.MediaFilesForm',
             'Select one or more audio files from the list below, and click OK to import them into this song.'))
 

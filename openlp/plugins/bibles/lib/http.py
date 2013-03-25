@@ -511,8 +511,8 @@ class HTTPBible(BibleDB):
         Run the import. This method overrides the parent class method. Returns
         ``True`` on success, ``False`` on failure.
         """
-        self.wizard.progressBar.setMaximum(68)
-        self.wizard.incrementProgressBar(translate('BiblesPlugin.HTTPBible', 'Registering Bible and loading books...'))
+        self.wizard.progress_bar.setMaximum(68)
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Bible and loading books...'))
         self.save_meta(u'download_source', self.download_source)
         self.save_meta(u'download_name', self.download_name)
         if self.proxy_server:
@@ -534,8 +534,8 @@ class HTTPBible(BibleDB):
             log.exception(u'Importing books from %s - download name: "%s" '\
                 'failed' % (self.download_source, self.download_name))
             return False
-        self.wizard.progressBar.setMaximum(len(books) + 2)
-        self.wizard.incrementProgressBar(translate( 'BiblesPlugin.HTTPBible', 'Registering Language...'))
+        self.wizard.progress_bar.setMaximum(len(books) + 2)
+        self.wizard.increment_progress_bar(translate( 'BiblesPlugin.HTTPBible', 'Registering Language...'))
         bible = BiblesResourcesDB.get_webbible(self.download_name, self.download_source.lower())
         if bible[u'language_id']:
             language_id = bible[u'language_id']
@@ -548,7 +548,7 @@ class HTTPBible(BibleDB):
         for book in books:
             if self.stop_import_flag:
                 break
-            self.wizard.incrementProgressBar(translate(
+            self.wizard.increment_progress_bar(translate(
                 'BiblesPlugin.HTTPBible', 'Importing %s...',
                 'Importing <book name>...') % book)
             book_ref_id = self.get_book_ref_id_by_name(book, len(books), language_id)
