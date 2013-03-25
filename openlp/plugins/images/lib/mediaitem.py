@@ -394,6 +394,7 @@ class ImageMediaItem(MediaManagerItem):
         ``initial_load``
             When set to False, the busy cursor and progressbar will be shown while loading images
         """
+        parent_group = None
         if target_group is None:
             # Find out if a group must be pre-selected
             preselect_group = None

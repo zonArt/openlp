@@ -50,6 +50,7 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         ``selected_group``
             The ID of the group that should be selected by default when showing the dialog
         """
+        self.new_group_edit.clear()
         if selected_group is not None:
             for i in range(self.group_combobox.count()):
                 if self.group_combobox.itemData(i) == selected_group:
