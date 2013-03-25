@@ -127,6 +127,7 @@ class MediaPlugin(Plugin):
         Plugin.app_startup(self)
         settings = Settings()
         settings.beginGroup(self.settings_section)
+        # FIXME: Probably broken due to Settings rewrite.
         if settings.contains(u'use phonon'):
             log.info(u'Found old Phonon setting')
             players = self.media_controller.mediaPlayers.keys()
@@ -139,7 +140,7 @@ class MediaPlugin(Plugin):
                 new_players.insert(0, u'phonon')
                 self.media_controller.mediaPlayers[u'phonon'].is_active = True
                 settings.setValue(u'players', u','.join(new_players))
-                self.settingsTab.load()
+                self.settings_tab.load()
             settings.remove(u'use phonon')
         settings.endGroup()
 
