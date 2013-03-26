@@ -38,6 +38,7 @@ from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
 
+
 class ServiceItemContext(object):
     """
     The context in which a Service Item is being generated
