@@ -32,6 +32,7 @@ A widget representing a song in the duplicate song removal wizard review page.
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import build_icon
+from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.xml import SongXML
 
 
@@ -162,7 +163,19 @@ class SongReviewWidget(QtGui.QWidget):
             item = QtGui.QTableWidgetItem()
             item.setText(verse[1])
             self.song_info_verse_list_widget.setItem(verse_number, 0, item)
-            song_tags.append(unicode(verse[0]['type'] + verse[0]['label']))
+
+            # We cannot use from_loose_input() here, because database
+            # is supposed to contain English lowercase singlechar tags.
+            verse_tag = verse[0][u'type']
+            verse_index = None
+            if len(verse_tag) > 1:
+                verse_index = VerseType.from_translated_string(verse_tag)
+                if verse_index is None:
+                    verse_index = VerseType.from_string(verse_tag, None)
+            if verse_index is None:
+                verse_index = VerseType.from_tag(verse_tag)
+            verse_tag = VerseType.translated_tags[verse_index].upper()
+            song_tags.append(unicode(verse_tag + verse[0]['label']))
         self.song_info_verse_list_widget.setVerticalHeaderLabels(song_tags)
         # Resize table fields to content and table to columns
         self.song_info_verse_list_widget.setColumnWidth(0, self.song_group_box.width())
