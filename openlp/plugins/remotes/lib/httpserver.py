@@ -227,7 +227,6 @@ class HttpConnection(object):
         """
         Handles the requests for the main url.  This is secure depending on settings in config.
         """
-        print "default"
         self.request_data = None
         if isinstance(kwargs, dict):
             self.request_data = kwargs.get(u'data', None)
@@ -252,7 +251,6 @@ class HttpConnection(object):
         Common function to process HTTP requests where secure or insecure
         """
         url = urlparse.urlparse(cherrypy.url())
-        #self.url_params = kwargs
         response = None
         for route, func in self.routes:
             match = re.match(route, url.path)
@@ -315,7 +313,11 @@ class HttpConnection(object):
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options'),
             'service': translate('RemotePlugin.Mobile', 'Service'),
-            'slides': translate('RemotePlugin.Mobile', 'Slides')
+            'slides': translate('RemotePlugin.Mobile', 'Slides'),
+            'title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 User Login'),
+            'from_page': "",
+            'message': "",
+            'username': "username"
         }
 
     def serve_file(self, filename=None):

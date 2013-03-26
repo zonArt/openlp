@@ -52,7 +52,6 @@ def check_credentials(user_name, password):
     Verifies credentials for username and password.
     Returns None on success or a string describing the error on failure
     """
-    print "check"
     if user_name == Settings().value(u'remotes/user id') and password == Settings().value(u'remotes/password'):
         return None
     else:
@@ -128,6 +127,7 @@ class AuthController(object):
         login_html = os.path.normpath(os.path.join(directory, u'login.html'))
         html = Template(filename=login_html, input_encoding=u'utf-8', output_encoding=u'utf-8').render(**variables)
         cherrypy.response.headers['Content-Type'] = u'text/html'
+        cherrypy.response.status = 200
         return html
 
     @cherrypy.expose
@@ -135,7 +135,6 @@ class AuthController(object):
         """
         Provides the actual login control
         """
-        print "login", from_page
         if username is None or password is None:
             return self.get_login_form("", from_page=from_page)
         error_msg = check_credentials(username, password)
@@ -144,7 +143,6 @@ class AuthController(object):
         else:
             cherrypy.session[SESSION_KEY] = cherrypy.request.login = username
             self.on_login(username)
-            print from_page
             raise cherrypy.HTTPRedirect(from_page or "/")
 
     @cherrypy.expose
