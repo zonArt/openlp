@@ -60,7 +60,7 @@ class CustomMediaItem(MediaManagerItem):
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.single_service_item = False
         self.quick_preview_allowed = True
-        self.hasSearch = True
+        self.has_search = True
         # Holds information about whether the edit is remotely triggered and
         # which Custom is required.
         self.remoteCustom = -1

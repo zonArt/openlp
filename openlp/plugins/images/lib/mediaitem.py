@@ -53,7 +53,7 @@ class ImageMediaItem(MediaManagerItem):
         self.icon_path = u'images/image'
         MediaManagerItem.__init__(self, parent, plugin)
         self.quick_preview_allowed = True
-        self.hasSearch = True
+        self.has_search = True
         self.manager = plugin.manager
         self.choose_group_form = ChooseGroupForm(self)
         self.add_group_form = AddGroupForm(self)
@@ -89,7 +89,7 @@ class ImageMediaItem(MediaManagerItem):
         log.debug(u'initialise')
         self.list_view.clear()
         self.list_view.setIconSize(QtCore.QSize(88, 50))
-        self.list_view.setIndentation(self.list_view.defaultIndentation)
+        self.list_view.setIndentation(self.list_view.default_indentation)
         self.list_view.allow_internal_dnd = True
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         check_directory_exists(self.servicePath)
