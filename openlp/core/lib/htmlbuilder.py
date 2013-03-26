@@ -127,7 +127,7 @@ sup {
         document.getElementById('footer').innerHTML = footertext;
     }
 
-    function show_text(newtext){
+    function show_text(new_text){
         var match = /-webkit-text-fill-color:[^;\"]+/gi;
         if(timer != null)
             clearTimeout(timer);
@@ -142,57 +142,47 @@ sup {
             if(outline != null)
                 txt = outline;
             if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
-                newtext = newtext.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
+                new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
                     function(match) {
                         return '</span>' + match + '<span>';
                     });
-                newtext = '<span>' + newtext + '</span>';
+                new_text = '<span>' + new_text + '</span>';
             }
         }
-        text_fade('lyricsmain', newtext);
-        text_fade('lyricsoutline', newtext);
-        text_fade('lyricsshadow', newtext.replace(match, ''));
-        if(text_opacity() == 1) return;
-        timer = setTimeout(function(){
-            show_text(newtext);
-        }, 100);
+        text_fade('lyricsmain', new_text);
+        text_fade('lyricsoutline', new_text);
+        text_fade('lyricsshadow', new_text.replace(match, ''));
     }
 
-    function text_fade(id, newtext){
+    function text_fade(id, new_text){
         /*
-        Using -webkit-transition: opacity 1s linear; would have been preferred
-        but it isn't currently quick enough when animating multiple layers of
-        large areas of large text. Therefore do it manually as best we can.
-        Hopefully in the future we can revisit and do more interesting
-        transitions using -webkit-transition and -webkit-transform.
-        However we need to ensure interrupted transitions (quickly change 2
-        slides) still looks pretty and is zippy.
+        Show the text.
         */
         var text = document.getElementById(id);
         if(text == null) return;
         if(!transition){
-            text.innerHTML = newtext;
+            text.innerHTML = new_text;
             return;
         }
-        if(newtext == text.innerHTML){
-            text.style.opacity = parseFloat(text.style.opacity) + 0.3;
-            if(text.style.opacity > 0.7)
-                text.style.opacity = 1;
-        } else {
-            text.style.opacity = parseFloat(text.style.opacity) - 0.3;
-            if(text.style.opacity <= 0.1){
-                text.innerHTML = newtext;
-            }
-        }
+        // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
+        text.style.opacity = '0.1';
+        // Fade new text in after the old text has finished fading out.
+        timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
     }
 
-    function text_opacity(){
-        var text = document.getElementById('lyricsmain');
-        return getComputedStyle(text, '').opacity;
+    function _show_text(text, new_text) {
+        /*
+        Helper function to show the new_text delayed.
+        */
+        text.innerHTML = new_text;
+        text.style.opacity = '1';
+        // Wait until the text is completely visible. We want to save the timer id, to be able to call
+        // clearTimeout(timer) when the text has changed before finishing fading.
+        timer = window.setTimeout(function(){timer = null;}, 400);
     }
 
-    function show_text_complete(){
-        return (text_opacity() == 1);
+    function show_text_completed(){
+        return (timer == null);
     }
 </script>
 </head>
@@ -218,7 +208,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     ``screen``
         Current display information
 
-    ``islive``
+    ``is_live``
         Item is going live, rather than preview/theme building
 
     ``background``
@@ -250,11 +240,11 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     html_additions = u''
     if plugins:
         for plugin in plugins:
-            css_additions += plugin.getDisplayCss()
-            js_additions += plugin.getDisplayJavaScript()
-            html_additions += plugin.getDisplayHtml()
+            css_additions += plugin.get_display_css()
+            js_additions += plugin.get_display_javascript()
+            html_additions += plugin.get_display_html()
     html = HTMLSRC % (
-        build_background_css(item, width, height),
+        build_background_css(item, width),
         css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item, webkit_ver),
@@ -269,8 +259,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
 
 def webkit_version():
     """
-    Return the Webkit version in use.
-    Note method added relatively recently, so return 0 if prior to this
+    Return the Webkit version in use. Note method added relatively recently, so return 0 if prior to this
     """
     try:
         webkit_ver = float(QtWebKit.qWebKitVersion())
@@ -280,13 +269,12 @@ def webkit_version():
     return webkit_ver
 
 
-def build_background_css(item, width, height):
+def build_background_css(item, width):
     """
     Build the background css
 
     ``item``
         Service Item containing theme and location information
-
     """
     width = int(width) / 2
     theme = item.themedata
@@ -336,6 +324,7 @@ def build_lyrics_css(item, webkit_ver):
 .lyricscell {
     display: table-cell;
     word-wrap: break-word;
+    -webkit-transition: opacity 0.4s ease;
     %s
 }
 .lyricsmain {
@@ -357,21 +346,18 @@ def build_lyrics_css(item, webkit_ver):
     if theme and item.main:
         lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
         lyrics = build_lyrics_format_css(theme, item.main.width(), item.main.height())
-        # For performance reasons we want to show as few DIV's as possible,
-        # especially when animating/transitions.
-        # However some bugs in older versions of qtwebkit mean we need to
-        # perform workarounds and add extra divs. Only do these when needed.
+        # For performance reasons we want to show as few DIV's as possible, especially when animating/transitions.
+        # However some bugs in older versions of qtwebkit mean we need to perform workarounds and add extra divs. Only
+        # do these when needed.
         #
-        # Before 533.3 the webkit-text-fill colour wasn't displayed, only the
-        # stroke (outline) color. So put stroke layer underneath the main text.
+        # Before 533.3 the webkit-text-fill colour wasn't displayed, only the stroke (outline) color. So put stroke
+        # layer underneath the main text.
         #
-        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment
-        # with the fill, or normal text. letter-spacing=1 is workaround
-        # https://bugs.webkit.org/show_bug.cgi?id=44403
+        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment with the fill, or normal text.
+        # letter-spacing=1 is workaround https://bugs.webkit.org/show_bug.cgi?id=44403
         #
-        # Up to 534.3 the text-shadow didn't get displayed when
-        # webkit-text-stroke was used. So use an offset text layer underneath.
-        # https://bugs.webkit.org/show_bug.cgi?id=19728
+        # Up to 534.3 the text-shadow didn't get displayed when webkit-text-stroke was used. So use an offset text
+        # layer underneath. https://bugs.webkit.org/show_bug.cgi?id=19728
         if webkit_ver >= 533.3:
             lyricsmain += build_lyrics_outline_css(theme)
         else:
@@ -380,20 +366,18 @@ def build_lyrics_css(item, webkit_ver):
             if theme.font_main_outline and webkit_ver <= 534.3:
                 shadow = u'padding-left: %spx; padding-top: %spx;' % \
                     (int(theme.font_main_shadow_size) + (int(theme.font_main_outline_size) * 2),
-                     theme.font_main_shadow_size)
+                    theme.font_main_shadow_size)
                 shadow += build_lyrics_outline_css(theme, True)
             else:
                 lyricsmain += u' text-shadow: %s %spx %spx;' % \
-                    (theme.font_main_shadow_color, theme.font_main_shadow_size,
-                    theme.font_main_shadow_size)
+                    (theme.font_main_shadow_color, theme.font_main_shadow_size, theme.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
     return lyrics_css
 
 
 def build_lyrics_outline_css(theme, is_shadow=False):
     """
-    Build the css which controls the theme outline
-    Also used by renderer for splitting verses
+    Build the css which controls the theme outline. Also used by renderer for splitting verses
 
     ``theme``
         Object containing theme information
@@ -416,8 +400,7 @@ def build_lyrics_outline_css(theme, is_shadow=False):
 
 def build_lyrics_format_css(theme, width, height):
     """
-    Build the css which controls the theme format
-    Also used by renderer for splitting verses
+    Build the css which controls the theme format. Also used by renderer for splitting verses
 
     ``theme``
         Object containing theme information
@@ -427,7 +410,6 @@ def build_lyrics_format_css(theme, width, height):
 
     ``height``
         Height of the lyrics block
-
     """
     align = HorizontalType.Names[theme.display_horizontal_align]
     valign = VerticalType.Names[theme.display_vertical_align]
@@ -469,22 +451,18 @@ def build_lyrics_html(item, webkitvers):
     ``webkitvers``
         The version of qtwebkit we're using
     """
-    # Bugs in some versions of QtWebKit mean we sometimes need additional
-    # divs for outline and shadow, since the CSS doesn't work.
-    # To support vertical alignment middle and bottom, nested div's using
-    # display:table/display:table-cell are required for each lyric block.
+    # Bugs in some versions of QtWebKit mean we sometimes need additional divs for outline and shadow, since the CSS
+    # doesn't work. To support vertical alignment middle and bottom, nested div's using display:table/display:table-cell
+    #  are required for each lyric block.
     lyrics = u''
     theme = item.themedata
     if webkitvers <= 534.3 and theme and theme.font_main_outline:
-        lyrics += u'<div class="lyricstable">' \
-            u'<div id="lyricsshadow" style="opacity:1" ' \
+        lyrics += u'<div class="lyricstable"><div id="lyricsshadow" style="opacity:1" ' \
             u'class="lyricscell lyricsshadow"></div></div>'
         if webkitvers < 533.3:
-            lyrics += u'<div class="lyricstable">' \
-                u'<div id="lyricsoutline" style="opacity:1" ' \
+            lyrics += u'<div class="lyricstable"><div id="lyricsoutline" style="opacity:1" ' \
                 u'class="lyricscell lyricsoutline"></div></div>'
-    lyrics += u'<div class="lyricstable">' \
-        u'<div id="lyricsmain" style="opacity:1" ' \
+    lyrics += u'<div class="lyricstable"><div id="lyricsmain" style="opacity:1" ' \
         u'class="lyricscell lyricsmain"></div></div>'
     return lyrics
 

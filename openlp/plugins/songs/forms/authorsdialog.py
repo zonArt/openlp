@@ -29,43 +29,56 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, build_icon
 from openlp.core.lib.ui import create_button_box
 
-class Ui_AuthorsDialog(object):
-    def setupUi(self, authorsDialog):
-        authorsDialog.setObjectName(u'AuthorsDialog')
-        authorsDialog.resize(300, 10)
-        self.dialogLayout = QtGui.QVBoxLayout(authorsDialog)
-        self.dialogLayout.setObjectName(u'dialog_layout')
-        self.authorLayout = QtGui.QFormLayout()
-        self.authorLayout.setObjectName(u'authorLayout')
-        self.firstNameLabel = QtGui.QLabel(authorsDialog)
-        self.firstNameLabel.setObjectName(u'firstNameLabel')
-        self.firstNameEdit = QtGui.QLineEdit(authorsDialog)
-        self.firstNameEdit.setObjectName(u'firstNameEdit')
-        self.firstNameLabel.setBuddy(self.firstNameEdit)
-        self.authorLayout.addRow(self.firstNameLabel, self.firstNameEdit)
-        self.lastNameLabel = QtGui.QLabel(authorsDialog)
-        self.lastNameLabel.setObjectName(u'lastNameLabel')
-        self.lastNameEdit = QtGui.QLineEdit(authorsDialog)
-        self.lastNameEdit.setObjectName(u'lastNameEdit')
-        self.lastNameLabel.setBuddy(self.lastNameEdit)
-        self.authorLayout.addRow(self.lastNameLabel, self.lastNameEdit)
-        self.displayLabel = QtGui.QLabel(authorsDialog)
-        self.displayLabel.setObjectName(u'displayLabel')
-        self.displayEdit = QtGui.QLineEdit(authorsDialog)
-        self.displayEdit.setObjectName(u'displayEdit')
-        self.displayLabel.setBuddy(self.displayEdit)
-        self.authorLayout.addRow(self.displayLabel, self.displayEdit)
-        self.dialogLayout.addLayout(self.authorLayout)
-        self.button_box = create_button_box(authorsDialog, u'button_box', [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.button_box)
-        self.retranslateUi(authorsDialog)
-        authorsDialog.setMaximumHeight(authorsDialog.sizeHint().height())
 
-    def retranslateUi(self, authorsDialog):
-        authorsDialog.setWindowTitle(translate('SongsPlugin.AuthorsForm', 'Author Maintenance'))
-        self.displayLabel.setText(translate('SongsPlugin.AuthorsForm', 'Display name:'))
-        self.firstNameLabel.setText(translate('SongsPlugin.AuthorsForm', 'First name:'))
-        self.lastNameLabel.setText(translate('SongsPlugin.AuthorsForm', 'Last name:'))
+class Ui_AuthorsDialog(object):
+    """
+    The :class:`~openlp.plugins.songs.forms.authorsdialog.Ui_AuthorsDialog` class defines the user interface for the
+    AuthorsForm dialog.
+    """
+    def setupUi(self, authors_dialog):
+        """
+        Set up the UI for the dialog.
+        """
+        authors_dialog.setObjectName(u'authors_dialog')
+        authors_dialog.resize(300, 10)
+        authors_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        authors_dialog.setModal(True)
+        self.dialog_layout = QtGui.QVBoxLayout(authors_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.author_layout = QtGui.QFormLayout()
+        self.author_layout.setObjectName(u'author_layout')
+        self.first_name_label = QtGui.QLabel(authors_dialog)
+        self.first_name_label.setObjectName(u'first_name_label')
+        self.first_name_edit = QtGui.QLineEdit(authors_dialog)
+        self.first_name_edit.setObjectName(u'first_name_edit')
+        self.first_name_label.setBuddy(self.first_name_edit)
+        self.author_layout.addRow(self.first_name_label, self.first_name_edit)
+        self.last_name_label = QtGui.QLabel(authors_dialog)
+        self.last_name_label.setObjectName(u'last_name_label')
+        self.last_name_edit = QtGui.QLineEdit(authors_dialog)
+        self.last_name_edit.setObjectName(u'last_name_edit')
+        self.last_name_label.setBuddy(self.last_name_edit)
+        self.author_layout.addRow(self.last_name_label, self.last_name_edit)
+        self.display_label = QtGui.QLabel(authors_dialog)
+        self.display_label.setObjectName(u'display_label')
+        self.display_edit = QtGui.QLineEdit(authors_dialog)
+        self.display_edit.setObjectName(u'display_edit')
+        self.display_label.setBuddy(self.display_edit)
+        self.author_layout.addRow(self.display_label, self.display_edit)
+        self.dialog_layout.addLayout(self.author_layout)
+        self.button_box = create_button_box(authors_dialog, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box)
+        self.retranslateUi(authors_dialog)
+        authors_dialog.setMaximumHeight(authors_dialog.sizeHint().height())
+
+    def retranslateUi(self, authors_dialog):
+        """
+        Translate the UI on the fly.
+        """
+        authors_dialog.setWindowTitle(translate('SongsPlugin.AuthorsForm', 'Author Maintenance'))
+        self.display_label.setText(translate('SongsPlugin.AuthorsForm', 'Display name:'))
+        self.first_name_label.setText(translate('SongsPlugin.AuthorsForm', 'First name:'))
+        self.last_name_label.setText(translate('SongsPlugin.AuthorsForm', 'Last name:'))

@@ -39,9 +39,10 @@ from subprocess import Popen, PIPE
 import sys
 import urllib2
 
+from PyQt4 import QtGui, QtCore
+
 from openlp.core.lib import Registry, Settings
 
-from PyQt4 import QtGui, QtCore
 
 if sys.platform != u'win32' and sys.platform != u'darwin':
     try:
@@ -50,8 +51,7 @@ if sys.platform != u'win32' and sys.platform != u'darwin':
     except ImportError:
         XDG_BASE_AVAILABLE = False
 
-import openlp
-from openlp.core.lib import translate, check_directory_exists
+from openlp.core.lib import translate
 
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}
@@ -77,107 +77,6 @@ class VersionThread(QtCore.QThread):
         version = check_latest_version(app_version)
         if LooseVersion(str(version)) > LooseVersion(str(app_version[u'full'])):
             Registry().execute(u'openlp_version_check', u'%s' % version)
-
-class AppLocation(object):
-    """
-    The :class:`AppLocation` class is a static class which retrieves a
-    directory based on the directory type.
-    """
-    AppDir = 1
-    ConfigDir = 2
-    DataDir = 3
-    PluginsDir = 4
-    VersionDir = 5
-    CacheDir = 6
-    LanguageDir = 7
-
-    # Base path where data/config/cache dir is located
-    BaseDir = None
-
-    @staticmethod
-    def get_directory(dir_type=1):
-        """
-        Return the appropriate directory according to the directory type.
-
-        ``dir_type``
-            The directory type you want, for instance the data directory.
-        """
-        if dir_type == AppLocation.AppDir:
-            return _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
-        elif dir_type == AppLocation.PluginsDir:
-            app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            return _get_frozen_path(os.path.join(app_path, u'plugins'),
-                os.path.join(os.path.split(openlp.__file__)[0], u'plugins'))
-        elif dir_type == AppLocation.VersionDir:
-            return _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
-        elif dir_type == AppLocation.LanguageDir:
-            app_path = _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), _get_os_dir_path(dir_type))
-            return os.path.join(app_path, u'i18n')
-        elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
-            return os.path.join(AppLocation.BaseDir, 'data')
-        else:
-            return _get_os_dir_path(dir_type)
-
-    @staticmethod
-    def get_data_path():
-        """
-        Return the path OpenLP stores all its data under.
-        """
-        # Check if we have a different data location.
-        if Settings().contains(u'advanced/data path'):
-            path = Settings().value(u'advanced/data path')
-        else:
-            path = AppLocation.get_directory(AppLocation.DataDir)
-            check_directory_exists(path)
-        return os.path.normpath(path)
-
-    @staticmethod
-    def get_section_data_path(section):
-        """
-        Return the path a particular module stores its data under.
-        """
-        data_path = AppLocation.get_data_path()
-        path = os.path.join(data_path, section)
-        check_directory_exists(path)
-        return path
-
-
-def _get_os_dir_path(dir_type):
-    """
-    Return a path based on which OS and environment we are running in.
-    """
-    encoding = sys.getfilesystemencoding()
-    if sys.platform == u'win32':
-        if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'APPDATA'), encoding), u'openlp', u'data')
-        elif dir_type == AppLocation.LanguageDir:
-            return os.path.split(openlp.__file__)[0]
-        return os.path.join(unicode(os.getenv(u'APPDATA'), encoding), u'openlp')
-    elif sys.platform == u'darwin':
-        if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'HOME'), encoding),
-                                u'Library', u'Application Support', u'openlp', u'Data')
-        elif dir_type == AppLocation.LanguageDir:
-            return os.path.split(openlp.__file__)[0]
-        return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'Library', u'Application Support', u'openlp')
-    else:
-        if dir_type == AppLocation.LanguageDir:
-            prefixes = [u'/usr/local', u'/usr']
-            for prefix in prefixes:
-                directory = os.path.join(prefix, u'share', u'openlp')
-                if os.path.exists(directory):
-                    return directory
-            return os.path.join(u'/usr', u'share', u'openlp')
-        if XDG_BASE_AVAILABLE:
-            if dir_type == AppLocation.ConfigDir:
-                return os.path.join(unicode(BaseDirectory.xdg_config_home, encoding), u'openlp')
-            elif dir_type == AppLocation.DataDir:
-                return os.path.join(unicode(BaseDirectory.xdg_data_home, encoding), u'openlp')
-            elif dir_type == AppLocation.CacheDir:
-                return os.path.join(unicode(BaseDirectory.xdg_cache_home, encoding), u'openlp')
-        if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp', u'data')
-        return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp')
 
 
 def _get_frozen_path(frozen_option, non_frozen_option):
@@ -436,11 +335,11 @@ def get_uno_command():
     Returns the UNO command to launch an openoffice.org instance.
     """
     COMMAND = u'soffice'
-    OPTIONS = u'-nologo -norestore -minimized -nodefault -nofirststartwizard'
+    OPTIONS = u'--nologo --norestore --minimized --nodefault --nofirststartwizard'
     if UNO_CONNECTION_TYPE == u'pipe':
-        CONNECTION = u'"-accept=pipe,name=openlp_pipe;urp;"'
+        CONNECTION = u'"--accept=pipe,name=openlp_pipe;urp;"'
     else:
-        CONNECTION = u'"-accept=socket,host=localhost,port=2002;urp;"'
+        CONNECTION = u'"--accept=socket,host=localhost,port=2002;urp;"'
     return u'%s %s %s' % (COMMAND, OPTIONS, CONNECTION)
 
 
@@ -497,8 +396,10 @@ def locale_compare(string1, string2):
 locale_direct_compare = locale.strcoll
 
 
+from applocation import AppLocation
 from languagemanager import LanguageManager
 from actions import ActionList
+
 
 __all__ = [u'AppLocation', u'ActionList', u'LanguageManager', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'get_web_page', u'get_uno_command', u'get_uno_instance',

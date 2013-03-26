@@ -30,7 +30,7 @@
 import logging
 import os
 
-from openlp.core.lib import Registry, SettingsManager, Settings, translate
+from openlp.core.lib import Registry, Settings, translate
 from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
@@ -120,11 +120,11 @@ class BibleManager(object):
         """
         log.debug(u'Bible Initialising')
         self.parent = parent
-        self.settingsSection = u'bibles'
+        self.settings_section = u'bibles'
         self.web = u'Web'
         self.db_cache = None
-        self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.proxy_name = Settings().value(self.settingsSection + u'/proxy name')
+        self.path = AppLocation.get_section_data_path(self.settings_section)
+        self.proxy_name = Settings().value(self.settings_section + u'/proxy name')
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
@@ -137,7 +137,7 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = SettingsManager.get_files(self.settingsSection, self.suffix)
+        files = AppLocation.get_files(self.settings_section, self.suffix)
         if u'alternative_book_names.sqlite' in files:
             files.remove(u'alternative_book_names.sqlite')
         log.debug(u'Bible Files %s', files)
@@ -352,7 +352,7 @@ class BibleManager(object):
         if not language_selection or language_selection.value == "None" or language_selection.value == "-1":
             # If None is returned, it's not the singleton object but a
             # BibleMeta object with the value "None"
-            language_selection = Settings().value(self.settingsSection + u'/book name language')
+            language_selection = Settings().value(self.settings_section + u'/book name language')
         else:
             language_selection = language_selection.value
         try:

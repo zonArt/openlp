@@ -101,17 +101,17 @@ class SongShowPlusImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        if not isinstance(self.importSource, list):
+        if not isinstance(self.import_source, list):
             return
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for file in self.importSource:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for file in self.import_source:
             if self.stop_import_flag:
                 return
             self.sspVerseOrderList = []
             other_count = 0
             other_list = {}
             file_name = os.path.split(file)[1]
-            self.importWizard.incrementProgressBar(WizardStrings.ImportingType % file_name, 0)
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % file_name, 0)
             song_data = open(file, 'rb')
             while True:
                 block_key, = struct.unpack("I", song_data.read(4))
@@ -146,17 +146,17 @@ class SongShowPlusImport(SongImport):
                         if author.find(",") !=-1:
                             authorParts = author.split(", ")
                             author = authorParts[1] + " " + authorParts[0]
-                        self.parseAuthor(unicode(author, u'cp1252'))
+                        self.parse_author(unicode(author, u'cp1252'))
                 elif block_key == COPYRIGHT:
                     self.addCopyright(unicode(data, u'cp1252'))
                 elif block_key == CCLI_NO:
                     self.ccliNumber = int(data)
                 elif block_key == VERSE:
-                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Verse], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
-                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Chorus], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
                 elif block_key == BRIDGE:
-                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.Tags[VerseType.Bridge], verse_no))
+                    self.addVerse(unicode(data, u'cp1252'), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
                 elif block_key == TOPIC:
                     self.topics.append(unicode(data, u'cp1252'))
                 elif block_key == COMMENTS:
@@ -192,19 +192,19 @@ class SongShowPlusImport(SongImport):
             verse_number = "1"
         verse_type = verse_type.lower()
         if verse_type == "verse":
-            verse_tag = VerseType.Tags[VerseType.Verse]
+            verse_tag = VerseType.tags[VerseType.Verse]
         elif verse_type == "chorus":
-            verse_tag = VerseType.Tags[VerseType.Chorus]
+            verse_tag = VerseType.tags[VerseType.Chorus]
         elif verse_type == "bridge":
-            verse_tag = VerseType.Tags[VerseType.Bridge]
+            verse_tag = VerseType.tags[VerseType.Bridge]
         elif verse_type == "pre-chorus":
-            verse_tag = VerseType.Tags[VerseType.PreChorus]
+            verse_tag = VerseType.tags[VerseType.PreChorus]
         else:
             if verse_name not in self.otherList:
                 if ignore_unique:
                     return None
                 self.otherCount += 1
                 self.otherList[verse_name] = str(self.otherCount)
-            verse_tag = VerseType.Tags[VerseType.Other]
+            verse_tag = VerseType.tags[VerseType.Other]
             verse_number = self.otherList[verse_name]
         return verse_tag + verse_number
