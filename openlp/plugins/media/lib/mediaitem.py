@@ -59,7 +59,7 @@ class MediaMediaItem(MediaManagerItem):
         self.automatic = u''
         MediaManagerItem.__init__(self, parent, plugin)
         self.single_service_item = False
-        self.hasSearch = True
+        self.has_search = True
         self.media_object = None
         self.display_controller = DisplayController(parent)
         self.display_controller.controller_layout = QtGui.QVBoxLayout()

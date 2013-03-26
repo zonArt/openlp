@@ -156,8 +156,7 @@ class OpenLP(QtGui.QApplication):
 
     def is_already_running(self):
         """
-        Look to see if OpenLP is already running and ask if a 2nd copy
-        is to be started.
+        Look to see if OpenLP is already running and ask if a 2nd instance is to be started.
         """
         self.shared_memory = QtCore.QSharedMemory('OpenLP')
         if self.shared_memory.attach():

@@ -492,7 +492,7 @@ class HttpConnection(object):
         if action == u'search':
             searches = []
             for plugin in self.plugin_manager.plugins:
-                if plugin.status == PluginStatus.Active and plugin.media_item and plugin.mediaItem.hasSearch:
+                if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
                     searches.append([plugin.name, unicode(plugin.textStrings[StringContent.Name][u'plural'])])
             return HttpResponse(json.dumps({u'results': {u'items': searches}}), {u'Content-Type': u'application/json'})
 
@@ -509,7 +509,7 @@ class HttpConnection(object):
             return HttpResponse(code=u'400 Bad Request')
         text = urllib.unquote(text)
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
-        if plugin.status == PluginStatus.Active and plugin.media_item and plugin.mediaItem.hasSearch:
+        if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
             results = plugin.media_item.search(text, False)
         else:
             results = []
