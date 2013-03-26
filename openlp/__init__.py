@@ -30,7 +30,7 @@
 The :mod:`openlp` module contains all the project produced OpenLP functionality
 """
 
-import core
-import plugins
+from . import core
+from . import plugins
 
 __all__ = [u'core', u'plugins']

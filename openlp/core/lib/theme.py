@@ -473,7 +473,7 @@ class ThemeXML(object):
         Pull out the XML string formatted for human consumption
         """
         self._build_xml_from_attrs()
-        return self.theme_xml.toprettyxml(indent=u'    ', newl=u'\n', encoding=u'utf-8')
+        return self.theme_xml.toprettyxml(indent='    ', newl='\n', encoding='utf-8')
 
     def parse(self, xml):
         """
