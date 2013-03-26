@@ -491,7 +491,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.new_data_path = None
         self.copy_data = False
         Settings().set_up_default_values()
-        Settings().remove_obsolete_settings()
         self.service_not_saved = False
         self.about_form = AboutForm(self)
         self.media_controller = MediaController()

@@ -305,6 +305,8 @@ def main(args=None):
     # Instance check
     if application.is_already_running():
         sys.exit()
+    # Remove/convert obsolete settings.
+    Settings().remove_obsolete_settings()
     # First time checks in settings
     if not Settings().value(u'core/has run wizard'):
         if not FirstTimeLanguageForm().exec_():
