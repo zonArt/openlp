@@ -36,7 +36,7 @@ import socket
 import urllib
 from HTMLParser import HTMLParseError
 
-from BeautifulSoup from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.lib import Registry, translate
 from openlp.core.lib.ui import critical_error_message_box
