@@ -43,7 +43,7 @@ the remotes.
 ``/files/{filename}``
     Serve a static file.
 
-``/api/poll``
+``/stage/api/poll``
     Poll to see if there are any changes. Returns a JSON-encoded dict of
     any changes that occurred::
 
@@ -227,30 +227,24 @@ class HttpConnection(object):
         """
         Handles the requests for the main url.  This is secure depending on settings in config.
         """
-        #url = urlparse.urlparse(cherrypy.url())
-        #self.url_params = urlparse.parse_qs(url.query)
+        print "default"
         self.request_data = None
         if isinstance(kwargs, dict):
             self.request_data = kwargs.get(u'data', None)
-        # Loop through the routes we set up earlier and execute them
         return self._process_http_request(args, kwargs)
 
     @cherrypy.expose
     def stage(self, *args, **kwargs):
         """
-        Handles the requests for the stage url.  This is not secure.
+        Handles the requests for the /stage url.  This is not secure.
         """
-        #url = urlparse.urlparse(cherrypy.url())
-        #self.url_params = urlparse.parse_qs(url.query)
         return self._process_http_request(args, kwargs)
 
     @cherrypy.expose
     def files(self, *args, **kwargs):
         """
-        Handles the requests for the files url.  This is not secure.
+        Handles the requests for the /files url.  This is not secure.
         """
-        #url = urlparse.urlparse(cherrypy.url())
-        #self.url_params = urlparse.parse_qs(url.query)
         return self._process_http_request(args, kwargs)
 
     def _process_http_request(self, args, kwargs):

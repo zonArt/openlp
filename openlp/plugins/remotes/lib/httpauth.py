@@ -59,11 +59,10 @@ def check_credentials(user_name, password):
         return translate('RemotePlugin.Mobile', 'Incorrect username or password.')
 
 
-def check_auth(*args, **kwargs):
+def check_authentication(*args, **kwargs):
     """
-    A tool that looks in config for 'auth.require'. If found and it
-    is not None, a login is required and the entry is evaluated as a list of
-    conditions that the user must fulfill
+    A tool that looks in config for 'auth.require'. If found and it is not None, a login is required and the entry is
+    evaluated as a list of conditions that the user must fulfill
     """
     conditions = cherrypy.request.config.get('auth.require', None)
     if not Settings().value(u'remotes/authentication enabled'):
@@ -79,7 +78,7 @@ def check_auth(*args, **kwargs):
         else:
             raise cherrypy.HTTPRedirect("/auth/login")
 
-cherrypy.tools.auth = cherrypy.Tool('before_handler', check_auth)
+cherrypy.tools.auth = cherrypy.Tool('before_handler', check_authentication)
 
 
 def require_auth(*conditions):
@@ -136,6 +135,7 @@ class AuthController(object):
         """
         Provides the actual login control
         """
+        print "login", from_page
         if username is None or password is None:
             return self.get_login_form("", from_page=from_page)
         error_msg = check_credentials(username, password)

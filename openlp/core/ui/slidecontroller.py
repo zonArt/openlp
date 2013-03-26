@@ -1080,7 +1080,6 @@ class SlideController(DisplayController):
         """
         Go to the next slide.
         """
-        print "next"
         if not self.service_item:
             return
         Registry().execute(u'%s_next' % self.service_item.name.lower(), [self.service_item, self.is_live])
@@ -1108,7 +1107,6 @@ class SlideController(DisplayController):
         """
         Go to the previous slide.
         """
-        print "prev"
         if not self.service_item:
             return
         Registry().execute(u'%s_previous' % self.service_item.name.lower(), [self.service_item, self.is_live])
