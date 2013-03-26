@@ -161,12 +161,6 @@ class CategoryList(object):
                 return category
         raise KeyError(u'Category "%s" does not exist.' % key)
 
-    def __contains__(self, item):
-        """
-        Implement the __contains__() method to make this class like a dictionary
-        """
-        return self.has_key(item)
-
     def __len__(self):
         """
         Implement the __len__() method to make this class like a dictionary
