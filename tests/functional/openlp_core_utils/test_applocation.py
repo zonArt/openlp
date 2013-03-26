@@ -85,6 +85,9 @@ class TestAppLocation(TestCase):
             # When: Get the list of files.
             result = AppLocation.get_files(u'section', u'.mp3')
 
+            # Then: Check if the section parameter was used correctly.
+            mocked_listdir.assert_called_with(u'test/dir/section')
+
             # Then: check if the file lists are identical.
             assert result == [u'file5.mp3', u'file6.mp3'],  u'The file lists should be identical.'
 

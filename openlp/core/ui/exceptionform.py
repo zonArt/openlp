@@ -86,6 +86,11 @@ try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
     WEBKIT_VERSION = u'-'
+try:
+    from openlp.core.ui.media.vlcplayer import VERSION
+    VLC_VERSION = VERSION
+except ImportError:
+    VLC_VERSION = u'-'
 
 
 from openlp.core.lib import UiStrings, Settings, translate
@@ -112,18 +117,18 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Show the dialog.
         """
-        self.descriptionTextEdit.setPlainText(u'')
-        self.onDescriptionUpdated()
-        self.fileAttachment = None
+        self.description_text_edit.setPlainText(u'')
+        self.on_description_updated()
+        self.file_attachment = None
         return QtGui.QDialog.exec_(self)
 
-    def _createReport(self):
+    def _create_report(self):
         """
         Create an exception report.
         """
         openlp_version = get_application_version()
-        description = self.descriptionTextEdit.toPlainText()
-        traceback = self.exceptionTextEdit.toPlainText()
+        description = self.description_text_edit.toPlainText()
+        traceback = self.exception_text_edit.toPlainText()
         system = translate('OpenLP.ExceptionForm', 'Platform: %s\n') % platform.platform()
         libraries = u'Python: %s\n' % platform.python_version() + \
             u'Qt4: %s\n' % Qt.qVersion() + \
@@ -138,15 +143,18 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
             u'PySQLite: %s\n' % SQLITE_VERSION + \
             u'Mako: %s\n' % MAKO_VERSION + \
-            u'pyUNO bridge: %s\n' % UNO_VERSION
+            u'pyUNO bridge: %s\n' % UNO_VERSION + \
+            u'VLC: %s\n' % VLC_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system += u'Desktop: KDE SC\n'
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
                 system += u'Desktop: GNOME\n'
+            elif os.environ.get(u'DESKTOP_SESSION') == u'xfce':
+                system += u'Desktop: Xfce\n'
         return (openlp_version, description, traceback, system, libraries)
 
-    def onSaveReportButtonClicked(self):
+    def on_save_report_button_clicked(self):
         """
         Saving exception log and system information to a file.
         """
@@ -164,7 +172,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         if filename:
             filename = unicode(filename).replace(u'/', os.path.sep)
             Settings().setValue(self.settings_section + u'/last directory', os.path.dirname(filename))
-            report_text = report_text % self._createReport()
+            report_text = report_text % self._create_report()
             try:
                 report_file = open(filename, u'w')
                 try:
@@ -180,10 +188,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             finally:
                 report_file.close()
 
-    def onSendReportButtonClicked(self):
+    def on_send_report_button_clicked(self):
         """
-        Opening systems default email client and inserting exception log and
-        system informations.
+        Opening systems default email client and inserting exception log and system information.
         """
         body = translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'
@@ -194,7 +201,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- Library Versions ---\n%s\n',
             'Please add the information that bug reports are favoured written '
             'in English.')
-        content = self._createReport()
+        content = self._create_report()
         source = u''
         exception = u''
         for line in content[2].split(u'\n'):
@@ -206,24 +213,24 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         mailto_url = QtCore.QUrl(u'mailto:bugs@openlp.org')
         mailto_url.addQueryItem(u'subject', subject)
         mailto_url.addQueryItem(u'body', body % content)
-        if self.fileAttachment:
-            mailto_url.addQueryItem(u'attach', self.fileAttachment)
+        if self.file_attachment:
+            mailto_url.addQueryItem(u'attach', self.file_attachment)
         QtGui.QDesktopServices.openUrl(mailto_url)
 
-    def onDescriptionUpdated(self):
+    def on_description_updated(self):
         """
         Update the minimum number of characters needed in the description.
         """
-        count = int(20 - len(self.descriptionTextEdit.toPlainText()))
+        count = int(20 - len(self.description_text_edit.toPlainText()))
         if count < 0:
             count = 0
-            self.__buttonState(True)
+            self.__button_state(True)
         else:
-            self.__buttonState(False)
-        self.descriptionWordCount.setText(
+            self.__button_state(False)
+        self.description_word_count.setText(
             translate('OpenLP.ExceptionDialog', 'Description characters to enter : %s') % count)
 
-    def onAttachFileButtonClicked(self):
+    def on_attach_file_button_clicked(self):
         """
         Attache files to the bug report e-mail.
         """
@@ -232,11 +239,11 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 Settings().value(self.settings_section + u'/last directory'), u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
-            self.fileAttachment = unicode(files)
+            self.file_attachment = unicode(files)
 
-    def __buttonState(self, state):
+    def __button_state(self, state):
         """
         Toggle the button state.
         """
-        self.saveReportButton.setEnabled(state)
-        self.sendReportButton.setEnabled(state)
+        self.save_report_button.setEnabled(state)
+        self.send_report_button.setEnabled(state)

@@ -39,28 +39,28 @@ class Ui_FileRenameDialog(object):
     """
     The UI widgets for the rename dialog
     """
-    def setupUi(self, fileRenameDialog):
+    def setupUi(self, file_rename_dialog):
         """
         Set up the UI
         """
-        fileRenameDialog.setObjectName(u'fileRenameDialog')
-        fileRenameDialog.resize(300, 10)
-        self.dialogLayout = QtGui.QGridLayout(fileRenameDialog)
-        self.dialogLayout.setObjectName(u'dialog_layout')
-        self.fileNameLabel = QtGui.QLabel(fileRenameDialog)
-        self.fileNameLabel.setObjectName(u'fileNameLabel')
-        self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
-        self.fileNameEdit = QtGui.QLineEdit(fileRenameDialog)
-        self.fileNameEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
-        self.fileNameEdit.setObjectName(u'fileNameEdit')
-        self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
-        self.button_box = create_button_box(fileRenameDialog, u'button_box', [u'cancel', u'ok'])
-        self.dialogLayout.addWidget(self.button_box, 1, 0, 1, 2)
-        self.retranslateUi(fileRenameDialog)
+        file_rename_dialog.setObjectName(u'file_rename_dialog')
+        file_rename_dialog.resize(300, 10)
+        self.dialog_layout = QtGui.QGridLayout(file_rename_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.file_name_label = QtGui.QLabel(file_rename_dialog)
+        self.file_name_label.setObjectName(u'file_name_label')
+        self.dialog_layout.addWidget(self.file_name_label, 0, 0)
+        self.file_name_edit = QtGui.QLineEdit(file_rename_dialog)
+        self.file_name_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
+        self.file_name_edit.setObjectName(u'file_name_edit')
+        self.dialog_layout.addWidget(self.file_name_edit, 0, 1)
+        self.button_box = create_button_box(file_rename_dialog, u'button_box', [u'cancel', u'ok'])
+        self.dialog_layout.addWidget(self.button_box, 1, 0, 1, 2)
+        self.retranslateUi(file_rename_dialog)
         self.setMaximumHeight(self.sizeHint().height())
 
-    def retranslateUi(self, fileRenameDialog):
+    def retranslateUi(self, file_rename_dialog):
         """
         Translate the UI on the fly.
         """
-        self.fileNameLabel.setText(translate('OpenLP.FileRenameForm', 'New File Name:'))
+        self.file_name_label.setText(translate('OpenLP.FileRenameForm', 'New File Name:'))

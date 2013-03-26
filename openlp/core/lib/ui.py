@@ -50,21 +50,21 @@ def add_welcome_page(parent, image):
     ``image``
         A splash image for the wizard.
     """
-    parent.welcomePage = QtGui.QWizardPage()
-    parent.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(image))
-    parent.welcomePage.setObjectName(u'WelcomePage')
-    parent.welcomeLayout = QtGui.QVBoxLayout(parent.welcomePage)
-    parent.welcomeLayout.setObjectName(u'WelcomeLayout')
-    parent.titleLabel = QtGui.QLabel(parent.welcomePage)
-    parent.titleLabel.setObjectName(u'TitleLabel')
-    parent.welcomeLayout.addWidget(parent.titleLabel)
-    parent.welcomeLayout.addSpacing(40)
-    parent.informationLabel = QtGui.QLabel(parent.welcomePage)
-    parent.informationLabel.setWordWrap(True)
-    parent.informationLabel.setObjectName(u'InformationLabel')
-    parent.welcomeLayout.addWidget(parent.informationLabel)
-    parent.welcomeLayout.addStretch()
-    parent.addPage(parent.welcomePage)
+    parent.welcome_page = QtGui.QWizardPage()
+    parent.welcome_page.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(image))
+    parent.welcome_page.setObjectName(u'welcome_page')
+    parent.welcome_layout = QtGui.QVBoxLayout(parent.welcome_page)
+    parent.welcome_layout.setObjectName(u'WelcomeLayout')
+    parent.title_label = QtGui.QLabel(parent.welcome_page)
+    parent.title_label.setObjectName(u'title_label')
+    parent.welcome_layout.addWidget(parent.title_label)
+    parent.welcome_layout.addSpacing(40)
+    parent.information_label = QtGui.QLabel(parent.welcome_page)
+    parent.information_label.setWordWrap(True)
+    parent.information_label.setObjectName(u'information_label')
+    parent.welcome_layout.addWidget(parent.information_label)
+    parent.welcome_layout.addStretch()
+    parent.addPage(parent.welcome_page)
 
 
 def create_button_box(dialog, name, standard_buttons, custom_buttons=None):

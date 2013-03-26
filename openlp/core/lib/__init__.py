@@ -38,6 +38,7 @@ from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
 
+
 class ServiceItemContext(object):
     """
     The context in which a Service Item is being generated
@@ -49,9 +50,8 @@ class ServiceItemContext(object):
 
 class ImageSource(object):
     """
-    This enumeration class represents different image sources. An image sources
-    states where an image is used. This enumeration class is need in the context
-    of the :class:~openlp.core.lib.imagemanager`.
+    This enumeration class represents different image sources. An image sources states where an image is used. This
+    enumeration class is need in the context of the :class:~openlp.core.lib.imagemanager`.
 
     ``ImagePlugin``
         This states that an image is being used by the image plugin.
@@ -73,8 +73,8 @@ class MediaType(object):
 
 class SlideLimits(object):
     """
-    Provides an enumeration for behaviour of OpenLP at the end limits of each
-    service item when pressing the up/down arrow keys
+    Provides an enumeration for behaviour of OpenLP at the end limits of each service item when pressing the up/down
+    arrow keys
     """
     End = 1
     Wrap = 2
@@ -83,8 +83,7 @@ class SlideLimits(object):
 
 class ServiceItemAction(object):
     """
-    Provides an enumeration for the required action moving between service
-    items by left/right arrow keys
+    Provides an enumeration for the required action moving between service items by left/right arrow keys
     """
     Previous = 1
     PreviousLastSlide = 2
@@ -92,32 +91,28 @@ class ServiceItemAction(object):
 
 
 def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
-              translate=QtCore.QCoreApplication.translate):
+              qt_translate=QtCore.QCoreApplication.translate):
     """
-    A special shortcut method to wrap around the Qt4 translation functions.
-    This abstracts the translation procedure so that we can change it if at a
-    later date if necessary, without having to redo the whole of OpenLP.
+    A special shortcut method to wrap around the Qt4 translation functions. This abstracts the translation procedure so
+    that we can change it if at a later date if necessary, without having to redo the whole of OpenLP.
 
     ``context``
-        The translation context, used to give each string a context or a
-        namespace.
+        The translation context, used to give each string a context or a namespace.
 
     ``text``
         The text to put into the translation tables for translation.
 
     ``comment``
-        An identifying string for when the same text is used in different roles
-        within the same context.
+        An identifying string for when the same text is used in different roles within the same context.
     """
-    return translate(context, text, comment, encoding, n)
+    return qt_translate(context, text, comment, encoding, n)
 
 
 def get_text_file_string(text_file):
     """
-    Open a file and return its content as unicode string. If the supplied file
-    name is not a file then the function returns False. If there is an error
-    loading the file or the content can't be decoded then the function will
-    return None.
+    Open a file and return its content as unicode string. If the supplied file name is not a file then the function
+    returns False. If there is an error loading the file or the content can't be decoded then the function will return
+    None.
 
     ``textfile``
         The name of the file.
@@ -141,28 +136,26 @@ def get_text_file_string(text_file):
     return content_string
 
 
-def str_to_bool(stringvalue):
+def str_to_bool(string_value):
     """
     Convert a string version of a boolean into a real boolean.
 
-    ``stringvalue``
+    ``string_value``
         The string value to examine and convert to a boolean type.
     """
-    if isinstance(stringvalue, bool):
-        return stringvalue
-    return unicode(stringvalue).strip().lower() in (u'true', u'yes', u'y')
+    if isinstance(string_value, bool):
+        return string_value
+    return unicode(string_value).strip().lower() in (u'true', u'yes', u'y')
 
 
 def build_icon(icon):
     """
-    Build a QIcon instance from an existing QIcon, a resource location, or a
-    physical file location. If the icon is a QIcon instance, that icon is
-    simply returned. If not, it builds a QIcon instance from the resource or
-    file name.
+    Build a QIcon instance from an existing QIcon, a resource location, or a physical file location. If the icon is a
+    QIcon instance, that icon is simply returned. If not, it builds a QIcon instance from the resource or file name.
 
     ``icon``
-        The icon to build. This can be a QIcon, a resource string in the form
-        ``:/resource/file.png``, or a file location like ``/path/to/file.png``.
+        The icon to build. This can be a QIcon, a resource string in the form ``:/resource/file.png``, or a file
+        location like ``/path/to/file.png``.
     """
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
@@ -179,8 +172,7 @@ def build_icon(icon):
 
 def image_to_byte(image):
     """
-    Resize an image to fit on the current screen for the web and returns
-    it as a byte stream.
+    Resize an image to fit on the current screen for the web and returns it as a byte stream.
 
     ``image``
         The image to converted.
@@ -198,8 +190,7 @@ def image_to_byte(image):
 
 def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     """
-    Create a thumbnail from the given image path and depending on
-    ``return_icon`` it returns an icon from this thumb.
+    Create a thumbnail from the given image path and depending on ``return_icon`` it returns an icon from this thumb.
 
     ``image_path``
         The image file to create the icon from.
@@ -208,12 +199,10 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
         The filename to save the thumbnail to.
 
     ``return_icon``
-        States if an icon should be build and returned from the thumb. Defaults
-        to ``True``.
+        States if an icon should be build and returned from the thumb. Defaults to ``True``.
 
     ``size``
-        Allows to state a own size to use. Defaults to ``None``, which means
-        that a default height of 88 is used.
+        Allows to state a own size to use. Defaults to ``None``, which means that a default height of 88 is used.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
@@ -234,9 +223,8 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
 
 def validate_thumb(file_path, thumb_path):
     """
-    Validates whether an file's thumb still exists and if is up to date.
-    **Note**, you must **not** call this function, before checking the
-    existence of the file.
+    Validates whether an file's thumb still exists and if is up to date. **Note**, you must **not** call this function,
+    before checking the existence of the file.
 
     ``file_path``
         The path to the file. The file **must** exist!
@@ -359,10 +347,9 @@ def check_directory_exists(directory, do_not_log=False):
 
 def create_separated_list(stringlist):
     """
-    Returns a string that represents a join of a list of strings with a
-    localized separator. This function corresponds to
-    QLocale::createSeparatedList which was introduced in Qt 4.8 and implements
-    the algorithm from http://www.unicode.org/reports/tr35/#ListPatterns
+    Returns a string that represents a join of a list of strings with a localized separator. This function corresponds
+    to QLocale::createSeparatedList which was introduced in Qt 4.8 and implements the algorithm from
+    http://www.unicode.org/reports/tr35/#ListPatterns
 
     ``stringlist``
         List of unicode strings
@@ -391,6 +378,7 @@ from uistrings import UiStrings
 from screen import ScreenList
 from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
+from treewidgetwithdnd import TreeWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
 from plugin import PluginStatus, StringContent, Plugin
