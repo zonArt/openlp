@@ -98,6 +98,7 @@ class SlideController(DisplayController):
             u'loop_separator',
             u'delay_spin_box'
         ]
+        # audioPauseItem is also in Settings so any changes need to be paired
         self.audio_list = [
             u'audioPauseItem',
             u'audio_time_label'
