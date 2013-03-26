@@ -145,20 +145,19 @@ def _get_os_dir_path(dir_type):
     """
     Return a path based on which OS and environment we are running in.
     """
-    encoding = sys.getfilesystemencoding()
     if sys.platform == u'win32':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'APPDATA'), encoding), u'openlp', u'data')
+            return os.path.join(unicode(os.getenv(u'APPDATA')), u'openlp', u'data')
         elif dir_type == AppLocation.LanguageDir:
             return os.path.split(openlp.__file__)[0]
-        return os.path.join(unicode(os.getenv(u'APPDATA'), encoding), u'openlp')
+        return os.path.join(unicode(os.getenv(u'APPDATA')), u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'HOME'), encoding),
+            return os.path.join(unicode(os.getenv(u'HOME')),
                                 u'Library', u'Application Support', u'openlp', u'Data')
         elif dir_type == AppLocation.LanguageDir:
             return os.path.split(openlp.__file__)[0]
-        return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'Library', u'Application Support', u'openlp')
+        return os.path.join(unicode(os.getenv(u'HOME')), u'Library', u'Application Support', u'openlp')
     else:
         if dir_type == AppLocation.LanguageDir:
             prefixes = [u'/usr/local', u'/usr']
@@ -175,6 +174,6 @@ def _get_os_dir_path(dir_type):
             elif dir_type == AppLocation.CacheDir:
                 return os.path.join(unicode(BaseDirectory.xdg_cache_home, encoding), u'openlp')
         if dir_type == AppLocation.DataDir:
-            return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp', u'data')
-        return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'.openlp')
+            return os.path.join(unicode(os.getenv(u'HOME')), u'.openlp', u'data')
+        return os.path.join(unicode(os.getenv(u'HOME')), u'.openlp')
 
