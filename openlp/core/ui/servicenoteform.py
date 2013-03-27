@@ -43,7 +43,9 @@ class ServiceNoteForm(QtGui.QDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super().__init__()
+        # TODO: python3 - parent correct?
+        #QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi()
         self.retranslateUi()
 
