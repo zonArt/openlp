@@ -184,7 +184,7 @@ def image_to_byte(image):
     image.save(buffie, "PNG")
     log.debug(u'image_to_byte - end')
     # convert to base64 encoding so does not get missed!
-    return byte_array.toBase64()
+    return bytes(byte_array.toBase64()).decode('utf-8')
 
 
 def create_thumb(image_path, thumb_path, return_icon=True, size=None):
