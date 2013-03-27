@@ -42,8 +42,11 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
     def __init__(self):
         """
         Constructor
+
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super().__init__()
+        # TODO: python3 - parent correct?
+        #QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
         self.item_list = []
         self.list_widget.currentRowChanged.connect(self.on_current_row_changed)
