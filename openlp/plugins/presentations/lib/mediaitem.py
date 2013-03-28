@@ -58,7 +58,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.Automatic = u''
         MediaManagerItem.__init__(self, parent, plugin)
         self.message_listener = MessageListener(self)
-        self.hasSearch = True
+        self.has_search = True
         self.single_service_item = False
         Registry().register_function(u'mediaitem_presentation_rebuild', self.populate_display_types)
         Registry().register_function(u'mediaitem_suffixes', self.build_file_mask_string)

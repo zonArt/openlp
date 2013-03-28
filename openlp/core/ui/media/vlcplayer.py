@@ -177,13 +177,13 @@ class VlcPlayer(MediaPlayer):
         controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         return True
 
-    def media_state_wait(self, display, mediaState):
+    def media_state_wait(self, display, media_state):
         """
         Wait for the video to change its state
         Wait no longer than 60 seconds. (loading an iso file needs a long time)
         """
         start = datetime.now()
-        while not mediaState == display.vlcMedia.get_state():
+        while not media_state == display.vlcMedia.get_state():
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
             self.application.process_events()
@@ -212,7 +212,7 @@ class VlcPlayer(MediaPlayer):
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
-        controller.seekSlider.setMaximum(controller.media_info.length * 1000)
+        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
         display.vlcWidget.raise_()
         return True
@@ -241,12 +241,12 @@ class VlcPlayer(MediaPlayer):
         if display.has_audio:
             display.vlcMediaPlayer.audio_set_volume(vol)
 
-    def seek(self, display, seekVal):
+    def seek(self, display, seek_value):
         """
         Go to a particular position
         """
         if display.vlcMediaPlayer.is_seekable():
-            display.vlcMediaPlayer.set_time(seekVal)
+            display.vlcMediaPlayer.set_time(seek_value)
 
     def reset(self, display):
         """
@@ -275,10 +275,10 @@ class VlcPlayer(MediaPlayer):
             if display.vlcMediaPlayer.get_time() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
-        if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.blockSignals(True)
-            controller.seekSlider.setSliderPosition(display.vlcMediaPlayer.get_time())
-            controller.seekSlider.blockSignals(False)
+        if not controller.seek_slider.isSliderDown():
+            controller.seek_slider.blockSignals(True)
+            controller.seek_slider.setSliderPosition(display.vlcMediaPlayer.get_time())
+            controller.seek_slider.blockSignals(False)
 
     def get_info(self):
         """

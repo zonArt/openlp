@@ -103,7 +103,7 @@ class MediaPlayer(object):
         """
         pass
 
-    def seek(self, display, seekVal):
+    def seek(self, display, seek_value):
         """
         Change playing position of current Media File
         """
