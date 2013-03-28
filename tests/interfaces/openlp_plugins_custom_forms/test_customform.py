@@ -42,9 +42,8 @@ class TestCustomFrom(TestCase):
         """
         # GIVEN: A mocked QDialog.exec_() method
         with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            # WHEN: Show the dialog.
+            # WHEN: Show the dialog and create a new custom item.
             self.form.exec_()
-            # Create a new custom item.
             self.form.load_custom(0)
 
             #THEN: The line edits should not contain any text.
