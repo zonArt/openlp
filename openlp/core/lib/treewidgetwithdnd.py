@@ -48,7 +48,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         self.mimeDataText = name
         self.allow_internal_dnd = False
         self.header().close()
-        self.defaultIndentation = self.indentation()
+        self.default_indentation = self.indentation()
         self.setIndentation(0)
         self.setAnimated(True)
         assert(self.mimeDataText)
@@ -125,13 +125,13 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
             event.accept()
             files = []
             for url in event.mimeData().urls():
-                localFile = url.toLocalFile()
-                if os.path.isfile(localFile):
-                    files.append(localFile)
-                elif os.path.isdir(localFile):
-                    listing = os.listdir(localFile)
+                local_file = url.toLocalFile()
+                if os.path.isfile(local_file):
+                    files.append(local_file)
+                elif os.path.isdir(local_file):
+                    listing = os.listdir(local_file)
                     for file_name in listing:
-                        files.append(os.path.join(localFile, file_name))
+                        files.append(os.path.join(local_file, file_name))
             Registry().execute(u'%s_dnd' % self.mimeDataText, {'files': files, 'target': self.itemAt(event.pos())})
         elif self.allow_internal_dnd:
             event.setDropAction(QtCore.Qt.CopyAction)

@@ -67,7 +67,7 @@ class BibleMediaItem(MediaManagerItem):
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
         self.quick_preview_allowed = True
-        self.hasSearch = True
+        self.has_search = True
         self.search_results = {}
         self.second_search_results = {}
         self.check_search_result()

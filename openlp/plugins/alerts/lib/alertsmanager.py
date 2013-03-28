@@ -87,11 +87,11 @@ class AlertsManager(QtCore.QObject):
         if not self.alert_list:
             return
         text = self.alert_list.pop(0)
-        alertTab = self.parent().settings_tab
-        self.live_controller.display.alert(text, alertTab.location)
+        alert_tab = self.parent().settings_tab
+        self.live_controller.display.alert(text, alert_tab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
-            self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
+            self.timer_id = self.startTimer(int(alert_tab.timeout) * 1000)
 
     def timerEvent(self, event):
         """
