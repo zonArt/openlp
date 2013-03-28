@@ -88,7 +88,15 @@ class TestSongShowPlusImport(TestCase):
             # THEN: doImport should return none and the progress bar maximum should not be set.
             self.assertIsNone(importer.doImport(), u'doImport should return None when import_source is not a list')
             self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
-                              u'setMaxium on import_wizard.progress_bar should not have been called')
+                u'setMaxium on import_wizard.progress_bar should not have been called')
+
+        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
+        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            importer = SongShowPlusImport(mocked_manager)
+            importer.import_wizard = mocked_import_wizard
+            importer.stop_import_flag = True
 
             # WHEN: Import source is an int
             importer.import_source = 0
@@ -96,7 +104,15 @@ class TestSongShowPlusImport(TestCase):
             # THEN: doImport should return none and the progress bar maximum should not be set.
             self.assertIsNone(importer.doImport(), u'doImport should return None when import_source is not a list')
             self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
-                              u'setMaxium on import_wizard.progress_bar should not have been called')
+                u'setMaxium on import_wizard.progress_bar should not have been called')
+
+            # GIVEN: A mocked out SongImport class, and a mocked out "manager"
+        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+            mocked_manager = MagicMock()
+            mocked_import_wizard = MagicMock()
+            importer = SongShowPlusImport(mocked_manager)
+            importer.import_wizard = mocked_import_wizard
+            importer.stop_import_flag = True
 
             # WHEN: Import source is a list
             importer.import_source = [u'List', u'of', u'files']
@@ -104,10 +120,10 @@ class TestSongShowPlusImport(TestCase):
             # THEN: doImport should return none and the progress bar setMaximum should be called with the length of
             #       import_source.
             self.assertIsNone(importer.doImport(),
-                              u'doImport should return None when import_source is a list and stop_import_flag is True')
+                u'doImport should return None when import_source is a list and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
-    def toOpenLPVerseTag_test(self):
+    def to_openlp_verse_tag_test(self):
         """
         Test to_openlp_verse_tag method
         """
@@ -133,6 +149,11 @@ class TestSongShowPlusImport(TestCase):
                 self.assertEquals(importer.to_openlp_verse_tag(original_tag), openlp_tag,
                     u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))
+
+        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
+        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+            mocked_manager = MagicMock()
+            importer = SongShowPlusImport(mocked_manager)
 
             # WHEN: Supplied with the following arguments replicating a verse order being added
             test_values = [(u'Verse 1', VerseType.tags[VerseType.Verse] + u'1'),
