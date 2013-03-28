@@ -9,7 +9,7 @@ from mock import call, patch, MagicMock
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songshowplusimport import SongShowPlusImport
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/songshowplussongs'))
 SONG_TEST_DATA = {u'Amazing Grace.sbsong':
         {u'title': u'Amazing Grace (Demonstration)',
          u'authors': [u'John Newton', u'Edwin Excell', u'John P. Rees'],
