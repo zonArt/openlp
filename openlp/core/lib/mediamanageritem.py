@@ -94,7 +94,7 @@ class MediaManagerItem(QtGui.QWidget):
         self.remote_triggered = None
         self.single_service_item = True
         self.quick_preview_allowed = False
-        self.hasSearch = False
+        self.has_search = False
         self.page_layout = QtGui.QVBoxLayout(self)
         self.page_layout.setSpacing(0)
         self.page_layout.setMargin(0)
