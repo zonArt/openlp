@@ -106,7 +106,7 @@ class TestSongShowPlusImport(TestCase):
             self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
                 u'setMaxium on import_wizard.progress_bar should not have been called')
 
-            # GIVEN: A mocked out SongImport class, and a mocked out "manager"
+        # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
