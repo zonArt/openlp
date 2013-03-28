@@ -91,8 +91,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.slide_list_view.clear()
         if id == 0:
             self.custom_slide = CustomSlide()
-            self.title_edit.set_text(u'')
-            self.credit_edit.set_text(u'')
+            self.title_edit.setText(u'')
+            self.credit_edit.setText(u'')
             self.theme_combo_box.setCurrentIndex(0)
         else:
             self.custom_slide = self.manager.get_object(CustomSlide, id)
@@ -158,7 +158,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Add a new blank slide.
         """
-        self.edit_slide_form.set_text(u'')
+        self.edit_slide_form.setText(u'')
         if self.edit_slide_form.exec_():
             self.slide_list_view.addItems(self.edit_slide_form.get_text())
 
@@ -166,7 +166,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Edit the currently selected slide.
         """
-        self.edit_slide_form.set_text(self.slide_list_view.currentItem().text())
+        self.edit_slide_form.setText(self.slide_list_view.currentItem().text())
         if self.edit_slide_form.exec_():
             self.update_slide_list(self.edit_slide_form.get_text())
 
@@ -180,7 +180,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             slide_text += item.text()
             if row != self.slide_list_view.count() - 1:
                 slide_text += u'\n[===]\n'
-        self.edit_slide_form.set_text(slide_text)
+        self.edit_slide_form.setText(slide_text)
         if self.edit_slide_form.exec_():
             self.update_slide_list(self.edit_slide_form.get_text(), True)
 

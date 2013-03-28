@@ -206,7 +206,7 @@ class BiblesTab(SettingsTab):
         self.layout_style = self.layout_style_combo_box.currentIndex()
 
     def on_language_selection_combo_box_changed(self):
-        self.language_selection = self.language_selectioncombo_box.currentIndex()
+        self.language_selection = self.language_selection_combo_box.currentIndex()
 
     def on_new_chapters_check_box_changed(self, check_state):
         self.show_new_chapters = False
