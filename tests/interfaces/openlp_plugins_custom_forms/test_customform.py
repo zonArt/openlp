@@ -1,5 +1,5 @@
 """
-Module to the custom edit form.
+Module to test the custom edit form.
 """
 from unittest import TestCase
 from mock import MagicMock, patch
