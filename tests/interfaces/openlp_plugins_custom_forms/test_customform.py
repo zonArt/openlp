@@ -36,7 +36,7 @@ class TestCustomFrom(TestCase):
         del self.main_window
         del self.app
 
-    def load_custom(self):
+    def load_custom_test(self):
         """
         Test the load_custom() method.
         """
