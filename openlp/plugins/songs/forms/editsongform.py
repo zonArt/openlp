@@ -256,8 +256,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             A QtGui.QKeyEvent event.
         """
         if event.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
-            if self.authorsComboBox.hasFocus() and self.authorsComboBox.currentText():
-                self.onAuthorAddButtonClicked()
+            if self.authors_combo_box.hasFocus() and self.authors_combo_box.currentText():
+                self.on_author_add_button_clicked()
                 return
             if self.topicsComboBox.hasFocus() and self.topicsComboBox.currentText():
                 self.on_topic_add_button_clicked()
