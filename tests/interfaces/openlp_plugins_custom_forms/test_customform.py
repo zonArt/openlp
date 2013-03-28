@@ -61,4 +61,4 @@ class TestCustomFrom(TestCase):
             self.form.exec_()
             QtTest.QTest.mouseClick(self.form.add_button, QtCore.Qt.LeftButton)
             #THEN: One slide should be added.
-            assert self.form.slide_list_view.count() == 1, u'There should be one slide be added.'
+            assert self.form.slide_list_view.count() == 1, u'There should be one slide added.'
