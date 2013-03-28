@@ -5,7 +5,6 @@ import os
 from unittest import TestCase
 from tempfile import mkstemp
 from mock import patch, MagicMock
-import cherrypy
 
 from openlp.core.lib import Settings
 from openlp.plugins.remotes.lib.httpauth import check_credentials, check_authentication
@@ -25,7 +24,7 @@ __default_settings__ = {
 SESSION_KEY = '_cp_openlp'
 
 
-class TestLib(TestCase):
+class TestAuth(TestCase):
     """
     Test the functions in the :mod:`lib` module.
     """
@@ -37,10 +36,6 @@ class TestLib(TestCase):
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         Settings().extend_default_settings(__default_settings__)
-        cherrypy.config.update({'environment': "test_suite"})
-        # prevent the HTTP server from ever starting
-        cherrypy.server.unsubscribe()
-        cherrypy.engine.start()
 
     def tearDown(self):
         """
@@ -49,11 +44,10 @@ class TestLib(TestCase):
         del self.application
         os.unlink(self.ini_file)
         os.unlink(Settings().fileName())
-        cherrypy.engine.exit()
 
     def check_credentials_test(self):
         """
-        Test the Authentication check routine.
+        Test the Authentication check routine with credentials.
         """
         # GIVEN: A user and password in settings
         Settings().setValue(u'remotes/user id', u'twinkle')
@@ -74,7 +68,7 @@ class TestLib(TestCase):
 
     def check_auth_inactive_test(self):
         """
-        Test the Authentication check routine.
+        Test the Authentication check routine when inactive.
         """
         # GIVEN: A access which is secure
         Settings().setValue(u'remotes/authentication enabled', False)

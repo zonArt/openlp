@@ -138,7 +138,7 @@ class HttpServer(object):
 
     def __init__(self, plugin):
         """
-        Initialise the httpserver, and start the server.
+        Initialise the http server, and start the server.
         """
         log.debug(u'Initialise httpserver')
         self.plugin = plugin
@@ -146,13 +146,11 @@ class HttpServer(object):
         self.connections = []
         self.conf = {'/files': {u'tools.staticdir.on': True,
                                 u'tools.staticdir.dir': self.html_dir}}
-        self.start_server()
 
     def start_server(self):
         """
         Start the http server, use the port in the settings default to 4316.
-        Listen out for slide and song changes so they can be broadcast to
-        clients. Listen out for socket connections.
+        Listen out for slide and song changes so they can be broadcast to clients. Listen out for socket connections.
         """
         log.debug(u'Start CherryPy server')
         if Settings().value(self.plugin.settings_section + u'/https enabled'):

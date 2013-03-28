@@ -64,6 +64,8 @@ def check_authentication(*args, **kwargs):
     evaluated as a list of conditions that the user must fulfill
     """
     conditions = cherrypy.request.config.get('auth.require', None)
+    a = cherrypy.request
+    print a
     if not Settings().value(u'remotes/authentication enabled'):
         return None
     if conditions is not None:
