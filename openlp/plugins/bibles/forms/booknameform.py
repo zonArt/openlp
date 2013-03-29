@@ -44,6 +44,7 @@ from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
+
 class BookNameForm(QDialog, Ui_BookNameDialog):
     """
     Class to manage a dialog which help the user to refer a book name a
@@ -57,20 +58,17 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         QDialog.__init__(self, parent)
         self.setupUi(self)
-        self.customSignals()
+        self.custom_signals()
         self.book_names = BibleStrings().BookNames
         self.book_id = False
 
-    def customSignals(self):
+    def custom_signals(self):
         """
         Set up the signals used in the booknameform.
         """
-        QtCore.QObject.connect(self.oldTestamentCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onCheckBoxIndexChanged)
-        QtCore.QObject.connect(self.newTestamentCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onCheckBoxIndexChanged)
-        QtCore.QObject.connect(self.apocryphaCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onCheckBoxIndexChanged)
+        self.oldTestamentCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.newTestamentCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.apocryphaCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
 
     def onCheckBoxIndexChanged(self, index):
         """

@@ -77,7 +77,7 @@ class OpenLP1Bible(BibleDB):
             # This file is not an openlp.org 1.x bible database.
             return False
         books = cursor.fetchall()
-        self.wizard.progressBar.setMaximum(len(books) + 1)
+        self.wizard.progress_bar.setMaximum(len(books) + 1)
         for book in books:
             if self.stop_import_flag:
                 connection.close()
@@ -94,7 +94,7 @@ class OpenLP1Bible(BibleDB):
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
             db_book = self.create_book(name, book_ref_id, book_details[u'testament_id'])
             # Update the progess bar.
-            self.wizard.incrementProgressBar(WizardStrings.ImportingType % name)
+            self.wizard.increment_progress_bar(WizardStrings.ImportingType % name)
             # Import the verses for this book.
             cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
                 'verse WHERE book_id=%s' % book_id)

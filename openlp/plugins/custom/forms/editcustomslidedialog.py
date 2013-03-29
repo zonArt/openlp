@@ -33,24 +33,25 @@ from openlp.core.lib import SpellTextEdit, UiStrings, translate
 from openlp.core.lib.ui import create_button, create_button_box
 
 class Ui_CustomSlideEditDialog(object):
-    def setupUi(self, customSlideEditDialog):
-        customSlideEditDialog.setObjectName(u'customSlideEditDialog')
-        customSlideEditDialog.resize(350, 300)
-        self.dialogLayout = QtGui.QVBoxLayout(customSlideEditDialog)
-        self.slideTextEdit = SpellTextEdit(self)
-        self.slideTextEdit.setObjectName(u'slideTextEdit')
-        self.dialogLayout.addWidget(self.slideTextEdit)
-        self.splitButton = create_button(customSlideEditDialog, u'splitButton', icon=u':/general/general_add.png')
-        self.insertButton = create_button(customSlideEditDialog, u'insertButton', icon=u':/general/general_add.png')
-        self.button_box = create_button_box(customSlideEditDialog, u'button_box', [u'cancel', u'save'],
-            [self.splitButton, self.insertButton])
-        self.dialogLayout.addWidget(self.button_box)
-        self.retranslateUi(customSlideEditDialog)
+    def setupUi(self, custom_slide_edit_dialog):
+        custom_slide_edit_dialog.setObjectName(u'custom_slide_edit_dialog')
+        custom_slide_edit_dialog.resize(350, 300)
+        self.dialog_layout = QtGui.QVBoxLayout(custom_slide_edit_dialog)
+        self.slide_text_edit = SpellTextEdit(self)
+        self.slide_text_edit.setObjectName(u'slide_text_edit')
+        self.dialog_layout.addWidget(self.slide_text_edit)
+        self.split_button = create_button(custom_slide_edit_dialog, u'splitButton', icon=u':/general/general_add.png')
+        self.insert_button = create_button(custom_slide_edit_dialog, u'insertButton',
+                                           icon=u':/general/general_add.png')
+        self.button_box = create_button_box(custom_slide_edit_dialog, u'button_box', [u'cancel', u'save'],
+            [self.split_button, self.insert_button])
+        self.dialog_layout.addWidget(self.button_box)
+        self.retranslateUi(custom_slide_edit_dialog)
 
-    def retranslateUi(self, customSlideEditDialog):
-        customSlideEditDialog.setWindowTitle(translate('CustomPlugin.EditVerseForm', 'Edit Slide'))
-        self.splitButton.setText(UiStrings().Split)
-        self.splitButton.setToolTip(UiStrings().SplitToolTip)
-        self.insertButton.setText(translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
-        self.insertButton.setToolTip(translate('CustomPlugin.EditCustomForm',
+    def retranslateUi(self, custom_slide_edit_dialog):
+        custom_slide_edit_dialog.setWindowTitle(translate('CustomPlugin.EditVerseForm', 'Edit Slide'))
+        self.split_button.setText(UiStrings().Split)
+        self.split_button.setToolTip(UiStrings().SplitToolTip)
+        self.insert_button.setText(translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
+        self.insert_button.setToolTip(translate('CustomPlugin.EditCustomForm',
             'Split a slide into two by inserting a slide splitter.'))

@@ -56,7 +56,7 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
             self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Copy'))
         else:
             self.setWindowTitle(translate('OpenLP.FileRenameForm', 'File Rename'))
-        self.fileNameEdit.setFocus()
+        self.file_name_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def _get_main_window(self):

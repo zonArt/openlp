@@ -85,7 +85,7 @@ class OSISBible(BibleDB):
         success = True
         last_chapter = 0
         match_count = 0
-        self.wizard.incrementProgressBar(translate('BiblesPlugin.OsisImport',
+        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport',
             'Detecting encoding (this may take a few minutes)...'))
         try:
             detect_file = open(self.filename, u'r')
@@ -151,11 +151,11 @@ class OSISBible(BibleDB):
                             book_ref_id,
                             book_details[u'testament_id'])
                     if last_chapter == 0:
-                        self.wizard.progressBar.setMaximum(chapter_count)
+                        self.wizard.progress_bar.setMaximum(chapter_count)
                     if last_chapter != chapter:
                         if last_chapter != 0:
                             self.session.commit()
-                        self.wizard.incrementProgressBar(translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
+                        self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
                             'Importing <book name> <chapter>...') % (book_details[u'name'], chapter))
                         last_chapter = chapter
                     # All of this rigmarol below is because the mod2osis

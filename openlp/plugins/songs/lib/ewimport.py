@@ -64,15 +64,15 @@ class EasyWorshipSongImport(SongImport):
 
     def doImport(self):
         # Open the DB and MB files if they exist
-        import_source_mb = self.importSource.replace('.DB', '.MB')
-        if not os.path.isfile(self.importSource):
+        import_source_mb = self.import_source.replace('.DB', '.MB')
+        if not os.path.isfile(self.import_source):
             return
         if not os.path.isfile(import_source_mb):
             return
-        db_size = os.path.getsize(self.importSource)
+        db_size = os.path.getsize(self.import_source)
         if db_size < 0x800:
             return
-        db_file = open(self.importSource, 'rb')
+        db_file = open(self.import_source, 'rb')
         self.memoFile = open(import_source_mb, 'rb')
         # Don't accept files that are clearly not paradox files
         record_size, header_size, block_size, first_block, num_fields = struct.unpack('<hhxb8xh17xh', db_file.read(35))
@@ -184,7 +184,7 @@ class EasyWorshipSongImport(SongImport):
                     if result is None:
                         return
                     words, self.encoding = result
-                    verse_type = VerseType.Tags[VerseType.Verse]
+                    verse_type = VerseType.tags[VerseType.Verse]
                     for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()
                         if not verse:
@@ -193,17 +193,17 @@ class EasyWorshipSongImport(SongImport):
                         first_line_is_tag = False
                         # EW tags: verse, chorus, pre-chorus, bridge, tag,
                         # intro, ending, slide
-                        for type in VerseType.Names+[u'tag', u'slide']:
-                            type = type.lower()
+                        for tag in VerseType.tags + [u'tag', u'slide']:
+                            tag = tag.lower()
                             ew_tag = verse_split[0].strip().lower()
-                            if ew_tag.startswith(type):
-                                verse_type = type[0]
-                                if type == u'tag' or type == u'slide':
-                                    verse_type = VerseType.Tags[VerseType.Other]
+                            if ew_tag.startswith(tag):
+                                verse_type = tag[0]
+                                if tag == u'tag' or tag == u'slide':
+                                    verse_type = VerseType.tags[VerseType.Other]
                                 first_line_is_tag = True
                                 number_found = False
                                 # check if tag is followed by number and/or note
-                                if len(ew_tag) > len(type):
+                                if len(ew_tag) > len(tag):
                                     match = NUMBER_REGEX.search(ew_tag)
                                     if match:
                                         number = match.group()
@@ -215,23 +215,19 @@ class EasyWorshipSongImport(SongImport):
                                 if not number_found:
                                     verse_type += u'1'
                                 break
-                        self.addVerse(
-                            verse_split[-1].strip() \
-                                if first_line_is_tag else verse,
-                            verse_type)
+                        self.addVerse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
                 if len(self.comments) > 5:
                     self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
                         '\n[above are Song Tags with notes imported from EasyWorship]'))
                 if self.stop_import_flag:
                     break
                 if not self.finish():
-                    self.logError(self.importSource)
+                    self.logError(self.import_source)
         db_file.close()
         self.memoFile.close()
 
     def findField(self, field_name):
-        return [i for i, x in enumerate(self.fieldDescs)
-            if x.name == field_name][0]
+        return [i for i, x in enumerate(self.fieldDescs) if x.name == field_name][0]
 
     def setRecordStruct(self, field_descs):
         # Begin with empty field struct list
