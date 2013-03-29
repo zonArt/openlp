@@ -277,10 +277,9 @@ class HttpRouter(object):
         """
         Common function to process HTTP requests where secure or insecure
         """
-        url = urlparse.urlparse(cherrypy.url())
         response = None
         for route, func in self.routes:
-            match = re.match(route, url.path)
+            match = re.match(route, url_path)
             if match:
                 log.debug('Route "%s" matched "%s"', route, url_path)
                 args = []

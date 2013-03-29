@@ -6,10 +6,9 @@ import os
 from unittest import TestCase
 from tempfile import mkstemp
 from mock import patch, MagicMock
-import cherrypy
 
 from openlp.core.lib import Settings
-from openlp.plugins.remotes.lib.httpserver import HttpConnection
+from openlp.plugins.remotes.lib.httpserver import HttpRouter
 from PyQt4 import QtGui
 
 __default_settings__ = {
@@ -23,10 +22,8 @@ __default_settings__ = {
     u'remotes/ip address': u'0.0.0.0'
 }
 
-SESSION_KEY = '_cp_openlp'
 
-
-class TestAuth(TestCase):
+class TestRouter(TestCase):
     """
     Test the functions in the :mod:`lib` module.
     """
@@ -38,7 +35,7 @@ class TestAuth(TestCase):
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         Settings().extend_default_settings(__default_settings__)
-        self.server = HttpConnection(None)
+        self.router = HttpRouter()
 
     def tearDown(self):
         """
@@ -49,19 +46,24 @@ class TestAuth(TestCase):
 
     def process_http_request_test(self):
         """
-        Test the Authentication check routine with credentials.
+        Test the router control functionality
         """
-        # GIVEN: A user and password in settings
-        cherrypy = MagicMock()
-        cherrypy.url.return_value = "nosetest/apl/poll"
+        # GIVEN: A testing set of Routes
+        mocked_function = MagicMock()
+        test_route = [
+            (r'^/stage/api/poll$', mocked_function),
+        ]
+        self.router.routes = test_route
 
-        print cherrypy.url()
+        # WHEN: called with a poll route
+        self.router.process_http_request(u'/stage/api/poll', None)
 
-        with patch(u'url.path') as mocked_url:
-            mocked_url.return_value = "nosetest/apl/poll"
-            self.server._process_http_request(None, None)
+        # THEN: the function should have been called only once
+        assert mocked_function.call_count == 1, \
+            u'The mocked function should have been matched and called once.'
 
-        self.assertFalse()
+
+        #self.assertFalse()
 
         # WHEN: We run the function with no input
         #authenticated = check_credentials(u'', u'')
