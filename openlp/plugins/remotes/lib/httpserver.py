@@ -127,28 +127,32 @@ from PyQt4 import QtCore
 from openlp.core.lib import Registry, Settings, PluginStatus, StringContent
 from openlp.core.utils import AppLocation, translate
 
-from cherrypy._cpcompat import md5, sha, ntob
+from cherrypy._cpcompat import sha, ntob
 
 log = logging.getLogger(__name__)
 
 
 def sha_password_encrypter(password):
-
+    """
+    Create an encrypted password for the given password.
+    """
     return sha(ntob(password)).hexdigest()
 
 
 def fetch_password(username):
+    """
+    Fetch the password for a provided user.
+    """
     if username != Settings().value(u'remotes/user id'):
         return None
-    print "fetch password", username
-    return sha(ntob(Settings().value(u'remotes/password'))).hexdigest()
+    return sha_password_encrypter(Settings().value(u'remotes/password'))
 
 
 class HttpServer(object):
     """
     Ability to control OpenLP via a web browser.
+    This class controls the Cherrypy server and configuration.
     """
-
     _cp_config = {
         'tools.sessions.on': True,
         'tools.auth.on': True
@@ -167,7 +171,7 @@ class HttpServer(object):
         Start the http server based on configuration.
         """
         log.debug(u'Start CherryPy server')
-        # Define to security levels and add the router code
+        # Define to security levels and inject the router code
         self.root = self.Public()
         self.root.files = self.Files()
         self.root.stage = self.Stage()
@@ -180,6 +184,9 @@ class HttpServer(object):
         cherrypy.engine.start()
 
     def define_config(self):
+        """
+        Define the configuration of the server.
+        """
         if Settings().value(self.plugin.settings_section + u'/https enabled'):
             port = Settings().value(self.plugin.settings_section + u'/https port')
             address = Settings().value(self.plugin.settings_section + u'/ip address')
@@ -209,14 +216,12 @@ class HttpServer(object):
                                      u'tools.basic_auth.on': False}}
         return directory_config
 
-    def reload_config(self):
-        cherrypy.tree.mount(self.root, '/', config=self.define_config())
-        cherrypy.config.reset()
-
     class Public:
+        """
+        Main access class with may have security enabled on it.
+        """
         @cherrypy.expose
         def default(self, *args, **kwargs):
-            print "public"
             self.router.request_data = None
             if isinstance(kwargs, dict):
                 self.router.request_data = kwargs.get(u'data', None)
@@ -224,13 +229,18 @@ class HttpServer(object):
             return self.router.process_http_request(url.path, *args)
 
     class Files:
+        """
+        Provides access to files and has no security available.  These are read only accesses
+        """
         @cherrypy.expose
         def default(self, *args, **kwargs):
-            print "files"
             url = urlparse.urlparse(cherrypy.url())
             return self.router.process_http_request(url.path, *args)
 
     class Stage:
+        """
+        Stageview is read only so security is not relevant and would reduce it's usability
+        """
         @cherrypy.expose
         def default(self, *args, **kwargs):
             url = urlparse.urlparse(cherrypy.url())
@@ -246,12 +256,11 @@ class HttpServer(object):
 
 class HttpRouter(object):
     """
-    A single connection, this handles communication between the server and the client.
+    This code is called by the HttpServer upon a request and it processes it based on the routing table.
     """
-
     def __init__(self):
         """
-        Initialise the CherryPy Server
+        Initialise the router
         """
         self.routes = [
             (u'^/$', self.serve_file),
@@ -275,7 +284,7 @@ class HttpRouter(object):
 
     def process_http_request(self, url_path, *args):
         """
-        Common function to process HTTP requests where secure or insecure
+        Common function to process HTTP requests
         """
         response = None
         for route, func in self.routes:

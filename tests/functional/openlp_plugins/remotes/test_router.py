@@ -8,7 +8,7 @@ from tempfile import mkstemp
 from mock import patch, MagicMock
 
 from openlp.core.lib import Settings
-from openlp.plugins.remotes.lib.httpserver import HttpRouter
+from openlp.plugins.remotes.lib.httpserver import HttpRouter, fetch_password, sha_password_encrypter
 from PyQt4 import QtGui
 
 __default_settings__ = {
@@ -44,6 +44,43 @@ class TestRouter(TestCase):
         del self.application
         os.unlink(self.ini_file)
 
+    def fetch_password_unknown_test(self):
+        """
+        Test the fetch password code with an unknown userid
+        """
+        # GIVEN: A default configuration
+        # WHEN: called with the defined userid
+        password = fetch_password(u'itwinkle')
+        print password
+
+        # THEN: the function should return None
+        self.assertEqual(password, None, u'The result for fetch_password should be None')
+
+    def fetch_password_known_test(self):
+        """
+        Test the fetch password code with the defined userid
+        """
+        # GIVEN: A default configuration
+        # WHEN: called with the defined userid
+        password = fetch_password(u'openlp')
+        required_password = sha_password_encrypter(u'password')
+
+        # THEN: the function should return the correct password
+        self.assertEqual(password, required_password, u'The result for fetch_password should be the defined password')
+
+    def sha_password_encrypter_test(self):
+        """
+        Test hash password function
+        """
+        # GIVEN: A default configuration
+        # WHEN: called with the defined userid
+        required_password = sha_password_encrypter(u'password')
+        test_value = '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
+
+        # THEN: the function should return the correct password
+        self.assertEqual(required_password, test_value,
+            u'The result for sha_password_encrypter should return the correct encrypted password')
+
     def process_http_request_test(self):
         """
         Test the router control functionality
@@ -61,22 +98,3 @@ class TestRouter(TestCase):
         # THEN: the function should have been called only once
         assert mocked_function.call_count == 1, \
             u'The mocked function should have been matched and called once.'
-
-
-        #self.assertFalse()
-
-        # WHEN: We run the function with no input
-        #authenticated = check_credentials(u'', u'')
-
-        # THEN: The authentication will fail with an error message
-        #self.assertEqual(authenticated, u'Incorrect username or password.',
-        #                 u'The return should be a error message string')
-
-        # WHEN: We run the function with the correct input
-        #authenticated = check_credentials(u'twinkle', u'mongoose')
-
-        # THEN: The authentication will pass.
-        #self.assertEqual(authenticated, None, u'The return should be a None string')
-
-
-
