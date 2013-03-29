@@ -184,7 +184,7 @@ class ThemesTab(SettingsTab):
         """
         self.global_theme = self.default_combo_box.currentText()
         self.renderer.set_global_theme()
-        self._previewGlobalTheme()
+        self._preview_global_theme()
 
     def update_theme_list(self, theme_list):
         """

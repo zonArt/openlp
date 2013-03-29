@@ -34,7 +34,7 @@ from sqlalchemy.sql import or_, func, and_
 
 from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, Settings, PluginStatus,\
     UiStrings, check_item_selected, translate
-from openlp.plugins.custom.forms import EditCustomForm
+from openlp.plugins.custom.forms.editcustomform import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide
 
@@ -60,7 +60,7 @@ class CustomMediaItem(MediaManagerItem):
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.single_service_item = False
         self.quick_preview_allowed = True
-        self.hasSearch = True
+        self.has_search = True
         # Holds information about whether the edit is remotely triggered and
         # which Custom is required.
         self.remoteCustom = -1

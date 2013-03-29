@@ -67,7 +67,7 @@ class BibleMediaItem(MediaManagerItem):
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
         self.quick_preview_allowed = True
-        self.hasSearch = True
+        self.has_search = True
         self.search_results = {}
         self.second_search_results = {}
         self.check_search_result()
@@ -516,13 +516,13 @@ class BibleMediaItem(MediaManagerItem):
     def onQuickStyleComboBoxChanged(self):
         self.settings.layout_style = self.quickStyleComboBox.currentIndex()
         self.advancedStyleComboBox.setCurrentIndex(self.settings.layout_style)
-        self.settings.layoutStyleComboBox.setCurrentIndex(self.settings.layout_style)
+        self.settings.layout_style_combo_box.setCurrentIndex(self.settings.layout_style)
         Settings().setValue(self.settings_section + u'/verse layout style', self.settings.layout_style)
 
     def onAdvancedStyleComboBoxChanged(self):
         self.settings.layout_style = self.advancedStyleComboBox.currentIndex()
         self.quickStyleComboBox.setCurrentIndex(self.settings.layout_style)
-        self.settings.layoutStyleComboBox.setCurrentIndex(self.settings.layout_style)
+        self.settings.layout_style_combo_box.setCurrentIndex(self.settings.layout_style)
         Settings().setValue(self.settings_section + u'/verse layout style', self.settings.layout_style)
 
     def onAdvancedVersionComboBox(self):
