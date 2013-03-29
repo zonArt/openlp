@@ -181,6 +181,9 @@ class RemoteTab(SettingsTab):
         self.password_label.setText(translate('RemotePlugin.RemoteTab', 'Password:'))
 
     def set_urls(self):
+        """
+        Update the display based on the data input on the screen
+        """
         ip_address = u'localhost'
         if self.address_edit.text() == ZERO_URL:
             interfaces = QtNetwork.QNetworkInterface.allInterfaces()
@@ -206,6 +209,9 @@ class RemoteTab(SettingsTab):
         self.stage_https_url.setText(u'<a href="%s">%s</a>' % (https_url, https_url))
 
     def load(self):
+        """
+        Load the configuration and update the server configuration if necessary
+        """
         self.port_spin_box.setValue(Settings().value(self.settings_section + u'/port'))
         self.https_port_spin_box.setValue(Settings().value(self.settings_section + u'/https port'))
         self.address_edit.setText(Settings().value(self.settings_section + u'/ip address'))
@@ -249,6 +255,9 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settings_section + u'/password', self.password.text())
 
     def on_twelve_hour_check_box_changed(self, check_state):
+        """
+        Toggle the 12 hour check box.
+        """
         self.twelve_hour = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:

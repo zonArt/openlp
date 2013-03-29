@@ -348,11 +348,7 @@ class HttpRouter(object):
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options'),
             'service': translate('RemotePlugin.Mobile', 'Service'),
-            'slides': translate('RemotePlugin.Mobile', 'Slides'),
-            'title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 User Login'),
-            'from_page': "",
-            'message': "",
-            'username': "username"
+            'slides': translate('RemotePlugin.Mobile', 'Slides')
         }
 
     def serve_file(self, filename=None):
@@ -588,12 +584,21 @@ class HttpRouter(object):
         self._http_success()
 
     def _http_success(self):
+        """
+        Set the HTTP success return code.
+        """
         cherrypy.response.status = 200
 
     def _http_bad_request(self):
+        """
+        Set the HTTP bad response return code.
+        """
         cherrypy.response.status = 400
 
     def _http_not_found(self):
+        """
+        Set the HTTP not found return code.
+        """
         cherrypy.response.status = 404
         cherrypy.response.body = ["<html><body>Sorry, an error occurred </body></html>"]
 
