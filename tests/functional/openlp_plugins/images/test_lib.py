@@ -23,6 +23,7 @@ class TestImageMediaItem(TestCase):
         Registry.create()
         Registry().register(u'service_list', MagicMock())
         Registry().register(u'main_window', self.mocked_main_window)
+        Registry().register(u'live_controller', MagicMock())
         mocked_parent = MagicMock()
         mocked_plugin = MagicMock()
         with patch(u'openlp.plugins.images.lib.mediaitem.ImageMediaItem.__init__') as mocked_init:
@@ -110,3 +111,17 @@ class TestImageMediaItem(TestCase):
             # THEN: loadFullList() should not have been called
             assert self.media_item.manager.save_object.call_count == 2, \
                 u'loadFullList() should have been called only once'
+
+    def on_reset_click_test(self):
+        """
+        Test that onResetClick() actually resets the background
+        """
+        # GIVEN:
+        self.media_item.resetAction = MagicMock()
+
+        # WHEN:
+        self.media_item.onResetClick()
+
+        # THEN:
+        self.media_item.resetAction.setVisible.assert_called_with(False)
+        self.media_item.live_controller.display.reset_image.assert_called_with()
