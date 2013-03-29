@@ -9,7 +9,7 @@ from unittest import TestCase
 from mock import MagicMock, patch
 
 from openlp.core.lib import Registry
-from openlp.plugins.images.lib.db import ImageFilenames
+from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 from openlp.plugins.images.lib.mediaitem import ImageMediaItem
 
 
@@ -116,12 +116,63 @@ class TestImageMediaItem(TestCase):
         """
         Test that onResetClick() actually resets the background
         """
-        # GIVEN:
+        # GIVEN: A mocked version of resetAction
         self.media_item.resetAction = MagicMock()
 
-        # WHEN:
+        # WHEN: onResetClick is called
         self.media_item.onResetClick()
 
-        # THEN:
+        # THEN: the resetAction should be set visible, and the image should be reset
         self.media_item.resetAction.setVisible.assert_called_with(False)
         self.media_item.live_controller.display.reset_image.assert_called_with()
+
+    def recursively_delete_group_side_effect(*args, **kwargs):
+        """
+        Side effect method that creates custom retun values for the recursively_delete_group method
+        """
+        if args[1] == ImageFilenames and args[2]:
+            # Create some fake objects that should be removed
+            returned_object1 = ImageFilenames()
+            returned_object1.id = 1
+            returned_object1.filename = u'/tmp/test_file_1.jpg'
+            returned_object2 = ImageFilenames()
+            returned_object2.id = 2
+            returned_object2.filename = u'/tmp/test_file_2.jpg'
+            returned_object3 = ImageFilenames()
+            returned_object3.id = 3
+            returned_object3.filename = u'/tmp/test_file_3.jpg'
+            return [returned_object1, returned_object2, returned_object3]
+        if args[1] == ImageGroups and args[2]:
+            # Change the parent_id that is matched so we don't get into an endless loop
+            ImageGroups.parent_id = 0
+            # Create a fake group that will be used in the next run
+            returned_object1 = ImageGroups()
+            returned_object1.id = 1
+            return [returned_object1]
+        return []
+
+    def recursively_delete_group_test(self):
+        """
+        Test that recursively_delete_group() works
+        """
+        # GIVEN: An ImageGroups object and mocked functions
+        with patch(u'openlp.core.utils.delete_file') as mocked_delete_file:
+            ImageFilenames.group_id = 1
+            ImageGroups.parent_id = 1
+            self.media_item.manager = MagicMock()
+            self.media_item.manager.get_all_objects.side_effect = self.recursively_delete_group_side_effect
+            self.media_item.servicePath = ""
+            test_group = ImageGroups()
+            test_group.id = 1
+
+            # WHEN: recursively_delete_group() is called
+            self.media_item.recursively_delete_group(test_group)
+
+            # THEN:
+            assert mocked_delete_file.call_count == 0, u'delete_file() should not be called'
+            assert self.media_item.manager.delete_object.call_count == 7, \
+                u'manager.delete_object() should be called exactly 7 times'
+
+            # CLEANUP: Remove added attribute from ImageFilenames and ImageGroups
+            delattr(ImageFilenames, 'group_id')
+            delattr(ImageGroups, 'parent_id')
