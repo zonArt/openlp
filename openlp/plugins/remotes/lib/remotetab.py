@@ -31,7 +31,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import Registry, Settings, SettingsTab, translate
+from openlp.core.lib import Settings, SettingsTab, translate
 from openlp.core.utils import AppLocation
 
 
@@ -237,9 +237,7 @@ class RemoteTab(SettingsTab):
                 Settings().value(self.settings_section + u'/https enabled') != \
                         self.https_settings_group_box.isChecked() or \
                 Settings().value(self.settings_section + u'/authentication enabled') != \
-                        self.user_login_group_box.isChecked() or \
-                Settings().value(self.settings_section + u'/user id') != self.user_id.text() or \
-                Settings().value(self.settings_section + u'/password') != self.password.text():
+                        self.user_login_group_box.isChecked():
             self.settings_form.register_post_process(u'remotes_config_updated')
         Settings().setValue(self.settings_section + u'/port', self.port_spin_box.value())
         Settings().setValue(self.settings_section + u'/https port', self.https_port_spin_box.value())
