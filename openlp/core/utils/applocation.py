@@ -63,7 +63,6 @@ class AppLocation(object):
     VersionDir = 5
     CacheDir = 6
     LanguageDir = 7
-    SharedData = 8
 
     # Base path where data/config/cache dir is located
     BaseDir = None
@@ -150,18 +149,18 @@ def _get_os_dir_path(dir_type):
     if sys.platform == u'win32':
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'APPDATA'), encoding), u'openlp', u'data')
-        elif dir_type == AppLocation.LanguageDir or dir_type == AppLocation.SharedData:
+        elif dir_type == AppLocation.LanguageDir:
             return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'APPDATA'), encoding), u'openlp')
     elif sys.platform == u'darwin':
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'HOME'), encoding),
                                 u'Library', u'Application Support', u'openlp', u'Data')
-        elif dir_type == AppLocation.LanguageDir or dir_type == AppLocation.SharedData:
+        elif dir_type == AppLocation.LanguageDir:
             return os.path.split(openlp.__file__)[0]
         return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'Library', u'Application Support', u'openlp')
     else:
-        if dir_type == AppLocation.LanguageDir or dir_type == AppLocation.SharedData:
+        if dir_type == AppLocation.LanguageDir:
             prefixes = [u'/usr/local', u'/usr']
             for prefix in prefixes:
                 directory = os.path.join(prefix, u'share', u'openlp')

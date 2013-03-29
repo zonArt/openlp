@@ -5,7 +5,7 @@ import os
 
 from unittest import TestCase
 from tempfile import mkstemp
-from mock import patch, MagicMock
+from mock import MagicMock
 
 from openlp.core.lib import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter, fetch_password, sha_password_encrypter
@@ -51,7 +51,6 @@ class TestRouter(TestCase):
         # GIVEN: A default configuration
         # WHEN: called with the defined userid
         password = fetch_password(u'itwinkle')
-        print password
 
         # THEN: the function should return None
         self.assertEqual(password, None, u'The result for fetch_password should be None')
@@ -75,7 +74,7 @@ class TestRouter(TestCase):
         # GIVEN: A default configuration
         # WHEN: called with the defined userid
         required_password = sha_password_encrypter(u'password')
-        test_value = '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
+        test_value = u'5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
 
         # THEN: the function should return the correct password
         self.assertEqual(required_password, test_value,

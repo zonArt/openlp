@@ -190,11 +190,11 @@ class HttpServer(object):
         if Settings().value(self.plugin.settings_section + u'/https enabled'):
             port = Settings().value(self.plugin.settings_section + u'/https port')
             address = Settings().value(self.plugin.settings_section + u'/ip address')
-            shared_data = AppLocation.get_directory(AppLocation.SharedData)
+            local_data = AppLocation.get_directory(AppLocation.DataDir)
             cherrypy.config.update({u'server.socket_host': str(address),
                                     u'server.socket_port': port,
-                                    u'server.ssl_certificate': os.path.join(shared_data, u'openlp.crt'),
-                                    u'server.ssl_private_key': os.path.join(shared_data, u'openlp.key')})
+                                    u'server.ssl_certificate': os.path.join(local_data, u'remotes', u'openlp.crt'),
+                                    u'server.ssl_private_key': os.path.join(local_data, u'remotes', u'openlp.key')})
         else:
             port = Settings().value(self.plugin.settings_section + u'/port')
             address = Settings().value(self.plugin.settings_section + u'/ip address')

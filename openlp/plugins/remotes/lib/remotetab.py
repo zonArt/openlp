@@ -217,9 +217,9 @@ class RemoteTab(SettingsTab):
         self.address_edit.setText(Settings().value(self.settings_section + u'/ip address'))
         self.twelve_hour = Settings().value(self.settings_section + u'/twelve hour')
         self.twelve_hour_check_box.setChecked(self.twelve_hour)
-        shared_data = AppLocation.get_directory(AppLocation.SharedData)
-        if not os.path.exists(os.path.join(shared_data, u'openlp.crt')) or \
-                not os.path.exists(os.path.join(shared_data, u'openlp.key')):
+        local_data = AppLocation.get_directory(AppLocation.DataDir)
+        if not os.path.exists(os.path.join(local_data, u'remotes', u'openlp.crt')) or \
+                not os.path.exists(os.path.join(local_data, u'remotes', u'openlp.key')):
             self.https_settings_group_box.setChecked(False)
             self.https_settings_group_box.setEnabled(False)
             self.https_error_label.setVisible(True)
