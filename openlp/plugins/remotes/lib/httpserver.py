@@ -126,9 +126,22 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Registry, Settings, PluginStatus, StringContent
 from openlp.core.utils import AppLocation, translate
-from openlp.plugins.remotes.lib.httpauth import AuthController, require_auth
+
+from cherrypy._cpcompat import md5, sha, ntob
 
 log = logging.getLogger(__name__)
+
+
+def sha_password_encrypter(password):
+
+    return sha(ntob(password)).hexdigest()
+
+
+def fetch_password(username):
+    if username != Settings().value(u'remotes/user id'):
+        return None
+    print "fetch password", username
+    return sha(ntob(Settings().value(u'remotes/password'))).hexdigest()
 
 
 class HttpServer(object):
@@ -136,44 +149,92 @@ class HttpServer(object):
     Ability to control OpenLP via a web browser.
     """
 
+    _cp_config = {
+        'tools.sessions.on': True,
+        'tools.auth.on': True
+    }
+
     def __init__(self, plugin):
         """
         Initialise the http server, and start the server.
         """
         log.debug(u'Initialise httpserver')
         self.plugin = plugin
-        self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'remotes', u'html')
-        self.connections = []
-        self.conf = {'/files': {u'tools.staticdir.on': True,
-                                u'tools.staticdir.dir': self.html_dir}}
+        self.router = HttpRouter()
 
     def start_server(self):
         """
-        Start the http server, use the port in the settings default to 4316.
-        Listen out for slide and song changes so they can be broadcast to clients. Listen out for socket connections.
+        Start the http server based on configuration.
         """
         log.debug(u'Start CherryPy server')
+        # Define to security levels and add the router code
+        self.root = self.Public()
+        self.root.files = self.Files()
+        self.root.stage = self.Stage()
+        self.root.router = self.router
+        self.root.files.router = self.router
+        self.root.stage.router = self.router
+        cherrypy.tree.mount(self.root, '/', config=self.define_config())
+        # Turn off the flood of access messages cause by poll
+        cherrypy.log.access_log.propagate = False
+        cherrypy.engine.start()
+
+    def define_config(self):
         if Settings().value(self.plugin.settings_section + u'/https enabled'):
             port = Settings().value(self.plugin.settings_section + u'/https port')
             address = Settings().value(self.plugin.settings_section + u'/ip address')
             shared_data = AppLocation.get_directory(AppLocation.SharedData)
-            server_config = {u'server.socket_host': str(address),
-                             u'server.socket_port': port,
-                             u'server.ssl_certificate': os.path.join(shared_data, u'openlp.crt'),
-                             u'server.ssl_private_key': os.path.join(shared_data, u'openlp.key')}
+            cherrypy.config.update({u'server.socket_host': str(address),
+                                    u'server.socket_port': port,
+                                    u'server.ssl_certificate': os.path.join(shared_data, u'openlp.crt'),
+                                    u'server.ssl_private_key': os.path.join(shared_data, u'openlp.key')})
         else:
             port = Settings().value(self.plugin.settings_section + u'/port')
             address = Settings().value(self.plugin.settings_section + u'/ip address')
-            server_config = {u'server.socket_host': str(address),
-                             u'server.socket_port': port}
-        cherrypy.config.update(server_config)
-        cherrypy.config.update({'environment': 'embedded'})
-        cherrypy.config.update({'engine.autoreload_on': False})
-        cherrypy.tree.mount(HttpConnection(self), '/', config=self.conf)
-        # Turn off the flood of access messages cause by poll
-        cherrypy.log.access_log.propagate = False
-        cherrypy.engine.start()
-        log.debug(u'TCP listening on port %d' % port)
+            cherrypy.config.update({u'server.socket_host': str(address)})
+            cherrypy.config.update({u'server.socket_port': port})
+        cherrypy.config.update({u'environment': u'embedded'})
+        cherrypy.config.update({u'engine.autoreload_on': False})
+        directory_config = {u'/': {u'tools.staticdir.on': True,
+                                u'tools.staticdir.dir': self.router.html_dir,
+                                u'tools.basic_auth.on': Settings().value(u'remotes/authentication enabled'),
+                                u'tools.basic_auth.realm': u'OpenLP Remote Login',
+                                u'tools.basic_auth.users': fetch_password,
+                                u'tools.basic_auth.encrypt': sha_password_encrypter},
+                         u'/files': {u'tools.staticdir.on': True,
+                                     u'tools.staticdir.dir': self.router.html_dir,
+                                     u'tools.basic_auth.on': False},
+                         u'/stage': {u'tools.staticdir.on': True,
+                                     u'tools.staticdir.dir': self.router.html_dir,
+                                     u'tools.basic_auth.on': False}}
+        return directory_config
+
+    def reload_config(self):
+        cherrypy.tree.mount(self.root, '/', config=self.define_config())
+        cherrypy.config.reset()
+
+    class Public:
+        @cherrypy.expose
+        def default(self, *args, **kwargs):
+            print "public"
+            self.router.request_data = None
+            if isinstance(kwargs, dict):
+                self.router.request_data = kwargs.get(u'data', None)
+            url = urlparse.urlparse(cherrypy.url())
+            return self.router.process_http_request(url.path, *args)
+
+    class Files:
+        @cherrypy.expose
+        def default(self, *args, **kwargs):
+            print "files"
+            url = urlparse.urlparse(cherrypy.url())
+            return self.router.process_http_request(url.path, *args)
+
+    class Stage:
+        @cherrypy.expose
+        def default(self, *args, **kwargs):
+            url = urlparse.urlparse(cherrypy.url())
+            return self.router.process_http_request(url.path, *args)
 
     def close(self):
         """
@@ -181,25 +242,17 @@ class HttpServer(object):
         """
         log.debug(u'close http server')
         cherrypy.engine.exit()
-        cherrypy.engine.stop()
 
 
-class HttpConnection(object):
+class HttpRouter(object):
     """
     A single connection, this handles communication between the server and the client.
     """
-    _cp_config = {
-        'tools.sessions.on': True,
-        'tools.auth.on': True
-    }
 
-    auth = AuthController()
-
-    def __init__(self, parent):
+    def __init__(self):
         """
         Initialise the CherryPy Server
         """
-        self.parent = parent
         self.routes = [
             (u'^/$', self.serve_file),
             (u'^/(stage)$', self.serve_file),
@@ -218,33 +271,9 @@ class HttpConnection(object):
             (r'^/api/(.*)/add$', self.add_to_service)
         ]
         self.translate()
+        self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'remotes', u'html')
 
-    @cherrypy.expose
-    @require_auth()
-    def default(self, *args, **kwargs):
-        """
-        Handles the requests for the main url.  This is secure depending on settings in config.
-        """
-        self.request_data = None
-        if isinstance(kwargs, dict):
-            self.request_data = kwargs.get(u'data', None)
-        return self._process_http_request(args, kwargs)
-
-    @cherrypy.expose
-    def stage(self, *args, **kwargs):
-        """
-        Handles the requests for the /stage url.  This is not secure.
-        """
-        return self._process_http_request(args, kwargs)
-
-    @cherrypy.expose
-    def files(self, *args, **kwargs):
-        """
-        Handles the requests for the /files url.  This is not secure.
-        """
-        return self._process_http_request(args, kwargs)
-
-    def _process_http_request(self, args, kwargs):
+    def process_http_request(self, url_path, *args):
         """
         Common function to process HTTP requests where secure or insecure
         """
@@ -253,7 +282,7 @@ class HttpConnection(object):
         for route, func in self.routes:
             match = re.match(route, url.path)
             if match:
-                log.debug('Route "%s" matched "%s"', route, url.path)
+                log.debug('Route "%s" matched "%s"', route, url_path)
                 args = []
                 for param in match.groups():
                     args.append(param)
@@ -332,8 +361,8 @@ class HttpConnection(object):
             filename = u'index.html'
         elif filename == u'stage':
             filename = u'stage.html'
-        path = os.path.normpath(os.path.join(self.parent.html_dir, filename))
-        if not path.startswith(self.parent.html_dir):
+        path = os.path.normpath(os.path.join(self.html_dir, filename))
+        if not path.startswith(self.html_dir):
             return self._http_not_found()
         ext = os.path.splitext(filename)[1]
         html = None
@@ -450,7 +479,6 @@ class HttpConnection(object):
             if current_item:
                 json_data[u'results'][u'item'] = self.live_controller.service_item.unique_identifier
         else:
-            print event
             if self.request_data:
                 try:
                     data = json.loads(self.request_data)[u'request'][u'id']

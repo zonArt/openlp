@@ -155,6 +155,7 @@ class RemoteTab(SettingsTab):
         self.address_edit.textChanged.connect(self.set_urls)
         self.port_spin_box.valueChanged.connect(self.set_urls)
         self.https_port_spin_box.valueChanged.connect(self.set_urls)
+        self.https_settings_group_box.clicked.connect(self.https_changed)
 
     def retranslateUi(self):
         self.server_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Server Settings'))
@@ -224,15 +225,22 @@ class RemoteTab(SettingsTab):
         self.user_id.setText(Settings().value(self.settings_section + u'/user id'))
         self.password.setText(Settings().value(self.settings_section + u'/password'))
         self.set_urls()
+        self.https_changed()
 
     def save(self):
-        changed = False
+        """
+        Save the configuration and update the server configuration if necessary
+        """
         if Settings().value(self.settings_section + u'/ip address') != self.address_edit.text() or \
                 Settings().value(self.settings_section + u'/port') != self.port_spin_box.value() or \
                 Settings().value(self.settings_section + u'/https port') != self.https_port_spin_box.value() or \
                 Settings().value(self.settings_section + u'/https enabled') != \
-                        self.https_settings_group_box.isChecked():
-            changed = True
+                        self.https_settings_group_box.isChecked() or \
+                Settings().value(self.settings_section + u'/authentication enabled') != \
+                        self.user_login_group_box.isChecked() or \
+                Settings().value(self.settings_section + u'/user id') != self.user_id.text() or \
+                Settings().value(self.settings_section + u'/password') != self.password.text():
+            self.settings_form.register_post_process(u'remotes_config_updated')
         Settings().setValue(self.settings_section + u'/port', self.port_spin_box.value())
         Settings().setValue(self.settings_section + u'/https port', self.https_port_spin_box.value())
         Settings().setValue(self.settings_section + u'/https enabled', self.https_settings_group_box.isChecked())
@@ -241,12 +249,16 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settings_section + u'/authentication enabled', self.user_login_group_box.isChecked())
         Settings().setValue(self.settings_section + u'/user id', self.user_id.text())
         Settings().setValue(self.settings_section + u'/password', self.password.text())
-        if changed:
-            Registry().execute(u'remotes_config_updated')
-
 
     def on_twelve_hour_check_box_changed(self, check_state):
         self.twelve_hour = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
             self.twelve_hour = True
+
+    def https_changed(self):
+        """
+        Invert the HTTP group box based on Https group settings
+        """
+        self.http_settings_group_box.setEnabled(not self.https_settings_group_box.isChecked())
+
