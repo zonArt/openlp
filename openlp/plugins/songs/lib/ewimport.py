@@ -48,9 +48,9 @@ NOTE_REGEX = re.compile(r'\(.*?\)')
 
 
 class FieldDescEntry:
-    def __init__(self, name, type, size):
+    def __init__(self, name, field_type, size):
         self.name = name
-        self.type = type
+        self.type = field_type
         self.size = size
 
 

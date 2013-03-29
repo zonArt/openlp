@@ -15,9 +15,9 @@ from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEn
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources'))
 
 class TestFieldDesc:
-    def __init__(self, name, type, size):
+    def __init__(self, name, field_type, size):
         self.name = name
-        self.type = type
+        self.type = field_type
         self.size = size
 
 TEST_DATA_ENCODING = u'cp1252'
@@ -70,7 +70,7 @@ class TestEasyWorshipSongImport(TestCase):
             # THEN: The importer object should not be None
             self.assertIsNotNone(importer, u'Import should not be none')
 
-    def find_field_test(self):
+    def find_field_exists_test(self):
         """
         Test finding a field in a given list using the :mod:`findField`
         """
