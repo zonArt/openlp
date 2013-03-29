@@ -91,8 +91,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.slide_list_view.clear()
         if id == 0:
             self.custom_slide = CustomSlide()
-            self.title_edit.set_text(u'')
-            self.credit_edit.set_text(u'')
+            self.title_edit.setText(u'')
+            self.credit_edit.setText(u'')
             self.theme_combo_box.setCurrentIndex(0)
         else:
             self.custom_slide = self.manager.get_object(CustomSlide, id)

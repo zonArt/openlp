@@ -150,7 +150,7 @@ class RemoteTab(SettingsTab):
         Settings().setValue(self.settings_section + u'/ip address', self.address_edit.text())
         Settings().setValue(self.settings_section + u'/twelve hour', self.twelve_hour)
         if changed:
-            Registry().register_function(u'remotes_config_updated')
+            Registry().execute(u'remotes_config_updated')
 
     def onTwelveHourCheckBoxChanged(self, check_state):
         self.twelve_hour = False
