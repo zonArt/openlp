@@ -74,12 +74,12 @@ class TestServiceManager(TestCase):
             # THEN: The following actions should be not visible.
             self.service_manager.edit_action.setVisible.assert_called_once_with(False), \
                 u'The action should be set invisible.'
-            self.service_manager.create_custom_action.setVisible.assert_called_with(False), \
+            self.service_manager.create_custom_action.setVisible.assert_called_once_with(False), \
                 u'The action should be set invisible.'
-            self.service_manager.maintain_action.setVisible.assert_called_with(False), \
+            self.service_manager.maintain_action.setVisible.assert_called_once_with(False), \
                 u'The action should be set invisible.'
             self.service_manager.notes_action.setVisible.assert_called_with(True), u'The action should be set visible.'
-            self.service_manager.time_action.setVisible.assert_called_with(False), \
+            self.service_manager.time_action.setVisible.assert_called_once_with(False), \
                 u'The action should be set invisible.'
-            self.service_manager.auto_start_action.setVisible.assert_called_with(False), \
+            self.service_manager.auto_start_action.setVisible.assert_called_once_with(False), \
                 u'The action should be set invisible.'
