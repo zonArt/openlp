@@ -158,12 +158,12 @@ class HttpServer(object):
         'tools.auth.on': True
     }
 
-    def __init__(self, plugin):
+    def __init__(self):
         """
         Initialise the http server, and start the server.
         """
         log.debug(u'Initialise httpserver')
-        self.plugin = plugin
+        self.settings_section = u'remotes'
         self.router = HttpRouter()
 
     def start_server(self):
@@ -187,17 +187,17 @@ class HttpServer(object):
         """
         Define the configuration of the server.
         """
-        if Settings().value(self.plugin.settings_section + u'/https enabled'):
-            port = Settings().value(self.plugin.settings_section + u'/https port')
-            address = Settings().value(self.plugin.settings_section + u'/ip address')
+        if Settings().value(self.settings_section + u'/https enabled'):
+            port = Settings().value(self.settings_section + u'/https port')
+            address = Settings().value(self.settings_section + u'/ip address')
             local_data = AppLocation.get_directory(AppLocation.DataDir)
             cherrypy.config.update({u'server.socket_host': str(address),
                                     u'server.socket_port': port,
                                     u'server.ssl_certificate': os.path.join(local_data, u'remotes', u'openlp.crt'),
                                     u'server.ssl_private_key': os.path.join(local_data, u'remotes', u'openlp.key')})
         else:
-            port = Settings().value(self.plugin.settings_section + u'/port')
-            address = Settings().value(self.plugin.settings_section + u'/ip address')
+            port = Settings().value(self.settings_section + u'/port')
+            address = Settings().value(self.settings_section + u'/ip address')
             cherrypy.config.update({u'server.socket_host': str(address)})
             cherrypy.config.update({u'server.socket_port': port})
         cherrypy.config.update({u'environment': u'embedded'})

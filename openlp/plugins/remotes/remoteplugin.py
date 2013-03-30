@@ -67,7 +67,7 @@ class RemotesPlugin(Plugin):
         """
         log.debug(u'initialise')
         Plugin.initialise(self)
-        self.server = HttpServer(self)
+        self.server = HttpServer()
         self.server.start_server()
 
     def finalise(self):
