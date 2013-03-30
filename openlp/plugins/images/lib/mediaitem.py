@@ -36,7 +36,7 @@ from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, Servic
     StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, check_item_selected, \
     create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
-from openlp.core.utils import AppLocation, delete_file, locale_compare, get_images_filter
+from openlp.core.utils import AppLocation, delete_file, get_local_key, get_images_filter
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 
@@ -255,7 +255,7 @@ class ImageMediaItem(MediaManagerItem):
             The ID of the group that will be added recursively
         """
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
-        image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
+        image_groups.sort(key=lambda group_object: get_local_key(group_object.group_name))
         folder_icon = build_icon(u':/images/image_group.png')
         for image_group in image_groups:
             group = QtGui.QTreeWidgetItem()
@@ -286,7 +286,7 @@ class ImageMediaItem(MediaManagerItem):
             combobox.clear()
             combobox.top_level_group_added = False
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
-        image_groups.sort(cmp=locale_compare, key=lambda group_object: group_object.group_name)
+        image_groups.sort(key=lambda group_object: get_local_key(group_object.group_name))
         for image_group in image_groups:
             combobox.addItem(prefix + image_group.group_name, image_group.id)
             self.fill_groups_combobox(combobox, image_group.id, prefix + '   ')
@@ -338,7 +338,7 @@ class ImageMediaItem(MediaManagerItem):
             self.expand_group(open_group.id)
         # Sort the images by its filename considering language specific
         # characters.
-        images.sort(cmp=locale_compare, key=lambda image_object: os.path.split(unicode(image_object.filename))[1])
+        images.sort(key=lambda image_object: get_local_key(os.path.split(unicode(image_object.filename))[1]))
         for imageFile in images:
             log.debug(u'Loading image: %s', imageFile.filename)
             filename = os.path.split(imageFile.filename)[1]
@@ -525,9 +525,9 @@ class ImageMediaItem(MediaManagerItem):
                 group_items.append(item)
             if isinstance(item.data(0, QtCore.Qt.UserRole), ImageFilenames):
                 image_items.append(item)
-        group_items.sort(cmp=locale_compare, key=lambda item: item.text(0))
+        group_items.sort(key=lambda item: get_local_key(item.text(0)))
         target_group.addChildren(group_items)
-        image_items.sort(cmp=locale_compare, key=lambda item: item.text(0))
+        image_items.sort(key=lambda item: get_local_key(item.text(0)))
         target_group.addChildren(image_items)
 
     def generate_slide_data(self, service_item, item=None, xmlVersion=False,

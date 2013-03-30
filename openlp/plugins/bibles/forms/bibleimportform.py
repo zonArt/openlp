@@ -38,7 +38,7 @@ from openlp.core.lib import Settings, UiStrings, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation, locale_compare
+from openlp.core.utils import AppLocation, get_local_key
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename
 
@@ -455,7 +455,7 @@ class BibleImportForm(OpenLPWizard):
         """
         self.webTranslationComboBox.clear()
         bibles = self.web_bible_list[index].keys()
-        bibles.sort(cmp=locale_compare)
+        bibles.sort(key=get_local_key)
         self.webTranslationComboBox.addItems(bibles)
 
     def onOsisBrowseButtonClicked(self):

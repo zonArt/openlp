@@ -38,12 +38,12 @@ from sqlalchemy.sql import or_
 from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
     UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
-from openlp.core.utils import AppLocation
+from openlp.core.utils import AppLocation, get_natural_key
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
-from openlp.plugins.songs.lib import VerseType, clean_string, natcmp
+from openlp.plugins.songs.lib import VerseType, clean_string
 from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
@@ -225,7 +225,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
-        searchresults.sort(cmp=natcmp, key=lambda song: song.sort_key)
+        searchresults.sort(key=lambda song: get_natural_key(song.sort_key))
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary:

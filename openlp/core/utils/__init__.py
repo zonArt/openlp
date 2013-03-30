@@ -38,6 +38,7 @@ import re
 from subprocess import Popen, PIPE
 import sys
 import urllib2
+import icu
 
 from PyQt4 import QtGui, QtCore
 
@@ -56,6 +57,7 @@ from openlp.core.lib import translate
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}
 IMAGES_FILTER = None
+ICU_COLLATOR = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
 CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
@@ -379,21 +381,42 @@ def format_time(text, local_time):
     return re.sub('\%[a-zA-Z]', match_formatting, text)
 
 
-def locale_compare(string1, string2):
+def get_local_key(string):
     """
-    Compares two strings according to the current locale settings.
-
-    As any other compare function, returns a negative, or a positive value,
-    or 0, depending on whether string1 collates before or after string2 or
-    is equal to it. Comparison is case insensitive.
+    Creates a key for case insensitive, locale aware string sorting.
     """
-    # Function locale.strcoll() from standard Python library does not work properly on Windows.
-    return locale.strcoll(string1.lower(), string2.lower())
+    string = string.lower()
+    # For Python 3 on platforms other than Windows ICU is not necessary. In those cases locale.strxfrm(str) can be used.
+    global ICU_COLLATOR
+    if ICU_COLLATOR is None:
+        from languagemanager import LanguageManager
+        locale = LanguageManager.get_language()
+        icu_locale = icu.Locale(locale)
+        ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
+    return ICU_COLLATOR.getSortKey(string)
 
 
-# For performance reasons provide direct reference to compare function without wrapping it in another function making
-# the string lowercase. This is needed for sorting songs.
-locale_direct_compare = locale.strcoll
+def get_natural_key(string):
+    """
+    Generate a key for locale aware natural string sorting. Returns a list of strings and integers.
+
+    ``string``
+        A string, list or tuple which represents the item string.
+    """
+    if isinstance(string, basestring):
+        string = re.findall(r'(\d+|\D+)', string)
+        if len(string) == 1:
+            return list(get_local_key(string[0]))
+    elif isinstance(string, tuple):
+        string = list(string)
+    if isinstance(string, list):
+        for index, part in enumerate(string):
+            if isinstance(part, basestring):
+                if part.isdigit():
+                    string[index] = int(part)
+                else:
+                    string[index] = get_local_key(part)
+    return string
 
 
 from applocation import AppLocation
@@ -403,4 +426,4 @@ from actions import ActionList
 
 __all__ = [u'AppLocation', u'ActionList', u'LanguageManager', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename', u'format_time', u'locale_compare', u'locale_direct_compare']
+    u'delete_file', u'clean_filename', u'format_time', u'get_local_key', u'get_natural_key']
