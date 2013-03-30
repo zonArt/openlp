@@ -107,6 +107,8 @@ class BiblePlugin(Plugin):
         Perform tasks on application startup
         """
         Plugin.app_startup(self)
+        # FIXME: python3
+        return
         if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),
