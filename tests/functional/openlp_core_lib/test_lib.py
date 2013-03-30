@@ -15,7 +15,7 @@ class TestLib(TestCase):
         """
         Test the str_to_bool function with boolean input
         """
-        #GIVEN: A boolean value set to true
+        # GIVEN: A boolean value set to true
         true_boolean = True
 
         # WHEN: We "convert" it to a bool
@@ -25,7 +25,7 @@ class TestLib(TestCase):
         assert isinstance(true_result, bool), u'The result should be a boolean'
         assert true_result is True, u'The result should be True'
 
-        #GIVEN: A boolean value set to false
+        # GIVEN: A boolean value set to false
         false_boolean = False
 
         # WHEN: We "convert" it to a bool
