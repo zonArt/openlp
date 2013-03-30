@@ -118,31 +118,6 @@ class MediaPlugin(Plugin):
         """
         return self.media_controller.get_media_display_html()
 
-    def app_startup(self):
-        """
-        Do a couple of things when the app starts up. In this particular case
-        we want to check if we have the old "Use Phonon" setting, and convert
-        it to "enable Phonon" and "make it the first one in the list".
-        """
-        Plugin.app_startup(self)
-        settings = Settings()
-        settings.beginGroup(self.settings_section)
-        if settings.contains(u'use phonon'):
-            log.info(u'Found old Phonon setting')
-            players = self.media_controller.mediaPlayers.keys()
-            has_phonon = u'phonon' in players
-            if settings.value(u'use phonon')  and has_phonon:
-                log.debug(u'Converting old setting to new setting')
-                new_players = []
-                if players:
-                    new_players = [player for player in players if player != u'phonon']
-                new_players.insert(0, u'phonon')
-                self.media_controller.mediaPlayers[u'phonon'].is_active = True
-                settings.setValue(u'players', u','.join(new_players))
-                self.settingsTab.load()
-            settings.remove(u'use phonon')
-        settings.endGroup()
-
     def _get_media_controller(self):
         """
         Adds the media controller to the class dynamically

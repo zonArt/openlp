@@ -305,6 +305,7 @@ class Settings(QtCore.QSettings):
         (u'bibles/bookname language', u'bibles/book name language', []),
         (u'general/enable slide loop', u'advanced/slide limits', [(SlideLimits.Wrap, True), (SlideLimits.End, False)]),
         (u'songs/ccli number', u'core/ccli number', []),
+        (u'media/use phonon', u'', []),
         # Changed during 2.1.x development.
         (u'advanced/stylesheet fix', u'', []),
         (u'bibles/last directory 1', u'bibles/last directory import', []),
