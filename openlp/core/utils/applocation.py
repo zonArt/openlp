@@ -168,11 +168,11 @@ def _get_os_dir_path(dir_type):
             return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
             if dir_type == AppLocation.ConfigDir:
-                return os.path.join(unicode(BaseDirectory.xdg_config_home, encoding), u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_config_home), u'openlp')
             elif dir_type == AppLocation.DataDir:
-                return os.path.join(unicode(BaseDirectory.xdg_data_home, encoding), u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_data_home), u'openlp')
             elif dir_type == AppLocation.CacheDir:
-                return os.path.join(unicode(BaseDirectory.xdg_cache_home, encoding), u'openlp')
+                return os.path.join(unicode(BaseDirectory.xdg_cache_home), u'openlp')
         if dir_type == AppLocation.DataDir:
             return os.path.join(unicode(os.getenv(u'HOME')), u'.openlp', u'data')
         return os.path.join(unicode(os.getenv(u'HOME')), u'.openlp')
