@@ -1,5 +1,5 @@
 #!/bin/sh
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -47,8 +47,7 @@ mv openlp/core/resources.py openlp/core/resources.py.old
 pyrcc4 -py3 -o openlp/core/resources.py.new resources/images/openlp-2.qrc
 
 # Remove patch breaking lines
-cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' \
-    > openlp/core/resources.py
+cat openlp/core/resources.py.new | sed '/# Created: /d;/#      by: /d' > openlp/core/resources.py
 
 # Patch resources.py to OpenLP coding style
 patch --posix -s openlp/core/resources.py scripts/resources.patch
