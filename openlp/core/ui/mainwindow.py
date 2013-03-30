@@ -650,7 +650,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for plugin in self.plugin_manager.plugins:
             self.activePlugin = plugin
             oldStatus = self.activePlugin.status
-            self.activePlugin.setStatus()
+            self.activePlugin.set_status()
             if oldStatus != self.activePlugin.status:
                 if self.activePlugin.status == PluginStatus.Active:
                     self.activePlugin.toggle_status(PluginStatus.Active)

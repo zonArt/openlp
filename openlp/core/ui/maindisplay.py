@@ -175,7 +175,7 @@ class MainDisplay(Display):
         We need to rebuild the CSS on the live display.
         """
         for plugin in self.plugin_manager.plugins:
-            plugin.refreshCss(self.frame)
+            plugin.refresh_css(self.frame)
 
     def retranslateUi(self):
         """
