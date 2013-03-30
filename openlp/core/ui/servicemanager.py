@@ -84,9 +84,8 @@ class ServiceManagerList(QtGui.QTreeWidget):
 
     def mouseMoveEvent(self, event):
         """
-        Drag and drop event does not care what data is selected
-        as the recipient will use events to request the data move
-        just tell it what plugin to call
+        Drag and drop event does not care what data is selected as the recipient will use events to request the data
+        move just tell it what plugin to call
         """
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
@@ -284,10 +283,9 @@ class ServiceManagerDialog(object):
 
 class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
     """
-    Manages the services. This involves taking text strings from plugins and
-    adding them to the service. This service can then be zipped up with all
-    the resources used into one OSZ or oszl file for use on any OpenLP v2
-    installation. Also handles the UI tasks of moving things up and down etc.
+    Manages the services. This involves taking text strings from plugins and adding them to the service. This service
+    can then be zipped up with all the resources used into one OSZ or oszl file for use on any OpenLP v2 installation.
+    Also handles the UI tasks of moving things up and down etc.
     """
     def __init__(self, parent=None):
         """
@@ -316,8 +314,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def set_modified(self, modified=True):
         """
-        Setter for property "modified". Sets whether or not the current service
-        has been modified.
+        Setter for property "modified". Sets whether or not the current service has been modified.
         """
         if modified:
             self.service_id += 1
@@ -361,7 +358,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def supported_suffixes(self, suffix):
         """
-        Adds Suffixes supported to the master list.  Called from Plugins.
+        Adds Suffixes supported to the master list. Called from Plugins.
 
         ``suffix``
             New Suffix to be supported
@@ -384,12 +381,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_load_service_clicked(self, load_file=None):
         """
-        Loads the service file and saves the existing one it there is one
-        unchanged
+        Loads the service file and saves the existing one it there is one unchanged.
 
         ``load_file``
-            The service file to the loaded.  Will be None is from menu so
-            selection will be required.
+            The service file to the loaded.  Will be None is from menu so selection will be required.
         """
         if self.is_modified():
             result = self.save_modified_service()
@@ -445,10 +440,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Save the current service file.
 
-        A temporary file is created so that we don't overwrite the existing one
-        and leave a mangled service file should there be an error when saving.
-        Audio files are also copied into the service manager directory, and
-        then packaged into the zip file.
+        A temporary file is created so that we don't overwrite the existing one and leave a mangled service file should
+        there be an error when saving. Audio files are also copied into the service manager directory, and then packaged
+        into the zip file.
         """
         if not self.file_name():
             return self.save_file_as()
@@ -514,8 +508,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             total_size += file_size
         log.debug(u'ServiceManager.save_file - ZIP contents size is %i bytes' % total_size)
         service_content = cPickle.dumps(service)
-        # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be
-        # extracted using unzip in UNIX.
+        # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be extracted using unzip in UNIX.
         allow_zip_64 = (total_size > 2147483648 + len(service_content))
         log.debug(u'ServiceManager.save_file - allowZip64 is %s' % allow_zip_64)
         zip_file = None
@@ -523,18 +516,15 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.main_window.increment_progress_bar()
         try:
             zip_file = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED, allow_zip_64)
-            # First we add service contents.
-            # We save ALL file_names into ZIP using UTF-8.
+            # First we add service contents. We save ALL file_names into ZIP using UTF-8.
             zip_file.writestr(service_file_name.encode(u'utf-8'), service_content)
             # Finally add all the listed media files.
             for write_from in write_list:
                 zip_file.write(write_from, write_from.encode(u'utf-8'))
             for audio_from, audio_to in audio_files:
                 if audio_from.startswith(u'audio'):
-                    # When items are saved, they get new unique_identifier. Let's copy the
-                    # file to the new location. Unused files can be ignored,
-                    # OpenLP automatically cleans up the service manager dir on
-                    # exit.
+                    # When items are saved, they get new unique_identifier. Let's copy the file to the new location.
+                    # Unused files can be ignored, OpenLP automatically cleans up the service manager dir on exit.
                     audio_from = os.path.join(self.servicePath, audio_from)
                 save_file = os.path.join(self.servicePath, audio_to)
                 save_path = os.path.split(save_file)[0]
@@ -587,7 +577,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         for item in self.service_items:
             self.main_window.increment_progress_bar()
             service_item = item[u'service_item'].get_service_repr(self._save_lite)
-            #@todo check for file item on save.
+            #TODO: check for file item on save.
             service.append({u'serviceitem': service_item})
             self.main_window.increment_progress_bar()
         service_content = cPickle.dumps(service)
@@ -622,8 +612,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def save_file_as(self):
         """
-        Get a file name and then call :func:`ServiceManager.save_file` to
-        save the file.
+        Get a file name and then call :func:`ServiceManager.save_file` to save the file.
         """
         default_service_enabled = Settings().value(u'advanced/default service enabled')
         if default_service_enabled:
@@ -645,8 +634,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             default_file_name = u''
         directory = Settings().value(self.main_window.service_manager_settings_section + u'/last directory')
         path = os.path.join(directory, default_file_name)
-        # SaveAs from osz to oszl is not valid as the files will be deleted
-        # on exit which is not sensible or usable in the long term.
+        # SaveAs from osz to oszl is not valid as the files will be deleted on exit which is not sensible or usable in
+        # the long term.
         if self._file_name.endswith(u'oszl') or self.service_has_all_original_files:
             file_name = QtGui.QFileDialog.getSaveFileName(self.main_window, UiStrings().SaveService, path,
                 translate('OpenLP.ServiceManager',
@@ -764,9 +753,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def load_Last_file(self):
         """
-        Load the last service item from the service manager when the
-        service was last closed. Can be blank if there was no service
-        present.
+        Load the last service item from the service manager when the service was last closed. Can be blank if there was
+        no service present.
         """
         file_name = Settings().value(u'servicemanager/last file')
         if file_name:
@@ -860,8 +848,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def toggle_auto_play_slides_once(self):
         """
-        Toggle Auto play slide once.
-        Inverts auto play once option for the item
+        Toggle Auto play slide once. Inverts auto play once option for the item
         """
         item = self.find_service_item()[0]
         service_item = self.service_items[item][u'service_item']
@@ -922,8 +909,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_service_item_edit_form(self):
         """
-        Opens a dialog to edit the service item and update the service
-        display if changes are saved.
+        Opens a dialog to edit the service item and update the service display if changes are saved.
         """
         item = self.find_service_item()[0]
         self.service_item_edit_form.set_service_item(self.service_items[item][u'service_item'])
@@ -933,17 +919,14 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def preview_live(self, unique_identifier, row):
         """
-        Called by the SlideController to request a preview item be made live
-        and allows the next preview to be updated if relevant.
-
+        Called by the SlideController to request a preview item be made live and allows the next preview to be updated
+        if relevant.
 
         ``unique_identifier``
             Reference to the service_item
 
-
         ``row``
             individual row number
-
         """
         for sitem in self.service_items:
             if sitem[u'service_item'].unique_identifier == unique_identifier:
@@ -1021,8 +1004,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_move_selection_up(self):
         """
-        Moves the cursor selection up the window.
-        Called by the up arrow.
+        Moves the cursor selection up the window. Called by the up arrow.
         """
         item = self.service_manager_list.currentItem()
         itemBefore = self.service_manager_list.itemAbove(item)
@@ -1032,8 +1014,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_move_selection_down(self):
         """
-        Moves the cursor selection down the window.
-        Called by the down arrow.
+        Moves the cursor selection down the window. Called by the down arrow.
         """
         item = self.service_manager_list.currentItem()
         itemAfter = self.service_manager_list.itemBelow(item)
@@ -1051,8 +1032,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def collapsed(self, item):
         """
-        Record if an item is collapsed. Used when repainting the list to get the
-        correct state.
+        Record if an item is collapsed. Used when repainting the list to get the correct state.
         """
         pos = item.data(0, QtCore.Qt.UserRole)
         self.service_items[pos - 1][u'expanded'] = False
@@ -1067,8 +1047,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def expanded(self, item):
         """
-        Record if an item is collapsed. Used when repainting the list to get the
-        correct state.
+        Record if an item is collapsed. Used when repainting the list to get the correct state.
         """
         pos = item.data(0, QtCore.Qt.UserRole)
         self.service_items[pos - 1][u'expanded'] = True
@@ -1133,9 +1112,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def repaint_service_list(self, service_item, service_item_child):
         """
-        Clear the existing service list and prepaint all the items. This is
-        used when moving items as the move takes place in a supporting list,
-        and when regenerating all the items due to theme changes.
+        Clear the existing service list and prepaint all the items. This is used when moving items as the move takes
+        place in a supporting list, and when regenerating all the items due to theme changes.
 
         ``service_item``
             The item which changed. (int)
@@ -1233,8 +1211,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def theme_change(self):
         """
-        The theme may have changed in the settings dialog so make
-        sure the theme combo box is in the correct state.
+        The theme may have changed in the settings dialog so make sure the theme combo box is in the correct state.
         """
         log.debug(u'theme_change')
         visible = self.renderer.theme_level == ThemeLevel.Global
@@ -1243,8 +1220,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def regenerate_service_Items(self, changed=False):
         """
-        Rebuild the service list as things have changed and a
-        repaint is the easiest way to do this.
+        Rebuild the service list as things have changed and a repaint is the easiest way to do this.
         """
         self.application.set_busy_cursor()
         log.debug(u'regenerate_service_Items')
@@ -1272,8 +1248,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             for item in tempServiceItems:
                 self.add_service_item(item[u'service_item'], False, expand=item[u'expanded'], repaint=False,
                     selected=item[u'selected'])
-            # Set to False as items may have changed rendering
-            # does not impact the saved song so True may also be valid
+            # Set to False as items may have changed rendering does not impact the saved song so True may also be valid
             if changed:
                 self.set_modified()
             # Repaint it once only at the end
@@ -1282,8 +1257,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def service_item_update(self, edit_id, unique_identifier, temporary=False):
         """
-        Triggered from plugins to update service items.
-        Save the values as they will be used as part of the service load
+        Triggered from plugins to update service items. Save the values as they will be used as part of the service load
         """
         self.load_item_unique_identifier = unique_identifier
         self.load_item_edit_id = int(edit_id)
@@ -1291,8 +1265,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def replace_service_item(self, newItem):
         """
-        Using the service item passed replace the one with the same edit id
-        if found.
+        Using the service item passed replace the one with the same edit id if found.
         """
         for item_count, item in enumerate(self.service_items):
             if item[u'service_item'].edit_id == newItem.edit_id and item[u'service_item'].name == newItem.name:
@@ -1375,8 +1348,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_make_live(self):
         """
-        Send the current item to the Live slide controller but triggered
-        by a tablewidget click event.
+        Send the current item to the Live slide controller but triggered by a tablewidget click event.
         """
         self.make_live()
 
@@ -1385,8 +1357,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Send the current item to the Live slide controller
 
         ``row``
-            Row number to be displayed if from preview.
-            -1 is passed if the value is not set
+            Row number to be displayed if from preview. -1 is passed if the value is not set
         """
         item, child = self.find_service_item()
         # No items in service
@@ -1431,10 +1402,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def find_service_item(self):
         """
-        Finds the first selected ServiceItem in the list and returns the
-        position of the serviceitem and its selected child item. For example,
-        if the third child item (in the Slidecontroller known as slide) in the
-        second service item is selected this will return::
+        Finds the first selected ServiceItem in the list and returns the position of the serviceitem and its selected
+        child item. For example, if the third child item (in the Slidecontroller known as slide) in the second service
+        item is selected this will return::
 
             (1, 2)
         """
@@ -1456,8 +1426,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def drop_event(self, event):
         """
-        Receive drop event and trigger an internal event to get the
-        plugins to build and push the correct service item
+        Receive drop event and trigger an internal event to get the plugins to build and push the correct service item.
         The drag event payload carries the plugin name
 
         ``event``
@@ -1529,8 +1498,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         theme_group = QtGui.QActionGroup(self.theme_menu)
         theme_group.setExclusive(True)
         theme_group.setObjectName(u'theme_group')
-        # Create a "Default" theme, which allows the user to reset the item's
-        # theme to the service theme or global theme.
+        # Create a "Default" theme, which allows the user to reset the item's theme to the service theme or global
+        # theme.
         defaultTheme = create_widget_action(self.theme_menu, text=UiStrings().Default, checked=False,
             triggers=self.on_theme_change_action)
         self.theme_menu.setDefaultAction(defaultTheme)
