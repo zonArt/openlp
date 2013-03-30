@@ -44,7 +44,6 @@ class TestEditCustomSlideForm(TestCase):
             # THEN: The dialog should be empty.
             assert self.form.slide_text_edit.toPlainText() == u'', u'There should not be any text in the text editor.'
 
-
     def set_text_test(self):
         """
         Test the set_text() method.
