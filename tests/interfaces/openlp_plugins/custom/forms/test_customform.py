@@ -1,5 +1,5 @@
 """
-Module to test the custom edit form.
+Module to test the EditCustomForm.
 """
 from unittest import TestCase
 from mock import MagicMock, patch
@@ -12,7 +12,7 @@ from openlp.plugins.custom.lib.mediaitem import CustomMediaItem
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm
 
 
-class TestCustomFrom(TestCase):
+class TestEditCustomForm(TestCase):
     """
     Test the EditCustomForm.
     """
