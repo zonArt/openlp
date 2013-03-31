@@ -125,7 +125,7 @@ class TestSongShowPlusImport(TestCase):
 
     def to_openlp_verse_tag_test(self):
         """
-        Test to_openlp_verse_tag method
+        Test to_openlp_verse_tag method by simulating adding a verse
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
@@ -150,6 +150,10 @@ class TestSongShowPlusImport(TestCase):
                     u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))
 
+    def to_openlp_verse_tag_verse_order_test(self):
+        """
+        Test to_openlp_verse_tag method by simulating adding a verse to the verse order
+        """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
         with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
