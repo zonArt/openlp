@@ -38,7 +38,7 @@ from sqlalchemy.sql import or_
 from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
     UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
 from openlp.core.lib.ui import create_widget_action
-from openlp.core.utils import AppLocation, get_natural_key
+from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
@@ -225,7 +225,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
-        searchresults.sort(key=lambda song: get_natural_key(song.sort_key))
+        searchresults.sort(key=lambda song: song.sort_key)
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary:

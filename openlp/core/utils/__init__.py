@@ -398,25 +398,18 @@ def get_local_key(string):
 
 def get_natural_key(string):
     """
-    Generate a key for locale aware natural string sorting. Returns a list of strings and integers.
-
-    ``string``
-        A string, list or tuple which represents the item string.
+    Generate a key for locale aware natural string sorting.
+    Returns a list of string compare keys and integers.
     """
-    if isinstance(string, basestring):
-        string = re.findall(r'(\d+|\D+)', string)
-        if len(string) == 1:
-            return list(get_local_key(string[0]))
-    elif isinstance(string, tuple):
-        string = list(string)
-    if isinstance(string, list):
-        for index, part in enumerate(string):
-            if isinstance(part, basestring):
-                if part.isdigit():
-                    string[index] = int(part)
-                else:
-                    string[index] = get_local_key(part)
-    return string
+    key = re.findall(r'(\d+|\D+)', string)
+    if len(key) == 1:
+        return list(get_local_key(string))
+    for index, part in enumerate(key):
+        if part.isdigit():
+            key[index] = int(part)
+        else:
+            key[index] = get_local_key(part)
+    return key
 
 
 from applocation import AppLocation
