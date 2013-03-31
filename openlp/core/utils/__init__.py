@@ -62,6 +62,7 @@ UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
 CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
 INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
+DIGITS_OR_NONDIGITS = re.compile(r'\d+|\D+', re.UNICODE)
 
 
 class VersionThread(QtCore.QThread):
@@ -401,14 +402,8 @@ def get_natural_key(string):
     Generate a key for locale aware natural string sorting.
     Returns a list of string compare keys and integers.
     """
-    key = re.findall(r'(\d+|\D+)', string)
-    if len(key) == 1:
-        return list(get_local_key(string))
-    for index, part in enumerate(key):
-        if part.isdigit():
-            key[index] = int(part)
-        else:
-            key[index] = get_local_key(part)
+    key = DIGITS_OR_NONDIGITS.findall(string)
+    key = [int(part) if part.isdigit() else get_local_key(part) for part in key]
     return key
 
 
