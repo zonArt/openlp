@@ -180,7 +180,7 @@ class SongShowPlusImport(SongImport):
     def to_openlp_verse_tag(self, verse_name, ignore_unique=False):
         # Have we got any digits? If so, verse number is everything from the digits to the end (OpenLP does not have
         # concept of part verses, so just ignore any non integers on the end (including floats))
-        match = re.match(u'(\D*)(\d+)', verse_name)
+        match = re.match(r'(\D*)(\d+)', verse_name)
         if match:
             verse_type = match.group(1).strip()
             verse_number = match.group(2)
