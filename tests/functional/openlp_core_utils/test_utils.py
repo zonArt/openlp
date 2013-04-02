@@ -102,4 +102,4 @@ class TestUtils(TestCase):
         result = clean_filename(invalid_name)
 
         # THEN: The file name should be cleaned.
-        assert result == wanted_name, u'The file name should be valid.'
+        assert result == wanted_name, u'The file name should not contain any special characters.'
