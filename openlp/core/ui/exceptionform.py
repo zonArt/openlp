@@ -71,7 +71,10 @@ except ImportError:
     MAKO_VERSION = u'-'
 try:
     import icu
-    ICU_VERSION = u'OK'
+    try:
+       ICU_VERSION = icu.VERSION
+    except AttributeError:
+       ICU_VERSION = u'OK'
 except ImportError:
     ICU_VERSION = u'-'
 try:
