@@ -70,11 +70,11 @@ class TestUtils(TestCase):
             result = split_filename(file_path)
 
             # THEN: A tuple should be returned.
-            assert result == wanted_result, u'A tuple with the directory and file should have been returned.'
+            assert result == wanted_result, u'A tuple with the directory and file name should have been returned.'
 
     def split_filename_with_dir_path_test(self):
         """
-        Test the split_filename() function with a path to a directory.
+        Test the split_filename() function with a path to a directory
         """
         # GIVEN: A path to a dir.
         file_path = u'/home/user/mydir'
@@ -87,7 +87,7 @@ class TestUtils(TestCase):
 
             # THEN: A tuple should be returned.
             assert result == wanted_result, \
-                u'A two-entry tuple with the directory and file (empty) should have been returned.'
+                u'A two-entry tuple with the directory and file name (empty) should have been returned.'
 
 
     def clean_filename_test(self):
