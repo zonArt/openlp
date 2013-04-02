@@ -30,8 +30,6 @@
 The :mod:`mediashoutimport` module provides the functionality for importing
 a MediaShout database into the OpenLP database.
 """
-import re
-import os
 import pyodbc
 
 from openlp.core.lib import translate

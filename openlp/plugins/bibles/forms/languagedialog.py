@@ -62,8 +62,8 @@ class Ui_LanguageDialog(object):
         self.languageComboBox.setObjectName(u'languageComboBox')
         self.languageHBoxLayout.addWidget(self.languageComboBox)
         self.languageLayout.addLayout(self.languageHBoxLayout)
-        self.buttonBox = create_button_box(languageDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.languageLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(languageDialog, u'button_box', [u'cancel', u'ok'])
+        self.languageLayout.addWidget(self.button_box)
 
         self.retranslateUi(languageDialog)
 

@@ -26,18 +26,27 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets for the rename dialog
+"""
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
+
 class Ui_FileRenameDialog(object):
+    """
+    The UI widgets for the rename dialog
+    """
     def setupUi(self, fileRenameDialog):
+        """
+        Set up the UI
+        """
         fileRenameDialog.setObjectName(u'fileRenameDialog')
         fileRenameDialog.resize(300, 10)
         self.dialogLayout = QtGui.QGridLayout(fileRenameDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.fileNameLabel = QtGui.QLabel(fileRenameDialog)
         self.fileNameLabel.setObjectName(u'fileNameLabel')
         self.dialogLayout.addWidget(self.fileNameLabel, 0, 0)
@@ -45,10 +54,13 @@ class Ui_FileRenameDialog(object):
         self.fileNameEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
         self.fileNameEdit.setObjectName(u'fileNameEdit')
         self.dialogLayout.addWidget(self.fileNameEdit, 0, 1)
-        self.buttonBox = create_button_box(fileRenameDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
+        self.button_box = create_button_box(fileRenameDialog, u'button_box', [u'cancel', u'ok'])
+        self.dialogLayout.addWidget(self.button_box, 1, 0, 1, 2)
         self.retranslateUi(fileRenameDialog)
         self.setMaximumHeight(self.sizeHint().height())
 
     def retranslateUi(self, fileRenameDialog):
+        """
+        Translate the UI on the fly.
+        """
         self.fileNameLabel.setText(translate('OpenLP.FileRenameForm', 'New File Name:'))

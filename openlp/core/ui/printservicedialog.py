@@ -26,11 +26,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets of the print service dialog.
+"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate, SpellTextEdit
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import SpellTextEdit, UiStrings, build_icon, translate
+
 
 class ZoomSize(object):
     """
@@ -45,7 +47,13 @@ class ZoomSize(object):
 
 
 class Ui_PrintServiceDialog(object):
+    """
+    The UI of the print service dialog
+    """
     def setupUi(self, printServiceDialog):
+        """
+        Set up the UI
+        """
         printServiceDialog.setObjectName(u'printServiceDialog')
         printServiceDialog.resize(664, 594)
         self.mainLayout = QtGui.QVBoxLayout(printServiceDialog)
@@ -122,9 +130,12 @@ class Ui_PrintServiceDialog(object):
         self.optionsLayout.addWidget(self.optionsGroupBox)
 
         self.retranslateUi(printServiceDialog)
-        QtCore.QObject.connect(self.optionsButton,QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
+        QtCore.QObject.connect(self.optionsButton, QtCore.SIGNAL(u'toggled(bool)'), self.toggleOptions)
 
     def retranslateUi(self, printServiceDialog):
+        """
+        Translate the UI on the fly
+        """
         printServiceDialog.setWindowTitle(UiStrings().PrintService)
         self.zoomOutButton.setToolTip(translate('OpenLP.PrintServiceForm', 'Zoom Out'))
         self.zoomOriginalButton.setToolTip(translate('OpenLP.PrintServiceForm', 'Zoom Original'))
@@ -132,7 +143,7 @@ class Ui_PrintServiceDialog(object):
         self.optionsButton.setText(translate('OpenLP.PrintServiceForm', 'Options'))
         self.titleLabel.setText(translate('OpenLP.PrintServiceForm', 'Title:'))
         self.footerLabel.setText(translate('OpenLP.PrintServiceForm', 'Custom Footer Text:'))
-        self.optionsGroupBox.setTitle(translate('OpenLP.PrintServiceForm','Other Options'))
+        self.optionsGroupBox.setTitle(translate('OpenLP.PrintServiceForm', 'Other Options'))
         self.slideTextCheckBox.setText(translate('OpenLP.PrintServiceForm', 'Include slide text if available'))
         self.pageBreakAfterText.setText(translate('OpenLP.PrintServiceForm', 'Add page break before each text item'))
         self.notesCheckBox.setText(translate('OpenLP.PrintServiceForm', 'Include service item notes'))
@@ -145,6 +156,5 @@ class Ui_PrintServiceDialog(object):
             u'100%',
             u'75%',
             u'50%',
-            u'25%']
-        )
-
+            u'25%'
+        ])

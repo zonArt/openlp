@@ -32,9 +32,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, check_item_selected, translate, \
-    ServiceItemContext, Settings, PluginStatus
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, ServiceItemContext, Settings, PluginStatus, \
+    UiStrings, check_item_selected, translate
 from openlp.plugins.custom.forms import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -58,7 +57,7 @@ class CustomMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin, icon):
         self.IconPath = u'custom/custom'
         MediaManagerItem.__init__(self, parent, plugin, icon)
-        self.edit_custom_form = EditCustomForm(self, self.plugin.formParent, self.plugin.manager)
+        self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.singleServiceItem = False
         self.quickPreviewAllowed = True
         self.hasSearch = True
@@ -74,8 +73,6 @@ class CustomMediaItem(MediaManagerItem):
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
         QtCore.QObject.connect(self.searchTextEdit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.onSearchTextButtonClicked)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_edit'), self.onRemoteEdit)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_edit_clear'), self.onRemoteEditClear)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_load_list'), self.loadList)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'custom_preview'), self.onPreviewClick)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.config_updated)
@@ -83,7 +80,7 @@ class CustomMediaItem(MediaManagerItem):
             self.create_from_service_item)
 
     def config_updated(self):
-        self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service', True)
+        self.add_custom_from_service = Settings().value(self.settingsSection + u'/add custom from service')
 
     def retranslateUi(self):
         self.searchTextLabel.setText(u'%s:' % UiStrings().Search)
@@ -97,8 +94,7 @@ class CustomMediaItem(MediaManagerItem):
             (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
         self.loadList(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
-        self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection,
-            CustomSearch.Titles))
+        self.searchTextEdit.setCurrentSearchType(Settings().value( u'%s/last search type' % self.settingsSection))
         self.config_updated()
 
     def loadList(self, custom_slides):
@@ -117,11 +113,6 @@ class CustomMediaItem(MediaManagerItem):
         # Called to redisplay the custom list screen edith from a search
         # or from the exit of the Custom edit dialog. If remote editing is
         # active trigger it and clean up so it will not update again.
-        if self.remoteTriggered == u'L':
-            self.onAddClick()
-        if self.remoteTriggered == u'P':
-            self.onPreviewClick()
-        self.onRemoteEditClear()
 
     def onNewClick(self):
         self.edit_custom_form.loadCustom(0)
@@ -129,26 +120,27 @@ class CustomMediaItem(MediaManagerItem):
         self.onClearTextButtonClick()
         self.onSelectionChange()
 
-    def onRemoteEditClear(self):
-        self.remoteTriggered = None
-        self.remoteCustom = -1
-
-    def onRemoteEdit(self, message):
+    def onRemoteEdit(self, custom_id, preview=False):
         """
         Called by ServiceManager or SlideController by event passing
         the custom Id in the payload along with an indicator to say which
         type of display is required.
         """
-        remote_type, custom_id = message.split(u':')
         custom_id = int(custom_id)
         valid = self.manager.get_object(CustomSlide, custom_id)
         if valid:
-            self.remoteCustom = custom_id
-            self.remoteTriggered = remote_type
-            self.edit_custom_form.loadCustom(custom_id, (remote_type == u'P'))
-            self.edit_custom_form.exec_()
-            self.autoSelectId = -1
-            self.onSearchTextButtonClicked()
+            self.edit_custom_form.loadCustom(custom_id, preview)
+            if self.edit_custom_form.exec_() == QtGui.QDialog.Accepted:
+                self.remoteTriggered = True
+                self.remoteCustom = custom_id
+                self.autoSelectId = -1
+                self.onSearchTextButtonClicked()
+                item = self.buildServiceItem(remote=True)
+                self.remoteTriggered = None
+                self.remoteCustom = 1
+                if item:
+                    return item
+        return None
 
     def onEditClick(self):
         """
@@ -208,7 +200,7 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide)
-        if Settings().value(self.settingsSection + u'/display footer', True) or credit:
+        if Settings().value(self.settingsSection + u'/display footer') or credit:
             service_item.raw_footer.append(u' '.join([title, credit]))
         else:
             service_item.raw_footer.append(u'')
@@ -258,7 +250,7 @@ class CustomMediaItem(MediaManagerItem):
             and_(CustomSlide.title == item.title, CustomSlide.theme_name == item.theme,
                 CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
         if custom:
-            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
+            self.service_manager.service_item_update(custom.id, item.unique_identifier)
         else:
             if self.add_custom_from_service:
                 self.create_from_service_item(item)
@@ -288,7 +280,7 @@ class CustomMediaItem(MediaManagerItem):
         self.plugin.manager.save_object(custom)
         self.onSearchTextButtonClicked()
         if item.name.lower() == u'custom':
-            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item._uuid, False))
+            Receiver.send_message(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
 
     def onClearTextButtonClick(self):
         """

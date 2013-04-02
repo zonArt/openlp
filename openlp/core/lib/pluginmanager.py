@@ -33,9 +33,10 @@ import os
 import sys
 import logging
 
-from openlp.core.lib import Plugin, PluginStatus
+from openlp.core.lib import Plugin, PluginStatus, Registry
 
 log = logging.getLogger(__name__)
+
 
 class PluginManager(object):
     """
@@ -43,13 +44,6 @@ class PluginManager(object):
     and executes all the hooks, as and when necessary.
     """
     log.info(u'Plugin manager loaded')
-    __instance__ = None
-    @staticmethod
-    def get_instance():
-        """
-        Obtain a single instance of class.
-        """
-        return PluginManager.__instance__
 
     def __init__(self, plugin_dir):
         """
@@ -60,7 +54,7 @@ class PluginManager(object):
             The directory to search for plugins.
         """
         log.info(u'Plugin manager Initialising')
-        PluginManager.__instance__ = self
+        Registry().register(u'plugin_manager', self)
         if not plugin_dir in sys.path:
             log.debug(u'Inserting %s into sys.path', plugin_dir)
             sys.path.insert(0, plugin_dir)
@@ -69,16 +63,13 @@ class PluginManager(object):
         self.plugins = []
         log.info(u'Plugin manager Initialised')
 
-    def find_plugins(self, plugin_dir, plugin_helpers):
+    def find_plugins(self, plugin_dir):
         """
         Scan the directory ``plugin_dir`` for objects inheriting from the
         ``Plugin`` class.
 
         ``plugin_dir``
             The directory to scan.
-
-        ``plugin_helpers``
-            A list of helper objects to pass to the plugins.
 
         """
         log.info(u'Finding plugins')
@@ -117,7 +108,7 @@ class PluginManager(object):
         plugin_objects = []
         for p in plugin_classes:
             try:
-                plugin = p(plugin_helpers)
+                plugin = p()
                 log.debug(u'Loaded plugin %s', unicode(p))
                 plugin_objects.append(plugin)
             except TypeError:
@@ -221,3 +212,13 @@ class PluginManager(object):
             if plugin.name == name:
                 return plugin
         return None
+
+    def new_service_created(self):
+        """
+        Loop through all the plugins and give them an opportunity to handle a new service
+        """
+        log.info(u'plugins - new service created')
+        for plugin in self.plugins:
+            if plugin.isActive():
+                plugin.new_service_created()
+

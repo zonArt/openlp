@@ -31,9 +31,7 @@ The :mod:`songproimport` module provides the functionality for importing SongPro
 songs into the OpenLP database.
 """
 import re
-import os
 
-from openlp.core.lib import translate
 from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
 
@@ -109,7 +107,10 @@ class SongProImport(SongImport):
             self.finish()
             return
         if u'rtf1' in text:
-            text, self.encoding = strip_rtf(text, self.encoding)
+            result = strip_rtf(text, self.encoding)
+            if result is None:
+                return
+            text, self.encoding = result
             text = text.rstrip()
         if not text:
             return

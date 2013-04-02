@@ -31,16 +31,22 @@ from PyQt4 import QtCore, QtGui
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver, ImageSource, Settings
+from openlp.core.lib import Plugin, StringContent, Receiver, ImageSource, Settings, build_icon, translate
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
 
 log = logging.getLogger(__name__)
 
+__default_settings__ = {
+        u'images/background color': u'#000000',
+        u'images/images files': []
+    }
+
+
 class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'images', plugin_helpers, ImageMediaItem, ImageTab)
+    def __init__(self):
+        Plugin.__init__(self, u'images', __default_settings__, ImageMediaItem, ImageTab)
         self.weight = -7
         self.iconPath = u':/plugins/plugin_images.png'
         self.icon = build_icon(self.iconPath)
@@ -91,5 +97,5 @@ class ImagePlugin(Plugin):
         image manager to require updates.  Actual update is triggered by the
         last part of saving the config.
         """
-        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color', u'#000000'))
-        self.liveController.imageManager.updateImagesBorder(ImageSource.ImagePlugin, background)
+        background = QtGui.QColor(Settings().value(self.settingsSection + u'/background color'))
+        self.liveController.imageManager.update_images_border(ImageSource.ImagePlugin, background)

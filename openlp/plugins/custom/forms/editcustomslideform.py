@@ -1,3 +1,4 @@
+#lint:disable
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -35,16 +36,18 @@ from editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)
 
+
 class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
     """
     Class documentation goes here.
     """
     log.info(u'Custom Verse Editor loaded')
+
     def __init__(self, parent=None):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(EditCustomSlideForm, self).__init__(parent)
         self.setupUi(self)
         # Connecting signals and slots
         QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
@@ -88,9 +91,10 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         full_text = self.slideTextEdit.toPlainText()
         position = self.slideTextEdit.textCursor().position()
-        if position and full_text[position-1] != u'\n':
-             text = u'\n' + text
-        if position ==  len(full_text) or full_text[position] != u'\n':
-             text += u'\n'
+        if position and full_text[position - 1] != u'\n':
+            text = u'\n' + text
+        if position == len(full_text) or full_text[position] != u'\n':
+            text += u'\n'
         self.slideTextEdit.insertPlainText(text)
 
+#lint:enable

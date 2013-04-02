@@ -31,36 +31,40 @@ The :mod:`settingsform` provides a user interface for the OpenLP settings
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, build_icon, PluginStatus
+from openlp.core.lib import Receiver, PluginStatus, Registry, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
 
+
 class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
     """
     Provide the form to manipulate the settings for OpenLP
     """
-    def __init__(self, mainWindow, parent=None):
+    def __init__(self, parent=None):
         """
         Initialise the settings form
         """
-        self.mainWindow = mainWindow
+        Registry().register(u'settings_form', self)
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         # General tab
         self.generalTab = GeneralTab(self)
         # Themes tab
-        self.themesTab = ThemesTab(self, mainWindow)
+        self.themesTab = ThemesTab(self)
         # Advanced tab
         self.advancedTab = AdvancedTab(self)
         # Advanced tab
-        self.playerTab = PlayerTab(self, mainWindow)
+        self.playerTab = PlayerTab(self)
 
     def exec_(self):
+        """
+        Execute the form
+        """
         # load all the settings
         self.settingListWidget.clear()
         while self.stackedLayout.count():
@@ -140,5 +144,25 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         per save.
         """
         if self.resetSuffixes:
-            self.mainWindow.serviceManagerContents.resetSupportedSuffixes()
+            self.service_manager.reset_supported_suffixes()
             self.resetSuffixes = False
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
+
+    def _get_service_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)

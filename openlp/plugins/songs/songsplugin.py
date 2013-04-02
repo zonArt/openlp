@@ -26,6 +26,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.songs.songsplugin` module contains the Plugin class
+for the Songs plugin.
+"""
 
 import logging
 import os
@@ -34,17 +38,30 @@ import sqlite3
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate, Receiver
+from openlp.core.lib import Plugin, StringContent, UiStrings, build_icon, translate
 from openlp.core.lib.db import Manager
-from openlp.core.lib.ui import UiStrings, create_action
+from openlp.core.lib.ui import create_action
 from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade, SongMediaItem, SongsTab
 from openlp.plugins.songs.lib.db import init_schema, Song
+from openlp.plugins.songs.lib.mediaitem import SongSearch
 from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 
 log = logging.getLogger(__name__)
+__default_settings__ = {
+        u'songs/db type': u'sqlite',
+        u'songs/last search type': SongSearch.Entire,
+        u'songs/last import type': SongFormat.OpenLyrics,
+        u'songs/update service on edit': False,
+        u'songs/search as type': False,
+        u'songs/add song from service': True,
+        u'songs/display songbar': True,
+        u'songs/last directory import': u'',
+        u'songs/last directory export': u''
+    }
+
 
 class SongsPlugin(Plugin):
     """
@@ -56,11 +73,11 @@ class SongsPlugin(Plugin):
     """
     log.info(u'Song Plugin loaded')
 
-    def __init__(self, plugin_helpers):
+    def __init__(self):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'songs', plugin_helpers, SongMediaItem, SongsTab)
+        Plugin.__init__(self, u'songs', __default_settings__, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
         self.iconPath = u':/plugins/plugin_songs.png'
@@ -79,9 +96,6 @@ class SongsPlugin(Plugin):
         action_list.add_action(self.songImportItem, UiStrings().Import)
         action_list.add_action(self.songExportItem, UiStrings().Export)
         action_list.add_action(self.toolsReindexItem, UiStrings().Tools)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'servicemanager_new_service'),
-            self.clearTemporarySongs)
-
 
     def addImportMenuItem(self, import_menu):
         """
@@ -140,7 +154,7 @@ class SongsPlugin(Plugin):
         if maxSongs == 0:
             return
         progressDialog = QtGui.QProgressDialog(translate('SongsPlugin', 'Reindexing songs...'), UiStrings().Cancel,
-            0, maxSongs, self.formParent)
+            0, maxSongs, self.main_window)
         progressDialog.setWindowTitle(translate('SongsPlugin', 'Reindexing songs'))
         progressDialog.setWindowModality(QtCore.Qt.WindowModal)
         songs = self.manager.get_all_objects(Song)
@@ -183,8 +197,7 @@ class SongsPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        songsUsingTheme = self.manager.get_all_objects(Song,
-            Song.theme_name == oldTheme)
+        songsUsingTheme = self.manager.get_all_objects(Song, Song.theme_name == oldTheme)
         for song in songsUsingTheme:
             song.theme_name = newTheme
             self.manager.save_object(song)
@@ -223,14 +236,14 @@ class SongsPlugin(Plugin):
         }
         self.setPluginUiTextStrings(tooltips)
 
-    def firstTime(self):
+    def first_time(self):
         """
         If the first time wizard has run, this function is run to import all the
         new songs into the database.
         """
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         self.onToolsReindexItemTriggered()
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         db_dir = unicode(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         if not os.path.exists(db_dir):
             return
@@ -238,13 +251,13 @@ class SongsPlugin(Plugin):
         song_count = 0
         for sfile in os.listdir(db_dir):
             if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
-                Receiver.send_message(u'openlp_process_events')
+                self.application.process_events()
                 song_dbs.append(os.path.join(db_dir, sfile))
                 song_count += self._countSongs(os.path.join(db_dir, sfile))
         if not song_dbs:
             return
-        Receiver.send_message(u'openlp_process_events')
-        progress = QtGui.QProgressDialog(self.formParent)
+        self.application.process_events()
+        progress = QtGui.QProgressDialog(self.main_window)
         progress.setWindowModality(QtCore.Qt.WindowModal)
         progress.setWindowTitle(translate('OpenLP.Ui', 'Importing Songs'))
         progress.setLabelText(translate('OpenLP.Ui', 'Starting import...'))
@@ -252,11 +265,11 @@ class SongsPlugin(Plugin):
         progress.setRange(0, song_count)
         progress.setMinimumDuration(0)
         progress.forceShow()
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         for db in song_dbs:
             importer = OpenLPSongImport(self.manager, filename=db)
             importer.doImport(progress)
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
         progress.setValue(song_count)
         self.mediaItem.onSearchTextButtonClicked()
 
@@ -265,7 +278,7 @@ class SongsPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info(u'Songs Finalising')
-        self.clearTemporarySongs()
+        self.new_service_created()
         # Clean up files and connections
         self.manager.finalise()
         self.songImportItem.setVisible(False)
@@ -277,13 +290,18 @@ class SongsPlugin(Plugin):
         action_list.remove_action(self.toolsReindexItem, UiStrings().Tools)
         Plugin.finalise(self)
 
-    def clearTemporarySongs(self):
-        # Remove temporary songs
+    def new_service_created(self):
+        """
+        Remove temporary songs from the database
+        """
         songs = self.manager.get_all_objects(Song, Song.temporary == True)
         for song in songs:
             self.manager.delete_object(Song, song.id)
 
     def _countSongs(self, db_file):
+        """
+        Provide a count of the songs in the database
+        """
         connection = sqlite3.connect(db_file)
         cursor = connection.cursor()
         cursor.execute(u'SELECT COUNT(id) AS song_count FROM songs')

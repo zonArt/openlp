@@ -35,10 +35,10 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon
-from openlp.core.ui import ScreenList
+from openlp.core.lib import ScreenList, build_icon
 
 log = logging.getLogger(__name__)
+
 
 class OpenLPDockWidget(QtGui.QDockWidget):
     """

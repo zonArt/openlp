@@ -33,6 +33,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.songbookdialog import Ui_SongBookDialog
 
+
 class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
     """
     Class documentation goes here.
@@ -41,10 +42,16 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(SongBookForm, self).__init__(parent)
         self.setupUi(self)
 
     def exec_(self, clear=True):
+        """
+        Execute the song book form.
+
+        ``clear``
+            Clear the fields on the form before displaying it.
+        """
         if clear:
             self.nameEdit.clear()
             self.publisherEdit.clear()
@@ -52,6 +59,9 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
+        """
+        Override the inherited method to check that the name of the book has been typed in.
+        """
         if not self.nameEdit.text():
             critical_error_message_box(
                 message=translate('SongsPlugin.SongBookForm', 'You need to type in a name for the book.'))

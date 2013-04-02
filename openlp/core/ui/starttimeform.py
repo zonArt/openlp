@@ -26,20 +26,26 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The actual start time form.
+"""
 from PyQt4 import QtGui
 
 from starttimedialog import Ui_StartTimeDialog
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import UiStrings, Registry, translate
+from openlp.core.lib.ui import critical_error_message_box
+
 
 class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
     """
-    The exception dialog
+    The start time dialog
     """
-    def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+    def __init__(self):
+        """
+        Constructor
+        """
+        QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
 
     def exec_(self):
@@ -60,6 +66,9 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
+        """
+        When the dialog succeeds, this is run
+        """
         start = self.hourSpinBox.value() * 3600 + \
             self.minuteSpinBox.value() * 60 + \
             self.secondSpinBox.value()
@@ -79,8 +88,21 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         return QtGui.QDialog.accept(self)
 
     def _time_split(self, seconds):
+        """
+        Split time up into hours minutes and seconds from secongs
+        """
         hours = seconds / 3600
         seconds -= 3600 * hours
         minutes = seconds / 60
         seconds -= 60 * minutes
         return hours, minutes, seconds
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

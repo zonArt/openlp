@@ -28,7 +28,7 @@
 ###############################################################################
 import re
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.utils import CONTROL_CHARS, locale_direct_compare
@@ -571,6 +571,8 @@ def strip_rtf(text, default_encoding=None):
                 while True:
                     try:
                         encoding, default_encoding = get_encoding(font, font_table, default_encoding, failed=failed)
+                        if not encoding:
+                            return None
                         out.append(chr(charcode).decode(encoding))
                     except UnicodeDecodeError:
                         failed = True

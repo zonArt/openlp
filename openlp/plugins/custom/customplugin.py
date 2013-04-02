@@ -26,6 +26,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.custom.customplugin` module contains the Plugin class
+for the Custom Slides plugin.
+"""
 
 import logging
 
@@ -33,8 +37,17 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.plugins.custom.lib import CustomMediaItem, CustomTab
 from openlp.plugins.custom.lib.db import CustomSlide, init_schema
+from openlp.plugins.custom.lib.mediaitem import CustomSearch
 
 log = logging.getLogger(__name__)
+
+__default_settings__ = {
+        u'custom/db type': u'sqlite',
+        u'custom/last search type':  CustomSearch.Titles,
+        u'custom/display footer': True,
+        u'custom/add custom from service': True
+    }
+
 
 class CustomPlugin(Plugin):
     """
@@ -47,8 +60,8 @@ class CustomPlugin(Plugin):
     """
     log.info(u'Custom Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'custom', plugin_helpers, CustomMediaItem, CustomTab)
+    def __init__(self):
+        Plugin.__init__(self, u'custom', __default_settings__, CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
         self.iconPath = u':/plugins/plugin_custom.png'

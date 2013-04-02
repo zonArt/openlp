@@ -26,13 +26,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.shortcutlistform` module contains the form class"""
 import logging
 import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings
+from openlp.core.lib import Registry, Settings
 from openlp.core.utils import translate
 from openlp.core.utils.actions import ActionList
 from shortcutlistdialog import Ui_ShortcutListDialog
@@ -41,12 +42,16 @@ REMOVE_AMPERSAND = re.compile(r'&{1}')
 
 log = logging.getLogger(__name__)
 
+
 class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
     """
     The shortcut list dialog
     """
 
     def __init__(self, parent=None):
+        """
+        Constructor
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.changedActions = {}
@@ -63,7 +68,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onClearPrimaryButtonClicked)
         QtCore.QObject.connect(self.clearAlternateButton, QtCore.SIGNAL(u'clicked(bool)'),
             self.onClearAlternateButtonClicked)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
+        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
             self.onRestoreDefaultsClicked)
         QtCore.QObject.connect(self.defaultRadioButton, QtCore.SIGNAL(u'clicked(bool)'),
             self.onDefaultRadioButtonClicked)
@@ -71,6 +76,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.onCustomRadioButtonClicked)
 
     def keyPressEvent(self, event):
+        """
+        Respond to certain key presses
+        """
         if event.key() == QtCore.Qt.Key_Space:
             self.keyReleaseEvent(event)
         elif self.primaryPushButton.isChecked() or self.alternatePushButton.isChecked():
@@ -80,6 +88,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             self.close()
 
     def keyReleaseEvent(self, event):
+        """
+        Respond to certain key presses
+        """
         if not self.primaryPushButton.isChecked() and not self.alternatePushButton.isChecked():
             return
         key = event.key()
@@ -105,6 +116,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                     False, text=key_sequence.toString())
 
     def exec_(self):
+        """
+        Execute the dialog
+        """
         self.changedActions = {}
         self.reloadShortcutList()
         self._adjustButton(self.primaryPushButton, False, False, u'')
@@ -273,7 +287,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Restores all default shortcuts.
         """
-        if self.buttonBox.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
+        if self.button_box.buttonRole(button) != QtGui.QDialogButtonBox.ResetRole:
             return
         if QtGui.QMessageBox.question(self, translate('OpenLP.ShortcutListDialog', 'Restore Default Shortcuts'),
             translate('OpenLP.ShortcutListDialog', 'Do you want to restore all '
@@ -421,10 +435,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 if action.shortcutContext() in [QtCore.Qt.WindowShortcut,
                     QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
-                if changing_action.shortcutContext() in  [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
+                if changing_action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]:
                     is_valid = False
         if not is_valid:
-            Receiver.send_message(u'openlp_warning_message', {
+            self.main_window.warning_message( {
                 u'title': translate('OpenLP.ShortcutListDialog', 'Duplicate Shortcut'),
                 u'message': translate('OpenLP.ShortcutListDialog',
                     'The shortcut "%s" is already assigned to another action, '
@@ -464,3 +478,13 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             button.setChecked(checked)
         if enabled is not None:
             button.setEnabled(enabled)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

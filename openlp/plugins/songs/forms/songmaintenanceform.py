@@ -31,13 +31,14 @@ import logging
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import Receiver, translate
-from openlp.core.lib.ui import UiStrings, critical_error_message_box
+from openlp.core.lib import Receiver, UiStrings, translate
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms import AuthorsForm, TopicsForm, SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
 from songmaintenancedialog import Ui_SongMaintenanceDialog
 
 log = logging.getLogger(__name__)
+
 
 class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     """
@@ -47,7 +48,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(SongMaintenanceForm, self).__init__(parent)
         self.setupUi(self)
         self.manager = manager
         self.authorform = AuthorsForm(self)
@@ -93,8 +94,14 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.typeListWidget.setFocus()
         return QtGui.QDialog.exec_(self)
 
-    def _getCurrentItemId(self, listWidget):
-        item = listWidget.currentItem()
+    def _getCurrentItemId(self, list_widget):
+        """
+        Get the ID of the currently selected item.
+
+        ``list_widget``
+            The list widget to examine.
+        """
+        item = list_widget.currentItem()
         if item:
             item_id = (item.data(QtCore.Qt.UserRole))
             return item_id
@@ -102,6 +109,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             return -1
 
     def _deleteItem(self, itemClass, listWidget, resetFunc, dlgTitle, del_text, err_text):
+        """
+        Delete an item.
+        """
         item_id = self._getCurrentItemId(listWidget)
         if item_id != -1:
             item = self.manager.get_object(itemClass, item_id)
@@ -196,6 +206,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             return True
 
     def onAuthorAddButtonClicked(self):
+        """
+        Add an author to the list.
+        """
         self.authorform.setAutoDisplayName(True)
         if self.authorform.exec_():
             author = Author.populate(
@@ -213,6 +226,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     message=translate('SongsPlugin.SongMaintenanceForm', 'This author already exists.'))
 
     def onTopicAddButtonClicked(self):
+        """
+        Add a topic to the list.
+        """
         if self.topicform.exec_():
             topic = Topic.populate(name=self.topicform.nameEdit.text())
             if self.checkTopic(topic):
@@ -226,6 +242,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     message=translate('SongsPlugin.SongMaintenanceForm', 'This topic already exists.'))
 
     def onBookAddButtonClicked(self):
+        """
+        Add a book to the list.
+        """
         if self.bookform.exec_():
             book = Book.populate(name=self.bookform.nameEdit.text(),
                 publisher=self.bookform.publisherEdit.text())
@@ -240,6 +259,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     message=translate('SongsPlugin.SongMaintenanceForm', 'This book already exists.'))
 
     def onAuthorEditButtonClicked(self):
+        """
+        Edit an author.
+        """
         author_id = self._getCurrentItemId(self.authorsListWidget)
         if author_id == -1:
             return
@@ -283,6 +305,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'Could not save your modified author, because the author already exists.'))
 
     def onTopicEditButtonClicked(self):
+        """
+        Edit a topic.
+        """
         topic_id = self._getCurrentItemId(self.topicsListWidget)
         if topic_id == -1:
             return
@@ -311,6 +336,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                     'Could not save your modified topic, because it already exists.'))
 
     def onBookEditButtonClicked(self):
+        """
+        Edit a book.
+        """
         book_id = self._getCurrentItemId(self.booksListWidget)
         if book_id == -1:
             return
@@ -346,12 +374,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Utility method to merge two objects to leave one in the database.
         """
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         merge(dbObject)
         reset()
         if not self.fromSongEdit:
             Receiver.send_message(u'songs_load_list')
-        Receiver.send_message(u'cursor_normal')
+        self.application.set_normal_cursor()
 
     def mergeAuthors(self, oldAuthor):
         """
@@ -481,3 +509,12 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             deleteButton.setEnabled(True)
             editButton.setEnabled(True)
 
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)

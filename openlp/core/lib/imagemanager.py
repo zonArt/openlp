@@ -39,10 +39,10 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import resize_image, image_to_byte, Receiver
-from openlp.core.ui import ScreenList
+from openlp.core.lib import Receiver, Registry, ScreenList, resize_image, image_to_byte
 
 log = logging.getLogger(__name__)
+
 
 class ImageThread(QtCore.QThread):
     """
@@ -50,14 +50,20 @@ class ImageThread(QtCore.QThread):
     threaded so it loads the frames and generates byte stream in background.
     """
     def __init__(self, manager):
+        """
+        Constructor for the thread class.
+
+        ``manager``
+            The image manager.
+        """
         QtCore.QThread.__init__(self, None)
-        self.imageManager = manager
+        self.image_manager = manager
 
     def run(self):
         """
         Run the thread.
         """
-        self.imageManager._process()
+        self.image_manager._process()
 
 
 class Priority(object):
@@ -182,71 +188,75 @@ class ImageManager(QtCore.QObject):
     log.info(u'Image Manager loaded')
 
     def __init__(self):
+        """
+        Constructor for the image manager.
+        """
         QtCore.QObject.__init__(self)
-        currentScreen = ScreenList().current
-        self.width = currentScreen[u'size'].width()
-        self.height = currentScreen[u'size'].height()
+        Registry().register(u'image_manager', self)
+        current_screen = ScreenList().current
+        self.width = current_screen[u'size'].width()
+        self.height = current_screen[u'size'].height()
         self._cache = {}
-        self.imageThread = ImageThread(self)
-        self._conversionQueue = PriorityQueue()
-        self.stopManager = False
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.processUpdates)
+        self.image_thread = ImageThread(self)
+        self._conversion_queue = PriorityQueue()
+        self.stop_manager = False
+        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.process_updates)
 
-    def updateDisplay(self):
+    def update_display(self):
         """
         Screen has changed size so rebuild the cache to new size.
         """
-        log.debug(u'updateDisplay')
-        currentScreen = ScreenList().current
-        self.width = currentScreen[u'size'].width()
-        self.height = currentScreen[u'size'].height()
+        log.debug(u'update_display')
+        current_screen = ScreenList().current
+        self.width = current_screen[u'size'].width()
+        self.height = current_screen[u'size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
         for image in self._cache.values():
-            self._resetImage(image)
+            self._reset_image(image)
 
-    def updateImagesBorder(self, source, background):
+    def update_images_border(self, source, background):
         """
         Border has changed so update all the images affected.
         """
-        log.debug(u'updateImages')
+        log.debug(u'update_images_border')
         # Mark the images as dirty for a rebuild by setting the image and byte
         # stream to None.
         for image in self._cache.values():
             if image.source == source:
                 image.background = background
-                self._resetImage(image)
+                self._reset_image(image)
 
-    def updateImageBorder(self, path, source, background):
+    def update_image_border(self, path, source, background):
         """
         Border has changed so update the image affected.
         """
-        log.debug(u'updateImage')
+        log.debug(u'update_image_border')
         # Mark the image as dirty for a rebuild by setting the image and byte
         # stream to None.
         image = self._cache[(path, source)]
         if image.source == source:
             image.background = background
-            self._resetImage(image)
+            self._reset_image(image)
 
-    def _resetImage(self, image):
+    def _reset_image(self, image):
         """
         Mark the given :class:`Image` instance as dirty by setting its ``image``
         and ``image_bytes`` attributes to None.
         """
         image.image = None
         image.image_bytes = None
-        self._conversionQueue.modify_priority(image, Priority.Normal)
+        self._conversion_queue.modify_priority(image, Priority.Normal)
 
-    def processUpdates(self):
+    def process_updates(self):
         """
         Flush the queue to updated any data to update
         """
         # We want only one thread.
-        if not self.imageThread.isRunning():
-            self.imageThread.start()
+        if not self.image_thread.isRunning():
+            self.image_thread.start()
 
-    def getImage(self, path, source):
+    def get_image(self, path, source):
         """
         Return the ``QImage`` from the cache. If not present wait for the
         background thread to process it.
@@ -254,9 +264,9 @@ class ImageManager(QtCore.QObject):
         log.debug(u'getImage %s' % path)
         image = self._cache[(path, source)]
         if image.image is None:
-            self._conversionQueue.modify_priority(image, Priority.High)
+            self._conversion_queue.modify_priority(image, Priority.High)
             # make sure we are running and if not give it a kick
-            self.processUpdates()
+            self.process_updates()
             while image.image is None:
                 log.debug(u'getImage - waiting')
                 time.sleep(0.1)
@@ -265,74 +275,74 @@ class ImageManager(QtCore.QObject):
             # byte stream was not generated yet. However, we only need to do
             # this, when the image was generated before it was requested
             # (otherwise this is already taken care of).
-            self._conversionQueue.modify_priority(image, Priority.Low)
+            self._conversion_queue.modify_priority(image, Priority.Low)
         return image.image
 
-    def getImageBytes(self, path, source):
+    def get_image_bytes(self, path, source):
         """
         Returns the byte string for an image. If not present wait for the
         background thread to process it.
         """
-        log.debug(u'getImageBytes %s' % path)
+        log.debug(u'get_image_bytes %s' % path)
         image = self._cache[(path, source)]
         if image.image_bytes is None:
-            self._conversionQueue.modify_priority(image, Priority.Urgent)
+            self._conversion_queue.modify_priority(image, Priority.Urgent)
             # make sure we are running and if not give it a kick
-            self.processUpdates()
+            self.process_updates()
             while image.image_bytes is None:
                 log.debug(u'getImageBytes - waiting')
                 time.sleep(0.1)
         return image.image_bytes
 
-    def addImage(self, path, source, background):
+    def add_image(self, path, source, background):
         """
         Add image to cache if it is not already there.
         """
-        log.debug(u'addImage %s' % path)
+        log.debug(u'add_image %s' % path)
         if not (path, source) in self._cache:
             image = Image(path, source, background)
             self._cache[(path, source)] = image
-            self._conversionQueue.put((image.priority, image.secondary_priority, image))
+            self._conversion_queue.put((image.priority, image.secondary_priority, image))
         # Check if the there are any images with the same path and check if the
         # timestamp has changed.
         for image in self._cache.values():
             if os.path.exists(path):
                 if image.path == path and image.timestamp != os.stat(path).st_mtime:
                     image.timestamp = os.stat(path).st_mtime
-                    self._resetImage(image)
+                    self._reset_image(image)
         # We want only one thread.
-        if not self.imageThread.isRunning():
-            self.imageThread.start()
+        if not self.image_thread.isRunning():
+            self.image_thread.start()
 
     def _process(self):
         """
         Controls the processing called from a ``QtCore.QThread``.
         """
         log.debug(u'_process - started')
-        while not self._conversionQueue.empty() and not self.stopManager:
-            self._processCache()
+        while not self._conversion_queue.empty() and not self.stop_manager:
+            self._process_cache()
         log.debug(u'_process - ended')
 
-    def _processCache(self):
+    def _process_cache(self):
         """
         Actually does the work.
         """
         log.debug(u'_processCache')
-        image = self._conversionQueue.get()[2]
+        image = self._conversion_queue.get()[2]
         # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height, image.background)
             # Set the priority to Lowest and stop here as we need to process
             # more important images first.
             if image.priority == Priority.Normal:
-                self._conversionQueue.modify_priority(image, Priority.Lowest)
+                self._conversion_queue.modify_priority(image, Priority.Lowest)
                 return
             # For image with high priority we set the priority to Low, as the
             # byte stream might be needed earlier the byte stream of image with
             # Normal priority. We stop here as we need to process more important
             # images first.
             elif image.priority == Priority.High:
-                self._conversionQueue.modify_priority(image, Priority.Low)
+                self._conversion_queue.modify_priority(image, Priority.Low)
                 return
         # Generate the byte stream for the image.
         if image.image_bytes is None:

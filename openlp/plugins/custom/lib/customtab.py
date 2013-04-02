@@ -26,10 +26,14 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.custom.lib.customtab` module contains the settings tab
+for the Custom Slides plugin, which is inserted into the configuration dialog.
+"""
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, translate, Settings
+from openlp.core.lib import SettingsTab, Settings, translate
 
 class CustomTab(SettingsTab):
     """
@@ -66,6 +70,9 @@ class CustomTab(SettingsTab):
             'Import missing custom slides from service files'))
 
     def onDisplayFooterCheckBoxChanged(self, check_state):
+        """
+        Toggle the setting for displaying the footer.
+        """
         self.displayFooter = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
@@ -77,8 +84,8 @@ class CustomTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settingsSection)
-        self.displayFooter = settings.value(u'display footer', True)
-        self.update_load = settings.value(u'add custom from service', True)
+        self.displayFooter = settings.value(u'display footer')
+        self.update_load = settings.value(u'add custom from service')
         self.displayFooterCheckBox.setChecked(self.displayFooter)
         self.add_from_service_checkbox.setChecked(self.update_load)
         settings.endGroup()

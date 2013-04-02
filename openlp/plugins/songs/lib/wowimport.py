@@ -107,13 +107,13 @@ class WowImport(SongImport):
         """
         if isinstance(self.importSource, list):
             self.importWizard.progressBar.setMaximum(len(self.importSource))
-            for file in self.importSource:
+            for source in self.importSource:
                 if self.stopImportFlag:
                     return
                 self.setDefaults()
-                song_data = open(file, 'rb')
+                song_data = open(source, 'rb')
                 if song_data.read(19) != u'WoW File\nSong Words':
-                    self.logError(file, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
+                    self.logError(source, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
                             ('Invalid Words of Worship song file. Missing "Wow File\\nSong Words" header.'))))
                     continue
                 # Seek to byte which stores number of blocks in the song
@@ -121,7 +121,7 @@ class WowImport(SongImport):
                 no_of_blocks = ord(song_data.read(1))
                 song_data.seek(66)
                 if song_data.read(16) != u'CSongDoc::CBlock':
-                    self.logError(file, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
+                    self.logError(source, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
                         ('Invalid Words of Worship song file. Missing "CSongDoc::CBlock" string.'))))
                     continue
                 # Seek to the beginning of the first block
@@ -150,9 +150,9 @@ class WowImport(SongImport):
                 copyright_length = ord(song_data.read(1))
                 if copyright_length:
                     self.addCopyright(unicode(song_data.read(copyright_length), u'cp1252'))
-                file_name = os.path.split(file)[1]
+                file_name = os.path.split(source)[1]
                 # Get the song title
                 self.title = file_name.rpartition(u'.')[0]
                 song_data.close()
                 if not self.finish():
-                    self.logError(file)
+                    self.logError(source)

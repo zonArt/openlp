@@ -26,14 +26,24 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The GUI widgets of the exception dialog.
+"""
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button, create_button_box
 
+
 class Ui_ExceptionDialog(object):
+    """
+    The GUI widgets of the exception dialog.
+    """
     def setupUi(self, exceptionDialog):
+        """
+        Set up the UI.
+        """
         exceptionDialog.setObjectName(u'exceptionDialog')
         self.exceptionLayout = QtGui.QVBoxLayout(exceptionDialog)
         self.exceptionLayout.setObjectName(u'exceptionLayout')
@@ -66,19 +76,22 @@ class Ui_ExceptionDialog(object):
         self.exceptionLayout.addWidget(self.exceptionTextEdit)
         self.sendReportButton = create_button(exceptionDialog, u'sendReportButton',
             icon=u':/general/general_email.png', click=self.onSendReportButtonClicked)
-        self.saveReportButton = create_button(exceptionDialog,u'saveReportButton',
+        self.saveReportButton = create_button(exceptionDialog, u'saveReportButton',
             icon=u':/general/general_save.png', click=self.onSaveReportButtonClicked)
         self.attachFileButton = create_button(exceptionDialog, u'attachFileButton',
             icon=u':/general/general_open.png', click=self.onAttachFileButtonClicked)
-        self.buttonBox = create_button_box(exceptionDialog, u'buttonBox',
+        self.button_box = create_button_box(exceptionDialog, u'button_box',
             [u'close'], [self.sendReportButton, self.saveReportButton, self.attachFileButton])
-        self.exceptionLayout.addWidget(self.buttonBox)
+        self.exceptionLayout.addWidget(self.button_box)
 
         self.retranslateUi(exceptionDialog)
         QtCore.QObject.connect(self.descriptionTextEdit,
             QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
 
     def retranslateUi(self, exceptionDialog):
+        """
+        Translate the widgets on the fly.
+        """
         exceptionDialog.setWindowTitle(translate('OpenLP.ExceptionDialog', 'Error Occurred'))
         self.descriptionExplanation.setText(translate('OpenLP.ExceptionDialog',
             'Please enter a description of what you were doing to cause this '

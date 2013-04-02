@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The actual print service dialog
+"""
 import cgi
 import datetime
 import os
@@ -33,8 +36,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string, Receiver, Settings
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import Receiver, Settings, UiStrings, Registry, translate, get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -107,15 +109,16 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 }
 """
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
-    def __init__(self, mainWindow, serviceManager):
+class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
+    """
+    The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
+    """
+    def __init__(self):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, mainWindow)
-        self.mainWindow = mainWindow
-        self.serviceManager = serviceManager
+        QtGui.QDialog.__init__(self, self.main_window)
         self.printer = QtGui.QPrinter()
         self.printDialog = QtGui.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
@@ -124,13 +127,13 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Load the settings for the dialog.
         settings = Settings()
         settings.beginGroup(u'advanced')
-        self.slideTextCheckBox.setChecked(settings.value(u'print slide text', False))
-        self.pageBreakAfterText.setChecked(settings.value(u'add page break', False))
+        self.slideTextCheckBox.setChecked(settings.value(u'print slide text'))
+        self.pageBreakAfterText.setChecked(settings.value(u'add page break'))
         if not self.slideTextCheckBox.isChecked():
             self.pageBreakAfterText.setDisabled(True)
-        self.metaDataCheckBox.setChecked(settings.value(u'print file meta data', False))
-        self.notesCheckBox.setChecked(settings.value(u'print notes', False))
-        self.zoomComboBox.setCurrentIndex(settings.value(u'display size', 0))
+        self.metaDataCheckBox.setChecked(settings.value(u'print file meta data'))
+        self.notesCheckBox.setChecked(settings.value(u'print notes'))
+        self.zoomComboBox.setCurrentIndex(settings.value(u'display size'))
         settings.endGroup()
         # Signals
         QtCore.QObject.connect(self.printButton, QtCore.SIGNAL(u'triggered()'), self.printServiceOrder)
@@ -141,10 +144,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         QtCore.QObject.connect(self.zoomComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'), self.displaySizeChanged)
         QtCore.QObject.connect(self.plainCopy, QtCore.SIGNAL(u'triggered()'), self.copyText)
         QtCore.QObject.connect(self.htmlCopy, QtCore.SIGNAL(u'triggered()'), self.copyHtmlText)
-        QtCore.QObject.connect(self.slideTextCheckBox, QtCore.SIGNAL(u'stateChanged(int)'), self.onSlideTextCheckBoxChanged)
+        QtCore.QObject.connect(self.slideTextCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
+            self.onSlideTextCheckBoxChanged)
         self.updatePreviewText()
 
     def toggleOptions(self, checked):
+        """
+        Toggle various options
+        """
         self.optionsWidget.setVisible(checked)
         if checked:
             left = self.optionsButton.pos().x()
@@ -171,7 +178,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self._addElement(u'body', parent=html_data)
         self._addElement(u'h1', cgi.escape(self.titleLineEdit.text()),
             html_data.body, classId=u'serviceTitle')
-        for index, item in enumerate(self.serviceManager.serviceItems):
+        for index, item in enumerate(self.service_manager.service_items):
             self._addPreviewItem(html_data.body, item[u'service_item'], index)
         # Add the custom service notes:
         if self.footerTextEdit.toPlainText():
@@ -183,6 +190,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.previewWidget.updatePreview()
 
     def _addPreviewItem(self, body, item, index):
+        """
+        Add a preview item
+        """
         div = self._addElement(u'div', classId=u'item', parent=body)
         # Add the title of the service item.
         item_title = self._addElement(u'h2', parent=div, classId=u'itemTitle')
@@ -320,14 +330,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # remove the icon from the text
         clipboard_text = clipboard_text.replace(u'\ufffc\xa0', u'')
         # and put it all on the clipboard
-        self.mainWindow.clipboard.setText(clipboard_text)
+        self.main_window.clipboard.setText(clipboard_text)
 
     def copyHtmlText(self):
         """
         Copies the display text to the clipboard as Html
         """
         self.update_song_usage()
-        self.mainWindow.clipboard.setText(self.document.toHtml())
+        self.main_window.clipboard.setText(self.document.toHtml())
 
     def printServiceOrder(self):
         """
@@ -390,9 +400,32 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         settings.endGroup()
 
     def update_song_usage(self):
+        """
+        Update the song usage
+        """
         # Only continue when we include the song's text.
         if not self.slideTextCheckBox.isChecked():
             return
-        for item in self.serviceManager.serviceItems:
+        for item in self.service_manager.serviceItems:
             # Trigger Audit requests
             Receiver.send_message(u'print_service_started', [item[u'service_item']])
+
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

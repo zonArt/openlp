@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The actual exception dialog form.
+"""
 import logging
 import re
 import os
@@ -85,30 +88,39 @@ except AttributeError:
     WEBKIT_VERSION = u'-'
 
 
-from openlp.core.lib import translate, SettingsManager
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import UiStrings, Settings, translate
 from openlp.core.utils import get_application_version
 
 from exceptiondialog import Ui_ExceptionDialog
 
 log = logging.getLogger(__name__)
 
+
 class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     """
     The exception dialog
     """
     def __init__(self, parent):
+        """
+        Constructor.
+        """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.settingsSection = u'crashreport'
 
     def exec_(self):
+        """
+        Show the dialog.
+        """
         self.descriptionTextEdit.setPlainText(u'')
         self.onDescriptionUpdated()
         self.fileAttachment = None
         return QtGui.QDialog.exec_(self)
 
     def _createReport(self):
+        """
+        Create an exception report.
+        """
         openlp_version = get_application_version()
         description = self.descriptionTextEdit.toPlainText()
         traceback = self.exceptionTextEdit.toPlainText()
@@ -129,9 +141,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'pyUNO bridge: %s\n' % UNO_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
-                system = system + u'Desktop: KDE SC\n'
+                system += u'Desktop: KDE SC\n'
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
-                system = system + u'Desktop: GNOME\n'
+                system += u'Desktop: GNOME\n'
         return (openlp_version, description, traceback, system, libraries)
 
     def onSaveReportButtonClicked(self):
@@ -147,12 +159,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             '--- Library Versions ---\n%s\n')
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
-            SettingsManager.get_last_dir(self.settingsSection),
+            Settings().value(self.settingsSection + u'/last directory'),
             translate('OpenLP.ExceptionForm',
             'Text files (*.txt *.log *.text)'))
         if filename:
             filename = unicode(filename).replace(u'/', os.path.sep)
-            SettingsManager.set_last_dir(self.settingsSection, os.path.dirname(filename))
+            Settings().setValue(self.settingsSection + u'/last directory', os.path.dirname(filename))
             report_text = report_text % self._createReport()
             try:
                 report_file = open(filename, u'w')
@@ -200,6 +212,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         QtGui.QDesktopServices.openUrl(mailto_url)
 
     def onDescriptionUpdated(self):
+        """
+        Update the minimum number of characters needed in the description.
+        """
         count = int(20 - len(self.descriptionTextEdit.toPlainText()))
         if count < 0:
             count = 0
@@ -210,14 +225,19 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             translate('OpenLP.ExceptionDialog', 'Description characters to enter : %s') % count)
 
     def onAttachFileButtonClicked(self):
+        """
+        Attache files to the bug report e-mail.
+        """
         files = QtGui.QFileDialog.getOpenFileName(
             self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
-                SettingsManager.get_last_dir(u'exceptions'), u'%s (*.*) (*)' % UiStrings().AllFiles)
+                Settings().value(self.settingsSection + u'/last directory'), u'%s (*.*) (*)' % UiStrings().AllFiles)
         log.info(u'New files(s) %s', unicode(files))
         if files:
             self.fileAttachment = unicode(files)
 
     def __buttonState(self, state):
+        """
+        Toggle the button state.
+        """
         self.saveReportButton.setEnabled(state)
         self.sendReportButton.setEnabled(state)
-

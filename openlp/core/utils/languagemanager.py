@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`languagemanager` module provides all the translation settings and
-language file loading for OpenLP.
+The :mod:`languagemanager` module provides all the translation settings and language file loading for OpenLP.
 """
 import logging
 import re
@@ -37,9 +36,10 @@ import sys
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import AppLocation
-from openlp.core.lib import translate, Settings
+from openlp.core.lib import Settings, translate
 
 log = logging.getLogger(__name__)
+
 
 class LanguageManager(object):
     """
@@ -98,7 +98,7 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        language = Settings().value(u'general/language', u'[en]')
+        language = Settings().value(u'general/language')
         language = str(language)
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         if re.match(r'[[].*[]]', language):

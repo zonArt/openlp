@@ -27,10 +27,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate
-from openlp.core.lib.ui import UiStrings
+from openlp.core.lib import Receiver, Settings, SettingsTab, UiStrings, translate
 
 class PresentationTab(SettingsTab):
     """
@@ -101,9 +100,8 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.PresenterCheckboxes[controller.name]
-            checkbox.setChecked(Settings().value(self.settingsSection + u'/' + controller.name, QtCore.Qt.Checked))
-        self.OverrideAppCheckBox.setChecked(Settings().value(self.settingsSection + u'/override app',
-            QtCore.Qt.Unchecked))
+            checkbox.setChecked(Settings().value(self.settingsSection + u'/' + controller.name))
+        self.OverrideAppCheckBox.setChecked(Settings().value(self.settingsSection + u'/override app'))
 
     def save(self):
         """
@@ -119,7 +117,7 @@ class PresentationTab(SettingsTab):
             if controller.is_available():
                 checkbox = self.PresenterCheckboxes[controller.name]
                 setting_key = self.settingsSection + u'/' + controller.name
-                if Settings().value(setting_key, QtCore.Qt.Checked) != checkbox.checkState():
+                if Settings().value(setting_key) != checkbox.checkState():
                     changed = True
                     Settings().setValue(setting_key, checkbox.checkState())
                     if checkbox.isChecked():
@@ -127,11 +125,11 @@ class PresentationTab(SettingsTab):
                     else:
                         controller.kill()
         setting_key = self.settingsSection + u'/override app'
-        if Settings().value(setting_key, QtCore.Qt.Checked) != self.OverrideAppCheckBox.checkState():
+        if Settings().value(setting_key) != self.OverrideAppCheckBox.checkState():
             Settings().setValue(setting_key, self.OverrideAppCheckBox.checkState())
             changed = True
         if changed:
-            self.parent.resetSupportedSuffixes()
+            self.parent.reset_supported_suffixes()
             Receiver.send_message(u'mediaitem_presentation_rebuild')
             Receiver.send_message(u'mediaitem_suffixes')
 

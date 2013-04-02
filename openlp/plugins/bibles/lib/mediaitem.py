@@ -31,10 +31,10 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, \
-    translate, create_separated_list, ServiceItemContext, Settings
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
+    create_separated_list, translate
 from openlp.core.lib.searchedit import SearchEdit
-from openlp.core.lib.ui import UiStrings, set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
+from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
 from openlp.core.utils import locale_compare
 from openlp.plugins.bibles.forms import BibleImportForm, EditBibleForm
@@ -228,7 +228,7 @@ class BibleMediaItem(MediaManagerItem):
         self.addSearchFields(u'advanced', UiStrings().Advanced)
         # Combo Boxes
         QtCore.QObject.connect(self.quickVersionComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
-        QtCore.QObject.connect(self.quickSecondComboBox,  QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
+        QtCore.QObject.connect(self.quickSecondComboBox, QtCore.SIGNAL(u'activated(int)'), self.updateAutoCompleter)
         QtCore.QObject.connect(self.advancedVersionComboBox,QtCore.SIGNAL(u'activated(int)'),
             self.onAdvancedVersionComboBox)
         QtCore.QObject.connect(self.advancedSecondComboBox, QtCore.SIGNAL(u'activated(int)'),
@@ -260,7 +260,7 @@ class BibleMediaItem(MediaManagerItem):
 
     def configUpdated(self):
         log.debug(u'configUpdated')
-        if Settings().value(self.settingsSection + u'/second bibles', True):
+        if Settings().value(self.settingsSection + u'/second bibles'):
             self.advancedSecondLabel.setVisible(True)
             self.advancedSecondComboBox.setVisible(True)
             self.quickSecondLabel.setVisible(True)
@@ -312,8 +312,7 @@ class BibleMediaItem(MediaManagerItem):
                 translate('BiblesPlugin.MediaItem', 'Text Search'),
                 translate('BiblesPlugin.MediaItem', 'Search Text...'))
         ])
-        self.quickSearchEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection,
-            BibleSearch.Reference))
+        self.quickSearchEdit.setCurrentSearchType(Settings().value(u'%s/last search type' % self.settingsSection))
         self.configUpdated()
         log.debug(u'bible manager initialise complete')
 
@@ -335,13 +334,13 @@ class BibleMediaItem(MediaManagerItem):
         self.advancedVersionComboBox.addItems(bibles)
         self.advancedSecondComboBox.addItems(bibles)
         # set the default value
-        bible = Settings().value(self.settingsSection + u'/advanced bible', u'')
+        bible = Settings().value(self.settingsSection + u'/advanced bible')
         if bible in bibles:
             find_and_set_in_combo_box(self.advancedVersionComboBox, bible)
             self.initialiseAdvancedBible(unicode(bible))
         elif bibles:
             self.initialiseAdvancedBible(bibles[0])
-        bible = Settings().value(self.settingsSection + u'/quick bible', self.quickVersionComboBox.currentText())
+        bible = Settings().value(self.settingsSection + u'/quick bible')
         find_and_set_in_combo_box(self.quickVersionComboBox, bible)
 
     def reloadBibles(self, process=False):
@@ -350,7 +349,7 @@ class BibleMediaItem(MediaManagerItem):
         self.loadBibles()
         # If called from first time wizard re-run, process any new bibles.
         if process:
-            self.plugin.appStartup()
+            self.plugin.app_startup()
         self.updateAutoCompleter()
 
     def initialiseAdvancedBible(self, bible, last_book_id=None):
@@ -480,7 +479,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.advancedTab.isVisible():
             bible = self.advancedVersionComboBox.currentText()
         if bible:
-            self.editBibleForm = EditBibleForm(self, self.plugin.formParent, self.plugin.manager)
+            self.editBibleForm = EditBibleForm(self, self.main_window, self.plugin.manager)
             self.editBibleForm.loadBible(bible)
             if self.editBibleForm.exec_():
                 self.reloadBibles()
@@ -615,7 +614,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'Advanced Search Button clicked')
         self.advancedSearchButton.setEnabled(False)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         bible = self.advancedVersionComboBox.currentText()
         second_bible = self.advancedSecondComboBox.currentText()
         book = self.advancedBookComboBox.currentText()
@@ -629,7 +628,7 @@ class BibleMediaItem(MediaManagerItem):
         verse_range = chapter_from + verse_separator + verse_from + range_separator + chapter_to + \
             verse_separator + verse_to
         versetext = u'%s %s' % (book, verse_range)
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         self.search_results = self.plugin.manager.get_verses(bible, versetext, book_ref_id)
         if second_bible:
             self.second_search_results = self.plugin.manager.get_verses(second_bible, versetext, book_ref_id)
@@ -641,8 +640,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
         self.checkSearchResult()
-        Receiver.send_message(u'cursor_normal')
-        Receiver.send_message(u'openlp_process_events')
+        self.application.set_normal_cursor()
 
     def onQuickSearchButton(self):
         """
@@ -651,7 +649,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         log.debug(u'Quick Search Button clicked')
         self.quickSearchButton.setEnabled(False)
-        Receiver.send_message(u'openlp_process_events')
+        self.application.process_events()
         bible = self.quickVersionComboBox.currentText()
         second_bible = self.quickSecondComboBox.currentText()
         text = self.quickSearchEdit.text()
@@ -663,7 +661,7 @@ class BibleMediaItem(MediaManagerItem):
                     self.search_results[0].book.book_reference_id)
         else:
             # We are doing a 'Text Search'.
-            Receiver.send_message(u'cursor_busy')
+            self.application.set_busy_cursor()
             bibles = self.plugin.manager.get_bibles()
             self.search_results = self.plugin.manager.verse_search(bible, second_bible, text)
             if second_bible and self.search_results:
@@ -698,8 +696,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
         self.checkSearchResult()
-        Receiver.send_message(u'cursor_normal')
-        Receiver.send_message(u'openlp_process_events')
+        self.application.set_normal_cursor()
 
     def displayResults(self, bible, second_bible=u''):
         """

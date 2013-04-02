@@ -90,86 +90,8 @@ class ServiceItemAction(object):
     Next = 3
 
 
-class Settings(QtCore.QSettings):
-    """
-    Class to wrap QSettings.
-
-    * Exposes all the methods of QSettings.
-    * Adds functionality for OpenLP Portable. If the ``defaultFormat`` is set to
-    ``IniFormat``, and the path to the Ini file is set using ``setFilename``,
-    then the Settings constructor (without any arguments) will create a Settings
-    object for accessing settings stored in that Ini file.
-    """
-    __filePath__ = u''
-
-    @staticmethod
-    def setFilename(iniFile):
-        """
-        Sets the complete path to an Ini file to be used by Settings objects.
-
-        Does not affect existing Settings objects.
-        """
-        Settings.__filePath__ = iniFile
-
-    def __init__(self, *args):
-        if not args and Settings.__filePath__ and \
-            Settings.defaultFormat() == Settings.IniFormat:
-            QtCore.QSettings.__init__(self, Settings.__filePath__, Settings.IniFormat)
-        else:
-            QtCore.QSettings.__init__(self, *args)
-
-    def value(self, key, defaultValue):
-        """
-        Returns the value for the given ``key``. The returned ``value`` is
-        of the same type as the ``defaultValue``.
-
-        ``key``
-            The key to return the value from.
-
-        ``defaultValue``
-            The value to be returned if the given ``key`` is not present in the
-            config. Note, the ``defaultValue``'s type defines the type the
-            returned is converted to. In other words, if the ``defaultValue`` is
-            a boolean, then the returned value will be converted to a boolean.
-
-            **Note**, this method only converts a few types and might need to be
-            extended if a certain type is missing!
-        """
-        # Check for none as u'' is passed as default and is valid! This is
-        # needed because the settings export does not know the default values,
-        # thus just passes None.
-        if defaultValue is None and not super(Settings, self).contains(key):
-            return None
-        setting =  super(Settings, self).value(key, defaultValue)
-        # On OS X (and probably on other platforms too) empty value from QSettings
-        # is represented as type PyQt4.QtCore.QPyNullVariant. This type has to be
-        # converted to proper 'None' Python type.
-        if isinstance(setting, QtCore.QPyNullVariant) and setting.isNull():
-            setting = None
-        # Handle 'None' type (empty value) properly.
-        if setting is None:
-            # An empty string saved to the settings results in a None type being
-            # returned. Convert it to empty unicode string.
-            if isinstance(defaultValue, unicode):
-                return u''
-            # An empty list saved to the settings results in a None type being
-            # returned.
-            else:
-                return []
-        # Convert the setting to the correct type.
-        if isinstance(defaultValue, bool):
-            if isinstance(setting, bool):
-                return setting
-            # Sometimes setting is string instead of a boolean.
-            return setting == u'true'
-        if isinstance(defaultValue, int):
-            return int(setting)
-        return setting
-
-
-def translate(context, text, comment=None,
-    encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
-    translate=QtCore.QCoreApplication.translate):
+def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
+              translate=QtCore.QCoreApplication.translate):
     """
     A special shortcut method to wrap around the Qt4 translation functions.
     This abstracts the translation procedure so that we can change it if at a
@@ -415,17 +337,21 @@ def expand_tags(text):
     return text
 
 
-def check_directory_exists(dir):
+def check_directory_exists(directory, do_not_log=False):
     """
     Check a theme directory exists and if not create it
 
-    ``dir``
-        Theme directory to make sure exists
+    ``directory``
+        The directory to make sure exists
+
+    ``do_not_log``
+        To not log anything. This is need for the start up, when the log isn't ready.
     """
-    log.debug(u'check_directory_exists %s' % dir)
+    if not do_not_log:
+        log.debug(u'check_directory_exists %s' % directory)
     try:
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
     except IOError:
         pass
 
@@ -459,7 +385,11 @@ def create_separated_list(stringlist):
             u'Locale list separator: start') % (stringlist[0], merged)
 
 
+from registry import Registry
+from uistrings import UiStrings
 from eventreceiver import Receiver
+from screen import ScreenList
+from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
@@ -468,8 +398,7 @@ from plugin import PluginStatus, StringContent, Plugin
 from pluginmanager import PluginManager
 from settingstab import SettingsTab
 from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
-from htmlbuilder import build_html, build_lyrics_format_css, \
-    build_lyrics_outline_css
+from htmlbuilder import build_html, build_lyrics_format_css, build_lyrics_outline_css
 from toolbar import OpenLPToolbar
 from dockwidget import OpenLPDockWidget
 from imagemanager import ImageManager

@@ -26,15 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets for the formatting tags window.
+"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import UiStrings, translate
+from openlp.core.lib.ui import create_button_box
+
 
 class Ui_FormattingTagDialog(object):
-
+    """
+    The UI widgets for the formatting tags window.
+    """
     def setupUi(self, formattingTagDialog):
+        """
+        Set up the UI
+        """
         formattingTagDialog.setObjectName(u'formattingTagDialog')
         formattingTagDialog.resize(725, 548)
         self.listdataGridLayout = QtGui.QGridLayout(formattingTagDialog)
@@ -109,12 +117,15 @@ class Ui_FormattingTagDialog(object):
         self.savePushButton.setObjectName(u'savePushButton')
         self.dataGridLayout.addWidget(self.savePushButton, 4, 2, 1, 1)
         self.listdataGridLayout.addWidget(self.editGroupBox, 2, 0, 1, 1)
-        self.buttonBox = create_button_box(formattingTagDialog, u'buttonBox', [u'close'])
-        self.listdataGridLayout.addWidget(self.buttonBox, 3, 0, 1, 1)
+        self.button_box = create_button_box(formattingTagDialog, u'button_box', [u'close'])
+        self.listdataGridLayout.addWidget(self.button_box, 3, 0, 1, 1)
 
         self.retranslateUi(formattingTagDialog)
 
     def retranslateUi(self, formattingTagDialog):
+        """
+        Translate the UI on the fly
+        """
         formattingTagDialog.setWindowTitle(translate('OpenLP.FormattingTagDialog', 'Configure Formatting Tags'))
         self.editGroupBox.setTitle(translate('OpenLP.FormattingTagDialog', 'Edit Selection'))
         self.savePushButton.setText(translate('OpenLP.FormattingTagDialog', 'Save'))

@@ -33,7 +33,7 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, check_directory_exists, create_thumb, validate_thumb, Settings
+from openlp.core.lib import Receiver, Registry, Settings, check_directory_exists, create_thumb, validate_thumb
 from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
@@ -387,7 +387,7 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if Settings().value(self.settings_section + u'/' + self.name, QtCore.Qt.Checked) == QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + u'/' + self.name) == QtCore.Qt.Checked:
             return self.is_available()
         else:
             return False
@@ -438,3 +438,13 @@ class PresentationController(object):
 
     def close_presentation(self):
         pass
+
+    def _get_plugin_manager(self):
+        """
+        Adds the plugin manager to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)

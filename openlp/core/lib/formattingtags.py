@@ -31,9 +31,8 @@ Provide HTML Tag management and Formatting Tag access class
 """
 import cPickle
 
-from PyQt4 import QtCore
+from openlp.core.lib import Settings, translate
 
-from openlp.core.lib import translate, Settings
 
 class FormattingTags(object):
     """
@@ -164,7 +163,7 @@ class FormattingTags(object):
         FormattingTags.add_html_tags(temporary_tags)
 
         # Formatting Tags were also known as display tags.
-        user_expands = Settings().value(u'displayTags/html_tags', u'')
+        user_expands = Settings().value(u'displayTags/html_tags')
         # cPickle only accepts str not unicode strings
         user_expands_string = str(user_expands)
         if user_expands_string:

@@ -34,11 +34,11 @@ import re
 import sqlite3
 
 from PyQt4 import QtCore
-from sqlalchemy import Column, ForeignKey, or_, Table, types, func
+from sqlalchemy import Column, ForeignKey, Table, or_, types, func
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Receiver, Registry, translate
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, clean_filename
@@ -360,7 +360,7 @@ class BibleDB(QtCore.QObject, Manager):
 
         ``book``
             The name of the book, according to the selected language.
-        
+
         ``language_selection``
             The language selection the user has chosen in the settings
             section of the Bible.
@@ -548,6 +548,16 @@ class BibleDB(QtCore.QObject, Manager):
         log.debug(u'...............................Verses ')
         verses = self.session.query(Verse).all()
         log.debug(verses)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
 
 
 class BiblesResourcesDB(QtCore.QObject, Manager):
@@ -778,7 +788,7 @@ class BiblesResourcesDB(QtCore.QObject, Manager):
             The source of the webbible.
         """
         log.debug(u'BiblesResourcesDB.get_webbibles("%s")', source)
-        if not isinstance(source,  unicode):
+        if not isinstance(source, unicode):
             source = unicode(source)
         source = BiblesResourcesDB.get_download_source(source)
         bibles = BiblesResourcesDB.run_sql(u'SELECT id, name, abbreviation, '
@@ -953,7 +963,7 @@ class AlternativeBookNamesDB(QtCore.QObject, Manager):
         return cursor.fetchall()
 
     @staticmethod
-    def get_book_reference_id(name,  language_id=None):
+    def get_book_reference_id(name, language_id=None):
         """
         Return a book_reference_id if the name matches.
 

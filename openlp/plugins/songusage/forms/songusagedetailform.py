@@ -30,11 +30,10 @@
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import Receiver, Settings, SettingsManager, translate, \
-    check_directory_exists
+from openlp.core.lib import Receiver, Settings, translate, check_directory_exists
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from songusagedetaildialog import Ui_SongUsageDetailDialog
 
@@ -58,14 +57,11 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         We need to set up the screen
         """
-        year = QtCore.QDate().currentDate().year()
-        if QtCore.QDate().currentDate().month() < 9:
-            year -= 1
-        toDate = Settings().value(self.plugin.settingsSection + u'/to date', QtCore.QDate(year, 8, 31))
-        fromDate = Settings().value(self.plugin.settingsSection + u'/from date', QtCore.QDate(year - 1, 9, 1))
+        toDate = Settings().value(self.plugin.settingsSection + u'/to date')
+        fromDate = Settings().value(self.plugin.settingsSection + u'/from date')
         self.fromDate.setSelectedDate(fromDate)
         self.toDate.setSelectedDate(toDate)
-        self.fileLineEdit.setText(SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
+        self.fileLineEdit.setText(Settings().value(self.plugin.settingsSection + u'/last directory export'))
 
     def defineOutputLocation(self):
         """
@@ -73,10 +69,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
-            SettingsManager.get_last_dir(self.plugin.settingsSection, 1))
-        path = unicode(path)
+            Settings().value(self.plugin.settingsSection + u'/last directory export'))
         if path:
-            SettingsManager.set_last_dir(self.plugin.settingsSection, path, 1)
+            Settings().setValue(self.plugin.settingsSection + u'/last directory export', path)
             self.fileLineEdit.setText(path)
 
     def accept(self):

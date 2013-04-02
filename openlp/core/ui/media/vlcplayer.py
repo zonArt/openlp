@@ -26,16 +26,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.media.vlcplayer` module contains our VLC component wrapper
+"""
 from datetime import datetime
 from distutils.version import LooseVersion
 import logging
 import os
 import sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, translate, Settings
+from openlp.core.lib import Settings, translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
@@ -80,8 +82,8 @@ VIDEO_EXT = [
     u'*.nsc',
     u'*.nsv',
     u'*.nut',
-    u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv',
-    u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid',
+    u'*.ra', u'*.ram', u'*.rm', u'*.rv', u'*.rmbv',
+    u'*.a52', u'*.dts', u'*.aac', u'*.flac', u'*.dv', u'*.vid',
     u'*.tta', u'*.tac',
     u'*.ty',
     u'*.dts',
@@ -99,6 +101,9 @@ class VlcPlayer(MediaPlayer):
     """
 
     def __init__(self, parent):
+        """
+        Constructor
+        """
         MediaPlayer.__init__(self, parent, u'vlc')
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
@@ -108,12 +113,16 @@ class VlcPlayer(MediaPlayer):
         self.video_extensions_list = VIDEO_EXT
 
     def setup(self, display):
+        """
+        Set up the media player
+        """
         display.vlcWidget = QtGui.QFrame(display)
+        display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
         if not display.hasAudio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse', True) and display.controller.isLive:
+        if Settings().value(u'advanced/hide mouse') and display.controller.isLive:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
         display.vlcInstance.set_log_verbosity(2)
@@ -140,9 +149,15 @@ class VlcPlayer(MediaPlayer):
         self.hasOwnWidget = True
 
     def check_available(self):
+        """
+        Return the availability of VLC
+        """
         return VLC_AVAILABLE
 
     def load(self, display):
+        """
+        Load a video into VLC
+        """
         log.debug(u'load vid in Vlc Controller')
         controller = display.controller
         volume = controller.media_info.volume
@@ -172,15 +187,21 @@ class VlcPlayer(MediaPlayer):
         while not mediaState == display.vlcMedia.get_state():
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             if (datetime.now() - start).seconds > 60:
                 return False
         return True
 
     def resize(self, display):
+        """
+        Resize the player
+        """
         display.vlcWidget.resize(display.size())
 
     def play(self, display):
+        """
+        Play the current item
+        """
         controller = display.controller
         start_time = 0
         if self.state != MediaState.Paused and controller.media_info.start_time > 0:
@@ -188,6 +209,7 @@ class VlcPlayer(MediaPlayer):
         display.vlcMediaPlayer.play()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
+        self.volume(display, controller.media_info.volume)
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
@@ -197,6 +219,9 @@ class VlcPlayer(MediaPlayer):
         return True
 
     def pause(self, display):
+        """
+        Pause the current item
+        """
         if display.vlcMedia.get_state() != vlc.State.Playing:
             return
         display.vlcMediaPlayer.pause()
@@ -204,27 +229,45 @@ class VlcPlayer(MediaPlayer):
             self.state = MediaState.Paused
 
     def stop(self, display):
+        """
+        Stop the current item
+        """
         display.vlcMediaPlayer.stop()
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
+        """
+        Set the volume
+        """
         if display.hasAudio:
             display.vlcMediaPlayer.audio_set_volume(vol)
 
     def seek(self, display, seekVal):
+        """
+        Go to a particular position
+        """
         if display.vlcMediaPlayer.is_seekable():
             display.vlcMediaPlayer.set_time(seekVal)
 
     def reset(self, display):
+        """
+        Reset the player
+        """
         display.vlcMediaPlayer.stop()
         display.vlcWidget.setVisible(False)
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
+        """
+        Set the visibility
+        """
         if self.hasOwnWidget:
             display.vlcWidget.setVisible(status)
 
     def update_ui(self, display):
+        """
+        Update the UI
+        """
         # Stop video if playback is finished.
         if display.vlcMedia.get_state() == vlc.State.Ended:
             self.stop(display)
@@ -234,9 +277,14 @@ class VlcPlayer(MediaPlayer):
                 self.stop(display)
                 self.set_visible(display, False)
         if not controller.seekSlider.isSliderDown():
+            controller.seekSlider.blockSignals(True)
             controller.seekSlider.setSliderPosition(display.vlcMediaPlayer.get_time())
+            controller.seekSlider.blockSignals(False)
 
     def get_info(self):
+        """
+        Return some information about this player
+        """
         return(translate('Media.player', 'VLC is an external player which '
             'supports a number of different formats.') +
             u'<br/> <strong>' + translate('Media.player', 'Audio') +

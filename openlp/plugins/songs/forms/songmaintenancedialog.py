@@ -29,8 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import UiStrings, build_icon
+from openlp.core.lib.ui import create_button_box
 from openlp.plugins.songs.lib.ui import SongStrings
 
 class Ui_SongMaintenanceDialog(object):
@@ -39,7 +39,7 @@ class Ui_SongMaintenanceDialog(object):
         songMaintenanceDialog.setWindowModality(QtCore.Qt.ApplicationModal)
         songMaintenanceDialog.resize(10, 350)
         self.dialogLayout = QtGui.QGridLayout(songMaintenanceDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.typeListWidget = QtGui.QListWidget(songMaintenanceDialog)
         self.typeListWidget.setIconSize(QtCore.QSize(32, 32))
         self.typeListWidget.setUniformItemSizes(True)
@@ -130,8 +130,8 @@ class Ui_SongMaintenanceDialog(object):
         self.stackedLayout.addWidget(self.booksPage)
         #
         self.dialogLayout.addLayout(self.stackedLayout, 0, 1)
-        self.buttonBox = create_button_box(songMaintenanceDialog, u'buttonBox', [u'close'])
-        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
+        self.button_box = create_button_box(songMaintenanceDialog, u'button_box', [u'close'])
+        self.dialogLayout.addWidget(self.button_box, 1, 0, 1, 2)
         self.retranslateUi(songMaintenanceDialog)
         self.stackedLayout.setCurrentIndex(0)
         QtCore.QObject.connect(self.typeListWidget, QtCore.SIGNAL(u'currentRowChanged(int)'),

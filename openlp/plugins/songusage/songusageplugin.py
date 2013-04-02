@@ -32,7 +32,7 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Plugin, Receiver, Settings, StringContent, translate
+from openlp.core.lib import Plugin, Receiver, Settings, StringContent, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList
@@ -42,11 +42,26 @@ from openlp.plugins.songusage.lib.db import init_schema, SongUsageItem
 
 log = logging.getLogger(__name__)
 
+
+YEAR = QtCore.QDate().currentDate().year()
+if QtCore.QDate().currentDate().month() < 9:
+    YEAR -= 1
+
+
+__default_settings__ = {
+        u'songusage/db type': u'sqlite',
+        u'songusage/active': False,
+        u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
+        u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
+        u'songusage/last directory export': u''
+    }
+
+
 class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
-    def __init__(self, plugin_helpers):
-        Plugin.__init__(self, u'songusage', plugin_helpers)
+    def __init__(self):
+        Plugin.__init__(self, u'songusage', __default_settings__)
         self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
@@ -92,12 +107,12 @@ class SongUsagePlugin(Plugin):
         self.songUsageMenu.addSeparator()
         self.songUsageMenu.addAction(self.songUsageReport)
         self.songUsageMenu.addAction(self.songUsageDelete)
-        self.songUsageActiveButton = QtGui.QToolButton(self.formParent.statusBar)
+        self.songUsageActiveButton = QtGui.QToolButton(self.main_window.statusBar)
         self.songUsageActiveButton.setCheckable(True)
         self.songUsageActiveButton.setAutoRaise(True)
         self.songUsageActiveButton.setStatusTip(translate('SongUsagePlugin', 'Toggle the tracking of song usage.'))
         self.songUsageActiveButton.setObjectName(u'songUsageActiveButton')
-        self.formParent.statusBar.insertPermanentWidget(1, self.songUsageActiveButton)
+        self.main_window.statusBar.insertPermanentWidget(1, self.songUsageActiveButton)
         self.songUsageActiveButton.hide()
         # Signals and slots
         QtCore.QObject.connect(self.songUsageStatus, QtCore.SIGNAL(u'visibilityChanged(bool)'),
@@ -112,15 +127,15 @@ class SongUsagePlugin(Plugin):
             self.displaySongUsage)
         QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'print_service_started'),
             self.printSongUsage)
-        self.songUsageActive = Settings().value(self.settingsSection + u'/active', False)
+        self.songUsageActive = Settings().value(self.settingsSection + u'/active')
         # Set the button and checkbox state
         self.setButtonState()
         action_list = ActionList.get_instance()
         action_list.add_action(self.songUsageStatus, translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageDelete, translate('SongUsagePlugin', 'Song Usage'))
         action_list.add_action(self.songUsageReport, translate('SongUsagePlugin', 'Song Usage'))
-        self.songUsageDeleteForm = SongUsageDeleteForm(self.manager, self.formParent)
-        self.songUsageDetailForm = SongUsageDetailForm(self, self.formParent)
+        self.songUsageDeleteForm = SongUsageDeleteForm(self.manager, self.main_window)
+        self.songUsageDetailForm = SongUsageDetailForm(self, self.main_window)
         self.songUsageMenu.menuAction().setVisible(True)
         self.songUsageActiveButton.show()
 

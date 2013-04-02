@@ -32,9 +32,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import MediaManagerItem, build_icon, SettingsManager, translate, check_item_selected, Receiver, \
-    ItemCapabilities, create_thumb, validate_thumb, ServiceItemContext, Settings
-from openlp.core.lib.ui import UiStrings, critical_error_message_box, create_horizontal_adjusting_combo_box
+from openlp.core.lib import MediaManagerItem, Receiver, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
+    build_icon, check_item_selected, create_thumb, translate, validate_thumb
+from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.utils import locale_compare
 from openlp.plugins.presentations.lib import MessageListener
 
@@ -85,7 +85,7 @@ class PresentationMediaItem(MediaManagerItem):
                 for type in types:
                     if fileType.find(type) == -1:
                         fileType += u'*.%s ' % type
-                        self.plugin.serviceManager.supportedSuffixes(type)
+                        self.service_manager.supported_suffixes(type)
         self.onNewFileMasks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % fileType
 
     def requiredIcons(self):
@@ -120,7 +120,7 @@ class PresentationMediaItem(MediaManagerItem):
         Populate the media manager tab
         """
         self.listView.setIconSize(QtCore.QSize(88, 50))
-        files = SettingsManager.load_list(self.settingsSection, u'presentations')
+        files = Settings().value(self.settingsSection + u'/presentations files')
         self.loadList(files, True)
         self.populateDisplayTypes()
 
@@ -137,8 +137,7 @@ class PresentationMediaItem(MediaManagerItem):
         if self.displayTypeComboBox.count() > 1:
             self.displayTypeComboBox.insertItem(0, self.Automatic)
             self.displayTypeComboBox.setCurrentIndex(0)
-        if Settings().value(self.settingsSection + u'/override app',
-            QtCore.Qt.Unchecked) == QtCore.Qt.Checked:
+        if Settings().value(self.settingsSection + u'/override app') == QtCore.Qt.Checked:
             self.presentationWidget.show()
         else:
             self.presentationWidget.hide()
@@ -151,16 +150,15 @@ class PresentationMediaItem(MediaManagerItem):
         """
         currlist = self.getFileList()
         titles = [os.path.split(file)[1] for file in currlist]
-        Receiver.send_message(u'cursor_busy')
+        self.application.set_busy_cursor()
         if not initialLoad:
-            Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(files))
+            self.main_window.displayProgressBar(len(files))
         # Sort the presentations by its filename considering language specific characters.
         files.sort(cmp=locale_compare,
             key=lambda filename: os.path.split(unicode(filename))[1])
         for file in files:
             if not initialLoad:
-                self.plugin.formParent.incrementProgressBar()
+                self.main_window.incrementProgressBar()
             if currlist.count(file) > 0:
                 continue
             filename = os.path.split(unicode(file))[1]
@@ -207,10 +205,9 @@ class PresentationMediaItem(MediaManagerItem):
                 item_name.setIcon(icon)
                 item_name.setToolTip(file)
                 self.listView.addItem(item_name)
-        Receiver.send_message(u'cursor_normal')
         if not initialLoad:
-            self.plugin.formParent.finishedProgressBar()
-            Receiver.send_message(u'cursor_normal')
+            self.main_window.finishedProgressBar()
+        self.application.set_normal_cursor()
 
     def onDeleteClick(self):
         """
@@ -220,20 +217,20 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.listView.selectedIndexes()
             row_list = [item.row() for item in items]
             row_list.sort(reverse=True)
-            Receiver.send_message(u'cursor_busy')
-            self.plugin.formParent.displayProgressBar(len(row_list))
+            self.application.set_busy_cursor()
+            self.main_window.displayProgressBar(len(row_list))
             for item in items:
                 filepath = unicode(item.data(QtCore.Qt.UserRole))
                 for cidx in self.controllers:
                     doc = self.controllers[cidx].add_document(filepath)
                     doc.presentation_deleted()
                     doc.close_presentation()
-                self.plugin.formParent.incrementProgressBar()
-            self.plugin.formParent.finishedProgressBar()
-            Receiver.send_message(u'cursor_normal')
+                self.main_window.incrementProgressBar()
+            self.main_window.finishedProgressBar()
+            self.application.set_busy_cursor()
             for row in row_list:
                 self.listView.takeItem(row)
-            SettingsManager.set_list(self.settingsSection, u'presentations', self.getFileList())
+            Settings().setValue(self.settingsSection + u'/presentations files', self.getFileList())
 
     def generateSlideData(self, service_item, item=None, xmlVersion=False,
         remote=False, context=ServiceItemContext.Service):
@@ -272,7 +269,7 @@ class PresentationMediaItem(MediaManagerItem):
                 if img:
                     while img:
                         service_item.add_from_command(path, name, img)
-                        i = i + 1
+                        i += 1
                         img = doc.get_thumbnail_path(i, True)
                     doc.close_presentation()
                     return True
@@ -312,8 +309,7 @@ class PresentationMediaItem(MediaManagerItem):
         return None
 
     def search(self, string, showError):
-        files = SettingsManager.load_list(
-            self.settingsSection, u'presentations')
+        files = Settings().value(self.settingsSection + u'/presentations files')
         results = []
         string = string.lower()
         for file in files:

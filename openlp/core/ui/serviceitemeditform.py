@@ -26,100 +26,111 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The service item edit dialog
+"""
 from PyQt4 import QtCore, QtGui
+from openlp.core.lib import Registry
 
 from serviceitemeditdialog import Ui_ServiceItemEditDialog
+
 
 class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
     """
     This is the form that is used to edit the verses of the song.
     """
-    def __init__(self, parent=None):
+    def __init__(self):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
-        self.itemList = []
-        QtCore.QObject.connect(self.listWidget, QtCore.SIGNAL(u'currentRowChanged(int)'), self.onCurrentRowChanged)
+        self.item_list = []
+        QtCore.QObject.connect(self.list_widget, QtCore.SIGNAL(u'currentRowChanged(int)'),
+            self.on_current_row_changed)
 
-    def setServiceItem(self, item):
+    def set_service_item(self, item):
+        """
+        Set the service item to be edited.
+        """
         self.item = item
-        self.itemList = []
+        self.item_list = []
         if self.item.is_image():
             self.data = True
             for frame in self.item._raw_frames:
-                self.itemList.append(frame)
-        self.loadData()
-        self.listWidget.setCurrentItem(self.listWidget.currentItem())
+                self.item_list.append(frame)
+        self.load_data()
+        self.list_widget.setCurrentItem(self.list_widget.currentItem())
 
-    def getServiceItem(self):
+    def get_service_item(self):
+        """
+        Get the modified service item.
+        """
         if self.data:
             self.item._raw_frames = []
             if self.item.is_image():
-                for item in self.itemList:
+                for item in self.item_list:
                     self.item.add_from_image(item[u'path'], item[u'title'])
             self.item.render()
         return self.item
 
-    def loadData(self):
+    def load_data(self):
         """
         Loads the image list.
         """
-        self.listWidget.clear()
-        for frame in self.itemList:
+        self.list_widget.clear()
+        for frame in self.item_list:
             item_name = QtGui.QListWidgetItem(frame[u'title'])
-            self.listWidget.addItem(item_name)
+            self.list_widget.addItem(item_name)
 
-    def onDeleteButtonClicked(self):
+    def on_delete_button_clicked(self):
         """
         Delete the current row.
         """
-        item = self.listWidget.currentItem()
+        item = self.list_widget.currentItem()
         if not item:
             return
-        row = self.listWidget.row(item)
-        self.itemList.pop(row)
-        self.loadData()
-        if row == self.listWidget.count():
-            self.listWidget.setCurrentRow(row - 1)
+        row = self.list_widget.row(item)
+        self.item_list.pop(row)
+        self.load_data()
+        if row == self.list_widget.count():
+            self.list_widget.setCurrentRow(row - 1)
         else:
-            self.listWidget.setCurrentRow(row)
+            self.list_widget.setCurrentRow(row)
 
-    def onUpButtonClicked(self):
+    def on_up_button_clicked(self):
         """
         Move the current row up in the list.
         """
-        self.__moveItem(u'up')
+        self.__move_item(u'up')
 
-    def onDownButtonClicked(self):
+    def on_down_button_clicked(self):
         """
         Move the current row down in the list
         """
-        self.__moveItem(u'down')
+        self.__move_item(u'down')
 
-    def __moveItem(self, direction=u''):
+    def __move_item(self, direction=u''):
         """
         Move the current item.
         """
         if not direction:
             return
-        item = self.listWidget.currentItem()
+        item = self.list_widget.currentItem()
         if not item:
             return
-        row = self.listWidget.row(item)
-        temp = self.itemList[row]
-        self.itemList.pop(row)
+        row = self.list_widget.row(item)
+        temp = self.item_list[row]
+        self.item_list.pop(row)
         if direction == u'up':
             row -= 1
         else:
             row += 1
-        self.itemList.insert(row, temp)
-        self.loadData()
-        self.listWidget.setCurrentRow(row)
+        self.item_list.insert(row, temp)
+        self.load_data()
+        self.list_widget.setCurrentRow(row)
 
-    def onCurrentRowChanged(self, row):
+    def on_current_row_changed(self, row):
         """
         Called when the currentRow has changed.
 
@@ -127,19 +138,29 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             The row number (int).
         """
         # Disable all buttons, as no row is selected or only one image is left.
-        if row == -1 or self.listWidget.count() == 1:
-            self.downButton.setEnabled(False)
-            self.upButton.setEnabled(False)
-            self.deleteButton.setEnabled(False)
+        if row == -1 or self.list_widget.count() == 1:
+            self.down_button.setEnabled(False)
+            self.up_button.setEnabled(False)
+            self.delete_button.setEnabled(False)
         else:
             # Check if we are at the end of the list.
-            if self.listWidget.count() == row + 1:
-                self.downButton.setEnabled(False)
+            if self.list_widget.count() == row + 1:
+                self.down_button.setEnabled(False)
             else:
-                self.downButton.setEnabled(True)
+                self.down_button.setEnabled(True)
             # Check if we are at the beginning of the list.
             if row == 0:
-                self.upButton.setEnabled(False)
+                self.up_button.setEnabled(False)
             else:
-                self.upButton.setEnabled(True)
-            self.deleteButton.setEnabled(True)
+                self.up_button.setEnabled(True)
+            self.delete_button.setEnabled(True)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

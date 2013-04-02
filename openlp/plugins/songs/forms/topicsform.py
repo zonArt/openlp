@@ -33,6 +33,7 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
 
+
 class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     """
     Class documentation goes here.
@@ -41,16 +42,22 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(TopicsForm, self).__init__(parent)
         self.setupUi(self)
 
     def exec_(self, clear=True):
+        """
+        Execute the dialog.
+        """
         if clear:
             self.nameEdit.clear()
         self.nameEdit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
+        """
+        Override the inherited method to check before we close.
+        """
         if not self.nameEdit.text():
             critical_error_message_box(message=translate('SongsPlugin.TopicsForm',
                 'You need to type in a topic name.'))

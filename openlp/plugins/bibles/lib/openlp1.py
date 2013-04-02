@@ -31,7 +31,6 @@ import logging
 import sqlite
 import sys
 
-from openlp.core.lib import Receiver
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -108,7 +107,7 @@ class OpenLP1Bible(BibleDB):
                 verse_number = int(verse[1])
                 text = unicode(verse[2], u'cp1252')
                 self.create_verse(db_book.id, chapter, verse_number, text)
-                Receiver.send_message(u'openlp_process_events')
+                self.application.process_events()
             self.session.commit()
         connection.close()
         return True

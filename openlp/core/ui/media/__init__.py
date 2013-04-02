@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.core.ui.media` module contains classes and objects for media player integration.
+"""
 import logging
 
 from openlp.core.lib import Settings
@@ -33,6 +36,7 @@ from openlp.core.lib import Settings
 from PyQt4 import QtCore
 
 log = logging.getLogger(__name__)
+
 
 class MediaState(object):
     """
@@ -70,23 +74,23 @@ class MediaInfo(object):
     end_time = 0
     media_type = MediaType()
 
+
 def get_media_players():
     """
     This method extracts the configured media players and overridden player
     from the settings.
     """
     log.debug(u'get_media_players')
-    saved_players = Settings().value(u'media/players', u'webkit')
+    saved_players = Settings().value(u'media/players')
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
-    if Settings().value(u'media/override player',
-        QtCore.Qt.Unchecked)== QtCore.Qt.Checked:
+    if Settings().value(u'media/override player') == QtCore.Qt.Checked:
         if reg_ex.exactMatch(saved_players):
             overridden_player = u'%s' % reg_ex.cap(1)
         else:
             overridden_player = u'auto'
     else:
         overridden_player = u''
-    saved_players_list = saved_players.replace(u'[', u'').replace(u']',u'').split(u',')
+    saved_players_list = saved_players.replace(u'[', u'').replace(u']', u'').split(u',')
     return saved_players_list, overridden_player
 
 
@@ -103,10 +107,11 @@ def set_media_players(players_list, overridden_player=u'auto'):
     """
     log.debug(u'set_media_players')
     players = u','.join(players_list)
-    if Settings().value(u'media/override player', QtCore.Qt.Unchecked) == QtCore.Qt.Checked and \
-        overridden_player != u'auto':
+    if Settings().value(u'media/override player') == QtCore.Qt.Checked and overridden_player != u'auto':
         players = players.replace(overridden_player, u'[%s]' % overridden_player)
     Settings().setValue(u'media/players', players)
 
 from mediacontroller import MediaController
 from playertab import PlayerTab
+
+__all__ = [u'MediaController', u'PlayerTab']

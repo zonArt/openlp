@@ -26,20 +26,29 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets of the language selection dialog.
+"""
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
+
 class Ui_FirstTimeLanguageDialog(object):
+    """
+    The UI widgets of the language selection dialog.
+    """
     def setupUi(self, languageDialog):
+        """
+        Set up the UI.
+        """
         languageDialog.setObjectName(u'languageDialog')
         languageDialog.resize(300, 50)
         self.dialogLayout = QtGui.QVBoxLayout(languageDialog)
         self.dialogLayout.setContentsMargins(8, 8, 8, 8)
         self.dialogLayout.setSpacing(8)
-        self.dialogLayout.setObjectName(u'dialogLayout')
+        self.dialogLayout.setObjectName(u'dialog_layout')
         self.infoLabel = QtGui.QLabel(languageDialog)
         self.infoLabel.setObjectName(u'infoLabel')
         self.dialogLayout.addWidget(self.infoLabel)
@@ -53,12 +62,15 @@ class Ui_FirstTimeLanguageDialog(object):
         self.languageComboBox.setObjectName("languageComboBox")
         self.languageLayout.addWidget(self.languageComboBox)
         self.dialogLayout.addLayout(self.languageLayout)
-        self.buttonBox = create_button_box(languageDialog, u'buttonBox', [u'cancel', u'ok'])
-        self.dialogLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(languageDialog, u'button_box', [u'cancel', u'ok'])
+        self.dialogLayout.addWidget(self.button_box)
         self.retranslateUi(languageDialog)
         self.setMaximumHeight(self.sizeHint().height())
 
     def retranslateUi(self, languageDialog):
+        """
+        Translate the UI on the fly.
+        """
         self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm', 'Select Translation'))
         self.infoLabel.setText(
             translate('OpenLP.FirstTimeLanguageForm', 'Choose the translation you\'d like to use in OpenLP.'))

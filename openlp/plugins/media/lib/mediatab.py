@@ -27,11 +27,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver, Settings, SettingsTab, translate
-from openlp.core.lib.ui import UiStrings, create_button
-from openlp.core.ui.media import get_media_players, set_media_players
+from openlp.core.lib import Receiver, Settings, SettingsTab, UiStrings, translate
 
 class MediaQCheckBox(QtGui.QCheckBox):
     """
@@ -72,21 +70,19 @@ class MediaTab(SettingsTab):
         self.autoStartCheckBox.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
 
     def load(self):
-        self.overridePlayerCheckBox.setChecked(Settings().value(self.settingsSection + u'/override player',
-            QtCore.Qt.Unchecked))
-        self.autoStartCheckBox.setChecked(Settings().value(self.settingsSection + u'/media auto start',
-            QtCore.Qt.Unchecked))
+        self.overridePlayerCheckBox.setChecked(Settings().value(self.settingsSection + u'/override player'))
+        self.autoStartCheckBox.setChecked(Settings().value(self.settingsSection + u'/media auto start'))
 
     def save(self):
         override_changed = False
         setting_key = self.settingsSection + u'/override player'
-        if Settings().value(setting_key, QtCore.Qt.Unchecked) != self.overridePlayerCheckBox.checkState():
+        if Settings().value(setting_key) != self.overridePlayerCheckBox.checkState():
             Settings().setValue(setting_key, self.overridePlayerCheckBox.checkState())
             override_changed = True
         setting_key = self.settingsSection + u'/media auto start'
-        if Settings().value(setting_key, QtCore.Qt.Unchecked) != self.autoStartCheckBox.checkState():
+        if Settings().value(setting_key) != self.autoStartCheckBox.checkState():
             Settings().setValue(setting_key, self.autoStartCheckBox.checkState())
         if override_changed:
-            self.parent.resetSupportedSuffixes()
+            self.parent.reset_supported_suffixes()
             Receiver.send_message(u'mediaitem_media_rebuild')
             Receiver.send_message(u'mediaitem_suffixes')
