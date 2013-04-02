@@ -225,7 +225,7 @@ class AlertsPlugin(Plugin):
         ``frame``
             The Web frame holding the page.
         """
-        align = VerticalType.Names[self.settingsTab.location]
+        align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
-            (align, self.settingsTab.font_face, self.settingsTab.font_size,
-            self.settingsTab.font_color, self.settingsTab.background_color))
+            (align, self.settings_tab.font_face, self.settings_tab.font_size,
+            self.settings_tab.font_color, self.settings_tab.background_color))

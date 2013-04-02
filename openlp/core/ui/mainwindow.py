@@ -328,7 +328,7 @@ class Ui_MainWindow(object):
         # Order things differently in OS X so that Preferences menu item in the
         # app menu is correct (this gets picked up automatically by Qt).
         if sys.platform == u'darwin':
-            add_actions(self.settings_menu, (self.settingsPluginListItem, self.settings_language_menu.menuAction(), 
+            add_actions(self.settings_menu, (self.settingsPluginListItem, self.settings_language_menu.menuAction(),
                 None, self.settings_configure_item, self.settings_shortcuts_item, self.formatting_tag_item))
         else:
             add_actions(self.settings_menu, (self.settingsPluginListItem, self.settings_language_menu.menuAction(),
@@ -342,7 +342,7 @@ class Ui_MainWindow(object):
                 self.about_item))
         else:
             add_actions(self.help_menu, (self.on_line_help_item, None, self.web_site_item, self.about_item))
-        add_actions(self.menuBar, (self.file_menu.menuAction(), self.view_menu.menuAction(), 
+        add_actions(self.menuBar, (self.file_menu.menuAction(), self.view_menu.menuAction(),
             self.tools_menu.menuAction(), self.settings_menu.menuAction(), self.help_menu.menuAction()))
         # Initialise the translation
         self.retranslateUi(main_window)
@@ -386,7 +386,7 @@ class Ui_MainWindow(object):
         self.file_save_item.setStatusTip(translate('OpenLP.MainWindow', 'Save the current service to disk.'))
         self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save &As...'))
         self.file_save_as_item.setToolTip(translate('OpenLP.MainWindow', 'Save Service As'))
-        self.file_save_as_item.setStatusTip(translate('OpenLP.MainWindow', 
+        self.file_save_as_item.setStatusTip(translate('OpenLP.MainWindow',
             'Save the current service under a new name.'))
         self.print_service_order_item.setText(UiStrings().PrintService)
         self.print_service_order_item.setStatusTip(translate('OpenLP.MainWindow', 'Print the current service.'))
@@ -449,7 +449,7 @@ class Ui_MainWindow(object):
         self.tools_first_time_wizard.setStatusTip(translate('OpenLP.MainWindow',
             'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
         self.update_theme_images.setText(translate('OpenLP.MainWindow', 'Update Theme Images'))
-        self.update_theme_images.setStatusTip(translate('OpenLP.MainWindow', 
+        self.update_theme_images.setStatusTip(translate('OpenLP.MainWindow',
             'Update the preview images for all themes.'))
         self.mode_default_Item.setText(translate('OpenLP.MainWindow', '&Default'))
         self.mode_default_Item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode back to the default.'))
@@ -651,7 +651,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         for plugin in self.plugin_manager.plugins:
             self.activePlugin = plugin
             oldStatus = self.activePlugin.status
-            self.activePlugin.setStatus()
+            self.activePlugin.set_status()
             if oldStatus != self.activePlugin.status:
                 if self.activePlugin.status == PluginStatus.Active:
                     self.activePlugin.toggle_status(PluginStatus.Active)
