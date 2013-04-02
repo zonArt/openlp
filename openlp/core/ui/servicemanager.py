@@ -228,6 +228,8 @@ class ServiceManagerDialog(object):
         self.menu = QtGui.QMenu()
         self.edit_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Edit Item'),
             icon=u':/general/general_edit.png', triggers=self.remote_edit)
+        self.rename_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Rename...'),
+            triggers=self.on_service_item_rename)
         self.maintain_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Reorder Item'),
             icon=u':/general/general_edit.png', triggers=self.on_service_item_edit_form)
         self.notes_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', '&Notes'),
@@ -1433,6 +1435,28 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 onRemoteEdit(self.service_items[item][u'service_item'].edit_id)
             if new_item:
                 self.add_service_item(new_item, replace=True)
+
+    def on_service_item_rename(self):
+        """
+        Opens a dialog to rename the service item.
+        """
+        item = self.find_service_item()[0]
+#        if False and not self.service_items[item][u'service_item'].is_text()\
+#            and (ItemCapabilities.HasDetailedTitleDisplay in self.service_items[item][u'service_item'].capabilities\
+#            or len(self.service_items[item][u'service_item']._raw_frames) == 1):
+#            get_main_title = False
+#            Title = self.service_items[item][u'service_item']._raw_frames[0][u'title']
+#        else:
+#            get_main_title = True
+        Title = self.service_items[item][u'service_item'].title
+        Title, ok = QtGui.QInputDialog.getText(self,
+            self.tr(translate('OpenLP.ServiceManager', 'Input title')), 
+            self.tr(translate('OpenLP.ServiceManager', 'Title')),  
+            QtGui.QLineEdit.Normal,  self.trUtf8(Title))
+        if ok:
+            self.service_items[item][u'service_item'].title = unicode(Title)
+            self.repaint_service_list(item, -1)
+            self.set_modified()
 
     def create_custom(self):
         """
