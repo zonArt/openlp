@@ -29,7 +29,6 @@
 """
 The :mod:`openlp.core.utils` module provides the utility libraries for OpenLP.
 """
-from datetime import datetime
 from distutils.version import LooseVersion
 import logging
 import locale
@@ -184,7 +183,7 @@ def check_latest_version(current_version):
     settings = Settings()
     settings.beginGroup(u'general')
     last_test = settings.value(u'last version test')
-    this_test = datetime.now().date()
+    this_test = QtCore.QDate.currentDate()
     settings.setValue(u'last version test', this_test)
     settings.endGroup()
     # Tell the main window whether there will ever be data to display
