@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import patch
 
-from openlp.core.utils import get_filesystem_encoding, _get_frozen_path
+from openlp.core.utils import get_filesystem_encoding, _get_frozen_path, clean_filename, split_filename
 
 class TestUtils(TestCase):
     """
@@ -56,3 +56,50 @@ class TestUtils(TestCase):
             # THEN: The frozen parameter is returned
             assert _get_frozen_path(u'frozen', u'not frozen') == u'frozen', u'Should return "frozen"'
 
+    def split_filename_with_file_path_test(self):
+        """
+        Test the split_filename() function with a path to a file
+        """
+        # GIVEN: A path to a file.
+        file_path = u'/home/user/myfile.txt'
+        wanted_result = (u'/home/user', u'myfile.txt')
+        with patch(u'openlp.core.utils.os.path.isfile') as mocked_is_file:
+            mocked_is_file.return_value = True
+
+            # WHEN: Split the file name.
+            result = split_filename(file_path)
+
+            # THEN: A tuple should be returned.
+            assert result == wanted_result, u'A tuple with the directory and file should have been returned.'
+
+    def split_filename_with_dir_path_test(self):
+        """
+        Test the split_filename() function with a path to a directory.
+        """
+        # GIVEN: A path to a dir.
+        file_path = u'/home/user/mydir'
+        wanted_result = (u'/home/user/mydir', u'')
+        with patch(u'openlp.core.utils.os.path.isfile') as mocked_is_file:
+            mocked_is_file.return_value = False
+
+            # WHEN: Split the file name.
+            result = split_filename(file_path)
+
+            # THEN: A tuple should be returned.
+            assert result == wanted_result, \
+                u'A two-entry tuple with the directory and file (empty) should have been returned.'
+
+
+    def clean_filename_test(self):
+        """
+        Test the clean_filename() function
+        """
+        # GIVEN: A invalid file name and the valid file name.
+        invalid_name = u'A_file_with_invalid_characters_[\\/:\*\?"<>\|\+\[\]%].py'
+        wanted_name = u'A_file_with_invalid_characters______________________.py'
+
+        # WHEN: Clean the name.
+        result = clean_filename(invalid_name)
+
+        # THEN: The file name should be cleaned.
+        assert result == wanted_name, u'The file name should be valid.'
