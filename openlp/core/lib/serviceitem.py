@@ -442,7 +442,7 @@ class ServiceItem(object):
         """
         Returns the title of the service item.
         """
-        if self.is_text():
+        if self.is_text() or self.is_image():
             return self.title
         else:
             if ItemCapabilities.HasDetailedTitleDisplay in self.capabilities:

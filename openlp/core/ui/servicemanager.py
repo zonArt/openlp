@@ -775,6 +775,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             pos = item.data(0, QtCore.Qt.UserRole)
         service_item = self.service_items[pos - 1]
         self.edit_action.setVisible(False)
+        self.rename_action.setVisible(False)
         self.create_custom_action.setVisible(False)
         self.maintain_action.setVisible(False)
         self.notes_action.setVisible(False)
@@ -782,6 +783,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.auto_start_action.setVisible(False)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanEdit) and service_item[u'service_item'].edit_id:
             self.edit_action.setVisible(True)
+        if not service_item[u'service_item'].is_capable(ItemCapabilities.HasDetailedTitleDisplay)\
+            and not service_item[u'service_item'].is_capable(ItemCapabilities.CanEdit):
+            self.rename_action.setVisible(True)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanMaintain):
             self.maintain_action.setVisible(True)
         if item.parent() is None:
@@ -1400,6 +1404,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Opens a dialog to rename the service item.
         """
         item = self.find_service_item()[0]
+        if ItemCapabilities.HasDetailedTitleDisplay in self.service_items[item][u'service_item'].capabilities\
+            or ItemCapabilities.CanEdit in self.service_items[item][u'service_item'].capabilities:
+            return
 #        if False and not self.service_items[item][u'service_item'].is_text()\
 #            and (ItemCapabilities.HasDetailedTitleDisplay in self.service_items[item][u'service_item'].capabilities\
 #            or len(self.service_items[item][u'service_item']._raw_frames) == 1):

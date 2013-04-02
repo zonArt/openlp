@@ -543,9 +543,11 @@ class ImageMediaItem(MediaManagerItem):
             if not items:
                 return False
         # Determine service item title
-        if isinstance(items[0].data(0, QtCore.Qt.UserRole), ImageGroups):
+        if (isinstance(items[0].data(0, QtCore.Qt.UserRole), ImageGroups) or len(items) == 1)\
+            and len(service_item._raw_frames) ==0:
             service_item.title = items[0].text(0)
-        else:
+        elif len(service_item._raw_frames) == 1 and service_item.title == service_item._raw_frames[0][u'title']\
+            or len(items) > 1 and len(service_item._raw_frames) ==0:
             service_item.title = unicode(self.plugin.name_strings[u'plural'])
         service_item.add_capability(ItemCapabilities.CanMaintain)
         service_item.add_capability(ItemCapabilities.CanPreview)
