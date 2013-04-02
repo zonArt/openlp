@@ -1407,13 +1407,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 #            Title = self.service_items[item][u'service_item']._raw_frames[0][u'title']
 #        else:
 #            get_main_title = True
-        Title = self.service_items[item][u'service_item'].title
-        Title, ok = QtGui.QInputDialog.getText(self,
-            self.tr(translate('OpenLP.ServiceManager', 'Input title')), 
-            self.tr(translate('OpenLP.ServiceManager', 'Title')),  
-            QtGui.QLineEdit.Normal,  self.trUtf8(Title))
+        title = self.service_items[item][u'service_item'].title
+        title, ok = QtGui.QInputDialog.getText(self, self.tr(translate('OpenLP.ServiceManager', 'Input title')), 
+            self.tr(translate('OpenLP.ServiceManager', 'Title')),  QtGui.QLineEdit.Normal,  self.trUtf8(title))
         if ok:
-            self.service_items[item][u'service_item'].title = unicode(Title)
+            self.service_items[item][u'service_item'].title = unicode(title)
             self.repaint_service_list(item, -1)
             self.set_modified()
 
