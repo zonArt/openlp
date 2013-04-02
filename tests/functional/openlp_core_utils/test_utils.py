@@ -79,5 +79,5 @@ class TestUtils(TestCase):
             unsorted_list = [u'item 10a', u'item 3b', u'1st item']
             # WHEN: We sort the list and use get_natural_key() to generate the sorting keys
             # THEN: We get a properly sorted list
-            assert sorted(unsorted_list, key=get_natural_key) == [u'1st item', u'item 3b', u'item 10a'], u'Numbers should be sortet naturally'
+            assert sorted(unsorted_list, key=get_natural_key) == [u'1st item', u'item 3b', u'item 10a'], u'Numbers should be sorted naturally'
 
