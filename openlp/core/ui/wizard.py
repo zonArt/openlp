@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Registry, Settings, UiStrings, build_icon, translate
+from openlp.core.lib import Registry, Settings, UiStrings, build_icon, translate
 from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)
@@ -57,11 +57,9 @@ class WizardStrings(object):
     Importing = translate('OpenLP.Ui', 'Importing')
     ImportingType = translate('OpenLP.Ui', 'Importing "%s"...')
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
-    ImportSelectLong = translate('OpenLP.Ui',
-        'Select the import format and the location to import from.')
-    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been '
-        'disabled due to a missing Python module. If you want to use this '
-        'importer, you will need to install the "python-sqlite" module.')
+    ImportSelectLong = translate('OpenLP.Ui', 'Select the import format and the location to import from.')
+    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been disabled due to a missing Python module. '
+        'If you want to use this importer, you will need to install the "python-sqlite" module.')
     OpenTypeFile = translate('OpenLP.Ui', 'Open %s File')
     OpenTypeFolder = translate('OpenLP.Ui', 'Open %s Folder')
     PercentSymbolFormat = translate('OpenLP.Ui', '%p%')
@@ -87,17 +85,17 @@ class OpenLPWizard(QtGui.QWizard):
         QtGui.QWizard.__init__(self, parent)
         self.plugin = plugin
         self.setObjectName(name)
-        self.openIcon = build_icon(u':/general/general_open.png')
-        self.deleteIcon = build_icon(u':/general/general_delete.png')
-        self.finishButton = self.button(QtGui.QWizard.FinishButton)
-        self.cancelButton = self.button(QtGui.QWizard.CancelButton)
+        self.open_icon = build_icon(u':/general/general_open.png')
+        self.delete_icon = build_icon(u':/general/general_delete.png')
+        self.finish_button = self.button(QtGui.QWizard.FinishButton)
+        self.cancel_button = self.button(QtGui.QWizard.CancelButton)
         self.setupUi(image)
-        self.registerFields()
-        self.customInit()
-        self.customSignals()
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        QtCore.QObject.connect(self.errorCopyToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorCopyToButtonClicked)
-        QtCore.QObject.connect(self.errorSaveToButton, QtCore.SIGNAL(u'clicked()'), self.onErrorSaveToButtonClicked)
+        self.register_fields()
+        self.custom_init()
+        self.custom_signals()
+        self.currentIdChanged.connect(self.on_current_id_changed)
+        self.error_copy_to_button.clicked.connect(self.on_error_copy_to_button_clicked)
+        self.error_save_to_button.clicked.connect(self.on_error_save_to_button_clicked)
 
     def setupUi(self, image):
         """
@@ -106,59 +104,76 @@ class OpenLPWizard(QtGui.QWizard):
         self.setModal(True)
         self.setWizardStyle(QtGui.QWizard.ModernStyle)
         self.setOptions(QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage)
+            QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
         add_welcome_page(self, image)
-        self.addCustomPages()
-        self.addProgressPage()
+        self.add_custom_pages()
+        self.add_progress_page()
         self.retranslateUi()
 
-    def registerFields(self):
+    def register_fields(self):
         """
         Hook method for wizards to register any fields they need.
         """
         pass
 
-    def addProgressPage(self):
+    def custom_init(self):
+        """
+        Hook method for custom initialisation
+        """
+        pass
+
+    def custom_signals(self):
+        """
+        Hook method for adding custom signals
+        """
+        pass
+
+    def add_custom_pages(self):
+        """
+        Hook method for wizards to add extra pages
+        """
+        pass
+
+    def add_progress_page(self):
         """
         Add the progress page for the wizard. This page informs the user how
         the wizard is progressing with its task.
         """
-        self.progressPage = QtGui.QWizardPage()
-        self.progressPage.setObjectName(u'progressPage')
-        self.progressLayout = QtGui.QVBoxLayout(self.progressPage)
-        self.progressLayout.setMargin(48)
-        self.progressLayout.setObjectName(u'progressLayout')
-        self.progressLabel = QtGui.QLabel(self.progressPage)
-        self.progressLabel.setObjectName(u'progressLabel')
-        self.progressLabel.setWordWrap(True)
-        self.progressLayout.addWidget(self.progressLabel)
-        self.progressBar = QtGui.QProgressBar(self.progressPage)
-        self.progressBar.setObjectName(u'progressBar')
-        self.progressLayout.addWidget(self.progressBar)
+        self.progress_page = QtGui.QWizardPage()
+        self.progress_page.setObjectName(u'progress_page')
+        self.progress_layout = QtGui.QVBoxLayout(self.progress_page)
+        self.progress_layout.setMargin(48)
+        self.progress_layout.setObjectName(u'progress_layout')
+        self.progress_label = QtGui.QLabel(self.progress_page)
+        self.progress_label.setObjectName(u'progress_label')
+        self.progress_label.setWordWrap(True)
+        self.progress_layout.addWidget(self.progress_label)
+        self.progress_bar = QtGui.QProgressBar(self.progress_page)
+        self.progress_bar.setObjectName(u'progress_bar')
+        self.progress_layout.addWidget(self.progress_bar)
         # Add a QTextEdit and a copy to file and copy to clipboard button to be
         # able to provide feedback to the user. Hidden by default.
-        self.errorReportTextEdit = QtGui.QTextEdit(self.progressPage)
-        self.errorReportTextEdit.setObjectName(u'progresserrorReportTextEdit')
-        self.errorReportTextEdit.setHidden(True)
-        self.errorReportTextEdit.setReadOnly(True)
-        self.progressLayout.addWidget(self.errorReportTextEdit)
-        self.errorButtonLayout = QtGui.QHBoxLayout()
-        self.errorButtonLayout.setObjectName(u'errorButtonLayout')
+        self.error_report_text_edit = QtGui.QTextEdit(self.progress_page)
+        self.error_report_text_edit.setObjectName(u'error_report_text_edit')
+        self.error_report_text_edit.setHidden(True)
+        self.error_report_text_edit.setReadOnly(True)
+        self.progress_layout.addWidget(self.error_report_text_edit)
+        self.error_button_layout = QtGui.QHBoxLayout()
+        self.error_button_layout.setObjectName(u'error_button_layout')
         spacer = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.errorButtonLayout.addItem(spacer)
-        self.errorCopyToButton = QtGui.QPushButton(self.progressPage)
-        self.errorCopyToButton.setObjectName(u'errorCopyToButton')
-        self.errorCopyToButton.setHidden(True)
-        self.errorCopyToButton.setIcon(build_icon(u':/system/system_edit_copy.png'))
-        self.errorButtonLayout.addWidget(self.errorCopyToButton)
-        self.errorSaveToButton = QtGui.QPushButton(self.progressPage)
-        self.errorSaveToButton.setObjectName(u'errorSaveToButton')
-        self.errorSaveToButton.setHidden(True)
-        self.errorSaveToButton.setIcon(build_icon(u':/general/general_save.png'))
-        self.errorButtonLayout.addWidget(self.errorSaveToButton)
-        self.progressLayout.addLayout(self.errorButtonLayout)
-        self.addPage(self.progressPage)
+        self.error_button_layout.addItem(spacer)
+        self.error_copy_to_button = QtGui.QPushButton(self.progress_page)
+        self.error_copy_to_button.setObjectName(u'error_copy_to_button')
+        self.error_copy_to_button.setHidden(True)
+        self.error_copy_to_button.setIcon(build_icon(u':/system/system_edit_copy.png'))
+        self.error_button_layout.addWidget(self.error_copy_to_button)
+        self.error_save_to_button = QtGui.QPushButton(self.progress_page)
+        self.error_save_to_button.setObjectName(u'error_save_to_button')
+        self.error_save_to_button.setHidden(True)
+        self.error_save_to_button.setIcon(build_icon(u':/general/general_save.png'))
+        self.error_button_layout.addWidget(self.error_save_to_button)
+        self.progress_layout.addLayout(self.error_button_layout)
+        self.addPage(self.progress_page)
 
     def exec_(self):
         """
@@ -172,40 +187,40 @@ class OpenLPWizard(QtGui.QWizard):
         Stop the wizard on cancel button, close button or ESC key.
         """
         log.debug(u'Wizard cancelled by user.')
-        if self.currentPage() == self.progressPage:
-            Receiver.send_message(u'openlp_stop_wizard')
+        if self.currentPage() == self.progress_page:
+            Registry().execute(u'openlp_stop_wizard')
         self.done(QtGui.QDialog.Rejected)
 
-    def onCurrentIdChanged(self, pageId):
+    def on_current_id_changed(self, pageId):
         """
         Perform necessary functions depending on which wizard page is active.
         """
-        if self.page(pageId) == self.progressPage:
-            self.preWizard()
+        if self.page(pageId) == self.progress_page:
+            self.pre_wizard()
             self.performWizard()
-            self.postWizard()
+            self.post_wizard()
         else:
-            self.customPageChanged(pageId)
+            self.custom_cage_changed(pageId)
 
-    def customPageChanged(self, pageId):
+    def custom_cage_changed(self, pageId):
         """
         Called when changing to a page other than the progress page
         """
         pass
 
-    def onErrorCopyToButtonClicked(self):
+    def on_error_copy_to_button_clicked(self):
         """
-        Called when the ``onErrorCopyToButtonClicked`` has been clicked.
-        """
-        pass
-
-    def onErrorSaveToButtonClicked(self):
-        """
-        Called when the ``onErrorSaveToButtonClicked`` has been clicked.
+        Called when the ``error_copy_to_button`` has been clicked.
         """
         pass
 
-    def incrementProgressBar(self, status_text, increment=1):
+    def on_error_save_to_button_clicked(self):
+        """
+        Called when the ``error_save_to_button`` has been clicked.
+        """
+        pass
+
+    def increment_progress_bar(self, status_text, increment=1):
         """
         Update the wizard progress page.
 
@@ -216,30 +231,30 @@ class OpenLPWizard(QtGui.QWizard):
             The value to increment the progress bar by.
         """
         log.debug(u'IncrementBar %s', status_text)
-        self.progressLabel.setText(status_text)
+        self.progress_label.setText(status_text)
         if increment > 0:
-            self.progressBar.setValue(self.progressBar.value() + increment)
+            self.progress_bar.setValue(self.progress_bar.value() + increment)
         self.application.process_events()
 
-    def preWizard(self):
+    def pre_wizard(self):
         """
         Prepare the UI for the import.
         """
-        self.finishButton.setVisible(False)
-        self.progressBar.setMinimum(0)
-        self.progressBar.setMaximum(1188)
-        self.progressBar.setValue(0)
+        self.finish_button.setVisible(False)
+        self.progress_bar.setMinimum(0)
+        self.progress_bar.setMaximum(1188)
+        self.progress_bar.setValue(0)
 
-    def postWizard(self):
+    def post_wizard(self):
         """
         Clean up the UI after the import has finished.
         """
-        self.progressBar.setValue(self.progressBar.maximum())
-        self.finishButton.setVisible(True)
-        self.cancelButton.setVisible(False)
+        self.progress_bar.setValue(self.progress_bar.maximum())
+        self.finish_button.setVisible(True)
+        self.cancel_button.setVisible(False)
         self.application.process_events()
 
-    def getFileName(self, title, editbox, setting_name, filters=u''):
+    def get_file_name(self, title, editbox, setting_name, filters=u''):
         """
         Opens a QFileDialog and saves the filename to the given editbox.
 
@@ -262,12 +277,12 @@ class OpenLPWizard(QtGui.QWizard):
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
         filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(Settings().value(self.plugin.settingsSection + u'/' + setting_name)), filters)
+            os.path.dirname(Settings().value(self.plugin.settings_section + u'/' + setting_name)), filters)
         if filename:
             editbox.setText(filename)
-        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, filename)
+        Settings().setValue(self.plugin.settings_section + u'/' + setting_name, filename)
 
-    def getFolder(self, title, editbox, setting_name):
+    def get_folder(self, title, editbox, setting_name):
         """
         Opens a QFileDialog and saves the selected folder to the given editbox.
 
@@ -281,11 +296,10 @@ class OpenLPWizard(QtGui.QWizard):
             The place where to save the last opened directory.
         """
         folder = QtGui.QFileDialog.getExistingDirectory(self, title,
-            Settings().value(self.plugin.settingsSection + u'/' + setting_name),
-            QtGui.QFileDialog.ShowDirsOnly)
+            Settings().value(self.plugin.settings_section + u'/' + setting_name), QtGui.QFileDialog.ShowDirsOnly)
         if folder:
             editbox.setText(folder)
-        Settings().setValue(self.plugin.settingsSection + u'/' + setting_name, folder)
+        Settings().setValue(self.plugin.settings_section + u'/' + setting_name, folder)
 
     def _get_application(self):
         """

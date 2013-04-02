@@ -37,8 +37,8 @@ log = logging.getLogger(__name__)
 
 class Registry(object):
     """
-    This is the Component Registry.  It is a singleton object and is used to provide a
-    look up service for common objects.
+    This is the Component Registry.  It is a singleton object and is used to provide a look up service for common
+    objects.
     """
     log.info(u'Registry loaded')
     __instance__ = None
@@ -59,15 +59,19 @@ class Registry(object):
         log.info(u'Registry Initialising')
         registry = cls()
         registry.service_list = {}
+        registry.functions_list = {}
         registry.running_under_test = False
         # Allow the tests to remove Registry entries but not the live system
-        if u'nosetest' in sys.argv[0]:
+        if u'nose' in sys.argv[0]:
             registry.running_under_test = True
         return registry
 
     def get(self, key):
         """
         Extracts the registry value from the list based on the key passed in
+
+        ``key``
+            The service to be retrieved.
         """
         if key in self.service_list:
             return self.service_list[key]
@@ -78,6 +82,12 @@ class Registry(object):
     def register(self, key, reference):
         """
         Registers a component against a key.
+
+        ``key``
+            The service to be created this is usually a major class like "renderer" or "main_window" .
+
+        ``reference``
+            The service address to be saved.
         """
         if key in self.service_list:
             log.error(u'Duplicate service exception %s' % key)
@@ -87,12 +97,74 @@ class Registry(object):
 
     def remove(self, key):
         """
-        Removes the registry value from the list based on the key passed in
-        (Only valid and active for testing framework)
+        Removes the registry value from the list based on the key passed in (Only valid and active for testing
+        framework).
+
+        ``key``
+            The service to be deleted.
         """
         if self.running_under_test is False:
             log.error(u'Invalid Method call for key %s' % key)
             raise KeyError(u'Invalid Method call for key %s' % key)
-            return
         if key in self.service_list:
             del self.service_list[key]
+
+    def register_function(self, event, function):
+        """
+        Register an event and associated function to be called
+
+        ``event``
+            The function description like "live_display_hide" where a number of places in the code
+            will/may need to respond to a single action and the caller does not need to understand or know about the
+            recipients.
+
+        ``function``
+            The function to be called when the event happens.
+        """
+        if event in self.functions_list:
+            self.functions_list[event].append(function)
+        else:
+            self.functions_list[event] = [function]
+
+    def remove_function(self, event, function):
+        """
+        Remove an event and associated handler
+
+        ``event``
+            The function description..
+
+        ``function``
+            The function to be called when the event happens.
+        """
+        if self.running_under_test is False:
+            log.error(u'Invalid Method call for key %s' % event)
+            raise KeyError(u'Invalid Method call for key %s' % event)
+        if event in self.functions_list:
+            self.functions_list[event].remove(function)
+
+    def execute(self, event, *args, **kwargs):
+        """
+        Execute all the handlers associated with the event and return an array of results.
+
+        ``event``
+            The function to be processed
+
+        ``*args``
+            Parameters to be passed to the function.
+
+        ``*kwargs``
+            Parameters to be passed to the function.
+        """
+        results = []
+        if event in self.functions_list:
+            for function in self.functions_list[event]:
+                try:
+                    result = function(*args, **kwargs)
+                    if result:
+                        results.append(result)
+                except TypeError:
+                    # Who has called me can help in debugging
+                    import inspect
+                    log.debug(inspect.currentframe().f_back.f_locals)
+                    log.exception(u'Exception for function %s', function)
+        return results

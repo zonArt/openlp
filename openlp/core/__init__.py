@@ -43,7 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Receiver, Settings, ScreenList, UiStrings, Registry, check_directory_exists
+from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -57,7 +57,7 @@ __all__ = [u'OpenLP', u'main']
 
 
 log = logging.getLogger()
-nt_repair_stylesheet = u"""
+NT_REPAIR_STYLESHEET = u"""
 QMainWindow::separator
 {
   border: none;
@@ -102,11 +102,9 @@ class OpenLP(QtGui.QApplication):
         Run the OpenLP application.
         """
         self.is_event_loop_active = False
-        # On Windows, the args passed into the constructor are ignored. Not
-        # very handy, so set the ones we want to use. On Linux and FreeBSD, in
-        # order to set the WM_CLASS property for X11, we pass "OpenLP" in as a
-        # command line argument. This interferes with files being passed in as
-        # command line arguments, so we remove it from the list.
+        # On Windows, the args passed into the constructor are ignored. Not very handy, so set the ones we want to use.
+        # On Linux and FreeBSD, in order to set the WM_CLASS property for X11, we pass "OpenLP" in as a command line
+        # argument. This interferes with files being passed in as command line arguments, so we remove it from the list.
         if 'OpenLP' in args:
             args.remove('OpenLP')
         self.args.extend(args)
@@ -125,7 +123,7 @@ class OpenLP(QtGui.QApplication):
                 u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += alternate_rows_repair_stylesheet
         if os.name == u'nt':
-            application_stylesheet += nt_repair_stylesheet
+            application_stylesheet += NT_REPAIR_STYLESHEET
         if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
         show_splash = Settings().value(u'general/show splash')
@@ -136,6 +134,8 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         # start the main app window
         self.main_window = MainWindow()
+        Registry().execute(u'bootstrap_initialise')
+        Registry().execute(u'bootstrap_post_set_up')
         self.main_window.show()
         if show_splash:
             # now kill the splashscreen
@@ -150,20 +150,13 @@ class OpenLP(QtGui.QApplication):
         update_check = Settings().value(u'general/update check')
         if update_check:
             VersionThread(self.main_window).start()
-        Receiver.send_message(u'live_display_blank_check')
+        self.main_window.is_display_blank()
         self.main_window.app_startup()
         return self.exec_()
 
-    def close_splash_screen(self):
-        """
-        Close the splash screen when requested.
-        """
-        self.splash.close()
-
     def is_already_running(self):
         """
-        Look to see if OpenLP is already running and ask if a 2nd copy
-        is to be started.
+        Look to see if OpenLP is already running and ask if a 2nd instance is to be started.
         """
         self.shared_memory = QtCore.QSharedMemory('OpenLP')
         if self.shared_memory.attach():
@@ -190,12 +183,10 @@ class OpenLP(QtGui.QApplication):
         ``traceback``
             A traceback object with the details of where the exception occurred.
         """
-        if not hasattr(self, u'mainWindow'):
-            log.exception(''.join(format_exception(exctype, value, traceback)))
-            return
-        if not hasattr(self, u'exceptionForm'):
+        log.exception(''.join(format_exception(exctype, value, traceback)))
+        if not hasattr(self, u'exception_form'):
             self.exception_form = ExceptionForm(self.main_window)
-        self.exception_form.exceptionTextEdit.setPlainText(''.join(format_exception(exctype, value, traceback)))
+        self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exctype, value, traceback)))
         self.set_normal_cursor()
         self.exception_form.exec_()
 
@@ -203,6 +194,7 @@ class OpenLP(QtGui.QApplication):
         """
         Wrapper to make ProcessEvents visible and named correctly
         """
+        log.debug(u'processing event flush')
         self.processEvents()
 
     def set_busy_cursor(self):

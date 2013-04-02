@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver
+from openlp.core.lib import Registry
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class Controller(object):
         self.hide_mode = hide_mode
         if self.is_live:
             if hide_mode == HideMode.Screen:
-                Receiver.send_message(u'live_display_hide', HideMode.Screen)
+                Registry().execute(u'live_display_hide', HideMode.Screen)
                 self.stop()
             elif hide_mode == HideMode.Theme:
                 self.blank(hide_mode)
@@ -79,7 +79,7 @@ class Controller(object):
                 self.blank(hide_mode)
             else:
                 self.doc.start_presentation()
-                Receiver.send_message(u'live_display_hide', HideMode.Screen)
+                Registry().execute(u'live_display_hide', HideMode.Screen)
                 self.doc.slidenumber = 1
                 if slide_no > 1:
                     self.slide(slide_no)
@@ -236,7 +236,7 @@ class Controller(object):
                 return
             if not self.doc.is_active():
                 return
-            Receiver.send_message(u'live_display_hide', HideMode.Theme)
+            Registry().execute(u'live_display_hide', HideMode.Theme)
         elif hide_mode == HideMode.Blank:
             if not self.activate():
                 return
@@ -273,7 +273,7 @@ class Controller(object):
         if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
-        Receiver.send_message(u'live_display_hide', HideMode.Screen)
+        Registry().execute(u'live_display_hide', HideMode.Screen)
 
     def poll(self):
         if not self.doc:
@@ -288,25 +288,25 @@ class MessageListener(object):
     """
     log.info(u'Message Listener loaded')
 
-    def __init__(self, mediaitem):
-        self.controllers = mediaitem.controllers
-        self.mediaitem = mediaitem
+    def __init__(self, media_item):
+        self.controllers = media_item.controllers
+        self.media_item = media_item
         self.preview_handler = Controller(False)
         self.live_handler = Controller(True)
         # messages are sent from core.ui.slidecontroller
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_start'), self.startup)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_stop'), self.shutdown)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_hide'), self.hide)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_first'), self.first)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_previous'), self.previous)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_next'), self.next)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_last'), self.last)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_slide'), self.slide)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_blank'), self.blank)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'presentations_unblank'), self.unblank)
+        Registry().register_function(u'presentations_start', self.startup)
+        Registry().register_function(u'presentations_stop', self.shutdown)
+        Registry().register_function(u'presentations_hide', self.hide)
+        Registry().register_function(u'presentations_first', self.first)
+        Registry().register_function(u'presentations_previous', self.previous)
+        Registry().register_function(u'presentations_next', self.next)
+        Registry().register_function(u'presentations_last', self.last)
+        Registry().register_function(u'presentations_slide', self.slide)
+        Registry().register_function(u'presentations_blank', self.blank)
+        Registry().register_function(u'presentations_unblank', self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
-        QtCore.QObject.connect(self.timer, QtCore.SIGNAL(u'timeout()'), self.timeout)
+        self.timer.timeout.connect(self.timeout)
 
     def startup(self, message):
         """
@@ -319,8 +319,8 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.title
-        if self.handler == self.mediaitem.Automatic:
-            self.handler = self.mediaitem.findControllerByType(file)
+        if self.handler == self.media_item.Automatic:
+            self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
                 return
         if is_live:

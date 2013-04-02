@@ -78,12 +78,12 @@ class SongProImport(SongImport):
         Receive a single file or a list of files to import.
         """
         self.encoding = None
-        with open(self.importSource, 'r') as songs_file:
-            self.importWizard.progressBar.setMaximum(0)
+        with open(self.import_source, 'r') as songs_file:
+            self.import_wizard.progress_bar.setMaximum(0)
             tag = u''
             text = u''
             for file_line in songs_file:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 file_line = unicode(file_line, u'cp1252')
                 file_text = file_line.rstrip()
@@ -115,7 +115,7 @@ class SongProImport(SongImport):
         if not text:
             return
         if tag == u'A':
-            self.parseAuthor(text)
+            self.parse_author(text)
         elif tag in [u'B', u'C']:
             self.addVerse(text, tag)
         elif tag == u'D':

@@ -58,9 +58,9 @@ class Ui_ServiceItemEditDialog(object):
             click=serviceItemEditDialog.on_delete_button_clicked)
         self.button_layout.addWidget(self.delete_button)
         self.button_layout.addStretch()
-        self.up_button = create_button(serviceItemEditDialog, u'upButton', role=u'up',
+        self.up_button = create_button(serviceItemEditDialog, u'up_button', role=u'up',
             click=serviceItemEditDialog.on_up_button_clicked)
-        self.down_button = create_button(serviceItemEditDialog, u'downButton', role=u'down',
+        self.down_button = create_button(serviceItemEditDialog, u'down_button', role=u'down',
             click=serviceItemEditDialog.on_down_button_clicked)
         self.button_layout.addWidget(self.up_button)
         self.button_layout.addWidget(self.down_button)

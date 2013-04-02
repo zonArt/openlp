@@ -105,10 +105,10 @@ class WowImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        if isinstance(self.importSource, list):
-            self.importWizard.progressBar.setMaximum(len(self.importSource))
-            for source in self.importSource:
-                if self.stopImportFlag:
+        if isinstance(self.import_source, list):
+            self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+            for source in self.import_source:
+                if self.stop_import_flag:
                     return
                 self.setDefaults()
                 song_data = open(source, 'rb')
@@ -145,7 +145,7 @@ class WowImport(SongImport):
                 # Now to extract the author
                 author_length = ord(song_data.read(1))
                 if author_length:
-                    self.parseAuthor(unicode(song_data.read(author_length), u'cp1252'))
+                    self.parse_author(unicode(song_data.read(author_length), u'cp1252'))
                 # Finally the copyright
                 copyright_length = ord(song_data.read(1))
                 if copyright_length:

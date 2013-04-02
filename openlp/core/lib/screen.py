@@ -35,7 +35,7 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Registry, translate
 
 log = logging.getLogger(__name__)
 
@@ -74,8 +74,8 @@ class ScreenList(object):
         screen_list.display_count = 0
         screen_list.screen_count_changed()
         screen_list.load_screen_settings()
-        QtCore.QObject.connect(desktop, QtCore.SIGNAL(u'resized(int)'), screen_list.screen_resolution_changed)
-        QtCore.QObject.connect(desktop, QtCore.SIGNAL(u'screenCountChanged(int)'), screen_list.screen_count_changed)
+        desktop.resized.connect(screen_list.screen_resolution_changed)
+        desktop.screenCountChanged.connect(screen_list.screen_count_changed)
         return screen_list
 
     def screen_resolution_changed(self, number):
@@ -100,7 +100,7 @@ class ScreenList(object):
                 if screen == self.override:
                     self.override = copy.deepcopy(newScreen)
                     self.set_override_display()
-                Receiver.send_message(u'config_screen_changed')
+                Registry().execute(u'config_screen_changed')
                 break
 
     def screen_count_changed(self, changed_screen=-1):
@@ -128,7 +128,7 @@ class ScreenList(object):
         # We do not want to send this message at start up.
         if changed_screen != -1:
             # Reload setting tabs to apply possible changes.
-            Receiver.send_message(u'config_screen_changed')
+            Registry().execute(u'config_screen_changed')
 
     def get_screen_list(self):
         """
@@ -244,7 +244,7 @@ class ScreenList(object):
         Loads the screen size and the monitor number from the settings.
         """
         from openlp.core.lib import Settings
-        # Add the screen settings to the settings dict. This has to be done here due to crycle dependency.
+        # Add the screen settings to the settings dict. This has to be done here due to cyclic dependency.
         # Do not do this anywhere else.
         screen_settings = {
             u'general/x position': self.current[u'size'].x(),

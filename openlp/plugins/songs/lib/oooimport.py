@@ -65,19 +65,19 @@ class OooImport(SongImport):
         self.processStarted = False
 
     def doImport(self):
-        if not isinstance(self.importSource, list):
+        if not isinstance(self.import_source, list):
             return
         try:
             self.startOoo()
         except NoConnectException as exc:
             self.logError(
-                self.importSource[0],
+                self.import_source[0],
                 translate('SongsPlugin.SongImport', 'Cannot access OpenOffice or LibreOffice'))
             log.error(exc)
             return
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for filename in self.importSource:
-            if self.stopImportFlag:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for filename in self.import_source:
+            if self.stop_import_flag:
                 break
             filename = unicode(filename)
             if os.path.isfile(filename):
@@ -162,7 +162,7 @@ class OooImport(SongImport):
                     self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.closeOooFile()
             else:
-                self.importWizard.incrementProgressBar(u'Processing file ' + filepath, 0)
+                self.import_wizard.increment_progress_bar(u'Processing file ' + filepath, 0)
         except AttributeError:
             log.exception("openOooFile failed: %s", url)
         return
@@ -189,8 +189,8 @@ class OooImport(SongImport):
         slides = doc.getDrawPages()
         text = u''
         for slide_no in range(slides.getCount()):
-            if self.stopImportFlag:
-                self.importWizard.incrementProgressBar(u'Import cancelled', 0)
+            if self.stop_import_flag:
+                self.import_wizard.increment_progress_bar(u'Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)
             slidetext = u''

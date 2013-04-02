@@ -91,22 +91,22 @@ class PowerSongImport(SongImport):
         """
         from importer import SongFormat
         PS_string = SongFormat.get(SongFormat.PowerSong, u'name')
-        if isinstance(self.importSource, unicode):
-            if os.path.isdir(self.importSource):
-                dir = self.importSource
-                self.importSource = []
+        if isinstance(self.import_source, unicode):
+            if os.path.isdir(self.import_source):
+                dir = self.import_source
+                self.import_source = []
                 for file in os.listdir(dir):
                     if fnmatch.fnmatch(file, u'*.song'):
-                        self.importSource.append(os.path.join(dir, file))
+                        self.import_source.append(os.path.join(dir, file))
             else:
-                self.importSource = u''
-        if not self.importSource or not isinstance(self.importSource, list):
+                self.import_source = u''
+        if not self.import_source or not isinstance(self.import_source, list):
             self.logError(translate('SongsPlugin.PowerSongImport', 'No songs to import.'),
                 translate('SongsPlugin.PowerSongImport', 'No %s files found.') % PS_string)
             return
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for file in self.importSource:
-            if self.stopImportFlag:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for file in self.import_source:
+            if self.stop_import_flag:
                 return
             self.setDefaults()
             parse_error = False
@@ -127,7 +127,7 @@ class PowerSongImport(SongImport):
                         if label == u'TITLE':
                             self.title = field.replace(u'\n', u' ')
                         elif label == u'AUTHOR':
-                            self.parseAuthor(field)
+                            self.parse_author(field)
                         elif label == u'COPYRIGHTLINE':
                             found_copyright = True
                             self._parseCopyrightCCLI(field)

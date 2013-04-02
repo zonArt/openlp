@@ -35,9 +35,11 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, translate
+from openlp.core.lib import Registry, translate
+
 
 log = logging.getLogger(__name__)
+
 
 class AlertsManager(QtCore.QObject):
     """
@@ -47,21 +49,20 @@ class AlertsManager(QtCore.QObject):
 
     def __init__(self, parent):
         QtCore.QObject.__init__(self, parent)
-        self.screen = None
         self.timer_id = 0
-        self.alertList = []
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'live_display_active'), self.generateAlert)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'alerts_text'), self.onAlertText)
+        self.alert_list = []
+        Registry().register_function(u'live_display_active', self.generate_alert)
+        Registry().register_function(u'alerts_text', self.alert_text)
 
-    def onAlertText(self, message):
+    def alert_text(self, message):
         """
         Called via a alerts_text event. Message is single element array
         containing text
         """
         if message:
-            self.displayAlert(message[0])
+            self.display_alert(message[0])
 
-    def displayAlert(self, text=u''):
+    def display_alert(self, text=u''):
         """
         Called from the Alert Tab to display an alert
 
@@ -70,27 +71,27 @@ class AlertsManager(QtCore.QObject):
         """
         log.debug(u'display alert called %s' % text)
         if text:
-            self.alertList.append(text)
+            self.alert_list.append(text)
             if self.timer_id != 0:
-                Receiver.send_message(u'mainwindow_status_text',
+                self.main_window.show_status_message(
                     translate('AlertsPlugin.AlertsManager', 'Alert message created and displayed.'))
                 return
-            Receiver.send_message(u'mainwindow_status_text', u'')
-            self.generateAlert()
+            self.main_window.show_status_message(u'')
+            self.generate_alert()
 
-    def generateAlert(self):
+    def generate_alert(self):
         """
         Format and request the Alert and start the timer
         """
         log.debug(u'Generate Alert called')
-        if not self.alertList:
+        if not self.alert_list:
             return
-        text = self.alertList.pop(0)
-        alertTab = self.parent().settingsTab
-        self.parent().liveController.display.alert(text, alertTab.location)
+        text = self.alert_list.pop(0)
+        alert_tab = self.parent().settings_tab
+        self.live_controller.display.alert(text, alert_tab.location)
         # Check to see if we have a timer running.
         if self.timer_id == 0:
-            self.timer_id = self.startTimer(int(alertTab.timeout) * 1000)
+            self.timer_id = self.startTimer(int(alert_tab.timeout) * 1000)
 
     def timerEvent(self, event):
         """
@@ -102,8 +103,28 @@ class AlertsManager(QtCore.QObject):
         """
         log.debug(u'timer event')
         if event.timerId() == self.timer_id:
-            alertTab = self.parent().settingsTab
-            self.parent().liveController.display.alert(u'', alertTab.location)
+            alertTab = self.parent().settings_tab
+            self.live_controller.display.alert(u'', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
-        self.generateAlert()
+        self.generate_alert()
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

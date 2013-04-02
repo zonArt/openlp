@@ -33,12 +33,12 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.plugins.songs.lib import VerseType
-
 from editversedialog import Ui_EditVerseDialog
 
 log = logging.getLogger(__name__)
 
 VERSE_REGEX = re.compile(r'---\[(.+):\D*(\d*)\D*.*\]---')
+
 
 class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
     """
@@ -50,61 +50,56 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        QtCore.QObject.connect(self.verseTextEdit, QtCore.SIGNAL('customContextMenuRequested(QPoint)'),
-            self.contextMenu)
-        QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
-        QtCore.QObject.connect(self.splitButton, QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
-        QtCore.QObject.connect(self.verseTextEdit, QtCore.SIGNAL(u'cursorPositionChanged()'),
-            self.onCursorPositionChanged)
-        QtCore.QObject.connect(self.verseTypeComboBox, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.onVerseTypeComboBoxChanged)
+        self.verse_text_edit.customContextMenuRequested.connect(self.context_menu)
+        self.insert_button.clicked.connect(self.on_insert_button_clicked)
+        self.split_button.clicked.connect(self.on_split_button_clicked)
+        self.verse_text_edit.cursorPositionChanged.connect(self.on_cursor_position_changed)
+        self.verse_type_combo_box.currentIndexChanged.connect(self.on_verse_type_combo_box_changed)
 
-    def contextMenu(self, point):
+    def context_menu(self, point):
         item = self.serviceManagerList.itemAt(point)
 
-    def insertVerse(self, verse_tag, verse_num=1):
-        if self.verseTextEdit.textCursor().columnNumber() != 0:
-            self.verseTextEdit.insertPlainText(u'\n')
+    def insert_verse(self, verse_tag, verse_num=1):
+        if self.verse_text_edit.textCursor().columnNumber() != 0:
+            self.verse_text_edit.insertPlainText(u'\n')
         verse_tag = VerseType.translated_name(verse_tag)
-        self.verseTextEdit.insertPlainText(u'---[%s:%s]---\n' % (verse_tag, verse_num))
-        self.verseTextEdit.setFocus()
+        self.verse_text_edit.insertPlainText(u'---[%s:%s]---\n' % (verse_tag, verse_num))
+        self.verse_text_edit.setFocus()
 
-    def onSplitButtonClicked(self):
-        text = self.verseTextEdit.toPlainText()
-        position = self.verseTextEdit.textCursor().position()
+    def on_split_button_clicked(self):
+        text = self.verse_text_edit.toPlainText()
+        position = self.verse_text_edit.textCursor().position()
         insert_string = u'[---]'
         if position and text[position-1] != u'\n':
-             insert_string = u'\n' + insert_string
+            insert_string = u'\n' + insert_string
         if position ==  len(text) or text[position] != u'\n':
-             insert_string += u'\n'
-        self.verseTextEdit.insertPlainText(insert_string)
-        self.verseTextEdit.setFocus()
+            insert_string += u'\n'
+        self.verse_text_edit.insertPlainText(insert_string)
+        self.verse_text_edit.setFocus()
 
-    def onInsertButtonClicked(self):
-        verse_type_index = self.verseTypeComboBox.currentIndex()
-        self.insertVerse(VerseType.Tags[verse_type_index],
-            self.verseNumberBox.value())
+    def on_insert_button_clicked(self):
+        verse_type_index = self.verse_type_combo_box.currentIndex()
+        self.insert_verse(VerseType.tags[verse_type_index], self.verse_number_box.value())
 
-    def onVerseTypeComboBoxChanged(self):
-        self.updateSuggestedVerseNumber()
+    def on_verse_type_combo_box_changed(self):
+        self.update_suggested_verse_number()
 
-    def onCursorPositionChanged(self):
-        self.updateSuggestedVerseNumber()
+    def on_cursor_position_changed(self):
+        self.update_suggested_verse_number()
 
-    def updateSuggestedVerseNumber(self):
+    def update_suggested_verse_number(self):
         """
-        Adjusts the verse number SpinBox in regard to the selected verse type
-        and the cursor's position.
+        Adjusts the verse number SpinBox in regard to the selected verse type and the cursor's position.
         """
-        position = self.verseTextEdit.textCursor().position()
-        text = self.verseTextEdit.toPlainText()
-        verse_name = VerseType.TranslatedNames[
-            self.verseTypeComboBox.currentIndex()]
+        position = self.verse_text_edit.textCursor().position()
+        text = self.verse_text_edit.toPlainText()
+        verse_name = VerseType.translated_names[
+            self.verse_type_combo_box.currentIndex()]
         if not text:
             return
         position = text.rfind(u'---[%s' % verse_name, 0, position)
         if position == -1:
-            self.verseNumberBox.setValue(1)
+            self.verse_number_box.setValue(1)
             return
         text = text[position:]
         position = text.find(u']---')
@@ -113,40 +108,39 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         text = text[:position + 4]
         match = VERSE_REGEX.match(text)
         if match:
-            verse_tag = match.group(1)
+            # TODO: Not used, remove?
+            # verse_tag = match.group(1)
             try:
                 verse_num = int(match.group(2)) + 1
             except ValueError:
                 verse_num = 1
-            self.verseNumberBox.setValue(verse_num)
+            self.verse_number_box.setValue(verse_num)
 
-    def setVerse(self, text, single=False,
-        tag=u'%s1' % VerseType.Tags[VerseType.Verse]):
-        self.hasSingleVerse = single
+    def set_verse(self, text, single=False, tag=u'%s1' % VerseType.tags[VerseType.Verse]):
+        self.has_single_verse = single
         if single:
             verse_type_index = VerseType.from_tag(tag[0], None)
             verse_number = tag[1:]
             if verse_type_index is not None:
-                self.verseTypeComboBox.setCurrentIndex(verse_type_index)
-            self.verseNumberBox.setValue(int(verse_number))
-            self.insertButton.setVisible(False)
+                self.verse_type_combo_box.setCurrentIndex(verse_type_index)
+            self.verse_number_box.setValue(int(verse_number))
+            self.insert_button.setVisible(False)
         else:
             if not text:
-                text = u'---[%s:1]---\n' % VerseType.TranslatedNames[VerseType.Verse]
-            self.verseTypeComboBox.setCurrentIndex(0)
-            self.verseNumberBox.setValue(1)
-            self.insertButton.setVisible(True)
-        self.verseTextEdit.setPlainText(text)
-        self.verseTextEdit.setFocus()
-        self.verseTextEdit.moveCursor(QtGui.QTextCursor.End)
+                text = u'---[%s:1]---\n' % VerseType.translated_names[VerseType.Verse]
+            self.verse_type_combo_box.setCurrentIndex(0)
+            self.verse_number_box.setValue(1)
+            self.insert_button.setVisible(True)
+        self.verse_text_edit.setPlainText(text)
+        self.verse_text_edit.setFocus()
+        self.verse_text_edit.moveCursor(QtGui.QTextCursor.End)
 
-    def getVerse(self):
-        return self.verseTextEdit.toPlainText(), VerseType.Tags[self.verseTypeComboBox.currentIndex()], \
-            unicode(self.verseNumberBox.value())
+    def get_verse(self):
+        return self.verse_text_edit.toPlainText(), VerseType.tags[self.verse_type_combo_box.currentIndex()], \
+            unicode(self.verse_number_box.value())
 
-    def getVerseAll(self):
-        text = self.verseTextEdit.toPlainText()
+    def get_all_verses(self):
+        text = self.verse_text_edit.toPlainText()
         if not text.startswith(u'---['):
-            text = u'---[%s:1]---\n%s' % (VerseType.TranslatedNames[VerseType.Verse], text)
+            text = u'---[%s:1]---\n%s' % (VerseType.translated_names[VerseType.Verse], text)
         return text
-

@@ -36,8 +36,7 @@ from openlp.core.lib import Settings, translate
 
 class FormattingTags(object):
     """
-    Static Class to HTML Tags to be access around the code the list is managed
-    by the Options Tab.
+    Static Class to HTML Tags to be access around the code the list is managed by the Options Tab.
     """
     html_expands = []
 
@@ -56,12 +55,11 @@ class FormattingTags(object):
         tags = []
         for tag in FormattingTags.html_expands:
             if not tag[u'protected'] and not tag.get(u'temporary'):
-                # Using dict ensures that copy is made and encoding of values
-                # a little later does not affect tags in the original list
+                # Using dict ensures that copy is made and encoding of values a little later does not affect tags in
+                # the original list
                 tags.append(dict(tag))
                 tag = tags[-1]
-                # Remove key 'temporary' from tags.
-                # It is not needed to be saved.
+                # Remove key 'temporary' from tags. It is not needed to be saved.
                 if u'temporary' in tag:
                     del tag[u'temporary']
                 for element in tag:
@@ -73,15 +71,12 @@ class FormattingTags(object):
     @staticmethod
     def load_tags():
         """
-        Load the Tags from store so can be used in the system or used to
-        update the display.
+        Load the Tags from store so can be used in the system or used to update the display.
         """
-        temporary_tags = [tag for tag in FormattingTags.html_expands
-            if tag.get(u'temporary')]
+        temporary_tags = [tag for tag in FormattingTags.html_expands if tag.get(u'temporary')]
         FormattingTags.html_expands = []
         base_tags = []
         # Append the base tags.
-        # Hex Color tags from http://www.w3schools.com/html/html_colornames.asp
         base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Red'),
             u'start tag': u'{r}',
             u'start html': u'<span style="-webkit-text-fill-color:red">',
@@ -195,19 +190,17 @@ class FormattingTags(object):
             The end tag, e. g. ``{/r}``
 
         * start html
-            The start html tag. For instance ``<span style="
-            -webkit-text-fill-color:red">``
+            The start html tag. For instance ``<span style="-webkit-text-fill-color:red">``
 
         * end html
             The end html tag. For example ``</span>``
 
         * protected
-            A boolean stating whether this is a build-in tag or not. Should be
-            ``True`` in most cases.
+            A boolean stating whether this is a build-in tag or not. Should be ``True`` in most cases.
 
         * temporary
-            A temporary tag will not be saved, but is also considered when
-            displaying text containing the tag. It has to be a ``boolean``.
+            A temporary tag will not be saved, but is also considered when displaying text containing the tag. It has
+            to be a ``boolean``.
         """
         FormattingTags.html_expands.extend(tags)
 

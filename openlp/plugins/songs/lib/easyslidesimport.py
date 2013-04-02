@@ -51,35 +51,35 @@ class EasySlidesImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
 
     def doImport(self):
-        log.info(u'Importing EasySlides XML file %s', self.importSource)
+        log.info(u'Importing EasySlides XML file %s', self.import_source)
         parser = etree.XMLParser(remove_blank_text=True)
-        parsed_file = etree.parse(self.importSource, parser)
+        parsed_file = etree.parse(self.import_source, parser)
         xml = unicode(etree.tostring(parsed_file))
         song_xml = objectify.fromstring(xml)
-        self.importWizard.progressBar.setMaximum(len(song_xml.Item))
+        self.import_wizard.progress_bar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self._parseSong(song)
 
     def _parseSong(self, song):
         self._success = True
-        self._addUnicodeAttribute(u'title', song.Title1, True)
+        self._add_unicode_attribute(u'title', song.Title1, True)
         if hasattr(song, u'Title2'):
-            self._addUnicodeAttribute(u'alternateTitle', song.Title2)
+            self._add_unicode_attribute(u'alternateTitle', song.Title2)
         if hasattr(song, u'SongNumber'):
-            self._addUnicodeAttribute(u'songNumber', song.SongNumber)
+            self._add_unicode_attribute(u'songNumber', song.SongNumber)
         if self.songNumber == u'0':
             self.songNumber = u''
         self._addAuthors(song)
         if hasattr(song, u'Copyright'):
-            self._addCopyright(song.Copyright)
+            self._add_copyright(song.Copyright)
         if hasattr(song, u'LicenceAdmin1'):
-            self._addCopyright(song.LicenceAdmin1)
+            self._add_copyright(song.LicenceAdmin1)
         if hasattr(song, u'LicenceAdmin2'):
-            self._addCopyright(song.LicenceAdmin2)
+            self._add_copyright(song.LicenceAdmin2)
         if hasattr(song, u'BookReference'):
-            self._addUnicodeAttribute(u'songBookName', song.BookReference)
+            self._add_unicode_attribute(u'songBookName', song.BookReference)
         self._parseAndAddLyrics(song)
         if self._success:
             if not self.finish():
@@ -87,7 +87,7 @@ class EasySlidesImport(SongImport):
         else:
             self.setDefaults()
 
-    def _addUnicodeAttribute(self, self_attribute, import_attribute, mandatory=False):
+    def _add_unicode_attribute(self, self_attribute, import_attribute, mandatory=False):
         """
         Add imported values to the song model converting them to unicode at the
         same time. If the unicode decode fails or a mandatory attribute is not
@@ -123,7 +123,7 @@ class EasySlidesImport(SongImport):
         except AttributeError:
             pass
 
-    def _addCopyright(self, element):
+    def _add_copyright(self, element):
         """
         Add a piece of copyright to the total copyright information for the
         song.
@@ -175,12 +175,12 @@ class EasySlidesImport(SongImport):
         # if the regions are inside verses
         regionsInVerses = (regions and regionlines[regionlines.keys()[0]] > 1)
         MarkTypes = {
-            u'CHORUS': VerseType.Tags[VerseType.Chorus],
-            u'VERSE': VerseType.Tags[VerseType.Verse],
-            u'INTRO': VerseType.Tags[VerseType.Intro],
-            u'ENDING': VerseType.Tags[VerseType.Ending],
-            u'BRIDGE': VerseType.Tags[VerseType.Bridge],
-            u'PRECHORUS': VerseType.Tags[VerseType.PreChorus]
+            u'CHORUS': VerseType.tags[VerseType.Chorus],
+            u'VERSE': VerseType.tags[VerseType.Verse],
+            u'INTRO': VerseType.tags[VerseType.Intro],
+            u'ENDING': VerseType.tags[VerseType.Ending],
+            u'BRIDGE': VerseType.tags[VerseType.Bridge],
+            u'PRECHORUS': VerseType.tags[VerseType.PreChorus]
         }
         verses = {}
         # list as [region, versetype, versenum, instance]

@@ -26,41 +26,39 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-"""
-Provide handling for persisting OpenLP settings.  OpenLP uses QSettings to manage settings persistence.  QSettings
-provides a single API for saving and retrieving settings from the application but writes to disk in an OS dependant
-format.
-"""
-import os
 
-from openlp.core.utils import AppLocation
+from PyQt4 import QtGui
+
+from openlp.core.lib import translate
+from openlp.core.lib.ui import create_button_box
 
 
-class SettingsManager(object):
-    """
-    Class to provide helper functions for the loading and saving of application settings.
-    """
+class Ui_AddGroupDialog(object):
+    def setupUi(self, add_group_dialog):
+        add_group_dialog.setObjectName(u'add_group_dialog')
+        add_group_dialog.resize(300, 10)
+        self.dialog_layout = QtGui.QVBoxLayout(add_group_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.name_layout = QtGui.QFormLayout()
+        self.name_layout.setObjectName(u'name_layout')
+        self.parent_group_label = QtGui.QLabel(add_group_dialog)
+        self.parent_group_label.setObjectName(u'parent_group_label')
+        self.parent_group_combobox = QtGui.QComboBox(add_group_dialog)
+        self.parent_group_combobox.setObjectName(u'parent_group_combobox')
+        self.name_layout.addRow(self.parent_group_label, self.parent_group_combobox)
+        self.name_label = QtGui.QLabel(add_group_dialog)
+        self.name_label.setObjectName(u'name_label')
+        self.name_edit = QtGui.QLineEdit(add_group_dialog)
+        self.name_edit.setObjectName(u'name_edit')
+        self.name_label.setBuddy(self.name_edit)
+        self.name_layout.addRow(self.name_label, self.name_edit)
+        self.dialog_layout.addLayout(self.name_layout)
+        self.button_box = create_button_box(add_group_dialog, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box)
+        self.retranslateUi(add_group_dialog)
+        add_group_dialog.setMaximumHeight(add_group_dialog.sizeHint().height())
 
-    @staticmethod
-    def get_files(section=None, extension=None):
-        """
-        Get a list of files from the data files path.
-
-        ``section``
-            Defaults to *None*. The section of code getting the files - used to load from a section's data subdirectory.
-
-        ``extension``
-            Defaults to *None*. The extension to search for.
-        """
-        path = AppLocation.get_data_path()
-        if section:
-            path = os.path.join(path, section)
-        try:
-            files = os.listdir(path)
-        except OSError:
-            return []
-        if extension:
-            return [filename for filename in files if extension == os.path.splitext(filename)[1]]
-        else:
-            # no filtering required
-            return files
+    def retranslateUi(self, add_group_dialog):
+        add_group_dialog.setWindowTitle(translate('ImagePlugin.AddGroupForm', 'Add group'))
+        self.parent_group_label.setText(translate('ImagePlugin.AddGroupForm', 'Parent group:'))
+        self.name_label.setText(translate('ImagePlugin.AddGroupForm', 'Group name:'))

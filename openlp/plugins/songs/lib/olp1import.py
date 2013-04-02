@@ -37,7 +37,7 @@ import sqlite
 import sys
 import os
 
-from openlp.core.lib import translate
+from openlp.core.lib import Registry, translate
 from openlp.plugins.songs.lib import retrieve_windows_encoding
 from songimport import SongImport
 
@@ -61,21 +61,20 @@ class OpenLP1SongImport(SongImport):
             The database providing the data to import.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.availableThemes = kwargs[u'plugin'].theme_manager.get_themes()
 
     def doImport(self):
         """
         Run the import for an openlp.org 1.x song database.
         """
-        if not self.importSource.endswith(u'.olp'):
-            self.logError(self.importSource,
+        if not self.import_source.endswith(u'.olp'):
+            self.logError(self.import_source,
                 translate('SongsPlugin.OpenLP1SongImport', 'Not a valid openlp.org 1.x song database.'))
             return
         encoding = self.getEncoding()
         if not encoding:
             return
         # Connect to the database.
-        connection = sqlite.connect(self.importSource, mode=0444, encoding=(encoding, 'replace'))
+        connection = sqlite.connect(self.import_source, mode=0444, encoding=(encoding, 'replace'))
         cursor = connection.cursor()
         # Determine if the db supports linking audio to songs.
         cursor.execute(u'SELECT name FROM sqlite_master '
@@ -100,17 +99,17 @@ class OpenLP1SongImport(SongImport):
             cursor.execute(u'-- types int, unicode')
             cursor.execute(u'SELECT settingsid, settingsname FROM settings')
             for theme_id, theme_name in cursor.fetchall():
-                if theme_name in self.availableThemes:
+                if theme_name in self.theme_manager.get_themes():
                     themes[theme_id] = theme_name
         # Import the songs.
         cursor.execute(u'-- types int, unicode, unicode, unicode')
         cursor.execute(u'SELECT songid, songtitle, lyrics || \'\' AS ' \
                 u'lyrics, copyrightinfo FROM songs')
         songs = cursor.fetchall()
-        self.importWizard.progressBar.setMaximum(len(songs))
+        self.import_wizard.progress_bar.setMaximum(len(songs))
         for song in songs:
             self.setDefaults()
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             song_id = song[0]
             self.title = song[1]
@@ -131,13 +130,13 @@ class OpenLP1SongImport(SongImport):
                 u'WHERE songid = %s' % song_id)
             author_ids = cursor.fetchall()
             for author_id in author_ids:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 for author in authors:
                     if author[0] == author_id[0]:
-                        self.parseAuthor(author[1])
+                        self.parse_author(author[1])
                         break
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             if db_has_tracks:
                 cursor.execute(u'-- types int, int')
@@ -146,24 +145,24 @@ class OpenLP1SongImport(SongImport):
                     u'WHERE songid = %s ORDER BY listindex' % song_id)
                 track_ids = cursor.fetchall()
                 for track_id, listindex in track_ids:
-                    if self.stopImportFlag:
+                    if self.stop_import_flag:
                         break
                     for track in tracks:
                         if track[0] == track_id:
                             media_file = self.expandMediaFile(track[1])
                             self.addMediaFile(media_file, listindex)
                             break
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 break
             if not self.finish():
-                self.logError(self.importSource)
+                self.logError(self.import_source)
 
     def getEncoding(self):
         """
         Detect character encoding of an openlp.org 1.x song database.
         """
         # Connect to the database.
-        connection = sqlite.connect(self.importSource.encode(
+        connection = sqlite.connect(self.import_source.encode(
             sys.getfilesystemencoding()), mode=0444)
         cursor = connection.cursor()
 
@@ -216,3 +215,13 @@ class OpenLP1SongImport(SongImport):
         if not common_app_data:
             return filename
         return os.path.join(common_app_data, u'openlp.org', 'Audio', filename)
+
+    def _get_theme_manager(self):
+        """
+        Adds the theme manager to the class dynamically
+        """
+        if not hasattr(self, u'_theme_manager'):
+            self._theme_manager = Registry().get(u'theme_manager')
+        return self._theme_manager
+
+    theme_manager = property(_get_theme_manager)

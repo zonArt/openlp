@@ -41,7 +41,7 @@ from ConfigParser import SafeConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import PluginStatus, Receiver, Settings, Registry, build_icon, check_directory_exists, translate
+from openlp.core.lib import PluginStatus, Settings, Registry, build_icon, check_directory_exists, translate
 from openlp.core.utils import AppLocation, get_web_page, get_filesystem_encoding
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -61,7 +61,7 @@ class ThemeScreenshotThread(QtCore.QThread):
         config = self.parent().config
         for theme in themes:
             # Stop if the wizard has been cancelled.
-            if self.parent().downloadCancelled:
+            if self.parent().was_download_cancelled:
                 return
             title = config.get(u'theme_%s' % theme, u'title')
             filename = config.get(u'theme_%s' % theme, u'filename')
@@ -91,20 +91,17 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # check to see if we have web access
         self.web = u'http://openlp.org/files/frw/'
         self.config = SafeConfigParser()
-        self.webAccess = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
-        if self.webAccess:
-            files = self.webAccess.read()
+        self.web_access = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
+        if self.web_access:
+            files = self.web_access.read()
             self.config.readfp(io.BytesIO(files))
-        self.updateScreenListCombo()
+        self.update_screen_list_combo()
         self.was_download_cancelled = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
-        QtCore.QObject.connect(self.cancelButton, QtCore.SIGNAL('clicked()'),
-            self.onCancelButtonClicked)
-        QtCore.QObject.connect(self.noInternetFinishButton, QtCore.SIGNAL('clicked()'),
-            self.onNoInternetFinishButtonClicked)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'currentIdChanged(int)'), self.onCurrentIdChanged)
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_screen_changed'),
-            self.updateScreenListCombo)
+        self.cancelButton.clicked.connect(self.onCancelButtonClicked)
+        self.noInternetFinishButton.clicked.connect(self.onNoInternetFinishButtonClicked)
+        self.currentIdChanged.connect(self.onCurrentIdChanged)
+        Registry().register_function(u'config_screen_changed', self.update_screen_list_combo)
 
     def exec_(self):
         """
@@ -118,13 +115,12 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
-        check_directory_exists(os.path.join(
-            unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
+        check_directory_exists(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.hasRunWizard = Settings().value(u'general/has run wizard')
         # Sort out internet access for downloads
-        if self.webAccess:
+        if self.web_access:
             songs = self.config.get(u'songs', u'languages')
             songs = songs.split(u',')
             for song in songs:
@@ -160,7 +156,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         self.application.process_events()
         if self.currentId() == FirstTimePage.Plugins:
-            if not self.webAccess:
+            if not self.web_access:
                 return FirstTimePage.NoInternet
             else:
                 return FirstTimePage.Songs
@@ -225,10 +221,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             time.sleep(0.2)
             self._preWizard()
             self._performWizard()
-            self._postWizard()
+            self._post_wizard()
             self.application.set_normal_cursor()
 
-    def updateScreenListCombo(self):
+    def update_screen_list_combo(self):
         """
         The user changed screen resolution or enabled/disabled more screens, so
         we need to update the combo box.
@@ -241,8 +237,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Process the triggering of the cancel button.
         """
-        if self.lastId == FirstTimePage.NoInternet or \
-                (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
+        if self.lastId == FirstTimePage.NoInternet or (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
         self.was_download_cancelled = True
@@ -296,8 +291,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(index)
                 if item.data(QtCore.Qt.UserRole) == filename:
                     break
-            item.setIcon(build_icon(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp',
-                screenshot)))
+            item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
+                    get_filesystem_encoding()), u'openlp', screenshot)))
 
     def _getFileSize(self, url):
         """
@@ -385,7 +380,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         # Try to give the wizard a chance to repaint itself
         time.sleep(0.1)
 
-    def _postWizard(self):
+    def _post_wizard(self):
         """
         Clean up the UI after the process has finished.
         """
@@ -428,7 +423,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._setPluginStatus(self.customCheckBox, u'custom/status')
         self._setPluginStatus(self.songUsageCheckBox, u'songusage/status')
         self._setPluginStatus(self.alertCheckBox, u'alerts/status')
-        if self.webAccess:
+        if self.web_access:
             # Build directories for downloads
             songs_destination = os.path.join(
                 unicode(gettempdir(), get_filesystem_encoding()), u'openlp')

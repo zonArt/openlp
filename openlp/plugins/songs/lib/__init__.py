@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The :mod:`~openlp.plugins.songs.lib` module contains a number of library functions and classes used in the Songs plugin.
+"""
 import re
 
 from PyQt4 import QtGui
@@ -37,8 +40,7 @@ from ui import SongStrings
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile(u'[\'`’ʻ′]', re.UNICODE)
-PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'"
-    r"([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
+PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
 # RTF control words which specify a "destination" to be ignored.
 DESTINATIONS = frozenset((
     u'aftncn', u'aftnsep', u'aftnsepc', u'annotation', u'atnauthor',
@@ -138,8 +140,7 @@ CHARSET_MAPPING = {
 
 class VerseType(object):
     """
-    VerseType provides an enumeration for the tags that may be associated
-    with verses in songs.
+    VerseType provides an enumeration for the tags that may be associated with verses in songs.
     """
     Verse = 0
     Chorus = 1
@@ -149,7 +150,7 @@ class VerseType(object):
     Ending = 5
     Other = 6
 
-    Names = [
+    names = [
         u'Verse',
         u'Chorus',
         u'Bridge',
@@ -157,9 +158,9 @@ class VerseType(object):
         u'Intro',
         u'Ending',
         u'Other']
-    Tags = [name[0].lower() for name in Names]
+    tags = [name[0].lower() for name in names]
 
-    TranslatedNames = [
+    translated_names = [
         translate('SongsPlugin.VerseType', 'Verse'),
         translate('SongsPlugin.VerseType', 'Chorus'),
         translate('SongsPlugin.VerseType', 'Bridge'),
@@ -167,13 +168,12 @@ class VerseType(object):
         translate('SongsPlugin.VerseType', 'Intro'),
         translate('SongsPlugin.VerseType', 'Ending'),
         translate('SongsPlugin.VerseType', 'Other')]
-    TranslatedTags = [name[0].lower() for name in TranslatedNames]
+    translated_tags = [name[0].lower() for name in translated_names]
 
     @staticmethod
     def translated_tag(verse_tag, default=Other):
         """
-        Return the translated UPPERCASE tag for a given tag,
-        used to show translated verse tags in UI
+        Return the translated UPPERCASE tag for a given tag, used to show translated verse tags in UI
 
         ``verse_tag``
             The string to return a VerseType for
@@ -182,11 +182,13 @@ class VerseType(object):
             Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
-        for num, tag in enumerate(VerseType.Tags):
+        for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
-                return VerseType.TranslatedTags[num].upper()
-        if default in VerseType.TranslatedTags:
-            return VerseType.TranslatedTags[default].upper()
+                return VerseType.translated_tags[num].upper()
+        if len(VerseType.names) > default:
+            return VerseType.translated_tags[default].upper()
+        else:
+            return VerseType.translated_tags[VerseType.Other].upper()
 
     @staticmethod
     def translated_name(verse_tag, default=Other):
@@ -200,11 +202,13 @@ class VerseType(object):
             Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
-        for num, tag in enumerate(VerseType.Tags):
+        for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
-                return VerseType.TranslatedNames[num]
-        if default in VerseType.TranslatedNames:
-            return VerseType.TranslatedNames[default]
+                return VerseType.translated_names[num]
+        if len(VerseType.names) > default:
+            return VerseType.translated_names[default]
+        else:
+            return VerseType.translated_names[VerseType.Other]
 
     @staticmethod
     def from_tag(verse_tag, default=Other):
@@ -218,10 +222,13 @@ class VerseType(object):
             Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
-        for num, tag in enumerate(VerseType.Tags):
+        for num, tag in enumerate(VerseType.tags):
             if verse_tag == tag:
                 return num
-        return default
+        if len(VerseType.names) > default:
+            return default
+        else:
+            return VerseType.Other
 
     @staticmethod
     def from_translated_tag(verse_tag, default=Other):
@@ -235,10 +242,13 @@ class VerseType(object):
             Default return value if no matching tag is found
         """
         verse_tag = verse_tag[0].lower()
-        for num, tag in enumerate(VerseType.TranslatedTags):
+        for num, tag in enumerate(VerseType.translated_tags):
             if verse_tag == tag:
                 return num
-        return default
+        if len(VerseType.names) > default:
+            return default
+        else:
+            return VerseType.Other
 
     @staticmethod
     def from_string(verse_name, default=Other):
@@ -252,7 +262,7 @@ class VerseType(object):
             Default return value if no matching tag is found
         """
         verse_name = verse_name.lower()
-        for num, name in enumerate(VerseType.Names):
+        for num, name in enumerate(VerseType.names):
             if verse_name == name.lower():
                 return num
         return default
@@ -266,7 +276,7 @@ class VerseType(object):
             The string to return a VerseType for
         """
         verse_name = verse_name.lower()
-        for num, translation in enumerate(VerseType.TranslatedNames):
+        for num, translation in enumerate(VerseType.translated_names):
             if verse_name == translation.lower():
                 return num
 
@@ -296,13 +306,11 @@ class VerseType(object):
 
 def retrieve_windows_encoding(recommendation=None):
     """
-    Determines which encoding to use on an information source. The process uses
-    both automated detection, which is passed to this method as a
-    recommendation, and user confirmation to return an encoding.
+    Determines which encoding to use on an information source. The process uses both automated detection, which is
+    passed to this method as a recommendation, and user confirmation to return an encoding.
 
     ``recommendation``
-        A recommended encoding discovered programmatically for the user to
-        confirm.
+        A recommended encoding discovered programmatically for the user to confirm.
     """
     # map chardet result to compatible windows standard code page
     codepage_mapping = {'IBM866': u'cp866', 'TIS-620': u'cp874',
@@ -355,24 +363,22 @@ def retrieve_windows_encoding(recommendation=None):
 
 def clean_string(string):
     """
-    Strips punctuation from the passed string to assist searching
+    Strips punctuation from the passed string to assist searching.
     """
     return WHITESPACE.sub(u' ', APOSTROPHE.sub(u'', string)).lower()
 
 
 def clean_title(title):
     """
-    Cleans the song title by removing Unicode control chars groups C0 & C1,
-    as well as any trailing spaces
+    Cleans the song title by removing Unicode control chars groups C0 & C1, as well as any trailing spaces.
     """
     return CONTROL_CHARS.sub(u'', title).rstrip()
 
 
 def clean_song(manager, song):
     """
-    Cleans the search title, rebuilds the search lyrics, adds a default author
-    if the song does not have one and other clean ups. This should always
-    called when a new song is added or changed.
+    Cleans the search title, rebuilds the search lyrics, adds a default author if the song does not have one and other
+    clean ups. This should always called when a new song is added or changed.
 
     ``manager``
         The song's manager.
@@ -380,6 +386,8 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
+    from xml import SongXML
+
     if isinstance(song.title, buffer):
         song.title = unicode(song.title)
     if isinstance(song.alternate_title, buffer):
@@ -397,21 +405,20 @@ def clean_song(manager, song):
     song.search_title = clean_string(song.title) + u'@' + clean_string(song.alternate_title)
     # Only do this, if we the song is a 1.9.4 song (or older).
     if song.lyrics.find(u'<lyrics language="en">') != -1:
-        # Remove the old "language" attribute from lyrics tag (prior to 1.9.5).
-        # This is not very important, but this keeps the database clean. This
-        # can be removed when everybody has cleaned his songs.
+        # Remove the old "language" attribute from lyrics tag (prior to 1.9.5). This is not very important, but this
+        # keeps the database clean. This can be removed when everybody has cleaned his songs.
         song.lyrics = song.lyrics.replace(u'<lyrics language="en">', u'<lyrics>')
         verses = SongXML().get_verses(song.lyrics)
         song.search_lyrics = u' '.join([clean_string(verse[1])
             for verse in verses])
         # We need a new and clean SongXML instance.
         sxml = SongXML()
-        # Rebuild the song's verses, to remove any wrong verse names (for
-        # example translated ones), which might have been added prior to 1.9.5.
+        # Rebuild the song's verses, to remove any wrong verse names (for  example translated ones), which might have
+        # been added prior to 1.9.5.
         # List for later comparison.
         compare_order = []
         for verse in verses:
-            verse_type = VerseType.Tags[VerseType.from_loose_input(verse[0][u'type'])]
+            verse_type = VerseType.tags[VerseType.from_loose_input(verse[0][u'type'])]
             sxml.add_verse_to_lyrics(
                 verse_type,
                 verse[0][u'label'],
@@ -422,15 +429,14 @@ def clean_song(manager, song):
             if verse[0][u'label'] == u'1':
                 compare_order.append(verse_type.upper())
         song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
-        # Rebuild the verse order, to convert translated verse tags, which might
-        # have been added prior to 1.9.5.
+        # Rebuild the verse order, to convert translated verse tags, which might have been added prior to 1.9.5.
         if song.verse_order:
             order = CONTROL_CHARS.sub(u'', song.verse_order).strip().split()
         else:
             order = []
         new_order = []
         for verse_def in order:
-            verse_type = VerseType.Tags[
+            verse_type = VerseType.tags[
                 VerseType.from_loose_input(verse_def[0])]
             if len(verse_def) > 1:
                 new_order.append((u'%s%s' % (verse_type, verse_def[1:])).upper())
@@ -463,16 +469,16 @@ def get_encoding(font, font_table, default_encoding, failed=False):
     Finds an encoding to use. Asks user, if necessary.
 
     ``font``
-    The number of currently active font.
+        The number of currently active font.
 
     ``font_table``
-    Dictionary of fonts and respective encodings.
+        Dictionary of fonts and respective encodings.
 
     ``default_encoding``
-    The default encoding to use when font_table is empty or no font is used.
+        The default encoding to use when font_table is empty or no font is used.
 
     ``failed``
-    A boolean indicating whether the previous encoding didn't work.
+        A boolean indicating whether the previous encoding didn't work.
     """
     encoding = None
     if font in font_table:
@@ -494,10 +500,10 @@ def strip_rtf(text, default_encoding=None):
     http://stackoverflow.com/questions/188545
 
     ``text``
-    RTF-encoded text, a string.
+        RTF-encoded text, a string.
 
     ``default_encoding``
-    Default encoding to use when no encoding is specified.
+        Default encoding to use when no encoding is specified.
     """
     # Current font is the font tag we last met.
     font = u''
@@ -589,8 +595,7 @@ def strip_rtf(text, default_encoding=None):
 
 def natcmp(a, b):
     """
-    Natural string comparison which mimics the behaviour of Python's internal
-    cmp function.
+    Natural string comparison which mimics the behaviour of Python's internal cmp function.
     """
     if len(a) <= len(b):
         for i, key in enumerate(a):
@@ -621,7 +626,3 @@ def natcmp(a, b):
             if result != 0:
                 return result
         return 1
-
-from xml import OpenLyrics, SongXML
-from songstab import SongsTab
-from mediaitem import SongMediaItem

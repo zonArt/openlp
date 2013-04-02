@@ -36,7 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Receiver, Settings, UiStrings, translate, build_icon
+from openlp.core.lib import SettingsTab, Settings, UiStrings, translate, build_icon
 from openlp.core.utils import AppLocation, format_time, get_images_filter
 from openlp.core.lib import SlideLimits
 
@@ -52,11 +52,10 @@ class AdvancedTab(SettingsTab):
         """
         Initialise the settings tab
         """
-        self.display_changed = False
         self.default_image = u':/graphics/openlp-splash-screen.png'
         self.default_color = u'#ffffff'
         self.data_exists = False
-        self.iconPath = u':/system/system_settings.png'
+        self.icon_path = u':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
         SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
 
@@ -66,7 +65,7 @@ class AdvancedTab(SettingsTab):
         """
         self.setObjectName(u'AdvancedTab')
         SettingsTab.setupUi(self)
-        self.ui_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.ui_group_box = QtGui.QGroupBox(self.left_column)
         self.ui_group_box.setObjectName(u'ui_group_box')
         self.ui_layout = QtGui.QFormLayout(self.ui_group_box)
         self.ui_layout.setObjectName(u'ui_layout')
@@ -91,9 +90,9 @@ class AdvancedTab(SettingsTab):
         self.enable_auto_close_check_box = QtGui.QCheckBox(self.ui_group_box)
         self.enable_auto_close_check_box.setObjectName(u'enable_auto_close_check_box')
         self.ui_layout.addRow(self.enable_auto_close_check_box)
-        self.leftLayout.addWidget(self.ui_group_box)
+        self.left_layout.addWidget(self.ui_group_box)
         # Default service name
-        self.service_name_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.service_name_group_box = QtGui.QGroupBox(self.left_column)
         self.service_name_group_box.setObjectName(u'service_name_group_box')
         self.service_name_layout = QtGui.QFormLayout(self.service_name_group_box)
         self.service_name_check_box = QtGui.QCheckBox(self.service_name_group_box)
@@ -130,9 +129,9 @@ class AdvancedTab(SettingsTab):
         self.service_name_example = QtGui.QLabel(self.service_name_group_box)
         self.service_name_example.setObjectName(u'service_name_example')
         self.service_name_layout.addRow(self.service_name_example_label, self.service_name_example)
-        self.leftLayout.addWidget(self.service_name_group_box)
+        self.left_layout.addWidget(self.service_name_group_box)
         # Data Directory
-        self.data_directory_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.data_directory_group_box = QtGui.QGroupBox(self.left_column)
         self.data_directory_group_box.setObjectName(u'data_directory_group_box')
         self.data_directory_layout = QtGui.QFormLayout(self.data_directory_group_box)
         self.data_directory_layout.setObjectName(u'data_directory_layout')
@@ -173,10 +172,10 @@ class AdvancedTab(SettingsTab):
         self.data_directory_layout.addRow(self.data_directory_new_label, self.new_data_directory_label_layout)
         self.data_directory_layout.addRow(self.data_directory_copy_check_layout)
         self.data_directory_layout.addRow(self.new_data_directory_has_files_label)
-        self.leftLayout.addWidget(self.data_directory_group_box)
-        self.leftLayout.addStretch()
+        self.left_layout.addWidget(self.data_directory_group_box)
+        self.left_layout.addStretch()
         # Default Image
-        self.default_image_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.default_image_group_box = QtGui.QGroupBox(self.right_column)
         self.default_image_group_box.setObjectName(u'default_image_group_box')
         self.default_image_layout = QtGui.QFormLayout(self.default_image_group_box)
         self.default_image_layout.setObjectName(u'default_image_layout')
@@ -201,18 +200,18 @@ class AdvancedTab(SettingsTab):
         self.default_file_layout.addWidget(self.default_browse_button)
         self.default_file_layout.addWidget(self.default_revert_button)
         self.default_image_layout.addRow(self.default_file_label, self.default_file_layout)
-        self.rightLayout.addWidget(self.default_image_group_box)
+        self.right_layout.addWidget(self.default_image_group_box)
         # Hide mouse
-        self.hide_mouse_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.hide_mouse_group_box = QtGui.QGroupBox(self.right_column)
         self.hide_mouse_group_box.setObjectName(u'hide_mouse_group_box')
         self.hide_mouse_layout = QtGui.QVBoxLayout(self.hide_mouse_group_box)
         self.hide_mouse_layout.setObjectName(u'hide_mouse_layout')
         self.hide_mouse_check_box = QtGui.QCheckBox(self.hide_mouse_group_box)
         self.hide_mouse_check_box.setObjectName(u'hide_mouse_check_box')
         self.hide_mouse_layout.addWidget(self.hide_mouse_check_box)
-        self.rightLayout.addWidget(self.hide_mouse_group_box)
+        self.right_layout.addWidget(self.hide_mouse_group_box)
         # Service Item Slide Limits
-        self.slide_group_box = QtGui.QGroupBox(self.rightColumn)
+        self.slide_group_box = QtGui.QGroupBox(self.right_column)
         self.slide_group_box.setObjectName(u'slide_group_box')
         self.slide_layout = QtGui.QVBoxLayout(self.slide_group_box)
         self.slide_layout.setObjectName(u'slide_layout')
@@ -228,9 +227,9 @@ class AdvancedTab(SettingsTab):
         self.next_item_radio_button = QtGui.QRadioButton(self.slide_group_box)
         self.next_item_radio_button.setObjectName(u'next_item_radio_button')
         self.slide_layout.addWidget(self.next_item_radio_button)
-        self.rightLayout.addWidget(self.slide_group_box)
+        self.right_layout.addWidget(self.slide_group_box)
         # Display Workarounds
-        self.display_workaround_group_box = QtGui.QGroupBox(self.leftColumn)
+        self.display_workaround_group_box = QtGui.QGroupBox(self.left_column)
         self.display_workaround_group_box.setObjectName(u'display_workaround_group_box')
         self.display_workaround_layout = QtGui.QVBoxLayout(self.display_workaround_group_box)
         self.display_workaround_layout.setObjectName(u'display_workaround_layout')
@@ -240,44 +239,25 @@ class AdvancedTab(SettingsTab):
         self.alternate_rows_check_box = QtGui.QCheckBox(self.display_workaround_group_box)
         self.alternate_rows_check_box.setObjectName(u'alternate_rows_check_box')
         self.display_workaround_layout.addWidget(self.alternate_rows_check_box)
-        self.rightLayout.addWidget(self.display_workaround_group_box)
-        self.rightLayout.addStretch()
+        self.right_layout.addWidget(self.display_workaround_group_box)
+        self.right_layout.addStretch()
         self.should_update_service_name_example = False
-        QtCore.QObject.connect(self.service_name_check_box, QtCore.SIGNAL(u'toggled(bool)'),
-            self.service_name_check_box_toggled)
-        QtCore.QObject.connect(self.service_name_day, QtCore.SIGNAL(u'currentIndexChanged(int)'),
-            self.on_service_name_day_changed)
-        QtCore.QObject.connect(self.service_name_time, QtCore.SIGNAL(u'timeChanged(QTime)'),
-            self.update_service_name_example)
-        QtCore.QObject.connect(self.service_name_edit, QtCore.SIGNAL(u'textChanged(QString)'),
-            self.update_service_name_example)
-        QtCore.QObject.connect(self.service_name_revert_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_service_name_revert_button_clicked)
-        QtCore.QObject.connect(self.default_color_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_default_color_button_clicked)
-        QtCore.QObject.connect(self.default_browse_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_default_browse_button_clicked)
-        QtCore.QObject.connect(self.default_revert_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_default_revert_button_clicked)
-        QtCore.QObject.connect(self.x11_bypass_check_box, QtCore.SIGNAL(u'toggled(bool)'),
-            self.on_X11_bypass_check_box_toggled)
-        QtCore.QObject.connect(self.alternate_rows_check_box,QtCore.SIGNAL(u'toggled(bool)'),
-            self.on_alternate_rows_check_box_toggled)
-        QtCore.QObject.connect(self.data_directory_browse_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_data_directory_browse_button_clicked)
-        QtCore.QObject.connect(self.data_directory_default_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_data_directory_default_button_clicked)
-        QtCore.QObject.connect(self.data_directory_cancel_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_data_directory_cancel_button_clicked)
-        QtCore.QObject.connect(self.data_directory_copy_check_box, QtCore.SIGNAL(u'toggled(bool)'),
-            self.on_data_directory_copy_check_box_toggled)
-        QtCore.QObject.connect(self.end_slide_radio_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_end_slide_button_clicked)
-        QtCore.QObject.connect(self.wrap_slide_radio_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_wrap_slide_button_clicked)
-        QtCore.QObject.connect(self.next_item_radio_button, QtCore.SIGNAL(u'clicked()'),
-            self.on_next_item_button_clicked)
-
+        self.service_name_check_box.toggled.connect(self.service_name_check_box_toggled)
+        self.service_name_day.currentIndexChanged.connect(self.on_service_name_day_changed)
+        self.service_name_time.timeChanged.connect(self.update_service_name_example)
+        self.service_name_edit.textChanged.connect(self.update_service_name_example)
+        self.service_name_revert_button.clicked.connect(self.on_service_name_revert_button_clicked)
+        self.default_color_button.clicked.connect(self.on_default_color_button_clicked)
+        self.default_browse_button.clicked.connect(self.on_default_browse_button_clicked)
+        self.default_revert_button.clicked.connect(self.on_default_revert_button_clicked)
+        self.alternate_rows_check_box.toggled.connect(self.on_alternate_rows_check_box_toggled)
+        self.data_directory_browse_button.clicked.connect(self.on_data_directory_browse_button_clicked)
+        self.data_directory_default_button.clicked.connect(self.on_data_directory_default_button_clicked)
+        self.data_directory_cancel_button.clicked.connect(self.on_data_directory_cancel_button_clicked)
+        self.data_directory_copy_check_box.toggled.connect(self.on_data_directory_copy_check_box_toggled)
+        self.end_slide_radio_button.clicked.connect(self.on_end_slide_button_clicked)
+        self.wrap_slide_radio_button.clicked.connect(self.on_wrap_slide_button_clicked)
+        self.next_item_radio_button.clicked.connect(self.on_next_item_button_clicked)
 
     def retranslateUi(self):
         """
@@ -308,8 +288,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_day.setItemText(5, translate('OpenLP.AdvancedTab', 'Saturday'))
         self.service_name_day.setItemText(6, translate('OpenLP.AdvancedTab', 'Sunday'))
         self.service_name_day.setItemText(7, translate('OpenLP.AdvancedTab', 'Now'))
-        self.service_name_time.setToolTip(translate('OpenLP.AdvancedTab',
-            'Time when usual service starts.'))
+        self.service_name_time.setToolTip(translate('OpenLP.AdvancedTab', 'Time when usual service starts.'))
         self.service_name_label.setText(translate('OpenLP.AdvancedTab', 'Name:'))
         self.service_name_edit.setToolTip(translate('OpenLP.AdvancedTab', 'Consult the OpenLP manual for usage.'))
         self.service_name_revert_button.setToolTip(
@@ -354,7 +333,7 @@ class AdvancedTab(SettingsTab):
         Load settings from disk.
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         # The max recent files value does not have an interface and so never
         # gets actually stored in the settings therefore the default value of
         # 20 will always be used.
@@ -397,22 +376,19 @@ class AdvancedTab(SettingsTab):
         if not os.path.exists(self.current_data_path):
             log.error(u'Data path not found %s' % self.current_data_path)
             answer = QtGui.QMessageBox.critical(self,
-                translate('OpenLP.AdvancedTab',
-                'Data Directory Error'),
-                translate('OpenLP.AdvancedTab',
-                'OpenLP data directory was not found\n\n%s\n\n'
+                translate('OpenLP.AdvancedTab', 'Data Directory Error'),
+                translate('OpenLP.AdvancedTab', 'OpenLP data directory was not found\n\n%s\n\n'
                 'This data directory was previously changed from the OpenLP '
                 'default location.  If the new location was on removable '
                 'media, that media needs to be made available.\n\n'
-                'Click "No" to stop loading OpenLP. allowing you to fix '
-                'the the problem.\n\n'
+                'Click "No" to stop loading OpenLP. allowing you to fix the the problem.\n\n'
                 'Click "Yes" to reset the data directory to the default '
                 'location.').replace('%s', self.current_data_path),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
                 QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.No:
                 log.info(u'User requested termination')
-                Receiver.send_message(u'cleanup')
+                self.main_window.clean_up()
                 sys.exit()
             # Set data location to default.
             settings.remove(u'advanced/data path')
@@ -429,7 +405,7 @@ class AdvancedTab(SettingsTab):
         Save settings to disk.
         """
         settings = Settings()
-        settings.beginGroup(self.settingsSection)
+        settings.beginGroup(self.settings_section)
         settings.setValue(u'default service enabled', self.service_name_check_box.isChecked())
         service_name = self.service_name_edit.text()
         preset_is_valid = self.generate_service_name_example()[0]
@@ -448,16 +424,15 @@ class AdvancedTab(SettingsTab):
         settings.setValue(u'expand service item', self.expand_service_item_check_box.isChecked())
         settings.setValue(u'enable exit confirmation', self.enable_auto_close_check_box.isChecked())
         settings.setValue(u'hide mouse', self.hide_mouse_check_box.isChecked())
-        settings.setValue(u'x11 bypass wm', self.x11_bypass_check_box.isChecked())
         settings.setValue(u'alternate rows', self.alternate_rows_check_box.isChecked())
         settings.setValue(u'default color', self.default_color)
         settings.setValue(u'default image', self.default_file_edit.text())
         settings.setValue(u'slide limits', self.slide_limits)
+        if self.x11_bypass_check_box.isChecked() != settings.value(u'x11 bypass wm'):
+            settings.setValue(u'x11 bypass wm', self.x11_bypass_check_box.isChecked())
+            self.settings_form.register_post_process(u'config_screen_changed')
+        self.settings_form.register_post_process(u'slidecontroller_update_slide_limits')
         settings.endGroup()
-        if self.display_changed:
-            Receiver.send_message(u'config_screen_changed')
-            self.display_changed = False
-        Receiver.send_message(u'slidecontroller_update_slide_limits')
 
     def cancel(self):
         """
@@ -527,8 +502,7 @@ class AdvancedTab(SettingsTab):
         """
         Select the background colour of the default display screen.
         """
-        new_color = QtGui.QColorDialog.getColor(
-            QtGui.QColor(self.default_color), self)
+        new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.default_color), self)
         if new_color.isValid():
             self.default_color = new_color.name()
             self.default_color_button.setStyleSheet(u'background-color: %s' % self.default_color)
@@ -538,8 +512,8 @@ class AdvancedTab(SettingsTab):
         Select an image for the default display screen.
         """
         file_filters = u'%s;;%s (*.*) (*)' % (get_images_filter(), UiStrings().AllFiles)
-        filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.AdvancedTab', 'Open File'), '', file_filters)
+        filename = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.AdvancedTab', 'Open File'), '',
+            file_filters)
         if filename:
             self.default_file_edit.setText(filename)
         self.default_file_edit.setFocus()
@@ -573,7 +547,7 @@ class AdvancedTab(SettingsTab):
         # Check if data already exists here.
         self.check_data_overwrite(new_data_path)
         # Save the new location.
-        Receiver.send_message(u'set_new_data_path', new_data_path)
+        self.main_window.set_new_data_path(new_data_path)
         self.new_data_directory_edit.setText(new_data_path)
         self.data_directory_cancel_button.show()
 
@@ -594,7 +568,7 @@ class AdvancedTab(SettingsTab):
                 return
             self.check_data_overwrite(new_data_path)
             # Save the new location.
-            Receiver.send_message(u'set_new_data_path', new_data_path)
+            self.main_window.set_new_data_path(new_data_path)
             self.new_data_directory_edit.setText(os.path.abspath(new_data_path))
             self.data_directory_cancel_button.show()
         else:
@@ -605,8 +579,7 @@ class AdvancedTab(SettingsTab):
         """
         Copy existing data when you change your data directory.
         """
-        Receiver.send_message(u'set_copy_data',
-            self.data_directory_copy_check_box.isChecked())
+        self.main_window.set_copy_data(self.data_directory_copy_check_box.isChecked())
         if self.data_exists:
             if self.data_directory_copy_check_box.isChecked():
                 self.new_data_directory_has_files_label.show()
@@ -645,8 +618,8 @@ class AdvancedTab(SettingsTab):
         """
         self.new_data_directory_edit.clear()
         self.data_directory_copy_check_box.setChecked(False)
-        Receiver.send_message(u'set_new_data_path', u'')
-        Receiver.send_message(u'set_copy_data', False)
+        self.main_window.set_new_data_path(None)
+        self.main_window.set_copy_data(False)
         self.data_directory_copy_check_box.hide()
         self.data_directory_cancel_button.hide()
         self.new_data_directory_has_files_label.hide()
@@ -657,15 +630,6 @@ class AdvancedTab(SettingsTab):
         """
         self.default_file_edit.setText(u':/graphics/openlp-splash-screen.png')
         self.default_file_edit.setFocus()
-
-    def on_X11_bypass_check_box_toggled(self, checked):
-        """
-        Toggle X11 bypass flag on maindisplay depending on check box state.
-
-        ``checked``
-            The state of the check box (boolean).
-        """
-        self.display_changed = True
 
     def on_alternate_rows_check_box_toggled(self, checked):
         """

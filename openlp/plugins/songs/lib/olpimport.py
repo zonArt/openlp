@@ -106,13 +106,13 @@ class OpenLPSongImport(SongImport):
             pass
 
         # Check the file type
-        if not self.importSource.endswith(u'.sqlite'):
-            self.logError(self.importSource,
+        if not self.import_source.endswith(u'.sqlite'):
+            self.logError(self.import_source,
                 translate('SongsPlugin.OpenLPSongImport', 'Not a valid OpenLP 2.0 song database.'))
             return
-        self.importSource = u'sqlite:///%s' % self.importSource
+        self.import_source = u'sqlite:///%s' % self.import_source
         # Load the db file
-        engine = create_engine(self.importSource)
+        engine = create_engine(self.import_source)
         source_meta = MetaData()
         source_meta.reflect(engine)
         self.sourceSession = scoped_session(sessionmaker(bind=engine))
@@ -169,8 +169,8 @@ class OpenLPSongImport(SongImport):
             mapper(OldTopic, source_topics_table)
 
         source_songs = self.sourceSession.query(OldSong).all()
-        if self.importWizard:
-            self.importWizard.progressBar.setMaximum(len(source_songs))
+        if self.import_wizard:
+            self.import_wizard.progress_bar.setMaximum(len(source_songs))
         for song in source_songs:
             new_song = Song()
             new_song.title = song.title
@@ -224,7 +224,7 @@ class OpenLPSongImport(SongImport):
                 progressDialog.setValue(progressDialog.value() + 1)
                 progressDialog.setLabelText(WizardStrings.ImportingType % new_song.title)
             else:
-                self.importWizard.incrementProgressBar(WizardStrings.ImportingType % new_song.title)
-            if self.stopImportFlag:
+                self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % new_song.title)
+            if self.stop_import_flag:
                 break
         engine.dispose()

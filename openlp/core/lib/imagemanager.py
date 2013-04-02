@@ -27,10 +27,9 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Provides the store and management for Images automatically caching them and
-resizing them when needed.  Only one copy of each image is needed in the system.
-A Thread is used to convert the image to a byte array so the user does not need
-to wait for the conversion to happen.
+Provides the store and management for Images automatically caching them and resizing them when needed. Only one copy of
+each image is needed in the system. A Thread is used to convert the image to a byte array so the user does not need to
+wait for the conversion to happen.
 """
 import logging
 import os
@@ -39,15 +38,15 @@ import Queue
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Receiver, Registry, ScreenList, resize_image, image_to_byte
+from openlp.core.lib import Registry, ScreenList, resize_image, image_to_byte
 
 log = logging.getLogger(__name__)
 
 
 class ImageThread(QtCore.QThread):
     """
-    A special Qt thread class to speed up the display of images. This is
-    threaded so it loads the frames and generates byte stream in background.
+    A special Qt thread class to speed up the display of images. This is threaded so it loads the frames and generates
+    byte stream in background.
     """
     def __init__(self, manager):
         """
@@ -71,30 +70,25 @@ class Priority(object):
     Enumeration class for different priorities.
 
     ``Lowest``
-        Only the image's byte stream has to be generated. But neither the
-        ``QImage`` nor the byte stream has been requested yet.
+        Only the image's byte stream has to be generated. But neither the ``QImage`` nor the byte stream has been
+        requested yet.
 
     ``Low``
-        Only the image's byte stream has to be generated. Because the image's
-        ``QImage`` has been requested previously it is reasonable to assume that
-        the byte stream will be needed before the byte stream of other images
-        whose ``QImage`` were not generated due to a request.
+        Only the image's byte stream has to be generated. Because the image's ``QImage`` has been requested previously
+        it is reasonable to assume that the byte stream will be needed before the byte stream of other images whose
+        ``QImage`` were not generated due to a request.
 
     ``Normal``
-        The image's byte stream as well as the image has to be generated.
-        Neither the ``QImage`` nor the byte stream has been requested yet.
+        The image's byte stream as well as the image has to be generated. Neither the ``QImage`` nor the byte stream has
+        been requested yet.
 
     ``High``
-        The image's byte stream as well as the image has to be generated. The
-        ``QImage`` for this image has been requested.
-        **Note**, this priority is only set when the ``QImage`` has not been
-        generated yet.
+        The image's byte stream as well as the image has to be generated. The ``QImage`` for this image has been
+        requested. **Note**, this priority is only set when the ``QImage`` has not been generated yet.
 
     ``Urgent``
-        The image's byte stream as well as the image has to be generated. The
-        byte stream for this image has been requested.
-        **Note**, this priority is only set when the byte stream has not been
-        generated yet.
+        The image's byte stream as well as the image has to be generated. The byte stream for this image has been
+        requested. **Note**, this priority is only set when the byte stream has not been generated yet.
     """
     Lowest = 4
     Low = 3
@@ -105,9 +99,8 @@ class Priority(object):
 
 class Image(object):
     """
-    This class represents an image. To mark an image as *dirty* call the
-    :class:`ImageManager`'s ``_resetImage`` method with the Image instance as
-    argument.
+    This class represents an image. To mark an image as *dirty* call the :class:`ImageManager`'s ``_reset_image`` method
+    with the Image instance as argument.
     """
     secondary_priority = 0
 
@@ -119,12 +112,12 @@ class Image(object):
             The image's file path. This should be an existing file path.
 
         ``source``
-            The source describes the image's origin. Possible values are
-            described in the :class:`~openlp.core.lib.ImageSource` class.
+            The source describes the image's origin. Possible values are described in the
+            :class:`~openlp.core.lib.ImageSource` class.
 
         ``background``
-            A ``QtGui.QColor`` object specifying the colour to be used to fill
-            the gabs if the image's ratio does not match with the display ratio.
+            A ``QtGui.QColor`` object specifying the colour to be used to fill the gabs if the image's ratio does not
+            match with the display ratio.
         """
         self.path = path
         self.image = None
@@ -133,6 +126,7 @@ class Image(object):
         self.source = source
         self.background = background
         self.timestamp = 0
+        # FIXME: We assume that the path exist. The caller has to take care that it exists!
         if os.path.exists(path):
             self.timestamp = os.stat(path).st_mtime
         self.secondary_priority = Image.secondary_priority
@@ -143,16 +137,14 @@ class PriorityQueue(Queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
 
-    Each item in the queue must be a tuple with three values. The first value
-    is the :class:`Image`'s ``priority`` attribute, the second value
-    the :class:`Image`'s ``secondary_priority`` attribute. The last value the
-    :class:`Image` instance itself::
+    Each item in the queue must be a tuple with three values. The first value is the :class:`Image`'s ``priority``
+    attribute, the second value the :class:`Image`'s ``secondary_priority`` attribute. The last value the :class:`Image`
+    instance itself::
 
         (image.priority, image.secondary_priority, image)
 
-    Doing this, the :class:`Queue.PriorityQueue` will sort the images according
-    to their priorities, but also according to there number. However, the number
-    only has an impact on the result if there are more images with the same
+    Doing this, the :class:`Queue.PriorityQueue` will sort the images according to their priorities, but also according
+    to there number. However, the number only has an impact on the result if there are more images with the same
     priority. In such case the image which has been added earlier is privileged.
     """
     def modify_priority(self, image, new_priority):
@@ -163,8 +155,7 @@ class PriorityQueue(Queue.PriorityQueue):
             The image to remove. This should be an :class:`Image` instance.
 
         ``new_priority``
-            The image's new priority. See the :class:`Priority` class for
-            priorities.
+            The image's new priority. See the :class:`Priority` class for priorities.
         """
         self.remove(image)
         image.priority = new_priority
@@ -200,7 +191,7 @@ class ImageManager(QtCore.QObject):
         self.image_thread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
         self.stop_manager = False
-        QtCore.QObject.connect(Receiver.get_receiver(), QtCore.SIGNAL(u'config_updated'), self.process_updates)
+        Registry().register_function(u'images_regenerate', self.process_updates)
 
     def update_display(self):
         """
@@ -210,8 +201,7 @@ class ImageManager(QtCore.QObject):
         current_screen = ScreenList().current
         self.width = current_screen[u'size'].width()
         self.height = current_screen[u'size'].height()
-        # Mark the images as dirty for a rebuild by setting the image and byte
-        # stream to None.
+        # Mark the images as dirty for a rebuild by setting the image and byte stream to None.
         for image in self._cache.values():
             self._reset_image(image)
 
@@ -220,8 +210,7 @@ class ImageManager(QtCore.QObject):
         Border has changed so update all the images affected.
         """
         log.debug(u'update_images_border')
-        # Mark the images as dirty for a rebuild by setting the image and byte
-        # stream to None.
+        # Mark the images as dirty for a rebuild by setting the image and byte stream to None.
         for image in self._cache.values():
             if image.source == source:
                 image.background = background
@@ -232,8 +221,7 @@ class ImageManager(QtCore.QObject):
         Border has changed so update the image affected.
         """
         log.debug(u'update_image_border')
-        # Mark the image as dirty for a rebuild by setting the image and byte
-        # stream to None.
+        # Mark the image as dirty for a rebuild by setting the image and byte stream to None.
         image = self._cache[(path, source)]
         if image.source == source:
             image.background = background
@@ -241,8 +229,7 @@ class ImageManager(QtCore.QObject):
 
     def _reset_image(self, image):
         """
-        Mark the given :class:`Image` instance as dirty by setting its ``image``
-        and ``image_bytes`` attributes to None.
+        Mark the given :class:`Image` instance as dirty by setting its ``image`` and ``image_bytes`` attributes to None.
         """
         image.image = None
         image.image_bytes = None
@@ -258,8 +245,7 @@ class ImageManager(QtCore.QObject):
 
     def get_image(self, path, source):
         """
-        Return the ``QImage`` from the cache. If not present wait for the
-        background thread to process it.
+        Return the ``QImage`` from the cache. If not present wait for the background thread to process it.
         """
         log.debug(u'getImage %s' % path)
         image = self._cache[(path, source)]
@@ -271,17 +257,15 @@ class ImageManager(QtCore.QObject):
                 log.debug(u'getImage - waiting')
                 time.sleep(0.1)
         elif image.image_bytes is None:
-            # Set the priority to Low, because the image was requested but the
-            # byte stream was not generated yet. However, we only need to do
-            # this, when the image was generated before it was requested
-            # (otherwise this is already taken care of).
+            # Set the priority to Low, because the image was requested but the byte stream was not generated yet.
+            # However, we only need to do this, when the image was generated before it was requested (otherwise this is
+            # already taken care of).
             self._conversion_queue.modify_priority(image, Priority.Low)
         return image.image
 
     def get_image_bytes(self, path, source):
         """
-        Returns the byte string for an image. If not present wait for the
-        background thread to process it.
+        Returns the byte string for an image. If not present wait for the background thread to process it.
         """
         log.debug(u'get_image_bytes %s' % path)
         image = self._cache[(path, source)]
@@ -303,8 +287,7 @@ class ImageManager(QtCore.QObject):
             image = Image(path, source, background)
             self._cache[(path, source)] = image
             self._conversion_queue.put((image.priority, image.secondary_priority, image))
-        # Check if the there are any images with the same path and check if the
-        # timestamp has changed.
+        # Check if the there are any images with the same path and check if the timestamp has changed.
         for image in self._cache.values():
             if os.path.exists(path):
                 if image.path == path and image.timestamp != os.stat(path).st_mtime:
@@ -332,15 +315,12 @@ class ImageManager(QtCore.QObject):
         # Generate the QImage for the image.
         if image.image is None:
             image.image = resize_image(image.path, self.width, self.height, image.background)
-            # Set the priority to Lowest and stop here as we need to process
-            # more important images first.
+            # Set the priority to Lowest and stop here as we need to process more important images first.
             if image.priority == Priority.Normal:
                 self._conversion_queue.modify_priority(image, Priority.Lowest)
                 return
-            # For image with high priority we set the priority to Low, as the
-            # byte stream might be needed earlier the byte stream of image with
-            # Normal priority. We stop here as we need to process more important
-            # images first.
+            # For image with high priority we set the priority to Low, as the byte stream might be needed earlier the
+            # byte stream of image with Normal priority. We stop here as we need to process more important images first.
             elif image.priority == Priority.High:
                 self._conversion_queue.modify_priority(image, Priority.Low)
                 return
