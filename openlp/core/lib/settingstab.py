@@ -184,10 +184,8 @@ class SettingsTab(QtGui.QWidget):
         """
         Adds the media controller to the class dynamically
         """
-#        if not hasattr(self, '_media_controller'):
-#            self._media_controller = Registry().get('media_controller')
-        # FIXME: python3
-        self._media_controller = Registry().get('media_controller')
+        if not hasattr(self, '_media_controller'):
+            self._media_controller = Registry().get('media_controller')
         return self._media_controller
 
     media_controller = property(_get_media_controller)
