@@ -45,9 +45,7 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
         """
         Constructor
         """
-        super().__init__()
-        # TODO: python3 - parent correct?
-        #QtGui.QDialog.__init__(self, self.main_window)
+        super(FileRenameForm, self).__init__(Registry().get(u'main_window'))
         self.setupUi(self)
 
     def exec_(self, copy=False):
@@ -61,12 +59,12 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
         self.file_name_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
+#    def _get_main_window(self):
+#        """
+#        Adds the main window to the class dynamically
+#        """
+#        if not hasattr(self, u'_main_window'):
+#            self._main_window = Registry().get(u'main_window')
+#        return self._main_window
+#
+#    main_window = property(_get_main_window)
