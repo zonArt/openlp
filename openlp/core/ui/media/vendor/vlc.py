@@ -3422,8 +3422,7 @@ def libvlc_media_new_path(p_instance, path):
     f = _Cfunctions.get('libvlc_media_new_path', None) or \
         _Cfunction('libvlc_media_new_path', ((1,), (1,),), class_result(Media),
                     ctypes.c_void_p, Instance, ctypes.c_char_p)
-    # OpenLP: Do not change this line. Needed for python3 rework.
-    return f(p_instance, str_to_bytes(path))
+    return f(p_instance, path)
 
 def libvlc_media_new_fd(p_instance, fd):
     '''Create a media for an already open file descriptor.
