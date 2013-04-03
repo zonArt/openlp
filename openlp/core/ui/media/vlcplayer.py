@@ -58,7 +58,7 @@ except OSError, e:
 
 if VLC_AVAILABLE:
     try:
-        VERSION = vlc.libvlc_get_version()
+        VERSION = vlc.libvlc_get_version().decode('UTF-8')
     except:
         VERSION = u'0.0.0'
     # LooseVersion does not work when a string contains letter and digits (e. g. 2.0.5 Twoflower).
