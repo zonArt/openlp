@@ -61,11 +61,11 @@ if VLC_AVAILABLE:
         VERSION = vlc.libvlc_get_version()
     except:
         VERSION = u'0.0.0'
-    #FIXME: python3 - LooseVersion does not work when a string contains letter and digits (2.0.5 Twoflower).
+    # LooseVersion does not work when a string contains letter and digits (2.0.5 Twoflower).
     # http://bugs.python.org/issue14894
-#    if LooseVersion(VERSION) < LooseVersion('1.1.0'):
-#        VLC_AVAILABLE = False
-#        log.debug(u'VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
+    if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
+        VLC_AVAILABLE = False
+        log.debug(u'VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
 
 AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
 
