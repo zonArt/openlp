@@ -33,9 +33,17 @@ backend for the Songs plugin
 
 from sqlalchemy import Column, Table, types
 from sqlalchemy.sql.expression import func
-from migrate.changeset.constraint import ForeignKeyConstraint
+#from migrate.changeset.constraint import ForeignKeyConstraint
+from alembic.migration import MigrationContext
+from alembic.operations import Operations
 
 __version__ = 3
+
+
+def get_alembic_operation(session):
+    context = MigrationContext(session.bind.connect())
+    return Operations(context)
+
 
 def upgrade_setup(metadata):
     """
@@ -67,13 +75,20 @@ def upgrade_1(session, metadata, tables):
     added to the media_files table, and a weight column so that the media
     files can be ordered.
     """
-    Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
-    Column(u'song_id', types.Integer(), default=None).create(table=tables[u'media_files'])
-    Column(u'weight', types.Integer(), default=0).create(table=tables[u'media_files'])
+    #Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
+    #Column(u'song_id', types.Integer(), default=None).create(table=tables[u'media_files'])
+    #Column(u'weight', types.Integer(), default=0).create(table=tables[u'media_files'])
+    #if metadata.bind.url.get_dialect().name != 'sqlite':
+    #    # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
+    #    ForeignKeyConstraint([u'song_id'], [u'songs.id'],
+    #        table=tables[u'media_files']).create()
+    op = get_alembic_operation(session)
+    op.drop_table(u'media_files_songs')
+    op.add_column(u'media_files', Column(u'song_id', types.Integer(), default=None))
+    op.add_column(u'media_files', Column(u'weight', types.Integer(), default=0))
     if metadata.bind.url.get_dialect().name != 'sqlite':
         # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
-        ForeignKeyConstraint([u'song_id'], [u'songs.id'],
-            table=tables[u'media_files']).create()
+        op.create_foreign_key(u'fk_media_files_song_id', u'media_files', u'songs', [u'song_id', u'id'])
 
 
 def upgrade_2(session, metadata, tables):
@@ -82,8 +97,11 @@ def upgrade_2(session, metadata, tables):
 
     This upgrade adds a create_date and last_modified date to the songs table
     """
-    Column(u'create_date', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
-    Column(u'last_modified', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
+    #Column(u'create_date', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
+    #Column(u'last_modified', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
+    op = get_alembic_operation(session)
+    op.add_column(u'songs', Column(u'create_date', types.DateTime(), default=func.now()))
+    op.add_column(u'songs', Column(u'last_modified', types.DateTime(), default=func.now()))
 
 
 def upgrade_3(session, metadata, tables):
@@ -92,5 +110,7 @@ def upgrade_3(session, metadata, tables):
 
     This upgrade adds a temporary song flag to the songs table
     """
-    Column(u'temporary', types.Boolean(), default=False).create(table=tables[u'songs'])
+    #Column(u'temporary', types.Boolean(), default=False).create(table=tables[u'songs'])
+    op = get_alembic_operation(session)
+    op.add_column(u'songs', Column(u'temporary', types.Boolean(), default=False))
 
