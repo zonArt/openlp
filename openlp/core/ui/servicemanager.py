@@ -30,7 +30,7 @@
 The service manager sets up, loads, saves and manages services.
 """
 import cgi
-import cPickle
+import pickle
 import logging
 import os
 import shutil
@@ -507,7 +507,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             file_size = os.path.getsize(file_item)
             total_size += file_size
         log.debug(u'ServiceManager.save_file - ZIP contents size is %i bytes' % total_size)
-        service_content = cPickle.dumps(service)
+        service_content = pickle.dumps(service)
         # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be extracted using unzip in UNIX.
         allow_zip_64 = (total_size > 2147483648 + len(service_content))
         log.debug(u'ServiceManager.save_file - allowZip64 is %s' % allow_zip_64)
@@ -580,7 +580,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             #TODO: check for file item on save.
             service.append({u'serviceitem': service_item})
             self.main_window.increment_progress_bar()
-        service_content = cPickle.dumps(service)
+        service_content = pickle.dumps(service)
         zip_file = None
         success = True
         self.main_window.increment_progress_bar()
@@ -697,7 +697,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     p_file = os.path.join(self.servicePath, osfile)
             if 'p_file' in locals():
                 file_to = open(p_file, u'r')
-                items = cPickle.load(file_to)
+                items = pickle.load(file_to)
                 file_to.close()
                 self.new_file()
                 self.set_file_name(file_name)

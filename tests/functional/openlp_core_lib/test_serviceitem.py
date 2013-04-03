@@ -2,7 +2,7 @@
     Package to test the openlp.core.lib package.
 """
 import os
-import cPickle
+import pickle
 from unittest import TestCase
 from mock import MagicMock, patch
 
@@ -272,7 +272,7 @@ class TestServiceItem(TestCase):
         service_file = os.path.join(TEST_PATH, name)
         try:
             open_file = open(service_file, u'r')
-            items = cPickle.load(open_file)
+            items = pickle.load(open_file)
             first_line = items[0]
         except IOError:
             first_line = u''
