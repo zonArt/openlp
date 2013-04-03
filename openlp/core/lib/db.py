@@ -38,6 +38,8 @@ from sqlalchemy import Table, MetaData, Column, types, create_engine
 from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, OperationalError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
+from alembic.migration import MigrationContext
+from alembic.operations import Operations
 
 from openlp.core.lib import translate, Settings
 from openlp.core.lib.ui import critical_error_message_box
@@ -65,6 +67,17 @@ def init_db(url, auto_flush=True, auto_commit=False):
     return session, metadata
 
 
+def get_upgrade_op(session):
+    """
+    Create a migration context and an operations object for performing upgrades.
+
+    ``session``
+        The SQLAlchemy session object.
+    """
+    context = MigrationContext(session.bind.connect())
+    return Operations(context)
+
+
 def upgrade_db(url, upgrade):
     """
     Upgrade a database.
@@ -82,13 +95,7 @@ def upgrade_db(url, upgrade):
         Provides a class for the metadata table.
         """
         pass
-    load_changes = False
-    tables = []
-    try:
-        tables = upgrade.upgrade_setup(metadata)
-        load_changes = True
-    except (SQLAlchemyError, DBAPIError):
-        pass
+
     metadata_table = Table(u'metadata', metadata,
         Column(u'key', types.Unicode(64), primary_key=True),
         Column(u'value', types.UnicodeText(), default=None)
@@ -105,22 +112,22 @@ def upgrade_db(url, upgrade):
     if version > upgrade.__version__:
         return version, upgrade.__version__
     version += 1
-    if load_changes:
+    try:
         while hasattr(upgrade, u'upgrade_%d' % version):
             log.debug(u'Running upgrade_%d', version)
             try:
                 upgrade_func = getattr(upgrade, u'upgrade_%d' % version)
-                upgrade_func(session, metadata, tables)
+                upgrade_func(session, metadata)
                 session.commit()
                 # Update the version number AFTER a commit so that we are sure the previous transaction happened
                 version_meta.value = unicode(version)
                 session.commit()
                 version += 1
             except (SQLAlchemyError, DBAPIError):
-                log.exception(u'Could not run database upgrade script '
-                    '"upgrade_%s", upgrade process has been halted.', version)
+                log.exception(u'Could not run database upgrade script "upgrade_%s", upgrade process has been halted.',
+                              version)
                 break
-    else:
+    except (SQLAlchemyError, DBAPIError):
         version_meta = Metadata.populate(key=u'version', value=int(upgrade.__version__))
         session.commit()
     return int(version_meta.value), upgrade.__version__
