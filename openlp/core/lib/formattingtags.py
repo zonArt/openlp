@@ -156,7 +156,7 @@ class FormattingTags(object):
             u'end html': u'', u'protected': True, u'temporary': False})
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
-
+        # FIXME: python3 - fix pickle.load() and pickle.dumps().
         # Formatting Tags were also known as display tags.
         user_expands = Settings().value(u'displayTags/html_tags')
         if user_expands:
