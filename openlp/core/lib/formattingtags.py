@@ -159,8 +159,8 @@ class FormattingTags(object):
 
         # Formatting Tags were also known as display tags.
         user_expands = Settings().value(u'displayTags/html_tags')
-        if user_expands_string:
-            user_tags = pickle.loads(user_expands_string)
+        if user_expands:
+            user_tags = pickle.loads(user_expands)
             for tag in user_tags:
                 for element in tag:
                     if isinstance(tag[element], str):
