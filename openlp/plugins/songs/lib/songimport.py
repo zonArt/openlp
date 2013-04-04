@@ -260,6 +260,8 @@ class SongImport(QtCore.QObject):
         elif int(verse_def[1:]) > self.verseCounts[verse_def[0]]:
             self.verseCounts[verse_def[0]] = int(verse_def[1:])
         self.verses.append([verse_def, verse_text.rstrip(), lang])
+        # A verse_def refers to all verses with that name, adding it once adds every instance, so do not add if already
+        # used.
         if verse_def not in self.verseOrderListGenerated:
             self.verseOrderListGenerated.append(verse_def)
 
