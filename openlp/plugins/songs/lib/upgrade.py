@@ -32,7 +32,7 @@ backend for the Songs plugin
 """
 
 from sqlalchemy import Column, types
-from sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func, false, null
 from openlp.core.lib.db import get_upgrade_op
 
 __version__ = 3
@@ -52,8 +52,8 @@ def upgrade_1(session, metadata):
     """
     op = get_upgrade_op(session)
     op.drop_table(u'media_files_songs')
-    op.add_column(u'media_files', Column(u'song_id', types.Integer(), default=None))
-    op.add_column(u'media_files', Column(u'weight', types.Integer(), default=0))
+    op.add_column(u'media_files', Column(u'song_id', types.Integer(), server_default=null()))
+    op.add_column(u'media_files', Column(u'weight', types.Integer(), server_default=0))
     if metadata.bind.url.get_dialect().name != 'sqlite':
         # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
         op.create_foreign_key(u'fk_media_files_song_id', u'media_files', u'songs', [u'song_id', u'id'])
@@ -66,8 +66,8 @@ def upgrade_2(session, metadata):
     This upgrade adds a create_date and last_modified date to the songs table
     """
     op = get_upgrade_op(session)
-    op.add_column(u'songs', Column(u'create_date', types.DateTime(), default=func.now()))
-    op.add_column(u'songs', Column(u'last_modified', types.DateTime(), default=func.now()))
+    op.add_column(u'songs', Column(u'create_date', types.DateTime(), server_default=func.now()))
+    op.add_column(u'songs', Column(u'last_modified', types.DateTime(), server_default=func.now()))
 
 
 def upgrade_3(session, metadata):
@@ -77,5 +77,5 @@ def upgrade_3(session, metadata):
     This upgrade adds a temporary song flag to the songs table
     """
     op = get_upgrade_op(session)
-    op.add_column(u'songs', Column(u'temporary', types.Boolean(), default=False))
+    op.add_column(u'songs', Column(u'temporary', types.Boolean(), server_default=false()))
 

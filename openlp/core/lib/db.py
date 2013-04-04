@@ -74,7 +74,7 @@ def get_upgrade_op(session):
     ``session``
         The SQLAlchemy session object.
     """
-    context = MigrationContext(session.bind.connect())
+    context = MigrationContext.configure(session.bind.connect())
     return Operations(context)
 
 
