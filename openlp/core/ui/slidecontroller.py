@@ -44,6 +44,8 @@ from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
+# Threshold which has to be trespassed to toggle.
+HIDE_MENU_THRESHOLD  = 27
 AUDIO_TIME_LABEL_STYLESHEET = u'background-color: palette(background); ' \
     u'border-top-color: palette(shadow); ' \
     u'border-left-color: palette(shadow); ' \
@@ -588,14 +590,12 @@ class SlideController(DisplayController):
         if self.is_live:
             # Space used by the toolbar.
             used_space = self.toolbar.size().width() + self.hide_menu.size().width()
-            # Threshold which has to be trespassed to toggle.
-            threshold = 27
             # Add the threshold to prevent flickering.
-            if width > used_space + threshold and self.hide_menu.isVisible():
+            if width > used_space + HIDE_MENU_THRESHOLD and self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.narrow_menu, False)
                 self.toolbar.set_widget_visible(self.wide_menu)
             # Take away a threshold to prevent flickering.
-            elif width < used_space - threshold and not self.hide_menu.isVisible():
+            elif width < used_space - HIDE_MENU_THRESHOLD and not self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.wide_menu, False)
                 self.toolbar.set_widget_visible(self.narrow_menu)
 
