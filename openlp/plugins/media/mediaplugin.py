@@ -54,7 +54,7 @@ class MediaPlugin(Plugin):
         # passed with drag and drop messages
         self.dnd_id = u'Media'
 
-    def create_settings_Tab(self, parent):
+    def create_settings_tab(self, parent):
         """
         Create the settings Tab
         """
