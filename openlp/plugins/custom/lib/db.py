@@ -35,7 +35,7 @@ from sqlalchemy import Column, Table, types
 from sqlalchemy.orm import mapper
 
 from openlp.core.lib.db import BaseModel, init_db
-from openlp.core.utils import get_local_key
+from openlp.core.utils import get_locale_key
 
 class CustomSlide(BaseModel):
     """
@@ -44,10 +44,10 @@ class CustomSlide(BaseModel):
     # By default sort the customs by its title considering language specific
     # characters.
     def __lt__(self, other):
-        return get_local_key(self.title) < get_local_key(other.title)
+        return get_locale_key(self.title) < get_locale_key(other.title)
 
     def __eq__(self, other):
-        return get_local_key(self.title) == get_local_key(other.title)
+        return get_locale_key(self.title) == get_locale_key(other.title)
 
 
 def init_schema(url):

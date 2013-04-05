@@ -382,7 +382,7 @@ def format_time(text, local_time):
     return re.sub('\%[a-zA-Z]', match_formatting, text)
 
 
-def get_local_key(string):
+def get_locale_key(string):
     """
     Creates a key for case insensitive, locale aware string sorting.
     """
@@ -403,7 +403,7 @@ def get_natural_key(string):
     Returns a list of string compare keys and integers.
     """
     key = DIGITS_OR_NONDIGITS.findall(string)
-    key = [int(part) if part.isdigit() else get_local_key(part) for part in key]
+    key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
     # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str and int.
     #if string[0].isdigit():
     #    return [''] + key 
@@ -417,4 +417,4 @@ from actions import ActionList
 
 __all__ = [u'AppLocation', u'ActionList', u'LanguageManager', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename', u'format_time', u'get_local_key', u'get_natural_key']
+    u'delete_file', u'clean_filename', u'format_time', u'get_locale_key', u'get_natural_key']
