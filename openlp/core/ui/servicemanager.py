@@ -1407,13 +1407,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         if ItemCapabilities.HasDetailedTitleDisplay in self.service_items[item][u'service_item'].capabilities\
             or ItemCapabilities.CanEdit in self.service_items[item][u'service_item'].capabilities:
             return
-#        if False and not self.service_items[item][u'service_item'].is_text()\
-#            and (ItemCapabilities.HasDetailedTitleDisplay in self.service_items[item][u'service_item'].capabilities\
-#            or len(self.service_items[item][u'service_item']._raw_frames) == 1):
-#            get_main_title = False
-#            Title = self.service_items[item][u'service_item']._raw_frames[0][u'title']
-#        else:
-#            get_main_title = True
         title = self.service_items[item][u'service_item'].title
         title, ok = QtGui.QInputDialog.getText(self, self.tr(translate('OpenLP.ServiceManager', 'Input title')), 
             self.tr(translate('OpenLP.ServiceManager', 'Title')),  QtGui.QLineEdit.Normal,  self.trUtf8(title))
