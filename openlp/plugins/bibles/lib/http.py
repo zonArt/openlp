@@ -698,7 +698,8 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
     soup = None
     try:
         if cleaner:
-            soup = BeautifulSoup(page_source, markup=cleaner)
+            # FIXME: markupMassage not supported.
+            soup = BeautifulSoup(page_source, markupMassage=cleaner)
         else:
             soup = BeautifulSoup(page_source)
     except HTMLParseError:
