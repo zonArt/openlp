@@ -44,7 +44,7 @@ from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 
-CLEANER_REGEX = re.compile('&nbsp;|<br />|\'\+\'')
+CLEANER_REGEX = re.compile(r'&nbsp;|<br />|\'\+\'')
 FIX_PUNKCTUATION_REGEX = re.compile(r'[ ]+([.,;])')
 REDUCE_SPACES_REGEX = re.compile(r'[ ]{2,}')
 UGLY_CHARS = {
@@ -699,7 +699,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
     try:
         if cleaner:
             # FIXME: markupMassage not supported.
-            soup = BeautifulSoup(page_source, markupMassage=cleaner)
+            soup = BeautifulSoup(page_source)#, markupMassage=cleaner)
         else:
             soup = BeautifulSoup(page_source)
     except HTMLParseError:
