@@ -4,7 +4,7 @@ This module contains tests for the SongShow Plus song importer.
 
 import os
 from unittest import TestCase
-from mock import call, patch, MagicMock
+from mock import patch, MagicMock
 
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songshowplusimport import SongShowPlusImport
@@ -195,11 +195,10 @@ class TestSongShowPlusImport(TestCase):
                 # WHEN: Importing each file
                 importer.import_source = [os.path.join(TEST_PATH, song_file)]
                 title = SONG_TEST_DATA[song_file][u'title']
-                parse_author_calls = [call(author) for author in SONG_TEST_DATA[song_file][u'authors']]
+                author_calls = SONG_TEST_DATA[song_file][u'authors']
                 song_copyright = SONG_TEST_DATA[song_file][u'copyright']
                 ccli_number = SONG_TEST_DATA[song_file][u'ccli_number']
-                add_verse_calls = \
-                    [call(verse_text, verse_tag) for verse_text, verse_tag in SONG_TEST_DATA[song_file][u'verses']]
+                add_verse_calls = SONG_TEST_DATA[song_file][u'verses']
                 topics = SONG_TEST_DATA[song_file][u'topics']
                 comments = SONG_TEST_DATA[song_file][u'comments']
                 song_book_name = SONG_TEST_DATA[song_file][u'song_book_name']
@@ -210,13 +209,15 @@ class TestSongShowPlusImport(TestCase):
                 #       called.
                 self.assertIsNone(importer.doImport(), u'doImport should return None when it has completed')
                 self.assertEquals(importer.title, title, u'title for %s should be "%s"' % (song_file, title))
-                mocked_parse_author.assert_has_calls(parse_author_calls)
+                for author in author_calls:
+                    mocked_parse_author.assert_any_call(author)
                 if song_copyright:
                     mocked_add_copyright.assert_called_with(song_copyright)
                 if ccli_number:
                     self.assertEquals(importer.ccliNumber, ccli_number, u'ccliNumber for %s should be %s'
                         % (song_file, ccli_number))
-                mocked_add_verse.assert_has_calls(add_verse_calls)
+                for verse_text, verse_tag in add_verse_calls:
+                    mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if topics:
                     self.assertEquals(importer.topics, topics, u'topics for %s should be %s' % (song_file, topics))
                 if comments:
