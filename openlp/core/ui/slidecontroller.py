@@ -588,12 +588,14 @@ class SlideController(DisplayController):
         if self.is_live:
             # Space used by the toolbar.
             used_space = self.toolbar.size().width() + self.hide_menu.size().width()
-            # The + 40 is needed to prevent flickering. This can be considered a "buffer".
-            if width > used_space + 40 and self.hide_menu.isVisible():
+            # Threshold which has to be trespassed to toggle.
+            threshold = 27
+            # Add the threshold to prevent flickering.
+            if width > used_space + threshold and self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.narrow_menu, False)
                 self.toolbar.set_widget_visible(self.wide_menu)
-            # The - 40 is needed to prevent flickering. This can be considered a "buffer".
-            elif width < used_space - 40 and not self.hide_menu.isVisible():
+            # Take away a threshold to prevent flickering.
+            elif width < used_space - threshold and not self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.wide_menu, False)
                 self.toolbar.set_widget_visible(self.narrow_menu)
 
