@@ -79,7 +79,7 @@ MODULES = [
     'lxml',
     'chardet',
     'enchant',
-    'BeautifulSoup',
+    'bs4',
     'mako',
     'migrate',
     'uno',
