@@ -27,11 +27,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.authorsdialog import Ui_AuthorsDialog
+
 
 class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
     """
@@ -43,60 +44,115 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
-        self._autoDisplayName = False
-        QtCore.QObject.connect(self.firstNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onFirstNameEditTextEdited)
-        QtCore.QObject.connect(self.lastNameEdit, QtCore.SIGNAL(u'textEdited(QString)'),
-            self.onLastNameEditTextEdited)
+        self.auto_display_name = False
+        self.first_name_edit.textEdited.connect(self.on_first_name_edited)
+        self.last_name_edit.textEdited.connect(self.on_last_name_edited)
 
     def exec_(self, clear=True):
+        """
+        Execute the dialog.
+
+        ``clear``
+            Clear the form fields before displaying the dialog.
+        """
         if clear:
-            self.firstNameEdit.clear()
-            self.lastNameEdit.clear()
-            self.displayEdit.clear()
-        self.firstNameEdit.setFocus()
+            self.first_name_edit.clear()
+            self.last_name_edit.clear()
+            self.display_edit.clear()
+        self.first_name_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
-    def onFirstNameEditTextEdited(self, display_name):
-        if not self._autoDisplayName:
+    def on_first_name_edited(self, display_name):
+        """
+        Slot for when the first name is edited.
+
+        When the first name is edited and the setting to automatically create a display name is True, then try to create
+        a display name from the first and last names.
+
+        ``display_name``
+            The text from the first_name_edit widget.
+        """
+        if not self.auto_display_name:
             return
-        if self.lastNameEdit.text():
-            display_name = display_name + u' ' + self.lastNameEdit.text()
-        self.displayEdit.setText(display_name)
+        if self.last_name_edit.text():
+            display_name = display_name + u' ' + self.last_name_edit.text()
+        self.display_edit.setText(display_name)
 
-    def onLastNameEditTextEdited(self, display_name):
-        if not self._autoDisplayName:
+    def on_last_name_edited(self, display_name):
+        """
+        Slot for when the last name is edited.
+
+        When the last name is edited and the setting to automatically create a display name is True, then try to create
+        a display name from the first and last names.
+
+        ``display_name``
+            The text from the last_name_edit widget.
+        """
+        if not self.auto_display_name:
             return
-        if self.firstNameEdit.text():
-            display_name = self.firstNameEdit.text() + u' ' + display_name
-        self.displayEdit.setText(display_name)
-
-    def autoDisplayName(self):
-        return self._autoDisplayName
-
-    def setAutoDisplayName(self, on):
-        self._autoDisplayName = on
+        if self.first_name_edit.text():
+            display_name = self.first_name_edit.text() + u' ' + display_name
+        self.display_edit.setText(display_name)
 
     def accept(self):
-        if not self.firstNameEdit.text():
+        """
+        Override the QDialog's accept() method to do some validation before the dialog can be closed.
+        """
+        if not self.first_name_edit.text():
             critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm', 'You need to type in the first name of the author.'))
-            self.firstNameEdit.setFocus()
+            self.first_name_edit.setFocus()
             return False
-        elif not self.lastNameEdit.text():
+        elif not self.last_name_edit.text():
             critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm', 'You need to type in the last name of the author.'))
-            self.lastNameEdit.setFocus()
+            self.last_name_edit.setFocus()
             return False
-        elif not self.displayEdit.text():
+        elif not self.display_edit.text():
             if critical_error_message_box(
                 message=translate('SongsPlugin.AuthorsForm',
                     'You have not set a display name for the author, combine the first and last names?'),
                 parent=self, question=True) == QtGui.QMessageBox.Yes:
-                self.displayEdit.setText(self.firstNameEdit.text() + u' ' + self.lastNameEdit.text())
+                self.display_edit.setText(self.first_name_edit.text() + u' ' + self.last_name_edit.text())
                 return QtGui.QDialog.accept(self)
             else:
-                self.displayEdit.setFocus()
+                self.display_edit.setFocus()
                 return False
         else:
             return QtGui.QDialog.accept(self)
+
+    def _get_first_name(self):
+        """
+        Get the value of the first name from the UI widget.
+        """
+        return self.first_name_edit.text()
+
+    def _set_first_name(self, value):
+        """
+        Set the value of the first name in the UI widget.
+        """
+        self.first_name_edit.setText(value)
+
+    first_name = property(_get_first_name, _set_first_name)
+
+    def _get_last_name(self):
+        """
+        Get the value of the last name from the UI widget.
+        """
+        return self.last_name_edit.text()
+
+    def _set_last_name(self, value):
+        """
+        Set the value of the last name in the UI widget.
+        """
+        self.last_name_edit.setText(value)
+
+    last_name = property(_get_last_name, _set_last_name)
+
+    def _get_display_name(self):
+        return self.display_edit.text()
+
+    def _set_display_name(self, value):
+        self.display_edit.setText(value)
+
+    display_name = property(_get_display_name, _set_display_name)

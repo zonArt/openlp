@@ -74,8 +74,8 @@ class ScreenList(object):
         screen_list.display_count = 0
         screen_list.screen_count_changed()
         screen_list.load_screen_settings()
-        QtCore.QObject.connect(desktop, QtCore.SIGNAL(u'resized(int)'), screen_list.screen_resolution_changed)
-        QtCore.QObject.connect(desktop, QtCore.SIGNAL(u'screenCountChanged(int)'), screen_list.screen_count_changed)
+        desktop.resized.connect(screen_list.screen_resolution_changed)
+        desktop.screenCountChanged.connect(screen_list.screen_count_changed)
         return screen_list
 
     def screen_resolution_changed(self, number):

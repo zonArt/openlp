@@ -57,22 +57,15 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.changedActions = {}
         self.action_list = ActionList.get_instance()
         self.dialog_was_shown = False
-        QtCore.QObject.connect(self.primaryPushButton, QtCore.SIGNAL(u'toggled(bool)'), self.onPrimaryPushButtonClicked)
-        QtCore.QObject.connect(self.alternatePushButton, QtCore.SIGNAL(u'toggled(bool)'),
-            self.onAlternatePushButtonClicked)
-        QtCore.QObject.connect(self.treeWidget,
-            QtCore.SIGNAL(u'currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)'), self.onCurrentItemChanged)
-        QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL(u'itemDoubleClicked(QTreeWidgetItem*, int)'),
-            self.onItemDoubleClicked)
-        QtCore.QObject.connect(self.clearPrimaryButton, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onClearPrimaryButtonClicked)
-        QtCore.QObject.connect(self.clearAlternateButton, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onClearAlternateButtonClicked)
-        QtCore.QObject.connect(self.button_box, QtCore.SIGNAL(u'clicked(QAbstractButton*)'),
-            self.onRestoreDefaultsClicked)
-        QtCore.QObject.connect(self.defaultRadioButton, QtCore.SIGNAL(u'clicked(bool)'),
-            self.onDefaultRadioButtonClicked)
-        QtCore.QObject.connect(self.customRadioButton, QtCore.SIGNAL(u'clicked(bool)'), self.onCustomRadioButtonClicked)
+        self.primaryPushButton.toggled.connect(self.onPrimaryPushButtonClicked)
+        self.alternatePushButton.toggled.connect(self.onAlternatePushButtonClicked)
+        self.treeWidget.currentItemChanged.connect(self.onCurrentItemChanged)
+        self.treeWidget.itemDoubleClicked.connect(self.onItemDoubleClicked)
+        self.clearPrimaryButton.clicked.connect(self.onClearPrimaryButtonClicked)
+        self.clearAlternateButton.clicked.connect(self.onClearAlternateButtonClicked)
+        self.button_box.clicked.connect(self.onRestoreDefaultsClicked)
+        self.defaultRadioButton.clicked.connect(self.onDefaultRadioButtonClicked)
+        self.customRadioButton.clicked.connect(self.onCustomRadioButtonClicked)
 
     def keyPressEvent(self, event):
         """

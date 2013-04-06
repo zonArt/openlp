@@ -50,51 +50,49 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         super(EditCustomSlideForm, self).__init__(parent)
         self.setupUi(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.insertButton, QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
-        QtCore.QObject.connect(self.splitButton, QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
+        self.insert_button.clicked.connect(self.on_insert_button_clicked)
+        self.split_button.clicked.connect(self.on_split_button_clicked)
 
-    def setText(self, text):
+    def set_text(self, text):
         """
-        Set the text for slideTextEdit.
+        Set the text for slide_text_edit.
 
         ``text``
             The text (unicode).
         """
-        self.slideTextEdit.clear()
+        self.slide_text_edit.clear()
         if text:
-            self.slideTextEdit.setPlainText(text)
-        self.slideTextEdit.setFocus()
+            self.slide_text_edit.setPlainText(text)
+        self.slide_text_edit.setFocus()
 
-    def getText(self):
+    def get_text(self):
         """
         Returns a list with all slides.
         """
-        return self.slideTextEdit.toPlainText().split(u'\n[===]\n')
+        return self.slide_text_edit.toPlainText().split(u'\n[===]\n')
 
-    def onInsertButtonClicked(self):
+    def on_insert_button_clicked(self):
         """
         Adds a slide split at the cursor.
         """
-        self.insertSingleLineTextAtCursor(u'[===]')
-        self.slideTextEdit.setFocus()
+        self.insert_single_line_text_at_cursor(u'[===]')
+        self.slide_text_edit.setFocus()
 
-    def onSplitButtonClicked(self):
+    def on_split_button_clicked(self):
         """
         Adds an optional split at cursor.
         """
-        self.insertSingleLineTextAtCursor(u'[---]')
-        self.slideTextEdit.setFocus()
+        self.insert_single_line_text_at_cursor(u'[---]')
+        self.slide_text_edit.setFocus()
 
-    def insertSingleLineTextAtCursor(self, text):
+    def insert_single_line_text_at_cursor(self, text):
         """
         Adds ``text`` in a single line at the cursor position.
         """
-        full_text = self.slideTextEdit.toPlainText()
-        position = self.slideTextEdit.textCursor().position()
+        full_text = self.slide_text_edit.toPlainText()
+        position = self.slide_text_edit.textCursor().position()
         if position and full_text[position - 1] != u'\n':
             text = u'\n' + text
         if position == len(full_text) or full_text[position] != u'\n':
             text += u'\n'
-        self.slideTextEdit.insertPlainText(text)
-
-#lint:enable
+        self.slide_text_edit.insertPlainText(text)

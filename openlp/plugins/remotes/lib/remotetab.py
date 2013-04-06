@@ -45,117 +45,115 @@ class RemoteTab(SettingsTab):
     def setupUi(self):
         self.setObjectName(u'RemoteTab')
         SettingsTab.setupUi(self)
-        self.serverSettingsGroupBox = QtGui.QGroupBox(self.leftColumn)
-        self.serverSettingsGroupBox.setObjectName(u'serverSettingsGroupBox')
-        self.serverSettingsLayout = QtGui.QFormLayout(self.serverSettingsGroupBox)
-        self.serverSettingsLayout.setObjectName(u'serverSettingsLayout')
-        self.addressLabel = QtGui.QLabel(self.serverSettingsGroupBox)
-        self.addressLabel.setObjectName(u'addressLabel')
-        self.addressEdit = QtGui.QLineEdit(self.serverSettingsGroupBox)
-        self.addressEdit.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        self.addressEdit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(
+        self.server_settings_group_box = QtGui.QGroupBox(self.left_column)
+        self.server_settings_group_box.setObjectName(u'server_settings_group_box')
+        self.server_settings_layout = QtGui.QFormLayout(self.server_settings_group_box)
+        self.server_settings_layout.setObjectName(u'server_settings_layout')
+        self.address_label = QtGui.QLabel(self.server_settings_group_box)
+        self.address_label.setObjectName(u'address_label')
+        self.address_edit = QtGui.QLineEdit(self.server_settings_group_box)
+        self.address_edit.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
+        self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(
             u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'), self))
-        self.addressEdit.setObjectName(u'addressEdit')
-        QtCore.QObject.connect(self.addressEdit, QtCore.SIGNAL(u'textChanged(const QString&)'), self.setUrls)
-        self.serverSettingsLayout.addRow(self.addressLabel, self.addressEdit)
-        self.twelveHourCheckBox = QtGui.QCheckBox(self.serverSettingsGroupBox)
-        self.twelveHourCheckBox.setObjectName(u'twelveHourCheckBox')
-        self.serverSettingsLayout.addRow(self.twelveHourCheckBox)
-        self.portLabel = QtGui.QLabel(self.serverSettingsGroupBox)
-        self.portLabel.setObjectName(u'portLabel')
-        self.portSpinBox = QtGui.QSpinBox(self.serverSettingsGroupBox)
-        self.portSpinBox.setMaximum(32767)
-        self.portSpinBox.setObjectName(u'portSpinBox')
-        QtCore.QObject.connect(self.portSpinBox, QtCore.SIGNAL(u'valueChanged(int)'), self.setUrls)
-        self.serverSettingsLayout.addRow(self.portLabel, self.portSpinBox)
-        self.remoteUrlLabel = QtGui.QLabel(self.serverSettingsGroupBox)
-        self.remoteUrlLabel.setObjectName(u'remoteUrlLabel')
-        self.remoteUrl = QtGui.QLabel(self.serverSettingsGroupBox)
-        self.remoteUrl.setObjectName(u'remoteUrl')
-        self.remoteUrl.setOpenExternalLinks(True)
-        self.serverSettingsLayout.addRow(self.remoteUrlLabel, self.remoteUrl)
-        self.stageUrlLabel = QtGui.QLabel(self.serverSettingsGroupBox)
-        self.stageUrlLabel.setObjectName(u'stageUrlLabel')
-        self.stageUrl = QtGui.QLabel(self.serverSettingsGroupBox)
-        self.stageUrl.setObjectName(u'stageUrl')
-        self.stageUrl.setOpenExternalLinks(True)
-        self.serverSettingsLayout.addRow(self.stageUrlLabel, self.stageUrl)
-        self.leftLayout.addWidget(self.serverSettingsGroupBox)
-        self.androidAppGroupBox = QtGui.QGroupBox(self.rightColumn)
-        self.androidAppGroupBox.setObjectName(u'androidAppGroupBox')
-        self.rightLayout.addWidget(self.androidAppGroupBox)
-        self.qrLayout = QtGui.QVBoxLayout(self.androidAppGroupBox)
-        self.qrLayout.setObjectName(u'qrLayout')
-        self.qrCodeLabel = QtGui.QLabel(self.androidAppGroupBox)
-        self.qrCodeLabel.setPixmap(QtGui.QPixmap(u':/remotes/android_app_qr.png'))
-        self.qrCodeLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.qrCodeLabel.setObjectName(u'qrCodeLabel')
-        self.qrLayout.addWidget(self.qrCodeLabel)
-        self.qrDescriptionLabel = QtGui.QLabel(self.androidAppGroupBox)
-        self.qrDescriptionLabel.setObjectName(u'qrDescriptionLabel')
-        self.qrDescriptionLabel.setOpenExternalLinks(True)
-        self.qrDescriptionLabel.setWordWrap(True)
-        self.qrLayout.addWidget(self.qrDescriptionLabel)
-        self.leftLayout.addStretch()
-        self.rightLayout.addStretch()
-        QtCore.QObject.connect(self.twelveHourCheckBox, QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onTwelveHourCheckBoxChanged)
+        self.address_edit.setObjectName(u'address_edit')
+        self.server_settings_layout.addRow(self.address_label, self.address_edit)
+        self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
+        self.twelve_hour_check_box.setObjectName(u'twelve_hour_check_box')
+        self.server_settings_layout.addRow(self.twelve_hour_check_box)
+        self.port_label = QtGui.QLabel(self.server_settings_group_box)
+        self.port_label.setObjectName(u'port_label')
+        self.port_spin_box = QtGui.QSpinBox(self.server_settings_group_box)
+        self.port_spin_box.setMaximum(32767)
+        self.port_spin_box.setObjectName(u'port_spin_box')
+        self.server_settings_layout.addRow(self.port_label, self.port_spin_box)
+        self.remote_url_label = QtGui.QLabel(self.server_settings_group_box)
+        self.remote_url_label.setObjectName(u'remote_url_label')
+        self.remote_url = QtGui.QLabel(self.server_settings_group_box)
+        self.remote_url.setObjectName(u'remote_url')
+        self.remote_url.setOpenExternalLinks(True)
+        self.server_settings_layout.addRow(self.remote_url_label, self.remote_url)
+        self.stage_url_label = QtGui.QLabel(self.server_settings_group_box)
+        self.stage_url_label.setObjectName(u'stage_url_label')
+        self.stage_url = QtGui.QLabel(self.server_settings_group_box)
+        self.stage_url.setObjectName(u'stage_url')
+        self.stage_url.setOpenExternalLinks(True)
+        self.server_settings_layout.addRow(self.stage_url_label, self.stage_url)
+        self.left_layout.addWidget(self.server_settings_group_box)
+        self.android_app_group_box = QtGui.QGroupBox(self.right_column)
+        self.android_app_group_box.setObjectName(u'android_app_group_box')
+        self.right_layout.addWidget(self.android_app_group_box)
+        self.qr_layout = QtGui.QVBoxLayout(self.android_app_group_box)
+        self.qr_layout.setObjectName(u'qr_layout')
+        self.qr_code_label = QtGui.QLabel(self.android_app_group_box)
+        self.qr_code_label.setPixmap(QtGui.QPixmap(u':/remotes/android_app_qr.png'))
+        self.qr_code_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.qr_code_label.setObjectName(u'qr_code_label')
+        self.qr_layout.addWidget(self.qr_code_label)
+        self.qr_description_label = QtGui.QLabel(self.android_app_group_box)
+        self.qr_description_label.setObjectName(u'qr_description_label')
+        self.qr_description_label.setOpenExternalLinks(True)
+        self.qr_description_label.setWordWrap(True)
+        self.qr_layout.addWidget(self.qr_description_label)
+        self.left_layout.addStretch()
+        self.right_layout.addStretch()
+        self.twelve_hour_check_box.stateChanged.connect(self.onTwelveHourCheckBoxChanged)
+        self.address_edit.textChanged.connect(self.set_urls)
+        self.port_spin_box.valueChanged.connect(self.set_urls)
 
     def retranslateUi(self):
-        self.serverSettingsGroupBox.setTitle(
-            translate('RemotePlugin.RemoteTab', 'Server Settings'))
-        self.addressLabel.setText(translate('RemotePlugin.RemoteTab', 'Serve on IP address:'))
-        self.portLabel.setText(translate('RemotePlugin.RemoteTab', 'Port number:'))
-        self.remoteUrlLabel.setText(translate('RemotePlugin.RemoteTab', 'Remote URL:'))
-        self.stageUrlLabel.setText(translate('RemotePlugin.RemoteTab', 'Stage view URL:'))
-        self.twelveHourCheckBox.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
-        self.androidAppGroupBox.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
-        self.qrDescriptionLabel.setText(translate('RemotePlugin.RemoteTab',
+        self.server_settings_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Server Settings'))
+        self.address_label.setText(translate('RemotePlugin.RemoteTab', 'Serve on IP address:'))
+        self.port_label.setText(translate('RemotePlugin.RemoteTab', 'Port number:'))
+        self.remote_url_label.setText(translate('RemotePlugin.RemoteTab', 'Remote URL:'))
+        self.stage_url_label.setText(translate('RemotePlugin.RemoteTab', 'Stage view URL:'))
+        self.twelve_hour_check_box.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
+        self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
+        self.qr_description_label.setText(translate('RemotePlugin.RemoteTab',
             'Scan the QR code or click <a href="https://play.google.com/store/'
             'apps/details?id=org.openlp.android">download</a> to install the '
             'Android app from Google Play.'))
 
-    def setUrls(self):
-        ipAddress = u'localhost'
-        if self.addressEdit.text() == ZERO_URL:
-            ifaces = QtNetwork.QNetworkInterface.allInterfaces()
-            for iface in ifaces:
-                if not iface.isValid():
+    def set_urls(self):
+        ip_address = u'localhost'
+        if self.address_edit.text() == ZERO_URL:
+            interfaces = QtNetwork.QNetworkInterface.allInterfaces()
+            for interface in interfaces:
+                if not interface.isValid():
                     continue
-                if not (iface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
+                if not (interface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
                     continue
-                for addr in iface.addressEntries():
-                    ip = addr.ip()
+                for address in interface.addressEntries():
+                    ip = address.ip()
                     if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ipAddress = ip
+                        ip_address = ip
                         break
         else:
-            ipAddress = self.addressEdit.text()
-        url = u'http://%s:%s/' % (ipAddress, self.portSpinBox.value())
-        self.remoteUrl.setText(u'<a href="%s">%s</a>' % (url, url))
+            ip_address = self.address_edit.text()
+        url = u'http://%s:%s/' % (ip_address, self.port_spin_box.value())
+        self.remote_url.setText(u'<a href="%s">%s</a>' % (url, url))
         url += u'stage'
-        self.stageUrl.setText(u'<a href="%s">%s</a>' % (url, url))
+        self.stage_url.setText(u'<a href="%s">%s</a>' % (url, url))
 
     def load(self):
-        self.portSpinBox.setValue(Settings().value(self.settingsSection + u'/port'))
-        self.addressEdit.setText(Settings().value(self.settingsSection + u'/ip address'))
-        self.twelveHour = Settings().value(self.settingsSection + u'/twelve hour')
-        self.twelveHourCheckBox.setChecked(self.twelveHour)
-        self.setUrls()
+        self.port_spin_box.setValue(Settings().value(self.settings_section + u'/port'))
+        self.address_edit.setText(Settings().value(self.settings_section + u'/ip address'))
+        self.twelve_hour = Settings().value(self.settings_section + u'/twelve hour')
+        self.twelve_hour_check_box.setChecked(self.twelve_hour)
+        self.set_urls()
 
     def save(self):
         changed = False
-        if Settings().value(self.settingsSection + u'/ip address') != self.addressEdit.text() or \
-                Settings().value(self.settingsSection + u'/port') != self.portSpinBox.value():
+        if Settings().value(self.settings_section + u'/ip address') != self.address_edit.text() or \
+                Settings().value(self.settings_section + u'/port') != self.port_spin_box.value():
             changed = True
-        Settings().setValue(self.settingsSection + u'/port', self.portSpinBox.value())
-        Settings().setValue(self.settingsSection + u'/ip address', self.addressEdit.text())
-        Settings().setValue(self.settingsSection + u'/twelve hour', self.twelveHour)
+        Settings().setValue(self.settings_section + u'/port', self.port_spin_box.value())
+        Settings().setValue(self.settings_section + u'/ip address', self.address_edit.text())
+        Settings().setValue(self.settings_section + u'/twelve hour', self.twelve_hour)
         if changed:
-            Registry().register_function(u'remotes_config_updated')
+            Registry().execute(u'remotes_config_updated')
 
     def onTwelveHourCheckBoxChanged(self, check_state):
-        self.twelveHour = False
+        self.twelve_hour = False
         # we have a set value convert to True/False
         if check_state == QtCore.Qt.Checked:
-            self.twelveHour = True
+            self.twelve_hour = True

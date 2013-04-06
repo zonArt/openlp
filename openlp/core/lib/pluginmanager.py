@@ -129,9 +129,9 @@ class PluginManager(object):
                 log.exception(u'Failed to load plugin %s', unicode(p))
         plugins_list = sorted(plugin_objects, key=lambda plugin: plugin.weight)
         for plugin in plugins_list:
-            if plugin.checkPreConditions():
+            if plugin.check_pre_conditions():
                 log.debug(u'Plugin %s active', unicode(plugin.name))
-                plugin.setStatus()
+                plugin.set_status()
             else:
                 plugin.status = PluginStatus.Disabled
             self.plugins.append(plugin)
@@ -142,7 +142,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.createMediaManagerItem()
+                plugin.create_media_manager_item()
 
     def hook_settings_tabs(self):
         """
@@ -153,7 +153,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.createSettingsTab(self.settings_form)
+                plugin.create_settings_Tab(self.settings_form)
 
     def hook_import_menu(self):
         """
@@ -163,7 +163,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addImportMenuItem(self.main_window.file_import_menu)
+                plugin.add_import_menu_item(self.main_window.file_import_menu)
 
     def hook_export_menu(self):
         """
@@ -172,7 +172,7 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addExportMenuItem(self.main_window.file_export_menu)
+                plugin.add_export_menu_Item(self.main_window.file_export_menu)
 
     def hook_tools_menu(self):
         """
@@ -181,7 +181,18 @@ class PluginManager(object):
         """
         for plugin in self.plugins:
             if plugin.status is not PluginStatus.Disabled:
-                plugin.addToolsMenuItem(self.main_window.tools_menu)
+                plugin.add_tools_menu_item(self.main_window.tools_menu)
+
+    def hook_upgrade_plugin_settings(self, settings):
+        """
+        Loop through all the plugins and give them an opportunity to upgrade their settings.
+
+        ``settings``
+            The Settings object containing the old settings.
+        """
+        for plugin in self.plugins:
+            if plugin.status is not PluginStatus.Disabled:
+                plugin.upgrade_settings(settings)
 
     def initialise_plugins(self):
         """
@@ -190,8 +201,8 @@ class PluginManager(object):
         """
         log.info(u'Initialise Plugins - Started')
         for plugin in self.plugins:
-            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.isActive()))
-            if plugin.isActive():
+            log.info(u'initialising plugins %s in a %s state' % (plugin.name, plugin.is_active()))
+            if plugin.is_active():
                 plugin.initialise()
                 log.info(u'Initialisation Complete for %s ' % plugin.name)
         log.info(u'Initialise Plugins - Finished')
@@ -203,7 +214,7 @@ class PluginManager(object):
         """
         log.info(u'finalising plugins')
         for plugin in self.plugins:
-            if plugin.isActive():
+            if plugin.is_active():
                 plugin.finalise()
                 log.info(u'Finalisation Complete for %s ' % plugin.name)
 
@@ -222,7 +233,7 @@ class PluginManager(object):
         """
         log.info(u'plugins - new service created')
         for plugin in self.plugins:
-            if plugin.isActive():
+            if plugin.is_active():
                 plugin.new_service_created()
 
     def _get_settings_form(self):

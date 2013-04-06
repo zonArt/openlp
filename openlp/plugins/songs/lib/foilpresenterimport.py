@@ -121,12 +121,12 @@ class FoilPresenterImport(SongImport):
         """
         Imports the songs.
         """
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.importSource:
+        for file_path in self.import_source:
             if self.stop_import_flag:
                 return
-            self.importWizard.incrementProgressBar(
+            self.import_wizard.increment_progress_bar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)

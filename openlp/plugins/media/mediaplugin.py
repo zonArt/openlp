@@ -40,7 +40,7 @@ log = logging.getLogger(__name__)
 __default_settings__ = {
         u'media/media auto start': QtCore.Qt.Unchecked,
         u'media/media files': []
-    }
+}
 
 
 class MediaPlugin(Plugin):
@@ -49,34 +49,34 @@ class MediaPlugin(Plugin):
     def __init__(self):
         Plugin.__init__(self, u'media', __default_settings__, MediaMediaItem)
         self.weight = -6
-        self.iconPath = u':/plugins/plugin_media.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_media.png'
+        self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
         self.dnd_id = u'Media'
 
-    def createSettingsTab(self, parent):
+    def create_settings_Tab(self, parent):
         """
         Create the settings Tab
         """
-        visible_name = self.getString(StringContent.VisibleName)
-        self.settingsTab = MediaTab(parent, self.name, visible_name[u'title'], self.iconPath)
+        visible_name = self.get_string(StringContent.VisibleName)
+        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'], self.icon_path)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
             '<br />The media plugin provides playback of audio and video.')
         return about_text
 
-    def setPluginTextStrings(self):
+    def set_plugin_text_strings(self):
         """
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('MediaPlugin', 'Media', 'name singular'),
             u'plural': translate('MediaPlugin', 'Media', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
@@ -90,7 +90,7 @@ class MediaPlugin(Plugin):
             u'live': translate('MediaPlugin', 'Send the selected media live.'),
             u'service': translate('MediaPlugin', 'Add the selected media to the service.')
         }
-        self.setPluginUiTextStrings(tooltips)
+        self.set_plugin_ui_text_strings(tooltips)
 
     def finalise(self):
         """
@@ -100,48 +100,23 @@ class MediaPlugin(Plugin):
         self.media_controller.finalise()
         Plugin.finalise(self)
 
-    def getDisplayCss(self):
+    def get_display_css(self):
         """
         Add css style sheets to htmlbuilder
         """
         return self.media_controller.get_media_display_css()
 
-    def getDisplayJavaScript(self):
+    def get_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
         return self.media_controller.get_media_display_javascript()
 
-    def getDisplayHtml(self):
+    def get_display_html(self):
         """
         Add html code to htmlbuilder
         """
         return self.media_controller.get_media_display_html()
-
-    def app_startup(self):
-        """
-        Do a couple of things when the app starts up. In this particular case
-        we want to check if we have the old "Use Phonon" setting, and convert
-        it to "enable Phonon" and "make it the first one in the list".
-        """
-        Plugin.app_startup(self)
-        settings = Settings()
-        settings.beginGroup(self.settingsSection)
-        if settings.contains(u'use phonon'):
-            log.info(u'Found old Phonon setting')
-            players = self.media_controller.mediaPlayers.keys()
-            has_phonon = u'phonon' in players
-            if settings.value(u'use phonon')  and has_phonon:
-                log.debug(u'Converting old setting to new setting')
-                new_players = []
-                if players:
-                    new_players = [player for player in players if player != u'phonon']
-                new_players.insert(0, u'phonon')
-                self.media_controller.mediaPlayers[u'phonon'].isActive = True
-                settings.setValue(u'players', u','.join(new_players))
-                self.settingsTab.load()
-            settings.remove(u'use phonon')
-        settings.endGroup()
 
     def _get_media_controller(self):
         """
