@@ -142,7 +142,7 @@ class EasyWorshipSongImport(SongImport):
             rec_count = (rec_count + record_size) / record_size
             block_list.append((cur_block_pos, rec_count))
             total_count += rec_count
-        self.importWizard.progressBar.setMaximum(total_count)
+        self.import_wizard.progress_bar.setMaximum(total_count)
         for block in block_list:
             cur_block_pos, rec_count = block
             db_file.seek(cur_block_pos + 6)

@@ -26,13 +26,29 @@ TEST_FIELD_DESCS = [TestFieldDesc(u'Title', 1, 50),
                     TestFieldDesc(u'RecID', 4, 4),
                     TestFieldDesc(u'Default Background', 9, 1),
                     TestFieldDesc(u'Words', 12, 250),
+                    TestFieldDesc(u'Words', 12, 250),
                     TestFieldDesc(u'BK Bitmap', 13, 10),
                     TestFieldDesc(u'Last Modified', 21, 10)]
 TEST_FIELDS = ['A Heart Like Thine\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0', 32868, 2147483750,
     129, '{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
     '{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;'
-    '\\red255\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g��\7\0f\r\0\0\1\0', '\0\0\0\0\0\0\0\0\0\0', 0]
-#22
+    '\\red255\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g��\7\0f\r\0\0\1\0',
+    '{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
+    '{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;\\red255'
+    '\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g>�\6\0�\6\0\0\1\0', '\0\0\0\0\0\0\0\0\0\0', 0]
+GET_MEMO_FIELD_TEST_RESULTS = [
+    (4, u'\2', {u'return': u'\2',
+                u'read': (1, 3430),
+                u'seek': (507136, (8, os.SEEK_CUR))}),
+    (4, u'\3', {u'return': u'',
+                u'read': (1, ),
+                u'seek': (507136, )}),
+    (5, u'\3', {u'return': u'\3',
+                u'read': (1, 1725),
+                u'seek': (3220111360L, (41L, os.SEEK_CUR), 3220111408L)}),
+    (5, u'\4', {u'return': u'',
+                u'read': (),
+                u'seek': ()})]
 
 class TestEasyWorshipSongImport(TestCase):
     """
@@ -72,7 +88,7 @@ class TestEasyWorshipSongImport(TestCase):
 
     def find_field_exists_test(self):
         """
-        Test finding a field in a given list using the :mod:`findField`
+        Test finding an existing field in a given list using the :mod:`findField`
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a list of field descriptions
         with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'):
@@ -88,6 +104,10 @@ class TestEasyWorshipSongImport(TestCase):
             for field_name in existing_fields:
                 self.assertEquals(importer.fieldDescs[importer.findField(field_name)].name, field_name)
 
+    def find_field_non_exists_test(self):
+        """
+        Test finding an non-existing field in a given list using the :mod:`findField`
+        """
         # GIVEN: A mocked out SongImport class, a mocked out "manager" and a list of field descriptions
         with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'):
             mocked_manager = MagicMock()
@@ -116,7 +136,7 @@ class TestEasyWorshipSongImport(TestCase):
             # THEN: setRecordStruct should return None and structStruct should be called with a value representing
             #       the list of field descriptions
             self.assertIsNone(importer.setRecordStruct(TEST_FIELD_DESCS), u'setRecordStruct should return None')
-            mocked_struct.Struct.assert_called_with('>50sHIB250s10sQ')
+            mocked_struct.Struct.assert_called_with('>50sHIB250s250s10sQ')
 
     def get_field_test(self):
 
@@ -130,33 +150,40 @@ class TestEasyWorshipSongImport(TestCase):
             # WHEN: Supplied with string with just NULL bytes, or an int with the value 0
             importer.fields = TEST_FIELDS
             importer.fieldDescs = TEST_FIELD_DESCS
-            field_results = [(0, 'A Heart Like Thine'), (1, 100), (2, 102L), (3, True), (5, None), (6, None)]
+            field_results = [(0, 'A Heart Like Thine'), (1, 100), (2, 102L), (3, True), (6, None), (7, None)]
 
             # THEN: getField should return None
             for field_index, result in field_results:
                 self.assertEquals(importer.getField(field_index), result,
                     u'getField should return "%s" when called with "%s"' % (result, TEST_FIELDS[field_index]))
 
-        # GIVEN: A mocked out SongImport class, a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'), \
-             patch(u'openlp.plugins.songs.lib.ewimport.SongImport'):
-            mocked_manager = MagicMock()
-            mocked
-            importer = EasyWorshipSongImport(mocked_manager)
-            importer.encoding = TEST_DATA_ENCODING
+    def get_memo_field_test(self):
+        for test_results in GET_MEMO_FIELD_TEST_RESULTS:
+            # GIVEN: A mocked out SongImport class, a mocked out "manager"
+            with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'):
+                mocked_manager = MagicMock()
+                mocked_memo_file = MagicMock()
+                importer = EasyWorshipSongImport(mocked_manager)
+                importer.encoding = TEST_DATA_ENCODING
+                importer.memoFile = mocked_memo_file
 
-            # WHEN: Supplied with string with just NULL bytes, or an int with the value 0
-            importer.fields = TEST_FIELDS
-            importer.fieldDescs = TEST_FIELD_DESCS
-            field_results = [(4, u'I dunno')]
+                # WHEN: Supplied with string with just NULL bytes, or an int with the value 0
+                importer.fields = TEST_FIELDS
+                importer.fieldDescs = TEST_FIELD_DESCS
+                field_index = test_results[0]
+                mocked_memo_file.read.return_value = test_results[1]
+                get_field_result = test_results[2][u'return']
+                get_field_read_calls = test_results[2][u'read']
+                get_field_seek_calls = test_results[2][u'seek']
 
-            # THEN: getField should return None
-            for field_index, result in field_results:
-                self.assertEquals(importer.getField(field_index), result)
-
-             #                     u'getField should return "%s" when called with "%s"' % (result, TEST_FIELDS[field_index]))
-
+                # THEN: getField should return None
+                self.assertEquals(importer.getField(field_index), get_field_result)
+                for call in get_field_read_calls:
+                    mocked_memo_file.read.assert_any_call(call)
+                for call in get_field_seek_calls:
+                    if isinstance(call, (int, long)):
+                        mocked_memo_file.seek.assert_any_call(call)
+                    else:
+                        mocked_memo_file.seek.assert_any_call(call[0], call[1])
 
 # TODO: Write doImport Tests
-
-# TODO: Write getField Tests
