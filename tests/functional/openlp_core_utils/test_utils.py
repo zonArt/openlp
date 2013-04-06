@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import patch
 
-from openlp.core.utils import get_filesystem_encoding, _get_frozen_path, get_local_key, get_natural_key
+from openlp.core.utils import get_filesystem_encoding, _get_frozen_path, get_locale_key, get_natural_key
 
 class TestUtils(TestCase):
     """
@@ -56,9 +56,9 @@ class TestUtils(TestCase):
             # THEN: The frozen parameter is returned
             assert _get_frozen_path(u'frozen', u'not frozen') == u'frozen', u'Should return "frozen"'
 
-    def get_local_key_test(self):
+    def get_locale_key_test(self):
         """
-        Test the get_local_key(string) function
+        Test the get_locale_key(string) function
         """
         with patch(u'openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language:
             # GIVEN: The language is German
@@ -67,7 +67,8 @@ class TestUtils(TestCase):
             unsorted_list = [u'Auszug', u'Aushang', u'\u00C4u\u00DFerung']
             # WHEN: We sort the list and use get_locale_key() to generate the sorting keys
             # THEN: We get a properly sorted list
-            assert sorted(unsorted_list, key=get_local_key) == [u'Aushang', u'\u00C4u\u00DFerung', u'Auszug'], u'Strings should be sorted properly'
+            test_passes = sorted(unsorted_list, key=get_locale_key) == [u'Aushang', u'\u00C4u\u00DFerung', u'Auszug']
+            assert test_passes, u'Strings should be sorted properly'
 
     def get_natural_key_test(self):
         """
@@ -79,5 +80,6 @@ class TestUtils(TestCase):
             unsorted_list = [u'item 10a', u'item 3b', u'1st item']
             # WHEN: We sort the list and use get_natural_key() to generate the sorting keys
             # THEN: We get a properly sorted list
-            assert sorted(unsorted_list, key=get_natural_key) == [u'1st item', u'item 3b', u'item 10a'], u'Numbers should be sorted naturally'
+            test_passes = sorted(unsorted_list, key=get_natural_key) == [u'1st item', u'item 3b', u'item 10a']
+            assert test_passes, u'Numbers should be sorted naturally'
 
