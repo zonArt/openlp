@@ -235,10 +235,9 @@ class BGExtract(object):
         log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_book_name = urllib.quote(book_name.encode("utf-8"))
         url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter, version)
-        cleaner = [(CLEANER_REGEX, lambda match: '')]
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
-            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='', cleaner=cleaner)
+            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='')
         if not soup:
             return None
         div = soup.find('div', 'result-text-style-normal')
@@ -665,8 +664,7 @@ class HTTPBible(BibleDB):
 
     application = property(_get_application)
 
-def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
-    pre_parse_substitute=None, cleaner=None):
+def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre_parse_substitute=None):
     """
     Gets a webpage and returns a parsed and optionally cleaned soup or None.
 
@@ -682,9 +680,6 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
 
     ``pre_parse_substitute``
         The text to replace any matches to the regular expression with.
-
-    ``cleaner``
-        An optional regex to use during webpage parsing.
     """
     if not reference_url:
         return None
@@ -697,11 +692,8 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
         page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source)
     soup = None
     try:
-        if cleaner:
-            # FIXME: markupMassage not supported.
-            soup = BeautifulSoup(page_source)#, markupMassage=cleaner)
-        else:
-            soup = BeautifulSoup(page_source)
+        soup = BeautifulSoup(page_source)
+        CLEANER_REGEX.sub(u'', soup)
     except HTMLParseError:
         log.exception(u'BeautifulSoup could not parse the bible page.')
     if not soup:
