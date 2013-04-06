@@ -66,14 +66,14 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         OpenLPWizard.__init__(self, self.main_window, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_duplicateremoval.bmp', False)
 
-    def customSignals(self):
+    def custom_signals(self):
         """
         Song wizard specific signals.
         """
-        self.finishButton.clicked.connect(self.onWizardExit)
-        self.cancelButton.clicked.connect(self.onWizardExit)
+        self.finish_button.clicked.connect(self.on_wizard_exit)
+        self.cancel_button.clicked.connect(self.on_wizard_exit)
 
-    def addCustomPages(self):
+    def add_custom_pages(self):
         """
         Add song wizard specific pages.
         """
@@ -119,9 +119,9 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Song wizard localisation.
         """
         self.setWindowTitle(translate(u'Wizard', u'Wizard'))
-        self.titleLabel.setText(WizardStrings.HeaderStyle % translate(u'OpenLP.Ui',
+        self.title_label.setText(WizardStrings.HeaderStyle % translate(u'OpenLP.Ui',
             u'Welcome to the Duplicate Song Removal Wizard'))
-        self.informationLabel.setText(translate("Wizard",
+        self.information_label.setText(translate("Wizard",
             u'This wizard will help you to remove duplicate songs from the song database. You will have a chance to '
             u'review every potential duplicate song before it is deleted. So no songs will be deleted without your '
             u'explicit approval.'))
@@ -138,7 +138,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.review_page.setTitle(translate(u'Wizard', u'Review duplicate songs (%s/%s)') % \
                 (self.review_current_count, self.review_total_count))
 
-    def customPageChanged(self, page_id):
+    def custom_page_changed(self, page_id):
         """
         Called when changing the wizard page.
 
@@ -227,12 +227,12 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             duplicate_added = True
         return duplicate_added
 
-    def onWizardExit(self):
+    def on_wizard_exit(self):
         """
         Once the wizard is finished, refresh the song list,
         since we potentially removed songs from it.
         """
-        self.plugin.mediaItem.onSearchTextButtonClicked()
+        self.plugin.media_item.on_search_text_button_clicked()
 
     def setDefaults(self):
         """

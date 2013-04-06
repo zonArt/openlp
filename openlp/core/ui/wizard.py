@@ -219,9 +219,9 @@ class OpenLPWizard(QtGui.QWizard):
             self.performWizard()
             self.post_wizard()
         else:
-            self.custom_cage_changed(pageId)
+            self.custom_page_changed(pageId)
 
-    def custom_cage_changed(self, pageId):
+    def custom_page_changed(self, pageId):
         """
         Called when changing to a page other than the progress page
         """
