@@ -8,7 +8,7 @@ from tempfile import mkstemp
 from mock import MagicMock
 
 from openlp.core.lib import Settings
-from openlp.plugins.remotes.lib.httpserver import HttpRouter, fetch_password, sha_password_encrypter
+from openlp.plugins.remotes.lib.httpserver import HttpRouter, fetch_password, make_sha_hash
 from PyQt4 import QtGui
 
 __default_settings__ = {
@@ -62,7 +62,7 @@ class TestRouter(TestCase):
         # GIVEN: A default configuration
         # WHEN: called with the defined userid
         password = fetch_password(u'openlp')
-        required_password = sha_password_encrypter(u'password')
+        required_password = make_sha_hash(u'password')
 
         # THEN: the function should return the correct password
         self.assertEqual(password, required_password, u'The result for fetch_password should be the defined password')
@@ -73,12 +73,12 @@ class TestRouter(TestCase):
         """
         # GIVEN: A default configuration
         # WHEN: called with the defined userid
-        required_password = sha_password_encrypter(u'password')
+        required_password = make_sha_hash(u'password')
         test_value = u'5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
 
         # THEN: the function should return the correct password
         self.assertEqual(required_password, test_value,
-            u'The result for sha_password_encrypter should return the correct encrypted password')
+            u'The result for make_sha_hash should return the correct encrypted password')
 
     def process_http_request_test(self):
         """

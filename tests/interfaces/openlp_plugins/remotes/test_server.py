@@ -9,10 +9,10 @@ from mock import MagicMock
 import urllib2
 import cherrypy
 
-from BeautifulSoup import BeautifulSoup, NavigableString, Tag
+from BeautifulSoup import BeautifulSoup
 
 from openlp.core.lib import Settings
-from openlp.plugins.remotes.lib.httpserver import HttpServer, fetch_password, sha_password_encrypter
+from openlp.plugins.remotes.lib.httpserver import HttpServer
 from PyQt4 import QtGui
 
 __default_settings__ = {

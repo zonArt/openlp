@@ -132,7 +132,7 @@ from cherrypy._cpcompat import sha, ntob
 log = logging.getLogger(__name__)
 
 
-def sha_password_encrypter(password):
+def make_sha_hash(password):
     """
     Create an encrypted password for the given password.
     """
@@ -145,7 +145,7 @@ def fetch_password(username):
     """
     if username != Settings().value(u'remotes/user id'):
         return None
-    return sha_password_encrypter(Settings().value(u'remotes/password'))
+    return make_sha_hash(Settings().value(u'remotes/password'))
 
 
 class HttpServer(object):
@@ -207,7 +207,7 @@ class HttpServer(object):
                                 u'tools.basic_auth.on': Settings().value(u'remotes/authentication enabled'),
                                 u'tools.basic_auth.realm': u'OpenLP Remote Login',
                                 u'tools.basic_auth.users': fetch_password,
-                                u'tools.basic_auth.encrypt': sha_password_encrypter},
+                                u'tools.basic_auth.encrypt': make_sha_hash},
                          u'/files': {u'tools.staticdir.on': True,
                                      u'tools.staticdir.dir': self.router.html_dir,
                                      u'tools.basic_auth.on': False},
