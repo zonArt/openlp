@@ -113,6 +113,10 @@ class ItemCapabilities(object):
 
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
+    
+    ``CanEditTitle``
+            The capability to allow the ServiceManager to allow the title of the item to be
+             edited
 
     """
     CanPreview = 1
@@ -131,6 +135,7 @@ class ItemCapabilities(object):
     CanWordSplit = 14
     HasBackgroundAudio = 15
     CanAutoStartForLive = 16
+    CanEditTitle = 17
 
 
 class ServiceItem(object):
@@ -442,7 +447,7 @@ class ServiceItem(object):
         """
         Returns the title of the service item.
         """
-        if self.is_text() or self.is_image():
+        if self.is_text() or ItemCapabilities.CanEditTitle in self.capabilities:
             return self.title
         else:
             if ItemCapabilities.HasDetailedTitleDisplay in self.capabilities:

@@ -783,8 +783,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.auto_start_action.setVisible(False)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanEdit) and service_item[u'service_item'].edit_id:
             self.edit_action.setVisible(True)
-        if not service_item[u'service_item'].is_capable(ItemCapabilities.HasDetailedTitleDisplay)\
-            and not service_item[u'service_item'].is_capable(ItemCapabilities.CanEdit):
+        if service_item[u'service_item'].is_capable(ItemCapabilities.CanEditTitle):
             self.rename_action.setVisible(True)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanMaintain):
             self.maintain_action.setVisible(True)
@@ -1404,8 +1403,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Opens a dialog to rename the service item.
         """
         item = self.find_service_item()[0]
-        if ItemCapabilities.HasDetailedTitleDisplay in self.service_items[item][u'service_item'].capabilities\
-            or ItemCapabilities.CanEdit in self.service_items[item][u'service_item'].capabilities:
+        if not service_item[u'service_item'].is_capable(ItemCapabilities.CanEditTitle):
             return
         title = self.service_items[item][u'service_item'].title
         title, ok = QtGui.QInputDialog.getText(self, self.tr(translate('OpenLP.ServiceManager', 'Input title')), 

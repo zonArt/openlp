@@ -842,6 +842,7 @@ class BibleMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanWordSplit)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         # Service Item: Title
         service_item.title = create_separated_list(raw_title)
         # Service Item: Theme
