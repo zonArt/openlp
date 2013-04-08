@@ -33,6 +33,7 @@ backend for the Songs plugin
 
 from sqlalchemy import Column, types
 from sqlalchemy.sql.expression import func, false, null, text
+
 from openlp.core.lib.db import get_upgrade_op
 
 __version__ = 3

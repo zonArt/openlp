@@ -9,6 +9,7 @@ from mock import MagicMock, patch
 from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
     image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
 
+
 class TestLib(TestCase):
 
     def str_to_bool_with_bool_test(self):
