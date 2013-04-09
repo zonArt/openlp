@@ -65,6 +65,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.review_total_count = 0
         OpenLPWizard.__init__(self, self.main_window, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_duplicateremoval.bmp', False)
+        self.setMinimumWidth(730)
 
     def custom_signals(self):
         """
@@ -96,18 +97,20 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.review_page.setObjectName(u'review_page')
         self.review_layout = QtGui.QVBoxLayout(self.review_page)
         self.review_layout.setObjectName(u'review_layout')
-        self.songs_horizontal_scroll_area = QtGui.QScrollArea(self.review_page)
-        self.songs_horizontal_scroll_area.setObjectName(u'songs_horizontal_scroll_area')
-        self.songs_horizontal_scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.songs_horizontal_scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        self.songs_horizontal_scroll_area.setWidgetResizable(True)
-        self.songs_horizontal_songs_widget = QtGui.QWidget(self.songs_horizontal_scroll_area)
-        self.songs_horizontal_songs_widget.setObjectName(u'songs_horizontal_songs_widget')
-        self.songs_horizontal_layout = QtGui.QHBoxLayout(self.songs_horizontal_songs_widget)
-        self.songs_horizontal_layout.setObjectName(u'songs_horizontal_layout')
-        self.songs_horizontal_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
-        self.songs_horizontal_scroll_area.setWidget(self.songs_horizontal_songs_widget)
-        self.review_layout.addWidget(self.songs_horizontal_scroll_area)
+        self.review_scroll_area = QtGui.QScrollArea(self.review_page)
+        self.review_scroll_area.setObjectName(u'review_scroll_area')
+        self.review_scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.review_scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.review_scroll_area.setWidgetResizable(True)
+        self.review_scroll_area_widget = QtGui.QWidget(self.review_scroll_area)
+        self.review_scroll_area_widget.setObjectName(u'review_scroll_area_widget')
+        self.review_scroll_area_layout = QtGui.QHBoxLayout(self.review_scroll_area_widget)
+        self.review_scroll_area_layout.setObjectName(u'review_scroll_area_layout')
+        self.review_scroll_area_layout.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
+        self.review_scroll_area_layout.setMargin(0)
+        self.review_scroll_area_layout.setSpacing(0)
+        self.review_scroll_area.setWidget(self.review_scroll_area_widget)
+        self.review_layout.addWidget(self.review_scroll_area)
         self.review_page_id = self.addPage(self.review_page)
         # Add a dummy page to the end, to prevent the finish button to appear and the next button do disappear on the
         #review page.
@@ -286,13 +289,13 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             log.exception(u'Could not remove directory: %s', save_path)
         self.plugin.manager.delete_object(Song, item_id)
         # Remove GUI elements for the song.
-        self.songs_horizontal_layout.removeWidget(song_review_widget)
+        self.review_scroll_area_layout.removeWidget(song_review_widget)
         song_review_widget.setParent(None)
         # Check if we only have one duplicate left:
         # 2 stretches + 1 SongReviewWidget = 3
         # The SongReviewWidget is then at position 1.
         if len(self.duplicate_song_list[-1]) == 1:
-            self.songs_horizontal_layout.itemAt(1).widget().song_remove_button.setEnabled(False)
+            self.review_scroll_area_layout.itemAt(1).widget().song_remove_button.setEnabled(False)
 
     def proceed_to_next_review(self):
         """
@@ -301,16 +304,16 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         # Remove last duplicate group.
         self.duplicate_song_list.pop()
         # Remove all previous elements.
-        for i in reversed(range(self.songs_horizontal_layout.count())): 
-            item = self.songs_horizontal_layout.itemAt(i)
+        for i in reversed(range(self.review_scroll_area_layout.count())):
+            item = self.review_scroll_area_layout.itemAt(i)
             if isinstance(item, QtGui.QWidgetItem):
                 # The order is important here, if the .setParent(None) call is done
                 # before the .removeItem() call, a segfault occurs.
                 widget = item.widget()
-                self.songs_horizontal_layout.removeItem(item) 
+                self.review_scroll_area_layout.removeItem(item)
                 widget.setParent(None)
             else:
-                self.songs_horizontal_layout.removeItem(item)
+                self.review_scroll_area_layout.removeItem(item)
         # Process next set of duplicates.
         self.process_current_duplicate_entry()
     
@@ -325,12 +328,12 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.update_review_counter_text()
         # Add song elements to the UI.
         if len(self.duplicate_song_list) > 0:
-            self.songs_horizontal_layout.addStretch(1)
+            self.review_scroll_area_layout.addStretch(1)
             for duplicate in self.duplicate_song_list[-1]:
                 song_review_widget = SongReviewWidget(self.review_page, duplicate)
                 song_review_widget.song_remove_button_clicked.connect(self.remove_button_clicked)
-                self.songs_horizontal_layout.addWidget(song_review_widget)
-            self.songs_horizontal_layout.addStretch(1)
+                self.review_scroll_area_layout.addWidget(song_review_widget)
+            self.review_scroll_area_layout.addStretch(1)
         # Change next button to finish button on last review.
         if len(self.duplicate_song_list) == 1:
             self.button(QtGui.QWizard.FinishButton).show()

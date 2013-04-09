@@ -75,7 +75,7 @@ class SongReviewWidget(QtGui.QWidget):
         self.song_vertical_layout.setObjectName(u'song_vertical_layout')
         self.song_group_box = QtGui.QGroupBox(self)
         self.song_group_box.setObjectName(u'song_group_box')
-        self.song_group_box.setFixedWidth(400)
+        self.song_group_box.setFixedWidth(300)
         self.song_group_box_layout = QtGui.QVBoxLayout(self.song_group_box)
         self.song_group_box_layout.setObjectName(u'song_group_box_layout')
         self.song_info_form_layout = QtGui.QFormLayout()
