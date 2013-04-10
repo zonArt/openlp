@@ -65,9 +65,7 @@ class EasyWorshipSongImport(SongImport):
     def doImport(self):
         # Open the DB and MB files if they exist
         import_source_mb = self.import_source.replace('.DB', '.MB')
-        if not os.path.isfile(self.import_source):
-            return
-        if not os.path.isfile(import_source_mb):
+        if not (os.path.isfile(self.import_source) or os.path.isfile(import_source_mb)):
             return
         db_size = os.path.getsize(self.import_source)
         if db_size < 0x800:
