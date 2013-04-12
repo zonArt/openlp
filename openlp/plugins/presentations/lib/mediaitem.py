@@ -244,9 +244,10 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.list_view.selectedItems()
             if len(items) > 1:
                 return False
+        service_item.title = self.displayTypeComboBox.currentText()
         service_item.shortname = self.displayTypeComboBox.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
-        service_item.add_capability(ItemCapabilities.CanEditTitle)
+        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname
         if not shortname:
             return False
@@ -259,7 +260,6 @@ class PresentationMediaItem(MediaManagerItem):
                         return False
                 controller = self.controllers[service_item.shortname]
                 (path, name) = os.path.split(filename)
-                service_item.title = name
                 doc = controller.add_document(filename)
                 if doc.get_thumbnail_path(1, True) is None:
                     doc.load_presentation()

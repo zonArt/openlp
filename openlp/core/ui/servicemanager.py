@@ -1403,7 +1403,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Opens a dialog to rename the service item.
         """
         item = self.find_service_item()[0]
-        if not service_item[u'service_item'].is_capable(ItemCapabilities.CanEditTitle):
+        if not self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEditTitle):
             return
         title = self.service_items[item][u'service_item'].title
         title, ok = QtGui.QInputDialog.getText(self, self.tr(translate('OpenLP.ServiceManager', 'Input title')), 
