@@ -76,7 +76,13 @@ if os.name == u'nt':
         HAS_MEDIASHOUT = True
     except ImportError:
         log.exception('Error importing %s', 'MediaShoutImport')
-
+HAS_WORSHIPCENTERPRO = False
+if os.name == u'nt':
+    try:
+        from worshipcenterproimport import WorshipCenterProImport
+        HAS_WORSHIPCENTERPRO = True
+    except ImportError:
+        log.exception('Error importing %s', 'WorshipCenterProImport')
 
 class SongFormatSelect(object):
     """
@@ -160,7 +166,8 @@ class SongFormat(object):
     SongsOfFellowship = 15
     SundayPlus = 16
     WordsOfWorship = 17
-    ZionWorx = 18
+    WorshipCenterPro = 18
+    ZionWorx = 19
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -311,6 +318,16 @@ class SongFormat(object):
             u'filter': u'%s (*.wsg *.wow-song)' %
                 translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
         },
+        WorshipCenterPro: {
+            u'name': u'WorshipCenter Pro',
+            u'prefix': u'worshipCenterPro',
+            u'canDisable': True,
+            u'selectMode': SongFormatSelect.SingleFile,
+            u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'WorshipCenter Pro Song Files'),
+            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+                'The WorshipCenter Pro importer is only supported on Windows. It has been disabled due to a missing '
+                'Python module. If you want to use this importer, you will need to install the "pyodbc" module.')
+        },
         ZionWorx: {
             u'class': ZionWorxImport,
             u'name': u'ZionWorx',
@@ -348,6 +365,7 @@ class SongFormat(object):
             SongFormat.SongsOfFellowship,
             SongFormat.SundayPlus,
             SongFormat.WordsOfWorship,
+            SongFormat.WorshipCenterPro,
             SongFormat.ZionWorx
         ]
 
@@ -399,5 +417,9 @@ if HAS_OOO:
 SongFormat.set(SongFormat.MediaShout, u'availability', HAS_MEDIASHOUT)
 if HAS_MEDIASHOUT:
     SongFormat.set(SongFormat.MediaShout, u'class', MediaShoutImport)
+SongFormat.set(SongFormat.WorshipCenterPro, u'availability', HAS_WORSHIPCENTERPRO)
+if HAS_WORSHIPCENTERPRO:
+    SongFormat.set(SongFormat.WorshipCenterPro, u'class', WorshipCenterProImport)
+
 
 __all__ = [u'SongFormat', u'SongFormatSelect']
