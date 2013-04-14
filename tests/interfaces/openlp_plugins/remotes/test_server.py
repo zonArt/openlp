@@ -101,6 +101,15 @@ class TestRouter(TestCase):
 
 
 def call_remote_server(url, username=None, password=None):
+    """
+    Helper function
+
+    ``username``
+        The username.
+
+    ``password``
+        The password.
+    """
     if username:
         passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
         passman.add_password(None, url, username, password)
@@ -115,6 +124,15 @@ def call_remote_server(url, username=None, password=None):
 
 
 def process_http_request(url_path, *args):
+    """
+    Override function to make the Mock work but does nothing.
+
+    ``Url_path``
+        The url_path.
+
+    ``*args``
+        Some args.
+    """
     cherrypy.response.status = 200
     return None
 

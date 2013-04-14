@@ -285,6 +285,12 @@ class HttpRouter(object):
     def process_http_request(self, url_path, *args):
         """
         Common function to process HTTP requests
+
+        ``url_path``
+            The requested URL.
+
+        ``*args``
+            Any passed data.
         """
         response = None
         for route, func in self.routes:

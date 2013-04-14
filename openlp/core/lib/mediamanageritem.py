@@ -487,6 +487,9 @@ class MediaManagerItem(QtGui.QWidget):
     def go_live_remote(self, message):
         """
         Remote Call wrapper
+
+        ``message``
+            The passed data item_id:Remote.
         """
         self.go_live(message[0], remote=message[1])
 
@@ -535,6 +538,9 @@ class MediaManagerItem(QtGui.QWidget):
     def add_to_service_remote(self, message):
         """
         Remote Call wrapper
+
+        ``message``
+            The passed data item:Remote.
         """
         self.add_to_service(message[0], remote=message[1])
 
