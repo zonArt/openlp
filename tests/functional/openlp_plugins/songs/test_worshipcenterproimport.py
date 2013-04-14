@@ -22,6 +22,23 @@ class TestRecord:
         self.Field = field
         self.Value = value
 
+class WorshipCenterProImportLogger(WorshipCenterProImport):
+    """
+    This class logs changes in the title instance variable
+    """
+    _title_assignment_list = []
+
+    def __init__(self, manager):
+        WorshipCenterProImport.__init__(self, manager)
+
+    @property
+    def title(self):
+        return self._title_assignment_list[-1]
+
+    @title.setter
+    def title(self, title):
+        self._title_assignment_list.append(title)
+
 
 RECORDSET_TEST_DATA = [TestRecord(1, u'TITLE', u'Amazing Grace'),
                        TestRecord(1, u'LYRICS',
@@ -139,7 +156,7 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_add_verse = MagicMock()
             mocked_finish = MagicMock()
             mocked_translate.return_value = u'Translated Text'
-            importer = WorshipCenterProImport(mocked_manager)
+            importer = WorshipCenterProImportLogger(mocked_manager)
             importer.logError = mocked_log_error
             importer.import_source = u'import_source'
             importer.import_wizard = mocked_import_wizard
@@ -160,11 +177,7 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(2)
             for song_data in SONG_TEST_DATA:
                 title_value = song_data[u'title']
-                # Here is where I'm stuck.
-                # importer.title, should have been first set to 'Amazing Grace' and then
-                # 'Beautiful Garden Of Prayer, The' how can I capture past values? mohij suggested using properties,
-                # I know very little about these, how would I be able to apply it from the test case?
-                #self.assertEqual(importer.title, title_value)
+                self.assertIn(title_value, importer._title_assignment_list)
                 verse_calls = song_data[u'verses']
                 for call in verse_calls:
                     mocked_add_verse.assert_any_call(call)
