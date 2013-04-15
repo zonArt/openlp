@@ -7,49 +7,55 @@ This module contains tests for the EasyWorship song importer.
 
 import os
 from unittest import TestCase
-from mock import call, patch, MagicMock
+from mock import patch, MagicMock
 
-from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEntry
 
+class EasyWorshipSongImportLogger(EasyWorshipSongImport):
+    """
+    This class logs changes in the title instance variable
+    """
+    _title_assignment_list = []
+
+    def __init__(self, manager):
+        EasyWorshipSongImport.__init__(self, manager)
+
+    @property
+    def title(self):
+        return self._title_assignment_list[-1]
+
+    @title.setter
+    def title(self, title):
+        self._title_assignment_list.append(title)
+
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/easyworshipsongs'))
-SONG_TEST_DATA = [{u'title': u'Amazing Grace (Demonstration)',
-                   u'authors': [u'John Newton', u'Edwin Excell', u'John P. Rees'],
-                   u'copyright': u'Public Domain ',
-                   u'ccli_number': 22025,
+SONG_TEST_DATA = [{u'title': u'Amazing Grace',
+                   u'authors': [u'John Newton'],
+                   u'copyright': u'Public Domain',
+                   u'ccli_number': 0,
                    u'verses':
-                       [(u'Amazing grace! How sweet the sound!\r\nThat saved a wretch like me!\r\n'
-                         u'I once was lost, but now am found;\r\nWas blind, but now I see.', u'v1'),
-                        (u'\'Twas grace that taught my heart to fear,\r\nAnd grace my fears relieved.\r\n'
-                         u'How precious did that grace appear,\r\nThe hour I first believed.', u'v2'),
-                        (u'The Lord has promised good to me,\r\nHis Word my hope secures.\r\n'
-                         u'He will my shield and portion be\r\nAs long as life endures.', u'v3'),
-                        (u'Thro\' many dangers, toils and snares\r\nI have already come.\r\n'
-                         u'\'Tis grace that brought me safe thus far,\r\nAnd grace will lead me home.', u'v4'),
-                        (u'When we\'ve been there ten thousand years,\r\nBright shining as the sun,\r\n'
-                         u'We\'ve no less days to sing God\'s praise,\r\nThan when we first begun.', u'v5')],
-                   u'topics': [u'Assurance', u'Grace', u'Praise', u'Salvation'],
-                   u'comments': u'\n\n\n',
-                   u'song_book_name': u'Demonstration Songs',
-                   u'song_number': 0,
+                       [(u'Amazing grace how sweet the sound,\nThat saved a wretch like me;\n'
+                         u'I once was lost, but now am found\nWas blind, but now I see.', u'v1'),
+                        (u'T\'was grace that taught my heart to fear,\nAnd grace my fears relieved;\n'
+                         u'How precious did that grace appear\nThe hour I first believed.', u'v2'),
+                        (u'Through many dangers, toil and snares,\nI have already come;\n'
+                         u'\'Tis grace has brought me safe thus far,\nAnd grace will lead me home.', u'v3'),
+                        (u'When we\'ve been there ten thousand years\nBright shining as the sun,\n'
+                         u'We\'ve no less days to sing God\'s praise\nThan when we\'ve first begun.', u'v4')],
                    u'verse_order_list': []},
-                  {u'title': u'Beautiful Garden Of Prayer (Demonstration)',
-                   u'authors': [u'Eleanor Allen Schroll', u'James H. Fillmore'],
-                   u'copyright': u'Public Domain ',
-                   u'ccli_number': 60252,
+                  {u'title': u'Beautiful Garden Of Prayer',
+                   u'authors': [u'Eleanor Allen Schroll James H. Fillmore'],
+                   u'copyright': u'Public Domain',
+                   u'ccli_number': 0,
                    u'verses':
-                       [(u'There\'s a garden where Jesus is waiting,\r\nThere\'s a place that is wondrously fair.\r\n'
-                         u'For it glows with the light of His presence,\r\n\'Tis the beautiful garden of prayer.', u'v1'),
-                        (u'There\'s a garden where Jesus is waiting,\r\nAnd I go with my burden and care.\r\n'
-                         u'Just to learn from His lips, words of comfort,\r\nIn the beautiful garden of prayer.', u'v2'),
-                        (u'There\'s a garden where Jesus is waiting,\r\nAnd He bids you to come meet Him there,\r\n'
-                         u'Just to bow and receive a new blessing,\r\nIn the beautiful garden of prayer.', u'v3'),
-                        (u'O the beautiful garden, the garden of prayer,\r\nO the beautiful garden of prayer.\r\n'
-                         u'There my Savior awaits, and He opens the gates\r\nTo the beautiful garden of prayer.', u'c1')],
-                   u'topics': [u'Devotion', u'Prayer'],
-                   u'comments': u'',
-                   u'song_book_name': u'',
-                   u'song_number': 0,
+                       [(u'O the beautiful garden, the garden of prayer,\nO the beautiful garden of prayer.\n'
+                         u'There my Savior awaits, and He opens the gates\nTo the beautiful garden of prayer.', u'c1'),
+                        (u'There\'s a garden where Jesus is waiting,\nThere\'s a place that is wondrously fair.\n'
+                         u'For it glows with the light of His presence,\n\'Tis the beautiful garden of prayer.', u'v1'),
+                        (u'There\'s a garden where Jesus is waiting,\nAnd I go with my burden and care.\n'
+                         u'Just to learn from His lips, words of comfort,\nIn the beautiful garden of prayer.', u'v2'),
+                        (u'There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
+                         u'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', u'v3')],
                    u'verse_order_list': []}]
 
 
@@ -236,14 +242,13 @@ class TestEasyWorshipSongImport(TestCase):
             mocked_os_path.isfile.assert_any_call(u'Songs.DB')
             mocked_os_path.isfile.assert_any_call(u'Songs.MB')
 
-    def do_import_source_validity_test(self):
+    def do_import_database_validity_test(self):
         """
-        Test the :mod:`doImport` module
+        Test the :mod:`doImport` module handles invalid database files correctly
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
         with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'), \
-            patch(u'openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
-            patch(u'__builtin__.open') as mocked_open:
+            patch(u'openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager)
             mocked_os_path.isfile.return_value = True
@@ -256,6 +261,32 @@ class TestEasyWorshipSongImport(TestCase):
             self.assertIsNone(importer.doImport(), u'doImport should return None when db_size is less than 0x800')
             mocked_os_path.getsize.assert_any_call(u'Songs.DB')
 
+    def do_import_memo_validty_test(self):
+        """
+        Test the :mod:`doImport` module handles invalid memo files correctly
+        """
+        # GIVEN: A mocked out SongImport class, a mocked out "manager"
+        with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'), \
+            patch(u'openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
+            patch(u'__builtin__.open') as mocked_open, \
+            patch(u'openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
+            mocked_manager = MagicMock()
+            importer = EasyWorshipSongImport(mocked_manager)
+            mocked_os_path.isfile.return_value = True
+            mocked_os_path.getsize.return_value = 0x800
+            importer.import_source = u'Songs.DB'
+
+            # WHEN: Unpacking first 35 bytes of Memo file
+            struct_unpack_return_values = [(0, 0x700, 2, 0, 0), (0, 0x800, 0, 0, 0), (0, 0x800, 5, 0, 0)]
+            mocked_struct.unpack.side_effect = struct_unpack_return_values
+
+            # THEN: doImport should return None having called closed the open files db and memo files.
+            for effect in struct_unpack_return_values:
+                self.assertIsNone(importer.doImport(), u'doImport should return None when db_size is less than 0x800')
+                self.assertEqual(mocked_open().close.call_count, 2,
+                    u'The open db and memo files should have been closed')
+                mocked_open().close.reset_mock()
+                self.assertIs(mocked_open().seek.called, False, u'db_file.seek should not have been called.')
 
     def file_import_test(self):
         """
@@ -264,70 +295,50 @@ class TestEasyWorshipSongImport(TestCase):
 
         # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
         #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'), \
+            patch(u'openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as mocked_retrieve_windows_encoding:
+            mocked_retrieve_windows_encoding.return_value = u'cp1252'
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
-            mocked_parse_author = MagicMock()
-            mocked_add_copyright = MagicMock()
+            mocked_add_author = MagicMock()
             mocked_add_verse = MagicMock()
             mocked_finish = MagicMock()
+            mocked_title = MagicMock()
             mocked_finish.return_value = True
-            importer = EasyWorshipSongImport(mocked_manager)
+            importer = EasyWorshipSongImportLogger(mocked_manager)
             importer.import_wizard = mocked_import_wizard
             importer.stop_import_flag = False
-            importer.parse_author = mocked_parse_author
-            importer.addCopyright = mocked_add_copyright
+            importer.addAuthor = mocked_add_author
             importer.addVerse = mocked_add_verse
+            importer.title = mocked_title
             importer.finish = mocked_finish
             importer.topics = []
 
             # WHEN: Importing each file
-            importer.import_source = [os.path.join(TEST_PATH, u'Songs.DB')]
-            title = SONG_TEST_DATA[song_file][u'title']
-            author_calls = SONG_TEST_DATA[song_file][u'authors']
-            song_copyright = SONG_TEST_DATA[song_file][u'copyright']
-            ccli_number = SONG_TEST_DATA[song_file][u'ccli_number']
-            add_verse_calls = SONG_TEST_DATA[song_file][u'verses']
-            topics = SONG_TEST_DATA[song_file][u'topics']
-            comments = SONG_TEST_DATA[song_file][u'comments']
-            song_book_name = SONG_TEST_DATA[song_file][u'song_book_name']
-            song_number = SONG_TEST_DATA[song_file][u'song_number']
-            verse_order_list = SONG_TEST_DATA[song_file][u'verse_order_list']
+            importer.import_source = os.path.join(TEST_PATH, u'Songs.DB')
 
             # THEN: doImport should return none, the song data should be as expected, and finish should have been
             #       called.
             self.assertIsNone(importer.doImport(), u'doImport should return None when it has completed')
-            self.assertEquals(importer.title, title, u'title for %s should be "%s"' % (song_file, title))
-            for author in author_calls:
-                mocked_parse_author.assert_any_call(author)
-            if song_copyright:
-                mocked_add_copyright.assert_called_with(song_copyright)
-            if ccli_number:
-                self.assertEquals(importer.ccliNumber, ccli_number, u'ccliNumber for %s should be %s'
-                                                                    % (song_file, ccli_number))
-            for verse_text, verse_tag in add_verse_calls:
-                mocked_add_verse.assert_any_call(verse_text, verse_tag)
-            if topics:
-                self.assertEquals(importer.topics, topics, u'topics for %s should be %s' % (song_file, topics))
-            if comments:
-                self.assertEquals(importer.comments, comments, u'comments for %s should be "%s"'
-                                                               % (song_file, comments))
-            if song_book_name:
-                self.assertEquals(importer.songBookName, song_book_name, u'songBookName for %s should be "%s"'
-                                                                         % (song_file, song_book_name))
-            if song_number:
-                self.assertEquals(importer.songNumber, song_number, u'songNumber for %s should be %s'
-                                                                    % (song_file, song_number))
-            if verse_order_list:
-                self.assertEquals(importer.verseOrderList, [], u'verseOrderList for %s should be %s'
-                                                               % (song_file, verse_order_list))
-            mocked_finish.assert_called_with()
-
-            # Open the DB and MB files if they exist
-    #        import_source_mb = self.import_source.replace('.DB', '.MB')
-     #       if not (os.path.isfile(self.import_source) or os.path.isfile(import_source_mb)):
-      #          return
-       #     db_size = os.path.getsize(self.import_source)
-        #    if db_size < 0x800:
-         #       return
-    # TODO: Write doImport Tests
+            for song_data in SONG_TEST_DATA:
+                print mocked_title.mocked_calls()
+                title = song_data[u'title']
+                author_calls = song_data[u'authors']
+                song_copyright = song_data[u'copyright']
+                ccli_number = song_data[u'ccli_number']
+                add_verse_calls = song_data[u'verses']
+                verse_order_list = song_data[u'verse_order_list']
+                self.assertIn(title, importer._title_assignment_list, u'title for %s should be "%s"' % (title, title))
+                for author in author_calls:
+                    mocked_add_author.assert_any_call(author)
+                if song_copyright:
+                    self.assertEqual(importer.copyright, song_copyright)
+                if ccli_number:
+                    self.assertEquals(importer.ccliNumber, ccli_number, u'ccliNumber for %s should be %s'
+                                                                        % (title, ccli_number))
+                for verse_text, verse_tag in add_verse_calls:
+                    mocked_add_verse.assert_any_call(verse_text, verse_tag)
+                if verse_order_list:
+                    self.assertEquals(importer.verseOrderList, verse_order_list, u'verseOrderList for %s should be %s'
+                                                                   % (title, verse_order_list))
+                mocked_finish.assert_called_with()
