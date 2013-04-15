@@ -5,7 +5,9 @@ from unittest import TestCase
 
 from mock import patch
 
-from openlp.core.utils import get_filesystem_encoding, _get_frozen_path, clean_filename, split_filename
+from openlp.core.utils import clean_filename, get_filesystem_encoding, _get_frozen_path, get_locale_key, \
+    get_natural_key, split_filename
+
 
 class TestUtils(TestCase):
     """
@@ -89,7 +91,6 @@ class TestUtils(TestCase):
             assert result == wanted_result, \
                 u'A two-entry tuple with the directory and file name (empty) should have been returned.'
 
-
     def clean_filename_test(self):
         """
         Test the clean_filename() function
@@ -103,3 +104,30 @@ class TestUtils(TestCase):
 
         # THEN: The file name should be cleaned.
         assert result == wanted_name, u'The file name should not contain any special characters.'
+
+    def get_locale_key_test(self):
+        """
+        Test the get_locale_key(string) function
+        """
+        with patch(u'openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language:
+            # GIVEN: The language is German
+            # 0x00C3 (A with diaresis) should be sorted as "A". 0x00DF (sharp s) should be sorted as "ss".
+            mocked_get_language.return_value = u'de'
+            unsorted_list = [u'Auszug', u'Aushang', u'\u00C4u\u00DFerung']
+            # WHEN: We sort the list and use get_locale_key() to generate the sorting keys
+            # THEN: We get a properly sorted list
+            test_passes = sorted(unsorted_list, key=get_locale_key) == [u'Aushang', u'\u00C4u\u00DFerung', u'Auszug']
+            assert test_passes, u'Strings should be sorted properly'
+
+    def get_natural_key_test(self):
+        """
+        Test the get_natural_key(string) function
+        """
+        with patch(u'openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language:
+            # GIVEN: The language is English (a language, which sorts digits before letters)
+            mocked_get_language.return_value = u'en'
+            unsorted_list = [u'item 10a', u'item 3b', u'1st item']
+            # WHEN: We sort the list and use get_natural_key() to generate the sorting keys
+            # THEN: We get a properly sorted list
+            test_passes = sorted(unsorted_list, key=get_natural_key) == [u'1st item', u'item 3b', u'item 10a']
+            assert test_passes, u'Numbers should be sorted naturally'

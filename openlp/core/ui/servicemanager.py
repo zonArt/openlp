@@ -234,18 +234,22 @@ class ServiceManagerDialog(object):
             icon=u':/general/general_edit.png', triggers=self.create_custom)
         self.menu.addSeparator()
         # Add AutoPlay menu actions
-        self.auto_play_slides_group = QtGui.QMenu(translate('OpenLP.ServiceManager', '&Auto play slides'))
-        self.menu.addMenu(self.auto_play_slides_group)
-        self.auto_play_slides_loop = create_widget_action(self.auto_play_slides_group,
+        self.auto_play_slides_menu = QtGui.QMenu(translate('OpenLP.ServiceManager', '&Auto play slides'))
+        self.menu.addMenu(self.auto_play_slides_menu)
+        auto_play_slides_group = QtGui.QActionGroup(self.auto_play_slides_menu)
+        auto_play_slides_group.setExclusive(True)
+        self.auto_play_slides_loop = create_widget_action(self.auto_play_slides_menu,
             text=translate('OpenLP.ServiceManager', 'Auto play slides &Loop'),
             checked=False, triggers=self.toggle_auto_play_slides_loop)
-        self.auto_play_slides_once = create_widget_action(self.auto_play_slides_group,
+        auto_play_slides_group.addAction(self.auto_play_slides_loop)
+        self.auto_play_slides_once = create_widget_action(self.auto_play_slides_menu,
             text=translate('OpenLP.ServiceManager', 'Auto play slides &Once'),
             checked=False, triggers=self.toggle_auto_play_slides_once)
-        self.auto_play_slides_group.addSeparator()
-        self.timed_slide_interval = create_widget_action(self.auto_play_slides_group,
+        auto_play_slides_group.addAction(self.auto_play_slides_once)
+        self.auto_play_slides_menu.addSeparator()
+        self.timed_slide_interval = create_widget_action(self.auto_play_slides_menu,
             text=translate('OpenLP.ServiceManager', '&Delay between slides'),
-            checked=False, triggers=self.on_timed_slide_interval)
+            triggers=self.on_timed_slide_interval)
         self.menu.addSeparator()
         self.preview_action = create_widget_action(self.menu, text=translate('OpenLP.ServiceManager', 'Show &Preview'),
             icon=u':/general/general_preview.png', triggers=self.make_preview)
@@ -786,7 +790,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             self.notes_action.setVisible(True)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanLoop) and  \
                 len(service_item[u'service_item'].get_frames()) > 1:
-            self.auto_play_slides_group.menuAction().setVisible(True)
+            self.auto_play_slides_menu.menuAction().setVisible(True)
             self.auto_play_slides_once.setChecked(service_item[u'service_item'].auto_play_slides_once)
             self.auto_play_slides_loop.setChecked(service_item[u'service_item'].auto_play_slides_loop)
             self.timed_slide_interval.setChecked(service_item[u'service_item'].timed_slide_interval > 0)
@@ -798,7 +802,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 translate('OpenLP.ServiceManager', '&Delay between slides') + delay_suffix)
             # TODO for future: make group explains itself more visually
         else:
-            self.auto_play_slides_group.menuAction().setVisible(False)
+            self.auto_play_slides_menu.menuAction().setVisible(False)
         if service_item[u'service_item'].is_capable(ItemCapabilities.HasVariableStartTime):
             self.time_action.setVisible(True)
         if service_item[u'service_item'].is_capable(ItemCapabilities.CanAutoStartForLive):
