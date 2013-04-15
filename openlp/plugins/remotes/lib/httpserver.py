@@ -216,7 +216,7 @@ class HttpServer(object):
                                      u'tools.basic_auth.on': False}}
         return directory_config
 
-    class Public:
+    class Public(object):
         """
         Main access class with may have security enabled on it.
         """
@@ -228,7 +228,7 @@ class HttpServer(object):
             url = urlparse.urlparse(cherrypy.url())
             return self.router.process_http_request(url.path, *args)
 
-    class Files:
+    class Files(object):
         """
         Provides access to files and has no security available.  These are read only accesses
         """
@@ -237,7 +237,7 @@ class HttpServer(object):
             url = urlparse.urlparse(cherrypy.url())
             return self.router.process_http_request(url.path, *args)
 
-    class Stage:
+    class Stage(object):
         """
         Stageview is read only so security is not relevant and would reduce it's usability
         """
