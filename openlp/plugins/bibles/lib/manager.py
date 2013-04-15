@@ -38,12 +38,8 @@ from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
 from osis import OSISBible
-# Imports that might fail.
-try:
-    from openlp1 import OpenLP1Bible
-    HAS_OPENLP1 = True
-except ImportError:
-    HAS_OPENLP1 = False
+
+
 
 log = logging.getLogger(__name__)
 
@@ -59,7 +55,6 @@ class BibleFormat(object):
     CSV = 1
     OpenSong = 2
     WebDownload = 3
-    OpenLP1 = 4
 
     @staticmethod
     def get_class(format):
@@ -77,8 +72,6 @@ class BibleFormat(object):
             return OpenSongBible
         elif format == BibleFormat.WebDownload:
             return HTTPBible
-        elif format == BibleFormat.OpenLP1:
-            return OpenLP1Bible
         else:
             return None
 
@@ -92,7 +85,6 @@ class BibleFormat(object):
             BibleFormat.CSV,
             BibleFormat.OpenSong,
             BibleFormat.WebDownload,
-            BibleFormat.OpenLP1
         ]
 
     @staticmethod
@@ -463,6 +455,5 @@ class BibleManager(object):
 
     main_window = property(_get_main_window)
 
-BibleFormat.set_availability(BibleFormat.OpenLP1, HAS_OPENLP1)
 
 __all__ = [u'BibleFormat']
