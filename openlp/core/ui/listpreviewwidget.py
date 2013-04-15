@@ -32,7 +32,8 @@ The :mod:`slidecontroller` module contains the most important part of OpenLP - t
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ImageSource, Registry, ServiceItem
+from openlp.core.lib import Registry, ServiceItem
+
 
 class ListPreviewWidget(object):
     def __init__(self, parent, is_live):
@@ -149,6 +150,12 @@ class ListPreviewWidget(object):
         if row + 1 < self.preview_table_widget.rowCount():
             self.preview_table_widget.scrollToItem(self.preview_table_widget.item(row + 1, 0))
         self.preview_table_widget.selectRow(row)
+
+    def currentRow(self):
+        return self.preview_table_widget.currentRow()
+
+    def rowCount(self):
+        return self.preview_table_widget.rowCount()
 
     def _get_image_manager(self):
         """

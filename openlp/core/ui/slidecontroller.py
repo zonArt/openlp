@@ -38,7 +38,7 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, SlideLimits, \
     ServiceItemAction, Settings, Registry, UiStrings, ScreenList, build_icon, build_html, translate
-from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
+from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType, ListPreviewWidget
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
 
@@ -157,18 +157,8 @@ class SlideController(DisplayController):
         self.controller_layout.setSpacing(0)
         self.controller_layout.setMargin(0)
         # Controller list view
-        self.preview_list_widget = QtGui.QTableWidget(self.controller)
-        self.preview_list_widget.setColumnCount(1)
-        self.preview_list_widget.horizontalHeader().setVisible(False)
-        self.preview_list_widget.setColumnWidth(0, self.controller.width())
-        self.preview_list_widget.is_live = self.is_live
-        self.preview_list_widget.setObjectName(u'preview_list_widget')
-        self.preview_list_widget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.preview_list_widget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.preview_list_widget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
-        self.preview_list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.preview_list_widget.setAlternatingRowColors(True)
-        self.controller_layout.addWidget(self.preview_list_widget)
+        self.preview_widget = ListPreviewWidget(self, self.is_live)
+        self.controller_layout.addWidget(self.preview_widget.get_preview_widget())
         # Build the full toolbar
         self.toolbar = OpenLPToolbar(self)
         size_toolbar_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
@@ -350,7 +340,7 @@ class SlideController(DisplayController):
                 {u'key': u'O', u'configurable': True, u'text': translate('OpenLP.SlideController', 'Go to "Other"')}
             ]
             shortcuts.extend([{u'key': unicode(number)} for number in range(10)])
-            self.preview_list_widget.addActions([create_action(self,
+            self.controller.addActions([create_action(self,
                 u'shortcutAction_%s' % s[u'key'], text=s.get(u'text'),
                 can_shortcuts=True,
                 context=QtCore.Qt.WidgetWithChildrenShortcut,
@@ -358,20 +348,20 @@ class SlideController(DisplayController):
                 triggers=self._slideShortcutActivated) for s in shortcuts])
             self.shortcutTimer.timeout.connect(self._slideShortcutActivated)
         # Signals
-        self.preview_list_widget.clicked.connect(self.onSlideSelected)
+        self.preview_widget.clicked.connect(self.onSlideSelected)
         if self.is_live:
             Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
             Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)
             self.toolbar.set_widget_visible(self.loop_list, False)
             self.toolbar.set_widget_visible(self.wide_menu, False)
         else:
-            self.preview_list_widget.doubleClicked.connect(self.onGoLiveClick)
+            self.preview_widget.double_clicked.connect(self.onGoLiveClick)
             self.toolbar.set_widget_visible([u'editSong'], False)
         if self.is_live:
             self.setLiveHotkeys(self)
-            self.__addActionsToWidget(self.preview_list_widget)
+            self.__addActionsToWidget(self.controller)
         else:
-            self.preview_list_widget.addActions([self.nextItem, self.previous_item])
+            self.controller.addActions([self.nextItem, self.previous_item])
         Registry().register_function(u'slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
         Registry().register_function(u'slidecontroller_%s_next' % self.type_prefix, self.on_slide_selected_next)
         Registry().register_function(u'slidecontroller_%s_previous' % self.type_prefix, self.on_slide_selected_previous)
@@ -427,7 +417,7 @@ class SlideController(DisplayController):
         if len(matches) == 1:
             self.shortcutTimer.stop()
             self.current_shortcut = u''
-            self.__checkUpdateSelectedSlide(self.slideList[matches[0]])
+            self.preview_widget.check_update_selected_slide(self.slideList[matches[0]])
             self.slideSelected()
         elif sender_name != u'shortcutTimer':
             # Start the time as we did not have any match.
@@ -437,7 +427,7 @@ class SlideController(DisplayController):
             if self.current_shortcut in keys:
                 # We had more than one match for example "V1" and "V10", but
                 # "V1" was the slide we wanted to go.
-                self.__checkUpdateSelectedSlide(self.slideList[self.current_shortcut])
+                self.preview_widget.check_update_selected_slide(self.slideList[self.current_shortcut])
                 self.slideSelected()
            # Reset the shortcut.
             self.current_shortcut = u''
@@ -571,16 +561,8 @@ class SlideController(DisplayController):
             self.preview_display.screen = {
                 u'size': self.preview_display.geometry()}
         # Make sure that the frames have the correct size.
-        self.preview_list_widget.setColumnWidth(0, self.preview_list_widget.viewport().size().width())
-        if self.service_item:
-            # Sort out songs, bibles, etc.
-            if self.service_item.is_text():
-                self.preview_list_widget.resizeRowsToContents()
-            else:
-                # Sort out image heights.
-                width = self.main_window.controlSplitter.sizes()[self.split]
-                for framenumber in range(len(self.service_item.get_frames())):
-                    self.preview_list_widget.setRowHeight(framenumber, width / self.ratio)
+        width = self.main_window.controlSplitter.sizes()[self.split]
+        self.preview_widget.preview_size_changed(width, self.ratio)
         self.onControllerSizeChanged(self.controller.width())
 
     def onControllerSizeChanged(self, width):
@@ -706,7 +688,7 @@ class SlideController(DisplayController):
         Replacement item following a remote edit
         """
         if item == self.service_item:
-            self._processItem(item, self.preview_list_widget.currentRow())
+            self._processItem(item, self.preview_widget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -722,7 +704,7 @@ class SlideController(DisplayController):
             slidenum = 0
         # If service item is the same as the current one, only change slide
         if slideno >= 0 and item == self.service_item:
-            self.__checkUpdateSelectedSlide(slidenum)
+            self.preview_widget.check_update_selected_slide(slidenum)
             self.slideSelected()
         else:
             self._processItem(item, slidenum)
@@ -749,10 +731,6 @@ class SlideController(DisplayController):
             self._resetBlank()
         Registry().execute(u'%s_start' % service_item.name.lower(), [service_item, self.is_live, self.hide_mode(), slideno])
         self.slideList = {}
-        width = self.main_window.controlSplitter.sizes()[self.split]
-        self.preview_list_widget.clear()
-        self.preview_list_widget.setRowCount(0)
-        self.preview_list_widget.setColumnWidth(0, width)
         if self.is_live:
             self.song_menu.menu().clear()
             self.display.audio_player.reset()
@@ -777,9 +755,8 @@ class SlideController(DisplayController):
                 self.setAudioItemsVisibility(True)
         row = 0
         text = []
+        width = self.main_window.controlSplitter.sizes()[self.split]
         for framenumber, frame in enumerate(self.service_item.get_frames()):
-            self.preview_list_widget.setRowCount(self.preview_list_widget.rowCount() + 1)
-            item = QtGui.QTableWidgetItem()
             slideHeight = 0
             if self.service_item.is_text():
                 if frame[u'verseTag']:
@@ -795,37 +772,12 @@ class SlideController(DisplayController):
                 else:
                     row += 1
                     self.slideList[unicode(row)] = row - 1
-                item.setText(frame[u'text'])
             else:
-                label = QtGui.QLabel()
-                label.setMargin(4)
-                if service_item.is_media():
-                    label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
-                else:
-                    label.setScaledContents(True)
-                if self.service_item.is_command():
-                    label.setPixmap(QtGui.QPixmap(frame[u'image']))
-                else:
-                    # If current slide set background to image
-                    if framenumber == slideno:
-                        self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(frame[u'path'],
-                            ImageSource.ImagePlugin)
-                    image = self.image_manager.get_image(frame[u'path'], ImageSource.ImagePlugin)
-                    label.setPixmap(QtGui.QPixmap.fromImage(image))
-                self.preview_list_widget.setCellWidget(framenumber, 0, label)
                 slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
-            text.append(unicode(row))
-            self.preview_list_widget.setItem(framenumber, 0, item)
-            if slideHeight:
-                self.preview_list_widget.setRowHeight(framenumber, slideHeight)
-        self.preview_list_widget.setVerticalHeaderLabels(text)
-        if self.service_item.is_text():
-            self.preview_list_widget.resizeRowsToContents()
-        self.preview_list_widget.setColumnWidth(0,
-            self.preview_list_widget.viewport().size().width())
-        self.__updatePreviewSelection(slideno)
+        self.preview_widget.update_preview_selection(slideno)
+        self.preview_widget.replace_service_manager_item(self.service_item, width, self.ratio)
         self.enableToolBar(service_item)
         # Pass to display for viewing.
         # Postpone image build, we need to do this later to avoid the theme
@@ -835,7 +787,6 @@ class SlideController(DisplayController):
         if service_item.is_media():
             self.onMediaStart(service_item)
         self.slideSelected(True)
-        self.preview_list_widget.setFocus()
         if old_item:
             # Close the old item after the new one is opened
             # This avoids the service theme/desktop flashing on screen
@@ -846,16 +797,6 @@ class SlideController(DisplayController):
             if old_item.is_media() and not service_item.is_media():
                 self.onMediaClose()
         Registry().execute(u'slidecontroller_%s_started' % self.type_prefix, [service_item])
-
-    def __updatePreviewSelection(self, slideno):
-        """
-        Utility method to update the selected slide in the list.
-        """
-        if slideno > self.preview_list_widget.rowCount():
-            self.preview_list_widget.selectRow(
-                self.preview_list_widget.rowCount() - 1)
-        else:
-            self.__checkUpdateSelectedSlide(slideno)
 
     # Screen event methods
     def on_slide_selected_index(self, message):
@@ -869,7 +810,7 @@ class SlideController(DisplayController):
             Registry().execute(u'%s_slide' % self.service_item.name.lower(), [self.service_item, self.is_live, index])
             self.updatePreview()
         else:
-            self.__checkUpdateSelectedSlide(index)
+            self.preview_widget.check_update_selected_slide(index)
             self.slideSelected()
 
     def mainDisplaySetBackground(self):
@@ -1012,9 +953,9 @@ class SlideController(DisplayController):
         Generate the preview when you click on a slide.
         if this is the Live Controller also display on the screen
         """
-        row = self.preview_list_widget.currentRow()
+        row = self.preview_widget.currentRow()
         self.selected_row = 0
-        if -1 < row < self.preview_list_widget.rowCount():
+        if -1 < row < self.preview_widget.rowCount():
             if self.service_item.is_command():
                 if self.is_live and not start:
                     Registry().execute(u'%s_slide' % self.service_item.name.lower(),
@@ -1032,7 +973,7 @@ class SlideController(DisplayController):
                     self.service_item.bg_image_bytes = None
             self.updatePreview()
             self.selected_row = row
-            self.__checkUpdateSelectedSlide(row)
+            self.preview_widget.check_update_selected_slide(row)
         Registry().execute(u'slidecontroller_%s_changed' % self.type_prefix, row)
         self.display.setFocus()
 
@@ -1040,7 +981,7 @@ class SlideController(DisplayController):
         """
         The slide has been changed. Update the slidecontroller accordingly
         """
-        self.__checkUpdateSelectedSlide(row)
+        self.preview_widget.check_update_selected_slide(row)
         self.updatePreview()
         Registry().execute(u'slidecontroller_%s_changed' % self.type_prefix, row)
 
@@ -1085,8 +1026,8 @@ class SlideController(DisplayController):
         if self.service_item.is_command() and self.is_live:
             self.updatePreview()
         else:
-            row = self.preview_list_widget.currentRow() + 1
-            if row == self.preview_list_widget.rowCount():
+            row = self.preview_widget.currentRow() + 1
+            if row == self.preview_widget.rowCount():
                 if wrap is None:
                     if self.slide_limits == SlideLimits.Wrap:
                         row = 0
@@ -1094,12 +1035,12 @@ class SlideController(DisplayController):
                         self.serviceNext()
                         return
                     else:
-                        row = self.preview_list_widget.rowCount() - 1
+                        row = self.preview_widget.rowCount() - 1
                 elif wrap:
                     row = 0
                 else:
-                    row = self.preview_list_widget.rowCount() - 1
-            self.__checkUpdateSelectedSlide(row)
+                    row = self.preview_widget.rowCount() - 1
+            self.preview_widget.check_update_selected_slide(row)
             self.slideSelected()
 
     def on_slide_selected_previous(self):
@@ -1112,26 +1053,18 @@ class SlideController(DisplayController):
         if self.service_item.is_command() and self.is_live:
             self.updatePreview()
         else:
-            row = self.preview_list_widget.currentRow() - 1
+            row = self.preview_widget.currentRow() - 1
             if row == -1:
                 if self.slide_limits == SlideLimits.Wrap:
-                    row = self.preview_list_widget.rowCount() - 1
+                    row = self.preview_widget.rowCount() - 1
                 elif self.is_live and self.slide_limits == SlideLimits.Next:
                     self.keypress_queue.append(ServiceItemAction.PreviousLastSlide)
                     self._process_queue()
                     return
                 else:
                     row = 0
-            self.__checkUpdateSelectedSlide(row)
+            self.preview_widget.check_update_selected_slide(row)
             self.slideSelected()
-
-    def __checkUpdateSelectedSlide(self, row):
-        """
-        Check if this slide has been updated
-        """
-        if row + 1 < self.preview_list_widget.rowCount():
-            self.preview_list_widget.scrollToItem(self.preview_list_widget.item(row + 1, 0))
-        self.preview_list_widget.selectRow(row)
 
     def onToggleLoop(self):
         """
@@ -1147,7 +1080,7 @@ class SlideController(DisplayController):
         """
         Start the timer loop running and store the timer id
         """
-        if self.preview_list_widget.rowCount() > 1:
+        if self.preview_widget.rowCount() > 1:
             self.timer_id = self.startTimer(int(self.delay_spin_box.value()) * 1000)
 
     def on_stop_loop(self):
@@ -1257,8 +1190,8 @@ class SlideController(DisplayController):
         """
         If preview copy slide item to live controller from Preview Controller
         """
-        row = self.preview_list_widget.currentRow()
-        if -1 < row < self.preview_list_widget.rowCount():
+        row = self.preview_widget.currentRow()
+        if -1 < row < self.preview_widget.rowCount():
             if self.service_item.from_service:
                 self.service_manager.preview_live(self.service_item.unique_identifier, row)
             else:
