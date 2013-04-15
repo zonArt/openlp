@@ -32,7 +32,7 @@ The :mod:`slidecontroller` module contains the most important part of OpenLP - t
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, ServiceItem
+from openlp.core.lib import ImageSource, Registry, ServiceItem
 
 
 class ListPreviewWidget(object):
@@ -87,7 +87,7 @@ class ListPreviewWidget(object):
                 for framenumber in range(len(self.service_item.get_frames())):
                     self.preview_table_widget.setRowHeight(framenumber, width / ratio)
 
-    def replace_service_manager_item(self, service_item, width, ratio):
+    def replace_service_manager_item(self, service_item, width, ratio, slideno):
         """
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
@@ -119,6 +119,15 @@ class ListPreviewWidget(object):
                     label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
                 else:
                     label.setScaledContents(True)
+                if self.service_item.is_command():
+                    label.setPixmap(QtGui.QPixmap(frame[u'image']))
+                else:
+                    # If current slide set background to image
+                    if framenumber == slideno:
+                        self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(frame[u'path'],
+                                                                                              ImageSource.ImagePlugin)
+                    image = self.image_manager.get_image(frame[u'path'], ImageSource.ImagePlugin)
+                    label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.preview_table_widget.setCellWidget(framenumber, 0, label)
                 slideHeight = width / ratio
                 row += 1
@@ -176,3 +185,4 @@ class ListPreviewWidget(object):
         return self._main_window
 
     main_window = property(_get_main_window)
+
