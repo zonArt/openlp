@@ -35,9 +35,12 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import ImageSource, Registry, ServiceItem
 
 
-class ListPreviewWidget(object):
+class ListPreviewWidget(QtCore.QObject):
+    clicked = QtCore.pyqtSignal()
+    double_clicked = QtCore.pyqtSignal()
+
     def __init__(self, parent, is_live):
-        # Controller list view
+        super(QtCore.QObject, self).__init__()
         self.is_live = is_live
         self.preview_table_widget = QtGui.QTableWidget(parent)
         self.preview_table_widget.setColumnCount(1)
@@ -50,16 +53,14 @@ class ListPreviewWidget(object):
         self.preview_table_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.preview_table_widget.setAlternatingRowColors(True)
         self.service_item = ServiceItem()
-        self.clicked = QtCore.pyqtSignal()
-        self.double_clicked = QtCore.pyqtSignal()
         if not self.is_live:
-            self.preview_table_widget.doubleClicked.connect(self.double_clicked)
-        self.preview_table_widget.clicked.connect(self.clicked)
+            self.preview_table_widget.doubleClicked.connect(self._double_clicked)
+        self.preview_table_widget.clicked.connect(self._clicked)
 
-    def clicked(self):
+    def _clicked(self):
         self.clicked.emit()
 
-    def double_clicked(self):
+    def _double_clicked(self):
         self.double_clicked.emit()
 
     def get_preview_widget(self):

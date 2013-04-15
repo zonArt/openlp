@@ -38,9 +38,10 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, SlideLimits, \
     ServiceItemAction, Settings, Registry, UiStrings, ScreenList, build_icon, build_html, translate
-from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType, ListPreviewWidget
+from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
+from openlp.core.ui.listpreviewwidget import ListPreviewWidget
 
 log = logging.getLogger(__name__)
 
@@ -777,7 +778,7 @@ class SlideController(DisplayController):
                 row += 1
                 self.slideList[unicode(row)] = row - 1
         self.preview_widget.update_preview_selection(slideno)
-        self.preview_widget.replace_service_manager_item(self.service_item, width, self.ratio)
+        self.preview_widget.replace_service_manager_item(self.service_item, width, self.ratio, slideno)
         self.enableToolBar(service_item)
         # Pass to display for viewing.
         # Postpone image build, we need to do this later to avoid the theme

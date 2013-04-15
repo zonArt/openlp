@@ -99,10 +99,9 @@ from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
 from thememanager import ThemeManager
-from listpreviewwidget import ListPreviewWidget
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
     'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',
     'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay', 'Display', 'ServiceNoteForm',
     'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
-    'FormattingTagForm', 'ShortcutListForm', 'ListPreviewWidget']
+    'FormattingTagForm', 'ShortcutListForm']
