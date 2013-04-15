@@ -99,14 +99,15 @@ class BGExtract(object):
         """
         if isinstance(tag, NavigableString):
             return None, unicode(tag)
-        elif tag.get('class') == 'versenum' or tag.get('class') == 'versenum mid-line':
+        elif tag.get('class')[0] == "versenum" or tag.get('class')[0] == 'versenum mid-line':
             verse = unicode(tag.string).replace('[', '').replace(']', '').strip()
             return verse, None
-        elif tag.get('class') == 'chapternum':
+        elif tag.get('class')[0] == 'chapternum':
             verse = '1'
             return verse, None
         else:
-            verse, text = None, ''
+            verse = None
+            text = ''
             for child in tag.contents:
                 c_verse, c_text = self._extract_verse(child)
                 if c_verse:
@@ -143,7 +144,8 @@ class BGExtract(object):
         tags = tags[::-1]
         current_text = ''
         for tag in tags:
-            verse, text = None, ''
+            verse = None
+            text = ''
             for child in tag.contents:
                 c_verse, c_text = self._extract_verse(child)
                 if c_verse:
@@ -208,7 +210,7 @@ class BGExtract(object):
             if clean_verse_num:
                 verse_text = raw_verse_num.next_element
                 part = raw_verse_num.next_element.next_element
-                while not (isinstance(part, Tag) and part.get(u'class') == u'versenum'):
+                while not (isinstance(part, Tag) and part.get(u'class')[0] == u'versenum'):
                     # While we are still in the same verse grab all the text.
                     if isinstance(part, NavigableString):
                         verse_text += part
@@ -349,7 +351,7 @@ class BSExtract(object):
         verses = {}
         for verse in content:
             self.application.process_events()
-            versenumber = int(VERSE_NUMBER_REGEX.sub(r'\3', verse[u'class']))
+            versenumber = int(VERSE_NUMBER_REGEX.sub(r'\3', u' '.join(verse[u'class'])))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
         return SearchResults(book_name, chapter, verses)
 
@@ -373,6 +375,16 @@ class BSExtract(object):
             return None
         content = content.find_all(u'li')
         return [book.contents[0].contents[0] for book in content]
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
 
 
 class CWExtract(object):
@@ -693,7 +705,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
     soup = None
     try:
         soup = BeautifulSoup(page_source)
-        CLEANER_REGEX.sub(u'', soup)
+        CLEANER_REGEX.sub(u'', unicode(soup))
     except HTMLParseError:
         log.exception(u'BeautifulSoup could not parse the bible page.')
     if not soup:
