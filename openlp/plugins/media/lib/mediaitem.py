@@ -37,7 +37,7 @@ from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, Regist
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
-from openlp.core.utils import AppLocation, locale_compare
+from openlp.core.utils import AppLocation, get_locale_key
 
 log = logging.getLogger(__name__)
 
@@ -261,7 +261,7 @@ class MediaMediaItem(MediaManagerItem):
     def load_list(self, media, target_group=None):
         # Sort the media by its filename considering language specific
         # characters.
-        media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
+        media.sort(key=lambda filename: get_locale_key(os.path.split(unicode(filename))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
             if not os.path.exists(track):
@@ -287,7 +287,7 @@ class MediaMediaItem(MediaManagerItem):
 
     def getList(self, type=MediaType.Audio):
         media = Settings().value(self.settings_section + u'/media files')
-        media.sort(cmp=locale_compare, key=lambda filename: os.path.split(unicode(filename))[1])
+        media.sort(key=lambda filename: get_locale_key(os.path.split(unicode(filename))[1]))
         ext = []
         if type == MediaType.Audio:
             ext = self.media_controller.audio_extensions_list
