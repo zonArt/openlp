@@ -146,18 +146,16 @@ class TestWorshipCenterProSongImport(TestCase):
         Test that a simulated WorshipCenter Pro recordset is imported correctly
         """
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module, a mocked out translate method,
-        #       a mocked "manager", logError method, addVerse method & mocked_finish method.
+        #       a mocked "manager", addVerse method & mocked_finish method.
         with patch(u'openlp.plugins.songs.lib.worshipcenterproimport.SongImport'), \
-             patch(u'openlp.plugins.songs.lib.worshipcenterproimport.pyodbc') as mocked_pyodbc, \
+            patch(u'openlp.plugins.songs.lib.worshipcenterproimport.pyodbc') as mocked_pyodbc, \
             patch(u'openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
             mocked_manager = MagicMock()
-            mocked_log_error = MagicMock()
             mocked_import_wizard = MagicMock()
             mocked_add_verse = MagicMock()
             mocked_finish = MagicMock()
             mocked_translate.return_value = u'Translated Text'
             importer = WorshipCenterProImportLogger(mocked_manager)
-            importer.logError = mocked_log_error
             importer.import_source = u'import_source'
             importer.import_wizard = mocked_import_wizard
             importer.addVerse = mocked_add_verse
@@ -175,9 +173,14 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_pyodbc.connect().cursor().execute.assert_called_with(u'SELECT ID, Field, Value FROM __SONGDATA')
             mocked_pyodbc.connect().cursor().fetchall.assert_any_call()
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(2)
+            add_verse_call_count = 0
             for song_data in SONG_TEST_DATA:
                 title_value = song_data[u'title']
-                self.assertIn(title_value, importer._title_assignment_list)
+                self.assertIn(title_value, importer._title_assignment_list,
+                    u'title should have been set to %s' % title_value)
                 verse_calls = song_data[u'verses']
+                add_verse_call_count += len(verse_calls)
                 for call in verse_calls:
                     mocked_add_verse.assert_any_call(call)
+            self.assertEqual(mocked_add_verse.call_count, add_verse_call_count,
+                u'Inccorect number of calls made to addVerse')
