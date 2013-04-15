@@ -70,10 +70,6 @@ class ListPreviewWidget(object):
         else:
             self.preview_table_widget.hide()
 
-    def replace_service_manager_item(self, service_item, width):
-        self.service_item = service_item
-        self._refresh(width)
-
     def preview_size_changed(self, width, ratio):
         """
         Takes care of the SlidePreview's size. Is called when one of the the
@@ -90,11 +86,12 @@ class ListPreviewWidget(object):
                 for framenumber in range(len(self.service_item.get_frames())):
                     self.preview_table_widget.setRowHeight(framenumber, width / ratio)
 
-    def _refresh(self, width, ratio):
+    def replace_service_manager_item(self, service_item, width, ratio):
         """
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
+        self.service_item = service_item
         self.preview_table_widget.clear()
         self.preview_table_widget.setRowCount(0)
         self.preview_table_widget.setColumnWidth(0, width)
@@ -132,10 +129,10 @@ class ListPreviewWidget(object):
         if self.service_item.is_text():
             self.preview_table_widget.resizeRowsToContents()
         self.preview_table_widget.setColumnWidth(0, self.preview_table_widget.viewport().size().width())
-        #stuff happens here, perhaps the setFocus has to happen later...
+        #stuff happens here, perhaps the setFocus() has to happen later...
         self.preview_table_widget.setFocus()
 
-    def __updatePreviewSelection(self, slideno):
+    def update_preview_selection(self, slideno):
         """
         Utility method to update the selected slide in the list.
         """
@@ -143,9 +140,9 @@ class ListPreviewWidget(object):
             self.preview_table_widget.selectRow(
                 self.preview_table_widget.rowCount() - 1)
         else:
-            self.__checkUpdateSelectedSlide(slideno)
+            self.check_update_selected_slide(slideno)
 
-    def __checkUpdateSelectedSlide(self, row):
+    def check_update_selected_slide(self, row):
         """
         Check if this slide has been updated
         """
