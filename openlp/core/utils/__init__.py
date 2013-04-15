@@ -247,7 +247,7 @@ def get_images_filter():
     global IMAGES_FILTER
     if not IMAGES_FILTER:
         log.debug(u'Generating images filter.')
-        formats = QtGui.QImageReader.supportedImageFormats()
+        formats = map(unicode, QtGui.QImageReader.supportedImageFormats())
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
         IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
@@ -405,7 +405,7 @@ def get_natural_key(string):
     key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
     # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str and int.
     #if string[0].isdigit():
-    #    return [''] + key 
+    #    return [''] + key
     return key
 
 
