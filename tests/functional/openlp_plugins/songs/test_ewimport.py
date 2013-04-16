@@ -28,6 +28,12 @@ class EasyWorshipSongImportLogger(EasyWorshipSongImport):
     def title(self, title):
         self._title_assignment_list.append(title)
 
+class TestFieldDesc:
+    def __init__(self, name, field_type, size):
+        self.name = name
+        self.type = field_type
+        self.size = size
+
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/easyworshipsongs'))
 SONG_TEST_DATA = [{u'title': u'Amazing Grace',
                    u'authors': [u'John Newton'],
@@ -57,15 +63,9 @@ SONG_TEST_DATA = [{u'title': u'Amazing Grace',
                         (u'There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
                          u'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', u'v3')],
                    u'verse_order_list': []}]
-
-
-class TestFieldDesc:
-    def __init__(self, name, field_type, size):
-        self.name = name
-        self.type = field_type
-        self.size = size
-
 TEST_DATA_ENCODING = u'cp1252'
+CODE_PAGE_MAPPINGS = [(852, u'cp1250'), (737, u'cp1253'), (775, u'cp1257'), (855, u'cp1251'), (857, u'cp1254'),
+    (866,  u'cp1251'), (869, u'cp1253'), (862, u'cp1255'), (874, u'cp874')]
 TEST_FIELD_DESCS = [TestFieldDesc(u'Title', 1, 50), TestFieldDesc(u'Text Percentage Bottom', 3, 2),
     TestFieldDesc(u'RecID', 4, 4), TestFieldDesc(u'Default Background', 9, 1), TestFieldDesc(u'Words', 12, 250),
     TestFieldDesc(u'Words', 12, 250), TestFieldDesc(u'BK Bitmap', 13, 10), TestFieldDesc(u'Last Modified', 21, 10)]
@@ -137,7 +137,7 @@ class TestEasyWorshipSongImport(TestCase):
             for field_name in existing_fields:
                 self.assertEquals(importer.fieldDescs[importer.findField(field_name)].name, field_name)
 
-    def find_field_non_exists_test(self):
+    def find_non_existing_field_test(self):
         """
         Test finding an non-existing field in a given list using the :mod:`findField`
         """
@@ -181,12 +181,12 @@ class TestEasyWorshipSongImport(TestCase):
             importer = EasyWorshipSongImport(mocked_manager)
             importer.encoding = TEST_DATA_ENCODING
 
-            # WHEN: Supplied with string with just NULL bytes, or an int with the value 0
+            # WHEN: Supplied with some test data and known results
             importer.fields = TEST_FIELDS
             importer.fieldDescs = TEST_FIELD_DESCS
             field_results = [(0, 'A Heart Like Thine'), (1, 100), (2, 102L), (3, True), (6, None), (7, None)]
 
-            # THEN: getField should return None
+            # THEN: getField should return the known results
             for field_index, result in field_results:
                 self.assertEquals(importer.getField(field_index), result,
                     u'getField should return "%s" when called with "%s"' % (result, TEST_FIELDS[field_index]))
@@ -225,7 +225,7 @@ class TestEasyWorshipSongImport(TestCase):
 
     def do_import_source_test(self):
         """
-        Test the :mod:`doImport` module
+        Test the :mod:`doImport` module opens the correct files
         """
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
         with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'), \
@@ -246,7 +246,7 @@ class TestEasyWorshipSongImport(TestCase):
         """
         Test the :mod:`doImport` module handles invalid database files correctly
         """
-        # GIVEN: A mocked out SongImport class, a mocked out "manager"
+        # GIVEN: A mocked out SongImport class, os.path and a mocked out "manager"
         with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'), \
             patch(u'openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
             mocked_manager = MagicMock()
@@ -287,6 +287,31 @@ class TestEasyWorshipSongImport(TestCase):
                     u'The open db and memo files should have been closed')
                 mocked_open().close.reset_mock()
                 self.assertIs(mocked_open().seek.called, False, u'db_file.seek should not have been called.')
+
+    def code_page_to_encoding_test(self):
+        """
+        Test the :mod:`doImport` converts the code page to the encoding correctly
+        """
+        # GIVEN: A mocked out SongImport class, a mocked out "manager"
+        with patch(u'openlp.plugins.songs.lib.ewimport.SongImport'), \
+            patch(u'openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
+            patch(u'__builtin__.open'), patch(u'openlp.plugins.songs.lib.ewimport.struct') as mocked_struct, \
+            patch(u'openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as mocked_retrieve_windows_encoding:
+            mocked_manager = MagicMock()
+            importer = EasyWorshipSongImport(mocked_manager)
+            mocked_os_path.isfile.return_value = True
+            mocked_os_path.getsize.return_value = 0x800
+            importer.import_source = u'Songs.DB'
+
+            # WHEN: Unpacking the code page
+            for code_page, encoding in CODE_PAGE_MAPPINGS:
+                struct_unpack_return_values = [(0, 0x800, 2, 0, 0), (code_page, )]
+                mocked_struct.unpack.side_effect = struct_unpack_return_values
+                mocked_retrieve_windows_encoding.return_value = False
+
+                # THEN: doImport should return None having called retrieve_windows_encoding with the correct encoding.
+                self.assertIsNone(importer.doImport(), u'doImport should return None when db_size is less than 0x800')
+                mocked_retrieve_windows_encoding.assert_call(encoding)
 
     def file_import_test(self):
         """
