@@ -147,7 +147,7 @@ class ListPreviewWidget(QtCore.QObject):
         """
         Utility method to update the selected slide in the list.
         """
-        if row > self.preview_table_widget.rowCount():
+        if row >= self.preview_table_widget.rowCount():
             self.preview_table_widget.selectRow(self.preview_table_widget.rowCount() - 1)
         else:
             self.check_update_selected_slide(row)
