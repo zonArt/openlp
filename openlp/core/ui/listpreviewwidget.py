@@ -143,15 +143,14 @@ class ListPreviewWidget(QtCore.QObject):
         #stuff happens here, perhaps the setFocus() has to happen later...
         self.preview_table_widget.setFocus()
 
-    def update_preview_selection(self, slideno):
+    def update_preview_selection(self, row):
         """
         Utility method to update the selected slide in the list.
         """
-        if slideno > self.preview_table_widget.rowCount():
-            self.preview_table_widget.selectRow(
-                self.preview_table_widget.rowCount() - 1)
+        if row > self.preview_table_widget.rowCount():
+            self.preview_table_widget.selectRow(self.preview_table_widget.rowCount() - 1)
         else:
-            self.check_update_selected_slide(slideno)
+            self.check_update_selected_slide(row)
 
     def check_update_selected_slide(self, row):
         """
