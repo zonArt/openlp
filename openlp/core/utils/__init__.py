@@ -386,7 +386,7 @@ def get_natural_key(string):
     # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str and int.
     #if string[0].isdigit():
     #    return [''] + key
-    return key
+    return key 
 
 
 from applocation import AppLocation
