@@ -84,6 +84,7 @@ MODULES = [
     'cherrypy',
     'migrate',
     'uno',
+    'icu',
 ]
 
 

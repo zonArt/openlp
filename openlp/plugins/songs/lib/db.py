@@ -38,6 +38,7 @@ from sqlalchemy.orm import mapper, relation, reconstructor
 from sqlalchemy.sql.expression import func
 
 from openlp.core.lib.db import BaseModel, init_db
+from openlp.core.utils import get_natural_key
 
 
 class Author(BaseModel):
@@ -69,36 +70,15 @@ class Song(BaseModel):
     def __init__(self):
         self.sort_key = ()
 
-    def _try_int(self, s):
-        """
-        Convert to integer if possible.
-        """
-        try:
-            return int(s)
-        except:
-            return s.lower()
-
-    def _natsort_key(self, s):
-        """
-        Used internally to get a tuple by which s is sorted.
-        """
-        return map(self._try_int, re.findall(r'(\d+|\D+)', s))
-
-    # This decorator tells sqlalchemy to call this method everytime
-    # any data on this object is updated.
-
     @reconstructor
     def init_on_load(self):
         """
-        Precompute a tuple to be used for sorting.
+        Precompute a natural sorting, locale aware sorting key.
 
         Song sorting is performance sensitive operation.
-        To get maximum speed lets precompute the string
-        used for comparison.
+        To get maximum speed lets precompute the sorting key.
         """
-        # Avoid the overhead of converting string to lowercase and to QString
-        # with every call to sort().
-        self.sort_key = self._natsort_key(self.title)
+        self.sort_key = get_natural_key(self.title)
 
 
 class Topic(BaseModel):
