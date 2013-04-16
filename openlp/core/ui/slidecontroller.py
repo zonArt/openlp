@@ -777,8 +777,8 @@ class SlideController(DisplayController):
                 slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
-        self.preview_widget.update_preview_selection(slideno)
         self.preview_widget.replace_service_manager_item(self.service_item, width, self.ratio, slideno)
+        self.preview_widget.update_preview_selection(slideno)
         self.enableToolBar(service_item)
         # Pass to display for viewing.
         # Postpone image build, we need to do this later to avoid the theme
