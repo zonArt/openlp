@@ -27,11 +27,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from setuptools import setup, find_packages
 import re
+from setuptools import setup, find_packages
+from subprocess import Popen, PIPE
+
 
 VERSION_FILE = 'openlp/.version'
 SPLIT_ALPHA_DIGITS = re.compile(r'(\d+|\D+)')
+
 
 def try_int(s):
     """
@@ -46,6 +49,7 @@ def try_int(s):
     except Exception:
         return s
 
+
 def natural_sort_key(s):
     """
     Return a tuple by which s is sorted.
@@ -54,6 +58,7 @@ def natural_sort_key(s):
         A string value from the list we want to sort.
     """
     return map(try_int, SPLIT_ALPHA_DIGITS.findall(s))
+
 
 def natural_compare(a, b):
     """
@@ -67,6 +72,7 @@ def natural_compare(a, b):
     """
     return cmp(natural_sort_key(a), natural_sort_key(b))
 
+
 def natural_sort(seq, compare=natural_compare):
     """
     Returns a copy of seq, sorted by natural string sort.
@@ -77,28 +83,27 @@ def natural_sort(seq, compare=natural_compare):
     return temp
 
 try:
-    # Try to import Bazaar
-    from bzrlib.branch import Branch
-    b = Branch.open_containing('.')[0]
-    b.lock_read()
-    try:
-        # Get the branch's latest revision number.
-        revno = b.revno()
-        # Convert said revision number into a bzr revision id.
-        revision_id = b.dotted_revno_to_revision_id((revno,))
-        # Get a dict of tags, with the revision id as the key.
-        tags = b.tags.get_reverse_tag_dict()
-        # Check if the latest
-        if revision_id in tags:
-            version = u'%s' % tags[revision_id][0]
-        else:
-            version = '%s-bzr%s' % \
-                (natural_sort(b.tags.get_tag_dict().keys())[-1], revno)
-        ver_file = open(VERSION_FILE, u'w')
-        ver_file.write(version)
-        ver_file.close()
-    finally:
-        b.unlock()
+    bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+        raise Exception(u'Error running bzr tags')
+    lines = output.splitlines()
+    if not lines:
+        tag = u'0.0.0'
+        revision = u'0'
+    else:
+        tag, revision = lines[-1].split()
+    bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+        raise Exception(u'Error running bzr log')
+    latest = output.split(u':')[0]
+    version = latest == revision and tag or u'%s-bzr%s' % (tag, latest)
+    ver_file = open(VERSION_FILE, u'w')
+    ver_file.write(version)
+    ver_file.close()
 except:
     ver_file = open(VERSION_FILE, u'r')
     version = ver_file.read().strip()
