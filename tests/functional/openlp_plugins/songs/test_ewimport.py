@@ -11,29 +11,6 @@ from mock import patch, MagicMock
 
 from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEntry
 
-class EasyWorshipSongImportLogger(EasyWorshipSongImport):
-    """
-    This class logs changes in the title instance variable
-    """
-    _title_assignment_list = []
-
-    def __init__(self, manager):
-        EasyWorshipSongImport.__init__(self, manager)
-
-    @property
-    def title(self):
-        return self._title_assignment_list[-1]
-
-    @title.setter
-    def title(self, title):
-        self._title_assignment_list.append(title)
-
-class TestFieldDesc:
-    def __init__(self, name, field_type, size):
-        self.name = name
-        self.type = field_type
-        self.size = size
-
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/easyworshipsongs'))
 SONG_TEST_DATA = [{u'title': u'Amazing Grace',
                    u'authors': [u'John Newton'],
@@ -63,6 +40,30 @@ SONG_TEST_DATA = [{u'title': u'Amazing Grace',
                         (u'There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
                          u'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', u'v3')],
                    u'verse_order_list': []}]
+
+class EasyWorshipSongImportLogger(EasyWorshipSongImport):
+    """
+    This class logs changes in the title instance variable
+    """
+    _title_assignment_list = []
+
+    def __init__(self, manager):
+        EasyWorshipSongImport.__init__(self, manager)
+
+    @property
+    def title(self):
+        return self._title_assignment_list[-1]
+
+    @title.setter
+    def title(self, title):
+        self._title_assignment_list.append(title)
+
+class TestFieldDesc:
+    def __init__(self, name, field_type, size):
+        self.name = name
+        self.type = field_type
+        self.size = size
+
 TEST_DATA_ENCODING = u'cp1252'
 CODE_PAGE_MAPPINGS = [(852, u'cp1250'), (737, u'cp1253'), (775, u'cp1257'), (855, u'cp1251'), (857, u'cp1254'),
     (866,  u'cp1251'), (869, u'cp1253'), (862, u'cp1255'), (874, u'cp874')]
