@@ -43,13 +43,11 @@ from osis import OSISBible
 
 log = logging.getLogger(__name__)
 
+
 class BibleFormat(object):
     """
-    This is a special enumeration class that holds the various types of Bibles,
-    plus a few helper functions to facilitate generic handling of Bible types
-    for importing.
+    This is a special enumeration class that holds the various types of Bibles.
     """
-    _format_availability = {}
     Unknown = -1
     OSIS = 0
     CSV = 1
@@ -86,14 +84,6 @@ class BibleFormat(object):
             BibleFormat.OpenSong,
             BibleFormat.WebDownload,
         ]
-
-    @staticmethod
-    def set_availability(format, available):
-        BibleFormat._format_availability[format] = available
-
-    @staticmethod
-    def get_availability(format):
-        return BibleFormat._format_availability.get(format, True)
 
 
 class BibleManager(object):

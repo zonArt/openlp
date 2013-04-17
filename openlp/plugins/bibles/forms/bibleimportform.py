@@ -94,8 +94,6 @@ class BibleImportForm(OpenLPWizard):
         button.
         """
         self.selectStack.setCurrentIndex(index)
-        next_button = self.button(QtGui.QWizard.NextButton)
-        next_button.setEnabled(BibleFormat.get_availability(index))
 
     def custom_init(self):
         """
@@ -482,7 +480,6 @@ class BibleImportForm(OpenLPWizard):
         self.setField(u'proxy_server', settings.value(u'proxy address'))
         self.setField(u'proxy_username', settings.value(u'proxy username'))
         self.setField(u'proxy_password', settings.value(u'proxy password'))
-        self.setField(u'openlp1_location', '')
         self.setField(u'license_version', self.versionNameEdit.text())
         self.setField(u'license_copyright', self.copyrightEdit.text())
         self.setField(u'license_permissions', self.permissionsEdit.text())
