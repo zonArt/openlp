@@ -35,72 +35,61 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import ImageSource, Registry, ServiceItem
 
 
-class ListPreviewWidget(QtCore.QObject):
-    clicked = QtCore.pyqtSignal()
-    double_clicked = QtCore.pyqtSignal()
-
-    def __init__(self, parent, is_live):
-        super(QtCore.QObject, self).__init__()
-        self.is_live = is_live
-        self.preview_table_widget = QtGui.QTableWidget(parent)
-        self.preview_table_widget.setColumnCount(1)
-        self.preview_table_widget.horizontalHeader().setVisible(False)
-        self.preview_table_widget.setColumnWidth(0, parent.width())
-        self.preview_table_widget.setObjectName(u'preview_table_widget')
-        self.preview_table_widget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.preview_table_widget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
-        self.preview_table_widget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
-        self.preview_table_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.preview_table_widget.setAlternatingRowColors(True)
+class ListPreviewWidget(QtGui.QTableWidget):
+    def __init__(self, parent, screen_ratio):
+        super(QtGui.QTableWidget, self).__init__(parent)
         self.service_item = ServiceItem()
-        if not self.is_live:
-            self.preview_table_widget.doubleClicked.connect(self._double_clicked)
-        self.preview_table_widget.clicked.connect(self._clicked)
+        self.screen_ratio = screen_ratio
 
-    def _clicked(self):
-        self.clicked.emit()
+        self.setColumnCount(1)
+        self.horizontalHeader().setVisible(False)
+        self.setColumnWidth(0, parent.width())
+        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+        self.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setAlternatingRowColors(True)
 
-    def _double_clicked(self):
-        self.double_clicked.emit()
+    def resizeEvent(self, QResizeEvent):
+        self.__recalculate_layout()
 
-    def get_preview_widget(self):
-        return self.preview_table_widget
-
-    def set_active(self, active):
-        if active:
-            self.preview_table_widget.show()
-        else:
-            self.preview_table_widget.hide()
-
-    def preview_size_changed(self, width, ratio):
-        """
-        Takes care of the SlidePreview's size. Is called when one of the the
-        splitters is moved or when the screen size is changed. Note, that this
-        method is (also) called frequently from the mainwindow *paintEvent*.
-        """
-        self.preview_table_widget.setColumnWidth(0, self.preview_table_widget.viewport().size().width())
+    def __recalculate_layout(self):
+        self.setColumnWidth(0, self.viewport().width())
         if self.service_item:
             # Sort out songs, bibles, etc.
             if self.service_item.is_text():
-                self.preview_table_widget.resizeRowsToContents()
+                self.resizeRowsToContents()
             else:
                 # Sort out image heights.
                 for framenumber in range(len(self.service_item.get_frames())):
-                    self.preview_table_widget.setRowHeight(framenumber, width / ratio)
+                    #self.setRowHeight(framenumber, width / ratio)
+                    height = self.viewport().width() / self.screen_ratio
+                    self.setRowHeight(framenumber, height)
 
-    def replace_service_manager_item(self, service_item, width, ratio, slideno):
+    #width = self.main_window.controlSplitter.sizes()[self.split]
+    def screen_size_changed(self, screen_ratio):
+        self.screen_ratio = screen_ratio
+        self.__recalculate_layout()
+
+    def set_active(self, active):
+        if active:
+            self.show()
+        else:
+            self.hide()
+
+    def replace_service_manager_item(self, service_item, width, slideno):
         """
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
         self.service_item = service_item
-        self.preview_table_widget.clear()
-        self.preview_table_widget.setRowCount(0)
-        self.preview_table_widget.setColumnWidth(0, width)
+        self.clear()
+        self.setRowCount(0)
+        self.setColumnWidth(0, width)
         row = 0
         text = []
         for framenumber, frame in enumerate(self.service_item.get_frames()):
-            self.preview_table_widget.setRowCount(self.preview_table_widget.rowCount() + 1)
+            self.setRowCount(self.rowCount() + 1)
             item = QtGui.QTableWidgetItem()
             slideHeight = 0
             if self.service_item.is_text():
@@ -129,26 +118,26 @@ class ListPreviewWidget(QtCore.QObject):
                                                                                               ImageSource.ImagePlugin)
                     image = self.image_manager.get_image(frame[u'path'], ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
-                self.preview_table_widget.setCellWidget(framenumber, 0, label)
-                slideHeight = width / ratio
+                self.setCellWidget(framenumber, 0, label)
+                slideHeight = width / self.screen_ratio
                 row += 1
             text.append(unicode(row))
-            self.preview_table_widget.setItem(framenumber, 0, item)
+            self.setItem(framenumber, 0, item)
             if slideHeight:
-                self.preview_table_widget.setRowHeight(framenumber, slideHeight)
-        self.preview_table_widget.setVerticalHeaderLabels(text)
+                self.setRowHeight(framenumber, slideHeight)
+        self.setVerticalHeaderLabels(text)
         if self.service_item.is_text():
-            self.preview_table_widget.resizeRowsToContents()
-        self.preview_table_widget.setColumnWidth(0, self.preview_table_widget.viewport().size().width())
+            self.resizeRowsToContents()
+        self.setColumnWidth(0, self.viewport().width())
         #stuff happens here, perhaps the setFocus() has to happen later...
-        self.preview_table_widget.setFocus()
+        self.setFocus()
 
     def update_preview_selection(self, row):
         """
         Utility method to update the selected slide in the list.
         """
-        if row >= self.preview_table_widget.rowCount():
-            self.preview_table_widget.selectRow(self.preview_table_widget.rowCount() - 1)
+        if row >= self.rowCount():
+            self.selectRow(self.rowCount() - 1)
         else:
             self.check_update_selected_slide(row)
 
@@ -156,15 +145,15 @@ class ListPreviewWidget(QtCore.QObject):
         """
         Check if this slide has been updated
         """
-        if row + 1 < self.preview_table_widget.rowCount():
-            self.preview_table_widget.scrollToItem(self.preview_table_widget.item(row + 1, 0))
-        self.preview_table_widget.selectRow(row)
+        if row + 1 < self.rowCount():
+            self.scrollToItem(self.item(row + 1, 0))
+        self.selectRow(row)
 
     def currentRow(self):
-        return self.preview_table_widget.currentRow()
+        return super(ListPreviewWidget, self).currentRow()
 
     def rowCount(self):
-        return self.preview_table_widget.rowCount()
+        return super(ListPreviewWidget, self).rowCount()
 
     def _get_image_manager(self):
         """

@@ -158,8 +158,8 @@ class SlideController(DisplayController):
         self.controller_layout.setSpacing(0)
         self.controller_layout.setMargin(0)
         # Controller list view
-        self.preview_widget = ListPreviewWidget(self, self.is_live)
-        self.controller_layout.addWidget(self.preview_widget.get_preview_widget())
+        self.preview_widget = ListPreviewWidget(self, self.ratio)
+        self.controller_layout.addWidget(self.preview_widget)
         # Build the full toolbar
         self.toolbar = OpenLPToolbar(self)
         size_toolbar_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
@@ -356,7 +356,7 @@ class SlideController(DisplayController):
             self.toolbar.set_widget_visible(self.loop_list, False)
             self.toolbar.set_widget_visible(self.wide_menu, False)
         else:
-            self.preview_widget.double_clicked.connect(self.onGoLiveClick)
+            self.preview_widget.doubleClicked.connect(self.onGoLiveClick)
             self.toolbar.set_widget_visible([u'editSong'], False)
         if self.is_live:
             self.setLiveHotkeys(self)
@@ -524,6 +524,7 @@ class SlideController(DisplayController):
             self.ratio = 1
         self.media_controller.setup_display(self.display, False)
         self.previewSizeChanged()
+        self.preview_widget.screen_size_changed(self.ratio)
         self.preview_display.setup()
         service_item = ServiceItem()
         self.preview_display.web_view.setHtml(build_html(service_item, self.preview_display.screen, None, self.is_live,
@@ -562,8 +563,6 @@ class SlideController(DisplayController):
             self.preview_display.screen = {
                 u'size': self.preview_display.geometry()}
         # Make sure that the frames have the correct size.
-        width = self.main_window.controlSplitter.sizes()[self.split]
-        self.preview_widget.preview_size_changed(width, self.ratio)
         self.onControllerSizeChanged(self.controller.width())
 
     def onControllerSizeChanged(self, width):
@@ -777,7 +776,7 @@ class SlideController(DisplayController):
                 slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
-        self.preview_widget.replace_service_manager_item(self.service_item, width, self.ratio, slideno)
+        self.preview_widget.replace_service_manager_item(self.service_item, width, slideno)
         self.preview_widget.update_preview_selection(slideno)
         self.enableToolBar(service_item)
         # Pass to display for viewing.
