@@ -76,8 +76,7 @@ class SongMediaItem(MediaManagerItem):
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.single_service_item = False
         self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
-        # Holds information about whether the edit is remotely triggered and
-        # which Song is required.
+        # Holds information about whether the edit is remotely triggered and which Song is required.
         self.remoteSong = -1
         self.editItem = None
         self.quick_preview_allowed = True
@@ -89,10 +88,8 @@ class SongMediaItem(MediaManagerItem):
             dest_file = os.path.join(
                 AppLocation.get_section_data_path(self.plugin.name), u'audio', str(song.id), os.path.split(bga)[1])
             check_directory_exists(os.path.split(dest_file)[0])
-            shutil.copyfile(os.path.join(AppLocation.get_section_data_path(u'servicemanager'), bga),
-                dest_file)
-            song.media_files.append(MediaFile.populate(
-                weight=i, file_name=dest_file))
+            shutil.copyfile(os.path.join(AppLocation.get_section_data_path(u'servicemanager'), bga), dest_file)
+            song.media_files.append(MediaFile.populate(weight=i, file_name=dest_file))
         self.plugin.manager.save_object(song, True)
 
     def add_end_header_bar(self):
@@ -120,7 +117,7 @@ class SongMediaItem(MediaManagerItem):
 
     def config_update(self):
         """
-        IS triggered when the songs config is updated
+        Is triggered when the songs config is updated
         """
         log.debug(u'config_updated')
         self.searchAsYouType = Settings().value(self.settings_section + u'/search as type')
@@ -211,10 +208,9 @@ class SongMediaItem(MediaManagerItem):
         of songs
         """
         log.debug(u'on_song_list_load - start')
-        # Called to redisplay the song list screen edit from a search
-        # or from the exit of the Song edit dialog. If remote editing is active
-        # Trigger it and clean up so it will not update again.
-        # Push edits to the service manager to update items
+        # Called to redisplay the song list screen edit from a search or from the exit of the Song edit dialog. If
+        # remote editing is active Trigger it and clean up so it will not update again. Push edits to the service
+        # manager to update items
         if self.editItem and self.updateServiceOnEdit and not self.remote_triggered:
             item = self.build_service_item(self.editItem)
             self.service_manager.replace_service_item(item)
@@ -280,9 +276,8 @@ class SongMediaItem(MediaManagerItem):
 
     def on_search_text_edit_changed(self, text):
         """
-        If search as type enabled invoke the search on each key press.
-        If the Lyrics are being searched do not start till 7 characters
-        have been entered.
+        If search as type enabled invoke the search on each key press. If the Lyrics are being searched do not start
+        till 7 characters have been entered.
         """
         if self.searchAsYouType:
             search_length = 1
@@ -320,9 +315,8 @@ class SongMediaItem(MediaManagerItem):
 
     def onRemoteEdit(self, song_id, preview=False):
         """
-        Called by ServiceManager or SlideController by event passing
-        the Song Id in the payload along with an indicator to say which
-        type of display is required.
+        Called by ServiceManager or SlideController by event passing the Song Id in the payload along with an indicator
+        to say which type of display is required.
         """
         log.debug(u'onRemoteEdit for song %s' % song_id)
         song_id = int(song_id)
@@ -362,11 +356,11 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.list_view, UiStrings().SelectDelete):
             items = self.list_view.selectedIndexes()
             if QtGui.QMessageBox.question(self,
-                UiStrings().ConfirmDelete,
-                translate('SongsPlugin.MediaItem', 'Are you sure you want to delete the %n selected song(s)?', '',
-                QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
+                    UiStrings().ConfirmDelete,
+                    translate('SongsPlugin.MediaItem', 'Are you sure you want to delete the %n selected song(s)?', '',
+                    QtCore.QCoreApplication.CodecForTr, len(items)),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             self.application.set_busy_cursor()
             self.main_window.display_progress_bar(len(items))
@@ -430,8 +424,8 @@ class SongMediaItem(MediaManagerItem):
                 verse_tags_translated = True
             if not song.verse_order.strip():
                 for verse in verse_list:
-                    # We cannot use from_loose_input() here, because database
-                    # is supposed to contain English lowercase singlechar tags.
+                    # We cannot use from_loose_input() here, because database is supposed to contain English lowercase
+                    # singlechar tags.
                     verse_tag = verse[0][u'type']
                     verse_index = None
                     if len(verse_tag) > 1:
@@ -470,9 +464,7 @@ class SongMediaItem(MediaManagerItem):
         if Settings().value(u'general/ccli number'):
             service_item.raw_footer.append(translate('SongsPlugin.MediaItem', 'CCLI License: ') +
                 Settings().value(u'general/ccli number'))
-        service_item.audit = [
-            song.title, author_list, song.copyright, unicode(song.ccli_number)
-        ]
+        service_item.audit = [song.title, author_list, song.copyright, unicode(song.ccli_number)]
         service_item.data_string = {u'title': song.search_title, u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         # Add the audio file to the service item.
@@ -489,9 +481,8 @@ class SongMediaItem(MediaManagerItem):
         if self.plugin.status != PluginStatus.Active or not item.data_string:
             return
         if item.data_string[u'title'].find(u'@') == -1:
-            # This file seems to be an old one (prior to 1.9.5), which means,
-            # that the search title (data_string[u'title']) is probably wrong.
-            # We add "@" to search title and hope that we do not add any
+            # FIXME: This file seems to be an old one (prior to 1.9.5), which means, that the search title
+            # (data_string[u'title']) is probably wrong. We add "@" to search title and hope that we do not add any
             # duplicate. This should work for songs without alternate title.
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title == (re.compile(r'\W+', re.UNICODE).sub(u' ',
