@@ -72,7 +72,7 @@ class TestEditSongForm(TestCase):
         # THEN: The warning lable should be hidden.
         assert not self.form.warning_label.isVisible(), u'The warning lable should be hidden.'
 
-    def bug_1170435_no_text_test(self):
+    def bug_1170435_test(self):
         """
         Regression test for bug 1170435 (test if lable hidden, when no verse order is specified)
         """
