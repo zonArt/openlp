@@ -75,10 +75,10 @@ class SongMediaItem(MediaManagerItem):
         self.edit_song_form = EditSongForm(self, self.main_window, self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.single_service_item = False
-        self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
+        self.song_maintenance_form = SongMaintenanceForm(self.plugin.manager, self)
         # Holds information about whether the edit is remotely triggered and which Song is required.
-        self.remoteSong = -1
-        self.editItem = None
+        self.remote_song = -1
+        self.edit_item = None
         self.quick_preview_allowed = True
         self.has_search = True
 
@@ -211,8 +211,8 @@ class SongMediaItem(MediaManagerItem):
         # Called to redisplay the song list screen edit from a search or from the exit of the Song edit dialog. If
         # remote editing is active Trigger it and clean up so it will not update again. Push edits to the service
         # manager to update items
-        if self.editItem and self.updateServiceOnEdit and not self.remote_triggered:
-            item = self.build_service_item(self.editItem)
+        if self.edit_item and self.updateServiceOnEdit and not self.remote_triggered:
+            item = self.build_service_item(self.edit_item)
             self.service_manager.replace_service_item(item)
         self.on_search_text_button_clicked()
         log.debug(u'on_song_list_load - finished')
@@ -311,7 +311,7 @@ class SongMediaItem(MediaManagerItem):
         self.auto_select_id = -1
 
     def onSongMaintenanceClick(self):
-        self.songMaintenanceForm.exec_()
+        self.song_maintenance_form.exec_()
 
     def onRemoteEdit(self, song_id, preview=False):
         """
@@ -326,10 +326,10 @@ class SongMediaItem(MediaManagerItem):
             if self.edit_song_form.exec_() == QtGui.QDialog.Accepted:
                 self.auto_select_id = -1
                 self.on_song_list_load()
-                self.remoteSong = song_id
+                self.remote_song = song_id
                 self.remote_triggered = True
                 item = self.build_service_item(remote=True)
-                self.remoteSong = -1
+                self.remote_song = -1
                 self.remote_triggered = None
                 if item:
                     return item
@@ -341,13 +341,13 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug(u'on_edit_click')
         if check_item_selected(self.list_view, UiStrings().SelectEdit):
-            self.editItem = self.list_view.currentItem()
-            item_id = self.editItem.data(QtCore.Qt.UserRole)
+            self.edit_item = self.list_view.currentItem()
+            item_id = self.edit_item.data(QtCore.Qt.UserRole)
             self.edit_song_form.load_song(item_id, False)
             self.edit_song_form.exec_()
             self.auto_select_id = -1
             self.on_song_list_load()
-        self.editItem = None
+        self.edit_item = None
 
     def on_delete_click(self):
         """
@@ -390,8 +390,8 @@ class SongMediaItem(MediaManagerItem):
         """
         log.debug(u'onCloneClick')
         if check_item_selected(self.list_view, UiStrings().SelectEdit):
-            self.editItem = self.list_view.currentItem()
-            item_id = self.editItem.data(QtCore.Qt.UserRole)
+            self.edit_item = self.list_view.currentItem()
+            item_id = self.edit_item.data(QtCore.Qt.UserRole)
             old_song = self.plugin.manager.get_object(Song, item_id)
             song_xml = self.openLyrics.song_to_xml(old_song)
             new_song = self.openLyrics.xml_to_song(song_xml)
@@ -405,8 +405,8 @@ class SongMediaItem(MediaManagerItem):
         """
         Generate the slide data. Needs to be implemented by the plugin.
         """
-        log.debug(u'generate_slide_data: %s, %s, %s' % (service_item, item, self.remoteSong))
-        item_id = self._get_id_of_item_to_generate(item, self.remoteSong)
+        log.debug(u'generate_slide_data: %s, %s, %s' % (service_item, item, self.remote_song))
+        item_id = self._get_id_of_item_to_generate(item, self.remote_song)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
