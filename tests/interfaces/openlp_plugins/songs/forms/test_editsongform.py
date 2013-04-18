@@ -46,7 +46,7 @@ class TestEditSongForm(TestCase):
     def is_verse_edit_form_executed_t(self):
         pass
 
-    def verse_order_warning_hidden_(self):
+    def verse_order_warning_hidden_test(self):
         """
         Test if the verse order warning lable is visible, when a verse order is specified
         """
