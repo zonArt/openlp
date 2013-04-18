@@ -34,7 +34,7 @@ class TestEditSongForm(TestCase):
         del self.main_window
         del self.app
 
-    def ui_defaults_test(self):
+    def ui_defaults_(self):
         """
         Test that the EditSongForm defaults are correct
         """
@@ -43,5 +43,58 @@ class TestEditSongForm(TestCase):
         self.assertFalse(self.form.author_remove_button.isEnabled(), u'The author remove button should not be enabled')
         self.assertFalse(self.form.topic_remove_button.isEnabled(), u'The topic remove button should not be enabled')
 
-    def is_verse_edit_form_executed_test(self):
+    def is_verse_edit_form_executed_t(self):
         pass
+
+    def verse_order_warning_hidden_(self):
+        """
+        Test if the verse order warning lable is visible, when a verse order is specified
+        """
+        # GIVEN: Mocked methods.
+        mocked_row_count = MagicMock()
+        mocked_row_count.return_value = 1
+        self.form.verse_list_widget.rowCount = mocked_row_count
+        # Mock out the verse.
+        mocked_verse = MagicMock()
+        self.form.verse_list_widget.item = mocked_verse
+        mocked_verse_data_method = MagicMock()
+        mocked_verse_data_method.return_value = u'V1'
+        mocked_verse.data = mocked_verse_data_method
+        mocked_item_method = MagicMock()
+        mocked_item_method.return_value = mocked_verse
+        mocked_extract_verse_order_method = MagicMock()
+        mocked_extract_verse_order_method.return_value = [u'V1']
+        self.form._extract_verse_order = mocked_extract_verse_order_method
+
+        # WHEN: Call the method.
+        self.form.on_verse_order_text_changed(u'V1')
+
+        # THEN: The warning lable should be hidden.
+        assert not self.form.warning_label.isVisible(), u'The warning lable should be hidden.'
+
+    def bug_1170435_no_text_test(self):
+        """
+        Regression test for bug 1170435 (test if lable hidden, when no verse order is specified)
+        """
+        # GIVEN: Mocked methods.
+        mocked_row_count = MagicMock()
+        mocked_row_count.return_value = 0
+        self.form.verse_list_widget.rowCount = mocked_row_count
+        # Mock out the verse. (We want a verse type to be returned).
+        mocked_verse = MagicMock()
+        self.form.verse_list_widget.item = mocked_verse
+        mocked_verse_data_method = MagicMock()
+        mocked_verse_data_method.return_value = u'V1'
+        mocked_verse.data = mocked_verse_data_method
+        mocked_item_method = MagicMock()
+        mocked_item_method.return_value = mocked_verse
+        mocked_extract_verse_order_method = MagicMock()
+        mocked_extract_verse_order_method.return_value = []
+        self.form._extract_verse_order = mocked_extract_verse_order_method
+
+        # WHEN: Call the method.
+        self.form.on_verse_order_text_changed(u'')
+
+        # THEN: The warning lable should be hidden.
+        assert  not self.form.warning_label.isVisible(), \
+            u'The lable should be visible because the verse order was left empty.'
