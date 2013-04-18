@@ -11,7 +11,9 @@ from PyQt4 import QtGui
 
 
 class TestSettings(TestCase):
-
+    """
+    Test the functions in the Settings module
+    """
     def setUp(self):
         """
         Create the UI
