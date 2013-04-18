@@ -69,7 +69,7 @@ class PresentationPlugin(Plugin):
         self.icon_path = u':/plugins/plugin_presentations.png'
         self.icon = build_icon(self.icon_path)
 
-    def create_settings_Tab(self, parent):
+    def create_settings_tab(self, parent):
         """
         Create the settings Tab
         """

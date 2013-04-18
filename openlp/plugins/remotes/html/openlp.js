@@ -147,7 +147,7 @@ window.OpenLP = {
   },
   pollServer: function () {
     $.getJSON(
-      "/api/poll",
+      "/stage/api/poll",
       function (data, status) {
         var prevItem = OpenLP.currentItem;
         OpenLP.currentSlide = data.results.slide;
