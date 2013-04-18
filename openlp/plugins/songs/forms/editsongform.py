@@ -697,7 +697,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for verse in verses:
             if not verse in order:
                 verses_not_used.append(verse)
-        self.warning_label.setVisible(len(verses_not_used) > 0)
+        self.warning_label.setVisible(len(verses_not_used) > 0 and bool(text))
 
     def on_copyright_insert_button_triggered(self):
         text = self.copyright_edit.text()
