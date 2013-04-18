@@ -112,7 +112,7 @@ class SongMediaItem(MediaManagerItem):
             text=translate('OpenLP.MediaManagerItem', '&Clone'), icon=u':/general/general_clone.png',
             triggers=self.onCloneClick)
 
-    def onFocus(self):
+    def on_focus(self):
         self.search_text_edit.setFocus()
 
     def config_update(self):
@@ -120,7 +120,7 @@ class SongMediaItem(MediaManagerItem):
         Is triggered when the songs config is updated
         """
         log.debug(u'config_updated')
-        self.searchAsYouType = Settings().value(self.settings_section + u'/search as type')
+        self.search_as_you_type = Settings().value(self.settings_section + u'/search as type')
         self.updateServiceOnEdit = Settings().value(self.settings_section + u'/update service on edit')
         self.addSongFromService = Settings().value(self.settings_section + u'/add song from service',)
 
@@ -279,7 +279,7 @@ class SongMediaItem(MediaManagerItem):
         If search as type enabled invoke the search on each key press. If the Lyrics are being searched do not start
         till 7 characters have been entered.
         """
-        if self.searchAsYouType:
+        if self.search_as_you_type:
             search_length = 1
             if self.search_text_edit.current_search_type() == SongSearch.Entire:
                 search_length = 4

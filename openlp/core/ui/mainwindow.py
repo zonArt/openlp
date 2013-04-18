@@ -560,7 +560,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         widget = self.media_tool_box.widget(index)
         if widget:
-            widget.onFocus()
+            widget.on_focus()
 
     def version_notice(self, version):
         """

@@ -250,7 +250,7 @@ class BibleMediaItem(MediaManagerItem):
         self.quickSearchEdit.returnPressed.connect(self.onQuickSearchButton)
         self.searchTabBar.currentChanged.connect(self.onSearchTabBarCurrentChanged)
 
-    def onFocus(self):
+    def on_focus(self):
         if self.quickTab.isVisible():
             self.quickSearchEdit.setFocus()
         else:

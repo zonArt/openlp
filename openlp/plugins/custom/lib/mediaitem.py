@@ -178,7 +178,7 @@ class CustomMediaItem(MediaManagerItem):
                 self.plugin.manager.delete_object(CustomSlide, id)
             self.on_search_text_button_clicked()
 
-    def onFocus(self):
+    def on_focus(self):
         self.search_text_edit.setFocus()
 
     def generate_slide_data(self, service_item, item=None, xmlVersion=False,
