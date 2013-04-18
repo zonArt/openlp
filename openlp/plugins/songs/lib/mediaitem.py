@@ -313,12 +313,12 @@ class SongMediaItem(MediaManagerItem):
     def on_song_maintenance_click(self):
         self.song_maintenance_form.exec_()
 
-    def onRemoteEdit(self, song_id, preview=False):
+    def on_remote_edit(self, song_id, preview=False):
         """
         Called by ServiceManager or SlideController by event passing the Song Id in the payload along with an indicator
         to say which type of display is required.
         """
-        log.debug(u'onRemoteEdit for song %s' % song_id)
+        log.debug(u'on_remote_edit for song %s' % song_id)
         song_id = int(song_id)
         valid = self.plugin.manager.get_object(Song, song_id)
         if valid:

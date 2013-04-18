@@ -1393,7 +1393,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         if self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEdit):
             new_item = Registry().get(self.service_items[item][u'service_item'].name). \
-                onRemoteEdit(self.service_items[item][u'service_item'].edit_id)
+                on_remote_edit(self.service_items[item][u'service_item'].edit_id)
             if new_item:
                 self.add_service_item(new_item, replace=True)
 
