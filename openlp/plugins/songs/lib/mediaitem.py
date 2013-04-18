@@ -102,7 +102,7 @@ class SongMediaItem(MediaManagerItem):
         # Signals and slots
         Registry().register_function(u'songs_load_list', self.on_song_list_load)
         Registry().register_function(u'songs_preview', self.on_preview_click)
-        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
+        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'cleared()'), self.on_clear_text_button_click)
         QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.on_search_text_button_clicked)
 
@@ -267,7 +267,7 @@ class SongMediaItem(MediaManagerItem):
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
-    def onClearTextButtonClick(self):
+    def on_clear_text_button_click(self):
         """
         Clear the search text.
         """
@@ -288,7 +288,7 @@ class SongMediaItem(MediaManagerItem):
             if len(text) > search_length:
                 self.on_search_text_button_clicked()
             elif not text:
-                self.onClearTextButtonClick()
+                self.on_clear_text_button_click()
 
     def on_import_click(self):
         if not hasattr(self, u'import_wizard'):
@@ -306,7 +306,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'on_new_click')
         self.edit_song_form.new_song()
         self.edit_song_form.exec_()
-        self.onClearTextButtonClick()
+        self.on_clear_text_button_click()
         self.on_selection_change()
         self.auto_select_id = -1
 

@@ -63,14 +63,14 @@ class CustomMediaItem(MediaManagerItem):
         self.has_search = True
         # Holds information about whether the edit is remotely triggered and
         # which Custom is required.
-        self.remoteCustom = -1
+        self.remote_custom = -1
         self.manager = plugin.manager
 
     def add_end_header_bar(self):
         self.toolbar.addSeparator()
         self.add_search_to_toolbar()
         # Signals and slots
-        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'cleared()'), self.onClearTextButtonClick)
+        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'cleared()'), self.on_clear_text_button_click)
         QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
             self.on_search_text_button_clicked)
         Registry().register_function(u'custom_load_list', self.load_list)
@@ -119,14 +119,13 @@ class CustomMediaItem(MediaManagerItem):
     def on_new_click(self):
         self.edit_custom_form.load_custom(0)
         self.edit_custom_form.exec_()
-        self.onClearTextButtonClick()
+        self.on_clear_text_button_click()
         self.on_selection_change()
 
-    def onRemoteEdit(self, custom_id, preview=False):
+    def on_remote_edit(self, custom_id, preview=False):
         """
-        Called by ServiceManager or SlideController by event passing
-        the custom Id in the payload along with an indicator to say which
-        type of display is required.
+        Called by ServiceManager or SlideController by event passing the custom Id in the payload along with an
+        indicator to say which type of display is required.
         """
         custom_id = int(custom_id)
         valid = self.manager.get_object(CustomSlide, custom_id)
@@ -134,12 +133,12 @@ class CustomMediaItem(MediaManagerItem):
             self.edit_custom_form.load_custom(custom_id, preview)
             if self.edit_custom_form.exec_() == QtGui.QDialog.Accepted:
                 self.remote_triggered = True
-                self.remoteCustom = custom_id
+                self.remote_custom = custom_id
                 self.auto_select_id = -1
                 self.on_search_text_button_clicked()
                 item = self.build_service_item(remote=True)
                 self.remote_triggered = None
-                self.remoteCustom = 1
+                self.remote_custom = 1
                 if item:
                     return item
         return None
@@ -163,17 +162,16 @@ class CustomMediaItem(MediaManagerItem):
         if check_item_selected(self.list_view, UiStrings().SelectDelete):
             items = self.list_view.selectedIndexes()
             if QtGui.QMessageBox.question(self,
-                UiStrings().ConfirmDelete,
-                translate('CustomPlugin.MediaItem',
-                    'Are you sure you want to delete the %n selected custom slide(s)?', '',
-                QtCore.QCoreApplication.CodecForTr, len(items)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
+                    UiStrings().ConfirmDelete,
+                    translate('CustomPlugin.MediaItem',
+                        'Are you sure you want to delete the %n selected custom slide(s)?', '',
+                    QtCore.QCoreApplication.CodecForTr, len(items)),
+                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
+                    QtGui.QMessageBox.Yes) == QtGui.QMessageBox.No:
                 return
             row_list = [item.row() for item in self.list_view.selectedIndexes()]
             row_list.sort(reverse=True)
-            id_list = [(item.data(QtCore.Qt.UserRole))
-                for item in self.list_view.selectedIndexes()]
+            id_list = [(item.data(QtCore.Qt.UserRole)) for item in self.list_view.selectedIndexes()]
             for id in id_list:
                 self.plugin.manager.delete_object(CustomSlide, id)
             self.on_search_text_button_clicked()
@@ -186,20 +184,20 @@ class CustomMediaItem(MediaManagerItem):
         """
         Generate the slide data. Needs to be implemented by the plugin.
         """
-        item_id = self._get_id_of_item_to_generate(item, self.remoteCustom)
+        item_id = self._get_id_of_item_to_generate(item, self.remote_custom)
         service_item.add_capability(ItemCapabilities.CanEdit)
         service_item.add_capability(ItemCapabilities.CanPreview)
         service_item.add_capability(ItemCapabilities.CanLoop)
         service_item.add_capability(ItemCapabilities.CanSoftBreak)
         service_item.add_capability(ItemCapabilities.OnLoadUpdate)
-        customSlide = self.plugin.manager.get_object(CustomSlide, item_id)
-        title = customSlide.title
-        credit = customSlide.credits
+        custom_slide = self.plugin.manager.get_object(CustomSlide, item_id)
+        title = custom_slide.title
+        credit = custom_slide.credits
         service_item.edit_id = item_id
-        theme = customSlide.theme_name
+        theme = custom_slide.theme_name
         if theme:
             service_item.theme = theme
-        custom_xml = CustomXMLParser(customSlide.text)
+        custom_xml = CustomXMLParser(custom_slide.text)
         verse_list = custom_xml.get_verses()
         raw_slides = [verse[1] for verse in verse_list]
         service_item.title = title
@@ -234,15 +232,14 @@ class CustomMediaItem(MediaManagerItem):
 
     def on_search_text_edit_changed(self, text):
         """
-        If search as type enabled invoke the search on each key press.
-        If the Title is being searched do not start until 2 characters
-        have been entered.
+        If search as type enabled invoke the search on each key press. If the Title is being searched do not start until
+        2 characters have been entered.
         """
         search_length = 2
         if len(text) > search_length:
             self.on_search_text_button_clicked()
         elif not text:
-            self.onClearTextButtonClick()
+            self.on_clear_text_button_click()
 
     def service_load(self, item):
         """
@@ -287,7 +284,7 @@ class CustomMediaItem(MediaManagerItem):
         if item.name.lower() == u'custom':
             Registry().execute(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
 
-    def onClearTextButtonClick(self):
+    def on_clear_text_button_click(self):
         """
         Clear the search text.
         """
