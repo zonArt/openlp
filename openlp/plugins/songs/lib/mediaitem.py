@@ -161,23 +161,23 @@ class SongMediaItem(MediaManagerItem):
         search_type = self.search_text_edit.current_search_type()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
-            search_results = self.searchEntire(search_keywords)
-            self.displayResultsSong(search_results)
+            search_results = self.search_entire(search_keywords)
+            self.display_results_song(search_results)
         elif search_type == SongSearch.Titles:
             log.debug(u'Titles Search')
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title.like(u'%' + clean_string(search_keywords) + u'%'))
-            self.displayResultsSong(search_results)
+            self.display_results_song(search_results)
         elif search_type == SongSearch.Lyrics:
             log.debug(u'Lyrics Search')
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_lyrics.like(u'%' + clean_string(search_keywords) + u'%'))
-            self.displayResultsSong(search_results)
+            self.display_results_song(search_results)
         elif search_type == SongSearch.Authors:
             log.debug(u'Authors Search')
             search_results = self.plugin.manager.get_all_objects(Author,
                 Author.display_name.like(u'%' + search_keywords + u'%'), Author.display_name.asc())
-            self.displayResultsAuthor(search_results)
+            self.display_results_author(search_results)
         elif search_type == SongSearch.Books:
             log.debug(u'Books Search')
             search_results = self.plugin.manager.get_all_objects(Book,
@@ -188,15 +188,15 @@ class SongMediaItem(MediaManagerItem):
                 search_results = self.plugin.manager.get_all_objects(Book,
                     Book.name.like(u'%' + search_keywords[0] + u'%'), Book.name.asc())
                 song_number = re.sub(r'[^0-9]', u'', search_keywords[2])
-            self.displayResultsBook(search_results, song_number)
+            self.display_results_book(search_results, song_number)
         elif search_type == SongSearch.Themes:
             log.debug(u'Theme Search')
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.theme_name.like(u'%' + search_keywords + u'%'))
-            self.displayResultsSong(search_results)
+            self.display_results_song(search_results)
         self.check_search_result()
 
-    def searchEntire(self, search_keywords):
+    def search_entire(self, search_keywords):
         return self.plugin.manager.get_all_objects(Song,
             or_(Song.search_title.like(u'%' + clean_string(search_keywords) + u'%'),
                 Song.search_lyrics.like(u'%' + clean_string(search_keywords) + u'%'),
@@ -217,7 +217,7 @@ class SongMediaItem(MediaManagerItem):
         self.on_search_text_button_clicked()
         log.debug(u'on_song_list_load - finished')
 
-    def displayResultsSong(self, searchresults):
+    def display_results_song(self, searchresults):
         log.debug(u'display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
@@ -237,7 +237,7 @@ class SongMediaItem(MediaManagerItem):
                 self.list_view.setCurrentItem(song_name)
         self.auto_select_id = -1
 
-    def displayResultsAuthor(self, searchresults):
+    def display_results_author(self, searchresults):
         log.debug(u'display results Author')
         self.list_view.clear()
         for author in searchresults:
@@ -250,7 +250,7 @@ class SongMediaItem(MediaManagerItem):
                 song_name.setData(QtCore.Qt.UserRole, song.id)
                 self.list_view.addItem(song_name)
 
-    def displayResultsBook(self, searchresults, song_number=False):
+    def display_results_book(self, searchresults, song_number=False):
         log.debug(u'display results Book')
         self.list_view.clear()
         for book in searchresults:
@@ -533,5 +533,5 @@ class SongMediaItem(MediaManagerItem):
         """
         Search for some songs
         """
-        search_results = self.searchEntire(string)
+        search_results = self.search_entire(string)
         return [[song.id, song.title] for song in search_results]
