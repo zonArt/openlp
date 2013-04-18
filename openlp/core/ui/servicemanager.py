@@ -273,7 +273,6 @@ class ServiceManagerDialog(object):
         Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
         Registry().register_function(u'theme_update_global', self.theme_change)
         Registry().register_function(u'mediaitem_suffix_reset', self.reset_supported_suffixes)
-        Registry().register_function(u'servicemanager_set_item', self.on_set_item)
 
     def drag_enter_event(self, event):
         """
@@ -315,6 +314,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.setup_ui(self)
+        # Need to use event as called across threads and UI is updated
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'servicemanager_set_item'), self.on_set_item)
 
     def set_modified(self, modified=True):
         """
@@ -993,7 +994,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_set_item(self, message):
         """
-        Called by a signal to select a specific item.
+        Called by a signal to select a specific item and make it live usually from remote.
         """
         self.set_item(int(message))
 
