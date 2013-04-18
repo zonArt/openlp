@@ -72,7 +72,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin)
-        self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
+        self.edit_song_form = EditSongForm(self, self.main_window, self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.single_service_item = False
         self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
@@ -82,7 +82,7 @@ class SongMediaItem(MediaManagerItem):
         self.quick_preview_allowed = True
         self.has_search = True
 
-    def _updateBackgroundAudio(self, song, item):
+    def _update_background_audio(self, song, item):
         song.media_files = []
         for i, bga in enumerate(item.background_audio):
             dest_file = os.path.join(
@@ -304,8 +304,8 @@ class SongMediaItem(MediaManagerItem):
 
     def on_new_click(self):
         log.debug(u'on_new_click')
-        self.editSongForm.new_song()
-        self.editSongForm.exec_()
+        self.edit_song_form.new_song()
+        self.edit_song_form.exec_()
         self.onClearTextButtonClick()
         self.on_selection_change()
         self.auto_select_id = -1
@@ -322,8 +322,8 @@ class SongMediaItem(MediaManagerItem):
         song_id = int(song_id)
         valid = self.plugin.manager.get_object(Song, song_id)
         if valid:
-            self.editSongForm.load_song(song_id, preview)
-            if self.editSongForm.exec_() == QtGui.QDialog.Accepted:
+            self.edit_song_form.load_song(song_id, preview)
+            if self.edit_song_form.exec_() == QtGui.QDialog.Accepted:
                 self.auto_select_id = -1
                 self.on_song_list_load()
                 self.remoteSong = song_id
@@ -343,8 +343,8 @@ class SongMediaItem(MediaManagerItem):
         if check_item_selected(self.list_view, UiStrings().SelectEdit):
             self.editItem = self.list_view.currentItem()
             item_id = self.editItem.data(QtCore.Qt.UserRole)
-            self.editSongForm.load_song(item_id, False)
-            self.editSongForm.exec_()
+            self.edit_song_form.load_song(item_id, False)
+            self.edit_song_form.exec_()
             self.auto_select_id = -1
             self.on_song_list_load()
         self.editItem = None
@@ -509,12 +509,12 @@ class SongMediaItem(MediaManagerItem):
                     break
                 # If there's any backing tracks, copy them over.
                 if item.background_audio:
-                    self._updateBackgroundAudio(song, item)
+                    self._update_background_audio(song, item)
         if add_song and self.addSongFromService:
             song = self.openLyrics.xml_to_song(item.xml_version)
             # If there's any backing tracks, copy them over.
             if item.background_audio:
-                self._updateBackgroundAudio(song, item)
+                self._update_background_audio(song, item)
             editId = song.id
             self.on_search_text_button_clicked()
         elif add_song and not self.addSongFromService:
@@ -522,7 +522,7 @@ class SongMediaItem(MediaManagerItem):
             song = self.openLyrics.xml_to_song(item.xml_version, True)
             # If there's any backing tracks, copy them over.
             if item.background_audio:
-                self._updateBackgroundAudio(song, item)
+                self._update_background_audio(song, item)
             editId = song.id
             temporary = True
         # Update service with correct song id.
