@@ -97,7 +97,7 @@ class SongMediaItem(MediaManagerItem):
         ## Song Maintenance Button ##
         self.maintenanceAction = self.toolbar.add_toolbar_action('maintenanceAction',
             icon=':/songs/song_maintenance.png',
-            triggers=self.onSongMaintenanceClick)
+            triggers=self.on_song_maintenance_click)
         self.add_search_to_toolbar()
         # Signals and slots
         Registry().register_function(u'songs_load_list', self.on_song_list_load)
@@ -110,7 +110,7 @@ class SongMediaItem(MediaManagerItem):
         create_widget_action(self.list_view, separator=True)
         create_widget_action(self.list_view,
             text=translate('OpenLP.MediaManagerItem', '&Clone'), icon=u':/general/general_clone.png',
-            triggers=self.onCloneClick)
+            triggers=self.on_clone_click)
 
     def on_focus(self):
         self.search_text_edit.setFocus()
@@ -310,7 +310,7 @@ class SongMediaItem(MediaManagerItem):
         self.on_selection_change()
         self.auto_select_id = -1
 
-    def onSongMaintenanceClick(self):
+    def on_song_maintenance_click(self):
         self.song_maintenance_form.exec_()
 
     def onRemoteEdit(self, song_id, preview=False):
@@ -384,11 +384,11 @@ class SongMediaItem(MediaManagerItem):
             self.application.set_normal_cursor()
             self.on_search_text_button_clicked()
 
-    def onCloneClick(self):
+    def on_clone_click(self):
         """
         Clone a Song
         """
-        log.debug(u'onCloneClick')
+        log.debug(u'on_clone_click')
         if check_item_selected(self.list_view, UiStrings().SelectEdit):
             self.edit_item = self.list_view.currentItem()
             item_id = self.edit_item.data(QtCore.Qt.UserRole)
