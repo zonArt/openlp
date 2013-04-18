@@ -83,6 +83,7 @@ MODULES = [
     'mako',
     'migrate',
     'uno',
+    'icu',
 ]
 
 
