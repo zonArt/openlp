@@ -61,8 +61,8 @@ class BibleMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin):
         self.icon_path = u'songs/song'
-        self.lockIcon = build_icon(u':/bibles/bibles_search_lock.png')
-        self.unlockIcon = build_icon(u':/bibles/bibles_search_unlock.png')
+        self.lock_icon = build_icon(u':/bibles/bibles_search_lock.png')
+        self.unlock_icon = build_icon(u':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
@@ -73,7 +73,7 @@ class BibleMediaItem(MediaManagerItem):
         self.check_search_result()
         Registry().register_function(u'bibles_load_list', self.reload_bibles)
 
-    def __checkSecondBible(self, bible, second_bible):
+    def __check_second_bible(self, bible, second_bible):
         """
         Check if the first item is a second bible item or not.
         """
@@ -84,7 +84,7 @@ class BibleMediaItem(MediaManagerItem):
             self.displayResults(bible, second_bible)
             return
         else:
-            item_second_bible = self._decodeQtObject(bitem, 'second_bible')
+            item_second_bible = self._decode_qt_object(bitem, 'second_bible')
         if item_second_bible and second_bible or not item_second_bible and not second_bible:
             self.displayResults(bible, second_bible)
         elif critical_error_message_box(
@@ -95,7 +95,7 @@ class BibleMediaItem(MediaManagerItem):
             self.list_view.clear()
             self.displayResults(bible, second_bible)
 
-    def _decodeQtObject(self, bitem, key):
+    def _decode_qt_object(self, bitem, key):
         reference = bitem.data(QtCore.Qt.UserRole)
         obj = reference[unicode(key)]
         return unicode(obj).strip()
@@ -159,7 +159,7 @@ class BibleMediaItem(MediaManagerItem):
         search_button_layout.setObjectName(prefix + u'search_button_layout')
         search_button_layout.addStretch()
         lockButton = QtGui.QToolButton(tab)
-        lockButton.setIcon(self.unlockIcon)
+        lockButton.setIcon(self.unlock_icon)
         lockButton.setCheckable(True)
         lockButton.setObjectName(prefix + u'LockButton')
         search_button_layout.addWidget(lockButton)
@@ -509,9 +509,9 @@ class BibleMediaItem(MediaManagerItem):
 
     def onLockButtonToggled(self, checked):
         if checked:
-            self.sender().setIcon(self.lockIcon)
+            self.sender().setIcon(self.lock_icon)
         else:
-            self.sender().setIcon(self.unlockIcon)
+            self.sender().setIcon(self.unlock_icon)
 
     def onQuickStyleComboBoxChanged(self):
         self.settings.layout_style = self.quickStyleComboBox.currentIndex()
@@ -633,7 +633,7 @@ class BibleMediaItem(MediaManagerItem):
         if not self.advancedLockButton.isChecked():
             self.list_view.clear()
         if self.list_view.count() != 0:
-            self.__checkSecondBible(bible, second_bible)
+            self.__check_second_bible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.advancedSearchButton.setEnabled(True)
@@ -689,7 +689,7 @@ class BibleMediaItem(MediaManagerItem):
         if not self.quickLockButton.isChecked():
             self.list_view.clear()
         if self.list_view.count() != 0 and self.search_results:
-            self.__checkSecondBible(bible, second_bible)
+            self.__check_second_bible(bible, second_bible)
         elif self.search_results:
             self.displayResults(bible, second_bible)
         self.quickSearchButton.setEnabled(True)
@@ -787,19 +787,19 @@ class BibleMediaItem(MediaManagerItem):
         raw_title = []
         verses = VerseReferenceList()
         for bitem in items:
-            book = self._decodeQtObject(bitem, 'book')
-            chapter = int(self._decodeQtObject(bitem, 'chapter'))
-            verse = int(self._decodeQtObject(bitem, 'verse'))
-            bible = self._decodeQtObject(bitem, 'bible')
-            version = self._decodeQtObject(bitem, 'version')
-            copyright = self._decodeQtObject(bitem, 'copyright')
-            permissions = self._decodeQtObject(bitem, 'permissions')
-            text = self._decodeQtObject(bitem, 'text')
-            second_bible = self._decodeQtObject(bitem, 'second_bible')
-            second_version = self._decodeQtObject(bitem, 'second_version')
-            second_copyright = self._decodeQtObject(bitem, 'second_copyright')
-            second_permissions = self._decodeQtObject(bitem, 'second_permissions')
-            second_text = self._decodeQtObject(bitem, 'second_text')
+            book = self._decode_qt_object(bitem, 'book')
+            chapter = int(self._decode_qt_object(bitem, 'chapter'))
+            verse = int(self._decode_qt_object(bitem, 'verse'))
+            bible = self._decode_qt_object(bitem, 'bible')
+            version = self._decode_qt_object(bitem, 'version')
+            copyright = self._decode_qt_object(bitem, 'copyright')
+            permissions = self._decode_qt_object(bitem, 'permissions')
+            text = self._decode_qt_object(bitem, 'text')
+            second_bible = self._decode_qt_object(bitem, 'second_bible')
+            second_version = self._decode_qt_object(bitem, 'second_version')
+            second_copyright = self._decode_qt_object(bitem, 'second_copyright')
+            second_permissions = self._decode_qt_object(bitem, 'second_permissions')
+            second_text = self._decode_qt_object(bitem, 'second_text')
             verses.add(book, chapter, verse, version, copyright, permissions)
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             if second_bible:
@@ -867,13 +867,13 @@ class BibleMediaItem(MediaManagerItem):
         """
         verse_separator = get_reference_separator(u'sep_v_display')
         range_separator = get_reference_separator(u'sep_r_display')
-        old_chapter = self._decodeQtObject(old_bitem, 'chapter')
-        old_verse = self._decodeQtObject(old_bitem, 'verse')
-        start_book = self._decodeQtObject(start_bitem, 'book')
-        start_chapter = self._decodeQtObject(start_bitem, 'chapter')
-        start_verse = self._decodeQtObject(start_bitem, 'verse')
-        start_bible = self._decodeQtObject(start_bitem, 'bible')
-        start_second_bible = self._decodeQtObject(start_bitem, 'second_bible')
+        old_chapter = self._decode_qt_object(old_bitem, 'chapter')
+        old_verse = self._decode_qt_object(old_bitem, 'verse')
+        start_book = self._decode_qt_object(start_bitem, 'book')
+        start_chapter = self._decode_qt_object(start_bitem, 'chapter')
+        start_verse = self._decode_qt_object(start_bitem, 'verse')
+        start_bible = self._decode_qt_object(start_bitem, 'bible')
+        start_second_bible = self._decode_qt_object(start_bitem, 'second_bible')
         if start_second_bible:
             bibles = u'%s, %s' % (start_bible, start_second_bible)
         else:
@@ -901,16 +901,16 @@ class BibleMediaItem(MediaManagerItem):
             The item we were previously dealing with.
         """
         # Get all the necessary meta data.
-        book = self._decodeQtObject(bitem, 'book')
-        chapter = int(self._decodeQtObject(bitem, 'chapter'))
-        verse = int(self._decodeQtObject(bitem, 'verse'))
-        bible = self._decodeQtObject(bitem, 'bible')
-        second_bible = self._decodeQtObject(bitem, 'second_bible')
-        old_book = self._decodeQtObject(old_bitem, 'book')
-        old_chapter = int(self._decodeQtObject(old_bitem, 'chapter'))
-        old_verse = int(self._decodeQtObject(old_bitem, 'verse'))
-        old_bible = self._decodeQtObject(old_bitem, 'bible')
-        old_second_bible = self._decodeQtObject(old_bitem, 'second_bible')
+        book = self._decode_qt_object(bitem, 'book')
+        chapter = int(self._decode_qt_object(bitem, 'chapter'))
+        verse = int(self._decode_qt_object(bitem, 'verse'))
+        bible = self._decode_qt_object(bitem, 'bible')
+        second_bible = self._decode_qt_object(bitem, 'second_bible')
+        old_book = self._decode_qt_object(old_bitem, 'book')
+        old_chapter = int(self._decode_qt_object(old_bitem, 'chapter'))
+        old_verse = int(self._decode_qt_object(old_bitem, 'verse'))
+        old_bible = self._decode_qt_object(old_bitem, 'bible')
+        old_second_bible = self._decode_qt_object(old_bitem, 'second_bible')
         if old_bible != bible or old_second_bible != second_bible or old_book != book:
             # The bible, second bible or book has changed.
             return True

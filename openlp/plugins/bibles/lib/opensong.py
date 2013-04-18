@@ -34,7 +34,9 @@ from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
+
 log = logging.getLogger(__name__)
+
 
 class OpenSongBible(BibleDB):
     """
@@ -42,8 +44,8 @@ class OpenSongBible(BibleDB):
     """
     def __init__(self, parent, **kwargs):
         """
-        Constructor to create and set up an instance of the OpenSongBible
-        class. This class is used to import Bibles from OpenSong's XML format.
+        Constructor to create and set up an instance of the OpenSongBible class. This class is used to import Bibles
+        from OpenSong's XML format.
         """
         log.debug(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
@@ -75,9 +77,8 @@ class OpenSongBible(BibleDB):
         file = None
         success = True
         try:
-            # NOTE: We don't need to do any of the normal encoding detection
-            # here, because lxml does it's own encoding detection, and the two
-            # mechanisms together interfere with each other.
+            # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
+            # detection, and the two mechanisms together interfere with each other.
             file = open(self.filename, u'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
@@ -116,16 +117,11 @@ class OpenSongBible(BibleDB):
                                 if len(verse_parts) > 1:
                                     number = int(verse_parts[0])
                             except TypeError:
-                                log.warn(u'Illegal verse number: %s',
-                                    unicode(verse.attrib[u'n']))
+                                log.warn(u'Illegal verse number: %s', unicode(verse.attrib[u'n']))
                             verse_number = number
                         else:
                             verse_number += 1
-                        self.create_verse(
-                            db_book.id,
-                            chapter_number,
-                            verse_number,
-                            self.get_text(verse))
+                        self.create_verse(db_book.id, chapter_number, verse_number, self.get_text(verse))
                     self.wizard.increment_progress_bar(translate('BiblesPlugin.Opensong', 'Importing %s %s...',
                         'Importing <book name> <chapter>...')) % (db_book.name, chapter_number)
                 self.session.commit()

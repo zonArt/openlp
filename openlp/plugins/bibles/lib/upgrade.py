@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`upgrade` module provides a way for the database and schema that is the
-backend for the Bibles plugin
+The :mod:`upgrade` module provides a way for the database and schema that is the backend for the Bibles plugin.
 """
 import logging
 
