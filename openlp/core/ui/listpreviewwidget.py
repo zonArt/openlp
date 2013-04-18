@@ -51,9 +51,16 @@ class ListPreviewWidget(QtGui.QTableWidget):
         self.setAlternatingRowColors(True)
 
     def resizeEvent(self, QResizeEvent):
+        """
+        Overloaded method from QTableWidget. Will recalculate the layout.
+        """
         self.__recalculate_layout()
 
     def __recalculate_layout(self):
+        """
+        Recalculates the layout of the table widget. It will set height and width
+        of the table cells. QTableWidget does not adapt the cells to the widget size at all.
+        """
         self.setColumnWidth(0, self.viewport().width())
         if self.service_item:
             # Sort out songs, bibles, etc.
@@ -66,21 +73,18 @@ class ListPreviewWidget(QtGui.QTableWidget):
                     height = self.viewport().width() / self.screen_ratio
                     self.setRowHeight(framenumber, height)
 
-    #width = self.main_window.controlSplitter.sizes()[self.split]
     def screen_size_changed(self, screen_ratio):
+        """
+        To be called whenever the live screen size changes.
+        Because this makes a layout recalculation necessary.
+        """
         self.screen_ratio = screen_ratio
         self.__recalculate_layout()
 
-    def set_active(self, active):
-        if active:
-            self.show()
-        else:
-            self.hide()
-
-    def replace_service_manager_item(self, service_item, width, slideno):
+    def replace_service_manager_item(self, service_item, width, slide):
         """
-        Loads a ServiceItem into the system from ServiceManager
-        Display the slide number passed
+        Replaces the current preview items with the ones in service_item.
+        Displays the given slide.
         """
         self.service_item = service_item
         self.clear()
@@ -112,10 +116,6 @@ class ListPreviewWidget(QtGui.QTableWidget):
                 if self.service_item.is_command():
                     label.setPixmap(QtGui.QPixmap(frame[u'image']))
                 else:
-                    # If current slide set background to image
-                    if framenumber == slideno:
-                        self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(frame[u'path'],
-                                                                                              ImageSource.ImagePlugin)
                     image = self.image_manager.get_image(frame[u'path'], ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.setCellWidget(framenumber, 0, label)
@@ -129,25 +129,19 @@ class ListPreviewWidget(QtGui.QTableWidget):
         if self.service_item.is_text():
             self.resizeRowsToContents()
         self.setColumnWidth(0, self.viewport().width())
-        #stuff happens here, perhaps the setFocus() has to happen later...
         self.setFocus()
+        self.change_slide(slide)
 
-    def update_preview_selection(self, row):
+    def change_slide(self, slide):
         """
-        Utility method to update the selected slide in the list.
+        Switches to the given row.
         """
-        if row >= self.rowCount():
-            self.selectRow(self.rowCount() - 1)
-        else:
-            self.check_update_selected_slide(row)
-
-    def check_update_selected_slide(self, row):
-        """
-        Check if this slide has been updated
-        """
-        if row + 1 < self.rowCount():
-            self.scrollToItem(self.item(row + 1, 0))
-        self.selectRow(row)
+        if slide >= self.rowCount():
+            slide = self.rowCount() - 1
+        #Scroll to next item if possible.
+        if slide + 1 < self.rowCount():
+            self.scrollToItem(self.item(slide + 1, 0))
+        self.selectRow(slide)
 
     def currentRow(self):
         return super(ListPreviewWidget, self).currentRow()

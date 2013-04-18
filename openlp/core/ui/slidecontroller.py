@@ -36,7 +36,7 @@ from collections import deque
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, SlideLimits, \
+from openlp.core.lib import OpenLPToolbar, ImageSource, ItemCapabilities, ServiceItem, SlideLimits, \
     ServiceItemAction, Settings, Registry, UiStrings, ScreenList, build_icon, build_html, translate
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
@@ -418,7 +418,7 @@ class SlideController(DisplayController):
         if len(matches) == 1:
             self.shortcutTimer.stop()
             self.current_shortcut = u''
-            self.preview_widget.check_update_selected_slide(self.slideList[matches[0]])
+            self.preview_widget.change_slide(self.slideList[matches[0]])
             self.slideSelected()
         elif sender_name != u'shortcutTimer':
             # Start the time as we did not have any match.
@@ -428,7 +428,7 @@ class SlideController(DisplayController):
             if self.current_shortcut in keys:
                 # We had more than one match for example "V1" and "V10", but
                 # "V1" was the slide we wanted to go.
-                self.preview_widget.check_update_selected_slide(self.slideList[self.current_shortcut])
+                self.preview_widget.change_slide(self.slideList[self.current_shortcut])
                 self.slideSelected()
            # Reset the shortcut.
             self.current_shortcut = u''
@@ -704,7 +704,7 @@ class SlideController(DisplayController):
             slidenum = 0
         # If service item is the same as the current one, only change slide
         if slideno >= 0 and item == self.service_item:
-            self.preview_widget.check_update_selected_slide(slidenum)
+            self.preview_widget.change_slide(slidenum)
             self.slideSelected()
         else:
             self._processItem(item, slidenum)
@@ -776,8 +776,11 @@ class SlideController(DisplayController):
                 slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
+                # If current slide set background to image
+                if not self.service_item.is_command() and framenumber == slideno:
+                    self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(frame[u'path'],
+                        ImageSource.ImagePlugin)
         self.preview_widget.replace_service_manager_item(self.service_item, width, slideno)
-        self.preview_widget.update_preview_selection(slideno)
         self.enableToolBar(service_item)
         # Pass to display for viewing.
         # Postpone image build, we need to do this later to avoid the theme
@@ -810,7 +813,7 @@ class SlideController(DisplayController):
             Registry().execute(u'%s_slide' % self.service_item.name.lower(), [self.service_item, self.is_live, index])
             self.updatePreview()
         else:
-            self.preview_widget.check_update_selected_slide(index)
+            self.preview_widget.change_slide(index)
             self.slideSelected()
 
     def mainDisplaySetBackground(self):
@@ -973,7 +976,7 @@ class SlideController(DisplayController):
                     self.service_item.bg_image_bytes = None
             self.updatePreview()
             self.selected_row = row
-            self.preview_widget.check_update_selected_slide(row)
+            self.preview_widget.change_slide(row)
         Registry().execute(u'slidecontroller_%s_changed' % self.type_prefix, row)
         self.display.setFocus()
 
@@ -981,7 +984,7 @@ class SlideController(DisplayController):
         """
         The slide has been changed. Update the slidecontroller accordingly
         """
-        self.preview_widget.check_update_selected_slide(row)
+        self.preview_widget.change_slide(row)
         self.updatePreview()
         Registry().execute(u'slidecontroller_%s_changed' % self.type_prefix, row)
 
@@ -1040,7 +1043,7 @@ class SlideController(DisplayController):
                     row = 0
                 else:
                     row = self.preview_widget.rowCount() - 1
-            self.preview_widget.check_update_selected_slide(row)
+            self.preview_widget.change_slide(row)
             self.slideSelected()
 
     def on_slide_selected_previous(self):
@@ -1063,7 +1066,7 @@ class SlideController(DisplayController):
                     return
                 else:
                     row = 0
-            self.preview_widget.check_update_selected_slide(row)
+            self.preview_widget.change_slide(row)
             self.slideSelected()
 
     def onToggleLoop(self):
