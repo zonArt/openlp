@@ -94,7 +94,7 @@ class ImageMediaItem(MediaManagerItem):
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         check_directory_exists(self.servicePath)
         # Load images from the database
-        self.loadFullList(
+        self.load_full_list(
             self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename), initial_load=True)
 
     def add_list_view_to_toolbar(self):
@@ -163,7 +163,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         create_widget_action(self.list_view, separator=True)
         create_widget_action(self.list_view,
-            text=UiStrings().AddGroup, icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
+            text=UiStrings().AddGroup, icon=u':/images/image_new_group.png', triggers=self.on_add_group_click)
         create_widget_action(self.list_view,
             text=self.plugin.get_string(StringContent.Load)[u'tooltip'],
             icon=u':/general/general_open.png', triggers=self.on_file_click)
@@ -173,16 +173,16 @@ class ImageMediaItem(MediaManagerItem):
         Add custom buttons to the start of the toolbar.
         """
         self.addGroupAction = self.toolbar.add_toolbar_action(u'addGroupAction',
-            icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
+            icon=u':/images/image_new_group.png', triggers=self.on_add_group_click)
 
     def add_end_header_bar(self):
         """
         Add custom buttons to the end of the toolbar
         """
         self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction',
-            icon=u':/slides/slide_blank.png', triggers=self.onReplaceClick)
+            icon=u':/slides/slide_blank.png', triggers=self.on_replace_click)
         self.resetAction = self.toolbar.add_toolbar_action(u'resetAction',
-            icon=u':/system/system_close.png', visible=False, triggers=self.onResetClick)
+            icon=u':/system/system_close.png', visible=False, triggers=self.on_reset_click)
 
     def recursively_delete_group(self, image_group):
         """
@@ -311,29 +311,29 @@ class ImageMediaItem(MediaManagerItem):
                 return True
         return return_value
 
-    def loadFullList(self, images, initial_load=False, open_group=None):
+    def load_full_list(self, images, initial_load=False, open_group=None):
         """
         Replace the list of images and groups in the interface.
 
         ``images``
-            A List of ImageFilenames objects that will be used to reload the mediamanager list
+            A List of ImageFilenames objects that will be used to reload the mediamanager list.
 
         ``initial_load``
-            When set to False, the busy cursor and progressbar will be shown while loading images
+            When set to False, the busy cursor and progressbar will be shown while loading images.
 
         ``open_group``
-            ImageGroups object of the group that must be expanded after reloading the list in the interface
+            ImageGroups object of the group that must be expanded after reloading the list in the interface.
         """
         if not initial_load:
             self.application.set_busy_cursor()
             self.main_window.display_progress_bar(len(images))
         self.list_view.clear()
-        # Load the list of groups and add them to the treeView
+        # Load the list of groups and add them to the treeView.
         group_items = {}
         self.add_sub_groups(group_items, parent_group_id=0)
         if open_group is not None:
             self.expand_group(open_group.id)
-        # Sort the images by its filename considering language specific
+        # Sort the images by its filename considering language specific.
         # characters.
         images.sort(key=lambda image_object: get_locale_key(os.path.split(unicode(image_object.filename))[1]))
         for imageFile in images:
@@ -452,7 +452,7 @@ class ImageMediaItem(MediaManagerItem):
         self.main_window.display_progress_bar(len(images))
         # Save the new images in the database
         self.save_new_images_list(images, group_id=parent_group.id, reload_list=False)
-        self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
+        self.load_full_list(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename),
             initial_load=initial_load, open_group=parent_group)
         self.application.set_normal_cursor()
 
@@ -479,7 +479,7 @@ class ImageMediaItem(MediaManagerItem):
             self.manager.save_object(imageFile)
             self.main_window.increment_progress_bar()
         if reload_list and images_list:
-            self.loadFullList(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
+            self.load_full_list(self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename))
 
     def dnd_move_internal(self, target):
         """
@@ -527,7 +527,7 @@ class ImageMediaItem(MediaManagerItem):
         image_items.sort(key=lambda item: get_locale_key(item.text(0)))
         target_group.addChildren(image_items)
 
-    def generate_slide_data(self, service_item, item=None, xmlVersion=False,
+    def generate_slide_data(self, service_item, item=None, xml_version=False,
         remote=False, context=ServiceItemContext.Service):
         """
         Generate the slide data. Needs to be implemented by the plugin.
@@ -605,7 +605,7 @@ class ImageMediaItem(MediaManagerItem):
         else:
             return False
 
-    def onAddGroupClick(self):
+    def on_add_group_click(self):
         """
         Called to add a new group
         """
@@ -626,7 +626,7 @@ class ImageMediaItem(MediaManagerItem):
                 group_name=self.add_group_form.name_edit.text())
             if not self.check_group_exists(new_group):
                 if self.manager.save_object(new_group):
-                    self.loadFullList(self.manager.get_all_objects(ImageFilenames,
+                    self.load_full_list(self.manager.get_all_objects(ImageFilenames,
                         order_by_ref=ImageFilenames.filename))
                     self.expand_group(new_group.id)
                     self.fill_groups_combobox(self.choose_group_form.group_combobox)
@@ -635,23 +635,22 @@ class ImageMediaItem(MediaManagerItem):
                     critical_error_message_box(
                         message=translate('ImagePlugin.AddGroupForm', 'Could not add the new group.'))
             else:
-                critical_error_message_box(
-                    message=translate('ImagePlugin.AddGroupForm', 'This group already exists.'))
+                critical_error_message_box(message=translate('ImagePlugin.AddGroupForm', 'This group already exists.'))
 
-    def onResetClick(self):
+    def on_reset_click(self):
         """
-        Called to reset the Live background with the image selected,
+        Called to reset the Live background with the image selected.
         """
         self.resetAction.setVisible(False)
         self.live_controller.display.reset_image()
 
     def live_theme_changed(self):
         """
-        Triggered by the change of theme in the slide controller
+        Triggered by the change of theme in the slide controller.
         """
         self.resetAction.setVisible(False)
 
-    def onReplaceClick(self):
+    def on_replace_click(self):
         """
         Called to replace Live backgound with the image selected.
         """
@@ -660,7 +659,7 @@ class ImageMediaItem(MediaManagerItem):
             background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))
             bitem = self.list_view.selectedItems()[0]
             if not isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageFilenames):
-                # Only continue when an image is selected
+                # Only continue when an image is selected.
                 return
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
             if os.path.exists(filename):
