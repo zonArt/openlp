@@ -110,11 +110,11 @@ class PresentationMediaItem(MediaManagerItem):
         self.display_layout.setObjectName(u'display_layout')
         self.display_type_label = QtGui.QLabel(self.presentation_widget)
         self.display_type_label.setObjectName(u'display_type_label')
-        self.displayTypeComboBox = create_horizontal_adjusting_combo_box(self.presentation_widget,
-            u'displayTypeComboBox')
-        self.display_type_label.setBuddy(self.displayTypeComboBox)
-        self.display_layout.addRow(self.display_type_label, self.displayTypeComboBox)
-        # Add the Presentation widget to the page layout
+        self.display_type_combo_box = create_horizontal_adjusting_combo_box(self.presentation_widget,
+            u'display_type_combo_box')
+        self.display_type_label.setBuddy(self.display_type_combo_box)
+        self.display_layout.addRow(self.display_type_label, self.display_type_combo_box)
+        # Add the Presentation widget to the page layout.
         self.page_layout.addWidget(self.presentation_widget)
 
     def initialise(self):
@@ -131,14 +131,14 @@ class PresentationMediaItem(MediaManagerItem):
         Load the combobox with the enabled presentation controllers, allowing user to select a specific app if settings
         allow.
         """
-        self.displayTypeComboBox.clear()
+        self.display_type_combo_box.clear()
         for item in self.controllers:
             # load the drop down selection
             if self.controllers[item].enabled():
-                self.displayTypeComboBox.addItem(item)
-        if self.displayTypeComboBox.count() > 1:
-            self.displayTypeComboBox.insertItem(0, self.Automatic)
-            self.displayTypeComboBox.setCurrentIndex(0)
+                self.display_type_combo_box.addItem(item)
+        if self.display_type_combo_box.count() > 1:
+            self.display_type_combo_box.insertItem(0, self.Automatic)
+            self.display_type_combo_box.setCurrentIndex(0)
         if Settings().value(self.settings_section + u'/override app') == QtCore.Qt.Checked:
             self.presentation_widget.show()
         else:
@@ -244,8 +244,8 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.list_view.selectedItems()
             if len(items) > 1:
                 return False
-        service_item.title = self.displayTypeComboBox.currentText()
-        service_item.shortname = self.displayTypeComboBox.currentText()
+        service_item.title = self.display_type_combo_box.currentText()
+        service_item.shortname = self.display_type_combo_box.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
         service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         shortname = service_item.shortname

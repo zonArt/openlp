@@ -70,10 +70,10 @@ class ImageMediaItem(MediaManagerItem):
         self.on_new_file_masks = u'%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
         self.addGroupAction.setText(UiStrings().AddGroup)
         self.addGroupAction.setToolTip(UiStrings().AddGroup)
-        self.replaceAction.setText(UiStrings().ReplaceBG)
-        self.replaceAction.setToolTip(UiStrings().ReplaceLiveBG)
-        self.resetAction.setText(UiStrings().ResetBG)
-        self.resetAction.setToolTip(UiStrings().ResetLiveBG)
+        self.replace_action.setText(UiStrings().ReplaceBG)
+        self.replace_action.setToolTip(UiStrings().ReplaceLiveBG)
+        self.reset_action.setText(UiStrings().ResetBG)
+        self.reset_action.setToolTip(UiStrings().ResetLiveBG)
 
     def required_icons(self):
         """
@@ -155,7 +155,7 @@ class ImageMediaItem(MediaManagerItem):
         self.list_view.doubleClicked.connect(self.on_double_clicked)
         self.list_view.itemSelectionChanged.connect(self.on_selection_change)
         self.list_view.customContextMenuRequested.connect(self.context_menu)
-        self.list_view.addAction(self.replaceAction)
+        self.list_view.addAction(self.replace_action)
 
     def add_custom_context_actions(self):
         """
@@ -179,9 +179,9 @@ class ImageMediaItem(MediaManagerItem):
         """
         Add custom buttons to the end of the toolbar
         """
-        self.replaceAction = self.toolbar.add_toolbar_action(u'replaceAction',
+        self.replace_action = self.toolbar.add_toolbar_action(u'replace_action',
             icon=u':/slides/slide_blank.png', triggers=self.on_replace_click)
-        self.resetAction = self.toolbar.add_toolbar_action(u'resetAction',
+        self.reset_action = self.toolbar.add_toolbar_action(u'reset_action',
             icon=u':/system/system_close.png', visible=False, triggers=self.on_reset_click)
 
     def recursively_delete_group(self, image_group):
@@ -641,14 +641,14 @@ class ImageMediaItem(MediaManagerItem):
         """
         Called to reset the Live background with the image selected.
         """
-        self.resetAction.setVisible(False)
+        self.reset_action.setVisible(False)
         self.live_controller.display.reset_image()
 
     def live_theme_changed(self):
         """
         Triggered by the change of theme in the slide controller.
         """
-        self.resetAction.setVisible(False)
+        self.reset_action.setVisible(False)
 
     def on_replace_click(self):
         """
@@ -664,7 +664,7 @@ class ImageMediaItem(MediaManagerItem):
             filename = bitem.data(0, QtCore.Qt.UserRole).filename
             if os.path.exists(filename):
                 if self.live_controller.display.direct_image(filename, background):
-                    self.resetAction.setVisible(True)
+                    self.reset_action.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
                         translate('ImagePlugin.MediaItem', 'There was no display item to amend.'))
