@@ -40,6 +40,7 @@ from openlp.core.utils import AppLocation, delete_file, get_locale_key, get_imag
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 
+
 log = logging.getLogger(__name__)
 
 
@@ -60,12 +61,11 @@ class ImageMediaItem(MediaManagerItem):
         self.fill_groups_combobox(self.choose_group_form.group_combobox)
         self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
         Registry().register_function(u'live_theme_changed', self.live_theme_changed)
-        # Allow DnD from the desktop
+        # Allow DnD from the desktop.
         self.list_view.activateDnD()
 
     def retranslateUi(self):
-        self.on_new_prompt = translate('ImagePlugin.MediaItem',
-            'Select Image(s)')
+        self.on_new_prompt = translate('ImagePlugin.MediaItem', 'Select Image(s)')
         file_formats = get_images_filter()
         self.on_new_file_masks = u'%s;;%s (*.*) (*)' % (file_formats, UiStrings().AllFiles)
         self.addGroupAction.setText(UiStrings().AddGroup)
@@ -77,7 +77,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def required_icons(self):
         """
-        Set which icons the media manager tab should show
+        Set which icons the media manager tab should show.
         """
         MediaManagerItem.required_icons(self)
         self.has_file_icon = True
@@ -99,8 +99,8 @@ class ImageMediaItem(MediaManagerItem):
 
     def add_list_view_to_toolbar(self):
         """
-        Creates the main widget for listing items the media item is tracking.
-        This method overloads MediaManagerItem.add_list_view_to_toolbar
+        Creates the main widget for listing items the media item is tracking. This method overloads
+        MediaManagerItem.add_list_view_to_toolbar.
         """
         # Add the List widget
         self.list_view = TreeWidgetWithDnD(self, self.plugin.name)
@@ -159,21 +159,18 @@ class ImageMediaItem(MediaManagerItem):
 
     def add_custom_context_actions(self):
         """
-        Add custom actions to the context menu
+        Add custom actions to the context menu.
         """
         create_widget_action(self.list_view, separator=True)
         create_widget_action(self.list_view,
-            text=UiStrings().AddGroup,
-            icon=u':/images/image_new_group.png',
-            triggers=self.onAddGroupClick)
+            text=UiStrings().AddGroup, icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
         create_widget_action(self.list_view,
             text=self.plugin.get_string(StringContent.Load)[u'tooltip'],
-            icon=u':/general/general_open.png',
-            triggers=self.on_file_click)
+            icon=u':/general/general_open.png', triggers=self.on_file_click)
 
     def add_start_header_bar(self):
         """
-        Add custom buttons to the start of the toolbar
+        Add custom buttons to the start of the toolbar.
         """
         self.addGroupAction = self.toolbar.add_toolbar_action(u'addGroupAction',
             icon=u':/images/image_new_group.png', triggers=self.onAddGroupClick)
@@ -189,10 +186,10 @@ class ImageMediaItem(MediaManagerItem):
 
     def recursively_delete_group(self, image_group):
         """
-        Recursively deletes a group and all groups and images in it
+        Recursively deletes a group and all groups and images in it.
 
         ``image_group``
-            The ImageGroups instance of the group that will be deleted
+            The ImageGroups instance of the group that will be deleted.
         """
         images = self.manager.get_all_objects(ImageFilenames, ImageFilenames.group_id == image_group.id)
         for image in images:
@@ -205,7 +202,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def on_delete_click(self):
         """
-        Remove an image item from the list
+        Remove an image item from the list.
         """
         # Turn off auto preview triggers.
         self.list_view.blockSignals(True)
@@ -226,11 +223,11 @@ class ImageMediaItem(MediaManagerItem):
                         self.manager.delete_object(ImageFilenames, row_item.data(0, QtCore.Qt.UserRole).id)
                     elif isinstance(item_data, ImageGroups):
                         if QtGui.QMessageBox.question(self.list_view.parent(),
-                            translate('ImagePlugin.MediaItem', 'Remove group'),
-                            translate('ImagePlugin.MediaItem',
-                            'Are you sure you want to remove "%s" and everything in it?') % item_data.group_name,
-                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
-                            QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
+                                translate('ImagePlugin.MediaItem', 'Remove group'),
+                                translate('ImagePlugin.MediaItem',
+                                'Are you sure you want to remove "%s" and everything in it?') % item_data.group_name,
+                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                QtGui.QMessageBox.No)) == QtGui.QMessageBox.Yes:
                             self.recursively_delete_group(item_data)
                             self.manager.delete_object(ImageGroups, row_item.data(0, QtCore.Qt.UserRole).id)
                             if item_data.parent_id == 0:
@@ -246,13 +243,13 @@ class ImageMediaItem(MediaManagerItem):
 
     def add_sub_groups(self, group_list, parent_group_id):
         """
-        Recursively add subgroups to the given parent group in a QTreeWidget
+        Recursively add subgroups to the given parent group in a QTreeWidget.
 
         ``group_list``
-            The List object that contains all QTreeWidgetItems
+            The List object that contains all QTreeWidgetItems.
 
         ``parent_group_id``
-            The ID of the group that will be added recursively
+            The ID of the group that will be added recursively.
         """
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == parent_group_id)
         image_groups.sort(key=lambda group_object: get_locale_key(group_object.group_name))
@@ -271,16 +268,16 @@ class ImageMediaItem(MediaManagerItem):
 
     def fill_groups_combobox(self, combobox, parent_group_id=0, prefix=''):
         """
-        Recursively add groups to the combobox in the 'Add group' dialog
+        Recursively add groups to the combobox in the 'Add group' dialog.
 
         ``combobox``
-            The QComboBox to add the options to
+            The QComboBox to add the options to.
 
         ``parent_group_id``
-            The ID of the group that will be added
+            The ID of the group that will be added.
 
         ``prefix``
-            A string containing the prefix that will be added in front of the groupname for each level of the tree
+            A string containing the prefix that will be added in front of the groupname for each level of the tree.
         """
         if parent_group_id == 0:
             combobox.clear()
@@ -293,13 +290,13 @@ class ImageMediaItem(MediaManagerItem):
 
     def expand_group(self, group_id, root_item=None):
         """
-        Expand groups in the widget recursively
+        Expand groups in the widget recursively.
 
         ``group_id``
-            The ID of the group that will be expanded
+            The ID of the group that will be expanded.
 
         ``root_item``
-            This option is only used for recursion purposes
+            This option is only used for recursion purposes.
         """
         return_value = False
         if root_item is None:

@@ -39,13 +39,16 @@ from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
 from openlp.core.utils import AppLocation, get_locale_key
 
+
 log = logging.getLogger(__name__)
+
 
 CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
 VIDEO = build_icon(QtGui.QImage(u':/media/media_video.png'))
 AUDIO = build_icon(QtGui.QImage(u':/media/media_audio.png'))
 DVDICON = build_icon(QtGui.QImage(u':/media/media_video.png'))
 ERROR = build_icon(QtGui.QImage(u':/general/general_delete.png'))
+
 
 class MediaMediaItem(MediaManagerItem):
     """
