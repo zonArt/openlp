@@ -27,8 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`presentationplugin` module provides the ability for OpenLP to display
-presentations from a variety of document formats.
+The :mod:`presentationplugin` module provides the ability for OpenLP to display presentations from a variety of document
+formats.
 """
 import os
 import logging
@@ -39,22 +39,23 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
+
 log = logging.getLogger(__name__)
 
+
 __default_settings__ = {
-        u'presentations/override app': QtCore.Qt.Unchecked,
-        u'presentations/Impress': QtCore.Qt.Checked,
-        u'presentations/Powerpoint': QtCore.Qt.Checked,
-        u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
-        u'presentations/presentations files': []
-    }
+    u'presentations/override app': QtCore.Qt.Unchecked,
+    u'presentations/Impress': QtCore.Qt.Checked,
+    u'presentations/Powerpoint': QtCore.Qt.Checked,
+    u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
+    u'presentations/presentations files': []
+}
 
 
 class PresentationPlugin(Plugin):
     """
-    This plugin allowed a Presentation to be opened, controlled and displayed
-    on the output display. The plugin controls third party applications such
-    as OpenOffice.org Impress, Microsoft PowerPoint and the PowerPoint viewer
+    This plugin allowed a Presentation to be opened, controlled and displayed on the output display. The plugin controls
+    third party applications such as OpenOffice.org Impress, Microsoft PowerPoint and the PowerPoint viewer.
     """
     log = logging.getLogger(u'PresentationPlugin')
 
@@ -71,16 +72,14 @@ class PresentationPlugin(Plugin):
 
     def create_settings_tab(self, parent):
         """
-        Create the settings Tab
+        Create the settings Tab.
         """
         visible_name = self.get_string(StringContent.VisibleName)
-        self.settings_tab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers,
-                                             self.icon_path)
+        self.settings_tab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers, self.icon_path)
 
     def initialise(self):
         """
-        Initialise the plugin. Determine which controllers are enabled
-        are start their processes.
+        Initialise the plugin. Determine which controllers are enabled are start their processes.
         """
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
@@ -95,8 +94,8 @@ class PresentationPlugin(Plugin):
 
     def finalise(self):
         """
-        Finalise the plugin. Ask all the enabled presentation applications
-        to close down their applications and release resources.
+        Finalise the plugin. Ask all the enabled presentation applications to close down their applications and release
+        resources.
         """
         log.info(u'Plugin Finalise')
         # Ask each controller to tidy up.
@@ -108,26 +107,23 @@ class PresentationPlugin(Plugin):
 
     def create_media_manager_item(self):
         """
-        Create the Media Manager List
+        Create the Media Manager List.
         """
         self.media_item = PresentationMediaItem(
             self.main_window.media_dock_manager.media_dock, self, self.icon, self.controllers)
 
     def register_controllers(self, controller):
         """
-        Register each presentation controller (Impress, PPT etc) and store for later use
+        Register each presentation controller (Impress, PPT etc) and store for later use.
         """
         self.controllers[controller.name] = controller
 
     def check_pre_conditions(self):
         """
-        Check to see if we have any presentation software available
-        If Not do not install the plugin.
+        Check to see if we have any presentation software available. If not do not install the plugin.
         """
         log.debug(u'check_pre_conditions')
-        controller_dir = os.path.join(
-            AppLocation.get_directory(AppLocation.PluginsDir),
-            u'presentations', u'lib')
+        controller_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'presentations', u'lib')
         for filename in os.listdir(controller_dir):
             if filename.endswith(u'controller.py') and not filename == 'presentationcontroller.py':
                 path = os.path.join(controller_dir, filename)
@@ -146,7 +142,7 @@ class PresentationPlugin(Plugin):
 
     def about(self):
         """
-        Return information about this plugin
+        Return information about this plugin.
         """
         about_text = translate('PresentationPlugin', '<strong>Presentation '
             'Plugin</strong><br />The presentation plugin provides the '
@@ -157,7 +153,7 @@ class PresentationPlugin(Plugin):
 
     def set_plugin_text_strings(self):
         """
-        Called to define all translatable texts of the plugin
+        Called to define all translatable texts of the plugin.
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
