@@ -295,12 +295,12 @@ class ImpressDocument(PresentationDocument):
         """
         log.debug(u'create property OpenOffice')
         if os.name == u'nt':
-            property = self.controller.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+            property_object = self.controller.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
         else:
-            property = PropertyValue()
-        property.Name = name
-        property.Value = value
-        return property
+            property_object = PropertyValue()
+        property_object.Name = name
+        property_object.Value = value
+        return property_object
 
     def close_presentation(self):
         """
