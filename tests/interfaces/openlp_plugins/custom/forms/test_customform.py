@@ -36,19 +36,29 @@ class TestEditCustomForm(TestCase):
         del self.main_window
         del self.app
 
+    def load_themes_test(self):
+        """
+        Test the load_themes() method.
+        """
+        # GIVEN: A theme list.
+        theme_list = [u'First Theme', u'Second Theme']
+
+        # WHEN: Show the dialog and add pass a theme list.
+        self.form.load_themes(theme_list)
+
+        # THEN: There should be three items in the combo box.
+        assert self.form.theme_combo_box.count() == 3, u'There should be three items (themes) in the combo box.'
+
     def load_custom_test(self):
         """
         Test the load_custom() method.
         """
-        # GIVEN: A mocked QDialog.exec_() method
-        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            # WHEN: Show the dialog and create a new custom item.
-            self.form.exec_()
-            self.form.load_custom(0)
+        # WHEN: Create a new custom item.
+        self.form.load_custom(0)
 
-            #THEN: The line edits should not contain any text.
-            self.assertEqual(self.form.title_edit.text(), u'', u'The title edit should be empty')
-            self.assertEqual(self.form.credit_edit.text(), u'', u'The credit edit should be empty')
+        # THEN: The line edits should not contain any text.
+        self.assertEqual(self.form.title_edit.text(), u'', u'The title edit should be empty')
+        self.assertEqual(self.form.credit_edit.text(), u'', u'The credit edit should be empty')
 
 
     def on_add_button_clicked_test(self):
@@ -57,10 +67,10 @@ class TestEditCustomForm(TestCase):
         """
         # GIVEN: A mocked QDialog.exec_() method
         with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
-            # WHEN: Show the dialog and add a new slide.
-            self.form.exec_()
+            # WHEN: Add a new slide.
             QtTest.QTest.mouseClick(self.form.add_button, QtCore.Qt.LeftButton)
-            #THEN: One slide should be added.
+
+            # THEN: One slide should be added.
             assert self.form.slide_list_view.count() == 1, u'There should be one slide added.'
 
     def validate_not_valid_part1_test(self):

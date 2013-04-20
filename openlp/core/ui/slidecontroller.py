@@ -44,6 +44,8 @@ from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
+# Threshold which has to be trespassed to toggle.
+HIDE_MENU_THRESHOLD  = 27
 AUDIO_TIME_LABEL_STYLESHEET = u'background-color: palette(background); ' \
     u'border-top-color: palette(shadow); ' \
     u'border-left-color: palette(shadow); ' \
@@ -358,8 +360,9 @@ class SlideController(DisplayController):
         # Signals
         self.preview_list_widget.clicked.connect(self.onSlideSelected)
         if self.is_live:
+            # Need to use event as called across threads and UI is updated
+            QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_toggle_display'), self.toggle_display)
             Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
-            Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)
             self.toolbar.set_widget_visible(self.loop_list, False)
             self.toolbar.set_widget_visible(self.wide_menu, False)
         else:
@@ -371,13 +374,16 @@ class SlideController(DisplayController):
         else:
             self.preview_list_widget.addActions([self.nextItem, self.previous_item])
         Registry().register_function(u'slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
-        Registry().register_function(u'slidecontroller_%s_next' % self.type_prefix, self.on_slide_selected_next)
-        Registry().register_function(u'slidecontroller_%s_previous' % self.type_prefix, self.on_slide_selected_previous)
         Registry().register_function(u'slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
-        Registry().register_function(u'slidecontroller_%s_set' % self.type_prefix, self.on_slide_selected_index)
         Registry().register_function(u'slidecontroller_%s_blank' % self.type_prefix, self.on_slide_blank)
         Registry().register_function(u'slidecontroller_%s_unblank' % self.type_prefix, self.on_slide_unblank)
         Registry().register_function(u'slidecontroller_update_slide_limits', self.update_slide_limits)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix),
+            self.on_slide_selected_index)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix),
+            self.on_slide_selected_next)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix),
+            self.on_slide_selected_previous)
 
     def _slideShortcutActivated(self):
         """
@@ -588,12 +594,12 @@ class SlideController(DisplayController):
         if self.is_live:
             # Space used by the toolbar.
             used_space = self.toolbar.size().width() + self.hide_menu.size().width()
-            # The + 40 is needed to prevent flickering. This can be considered a "buffer".
-            if width > used_space + 40 and self.hide_menu.isVisible():
+            # Add the threshold to prevent flickering.
+            if width > used_space + HIDE_MENU_THRESHOLD and self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.narrow_menu, False)
                 self.toolbar.set_widget_visible(self.wide_menu)
-            # The - 40 is needed to prevent flickering. This can be considered a "buffer".
-            elif width < used_space - 40 and not self.hide_menu.isVisible():
+            # Take away a threshold to prevent flickering.
+            elif width < used_space - HIDE_MENU_THRESHOLD and not self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.wide_menu, False)
                 self.toolbar.set_widget_visible(self.narrow_menu)
 

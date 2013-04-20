@@ -714,6 +714,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
     Registry().get(u'application').process_events()
     return soup
 
+
 def send_error_message(error_type):
     """
     Send a standard error message informing the user of an issue.

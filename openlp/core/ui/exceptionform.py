@@ -70,6 +70,19 @@ try:
 except ImportError:
     MAKO_VERSION = u'-'
 try:
+    import icu
+    try:
+        ICU_VERSION = icu.VERSION
+    except AttributeError:
+        ICU_VERSION = u'OK'
+except ImportError:
+    ICU_VERSION = u'-'
+try:
+    import cherrypy
+    CHERRYPY_VERSION = cherrypy.__version__
+except ImportError:
+    CHERRYPY_VERSION = u'-'
+try:
     import uno
     arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
     arg.Name = u'nodepath'
@@ -143,6 +156,8 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
             u'PySQLite: %s\n' % SQLITE_VERSION + \
             u'Mako: %s\n' % MAKO_VERSION + \
+            u'CherryPy: %s\n' % CHERRYPY_VERSION + \
+            u'pyICU: %s\n' % ICU_VERSION + \
             u'pyUNO bridge: %s\n' % UNO_VERSION + \
             u'VLC: %s\n' % VLC_VERSION
         if platform.system() == u'Linux':

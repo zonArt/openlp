@@ -81,7 +81,8 @@ class Ui_SongUsageDetailDialog(object):
         self.save_file_push_button.clicked.connect(song_usage_detail_dialog.define_output_location)
 
     def retranslateUi(self, song_usage_detail_dialog):
-        song_usage_detail_dialog.setWindowTitle(translate('SongUsagePlugin.SongUsageDetailForm', 'Song Usage Extraction'))
+        song_usage_detail_dialog.setWindowTitle(
+            translate('SongUsagePlugin.SongUsageDetailForm', 'Song Usage Extraction'))
         self.date_range_group_box.setTitle(translate('SongUsagePlugin.SongUsageDetailForm', 'Select Date Range'))
         self.to_label.setText(translate('SongUsagePlugin.SongUsageDetailForm', 'to'))
         self.file_group_box.setTitle(translate('SongUsagePlugin.SongUsageDetailForm', 'Report Location'))

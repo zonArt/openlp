@@ -81,8 +81,10 @@ MODULES = [
     'enchant',
     'bs4',
     'mako',
+    'cherrypy',
     'migrate',
     'uno',
+    'icu',
 ]
 
 

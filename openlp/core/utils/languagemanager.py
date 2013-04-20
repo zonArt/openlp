@@ -98,7 +98,7 @@ class LanguageManager(object):
         """
         Retrieve a saved language to use from settings
         """
-        language = Settings().value(u'general/language')
+        language = Settings().value(u'core/language')
         language = str(language)
         log.info(u'Language file: \'%s\' Loaded from conf file' % language)
         if re.match(r'[[].*[]]', language):
@@ -128,7 +128,7 @@ class LanguageManager(object):
                 language = unicode(qm_list[action_name])
         if LanguageManager.auto_language:
             language = u'[%s]' % language
-        Settings().setValue(u'general/language', language)
+        Settings().setValue(u'core/language', language)
         log.info(u'Language file: \'%s\' written to conf file' % language)
         if message:
             QtGui.QMessageBox.information(None,

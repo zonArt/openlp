@@ -43,7 +43,7 @@ from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
-from openlp.plugins.songs.lib import VerseType, clean_string, natcmp
+from openlp.plugins.songs.lib import VerseType, clean_string
 from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
@@ -225,7 +225,7 @@ class SongMediaItem(MediaManagerItem):
         log.debug(u'display results Song')
         self.save_auto_select_id()
         self.list_view.clear()
-        searchresults.sort(cmp=natcmp, key=lambda song: song.sort_key)
+        searchresults.sort(key=lambda song: song.sort_key)
         for song in searchresults:
             # Do not display temporary songs
             if song.temporary:
@@ -467,9 +467,9 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if Settings().value(u'general/ccli number'):
+        if Settings().value(u'core/ccli number'):
             service_item.raw_footer.append(translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'general/ccli number'))
+                Settings().value(u'core/ccli number'))
         service_item.audit = [
             song.title, author_list, song.copyright, unicode(song.ccli_number)
         ]
