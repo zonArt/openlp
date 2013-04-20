@@ -461,9 +461,9 @@ class SongMediaItem(MediaManagerItem):
         service_item.raw_footer.append(song.title)
         service_item.raw_footer.append(create_separated_list(author_list))
         service_item.raw_footer.append(song.copyright)
-        if Settings().value(u'general/ccli number'):
+        if Settings().value(u'core/ccli number'):
             service_item.raw_footer.append(translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'general/ccli number'))
+                Settings().value(u'core/ccli number'))
         service_item.audit = [song.title, author_list, song.copyright, unicode(song.ccli_number)]
         service_item.data_string = {u'title': song.search_title, u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)

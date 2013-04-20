@@ -103,7 +103,7 @@ class Plugin(QtCore.QObject):
     ``add_export_menu_Item(export_menu)``
         Add an item to the Export menu.
 
-    ``create_settings_Tab()``
+    ``create_settings_tab()``
         Creates a new instance of SettingsTabItem to be used in the Settings
         dialog.
 
@@ -252,7 +252,7 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def create_settings_Tab(self, parent):
+    def create_settings_tab(self, parent):
         """
         Create a tab for the settings window to display the configurable options
         for this plugin to the user.

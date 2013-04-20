@@ -320,7 +320,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for plugin in self.plugin_manager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.from_media_button.setVisible(True)
-                self.media_form.populateFiles(plugin.media_item.getList(MediaType.Audio))
+                self.media_form.populateFiles(plugin.media_item.get_list(MediaType.Audio))
                 break
 
     def new_song(self):

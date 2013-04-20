@@ -54,6 +54,7 @@ UGLY_CHARS = {
 
 log = logging.getLogger(__name__)
 
+
 class BGExtract(object):
     """
     Extract verses from BibleGateway
@@ -670,6 +671,7 @@ class HTTPBible(BibleDB):
 
     application = property(_get_application)
 
+
 def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
     pre_parse_substitute=None, cleaner=None):
     """
@@ -713,6 +715,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
         return None
     Registry().get(u'application').process_events()
     return soup
+
 
 def send_error_message(error_type):
     """

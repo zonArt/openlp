@@ -11,7 +11,9 @@ from PyQt4 import QtGui
 
 
 class TestSettings(TestCase):
-
+    """
+    Test the functions in the Settings module
+    """
     def setUp(self):
         """
         Create the UI
@@ -35,16 +37,16 @@ class TestSettings(TestCase):
         # GIVEN: A new Settings setup
 
         # WHEN reading a setting for the first time
-        default_value = Settings().value(u'general/has run wizard')
+        default_value = Settings().value(u'core/has run wizard')
 
         # THEN the default value is returned
         assert default_value is False, u'The default value should be False'
 
         # WHEN a new value is saved into config
-        Settings().setValue(u'general/has run wizard', True)
+        Settings().setValue(u'core/has run wizard', True)
 
         # THEN the new value is returned when re-read
-        assert Settings().value(u'general/has run wizard') is True, u'The saved value should have been returned'
+        assert Settings().value(u'core/has run wizard') is True, u'The saved value should have been returned'
 
     def settings_override_test(self):
         """
