@@ -91,8 +91,7 @@ class PresentationTab(SettingsTab):
         if checkbox.isEnabled():
             checkbox.setText(controller.name)
         else:
-            checkbox.setText(
-                translate('PresentationPlugin.PresentationTab', '%s (unavailable)') % controller.name)
+            checkbox.setText(translate('PresentationPlugin.PresentationTab', '%s (unavailable)') % controller.name)
 
     def load(self):
         """
@@ -106,8 +105,8 @@ class PresentationTab(SettingsTab):
 
     def save(self):
         """
-        Save the settings. If the tab hasn't been made visible to the user then there is nothing to do, 
-        so exit. This removes the need to start presentation applications unnecessarily.
+        Save the settings. If the tab hasn't been made visible to the user then there is nothing to do, so exit. This
+        removes the need to start presentation applications unnecessarily.
         """
         if not self.activated:
             return
