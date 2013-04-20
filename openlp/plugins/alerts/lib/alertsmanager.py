@@ -49,10 +49,12 @@ class AlertsManager(QtCore.QObject):
 
     def __init__(self, parent):
         QtCore.QObject.__init__(self, parent)
+        Registry().register(u'alerts_manager', self)
         self.timer_id = 0
         self.alert_list = []
         Registry().register_function(u'live_display_active', self.generate_alert)
         Registry().register_function(u'alerts_text', self.alert_text)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'alerts_text'), self.alert_text)
 
     def alert_text(self, message):
         """
