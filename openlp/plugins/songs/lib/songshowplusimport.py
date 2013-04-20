@@ -141,7 +141,7 @@ class SongShowPlusImport(SongImport):
                         if author.find(",") !=-1:
                             authorParts = author.split(", ")
                             author = authorParts[1] + " " + authorParts[0]
-                        self.parse_author(unicode(author, u'cp1252'))
+                        self.parse_author(author)
                 elif block_key == COPYRIGHT:
                     self.addCopyright(data)
                 elif block_key == CCLI_NO:
