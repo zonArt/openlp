@@ -415,7 +415,7 @@ class MediaController(object):
         elif not hidden or controller.media_info.is_background or service_item.will_auto_start:
             autoplay = True
         # Unblank on load set
-        elif Settings().value(u'general/auto unblank'):
+        elif Settings().value(u'core/auto unblank'):
             autoplay = True
         if autoplay:
             if not self.media_play(controller):
