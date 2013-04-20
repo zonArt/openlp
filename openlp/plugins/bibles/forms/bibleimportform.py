@@ -128,7 +128,7 @@ class BibleImportForm(OpenLPWizard):
         self.formatLabel = QtGui.QLabel(self.selectPage)
         self.formatLabel.setObjectName(u'FormatLabel')
         self.formatComboBox = QtGui.QComboBox(self.selectPage)
-        self.formatComboBox.addItems([u'', u'', u'', u'', u''])
+        self.formatComboBox.addItems([u'', u'', u'', u''])
         self.formatComboBox.setObjectName(u'FormatComboBox')
         self.formatLayout.addRow(self.formatLabel, self.formatComboBox)
         self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
