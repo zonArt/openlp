@@ -276,5 +276,7 @@ class TestServiceItem(TestCase):
             first_line = items[0]
         except IOError:
             first_line = u''
+        finally:
+            open_file.close()
         return first_line
 
