@@ -81,8 +81,10 @@ MODULES = [
     'enchant',
     'BeautifulSoup',
     'mako',
+    'cherrypy',
     'migrate',
     'uno',
+    'icu',
 ]
 
 

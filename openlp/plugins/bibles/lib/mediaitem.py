@@ -36,7 +36,7 @@ from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, Servic
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
-from openlp.core.utils import locale_compare
+from openlp.core.utils import get_locale_key
 from openlp.plugins.bibles.forms import BibleImportForm, EditBibleForm
 from openlp.plugins.bibles.lib import LayoutStyle, DisplayStyle, VerseReferenceList, get_reference_separator, \
     LanguageSelection, BibleStrings
@@ -325,7 +325,7 @@ class BibleMediaItem(MediaManagerItem):
         # Get all bibles and sort the list.
         bibles = self.plugin.manager.get_bibles().keys()
         bibles = filter(None, bibles)
-        bibles.sort(cmp=locale_compare)
+        bibles.sort(key=get_locale_key)
         # Load the bibles into the combo boxes.
         self.quickVersionComboBox.addItems(bibles)
         self.quickSecondComboBox.addItems(bibles)
@@ -461,7 +461,7 @@ class BibleMediaItem(MediaManagerItem):
                     for book in book_data:
                         data = BiblesResourcesDB.get_book_by_id(book.book_reference_id)
                         books.append(data[u'name'] + u' ')
-                books.sort(cmp=locale_compare)
+                books.sort(key=get_locale_key)
         set_case_insensitive_completer(books, self.quickSearchEdit)
 
     def on_import_click(self):
@@ -516,13 +516,13 @@ class BibleMediaItem(MediaManagerItem):
     def onQuickStyleComboBoxChanged(self):
         self.settings.layout_style = self.quickStyleComboBox.currentIndex()
         self.advancedStyleComboBox.setCurrentIndex(self.settings.layout_style)
-        self.settings.layoutStyleComboBox.setCurrentIndex(self.settings.layout_style)
+        self.settings.layout_style_combo_box.setCurrentIndex(self.settings.layout_style)
         Settings().setValue(self.settings_section + u'/verse layout style', self.settings.layout_style)
 
     def onAdvancedStyleComboBoxChanged(self):
         self.settings.layout_style = self.advancedStyleComboBox.currentIndex()
         self.quickStyleComboBox.setCurrentIndex(self.settings.layout_style)
-        self.settings.layoutStyleComboBox.setCurrentIndex(self.settings.layout_style)
+        self.settings.layout_style_combo_box.setCurrentIndex(self.settings.layout_style)
         Settings().setValue(self.settings_section + u'/verse layout style', self.settings.layout_style)
 
     def onAdvancedVersionComboBox(self):
