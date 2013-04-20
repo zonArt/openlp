@@ -159,8 +159,6 @@ class SongShowPlusImport(SongImport):
                 elif block_key == VERSE_ORDER:
                     verse_tag = self.to_openlp_verse_tag(data, True)
                     if verse_tag:
-                        if not isinstance(verse_tag, unicode):
-                            verse_tag = unicode(verse_tag, u'cp1252')
                         self.ssp_verse_order_list.append(verse_tag)
                 elif block_key == SONG_BOOK:
                     self.songBookName = data
