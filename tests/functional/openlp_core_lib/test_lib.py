@@ -179,7 +179,7 @@ class TestLib(TestCase):
         """
         Test the get_text_file_string() method when a read error happens
         """
-        with patch(u'openlp.core.lib.os.path.isfile') as mocked_isfile, patch(u'__builtin__.open') as mocked_open:
+        with patch(u'openlp.core.lib.os.path.isfile') as mocked_isfile, patch(u'builtins.open') as mocked_open:
             # GIVEN: A mocked-out open() which raises an exception and isfile returns True
             filename = u'testfile.txt'
             mocked_isfile.return_value = True
