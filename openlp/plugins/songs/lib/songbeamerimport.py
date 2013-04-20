@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songbeamerimport` module provides the functionality for importing
- SongBeamer songs into the OpenLP database.
+The :mod:`songbeamerimport` module provides the functionality for importing SongBeamer songs into the OpenLP database.
 """
 import chardet
 import codecs
@@ -43,32 +42,31 @@ log = logging.getLogger(__name__)
 
 class SongBeamerTypes(object):
     MarkTypes = {
-        u'Refrain': VerseType.Tags[VerseType.Chorus],
-        u'Chorus': VerseType.Tags[VerseType.Chorus],
-        u'Vers': VerseType.Tags[VerseType.Verse],
-        u'Verse': VerseType.Tags[VerseType.Verse],
-        u'Strophe': VerseType.Tags[VerseType.Verse],
-        u'Intro': VerseType.Tags[VerseType.Intro],
-        u'Coda': VerseType.Tags[VerseType.Ending],
-        u'Ending': VerseType.Tags[VerseType.Ending],
-        u'Bridge': VerseType.Tags[VerseType.Bridge],
-        u'Interlude': VerseType.Tags[VerseType.Bridge],
-        u'Zwischenspiel': VerseType.Tags[VerseType.Bridge],
-        u'Pre-Chorus': VerseType.Tags[VerseType.PreChorus],
-        u'Pre-Refrain': VerseType.Tags[VerseType.PreChorus],
-        u'Pre-Bridge': VerseType.Tags[VerseType.Other],
-        u'Pre-Coda': VerseType.Tags[VerseType.Other],
-        u'Unbekannt': VerseType.Tags[VerseType.Other],
-        u'Unknown': VerseType.Tags[VerseType.Other],
-        u'Unbenannt': VerseType.Tags[VerseType.Other]
+        u'Refrain': VerseType.tags[VerseType.Chorus],
+        u'Chorus': VerseType.tags[VerseType.Chorus],
+        u'Vers': VerseType.tags[VerseType.Verse],
+        u'Verse': VerseType.tags[VerseType.Verse],
+        u'Strophe': VerseType.tags[VerseType.Verse],
+        u'Intro': VerseType.tags[VerseType.Intro],
+        u'Coda': VerseType.tags[VerseType.Ending],
+        u'Ending': VerseType.tags[VerseType.Ending],
+        u'Bridge': VerseType.tags[VerseType.Bridge],
+        u'Interlude': VerseType.tags[VerseType.Bridge],
+        u'Zwischenspiel': VerseType.tags[VerseType.Bridge],
+        u'Pre-Chorus': VerseType.tags[VerseType.PreChorus],
+        u'Pre-Refrain': VerseType.tags[VerseType.PreChorus],
+        u'Pre-Bridge': VerseType.tags[VerseType.Other],
+        u'Pre-Coda': VerseType.tags[VerseType.Other],
+        u'Unbekannt': VerseType.tags[VerseType.Other],
+        u'Unknown': VerseType.tags[VerseType.Other],
+        u'Unbenannt': VerseType.tags[VerseType.Other]
     }
 
 
 class SongBeamerImport(SongImport):
     """
-    Import Song Beamer files(s)
-    Song Beamer file format is text based
-    in the beginning are one or more control tags written
+    Import Song Beamer files(s). Song Beamer file format is text based in the beginning are one or more control tags
+    written.
     """
     HTML_TAG_PAIRS = [
         (re.compile(u'<b>'), u'{st}'),
@@ -104,16 +102,16 @@ class SongBeamerImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        if not isinstance(self.importSource, list):
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        if not isinstance(self.import_source, list):
             return
-        for file in self.importSource:
+        for file in self.import_source:
             # TODO: check that it is a valid SongBeamer file
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self.setDefaults()
             self.currentVerse = u''
-            self.currentVerseType = VerseType.Tags[VerseType.Verse]
+            self.currentVerseType = VerseType.tags[VerseType.Verse]
             read_verses = False
             file_name = os.path.split(file)[1]
             if os.path.isfile(file):
@@ -135,10 +133,9 @@ class SongBeamerImport(SongImport):
                 elif line.startswith(u'---'):
                     if self.currentVerse:
                         self.replaceHtmlTags()
-                        self.addVerse(self.currentVerse,
-                            self.currentVerseType)
+                        self.addVerse(self.currentVerse, self.currentVerseType)
                         self.currentVerse = u''
-                        self.currentVerseType = VerseType.Tags[VerseType.Verse]
+                        self.currentVerseType = VerseType.tags[VerseType.Verse]
                     read_verses = True
                     verse_start = True
                 elif read_verses:
@@ -156,8 +153,7 @@ class SongBeamerImport(SongImport):
 
     def replaceHtmlTags(self):
         """
-        This can be called to replace SongBeamer's specific (html) tags with
-        OpenLP's specific (html) tags.
+        This can be called to replace SongBeamer's specific (html) tags with OpenLP's specific (html) tags.
         """
         for pair in SongBeamerImport.HTML_TAG_PAIRS:
             self.currentVerse = pair[0].sub(pair[1], self.currentVerse)
@@ -167,8 +163,7 @@ class SongBeamerImport(SongImport):
         Parses a meta data line.
 
         ``line``
-            The line in the file. It should consist of a tag and a value
-            for this tag (unicode)::
+            The line in the file. It should consist of a tag and a value for this tag (unicode)::
 
                 u'#Title=Nearer my God to Thee'
         """
@@ -182,7 +177,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#AddCopyrightInfo':
             pass
         elif tag_val[0] == u'#Author':
-            self.parseAuthor(tag_val[1])
+            self.parse_author(tag_val[1])
         elif tag_val[0] == u'#BackgroundImage':
             pass
         elif tag_val[0] == u'#Bible':
@@ -222,7 +217,7 @@ class SongBeamerImport(SongImport):
         elif tag_val[0] == u'#LangCount':
             pass
         elif tag_val[0] == u'#Melody':
-            self.parseAuthor(tag_val[1])
+            self.parse_author(tag_val[1])
         elif tag_val[0] == u'#NatCopyright':
             pass
         elif tag_val[0] == u'#OTitle':
@@ -273,8 +268,8 @@ class SongBeamerImport(SongImport):
 
     def checkVerseMarks(self, line):
         """
-        Check and add the verse's MarkType. Returns ``True`` if the given line
-        contains a correct verse mark otherwise ``False``.
+        Check and add the verse's MarkType. Returns ``True`` if the given linE contains a correct verse mark otherwise
+        ``False``.
 
         ``line``
             The line to check for marks (unicode).

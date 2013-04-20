@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -82,42 +82,37 @@ class ZionWorxImport(SongImport):
         """
         Receive a CSV file (from a ZionWorx database dump) to import.
         """
-        with open(self.importSource, 'rb') as songs_file:
-            field_names = [u'SongNum', u'Title1', u'Title2', u'Lyrics',
-                u'Writer', u'Copyright', u'Keywords', u'DefaultStyle']
+        with open(self.import_source, 'rb') as songs_file:
+            field_names = [u'SongNum', u'Title1', u'Title2', u'Lyrics', u'Writer', u'Copyright', u'Keywords',
+                u'DefaultStyle']
             songs_reader = csv.DictReader(songs_file, field_names)
             try:
                 records = list(songs_reader)
             except csv.Error, e:
-                self.logError(unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Error reading CSV file.')),
-                    unicode(translate('SongsPlugin.ZionWorxImport',
-                    'Line %d: %s')) % (songs_reader.line_num, e))
+                self.logError(translate('SongsPlugin.ZionWorxImport', 'Error reading CSV file.'),
+                    translate('SongsPlugin.ZionWorxImport', 'Line %d: %s') % (songs_reader.line_num, e))
                 return
             num_records = len(records)
             log.info(u'%s records found in CSV file' % num_records)
-            self.importWizard.progressBar.setMaximum(num_records)
+            self.import_wizard.progress_bar.setMaximum(num_records)
             for index, record in enumerate(records, 1):
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     return
                 self.setDefaults()
                 try:
                     self.title = self._decode(record[u'Title1'])
                     if record[u'Title2']:
-                        self.alternateTitle = self._decode(record[u'Title2'])
-                    self.parseAuthor(self._decode(record[u'Writer']))
+                        self.alternate_title = self._decode(record[u'Title2'])
+                    self.parse_author(self._decode(record[u'Writer']))
                     self.addCopyright(self._decode(record[u'Copyright']))
                     lyrics = self._decode(record[u'Lyrics'])
                 except UnicodeDecodeError, e:
-                    self.logError(unicode(translate(
-                        'SongsPlugin.ZionWorxImport', 'Record %d' % index)),
-                        unicode(translate('SongsPlugin.ZionWorxImport',
-                        'Decoding error: %s')) % e)
+                    self.logError(translate('SongsPlugin.ZionWorxImport', 'Record %d' % index),
+                        translate('SongsPlugin.ZionWorxImport', 'Decoding error: %s') % e)
                     continue
                 except TypeError, e:
-                    self.logError(unicode(translate(
-                        'SongsPlugin.ZionWorxImport', 'File not valid ZionWorx '
-                        'CSV format.')), u'TypeError: %s' % e)
+                    self.logError(translate(
+                        'SongsPlugin.ZionWorxImport', 'File not valid ZionWorx CSV format.'), u'TypeError: %s' % e)
                     return
                 verse = u''
                 for line in lyrics.splitlines():
@@ -130,8 +125,7 @@ class ZionWorxImport(SongImport):
                     self.addVerse(verse)
                 title = self.title
                 if not self.finish():
-                    self.logError(unicode(translate(
-                        'SongsPlugin.ZionWorxImport', 'Record %d')) % index
+                    self.logError(translate('SongsPlugin.ZionWorxImport', 'Record %d') % index
                         + (u': "' + title + u'"' if title else u''))
 
     def _decode(self, str):

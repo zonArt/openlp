@@ -1,8 +1,8 @@
 /******************************************************************************
  * OpenLP - Open Source Lyrics Projection                                      *
  * --------------------------------------------------------------------------- *
- * Copyright (c) 2008-2012 Raoul Snyman                                        *
- * Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      *
+ * Copyright (c) 2008-2013 Raoul Snyman                                        *
+ * Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      *
  * Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      *
  * Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   *
  * Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          *
@@ -26,7 +26,7 @@
 window.OpenLP = {
   loadService: function (event) {
     $.getJSON(
-      "/api/service/list",
+      "/stage/api/service/list",
       function (data, status) {
         OpenLP.nextSong = "";
         $("#notes").html("");
@@ -46,7 +46,7 @@ window.OpenLP = {
   },
   loadSlides: function (event) {
     $.getJSON(
-      "/api/controller/live/text",
+      "/stage/api/controller/live/text",
       function (data, status) {
         OpenLP.currentSlides = data.results.slides;
         OpenLP.currentSlide = 0;
@@ -137,7 +137,7 @@ window.OpenLP = {
   },
   pollServer: function () {
     $.getJSON(
-      "/api/poll",
+      "/stage/api/poll",
       function (data, status) {
         OpenLP.updateClock(data);
         if (OpenLP.currentItem != data.results.item ||

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,14 +26,23 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets of the plugin view dialog
+#"""
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import UiStrings, translate
+from openlp.core.lib.ui import create_button_box
+
 
 class Ui_PluginViewDialog(object):
+    """
+    The UI of the plugin view dialog
+    """
     def setupUi(self, pluginViewDialog):
+        """
+        Set up the UI
+        """
         pluginViewDialog.setObjectName(u'pluginViewDialog')
         pluginViewDialog.setWindowModality(QtCore.Qt.ApplicationModal)
         self.pluginLayout = QtGui.QVBoxLayout(pluginViewDialog)
@@ -61,27 +70,23 @@ class Ui_PluginViewDialog(object):
         self.aboutLabel = QtGui.QLabel(self.pluginInfoGroupBox)
         self.aboutLabel.setObjectName(u'aboutLabel')
         self.aboutTextBrowser = QtGui.QTextBrowser(self.pluginInfoGroupBox)
-        self.aboutTextBrowser.setTextInteractionFlags(
-            QtCore.Qt.LinksAccessibleByMouse)
+        self.aboutTextBrowser.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
         self.aboutTextBrowser.setObjectName(u'aboutTextBrowser')
         self.pluginInfoLayout.addRow(self.aboutLabel, self.aboutTextBrowser)
         self.listLayout.addWidget(self.pluginInfoGroupBox)
         self.pluginLayout.addLayout(self.listLayout)
-        self.buttonBox = create_button_box(pluginViewDialog, u'buttonBox',
-            [u'ok'])
-        self.pluginLayout.addWidget(self.buttonBox)
+        self.button_box = create_button_box(pluginViewDialog, u'button_box', [u'ok'])
+        self.pluginLayout.addWidget(self.button_box)
         self.retranslateUi(pluginViewDialog)
 
     def retranslateUi(self, pluginViewDialog):
-        pluginViewDialog.setWindowTitle(
-            translate('OpenLP.PluginForm', 'Plugin List'))
-        self.pluginInfoGroupBox.setTitle(
-            translate('OpenLP.PluginForm', 'Plugin Details'))
+        """
+        Translate the UI on the fly
+        """
+        pluginViewDialog.setWindowTitle(translate('OpenLP.PluginForm', 'Plugin List'))
+        self.pluginInfoGroupBox.setTitle(translate('OpenLP.PluginForm', 'Plugin Details'))
         self.versionLabel.setText(u'%s:' % UiStrings().Version)
         self.aboutLabel.setText(u'%s:' % UiStrings().About)
-        self.statusLabel.setText(
-            translate('OpenLP.PluginForm', 'Status:'))
-        self.statusComboBox.setItemText(0,
-            translate('OpenLP.PluginForm', 'Active'))
-        self.statusComboBox.setItemText(1,
-            translate('OpenLP.PluginForm', 'Inactive'))
+        self.statusLabel.setText(translate('OpenLP.PluginForm', 'Status:'))
+        self.statusComboBox.setItemText(0, translate('OpenLP.PluginForm', 'Active'))
+        self.statusComboBox.setItemText(1, translate('OpenLP.PluginForm', 'Inactive'))

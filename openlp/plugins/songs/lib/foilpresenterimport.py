@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -121,12 +121,12 @@ class FoilPresenterImport(SongImport):
         """
         Imports the songs.
         """
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.importSource:
-            if self.stopImportFlag:
+        for file_path in self.import_source:
+            if self.stop_import_flag:
                 return
-            self.importWizard.incrementProgressBar(
+            self.import_wizard.increment_progress_bar(
                 WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
@@ -335,9 +335,7 @@ class FoilPresenter(object):
                         author)
                     author = re.compile(u'[N|n]ach.*$').sub(u'', author)
                     author = author.strip()
-                    if re.search(
-                        u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s',
-                        author, re.U):
+                    if re.search(u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', author, re.U):
                         temp = re.split(u'\s[a|u]nd\s|\s&\s', author)
                         for tempx in temp:
                             tempx = tempx.strip()
@@ -345,12 +343,10 @@ class FoilPresenter(object):
                     elif len(author) > 2:
                         authors.append(author)
         for display_name in authors:
-            author = self.manager.get_object_filtered(Author,
-                Author.display_name == display_name)
+            author = self.manager.get_object_filtered(Author, Author.display_name == display_name)
             if author is None:
                 # We need to create a new author, as the author does not exist.
-                author = Author.populate(display_name=display_name,
-                    last_name=display_name.split(u' ')[-1],
+                author = Author.populate(display_name=display_name, last_name=display_name.split(u' ')[-1],
                     first_name=u' '.join(display_name.split(u' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
@@ -416,17 +412,16 @@ class FoilPresenter(object):
         temp_sortnr_backup = 1
         temp_sortnr_liste = []
         verse_count = {
-            VerseType.Tags[VerseType.Verse]: 1,
-            VerseType.Tags[VerseType.Chorus]: 1,
-            VerseType.Tags[VerseType.Bridge]: 1,
-            VerseType.Tags[VerseType.Ending]: 1,
-            VerseType.Tags[VerseType.Other]: 1,
-            VerseType.Tags[VerseType.Intro]: 1,
-            VerseType.Tags[VerseType.PreChorus]: 1
+            VerseType.tags[VerseType.Verse]: 1,
+            VerseType.tags[VerseType.Chorus]: 1,
+            VerseType.tags[VerseType.Bridge]: 1,
+            VerseType.tags[VerseType.Ending]: 1,
+            VerseType.tags[VerseType.Other]: 1,
+            VerseType.tags[VerseType.Intro]: 1,
+            VerseType.tags[VerseType.PreChorus]: 1
         }
         for strophe in foilpresenterfolie.strophen.strophe:
-            text = self._child(strophe.text_) if hasattr(strophe, u'text_') \
-                else u''
+            text = self._child(strophe.text_) if hasattr(strophe, u'text_') else u''
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
             sortnr = False
@@ -443,25 +438,25 @@ class FoilPresenter(object):
             temp_verse_name = re.compile(u'[0-9].*').sub(u'', verse_name)
             temp_verse_name = temp_verse_name[:3].lower()
             if temp_verse_name == u'ref':
-                verse_type = VerseType.Tags[VerseType.Chorus]
+                verse_type = VerseType.tags[VerseType.Chorus]
             elif temp_verse_name == u'r':
-                verse_type = VerseType.Tags[VerseType.Chorus]
+                verse_type = VerseType.tags[VerseType.Chorus]
             elif temp_verse_name == u'':
-                verse_type = VerseType.Tags[VerseType.Verse]
+                verse_type = VerseType.tags[VerseType.Verse]
             elif temp_verse_name == u'v':
-                verse_type = VerseType.Tags[VerseType.Verse]
+                verse_type = VerseType.tags[VerseType.Verse]
             elif temp_verse_name == u'bri':
-                verse_type = VerseType.Tags[VerseType.Bridge]
+                verse_type = VerseType.tags[VerseType.Bridge]
             elif temp_verse_name == u'cod':
-                verse_type = VerseType.Tags[VerseType.Ending]
+                verse_type = VerseType.tags[VerseType.Ending]
             elif temp_verse_name == u'sch':
-                verse_type = VerseType.Tags[VerseType.Ending]
+                verse_type = VerseType.tags[VerseType.Ending]
             elif temp_verse_name == u'pre':
-                verse_type = VerseType.Tags[VerseType.PreChorus]
+                verse_type = VerseType.tags[VerseType.PreChorus]
             elif temp_verse_name == u'int':
-                verse_type = VerseType.Tags[VerseType.Intro]
+                verse_type = VerseType.tags[VerseType.Intro]
             else:
-                verse_type = VerseType.Tags[VerseType.Other]
+                verse_type = VerseType.tags[VerseType.Other]
             verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
@@ -474,7 +469,7 @@ class FoilPresenter(object):
                     if value == u''.join((verse_type, verse_number)):
                         verse_number = unicode(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
-            verse_type = VerseType.Names[verse_type_index]
+            verse_type = VerseType.tags[verse_type_index]
             temp_verse_order[verse_sortnr] = u''.join((verse_type[0],
                 verse_number))
             temp_verse_order_backup.append(u''.join((verse_type[0],

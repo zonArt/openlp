@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -34,19 +34,17 @@ import logging
 import os
 from urllib import quote_plus as urlquote
 
-from PyQt4 import QtCore
 from sqlalchemy import Table, MetaData, Column, types, create_engine
-from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, \
-    OperationalError
+from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, OperationalError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
 
-from openlp.core.lib import translate
+from openlp.core.lib import translate, Settings
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import AppLocation, delete_file
-from openlp.core.lib.settings import Settings
 
 log = logging.getLogger(__name__)
+
 
 def init_db(url, auto_flush=True, auto_commit=False):
     """
@@ -63,8 +61,7 @@ def init_db(url, auto_flush=True, auto_commit=False):
     """
     engine = create_engine(url, poolclass=NullPool)
     metadata = MetaData(bind=engine)
-    session = scoped_session(sessionmaker(autoflush=auto_flush,
-        autocommit=auto_commit, bind=engine))
+    session = scoped_session(sessionmaker(autoflush=auto_flush, autocommit=auto_commit, bind=engine))
     return session, metadata
 
 
@@ -112,18 +109,19 @@ def upgrade_db(url, upgrade):
         while hasattr(upgrade, u'upgrade_%d' % version):
             log.debug(u'Running upgrade_%d', version)
             try:
-                getattr(upgrade, u'upgrade_%d' % version) \
-                    (session, metadata, tables)
+                upgrade_func = getattr(upgrade, u'upgrade_%d' % version)
+                upgrade_func(session, metadata, tables)
+                session.commit()
+                # Update the version number AFTER a commit so that we are sure the previous transaction happened
+                version_meta.value = unicode(version)
+                session.commit()
+                version += 1
             except (SQLAlchemyError, DBAPIError):
                 log.exception(u'Could not run database upgrade script '
                     '"upgrade_%s", upgrade process has been halted.', version)
                 break
-            version_meta.value = unicode(version)
-            session.commit()
-            version += 1
     else:
-        version_meta = Metadata.populate(key=u'version',
-            value=int(upgrade.__version__))
+        version_meta = Metadata.populate(key=u'version', value=int(upgrade.__version__))
         session.commit()
     return int(version_meta.value), upgrade.__version__
 
@@ -136,16 +134,13 @@ def delete_database(plugin_name, db_file_name=None):
         The name of the plugin to remove the database for
 
     ``db_file_name``
-        The database file name. Defaults to None resulting in the
-        plugin_name being used.
+        The database file name. Defaults to None resulting in the plugin_name being used.
     """
     db_file_path = None
     if db_file_name:
-        db_file_path = os.path.join(
-            AppLocation.get_section_data_path(plugin_name), db_file_name)
+        db_file_path = os.path.join(AppLocation.get_section_data_path(plugin_name), db_file_name)
     else:
-        db_file_path = os.path.join(
-            AppLocation.get_section_data_path(plugin_name), plugin_name)
+        db_file_path = os.path.join(AppLocation.get_section_data_path(plugin_name), plugin_name)
     return delete_file(db_file_path)
 
 
@@ -163,15 +158,15 @@ class BaseModel(object):
             instance.__setattr__(key, value)
         return instance
 
+
 class Manager(object):
     """
     Provide generic object persistence management
     """
-    def __init__(self, plugin_name, init_schema, db_file_name=None,
-                 upgrade_mod=None):
+    def __init__(self, plugin_name, init_schema, db_file_name=None, upgrade_mod=None):
         """
-        Runs the initialisation process that includes creating the connection
-        to the database and the tables if they don't exist.
+        Runs the initialisation process that includes creating the connection to the database and the tables if they do
+        not exist.
 
         ``plugin_name``
             The name to setup paths and settings section names
@@ -183,33 +178,27 @@ class Manager(object):
             The upgrade_schema function for this database
 
         ``db_file_name``
-            The file name to use for this database. Defaults to None resulting
-            in the plugin_name being used.
+            The file name to use for this database. Defaults to None resulting in the plugin_name being used.
         """
         settings = Settings()
         settings.beginGroup(plugin_name)
         self.db_url = u''
         self.is_dirty = False
         self.session = None
-        db_type = unicode(
-            settings.value(u'db type', QtCore.QVariant(u'sqlite')).toString())
+        db_type = settings.value(u'db type')
         if db_type == u'sqlite':
             if db_file_name:
-                self.db_url = u'sqlite:///%s/%s' % (
-                    AppLocation.get_section_data_path(plugin_name),
-                    db_file_name)
+                self.db_url = u'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
             else:
-                self.db_url = u'sqlite:///%s/%s.sqlite' % (
-                    AppLocation.get_section_data_path(plugin_name), plugin_name)
+                self.db_url = u'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
             self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                urlquote(unicode(settings.value(u'db username').toString())),
-                urlquote(unicode(settings.value(u'db password').toString())),
-                urlquote(unicode(settings.value(u'db hostname').toString())),
-                urlquote(unicode(settings.value(u'db database').toString())))
+                urlquote(settings.value(u'db username')),
+                urlquote(settings.value(u'db password')),
+                urlquote(settings.value(u'db hostname')),
+                urlquote(settings.value(u'db database')))
             if db_type == u'mysql':
-                db_encoding = unicode(
-                    settings.value(u'db encoding', u'utf8').toString())
+                db_encoding = settings.value(u'db encoding')
                 self.db_url += u'?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:
@@ -217,12 +206,9 @@ class Manager(object):
             if db_ver > up_ver:
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
-                    unicode(translate('OpenLP.Manager', 'The database being '
-                        'loaded was created in a more recent version of '
-                        'OpenLP. The database is version %d, while OpenLP '
-                        'expects version %d. The database will not be loaded.'
-                        '\n\nDatabase: %s')) % \
-                        (db_ver, up_ver, self.db_url)
+                    translate('OpenLP.Manager', 'The database being loaded was created in a more recent version of '
+                        'OpenLP. The database is version %d, while OpenLP expects version %d. The database will not '
+                        'be loaded.\n\nDatabase: %s') % (db_ver, up_ver, self.db_url)
                 )
                 return
         try:
@@ -231,8 +217,7 @@ class Manager(object):
             log.exception(u'Error loading database: %s', self.db_url)
             critical_error_message_box(
                 translate('OpenLP.Manager', 'Database Error'),
-                unicode(translate('OpenLP.Manager', 'OpenLP cannot load your '
-                    'database.\n\nDatabase: %s')) % self.db_url
+                translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s') % self.db_url
             )
 
     def save_object(self, object_instance, commit=True):
@@ -253,11 +238,9 @@ class Manager(object):
                 self.is_dirty = True
                 return True
             except OperationalError:
-                # This exception clause is for users running MySQL which likes
-                # to terminate connections on its own without telling anyone.
-                # See bug #927473
-                # However, other dbms can raise it, usually in a non-recoverable
-                # way. So we only retry 3 times.
+                # This exception clause is for users running MySQL which likes to terminate connections on its own
+                # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                # non-recoverable way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue - "MySQL has gone away"')
                 self.session.rollback()
                 if try_count >= 2:
@@ -288,11 +271,9 @@ class Manager(object):
                 self.is_dirty = True
                 return True
             except OperationalError:
-                # This exception clause is for users running MySQL which likes
-                # to terminate connections on its own without telling anyone.
-                # See bug #927473
-                # However, other dbms can raise it, usually in a non-recoverable
-                # way. So we only retry 3 times.
+                # This exception clause is for users running MySQL which likes to terminate connections on its own
+                # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                # non-recoverable way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
                 if try_count >= 2:
@@ -322,11 +303,9 @@ class Manager(object):
                 try:
                     return self.session.query(object_class).get(key)
                 except OperationalError:
-                    # This exception clause is for users running MySQL which likes
-                    # to terminate connections on its own without telling anyone.
-                    # See bug #927473
-                    # However, other dbms can raise it, usually in a non-recoverable
-                    # way. So we only retry 3 times.
+                    # This exception clause is for users running MySQL which likes to terminate connections on its own
+                    # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                    # non-recoverable way. So we only retry 3 times.
                     log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                     if try_count >= 2:
                         raise
@@ -345,17 +324,14 @@ class Manager(object):
             try:
                 return self.session.query(object_class).filter(filter_clause).first()
             except OperationalError:
-                # This exception clause is for users running MySQL which likes
-                # to terminate connections on its own without telling anyone.
-                # See bug #927473
-                # However, other dbms can raise it, usually in a non-recoverable
-                # way. So we only retry 3 times.
+                # This exception clause is for users running MySQL which likes to terminate connections on its own
+                # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                # non-recoverable way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 if try_count >= 2:
                     raise
 
-    def get_all_objects(self, object_class, filter_clause=None,
-        order_by_ref=None):
+    def get_all_objects(self, object_class, filter_clause=None, order_by_ref=None):
         """
         Returns all the objects from the database
 
@@ -363,8 +339,7 @@ class Manager(object):
             The type of objects to return
 
         ``filter_clause``
-            The filter governing selection of objects to return. Defaults to
-            None.
+            The filter governing selection of objects to return. Defaults to None.
 
         ``order_by_ref``
             Any parameters to order the returned objects by. Defaults to None.
@@ -380,11 +355,9 @@ class Manager(object):
             try:
                 return query.all()
             except OperationalError:
-                # This exception clause is for users running MySQL which likes
-                # to terminate connections on its own without telling anyone.
-                # See bug #927473
-                # However, other dbms can raise it, usually in a non-recoverable
-                # way. So we only retry 3 times.
+                # This exception clause is for users running MySQL which likes to terminate connections on its own
+                # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                # non-recoverable way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 if try_count >= 2:
                     raise
@@ -397,8 +370,7 @@ class Manager(object):
             The type of objects to return.
 
         ``filter_clause``
-            The filter governing selection of objects to return. Defaults to
-            None.
+            The filter governing selection of objects to return. Defaults to None.
         """
         query = self.session.query(object_class)
         if filter_clause is not None:
@@ -407,11 +379,9 @@ class Manager(object):
             try:
                 return query.count()
             except OperationalError:
-                # This exception clause is for users running MySQL which likes
-                # to terminate connections on its own without telling anyone.
-                # See bug #927473
-                # However, other dbms can raise it, usually in a non-recoverable
-                # way. So we only retry 3 times.
+                # This exception clause is for users running MySQL which likes to terminate connections on its own
+                # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                # non-recoverable way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 if try_count >= 2:
                     raise
@@ -435,11 +405,9 @@ class Manager(object):
                     self.is_dirty = True
                     return True
                 except OperationalError:
-                    # This exception clause is for users running MySQL which likes
-                    # to terminate connections on its own without telling anyone.
-                    # See bug #927473
-                    # However, other dbms can raise it, usually in a non-recoverable
-                    # way. So we only retry 3 times.
+                    # This exception clause is for users running MySQL which likes to terminate connections on its own
+                    # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                    # non-recoverable way. So we only retry 3 times.
                     log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                     self.session.rollback()
                     if try_count >= 2:
@@ -456,17 +424,14 @@ class Manager(object):
 
     def delete_all_objects(self, object_class, filter_clause=None):
         """
-        Delete all object records.
-        This method should only be used for simple tables and not ones with
-        relationships.  The relationships are not deleted from the database and
-        this will lead to database corruptions.
+        Delete all object records. This method should only be used for simple tables and **not** ones with
+        relationships. The relationships are not deleted from the database and this will lead to database corruptions.
 
         ``object_class``
             The type of object to delete
 
         ``filter_clause``
-            The filter governing selection of objects to return. Defaults to
-            None.
+            The filter governing selection of objects to return. Defaults to None.
         """
         for try_count in range(3):
             try:
@@ -478,11 +443,9 @@ class Manager(object):
                 self.is_dirty = True
                 return True
             except OperationalError:
-                # This exception clause is for users running MySQL which likes
-                # to terminate connections on its own without telling anyone.
-                # See bug #927473
-                # However, other dbms can raise it, usually in a non-recoverable
-                # way. So we only retry 3 times.
+                # This exception clause is for users running MySQL which likes to terminate connections on its own
+                # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
+                # non-recoverable way. So we only retry 3 times.
                 log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
                 if try_count >= 2:

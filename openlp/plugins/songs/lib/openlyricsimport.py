@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -39,10 +39,10 @@ from lxml import etree
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib.songimport import SongImport
 from openlp.plugins.songs.lib.ui import SongStrings
-from openlp.plugins.songs.lib import OpenLyrics
-from openlp.plugins.songs.lib.xml import OpenLyricsError
+from openlp.plugins.songs.lib.xml import OpenLyrics, OpenLyricsError
 
 log = logging.getLogger(__name__)
+
 
 class OpenLyricsImport(SongImport):
     """
@@ -60,13 +60,12 @@ class OpenLyricsImport(SongImport):
         """
         Imports the songs.
         """
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         parser = etree.XMLParser(remove_blank_text=True)
-        for file_path in self.importSource:
-            if self.stopImportFlag:
+        for file_path in self.import_source:
+            if self.stop_import_flag:
                 return
-            self.importWizard.incrementProgressBar(
-                WizardStrings.ImportingType % os.path.basename(file_path))
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 # Pass a file object, because lxml does not cope with some
                 # special characters in the path (see lp:757673 and lp:744337).

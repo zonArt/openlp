@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -51,35 +51,35 @@ class EasySlidesImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
 
     def doImport(self):
-        log.info(u'Importing EasySlides XML file %s', self.importSource)
+        log.info(u'Importing EasySlides XML file %s', self.import_source)
         parser = etree.XMLParser(remove_blank_text=True)
-        parsed_file = etree.parse(self.importSource, parser)
+        parsed_file = etree.parse(self.import_source, parser)
         xml = unicode(etree.tostring(parsed_file))
         song_xml = objectify.fromstring(xml)
-        self.importWizard.progressBar.setMaximum(len(song_xml.Item))
+        self.import_wizard.progress_bar.setMaximum(len(song_xml.Item))
         for song in song_xml.Item:
-            if self.stopImportFlag:
+            if self.stop_import_flag:
                 return
             self._parseSong(song)
 
     def _parseSong(self, song):
         self._success = True
-        self._addUnicodeAttribute(u'title', song.Title1, True)
+        self._add_unicode_attribute(u'title', song.Title1, True)
         if hasattr(song, u'Title2'):
-            self._addUnicodeAttribute(u'alternateTitle', song.Title2)
+            self._add_unicode_attribute(u'alternateTitle', song.Title2)
         if hasattr(song, u'SongNumber'):
-            self._addUnicodeAttribute(u'songNumber', song.SongNumber)
+            self._add_unicode_attribute(u'songNumber', song.SongNumber)
         if self.songNumber == u'0':
             self.songNumber = u''
         self._addAuthors(song)
         if hasattr(song, u'Copyright'):
-            self._addCopyright(song.Copyright)
+            self._add_copyright(song.Copyright)
         if hasattr(song, u'LicenceAdmin1'):
-            self._addCopyright(song.LicenceAdmin1)
+            self._add_copyright(song.LicenceAdmin1)
         if hasattr(song, u'LicenceAdmin2'):
-            self._addCopyright(song.LicenceAdmin2)
+            self._add_copyright(song.LicenceAdmin2)
         if hasattr(song, u'BookReference'):
-            self._addUnicodeAttribute(u'songBookName', song.BookReference)
+            self._add_unicode_attribute(u'songBookName', song.BookReference)
         self._parseAndAddLyrics(song)
         if self._success:
             if not self.finish():
@@ -87,8 +87,7 @@ class EasySlidesImport(SongImport):
         else:
             self.setDefaults()
 
-    def _addUnicodeAttribute(self, self_attribute, import_attribute,
-        mandatory=False):
+    def _add_unicode_attribute(self, self_attribute, import_attribute, mandatory=False):
         """
         Add imported values to the song model converting them to unicode at the
         same time. If the unicode decode fails or a mandatory attribute is not
@@ -117,15 +116,14 @@ class EasySlidesImport(SongImport):
     def _addAuthors(self, song):
         try:
             authors = unicode(song.Writer).split(u',')
-            self.authors = \
-                [author.strip() for author in authors if author.strip()]
+            self.authors = [author.strip() for author in authors if author.strip()]
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Writer')
             self._success = False
         except AttributeError:
             pass
 
-    def _addCopyright(self, element):
+    def _add_copyright(self, element):
         """
         Add a piece of copyright to the total copyright information for the
         song.
@@ -164,26 +162,25 @@ class EasySlidesImport(SongImport):
                 region = self._extractRegion(line)
                 regionlines[region] = 1 + regionlines.get(region, 0)
             elif line[0] == u'[':
-                separatorlines = separatorlines + 1
+                separatorlines += 1
         # if the song has separators
         separators = (separatorlines > 0)
         # the number of different regions in song - 1
         if len(regionlines) > 1:
             log.info(u'EasySlidesImport: the file contained a song named "%s"'
-                u'with more than two regions, but only two regions are',
-                u'tested, encountered regions were: %s',
+                u'with more than two regions, but only two regions are tested, encountered regions were: %s',
                 self.title, u','.join(regionlines.keys()))
         # if the song has regions
         regions = (len(regionlines) > 0)
         # if the regions are inside verses
         regionsInVerses = (regions and regionlines[regionlines.keys()[0]] > 1)
         MarkTypes = {
-            u'CHORUS': VerseType.Tags[VerseType.Chorus],
-            u'VERSE': VerseType.Tags[VerseType.Verse],
-            u'INTRO': VerseType.Tags[VerseType.Intro],
-            u'ENDING': VerseType.Tags[VerseType.Ending],
-            u'BRIDGE': VerseType.Tags[VerseType.Bridge],
-            u'PRECHORUS': VerseType.Tags[VerseType.PreChorus]
+            u'CHORUS': VerseType.tags[VerseType.Chorus],
+            u'VERSE': VerseType.tags[VerseType.Verse],
+            u'INTRO': VerseType.tags[VerseType.Intro],
+            u'ENDING': VerseType.tags[VerseType.Ending],
+            u'BRIDGE': VerseType.tags[VerseType.Bridge],
+            u'PRECHORUS': VerseType.tags[VerseType.PreChorus]
         }
         verses = {}
         # list as [region, versetype, versenum, instance]
@@ -203,7 +200,7 @@ class EasySlidesImport(SongImport):
                     # separators are used, so empty line means slide break
                     # inside verse
                     if self._listHas(verses, [reg, vt, vn, inst]):
-                        inst = inst + 1
+                        inst += 1
                 else:
                     # separators are not used, so empty line starts a new verse
                     vt = u'V'
@@ -276,8 +273,8 @@ class EasySlidesImport(SongImport):
                 if tag in versetags:
                     self.verseOrderList.append(tag)
                 else:
-                    log.info(u'Got order item %s, which is not in versetags,'
-                        u'dropping item from presentation order', tag)
+                    log.info(u'Got order item %s, which is not in versetags, dropping item from presentation order',
+                        tag)
         except UnicodeDecodeError:
             log.exception(u'Unicode decode error while decoding Sequence')
             self._success = False

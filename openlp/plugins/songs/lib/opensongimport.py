@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -111,9 +111,9 @@ class OpenSongImport(SongImport):
         SongImport.__init__(self, manager, **kwargs)
 
     def doImport(self):
-        self.importWizard.progressBar.setMaximum(len(self.importSource))
-        for filename in self.importSource:
-            if self.stopImportFlag:
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+        for filename in self.import_source:
+            if self.stop_import_flag:
                 return
             song_file = open(filename)
             self.doImportFile(song_file)
@@ -133,15 +133,13 @@ class OpenSongImport(SongImport):
         root = tree.getroot()
         if root.tag != u'song':
             self.logError(file.name, unicode(
-                translate('SongsPlugin.OpenSongImport',
-                ('Invalid OpenSong song file. Missing '
-                'song tag.'))))
+                translate('SongsPlugin.OpenSongImport', ('Invalid OpenSong song file. Missing song tag.'))))
             return
         fields = dir(root)
         decode = {
             u'copyright': self.addCopyright,
             u'ccli': u'ccli_number',
-            u'author': self.parseAuthor,
+            u'author': self.parse_author,
             u'title': u'title',
             u'aka': u'alternate_title',
             u'hymn_number': u'song_number'
@@ -162,7 +160,7 @@ class OpenSongImport(SongImport):
         # keep track of verses appearance order
         our_verse_order = []
         # default verse
-        verse_tag = VerseType.Tags[VerseType.Verse]
+        verse_tag = VerseType.tags[VerseType.Verse]
         verse_num = u'1'
         # for the case where song has several sections with same marker
         inst = 1
@@ -179,33 +177,27 @@ class OpenSongImport(SongImport):
             if not this_line:
                 continue
             # skip guitar chords and page and column breaks
-            if this_line.startswith(u'.') or this_line.startswith(u'---') \
-                or this_line.startswith(u'-!!'):
+            if this_line.startswith(u'.') or this_line.startswith(u'---') or this_line.startswith(u'-!!'):
                 continue
             # verse/chorus/etc. marker
             if this_line.startswith(u'['):
                 # drop the square brackets
                 right_bracket = this_line.find(u']')
                 content = this_line[1:right_bracket].lower()
-                # have we got any digits?
-                # If so, verse number is everything from the digits
-                # to the end (openlp does not have concept of part verses, so
-                # just ignore any non integers on the end (including floats))
+                # have we got any digits? If so, verse number is everything from the digits to the end (openlp does not
+                # have concept of part verses, so just ignore any non integers on the end (including floats))
                 match = re.match(u'(\D*)(\d+)', content)
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
                 else:
-                    # otherwise we assume number 1 and take the whole prefix as
-                    # the verse tag
+                    # otherwise we assume number 1 and take the whole prefix as the verse tag
                     verse_tag = content
                     verse_num = u'1'
-                verse_index = VerseType.from_loose_input(verse_tag) \
-                    if verse_tag else 0
-                verse_tag = VerseType.Tags[verse_index]
+                verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
+                verse_tag = VerseType.tags[verse_index]
                 inst = 1
-                if [verse_tag, verse_num, inst] in our_verse_order \
-                    and verse_num in verses.get(verse_tag, {}):
+                if [verse_tag, verse_num, inst] in our_verse_order and verse_num in verses.get(verse_tag, {}):
                     inst = len(verses[verse_tag][verse_num]) + 1
                 continue
             # number at start of line.. it's verse number
@@ -232,8 +224,7 @@ class OpenSongImport(SongImport):
             while(length < len(verse_num) and verse_num[length].isnumeric()):
                 length += 1
             verse_def = u'%s%s' % (verse_tag, verse_num[:length])
-            verse_joints[verse_def] = \
-                u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
+            verse_joints[verse_def] = u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
                 if verse_def in verse_joints else lines
         for verse_def, lines in verse_joints.iteritems():
             self.addVerse(lines, verse_def)
@@ -242,8 +233,8 @@ class OpenSongImport(SongImport):
         # figure out the presentation order, if present
         if u'presentation' in fields and root.presentation:
             order = unicode(root.presentation)
-            # We make all the tags in the lyrics lower case, so match that here
-            # and then split into a list on the whitespace
+            # We make all the tags in the lyrics lower case, so match that here and then split into a list on the
+            # whitespace.
             order = order.lower().split()
             for verse_def in order:
                 match = re.match(u'(\D*)(\d+.*)', verse_def)
@@ -251,7 +242,7 @@ class OpenSongImport(SongImport):
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
                     if not verse_tag:
-                        verse_tag = VerseType.Tags[VerseType.Verse]
+                        verse_tag = VerseType.tags[VerseType.Verse]
                 else:
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def

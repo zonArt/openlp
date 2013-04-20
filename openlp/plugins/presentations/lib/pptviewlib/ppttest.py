@@ -4,14 +4,14 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -71,35 +71,35 @@ class PPTViewer(QtGui.QWidget):
         row = 0
         grid.addWidget(folder_label, 0, 0)
         grid.addWidget(self.folderEdit, 0, 1)
-        row = row + 1
+        row += 1
         grid.addWidget(x_label, row, 0)
         grid.addWidget(self.xEdit, row, 1)
         grid.addWidget(y_label, row, 2)
         grid.addWidget(self.yEdit, row, 3)
-        row = row + 1
+        row += 1
         grid.addWidget(width_label, row, 0)
         grid.addWidget(self.widthEdit, row, 1)
         grid.addWidget(height_label, row, 2)
         grid.addWidget(self.heightEdit, row, 3)
-        row = row + 1
+        row += 1
         grid.addWidget(ppt_label, row, 0)
         grid.addWidget(self.pptEdit, row, 1)
         grid.addWidget(ppt_dlg_btn, row, 2)
         grid.addWidget(ppt_btn, row, 3)
-        row = row + 1
+        row += 1
         grid.addWidget(slide_label, row, 0)
         grid.addWidget(self.slideEdit, row, 1)
         grid.addWidget(slide_btn, row, 2)
-        row = row + 1
+        row += 1
         grid.addWidget(prev, row, 0)
         grid.addWidget(next, row, 1)
-        row = row + 1
+        row += 1
         grid.addWidget(blank, row, 0)
         grid.addWidget(unblank, row, 1)
-        row = row + 1
+        row += 1
         grid.addWidget(restart, row, 0)
         grid.addWidget(close, row, 1)
-        row = row + 1
+        row += 1
         grid.addWidget(stop, row, 0)
         grid.addWidget(resume, row, 1)
         self.connect(ppt_btn, QtCore.SIGNAL(u'clicked()'), self.openClick)

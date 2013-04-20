@@ -5,14 +5,14 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -38,8 +38,15 @@ modules, simply run this script::
 """
 import os
 import sys
+from distutils.version import LooseVersion
 
-is_win = sys.platform.startswith('win')
+# If we try to import uno before nose this will create a warning. Just try to import nose first to suppress the warning.
+try:
+    import nose
+except ImportError:
+    pass
+
+IS_WIN = sys.platform.startswith('win')
 
 VERS = {
     'Python': '2.6',
@@ -47,7 +54,7 @@ VERS = {
     'Qt4': '4.6',
     'sqlalchemy': '0.5',
     # pyenchant 1.6 required on Windows
-    'enchant': '1.6' if is_win else '1.3'
+    'enchant': '1.6' if IS_WIN else '1.3'
 }
 
 # pywin32
@@ -74,8 +81,10 @@ MODULES = [
     'enchant',
     'BeautifulSoup',
     'mako',
+    'cherrypy',
     'migrate',
     'uno',
+    'icu',
 ]
 
 
@@ -83,21 +92,20 @@ OPTIONAL_MODULES = [
     ('sqlite', ' (SQLite 2 support)'),
     ('MySQLdb', ' (MySQL support)'),
     ('psycopg2', ' (PostgreSQL support)'),
-    ('pytest', ' (testing framework)'),
+    ('nose', ' (testing framework)'),
+    ('mock',  ' (testing module)'),
 ]
 
 w = sys.stdout.write
 
 def check_vers(version, required, text):
-    if type(version) is str:
-        version = version.split('.')
-        version = map(int, version)
-    if type(required) is str:
-        required = required.split('.')
-        required = map(int, required)
-    w('  %s >= %s ...    ' % (text, '.'.join(map(str, required))))
-    if version >= required:
-        w('.'.join(map(str, version)) + os.linesep)
+    if type(version) is not str:
+        version = '.'.join(map(str, version))
+    if type(required) is not str:
+        required = '.'.join(map(str, required))
+    w('  %s >= %s ...    ' % (text, required))
+    if LooseVersion(version) >= LooseVersion(required):
+        w(version + os.linesep)
         return True
     else:
         w('FAIL' + os.linesep)
@@ -177,7 +185,7 @@ def main():
     for m in OPTIONAL_MODULES:
         check_module(m[0], text=m[1])
 
-    if is_win:
+    if IS_WIN:
         print('Checking for Windows specific modules...')
         for m in WIN32_MODULES:
             check_module(m)

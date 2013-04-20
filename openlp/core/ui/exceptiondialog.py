@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,78 +26,81 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The GUI widgets of the exception dialog.
+"""
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button, create_button_box
 
+
 class Ui_ExceptionDialog(object):
-    def setupUi(self, exceptionDialog):
-        exceptionDialog.setObjectName(u'exceptionDialog')
-        self.exceptionLayout = QtGui.QVBoxLayout(exceptionDialog)
-        self.exceptionLayout.setObjectName(u'exceptionLayout')
-        self.messageLayout = QtGui.QHBoxLayout()
-        self.messageLayout.setObjectName(u'messageLayout')
-        self.messageLayout.addSpacing(12)
-        self.bugLabel = QtGui.QLabel(exceptionDialog)
-        self.bugLabel.setPixmap(QtGui.QPixmap(u':/graphics/exception.png'))
-        self.bugLabel.setSizePolicy(QtGui.QSizePolicy.Fixed,
-            QtGui.QSizePolicy.Fixed)
-        self.bugLabel.setObjectName(u'bugLabel')
-        self.messageLayout.addWidget(self.bugLabel)
-        self.messageLayout.addSpacing(12)
-        self.messageLabel = QtGui.QLabel(exceptionDialog)
-        self.messageLabel.setWordWrap(True)
-        self.messageLabel.setObjectName(u'messageLabel')
-        self.messageLayout.addWidget(self.messageLabel)
-        self.exceptionLayout.addLayout(self.messageLayout)
-        self.descriptionExplanation = QtGui.QLabel(exceptionDialog)
-        self.descriptionExplanation.setObjectName(u'descriptionExplanation')
-        self.exceptionLayout.addWidget(self.descriptionExplanation)
-        self.descriptionTextEdit = QtGui.QPlainTextEdit(exceptionDialog)
-        self.descriptionTextEdit.setObjectName(u'descriptionTextEdit')
-        self.exceptionLayout.addWidget(self.descriptionTextEdit)
-        self.descriptionWordCount = QtGui.QLabel(exceptionDialog)
-        self.descriptionWordCount.setObjectName(u'descriptionWordCount')
-        self.exceptionLayout.addWidget(self.descriptionWordCount)
-        self.exceptionTextEdit = QtGui.QPlainTextEdit(exceptionDialog)
-        self.exceptionTextEdit.setReadOnly(True)
-        self.exceptionTextEdit.setObjectName(u'exceptionTextEdit')
-        self.exceptionLayout.addWidget(self.exceptionTextEdit)
-        self.sendReportButton = create_button(exceptionDialog,
-            u'sendReportButton', icon=u':/general/general_email.png',
-            click=self.onSendReportButtonClicked)
-        self.saveReportButton = create_button(exceptionDialog,
-            u'saveReportButton', icon=u':/general/general_save.png',
-            click=self.onSaveReportButtonClicked)
-        self.attachFileButton = create_button(exceptionDialog,
-            u'attachFileButton', icon=u':/general/general_open.png',
-            click=self.onAttachFileButtonClicked)
-        self.buttonBox = create_button_box(exceptionDialog, u'buttonBox',
-            [u'close'], [self.sendReportButton, self.saveReportButton,
-            self.attachFileButton])
-        self.exceptionLayout.addWidget(self.buttonBox)
+    """
+    The GUI widgets of the exception dialog.
+    """
+    def setupUi(self, exception_dialog):
+        """
+        Set up the UI.
+        """
+        exception_dialog.setObjectName(u'exception_dialog')
+        self.exception_layout = QtGui.QVBoxLayout(exception_dialog)
+        self.exception_layout.setObjectName(u'exception_layout')
+        self.message_layout = QtGui.QHBoxLayout()
+        self.message_layout.setObjectName(u'messageLayout')
+        self.message_layout.addSpacing(12)
+        self.bug_label = QtGui.QLabel(exception_dialog)
+        self.bug_label.setPixmap(QtGui.QPixmap(u':/graphics/exception.png'))
+        self.bug_label.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.bug_label.setObjectName(u'bug_label')
+        self.message_layout.addWidget(self.bug_label)
+        self.message_layout.addSpacing(12)
+        self.message_label = QtGui.QLabel(exception_dialog)
+        self.message_label.setWordWrap(True)
+        self.message_label.setObjectName(u'message_label')
+        self.message_layout.addWidget(self.message_label)
+        self.exception_layout.addLayout(self.message_layout)
+        self.description_explanation = QtGui.QLabel(exception_dialog)
+        self.description_explanation.setObjectName(u'description_explanation')
+        self.exception_layout.addWidget(self.description_explanation)
+        self.description_text_edit = QtGui.QPlainTextEdit(exception_dialog)
+        self.description_text_edit.setObjectName(u'description_text_edit')
+        self.exception_layout.addWidget(self.description_text_edit)
+        self.description_word_count = QtGui.QLabel(exception_dialog)
+        self.description_word_count.setObjectName(u'description_word_count')
+        self.exception_layout.addWidget(self.description_word_count)
+        self.exception_text_edit = QtGui.QPlainTextEdit(exception_dialog)
+        self.exception_text_edit.setReadOnly(True)
+        self.exception_text_edit.setObjectName(u'exception_text_edit')
+        self.exception_layout.addWidget(self.exception_text_edit)
+        self.send_report_button = create_button(exception_dialog, u'send_report_button',
+            icon=u':/general/general_email.png', click=self.on_send_report_button_clicked)
+        self.save_report_button = create_button(exception_dialog, u'save_report_button',
+            icon=u':/general/general_save.png', click=self.on_save_report_button_clicked)
+        self.attach_tile_button = create_button(exception_dialog, u'attach_tile_button',
+            icon=u':/general/general_open.png', click=self.on_attach_file_button_clicked)
+        self.button_box = create_button_box(exception_dialog, u'button_box',
+            [u'close'], [self.send_report_button, self.save_report_button, self.attach_tile_button])
+        self.exception_layout.addWidget(self.button_box)
 
-        self.retranslateUi(exceptionDialog)
-        QtCore.QObject.connect(self.descriptionTextEdit,
-            QtCore.SIGNAL(u'textChanged()'), self.onDescriptionUpdated)
+        self.retranslateUi(exception_dialog)
+        self.description_text_edit.textChanged.connect(self.on_description_updated)
 
-    def retranslateUi(self, exceptionDialog):
-        exceptionDialog.setWindowTitle(
-            translate('OpenLP.ExceptionDialog', 'Error Occurred'))
-        self.descriptionExplanation.setText(translate('OpenLP.ExceptionDialog',
+    def retranslateUi(self, exception_dialog):
+        """
+        Translate the widgets on the fly.
+        """
+        exception_dialog.setWindowTitle(translate('OpenLP.ExceptionDialog', 'Error Occurred'))
+        self.description_explanation.setText(translate('OpenLP.ExceptionDialog',
             'Please enter a description of what you were doing to cause this '
             'error \n(Minimum 20 characters)'))
-        self.messageLabel.setText(translate('OpenLP.ExceptionDialog', 'Oops! '
+        self.message_label.setText(translate('OpenLP.ExceptionDialog', 'Oops! '
             'OpenLP hit a problem, and couldn\'t recover. The text in the box '
             'below contains information that might be helpful to the OpenLP '
             'developers, so please e-mail it to bugs@openlp.org, along with a '
             'detailed description of what you were doing when the problem '
             'occurred.'))
-        self.sendReportButton.setText(translate('OpenLP.ExceptionDialog',
-            'Send E-Mail'))
-        self.saveReportButton.setText(translate('OpenLP.ExceptionDialog',
-            'Save to File'))
-        self.attachFileButton.setText(translate('OpenLP.ExceptionDialog',
-            'Attach File'))
+        self.send_report_button.setText(translate('OpenLP.ExceptionDialog', 'Send E-Mail'))
+        self.save_report_button.setText(translate('OpenLP.ExceptionDialog', 'Save to File'))
+        self.attach_tile_button.setText(translate('OpenLP.ExceptionDialog', 'Attach File'))

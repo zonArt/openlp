@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -28,17 +28,16 @@
 ###############################################################################
 
 """
-Provide additional functionality required by OpenLP from the inherited
-QDockWidget.
+Provide additional functionality required by OpenLP from the inherited QDockWidget.
 """
 import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import build_icon
-from openlp.core.ui import ScreenList
+from openlp.core.lib import ScreenList, build_icon
 
 log = logging.getLogger(__name__)
+
 
 class OpenLPDockWidget(QtGui.QDockWidget):
     """
@@ -56,8 +55,8 @@ class OpenLPDockWidget(QtGui.QDockWidget):
             self.setWindowIcon(build_icon(icon))
         # Sort out the minimum width.
         screens = ScreenList()
-        mainwindow_docbars = screens.current[u'size'].width() / 5
-        if mainwindow_docbars > 300:
+        main_window_docbars = screens.current[u'size'].width() / 5
+        if main_window_docbars > 300:
             self.setMinimumWidth(300)
         else:
-            self.setMinimumWidth(mainwindow_docbars)
+            self.setMinimumWidth(main_window_docbars)

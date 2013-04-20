@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,12 +26,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+This module contains the topic edit form.
+"""
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.topicsdialog import Ui_TopicsDialog
+
 
 class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
     """
@@ -41,21 +45,40 @@ class TopicsForm(QtGui.QDialog, Ui_TopicsDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(TopicsForm, self).__init__(parent)
         self.setupUi(self)
 
     def exec_(self, clear=True):
+        """
+        Execute the dialog.
+        """
         if clear:
-            self.nameEdit.clear()
-        self.nameEdit.setFocus()
+            self.name_edit.clear()
+        self.name_edit.setFocus()
         return QtGui.QDialog.exec_(self)
 
     def accept(self):
-        if not self.nameEdit.text():
-            critical_error_message_box(
-                message=translate('SongsPlugin.TopicsForm',
+        """
+        Override the inherited method to check before we close.
+        """
+        if not self.name_edit.text():
+            critical_error_message_box(message=translate('SongsPlugin.TopicsForm',
                 'You need to type in a topic name.'))
-            self.nameEdit.setFocus()
+            self.name_edit.setFocus()
             return False
         else:
             return QtGui.QDialog.accept(self)
+
+    def _get_name(self):
+        """
+        Return the name of the topic.
+        """
+        return self.name_edit.text()
+
+    def _set_name(self, value):
+        """
+        Set the topic name.
+        """
+        self.name_edit.setText(value)
+
+    name = property(_get_name, _set_name)

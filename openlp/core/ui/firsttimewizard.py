@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,7 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The UI widgets for the first time wizard.
+"""
 from PyQt4 import QtCore, QtGui
 
 import sys
@@ -34,7 +36,11 @@ import sys
 from openlp.core.lib import translate
 from openlp.core.lib.ui import add_welcome_page
 
+
 class FirstTimePage(object):
+    """
+    An enumeration class with each of the pages of the wizard.
+    """
     Welcome = 0
     Plugins = 1
     NoInternet = 2
@@ -46,15 +52,19 @@ class FirstTimePage(object):
 
 
 class Ui_FirstTimeWizard(object):
+    """
+    The UI widgets for the first time wizard.
+    """
     def setupUi(self, FirstTimeWizard):
+        """
+        Set up the UI.
+        """
         FirstTimeWizard.setObjectName(u'FirstTimeWizard')
         FirstTimeWizard.resize(550, 386)
         FirstTimeWizard.setModal(True)
         FirstTimeWizard.setWizardStyle(QtGui.QWizard.ModernStyle)
-        FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages |
-            QtGui.QWizard.NoBackButtonOnStartPage |
-            QtGui.QWizard.NoBackButtonOnLastPage |
-            QtGui.QWizard.HaveCustomButton1)
+        FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages | QtGui.QWizard.NoBackButtonOnStartPage |
+            QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
         self.noInternetFinishButton = self.button(QtGui.QWizard.CustomButton1)
         self.cancelButton = self.button(QtGui.QWizard.CancelButton)
@@ -175,8 +185,7 @@ class Ui_FirstTimeWizard(object):
         self.themeComboBox = QtGui.QComboBox(self.defaultsPage)
         self.themeComboBox.setEditable(False)
         self.themeComboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        self.themeComboBox.setSizeAdjustPolicy(
-            QtGui.QComboBox.AdjustToContents)
+        self.themeComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
         self.themeComboBox.setObjectName(u'themeComboBox')
         self.defaultsLayout.addRow(self.themeLabel, self.themeComboBox)
         FirstTimeWizard.setPage(FirstTimePage.Defaults, self.defaultsPage)
@@ -196,43 +205,30 @@ class Ui_FirstTimeWizard(object):
         self.retranslateUi(FirstTimeWizard)
 
     def retranslateUi(self, FirstTimeWizard):
-        FirstTimeWizard.setWindowTitle(translate(
-            'OpenLP.FirstTimeWizard', 'First Time Wizard'))
-        self.titleLabel.setText(
-            u'<span style="font-size:14pt; font-weight:600;">%s</span>' % \
-            translate('OpenLP.FirstTimeWizard',
-            'Welcome to the First Time Wizard'))
-        self.informationLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'This wizard will help you to configure OpenLP for initial use.'
-            ' Click the next button below to start.'))
-        self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Activate required Plugins'))
-        self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Select the Plugins you wish to use. '))
+        """
+        Translate the UI on the fly
+        """
+        FirstTimeWizard.setWindowTitle(translate('OpenLP.FirstTimeWizard', 'First Time Wizard'))
+        self.title_label.setText(u'<span style="font-size:14pt; font-weight:600;">%s</span>' %
+            translate('OpenLP.FirstTimeWizard', 'Welcome to the First Time Wizard'))
+        self.information_label.setText(translate('OpenLP.FirstTimeWizard',
+            'This wizard will help you to configure OpenLP for initial use. Click the next button below to start.'))
+        self.pluginPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Activate required Plugins'))
+        self.pluginPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select the Plugins you wish to use. '))
         self.songsCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Songs'))
-        self.customCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Custom Slides'))
+        self.customCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Custom Slides'))
         self.bibleCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Bible'))
-        self.imageCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Images'))
+        self.imageCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Images'))
         # TODO Presentation plugin is not yet working on Mac OS X.
         # For now just ignore it.
         if sys.platform != 'darwin':
-            self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-                'Presentations'))
-        self.mediaCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Media (Audio and Video)'))
-        self.remoteCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Allow remote access'))
-        self.songUsageCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Monitor Song Usage'))
-        self.alertCheckBox.setText(translate('OpenLP.FirstTimeWizard',
-            'Allow Alerts'))
-        self.noInternetPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'No Internet Connection'))
-        self.noInternetPage.setSubTitle(translate(
-            'OpenLP.FirstTimeWizard',
-            'Unable to detect an Internet connection.'))
+            self.presentationCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Presentations'))
+        self.mediaCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Media (Audio and Video)'))
+        self.remoteCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Allow remote access'))
+        self.songUsageCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Monitor Song Usage'))
+        self.alertCheckBox.setText(translate('OpenLP.FirstTimeWizard', 'Allow Alerts'))
+        self.noInternetPage.setTitle(translate('OpenLP.FirstTimeWizard', 'No Internet Connection'))
+        self.noInternetPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Unable to detect an Internet connection.'))
         self.noInternetText = translate('OpenLP.FirstTimeWizard',
             'No Internet connection was found. The First Time Wizard needs an '
             'Internet connection in order to be able to download sample '
@@ -242,29 +238,17 @@ class Ui_FirstTimeWizard(object):
             'check your Internet connection and re-run this wizard by '
             'selecting "Tools/Re-run First Time Wizard" from OpenLP.')
         self.cancelWizardText = translate('OpenLP.FirstTimeWizard',
-            '\n\nTo cancel the First Time Wizard completely (and not start '
-            'OpenLP), click the Cancel button now.')
-        self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Sample Songs'))
-        self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Select and download public domain songs.'))
-        self.biblesPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Sample Bibles'))
-        self.biblesPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Select and download free Bibles.'))
-        self.themesPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Sample Themes'))
-        self.themesPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
-            'Select and download sample themes.'))
-        self.defaultsPage.setTitle(translate('OpenLP.FirstTimeWizard',
-            'Default Settings'))
+            '\n\nTo cancel the First Time Wizard completely (and not start OpenLP), click the Cancel button now.')
+        self.songsPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Songs'))
+        self.songsPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download public domain songs.'))
+        self.biblesPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Bibles'))
+        self.biblesPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download free Bibles.'))
+        self.themesPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Sample Themes'))
+        self.themesPage.setSubTitle(translate('OpenLP.FirstTimeWizard', 'Select and download sample themes.'))
+        self.defaultsPage.setTitle(translate('OpenLP.FirstTimeWizard', 'Default Settings'))
         self.defaultsPage.setSubTitle(translate('OpenLP.FirstTimeWizard',
             'Set up default settings to be used by OpenLP.'))
-        self.displayLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Default output display:'))
-        self.themeLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Select default theme:'))
-        self.progressLabel.setText(translate('OpenLP.FirstTimeWizard',
-            'Starting configuration process...'))
-        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1,
-            translate('OpenLP.FirstTimeWizard', 'Finish'))
+        self.displayLabel.setText(translate('OpenLP.FirstTimeWizard', 'Default output display:'))
+        self.themeLabel.setText(translate('OpenLP.FirstTimeWizard', 'Select default theme:'))
+        self.progressLabel.setText(translate('OpenLP.FirstTimeWizard', 'Starting configuration process...'))
+        FirstTimeWizard.setButtonText(QtGui.QWizard.CustomButton1, translate('OpenLP.FirstTimeWizard', 'Finish'))

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -64,19 +64,18 @@ class EasyWorshipSongImport(SongImport):
 
     def doImport(self):
         # Open the DB and MB files if they exist
-        import_source_mb = self.importSource.replace('.DB', '.MB')
-        if not os.path.isfile(self.importSource):
+        import_source_mb = self.import_source.replace('.DB', '.MB')
+        if not os.path.isfile(self.import_source):
             return
         if not os.path.isfile(import_source_mb):
             return
-        db_size = os.path.getsize(self.importSource)
+        db_size = os.path.getsize(self.import_source)
         if db_size < 0x800:
             return
-        db_file = open(self.importSource, 'rb')
+        db_file = open(self.import_source, 'rb')
         self.memoFile = open(import_source_mb, 'rb')
         # Don't accept files that are clearly not paradox files
-        record_size, header_size, block_size, first_block, num_fields \
-            = struct.unpack('<hhxb8xh17xh', db_file.read(35))
+        record_size, header_size, block_size, first_block, num_fields = struct.unpack('<hhxb8xh17xh', db_file.read(35))
         if header_size != 0x800 or block_size < 1 or block_size > 4:
             db_file.close()
             self.memoFile.close()
@@ -111,20 +110,17 @@ class EasyWorshipSongImport(SongImport):
         # There does not appear to be a _reliable_ way of getting the number
         # of songs/records, so let's use file blocks for measuring progress.
         total_blocks = (db_size - header_size) / (block_size * 1024)
-        self.importWizard.progressBar.setMaximum(total_blocks)
+        self.import_wizard.progress_bar.setMaximum(total_blocks)
         # Read the field description information
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
         db_file.seek(4 + (num_fields * 4) + 261, os.SEEK_CUR)
-        field_names = db_file.read(header_size - db_file.tell()).split('\0',
-            num_fields)
+        field_names = db_file.read(header_size - db_file.tell()).split('\0', num_fields)
         field_names.pop()
         field_descs = []
         for i, field_name in enumerate(field_names):
-            field_type, field_size = struct.unpack_from('BB',
-                field_info, i * 2)
-            field_descs.append(FieldDescEntry(field_name, field_type,
-                field_size))
+            field_type, field_size = struct.unpack_from('BB', field_info, i * 2)
+            field_descs.append(FieldDescEntry(field_name, field_type, field_size))
         self.setRecordStruct(field_descs)
         # Pick out the field description indexes we will need
         try:
@@ -146,7 +142,7 @@ class EasyWorshipSongImport(SongImport):
             rec_count = (rec_count + record_size) / record_size
             # Loop through each record within the current block
             for i in range(rec_count):
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 raw_record = db_file.read(record_size)
                 self.fields = self.recordStruct.unpack(raw_record)
@@ -164,9 +160,7 @@ class EasyWorshipSongImport(SongImport):
                 if admin:
                     if copy:
                         self.copyright += u', '
-                    self.copyright += \
-                        unicode(translate('SongsPlugin.EasyWorshipSongImport',
-                            'Administered by %s')) % admin
+                    self.copyright += translate('SongsPlugin.EasyWorshipSongImport', 'Administered by %s') % admin
                 if ccli:
                     self.ccliNumber = ccli
                 if authors:
@@ -180,8 +174,11 @@ class EasyWorshipSongImport(SongImport):
                         self.addAuthor(author_name.strip())
                 if words:
                     # Format the lyrics
-                    words, self.encoding = strip_rtf(words, self.encoding)
-                    verse_type = VerseType.Tags[VerseType.Verse]
+                    result = strip_rtf(words, self.encoding)
+                    if result is None:
+                        return
+                    words, self.encoding = result
+                    verse_type = VerseType.tags[VerseType.Verse]
                     for verse in SLIDE_BREAK_REGEX.split(words):
                         verse = verse.strip()
                         if not verse:
@@ -190,17 +187,17 @@ class EasyWorshipSongImport(SongImport):
                         first_line_is_tag = False
                         # EW tags: verse, chorus, pre-chorus, bridge, tag,
                         # intro, ending, slide
-                        for type in VerseType.Names+[u'tag', u'slide']:
-                            type = type.lower()
+                        for tag in VerseType.tags + [u'tag', u'slide']:
+                            tag = tag.lower()
                             ew_tag = verse_split[0].strip().lower()
-                            if ew_tag.startswith(type):
-                                verse_type = type[0]
-                                if type == u'tag' or type == u'slide':
-                                    verse_type = VerseType.Tags[VerseType.Other]
+                            if ew_tag.startswith(tag):
+                                verse_type = tag[0]
+                                if tag == u'tag' or tag == u'slide':
+                                    verse_type = VerseType.tags[VerseType.Other]
                                 first_line_is_tag = True
                                 number_found = False
                                 # check if tag is followed by number and/or note
-                                if len(ew_tag) > len(type):
+                                if len(ew_tag) > len(tag):
                                     match = NUMBER_REGEX.search(ew_tag)
                                     if match:
                                         number = match.group()
@@ -212,25 +209,19 @@ class EasyWorshipSongImport(SongImport):
                                 if not number_found:
                                     verse_type += u'1'
                                 break
-                        self.addVerse(
-                            verse_split[-1].strip() \
-                                if first_line_is_tag else verse,
-                            verse_type)
+                        self.addVerse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
                 if len(self.comments) > 5:
-                    self.comments += unicode(
-                        translate('SongsPlugin.EasyWorshipSongImport',
-                        '\n[above are Song Tags with notes imported from \
-                        EasyWorship]'))
-                if self.stopImportFlag:
+                    self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
+                        '\n[above are Song Tags with notes imported from EasyWorship]'))
+                if self.stop_import_flag:
                     break
                 if not self.finish():
-                    self.logError(self.importSource)
+                    self.logError(self.import_source)
         db_file.close()
         self.memoFile.close()
 
     def findField(self, field_name):
-        return [i for i, x in enumerate(self.fieldDescs)
-            if x.name == field_name][0]
+        return [i for i, x in enumerate(self.fieldDescs) if x.name == field_name][0]
 
     def setRecordStruct(self, field_descs):
         # Begin with empty field struct list
@@ -286,8 +277,7 @@ class EasyWorshipSongImport(SongImport):
             return (field ^ 0x80 == 1)
         elif field_desc.type == 0x0c or field_desc.type == 0x0d:
             # Memo or Blob
-            block_start, blob_size = \
-                struct.unpack_from('<II', field, len(field)-10)
+            block_start, blob_size = struct.unpack_from('<II', field, len(field)-10)
             sub_block = block_start & 0xff
             block_start &= ~0xff
             self.memoFile.seek(block_start)

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -33,122 +33,11 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, Receiver, translate
+from openlp.core.lib import Registry, UiStrings, build_icon, translate
 from openlp.core.utils.actions import ActionList
 
+
 log = logging.getLogger(__name__)
-
-class UiStrings(object):
-    """
-    Provide standard strings for objects to use.
-    """
-    __instance__ = None
-
-    def __new__(cls):
-        """
-        Override the default object creation method to return a single instance.
-        """
-        if not cls.__instance__:
-            cls.__instance__ = object.__new__(cls)
-        return cls.__instance__
-
-    def __init__(self):
-        """
-        These strings should need a good reason to be retranslated elsewhere.
-        Should some/more/less of these have an &amp; attached?
-        """
-        self.About = translate('OpenLP.Ui', 'About')
-        self.Add = translate('OpenLP.Ui', '&Add')
-        self.Advanced = translate('OpenLP.Ui', 'Advanced')
-        self.AllFiles = translate('OpenLP.Ui', 'All Files')
-        self.Bottom = translate('OpenLP.Ui', 'Bottom')
-        self.Browse = translate('OpenLP.Ui', 'Browse...')
-        self.Cancel = translate('OpenLP.Ui', 'Cancel')
-        self.CCLINumberLabel = translate('OpenLP.Ui', 'CCLI number:')
-        self.CreateService = translate('OpenLP.Ui', 'Create a new service.')
-        self.ConfirmDelete = translate('OpenLP.Ui', 'Confirm Delete')
-        self.Continuous = translate('OpenLP.Ui', 'Continuous')
-        self.Default = unicode(translate('OpenLP.Ui', 'Default'))
-        self.Delete = translate('OpenLP.Ui', '&Delete')
-        self.DisplayStyle = translate('OpenLP.Ui', 'Display style:')
-        self.Duplicate = translate('OpenLP.Ui', 'Duplicate Error')
-        self.Edit = translate('OpenLP.Ui', '&Edit')
-        self.EmptyField = translate('OpenLP.Ui', 'Empty Field')
-        self.Error = translate('OpenLP.Ui', 'Error')
-        self.Export = translate('OpenLP.Ui', 'Export')
-        self.File = translate('OpenLP.Ui', 'File')
-        self.FontSizePtUnit = translate('OpenLP.Ui', 'pt',
-            'Abbreviated font pointsize unit')
-        self.Help = translate('OpenLP.Ui', 'Help')
-        self.Hours = translate('OpenLP.Ui', 'h',
-            'The abbreviated unit for hours')
-        self.IFdSs = translate('OpenLP.Ui', 'Invalid Folder Selected',
-            'Singular')
-        self.IFSs = translate('OpenLP.Ui', 'Invalid File Selected', 'Singular')
-        self.IFSp = translate('OpenLP.Ui', 'Invalid Files Selected', 'Plural')
-        self.Image = translate('OpenLP.Ui', 'Image')
-        self.Import = translate('OpenLP.Ui', 'Import')
-        self.LayoutStyle = translate('OpenLP.Ui', 'Layout style:')
-        self.Live = translate('OpenLP.Ui', 'Live')
-        self.LiveBGError = translate('OpenLP.Ui', 'Live Background Error')
-        self.LiveToolbar = translate('OpenLP.Ui', 'Live Toolbar')
-        self.Load = translate('OpenLP.Ui', 'Load')
-        self.Minutes = translate('OpenLP.Ui', 'm',
-            'The abbreviated unit for minutes')
-        self.Middle = translate('OpenLP.Ui', 'Middle')
-        self.New = translate('OpenLP.Ui', 'New')
-        self.NewService = translate('OpenLP.Ui', 'New Service')
-        self.NewTheme = translate('OpenLP.Ui', 'New Theme')
-        self.NextTrack = translate('OpenLP.Ui', 'Next Track')
-        self.NFdSs = translate('OpenLP.Ui', 'No Folder Selected', 'Singular')
-        self.NFSs = translate('OpenLP.Ui', 'No File Selected', 'Singular')
-        self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
-        self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
-        self.NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
-        self.OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
-        self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2.0')
-        self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. '
-            'Do you wish to continue?')
-        self.OpenService = translate('OpenLP.Ui', 'Open service.')
-        self.PlaySlidesInLoop = translate('OpenLP.Ui','Play Slides in Loop')
-        self.PlaySlidesToEnd = translate('OpenLP.Ui','Play Slides to End')
-        self.Preview = translate('OpenLP.Ui', 'Preview')
-        self.PrintService = translate('OpenLP.Ui', 'Print Service')
-        self.ReplaceBG = translate('OpenLP.Ui', 'Replace Background')
-        self.ReplaceLiveBG = translate('OpenLP.Ui', 'Replace live background.')
-        self.ResetBG = translate('OpenLP.Ui', 'Reset Background')
-        self.ResetLiveBG = translate('OpenLP.Ui', 'Reset live background.')
-        self.Seconds = translate('OpenLP.Ui', 's',
-            'The abbreviated unit for seconds')
-        self.SaveAndPreview = translate('OpenLP.Ui', 'Save && Preview')
-        self.Search = translate('OpenLP.Ui', 'Search')
-        self.SearchThemes = translate(
-            'OpenLP.Ui', 'Search Themes...', 'Search bar place holder text ')
-        self.SelectDelete = translate('OpenLP.Ui', 'You must select an item '
-            'to delete.')
-        self.SelectEdit = translate('OpenLP.Ui', 'You must select an item to '
-            'edit.')
-        self.Settings = translate('OpenLP.Ui', 'Settings')
-        self.SaveService = translate('OpenLP.Ui', 'Save Service')
-        self.Service = translate('OpenLP.Ui', 'Service')
-        self.Split = translate('OpenLP.Ui', 'Optional &Split')
-        self.SplitToolTip = translate('OpenLP.Ui', 'Split a slide into two '
-            'only if it does not fit on the screen as one slide.')
-        self.StartTimeCode = unicode(translate('OpenLP.Ui', 'Start %s'))
-        self.StopPlaySlidesInLoop = translate('OpenLP.Ui',
-            'Stop Play Slides in Loop')
-        self.StopPlaySlidesToEnd = translate('OpenLP.Ui',
-            'Stop Play Slides to End')
-        self.Theme = translate('OpenLP.Ui', 'Theme', 'Singular')
-        self.Themes = translate('OpenLP.Ui', 'Themes', 'Plural')
-        self.Tools = translate('OpenLP.Ui', 'Tools')
-        self.Top = translate('OpenLP.Ui', 'Top')
-        self.UnsupportedFile = translate('OpenLP.Ui', 'Unsupported File')
-        self.VersePerSlide = translate('OpenLP.Ui', 'Verse Per Slide')
-        self.VersePerLine = translate('OpenLP.Ui', 'Verse Per Line')
-        self.Version = translate('OpenLP.Ui', 'Version')
-        self.View = translate('OpenLP.Ui', 'View')
-        self.ViewMode = translate('OpenLP.Ui', 'View Mode')
 
 
 def add_welcome_page(parent, image):
@@ -161,29 +50,27 @@ def add_welcome_page(parent, image):
     ``image``
         A splash image for the wizard.
     """
-    parent.welcomePage = QtGui.QWizardPage()
-    parent.welcomePage.setPixmap(QtGui.QWizard.WatermarkPixmap,
-        QtGui.QPixmap(image))
-    parent.welcomePage.setObjectName(u'WelcomePage')
-    parent.welcomeLayout = QtGui.QVBoxLayout(parent.welcomePage)
-    parent.welcomeLayout.setObjectName(u'WelcomeLayout')
-    parent.titleLabel = QtGui.QLabel(parent.welcomePage)
-    parent.titleLabel.setObjectName(u'TitleLabel')
-    parent.welcomeLayout.addWidget(parent.titleLabel)
-    parent.welcomeLayout.addSpacing(40)
-    parent.informationLabel = QtGui.QLabel(parent.welcomePage)
-    parent.informationLabel.setWordWrap(True)
-    parent.informationLabel.setObjectName(u'InformationLabel')
-    parent.welcomeLayout.addWidget(parent.informationLabel)
-    parent.welcomeLayout.addStretch()
-    parent.addPage(parent.welcomePage)
+    parent.welcome_page = QtGui.QWizardPage()
+    parent.welcome_page.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(image))
+    parent.welcome_page.setObjectName(u'welcome_page')
+    parent.welcome_layout = QtGui.QVBoxLayout(parent.welcome_page)
+    parent.welcome_layout.setObjectName(u'WelcomeLayout')
+    parent.title_label = QtGui.QLabel(parent.welcome_page)
+    parent.title_label.setObjectName(u'title_label')
+    parent.welcome_layout.addWidget(parent.title_label)
+    parent.welcome_layout.addSpacing(40)
+    parent.information_label = QtGui.QLabel(parent.welcome_page)
+    parent.information_label.setWordWrap(True)
+    parent.information_label.setObjectName(u'information_label')
+    parent.welcome_layout.addWidget(parent.information_label)
+    parent.welcome_layout.addStretch()
+    parent.addPage(parent.welcome_page)
 
 
-def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
+def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     """
-    Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and
-    ``rejected()`` signals of the button box are connected with the dialogs
-    ``accept()`` and ``reject()`` slots.
+    Creates a QDialogButtonBox with the given buttons. The ``accepted()`` and ``rejected()`` signals of the button box
+    are connected with the dialogs ``accept()`` and ``reject()`` slots.
 
     ``dialog``
         The parent object. This has to be a ``QDialog`` descendant.
@@ -192,14 +79,15 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
         A string which is set as object name.
 
     ``standard_buttons``
-        A list of strings for the used buttons. It might contain: ``ok``,
-        ``save``, ``cancel``, ``close``, and ``defaults``.
+        A list of strings for the used buttons. It might contain: ``ok``, ``save``, ``cancel``, ``close``, and
+        ``defaults``.
 
     ``custom_buttons``
-        A list of additional buttons. If a item is a instance of
-        QtGui.QAbstractButton it is added with QDialogButtonBox.ActionRole.
-        Otherwhise the item has to be a tuple of a button and a ButtonRole.
+        A list of additional buttons. If a item is a instance of QtGui.QAbstractButton it is added with
+        QDialogButtonBox.ActionRole. Otherwhise the item has to be a tuple of a button and a ButtonRole.
     """
+    if custom_buttons is None:
+        custom_buttons = []
     buttons = QtGui.QDialogButtonBox.NoButton
     if u'ok' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Ok
@@ -219,18 +107,14 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=[]):
             button_box.addButton(button, QtGui.QDialogButtonBox.ActionRole)
         else:
             button_box.addButton(*button)
-    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'accepted()'),
-        dialog.accept)
-    QtCore.QObject.connect(button_box, QtCore.SIGNAL(u'rejected()'),
-        dialog.reject)
+    button_box.accepted.connect(dialog.accept)
+    button_box.rejected.connect(dialog.reject)
     return button_box
 
 
-def critical_error_message_box(title=None, message=None, parent=None,
-    question=False):
+def critical_error_message_box(title=None, message=None, parent=None, question=False):
     """
-    Provides a standard critical message box for errors that OpenLP displays
-    to users.
+    Provides a standard critical message box for errors that OpenLP displays to users.
 
     ``title``
         The title for the message box.
@@ -246,11 +130,8 @@ def critical_error_message_box(title=None, message=None, parent=None,
     """
     if question:
         return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
-            QtGui.QMessageBox.StandardButtons(
-            QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
-    data = {u'message': message}
-    data[u'title'] = title if title else UiStrings().Error
-    return Receiver.send_message(u'openlp_error_message', data)
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+    return Registry().get(u'main_window').error_message(title if title else UiStrings().Error, message)
 
 
 def create_horizontal_adjusting_combo_box(parent, name):
@@ -281,16 +162,14 @@ def create_button(parent, name, **kwargs):
         A string which is set as object name (required).
 
     ``role``
-        A string which can have one value out of ``delete``, ``up``, and
-        ``down``. This decides about default values for properties like text,
-        icon, or tooltip.
+        A string which can have one value out of ``delete``, ``up``, and ``down``. This decides about default values
+        for properties like text, icon, or tooltip.
 
     ``text``
         A string for the action text.
 
     ``icon``
-        Either a QIcon, a resource string, or a file location string for the
-        action icon.
+        Either a QIcon, a resource string, or a file location string for the action icon.
 
     ``tooltip``
         A string for the action tool tip.
@@ -302,19 +181,15 @@ def create_button(parent, name, **kwargs):
         role = kwargs.pop(u'role')
         if role == u'delete':
             kwargs.setdefault(u'text', UiStrings().Delete)
-            kwargs.setdefault(u'tooltip',
-                translate('OpenLP.Ui', 'Delete the selected item.'))
+            kwargs.setdefault(u'tooltip', translate('OpenLP.Ui', 'Delete the selected item.'))
         elif role == u'up':
             kwargs.setdefault(u'icon', u':/services/service_up.png')
-            kwargs.setdefault(u'tooltip',
-                translate('OpenLP.Ui', 'Move selection up one position.'))
+            kwargs.setdefault(u'tooltip', translate('OpenLP.Ui', 'Move selection up one position.'))
         elif role == u'down':
             kwargs.setdefault(u'icon', u':/services/service_down.png')
-            kwargs.setdefault(u'tooltip',
-                translate('OpenLP.Ui', 'Move selection down one position.'))
+            kwargs.setdefault(u'tooltip', translate('OpenLP.Ui', 'Move selection down one position.'))
         else:
-            log.warn(u'The role "%s" is not defined in create_push_button().',
-                role)
+            log.warn(u'The role "%s" is not defined in create_push_button().', role)
     if kwargs.pop(u'class', u'') == u'toolbutton':
         button = QtGui.QToolButton(parent)
     else:
@@ -329,8 +204,7 @@ def create_button(parent, name, **kwargs):
     if not kwargs.pop(u'enabled', True):
         button.setEnabled(False)
     if kwargs.get(u'click'):
-        QtCore.QObject.connect(button, QtCore.SIGNAL(u'clicked()'),
-            kwargs.pop(u'click'))
+        button.clicked.connect(kwargs.pop(u'click'))
     for key in kwargs.keys():
         if key not in [u'text', u'icon', u'tooltip', u'click']:
             log.warn(u'Parameter %s was not consumed in create_button().', key)
@@ -373,10 +247,12 @@ def create_action(parent, name, **kwargs):
         True in case the action will be considered a separator.
 
     ``data``
-        Data which is set as QVariant type.
+        The action's data.
 
-    ``shortcuts``
-        A QList<QKeySequence> (or a list of strings) which are set as shortcuts.
+    ``can_shortcuts``
+        Capability stating if this action can have shortcuts. If ``True`` the action is added to shortcut dialog
+        otherwise it it not. Define your shortcut in the :class:`~openlp.core.lib.Settings` class. *Note*: When *not*
+        ``True`` you *must not* set a shortcuts at all.
 
     ``context``
         A context for the shortcut execution.
@@ -407,29 +283,25 @@ def create_action(parent, name, **kwargs):
     if kwargs.pop(u'separator', False):
         action.setSeparator(True)
     if u'data' in kwargs:
-        action.setData(QtCore.QVariant(kwargs.pop(u'data')))
-    if kwargs.get(u'shortcuts'):
-        action.setShortcuts(kwargs.pop(u'shortcuts'))
+        action.setData(kwargs.pop(u'data'))
+    if kwargs.pop(u'can_shortcuts', False):
+        action_list = ActionList.get_instance()
+        action_list.add_action(action, kwargs.pop(u'category', None))
     if u'context' in kwargs:
         action.setShortcutContext(kwargs.pop(u'context'))
-    if kwargs.get(u'category'):
-        action_list = ActionList.get_instance()
-        action_list.add_action(action, unicode(kwargs.pop(u'category')))
     if kwargs.get(u'triggers'):
-        QtCore.QObject.connect(action, QtCore.SIGNAL(u'triggered(bool)'),
-            kwargs.pop(u'triggers'))
+        action.triggered.connect(kwargs.pop(u'triggers'))
     for key in kwargs.keys():
-        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked',
-            u'shortcuts', u'category', u'triggers']:
+        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked', u'can_shortcuts',
+                u'category', u'triggers']:
             log.warn(u'Parameter %s was not consumed in create_action().', key)
     return action
 
 
 def create_widget_action(parent, name=u'', **kwargs):
     """
-    Return a new QAction by calling ``create_action(parent, name, **kwargs)``.
-    The shortcut context defaults to ``QtCore.Qt.WidgetShortcut`` and the action
-    is added to the parents action list.
+    Return a new QAction by calling ``create_action(parent, name, **kwargs)``. The shortcut context defaults to
+    ``QtCore.Qt.WidgetShortcut`` and the action is added to the parents action list.
     """
     kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut)
     action = create_action(parent, name, **kwargs)
@@ -454,8 +326,7 @@ def set_case_insensitive_completer(cache, widget):
 
 def create_valign_selection_widgets(parent):
     """
-    Creates a standard label and combo box for asking users to select a
-    vertical alignment.
+    Creates a standard label and combo box for asking users to select a vertical alignment.
 
     ``parent``
         The parent object. This should be a ``QWidget`` descendant.
@@ -465,8 +336,7 @@ def create_valign_selection_widgets(parent):
     label = QtGui.QLabel(parent)
     label.setText(translate('OpenLP.Ui', '&Vertical Align:'))
     combo_box = QtGui.QComboBox(parent)
-    combo_box.addItems(
-        [UiStrings().Top, UiStrings().Middle, UiStrings().Bottom])
+    combo_box.addItems([UiStrings().Top, UiStrings().Middle, UiStrings().Bottom])
     label.setBuddy(combo_box)
     return label, combo_box
 

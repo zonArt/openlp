@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,9 +31,7 @@ The :mod:`songproimport` module provides the functionality for importing SongPro
 songs into the OpenLP database.
 """
 import re
-import os
 
-from openlp.core.lib import translate
 from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
 
@@ -80,12 +78,12 @@ class SongProImport(SongImport):
         Receive a single file or a list of files to import.
         """
         self.encoding = None
-        with open(self.importSource, 'r') as songs_file:
-            self.importWizard.progressBar.setMaximum(0)
+        with open(self.import_source, 'r') as songs_file:
+            self.import_wizard.progress_bar.setMaximum(0)
             tag = u''
             text = u''
             for file_line in songs_file:
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     break
                 file_line = unicode(file_line, u'cp1252')
                 file_text = file_line.rstrip()
@@ -109,12 +107,15 @@ class SongProImport(SongImport):
             self.finish()
             return
         if u'rtf1' in text:
-            text, self.encoding = strip_rtf(text, self.encoding)
+            result = strip_rtf(text, self.encoding)
+            if result is None:
+                return
+            text, self.encoding = result
             text = text.rstrip()
         if not text:
             return
         if tag == u'A':
-            self.parseAuthor(text)
+            self.parse_author(text)
         elif tag in [u'B', u'C']:
             self.addVerse(text, tag)
         elif tag == u'D':

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -27,46 +27,50 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`maindisplay` module provides the functionality to display screens
-and play multimedia within OpenLP.
+The :mod:`maindisplay` module provides the functionality to display screens and play multimedia within OpenLP.
+
+Some of the code for this form is based on the examples at:
+
+* `http://www.steveheffernan.com/html5-video-player/demo-video-player.html`_
+* `http://html5demos.com/two-videos`_
+
 """
 import cgi
 import logging
-import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Receiver, build_html, ServiceItem, image_to_byte, \
-    translate, PluginManager, expand_tags, ImageSource
+from openlp.core.lib import ServiceItem, Settings, ImageSource, Registry, build_html, expand_tags, \
+    image_to_byte, translate
 from openlp.core.lib.theme import BackgroundType
-from openlp.core.lib.settings import Settings
 
-from openlp.core.ui import HideMode, ScreenList, AlertLocation
+from openlp.core.lib import ScreenList
+from openlp.core.ui import HideMode, AlertLocation
 
 log = logging.getLogger(__name__)
 
-#http://www.steveheffernan.com/html5-video-player/demo-video-player.html
-#http://html5demos.com/two-videos
 
 class Display(QtGui.QGraphicsView):
     """
     This is a general display screen class. Here the general display settings
-   will done. It will be used as specialized classes by Main Display and
-   Preview display.
+    will done. It will be used as specialized classes by Main Display and
+    Preview display.
     """
     def __init__(self, parent, live, controller):
+        """
+        Constructor
+        """
         if live:
             QtGui.QGraphicsView.__init__(self)
             # Overwrite the parent() method.
             self.parent = lambda: parent
         else:
             QtGui.QGraphicsView.__init__(self, parent)
-        self.isLive = live
+        self.is_live = live
         self.controller = controller
         self.screen = {}
-        self.plugins = PluginManager.get_instance().plugins
         # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
         # OpenGL. Only white blank screen is shown on the 2nd monitor all the
         # time. We need to investigate more how to use OpenGL properly on Mac OS
@@ -78,98 +82,87 @@ class Display(QtGui.QGraphicsView):
         """
         Set up and build the screen base
         """
-        log.debug(u'Start Display base setup (live = %s)' % self.isLive)
+        log.debug(u'Start Display base setup (live = %s)' % self.is_live)
         self.setGeometry(self.screen[u'size'])
         log.debug(u'Setup webView')
-        self.webView = QtWebKit.QWebView(self)
-        self.webView.setGeometry(0, 0,
-            self.screen[u'size'].width(), self.screen[u'size'].height())
-        self.webView.settings().setAttribute(
-            QtWebKit.QWebSettings.PluginsEnabled, True)
-        palette = self.webView.palette()
+        self.web_view = QtWebKit.QWebView(self)
+        self.web_view.setGeometry(0, 0, self.screen[u'size'].width(), self.screen[u'size'].height())
+        self.web_view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled, True)
+        palette = self.web_view.palette()
         palette.setBrush(QtGui.QPalette.Base, QtCore.Qt.transparent)
-        self.webView.page().setPalette(palette)
-        self.webView.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
-        self.page = self.webView.page()
+        self.web_view.page().setPalette(palette)
+        self.web_view.setAttribute(QtCore.Qt.WA_OpaquePaintEvent, False)
+        self.page = self.web_view.page()
         self.frame = self.page.mainFrame()
-        if self.isLive and log.getEffectiveLevel() == logging.DEBUG:
-            self.webView.settings().setAttribute(
-                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-        QtCore.QObject.connect(self.webView,
-            QtCore.SIGNAL(u'loadFinished(bool)'), self.isWebLoaded)
+        if self.is_live and log.getEffectiveLevel() == logging.DEBUG:
+            self.web_view.settings().setAttribute(QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+        self.web_view.loadFinished.connect(self.is_web_loaded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical,
-            QtCore.Qt.ScrollBarAlwaysOff)
-        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal,
-            QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Vertical, QtCore.Qt.ScrollBarAlwaysOff)
+        self.frame.setScrollBarPolicy(QtCore.Qt.Horizontal, QtCore.Qt.ScrollBarAlwaysOff)
 
     def resizeEvent(self, event):
-        self.webView.setGeometry(0, 0, self.width(), self.height())
+        """
+        React to resizing of this display
+        """
+        self.web_view.setGeometry(0, 0, self.width(), self.height())
 
-    def isWebLoaded(self):
+    def is_web_loaded(self):
         """
         Called by webView event to show display is fully loaded
         """
-        log.debug(u'Webloaded')
-        self.webLoaded = True
+        log.debug(u'is web loaded')
+        self.web_loaded = True
 
 
 class MainDisplay(Display):
     """
     This is the display screen as a specialized class from the Display class
     """
-    def __init__(self, parent, imageManager, live, controller):
+    def __init__(self, parent, live, controller):
+        """
+        Constructor
+        """
         Display.__init__(self, parent, live, controller)
-        self.imageManager = imageManager
         self.screens = ScreenList()
-        self.rebuildCSS = False
-        self.hideMode = None
+        self.rebuild_css = False
+        self.hide_mode = None
         self.override = {}
         self.retranslateUi()
-        self.mediaObject = None
+        self.media_object = None
         if live:
-            self.audioPlayer = AudioPlayer(self)
+            self.audio_player = AudioPlayer(self)
         else:
-            self.audioPlayer = None
-        self.firstTime = True
-        self.webLoaded = True
+            self.audio_player = None
+        self.first_time = True
+        self.web_loaded = True
         self.setStyleSheet(u'border: 0px; margin: 0px; padding: 0px;')
-        windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | \
-            QtCore.Qt.WindowStaysOnTopHint
-        # Fix for bug #1014422.
-        x11_bypass_default = True
-        if sys.platform.startswith(u'linux'):
-            # Default to False on Gnome.
-            x11_bypass_default = bool(not
-                os.environ.get(u'GNOME_DESKTOP_SESSION_ID'))
-        if Settings().value(u'advanced/x11 bypass wm',
-            QtCore.QVariant(x11_bypass_default)).toBool():
-            windowFlags |= QtCore.Qt.X11BypassWindowManagerHint
-        # TODO: The following combination of windowFlags works correctly
+        window_flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Tool | QtCore.Qt.WindowStaysOnTopHint
+        if Settings().value(u'advanced/x11 bypass wm'):
+            window_flags |= QtCore.Qt.X11BypassWindowManagerHint
+        # TODO: The following combination of window_flags works correctly
         # on Mac OS X. For next OpenLP version we should test it on other
         # platforms. For OpenLP 2.0 keep it only for OS X to not cause any
         # regressions on other platforms.
         if sys.platform == 'darwin':
-            windowFlags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
+            window_flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.Window
             # For primary screen ensure it stays above the OS X dock
             # and menu bar
             if self.screens.current[u'primary']:
                 self.setWindowState(QtCore.Qt.WindowFullScreen)
-        self.setWindowFlags(windowFlags)
+        self.setWindowFlags(window_flags)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setTransparency(False)
-        if self.isLive:
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'live_display_hide'), self.hideDisplay)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'live_display_show'), self.showDisplay)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'update_display_css'), self.cssChanged)
-            QtCore.QObject.connect(Receiver.get_receiver(),
-                QtCore.SIGNAL(u'config_updated'), self.configChanged)
+        self.set_transparency(False)
+        if self.is_live:
+            Registry().register_function(u'live_display_hide', self.hide_display)
+            Registry().register_function(u'live_display_show', self.show_display)
+            Registry().register_function(u'update_display_css', self.css_changed)
 
-    def setTransparency(self, enabled):
+    def set_transparency(self, enabled):
+        """
+        Set the transparency of the window
+        """
         if enabled:
             self.setAutoFillBackground(False)
         else:
@@ -177,21 +170,12 @@ class MainDisplay(Display):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
         self.repaint()
 
-    def cssChanged(self):
+    def css_changed(self):
         """
-        We may need to rebuild the CSS on the live display.
+        We need to rebuild the CSS on the live display.
         """
-        self.rebuildCSS = True
-
-    def configChanged(self):
-        """
-        Call the plugins to rebuild the Live display CSS as the screen has
-        not been rebuild on exit of config.
-        """
-        if self.rebuildCSS and self.plugins:
-            for plugin in self.plugins:
-                plugin.refreshCss(self.frame)
-        self.rebuildCSS = False
+        for plugin in self.plugin_manager.plugins:
+            plugin.refresh_css(self.frame)
 
     def retranslateUi(self):
         """
@@ -203,37 +187,33 @@ class MainDisplay(Display):
         """
         Set up and build the output screen
         """
-        log.debug(u'Start MainDisplay setup (live = %s)' % self.isLive)
+        log.debug(u'Start MainDisplay setup (live = %s)' % self.is_live)
         self.screen = self.screens.current
         self.setVisible(False)
         Display.setup(self)
-        if self.isLive:
+        if self.is_live:
             # Build the initial frame.
             background_color = QtGui.QColor()
-            background_color.setNamedColor(Settings().value(
-                u'advanced/default color',
-                QtCore.QVariant(u'#ffffff')).toString())
+            background_color.setNamedColor(Settings().value(u'advanced/default color'))
             if not background_color.isValid():
                 background_color = QtCore.Qt.white
-            image_file = Settings().value(u'advanced/default image',
-                QtCore.QVariant(u':/graphics/openlp-splash-screen.png'))\
-                .toString()
+            image_file = Settings().value(u'advanced/default image')
             splash_image = QtGui.QImage(image_file)
-            self.initialFrame = QtGui.QImage(
+            self.initial_fame = QtGui.QImage(
                 self.screen[u'size'].width(),
                 self.screen[u'size'].height(),
                 QtGui.QImage.Format_ARGB32_Premultiplied)
             painter_image = QtGui.QPainter()
-            painter_image.begin(self.initialFrame)
-            painter_image.fillRect(self.initialFrame.rect(), background_color)
+            painter_image.begin(self.initial_fame)
+            painter_image.fillRect(self.initial_fame.rect(), background_color)
             painter_image.drawImage(
                 (self.screen[u'size'].width() - splash_image.width()) / 2,
                 (self.screen[u'size'].height() - splash_image.height()) / 2,
                 splash_image)
-            serviceItem = ServiceItem()
-            serviceItem.bg_image_bytes = image_to_byte(self.initialFrame)
-            self.webView.setHtml(build_html(serviceItem, self.screen,
-                self.isLive, None, plugins=self.plugins))
+            service_item = ServiceItem()
+            service_item.bg_image_bytes = image_to_byte(self.initial_fame)
+            self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
+                plugins=self.plugin_manager.plugins))
             self.__hideMouse()
         log.debug(u'Finished MainDisplay setup')
 
@@ -249,12 +229,11 @@ class MainDisplay(Display):
         """
         log.debug(u'text to display')
         # Wait for the webview to update before displaying text.
-        while not self.webLoaded:
-            Receiver.send_message(u'openlp_process_events')
+        while not self.web_loaded:
+            self.application.process_events()
         self.setGeometry(self.screen[u'size'])
         if animate:
-            self.frame.evaluateJavaScript(u'show_text("%s")' %
-                slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+            self.frame.evaluateJavaScript(u'show_text("%s")' % slide.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
         else:
             # This exists for https://bugs.launchpad.net/openlp/+bug/1016843
             # For unknown reasons if evaluateJavaScript is called
@@ -275,10 +254,8 @@ class MainDisplay(Display):
         log.debug(u'alert to display')
         # First we convert <>& marks to html variants, then apply
         # formattingtags, finally we double all backslashes for JavaScript.
-        text_prepared = expand_tags(
-            cgi.escape(text)).replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
-        if self.height() != self.screen[u'size'].height() or not \
-            self.isVisible():
+        text_prepared = expand_tags(cgi.escape(text)).replace(u'\\', u'\\\\').replace(u'\"', u'\\\"')
+        if self.height() != self.screen[u'size'].height() or not self.isVisible():
             shrink = True
             js = u'show_alert("%s", "%s")' % (text_prepared, u'top')
         else:
@@ -287,32 +264,30 @@ class MainDisplay(Display):
         height = self.frame.evaluateJavaScript(js)
         if shrink:
             if text:
-                alert_height = int(height.toString())
+                alert_height = int(height)
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
                 if location == AlertLocation.Middle:
-                    self.move(self.screen[u'size'].left(),
-                    (self.screen[u'size'].height() - alert_height) / 2)
+                    self.move(self.screen[u'size'].left(), (self.screen[u'size'].height() - alert_height) / 2)
                 elif location == AlertLocation.Bottom:
-                    self.move(self.screen[u'size'].left(),
-                        self.screen[u'size'].height() - alert_height)
+                    self.move(self.screen[u'size'].left(), self.screen[u'size'].height() - alert_height)
             else:
                 self.setVisible(False)
                 self.setGeometry(self.screen[u'size'])
 
-    def directImage(self, path, background):
+    def direct_image(self, path, background):
         """
         API for replacement backgrounds so Images are added directly to cache.
         """
-        self.imageManager.addImage(path, ImageSource.ImagePlugin, background)
-        if not hasattr(self, u'serviceItem'):
+        self.image_manager.add_image(path, ImageSource.ImagePlugin, background)
+        if not hasattr(self, u'service_item'):
             return False
         self.override[u'image'] = path
-        self.override[u'theme'] = self.serviceItem.themedata.background_filename
+        self.override[u'theme'] = self.service_item.themedata.background_filename
         self.image(path)
         # Update the preview frame.
-        if self.isLive:
-            self.parent().updatePreview()
+        if self.is_live:
+            self.live_controller.updatePreview()
         return True
 
     def image(self, path):
@@ -326,11 +301,11 @@ class MainDisplay(Display):
             re-added to the image manager.
         """
         log.debug(u'image to display')
-        image = self.imageManager.getImageBytes(path, ImageSource.ImagePlugin)
-        self.controller.mediaController.video_reset(self.controller)
-        self.displayImage(image)
+        image = self.image_manager.get_image_bytes(path, ImageSource.ImagePlugin)
+        self.controller.media_controller.media_reset(self.controller)
+        self.display_image(image)
 
-    def displayImage(self, image):
+    def display_image(self, image):
         """
         Display an image, as is.
         """
@@ -341,16 +316,16 @@ class MainDisplay(Display):
             js = u'show_image("");'
         self.frame.evaluateJavaScript(js)
 
-    def resetImage(self):
+    def reset_image(self):
         """
-        Reset the backgound image to the service item image. Used after the
+        Reset the background image to the service item image. Used after the
         image plugin has changed the background.
         """
-        log.debug(u'resetImage')
-        if hasattr(self, u'serviceItem'):
-            self.displayImage(self.serviceItem.bg_image_bytes)
+        log.debug(u'reset_image')
+        if hasattr(self, u'service_item'):
+            self.display_image(self.service_item.bg_image_bytes)
         else:
-            self.displayImage(None)
+            self.display_image(None)
         # clear the cache
         self.override = {}
 
@@ -358,86 +333,82 @@ class MainDisplay(Display):
         """
         Generates a preview of the image displayed.
         """
-        log.debug(u'preview for %s', self.isLive)
-        Receiver.send_message(u'openlp_process_events')
+        log.debug(u'preview for %s', self.is_live)
+        was_visible = self.isVisible()
+        self.application.process_events()
         # We must have a service item to preview.
-        if self.isLive and hasattr(self, u'serviceItem'):
+        if self.is_live and hasattr(self, u'service_item'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
-            if self.serviceItem.themedata and \
-                self.serviceItem.themedata.display_slide_transition:
-                while self.frame.evaluateJavaScript(u'show_text_complete()') \
-                    .toString() == u'false':
-                    Receiver.send_message(u'openlp_process_events')
+            if self.service_item.themedata and self.service_item.themedata.display_slide_transition:
+                while not self.frame.evaluateJavaScript(u'show_text_completed()'):
+                    self.application.process_events()
         # Wait for the webview to update before getting the preview.
         # Important otherwise first preview will miss the background !
-        while not self.webLoaded:
-            Receiver.send_message(u'openlp_process_events')
+        while not self.web_loaded:
+            self.application.process_events()
         # if was hidden keep it hidden
-        if self.isLive:
-            if self.hideMode:
-                self.hideDisplay(self.hideMode)
-            else:
+        if self.is_live:
+            if self.hide_mode:
+                self.hide_display(self.hide_mode)
+            # Only continue if the visibility wasn't changed during method call.
+            elif was_visible == self.isVisible():
+
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if Settings().value(u'general/display on monitor',
-                        QtCore.QVariant(True)).toBool():
+                    if Settings().value(u'general/display on monitor'):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
         return QtGui.QPixmap.grabWidget(self)
 
-    def buildHtml(self, serviceItem, image_path=u''):
+    def build_html(self, service_item, image_path=u''):
         """
-        Store the serviceItem and build the new HTML from it. Add the
+        Store the service_item and build the new HTML from it. Add the
         HTML to the display
         """
-        log.debug(u'buildHtml')
-        self.webLoaded = False
-        self.initialFrame = None
-        self.serviceItem = serviceItem
+        log.debug(u'build_html')
+        self.web_loaded = False
+        self.initial_fame = None
+        self.service_item = service_item
         background = None
         # We have an image override so keep the image till the theme changes.
         if self.override:
             # We have an video override so allow it to be stopped.
             if u'video' in self.override:
-                Receiver.send_message(u'video_background_replaced')
+                Registry().execute(u'video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override[u'theme'] != \
-                serviceItem.themedata.background_filename:
-                Receiver.send_message(u'live_theme_changed')
+            elif self.override[u'theme'] != service_item.themedata.background_filename:
+                Registry().execute(u'live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
-                background = self.imageManager.getImageBytes(
-                    self.override[u'image'], ImageSource.ImagePlugin)
-        self.setTransparency(self.serviceItem.themedata.background_type ==
+                background = self.image_manager.get_image_bytes(self.override[u'image'], ImageSource.ImagePlugin)
+        self.set_transparency(self.service_item.themedata.background_type ==
             BackgroundType.to_string(BackgroundType.Transparent))
-        if self.serviceItem.themedata.background_filename:
-            self.serviceItem.bg_image_bytes = self.imageManager.getImageBytes(
-                self.serviceItem.themedata.background_filename,
-                ImageSource.Theme)
+        if self.service_item.themedata.background_filename:
+            self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(
+                self.service_item.themedata.background_filename, ImageSource.Theme
+            )
         if image_path:
-            image_bytes = self.imageManager.getImageBytes(
-                image_path, ImageSource.ImagePlugin)
+            image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
-        html = build_html(self.serviceItem, self.screen, self.isLive,
-            background, image_bytes, self.plugins)
+        html = build_html(self.service_item, self.screen, self.is_live, background, image_bytes,
+            plugins=self.plugin_manager.plugins)
         log.debug(u'buildHtml - pre setHtml')
-        self.webView.setHtml(html)
+        self.web_view.setHtml(html)
         log.debug(u'buildHtml - post setHtml')
-        if serviceItem.foot_text:
-            self.footer(serviceItem.foot_text)
+        if service_item.foot_text:
+            self.footer(service_item.foot_text)
         # if was hidden keep it hidden
-        if self.hideMode and self.isLive and not serviceItem.is_media():
-            if Settings().value(u'general/auto unblank',
-                QtCore.QVariant(False)).toBool():
-                Receiver.send_message(u'slidecontroller_live_unblank')
+        if self.hide_mode and self.is_live and not service_item.is_media():
+            if Settings().value(u'general/auto unblank'):
+                Registry().execute(u'slidecontroller_live_unblank')
             else:
-                self.hideDisplay(self.hideMode)
+                self.hide_display(self.hide_mode)
         self.__hideMouse()
 
     def footer(self, text):
@@ -445,65 +416,100 @@ class MainDisplay(Display):
         Display the Footer
         """
         log.debug(u'footer')
-        js = u'show_footer(\'' + \
-            text.replace(u'\\', u'\\\\').replace(u'\'', u'\\\'') + u'\')'
+        js = u'show_footer(\'' + text.replace(u'\\', u'\\\\').replace(u'\'', u'\\\'') + u'\')'
         self.frame.evaluateJavaScript(js)
 
-    def hideDisplay(self, mode=HideMode.Screen):
+    def hide_display(self, mode=HideMode.Screen):
         """
         Hide the display by making all layers transparent
         Store the images so they can be replaced when required
         """
-        log.debug(u'hideDisplay mode = %d', mode)
+        log.debug(u'hide_display mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor',
-                QtCore.QVariant(True)).toBool():
+            if not Settings().value(u'general/display on monitor'):
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
             self.setVisible(False)
-        elif mode == HideMode.Blank or self.initialFrame:
+        elif mode == HideMode.Blank or self.initial_fame:
             self.frame.evaluateJavaScript(u'show_blank("black");')
         else:
             self.frame.evaluateJavaScript(u'show_blank("theme");')
         if mode != HideMode.Screen:
             if self.isHidden():
                 self.setVisible(True)
-                self.webView.setVisible(True)
-        self.hideMode = mode
+                self.web_view.setVisible(True)
+        self.hide_mode = mode
 
-    def showDisplay(self):
+    def show_display(self):
         """
-        Show the stored layers so the screen reappears as it was
-        originally.
+        Show the stored layers so the screen reappears as it was originally.
         Make the stored images None to release memory.
         """
-        log.debug(u'showDisplay')
+        log.debug(u'show_display')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor',
-                QtCore.QVariant(True)).toBool():
+            if not Settings().value(u'general/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
             self.setVisible(True)
-        self.hideMode = None
+        self.hide_mode = None
         # Trigger actions when display is active again.
-        if self.isLive:
-            Receiver.send_message(u'live_display_active')
+        if self.is_live:
+            Registry().execute(u'live_display_active')
 
     def __hideMouse(self):
         """
         Hide mouse cursor when moved over display.
         """
-        if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool():
+        if Settings().value(u'advanced/hide mouse'):
             self.setCursor(QtCore.Qt.BlankCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "none"')
         else:
             self.setCursor(QtCore.Qt.ArrowCursor)
             self.frame.evaluateJavaScript('document.body.style.cursor = "auto"')
+
+    def _get_plugin_manager(self):
+        """
+        Adds the Renderer to the class dynamically
+        """
+        if not hasattr(self, u'_plugin_manager'):
+            self._plugin_manager = Registry().get(u'plugin_manager')
+        return self._plugin_manager
+
+    plugin_manager = property(_get_plugin_manager)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, u'_image_manager'):
+            self._image_manager = Registry().get(u'image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
+
+    def _get_live_controller(self):
+        """
+        Adds the live controller to the class dynamically
+        """
+        if not hasattr(self, u'_live_controller'):
+            self._live_controller = Registry().get(u'live_controller')
+        return self._live_controller
+
+    live_controller = property(_get_live_controller)
 
 
 class AudioPlayer(QtCore.QObject):
@@ -525,42 +531,46 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex = -1
         self.playlist = []
         self.repeat = False
-        self.mediaObject = Phonon.MediaObject()
-        self.mediaObject.setTickInterval(100)
-        self.audioObject = Phonon.AudioOutput(Phonon.VideoCategory)
-        Phonon.createPath(self.mediaObject, self.audioObject)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'aboutToFinish()'), self.onAboutToFinish)
-        QtCore.QObject.connect(self.mediaObject,
-            QtCore.SIGNAL(u'finished()'), self.onFinished)
+        self.media_object = Phonon.MediaObject()
+        self.media_object.setTickInterval(100)
+        self.audio_object = Phonon.AudioOutput(Phonon.VideoCategory)
+        Phonon.createPath(self.media_object, self.audio_object)
+        self.media_object.aboutToFinish.connect(self.on_about_to_finish)
+        self.media_object.finished.connect(self.on_finished)
 
     def __del__(self):
         """
         Shutting down so clean up connections
         """
         self.stop()
-        for path in self.mediaObject.outputPaths():
+        for path in self.media_object.outputPaths():
             path.disconnect()
 
-    def onAboutToFinish(self):
+    def on_about_to_finish(self):
         """
         Just before the audio player finishes the current track, queue the next
         item in the playlist, if there is one.
         """
         self.currentIndex += 1
         if len(self.playlist) > self.currentIndex:
-            self.mediaObject.enqueue(self.playlist[self.currentIndex])
+            self.media_object.enqueue(self.playlist[self.currentIndex])
 
-    def onFinished(self):
+    def on_finished(self):
+        """
+        When the audio track finishes.
+        """
         if self.repeat:
             log.debug(u'Repeat is enabled... here we go again!')
-            self.mediaObject.clearQueue()
-            self.mediaObject.clear()
+            self.media_object.clearQueue()
+            self.media_object.clear()
             self.currentIndex = -1
             self.play()
 
     def connectVolumeSlider(self, slider):
-        slider.setAudioOutput(self.audioObject)
+        """
+        Connect the volume slider to the output channel.
+        """
+        slider.setAudioOutput(self.audio_object)
 
     def reset(self):
         """
@@ -569,7 +579,7 @@ class AudioPlayer(QtCore.QObject):
         self.currentIndex = -1
         self.playlist = []
         self.stop()
-        self.mediaObject.clear()
+        self.media_object.clear()
 
     def play(self):
         """
@@ -577,24 +587,24 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug(u'AudioPlayer.play() called')
         if self.currentIndex == -1:
-            self.onAboutToFinish()
-        self.mediaObject.play()
+            self.on_about_to_finish()
+        self.media_object.play()
 
     def pause(self):
         """
         Pause the Audio
         """
         log.debug(u'AudioPlayer.pause() called')
-        self.mediaObject.pause()
+        self.media_object.pause()
 
     def stop(self):
         """
         Stop the Audio and clean up
         """
         log.debug(u'AudioPlayer.stop() called')
-        self.mediaObject.stop()
+        self.media_object.stop()
 
-    def addToPlaylist(self, filenames):
+    def add_to_playlist(self, filenames):
         """
         Add another file to the playlist.
 
@@ -606,26 +616,36 @@ class AudioPlayer(QtCore.QObject):
         self.playlist.extend(map(Phonon.MediaSource, filenames))
 
     def next(self):
+        """
+        Skip forward to the next track in the list
+        """
         if not self.repeat and self.currentIndex + 1 >= len(self.playlist):
             return
-        isPlaying = self.mediaObject.state() == Phonon.PlayingState
+        isPlaying = self.media_object.state() == Phonon.PlayingState
         self.currentIndex += 1
         if self.repeat and self.currentIndex == len(self.playlist):
             self.currentIndex = 0
-        self.mediaObject.clearQueue()
-        self.mediaObject.clear()
-        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        self.media_object.clearQueue()
+        self.media_object.clear()
+        self.media_object.enqueue(self.playlist[self.currentIndex])
         if isPlaying:
-            self.mediaObject.play()
+            self.media_object.play()
 
-    def goTo(self, index):
-        isPlaying = self.mediaObject.state() == Phonon.PlayingState
-        self.mediaObject.clearQueue()
-        self.mediaObject.clear()
+    def go_to(self, index):
+        """
+        Go to a particular track in the list
+        """
+        isPlaying = self.media_object.state() == Phonon.PlayingState
+        self.media_object.clearQueue()
+        self.media_object.clear()
         self.currentIndex = index
-        self.mediaObject.enqueue(self.playlist[self.currentIndex])
+        self.media_object.enqueue(self.playlist[self.currentIndex])
         if isPlaying:
-            self.mediaObject.play()
+            self.media_object.play()
 
     def connectSlot(self, signal, slot):
-        QtCore.QObject.connect(self.mediaObject, signal, slot)
+        """
+        Connect a slot to a signal on the media object.  Used by slidecontroller to connect to audio object.
+        """
+        QtCore.QObject.connect(self.media_object, signal, slot)
+

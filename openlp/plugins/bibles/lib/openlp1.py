@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -31,7 +31,6 @@ import logging
 import sqlite
 import sys
 
-from openlp.core.lib import Receiver
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
@@ -56,12 +55,11 @@ class OpenLP1Bible(BibleDB):
         connection = None
         cursor = None
         try:
-            connection = sqlite.connect(
-                self.filename.encode(sys.getfilesystemencoding()))
+            connection = sqlite.connect(self.filename.encode(sys.getfilesystemencoding()))
             cursor = connection.cursor()
         except sqlite.DatabaseError:
             log.exception(u'File "%s" is encrypted or not a sqlite database, '
-            'therefore not an openlp.org 1.x database either' % self.filename)
+                'therefore not an openlp.org 1.x database either' % self.filename)
             # Please add an user error here!
             # This file is not an openlp.org 1.x bible database.
             return False
@@ -72,15 +70,14 @@ class OpenLP1Bible(BibleDB):
             return False
         # Create all books.
         try:
-            cursor.execute(
-                u'SELECT id, testament_id, name, abbreviation FROM book')
+            cursor.execute(u'SELECT id, testament_id, name, abbreviation FROM book')
         except sqlite.DatabaseError as error:
             log.exception(u'DatabaseError: %s' % error)
             # Please add an user error here!
             # This file is not an openlp.org 1.x bible database.
             return False
         books = cursor.fetchall()
-        self.wizard.progressBar.setMaximum(len(books) + 1)
+        self.wizard.progress_bar.setMaximum(len(books) + 1)
         for book in books:
             if self.stop_import_flag:
                 connection.close()
@@ -92,14 +89,12 @@ class OpenLP1Bible(BibleDB):
             book_ref_id = self.get_book_ref_id_by_name(name, len(books),
                 language_id)
             if not book_ref_id:
-                log.exception(u'Importing books from "%s" '\
-                    'failed' % self.filename)
+                log.exception(u'Importing books from "%s" failed' % self.filename)
                 return False
             book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-            db_book = self.create_book(name, book_ref_id,
-                book_details[u'testament_id'])
+            db_book = self.create_book(name, book_ref_id, book_details[u'testament_id'])
             # Update the progess bar.
-            self.wizard.incrementProgressBar(WizardStrings.ImportingType % name)
+            self.wizard.increment_progress_bar(WizardStrings.ImportingType % name)
             # Import the verses for this book.
             cursor.execute(u'SELECT chapter, verse, text || \'\' AS text FROM '
                 'verse WHERE book_id=%s' % book_id)
@@ -112,7 +107,7 @@ class OpenLP1Bible(BibleDB):
                 verse_number = int(verse[1])
                 text = unicode(verse[2], u'cp1252')
                 self.create_verse(db_book.id, chapter, verse_number, text)
-                Receiver.send_message(u'openlp_process_events')
+                self.application.process_events()
             self.session.commit()
         connection.close()
         return True

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,25 +26,26 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+The :mod:`~openlp.core.ui.media.vlcplayer` module contains our VLC component wrapper
+"""
 from datetime import datetime
 from distutils.version import LooseVersion
 import logging
 import os
 import sys
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Receiver
-from openlp.core.lib.settings import Settings
-from openlp.core.lib.mediaplayer import MediaPlayer
+from openlp.core.lib import Settings, translate
 from openlp.core.ui.media import MediaState
+from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
 
 VLC_AVAILABLE = False
 try:
-    import vlc
+    from openlp.core.ui.media.vendor import vlc
     VLC_AVAILABLE = bool(vlc.get_default_instance())
 except (ImportError, NameError, NotImplementedError):
     pass
@@ -57,12 +58,12 @@ except OSError, e:
 
 if VLC_AVAILABLE:
     try:
-        version = vlc.libvlc_get_version()
+        VERSION = vlc.libvlc_get_version()
     except:
-        version = u'0.0.0'
-    if LooseVersion(version) < LooseVersion('1.1.0'):
+        VERSION = u'0.0.0'
+    if LooseVersion(VERSION) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
-        log.debug(u'VLC could not be loaded: %s' % version)
+        log.debug(u'VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
 
 AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
 
@@ -81,8 +82,8 @@ VIDEO_EXT = [
     u'*.nsc',
     u'*.nsv',
     u'*.nut',
-    u'*.ra', u'*.ram', u'*.rm', u'*.rv' ,u'*.rmbv',
-    u'*.a52', u'*.dts', u'*.aac', u'*.flac' ,u'*.dv', u'*.vid',
+    u'*.ra', u'*.ram', u'*.rm', u'*.rv', u'*.rmbv',
+    u'*.a52', u'*.dts', u'*.aac', u'*.flac', u'*.dv', u'*.vid',
     u'*.tta', u'*.tac',
     u'*.ty',
     u'*.dts',
@@ -100,26 +101,30 @@ class VlcPlayer(MediaPlayer):
     """
 
     def __init__(self, parent):
+        """
+        Constructor
+        """
         MediaPlayer.__init__(self, parent, u'vlc')
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
         self.parent = parent
-        self.canFolder = True
+        self.can_folder = True
         self.audio_extensions_list = AUDIO_EXT
         self.video_extensions_list = VIDEO_EXT
 
     def setup(self, display):
+        """
+        Set up the media player
+        """
         display.vlcWidget = QtGui.QFrame(display)
+        display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
         command_line_options = u'--no-video-title-show'
-        if not display.hasAudio:
+        if not display.has_audio:
             command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse',
-            QtCore.QVariant(False)).toBool() and \
-            display.controller.isLive:
+        if Settings().value(u'advanced/hide mouse') and display.controller.is_live:
             command_line_options += u' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
-        display.vlcInstance.set_log_verbosity(2)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()
         display.vlcWidget.resize(display.size())
@@ -140,17 +145,22 @@ class VlcPlayer(MediaPlayer):
         else:
             # for Linux using the X Server
             display.vlcMediaPlayer.set_xwindow(win_id)
-        self.hasOwnWidget = True
+        self.has_own_widget = True
 
     def check_available(self):
+        """
+        Return the availability of VLC
+        """
         return VLC_AVAILABLE
 
     def load(self, display):
+        """
+        Load a video into VLC
+        """
         log.debug(u'load vid in Vlc Controller')
         controller = display.controller
         volume = controller.media_info.volume
-        file_path = str(
-            controller.media_info.file_info.absoluteFilePath().toUtf8())
+        file_path = str(controller.media_info.file_info.absoluteFilePath())
         path = os.path.normcase(file_path)
         # create the media
         display.vlcMedia = display.vlcInstance.media_new_path(path)
@@ -162,47 +172,55 @@ class VlcPlayer(MediaPlayer):
         # We need to set media_info.length during load because we want
         # to avoid start and stop the video twice. Once for real playback
         # and once to just get media length.
-        # 
+        #
         # Media plugin depends on knowing media length before playback.
-        controller.media_info.length = \
-            int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+        controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
         return True
 
-    def media_state_wait(self, display, mediaState):
+    def media_state_wait(self, display, media_state):
         """
         Wait for the video to change its state
         Wait no longer than 60 seconds. (loading an iso file needs a long time)
         """
         start = datetime.now()
-        while not mediaState == display.vlcMedia.get_state():
+        while not media_state == display.vlcMedia.get_state():
             if display.vlcMedia.get_state() == vlc.State.Error:
                 return False
-            Receiver.send_message(u'openlp_process_events')
+            self.application.process_events()
             if (datetime.now() - start).seconds > 60:
                 return False
         return True
 
     def resize(self, display):
+        """
+        Resize the player
+        """
         display.vlcWidget.resize(display.size())
 
     def play(self, display):
+        """
+        Play the current item
+        """
         controller = display.controller
         start_time = 0
-        if controller.media_info.start_time > 0:
+        if self.state != MediaState.Paused and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.vlcMediaPlayer.play()
         if not self.media_state_wait(display, vlc.State.Playing):
             return False
+        self.volume(display, controller.media_info.volume)
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
-        controller.media_info.length = \
-            int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
-        controller.seekSlider.setMaximum(controller.media_info.length * 1000)
+        controller.media_info.length = int(display.vlcMediaPlayer.get_media().get_duration() / 1000)
+        controller.seek_slider.setMaximum(controller.media_info.length * 1000)
         self.state = MediaState.Playing
         display.vlcWidget.raise_()
         return True
 
     def pause(self, display):
+        """
+        Pause the current item
+        """
         if display.vlcMedia.get_state() != vlc.State.Playing:
             return
         display.vlcMediaPlayer.pause()
@@ -210,37 +228,65 @@ class VlcPlayer(MediaPlayer):
             self.state = MediaState.Paused
 
     def stop(self, display):
+        """
+        Stop the current item
+        """
         display.vlcMediaPlayer.stop()
         self.state = MediaState.Stopped
 
     def volume(self, display, vol):
-        if display.hasAudio:
+        """
+        Set the volume
+        """
+        if display.has_audio:
             display.vlcMediaPlayer.audio_set_volume(vol)
 
-    def seek(self, display, seekVal):
+    def seek(self, display, seek_value):
+        """
+        Go to a particular position
+        """
         if display.vlcMediaPlayer.is_seekable():
-            display.vlcMediaPlayer.set_time(seekVal)
+            display.vlcMediaPlayer.set_time(seek_value)
 
     def reset(self, display):
+        """
+        Reset the player
+        """
         display.vlcMediaPlayer.stop()
         display.vlcWidget.setVisible(False)
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
-        if self.hasOwnWidget:
+        """
+        Set the visibility
+        """
+        if self.has_own_widget:
             display.vlcWidget.setVisible(status)
 
     def update_ui(self, display):
+        """
+        Update the UI
+        """
         # Stop video if playback is finished.
         if display.vlcMedia.get_state() == vlc.State.Ended:
             self.stop(display)
         controller = display.controller
         if controller.media_info.end_time > 0:
-            if display.vlcMediaPlayer.get_time() > \
-                controller.media_info.end_time * 1000:
+            if display.vlcMediaPlayer.get_time() > controller.media_info.end_time * 1000:
                 self.stop(display)
                 self.set_visible(display, False)
-        if not controller.seekSlider.isSliderDown():
-            controller.seekSlider.setSliderPosition( \
-                display.vlcMediaPlayer.get_time())
+        if not controller.seek_slider.isSliderDown():
+            controller.seek_slider.blockSignals(True)
+            controller.seek_slider.setSliderPosition(display.vlcMediaPlayer.get_time())
+            controller.seek_slider.blockSignals(False)
 
+    def get_info(self):
+        """
+        Return some information about this player
+        """
+        return(translate('Media.player', 'VLC is an external player which '
+            'supports a number of different formats.') +
+            u'<br/> <strong>' + translate('Media.player', 'Audio') +
+            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
+            translate('Media.player', 'Video') + u'</strong><br/>' +
+            unicode(VIDEO_EXT) + u'<br/>')

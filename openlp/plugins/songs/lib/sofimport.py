@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -100,7 +100,7 @@ class SofImport(OooImport):
         try:
             paragraphs = self.document.getText().createEnumeration()
             while paragraphs.hasMoreElements():
-                if self.stopImportFlag:
+                if self.stop_import_flag:
                     return
                 paragraph = paragraphs.nextElement()
                 if paragraph.supportsService("com.sun.star.text.Paragraph"):
@@ -169,8 +169,7 @@ class SofImport(OooImport):
             return
         if text == u'A Songs of Fellowship Worship Resource':
             return
-        if text.startswith(u'(NB.') or text.startswith(u'(Regrettably') \
-            or text.startswith(u'(From'):
+        if text.startswith(u'(NB.') or text.startswith(u'(Regrettably') or text.startswith(u'(From'):
             self.skipToCloseBracket = True
             return
         if text.startswith(u'Copyright'):
@@ -262,7 +261,7 @@ class SofImport(OooImport):
         if title.endswith(u','):
             title = title[:-1]
         self.title = title
-        self.importWizard.incrementProgressBar(u'Processing song ' + title, 0)
+        self.import_wizard.increment_progress_bar(u'Processing song ' + title, 0)
 
     def addSofAuthor(self, text):
         """
@@ -272,7 +271,7 @@ class SofImport(OooImport):
         "Mr Smith" and "Mrs Smith".
         """
         text = text.replace(u' and ', u' & ')
-        self.parseAuthor(text)
+        self.parse_author(text)
 
     def addVerseLine(self, text):
         """

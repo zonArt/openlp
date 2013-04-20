@@ -1,17 +1,18 @@
+#lint:disable
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -35,64 +36,63 @@ from editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)
 
+
 class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
     """
     Class documentation goes here.
     """
     log.info(u'Custom Verse Editor loaded')
+
     def __init__(self, parent=None):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(EditCustomSlideForm, self).__init__(parent)
         self.setupUi(self)
         # Connecting signals and slots
-        QtCore.QObject.connect(self.insertButton,
-            QtCore.SIGNAL(u'clicked()'), self.onInsertButtonClicked)
-        QtCore.QObject.connect(self.splitButton,
-            QtCore.SIGNAL(u'clicked()'), self.onSplitButtonClicked)
+        self.insert_button.clicked.connect(self.on_insert_button_clicked)
+        self.split_button.clicked.connect(self.on_split_button_clicked)
 
-    def setText(self, text):
+    def set_text(self, text):
         """
-        Set the text for slideTextEdit.
+        Set the text for slide_text_edit.
 
         ``text``
             The text (unicode).
         """
-        self.slideTextEdit.clear()
+        self.slide_text_edit.clear()
         if text:
-            self.slideTextEdit.setPlainText(text)
-        self.slideTextEdit.setFocus()
+            self.slide_text_edit.setPlainText(text)
+        self.slide_text_edit.setFocus()
 
-    def getText(self):
+    def get_text(self):
         """
         Returns a list with all slides.
         """
-        return self.slideTextEdit.toPlainText().split(u'\n[===]\n')
+        return self.slide_text_edit.toPlainText().split(u'\n[===]\n')
 
-    def onInsertButtonClicked(self):
+    def on_insert_button_clicked(self):
         """
         Adds a slide split at the cursor.
         """
-        self.insertSingleLineTextAtCursor(u'[===]')
-        self.slideTextEdit.setFocus()
+        self.insert_single_line_text_at_cursor(u'[===]')
+        self.slide_text_edit.setFocus()
 
-    def onSplitButtonClicked(self):
+    def on_split_button_clicked(self):
         """
         Adds an optional split at cursor.
         """
-        self.insertSingleLineTextAtCursor(u'[---]')
-        self.slideTextEdit.setFocus()
+        self.insert_single_line_text_at_cursor(u'[---]')
+        self.slide_text_edit.setFocus()
 
-    def insertSingleLineTextAtCursor(self, text):
+    def insert_single_line_text_at_cursor(self, text):
         """
         Adds ``text`` in a single line at the cursor position.
         """
-        full_text = self.slideTextEdit.toPlainText()
-        position = self.slideTextEdit.textCursor().position()
-        if position and full_text[position-1] != u'\n':
-             text = u'\n' + text
-        if position ==  len(full_text) or full_text[position] != u'\n':
-             text += u'\n'
-        self.slideTextEdit.insertPlainText(text)
-
+        full_text = self.slide_text_edit.toPlainText()
+        position = self.slide_text_edit.textCursor().position()
+        if position and full_text[position - 1] != u'\n':
+            text = u'\n' + text
+        if position == len(full_text) or full_text[position] != u'\n':
+            text += u'\n'
+        self.slide_text_edit.insertPlainText(text)

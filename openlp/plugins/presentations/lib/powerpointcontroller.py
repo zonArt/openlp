@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -36,6 +36,7 @@ if os.name == u'nt':
     import win32ui
     import pywintypes
 
+from openlp.core.lib import ScreenList
 from presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
@@ -56,8 +57,7 @@ class PowerpointController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Powerpoint',
-            PowerpointDocument)
+        PresentationController.__init__(self, plugin, u'Powerpoint', PowerpointDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
 
@@ -68,8 +68,7 @@ class PowerpointController(PresentationController):
         log.debug(u'check_available')
         if os.name == u'nt':
             try:
-                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
-                    u'PowerPoint.Application').Close()
+                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, u'PowerPoint.Application').Close()
                 return True
             except WindowsError:
                 pass
@@ -126,13 +125,11 @@ class PowerpointDocument(PresentationDocument):
         if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
         try:
-            self.controller.process.Presentations.Open(self.filepath, False,
-                False, True)
+            self.controller.process.Presentations.Open(self.filepath, False, False, True)
         except pywintypes.com_error:
             log.debug(u'PPT open failed')
             return False
-        self.presentation = self.controller.process.Presentations(
-            self.controller.process.Presentations.Count)
+        self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
         self.create_thumbnails()
         return True
 
@@ -153,8 +150,7 @@ class PowerpointDocument(PresentationDocument):
             return
         for num in range(self.presentation.Slides.Count):
             self.presentation.Slides(num + 1).Export(os.path.join(
-                self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)),
-                'png', 320, 240)
+                self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)), 'png', 320, 240)
 
     def close_presentation(self):
         """
@@ -254,12 +250,10 @@ class PowerpointDocument(PresentationDocument):
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
             except win32ui.error:
                 try:
-                    dpi = \
-                        win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
+                    dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except win32ui.error:
                     dpi = 96
-            renderer = self.controller.plugin.renderer
-            rect = renderer.screens.current[u'size']
+            rect = ScreenList().current[u'size']
             ppt_window = self.presentation.SlideShowSettings.Run()
             if not ppt_window:
                 return
@@ -322,8 +316,7 @@ class PowerpointDocument(PresentationDocument):
         ``slide_no``
             The slide the notes are required for, starting at 1.
         """
-        return _get_text_from_shapes(
-            self.presentation.Slides(slide_no).NotesPage.Shapes)
+        return _get_text_from_shapes(self.presentation.Slides(slide_no).NotesPage.Shapes)
 
 def _get_text_from_shapes(shapes):
     """

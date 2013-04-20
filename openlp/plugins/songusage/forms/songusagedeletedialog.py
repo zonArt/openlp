@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,35 +32,30 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
-class Ui_SongUsageDeleteDialog(object):
-    def setupUi(self, songUsageDeleteDialog):
-        songUsageDeleteDialog.setObjectName(u'songUsageDeleteDialog')
-        songUsageDeleteDialog.resize(291, 243)
-        self.verticalLayout = QtGui.QVBoxLayout(songUsageDeleteDialog)
-        self.verticalLayout.setSpacing(8)
-        self.verticalLayout.setContentsMargins(8, 8, 8, 8)
-        self.verticalLayout.setObjectName(u'verticalLayout')
-        self.deleteLabel = QtGui.QLabel(songUsageDeleteDialog)
-        self.deleteLabel.setObjectName(u'deleteLabel')
-        self.verticalLayout.addWidget(self.deleteLabel)
-        self.deleteCalendar = QtGui.QCalendarWidget(songUsageDeleteDialog)
-        self.deleteCalendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
-        self.deleteCalendar.setGridVisible(True)
-        self.deleteCalendar.setVerticalHeaderFormat(
-            QtGui.QCalendarWidget.NoVerticalHeader)
-        self.deleteCalendar.setObjectName(u'deleteCalendar')
-        self.verticalLayout.addWidget(self.deleteCalendar)
-        self.buttonBox = create_button_box(songUsageDeleteDialog, u'buttonBox',
-            [u'cancel', u'ok'])
-        self.verticalLayout.addWidget(self.buttonBox)
-        self.retranslateUi(songUsageDeleteDialog)
 
-    def retranslateUi(self, songUsageDeleteDialog):
-        songUsageDeleteDialog.setWindowTitle(
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Delete Song Usage Data'))
-        self.deleteLabel.setText(
-            translate('SongUsagePlugin.SongUsageDeleteForm',
-                'Select the date up to which the song usage data should be '
-                'deleted. All data recorded before this date will be '
-                'permanently deleted.'))
+class Ui_SongUsageDeleteDialog(object):
+    def setupUi(self, song_usage_delete_dialog):
+        song_usage_delete_dialog.setObjectName(u'song_usage_delete_dialog')
+        song_usage_delete_dialog.resize(291, 243)
+        self.vertical_layout = QtGui.QVBoxLayout(song_usage_delete_dialog)
+        self.vertical_layout.setSpacing(8)
+        self.vertical_layout.setContentsMargins(8, 8, 8, 8)
+        self.vertical_layout.setObjectName(u'vertical_layout')
+        self.delete_label = QtGui.QLabel(song_usage_delete_dialog)
+        self.delete_label.setObjectName(u'delete_label')
+        self.vertical_layout.addWidget(self.delete_label)
+        self.delete_calendar = QtGui.QCalendarWidget(song_usage_delete_dialog)
+        self.delete_calendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
+        self.delete_calendar.setGridVisible(True)
+        self.delete_calendar.setVerticalHeaderFormat(QtGui.QCalendarWidget.NoVerticalHeader)
+        self.delete_calendar.setObjectName(u'delete_calendar')
+        self.vertical_layout.addWidget(self.delete_calendar)
+        self.button_box = create_button_box(song_usage_delete_dialog, u'button_box', [u'cancel', u'ok'])
+        self.vertical_layout.addWidget(self.button_box)
+        self.retranslateUi(song_usage_delete_dialog)
+
+    def retranslateUi(self, song_usage_delete_dialog):
+        song_usage_delete_dialog.setWindowTitle(translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Song Usage Data'))
+        self.delete_label.setText(
+            translate('SongUsagePlugin.SongUsageDeleteForm', 'Select the date up to which the song usage data '
+                'should be deleted. All data recorded before this date will be permanently deleted.'))

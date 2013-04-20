@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -32,36 +32,43 @@ from PyQt4 import QtGui
 from openlp.core.lib import translate
 from openlp.core.lib.ui import create_button_box
 
-class Ui_SongBookDialog(object):
-    def setupUi(self, songBookDialog):
-        songBookDialog.setObjectName(u'songBookDialog')
-        songBookDialog.resize(300, 10)
-        self.dialogLayout = QtGui.QVBoxLayout(songBookDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
-        self.bookLayout = QtGui.QFormLayout()
-        self.bookLayout.setObjectName(u'bookLayout')
-        self.nameLabel = QtGui.QLabel(songBookDialog)
-        self.nameLabel.setObjectName(u'nameLabel')
-        self.nameEdit = QtGui.QLineEdit(songBookDialog)
-        self.nameEdit.setObjectName(u'nameEdit')
-        self.nameLabel.setBuddy(self.nameEdit)
-        self.bookLayout.addRow(self.nameLabel, self.nameEdit)
-        self.publisherLabel = QtGui.QLabel(songBookDialog)
-        self.publisherLabel.setObjectName(u'publisherLabel')
-        self.publisherEdit = QtGui.QLineEdit(songBookDialog)
-        self.publisherEdit.setObjectName(u'publisherEdit')
-        self.publisherLabel.setBuddy(self.publisherEdit)
-        self.bookLayout.addRow(self.publisherLabel, self.publisherEdit)
-        self.dialogLayout.addLayout(self.bookLayout)
-        self.buttonBox = create_button_box(songBookDialog, u'buttonBox',
-            [u'cancel', u'save'])
-        self.dialogLayout.addWidget(self.buttonBox)
-        self.retranslateUi(songBookDialog)
-        songBookDialog.setMaximumHeight(songBookDialog.sizeHint().height())
 
-    def retranslateUi(self, songBookDialog):
-        songBookDialog.setWindowTitle(
-            translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
-        self.nameLabel.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
-        self.publisherLabel.setText(
-            translate('SongsPlugin.SongBookForm', '&Publisher:'))
+class Ui_SongBookDialog(object):
+    """
+    The user interface for the song book dialog.
+    """
+    def setupUi(self, song_book_dialog):
+        """
+        Set up the user interface.
+        """
+        song_book_dialog.setObjectName(u'song_book_dialog')
+        song_book_dialog.resize(300, 10)
+        self.dialog_layout = QtGui.QVBoxLayout(song_book_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.book_layout = QtGui.QFormLayout()
+        self.book_layout.setObjectName(u'book_layout')
+        self.name_label = QtGui.QLabel(song_book_dialog)
+        self.name_label.setObjectName(u'name_label')
+        self.name_edit = QtGui.QLineEdit(song_book_dialog)
+        self.name_edit.setObjectName(u'name_edit')
+        self.name_label.setBuddy(self.name_edit)
+        self.book_layout.addRow(self.name_label, self.name_edit)
+        self.publisher_label = QtGui.QLabel(song_book_dialog)
+        self.publisher_label.setObjectName(u'publisher_label')
+        self.publisher_edit = QtGui.QLineEdit(song_book_dialog)
+        self.publisher_edit.setObjectName(u'publisher_edit')
+        self.publisher_label.setBuddy(self.publisher_edit)
+        self.book_layout.addRow(self.publisher_label, self.publisher_edit)
+        self.dialog_layout.addLayout(self.book_layout)
+        self.button_box = create_button_box(song_book_dialog, u'button_box', [u'cancel', u'save'])
+        self.dialog_layout.addWidget(self.button_box)
+        self.retranslateUi(song_book_dialog)
+        song_book_dialog.setMaximumHeight(song_book_dialog.sizeHint().height())
+
+    def retranslateUi(self, song_book_dialog):
+        """
+        Translate the UI on the fly.
+        """
+        song_book_dialog.setWindowTitle(translate('SongsPlugin.SongBookForm', 'Song Book Maintenance'))
+        self.name_label.setText(translate('SongsPlugin.SongBookForm', '&Name:'))
+        self.publisher_label.setText(translate('SongsPlugin.SongBookForm', '&Publisher:'))

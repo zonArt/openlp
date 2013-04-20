@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -105,28 +105,24 @@ class WowImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        if isinstance(self.importSource, list):
-            self.importWizard.progressBar.setMaximum(len(self.importSource))
-            for file in self.importSource:
-                if self.stopImportFlag:
+        if isinstance(self.import_source, list):
+            self.import_wizard.progress_bar.setMaximum(len(self.import_source))
+            for source in self.import_source:
+                if self.stop_import_flag:
                     return
                 self.setDefaults()
-                song_data = open(file, 'rb')
+                song_data = open(source, 'rb')
                 if song_data.read(19) != u'WoW File\nSong Words':
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.WordsofWorshipSongImport',
-                        ('Invalid Words of Worship song file. Missing '
-                            '"Wow File\\nSong Words" header.'))))
+                    self.logError(source, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
+                            ('Invalid Words of Worship song file. Missing "Wow File\\nSong Words" header.'))))
                     continue
                 # Seek to byte which stores number of blocks in the song
                 song_data.seek(56)
                 no_of_blocks = ord(song_data.read(1))
                 song_data.seek(66)
                 if song_data.read(16) != u'CSongDoc::CBlock':
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.WordsofWorshipSongImport',
-                        ('Invalid Words of Worship song file. Missing '
-                            '"CSongDoc::CBlock" string.'))))
+                    self.logError(source, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
+                        ('Invalid Words of Worship song file. Missing "CSongDoc::CBlock" string.'))))
                     continue
                 # Seek to the beginning of the first block
                 song_data.seek(82)
@@ -134,8 +130,7 @@ class WowImport(SongImport):
                     self.linesToRead = ord(song_data.read(4)[:1])
                     block_text = u''
                     while self.linesToRead:
-                        self.lineText = unicode(
-                            song_data.read(ord(song_data.read(1))), u'cp1252')
+                        self.lineText = unicode(song_data.read(ord(song_data.read(1))), u'cp1252')
                         song_data.seek(1, os.SEEK_CUR)
                         if block_text:
                             block_text += u'\n'
@@ -150,16 +145,14 @@ class WowImport(SongImport):
                 # Now to extract the author
                 author_length = ord(song_data.read(1))
                 if author_length:
-                    self.parseAuthor(
-                        unicode(song_data.read(author_length), u'cp1252'))
+                    self.parse_author(unicode(song_data.read(author_length), u'cp1252'))
                 # Finally the copyright
                 copyright_length = ord(song_data.read(1))
                 if copyright_length:
-                    self.addCopyright(unicode(
-                        song_data.read(copyright_length), u'cp1252'))
-                file_name = os.path.split(file)[1]
+                    self.addCopyright(unicode(song_data.read(copyright_length), u'cp1252'))
+                file_name = os.path.split(source)[1]
                 # Get the song title
                 self.title = file_name.rpartition(u'.')[0]
                 song_data.close()
                 if not self.finish():
-                    self.logError(file)
+                    self.logError(source)

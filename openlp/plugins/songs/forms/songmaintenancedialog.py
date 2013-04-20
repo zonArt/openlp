@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -29,136 +29,137 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon
-from openlp.core.lib.ui import UiStrings, create_button_box
+from openlp.core.lib import UiStrings, build_icon
+from openlp.core.lib.ui import create_button_box
 from openlp.plugins.songs.lib.ui import SongStrings
 
-class Ui_SongMaintenanceDialog(object):
-    def setupUi(self, songMaintenanceDialog):
-        songMaintenanceDialog.setObjectName(u'songMaintenanceDialog')
-        songMaintenanceDialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        songMaintenanceDialog.resize(10, 350)
-        self.dialogLayout = QtGui.QGridLayout(songMaintenanceDialog)
-        self.dialogLayout.setObjectName(u'dialogLayout')
-        self.typeListWidget = QtGui.QListWidget(songMaintenanceDialog)
-        self.typeListWidget.setIconSize(QtCore.QSize(32, 32))
-        self.typeListWidget.setUniformItemSizes(True)
-        self.typeListWidget.setObjectName(u'typeListWidget')
-        self.listItemAuthors = QtGui.QListWidgetItem(self.typeListWidget)
-        self.listItemAuthors.setIcon(
-            build_icon(u':/songs/author_maintenance.png'))
-        self.listItemTopics = QtGui.QListWidgetItem(self.typeListWidget)
-        self.listItemTopics.setIcon(
-            build_icon(u':/songs/topic_maintenance.png'))
-        self.listItemBooks = QtGui.QListWidgetItem(self.typeListWidget)
-        self.listItemBooks.setIcon(
-            build_icon(u':/songs/book_maintenance.png'))
-        self.dialogLayout.addWidget(self.typeListWidget, 0, 0)
-        self.stackedLayout = QtGui.QStackedLayout()
-        self.stackedLayout.setObjectName(u'stackedLayout')
-        # authors page
-        self.authorsPage = QtGui.QWidget(songMaintenanceDialog)
-        self.authorsPage.setObjectName(u'authorsPage')
-        self.authorsLayout = QtGui.QVBoxLayout(self.authorsPage)
-        self.authorsLayout.setObjectName(u'authorsLayout')
-        self.authorsListWidget = QtGui.QListWidget(self.authorsPage)
-        self.authorsListWidget.setObjectName(u'authorsListWidget')
-        self.authorsLayout.addWidget(self.authorsListWidget)
-        self.authorsButtonsLayout = QtGui.QHBoxLayout()
-        self.authorsButtonsLayout.setObjectName(u'authorsButtonsLayout')
-        self.authorsButtonsLayout.addStretch()
-        self.authorsAddButton = QtGui.QPushButton(self.authorsPage)
-        self.authorsAddButton.setIcon(build_icon(u':/songs/author_add.png'))
-        self.authorsAddButton.setObjectName(u'authorsAddButton')
-        self.authorsButtonsLayout.addWidget(self.authorsAddButton)
-        self.authorsEditButton = QtGui.QPushButton(self.authorsPage)
-        self.authorsEditButton.setIcon(build_icon(u':/songs/author_edit.png'))
-        self.authorsEditButton.setObjectName(u'authorsEditButton')
-        self.authorsButtonsLayout.addWidget(self.authorsEditButton)
-        self.authorsDeleteButton = QtGui.QPushButton(self.authorsPage)
-        self.authorsDeleteButton.setIcon(
-            build_icon(u':/songs/author_delete.png'))
-        self.authorsDeleteButton.setObjectName(u'authorsDeleteButton')
-        self.authorsButtonsLayout.addWidget(self.authorsDeleteButton)
-        self.authorsLayout.addLayout(self.authorsButtonsLayout)
-        self.stackedLayout.addWidget(self.authorsPage)
-        # topics page
-        self.topicsPage = QtGui.QWidget(songMaintenanceDialog)
-        self.topicsPage.setObjectName(u'topicsPage')
-        self.topicsLayout = QtGui.QVBoxLayout(self.topicsPage)
-        self.topicsLayout.setObjectName(u'topicsLayout')
-        self.topicsListWidget = QtGui.QListWidget(self.topicsPage)
-        self.topicsListWidget.setObjectName(u'topicsListWidget')
-        self.topicsLayout.addWidget(self.topicsListWidget)
-        self.topicsButtonsLayout = QtGui.QHBoxLayout()
-        self.topicsButtonsLayout.setObjectName(u'topicsButtonLayout')
-        self.topicsButtonsLayout.addStretch()
-        self.topicsAddButton = QtGui.QPushButton(self.topicsPage)
-        self.topicsAddButton.setIcon(build_icon(u':/songs/topic_add.png'))
-        self.topicsAddButton.setObjectName(u'topicsAddButton')
-        self.topicsButtonsLayout.addWidget(self.topicsAddButton)
-        self.topicsEditButton = QtGui.QPushButton(self.topicsPage)
-        self.topicsEditButton.setIcon(build_icon(u':/songs/topic_edit.png'))
-        self.topicsEditButton.setObjectName(u'topicsEditButton')
-        self.topicsButtonsLayout.addWidget(self.topicsEditButton)
-        self.topicsDeleteButton = QtGui.QPushButton(self.topicsPage)
-        self.topicsDeleteButton.setIcon(build_icon(u':/songs/topic_delete.png'))
-        self.topicsDeleteButton.setObjectName(u'topicsDeleteButton')
-        self.topicsButtonsLayout.addWidget(self.topicsDeleteButton)
-        self.topicsLayout.addLayout(self.topicsButtonsLayout)
-        self.stackedLayout.addWidget(self.topicsPage)
-        # song books page
-        self.booksPage = QtGui.QWidget(songMaintenanceDialog)
-        self.booksPage.setObjectName(u'booksPage')
-        self.booksLayout = QtGui.QVBoxLayout(self.booksPage)
-        self.booksLayout.setObjectName(u'booksLayout')
-        self.booksListWidget = QtGui.QListWidget(self.booksPage)
-        self.booksListWidget.setObjectName(u'booksListWidget')
-        self.booksLayout.addWidget(self.booksListWidget)
-        self.booksButtonsLayout = QtGui.QHBoxLayout()
-        self.booksButtonsLayout.setObjectName(u'booksButtonLayout')
-        self.booksButtonsLayout.addStretch()
-        self.booksAddButton = QtGui.QPushButton(self.booksPage)
-        self.booksAddButton.setIcon(build_icon(u':/songs/book_add.png'))
-        self.booksAddButton.setObjectName(u'booksAddButton')
-        self.booksButtonsLayout.addWidget(self.booksAddButton)
-        self.booksEditButton = QtGui.QPushButton(self.booksPage)
-        self.booksEditButton.setIcon(build_icon(u':/songs/book_edit.png'))
-        self.booksEditButton.setObjectName(u'booksEditButton')
-        self.booksButtonsLayout.addWidget(self.booksEditButton)
-        self.booksDeleteButton = QtGui.QPushButton(self.booksPage)
-        self.booksDeleteButton.setIcon(build_icon(u':/songs/book_delete.png'))
-        self.booksDeleteButton.setObjectName(u'booksDeleteButton')
-        self.booksButtonsLayout.addWidget(self.booksDeleteButton)
-        self.booksLayout.addLayout(self.booksButtonsLayout)
-        self.stackedLayout.addWidget(self.booksPage)
-        #
-        self.dialogLayout.addLayout(self.stackedLayout, 0, 1)
-        self.buttonBox = create_button_box(songMaintenanceDialog, u'buttonBox',
-            [u'close'])
-        self.dialogLayout.addWidget(self.buttonBox, 1, 0, 1, 2)
-        self.retranslateUi(songMaintenanceDialog)
-        self.stackedLayout.setCurrentIndex(0)
-        QtCore.QObject.connect(self.typeListWidget,
-            QtCore.SIGNAL(u'currentRowChanged(int)'),
-            self.stackedLayout.setCurrentIndex)
 
-    def retranslateUi(self, songMaintenanceDialog):
-        songMaintenanceDialog.setWindowTitle(SongStrings.SongMaintenance)
-        self.listItemAuthors.setText(SongStrings.Authors)
-        self.listItemTopics.setText(SongStrings.Topics)
-        self.listItemBooks.setText(SongStrings.SongBooks)
-        self.authorsAddButton.setText(UiStrings().Add)
-        self.authorsEditButton.setText(UiStrings().Edit)
-        self.authorsDeleteButton.setText(UiStrings().Delete)
-        self.topicsAddButton.setText(UiStrings().Add)
-        self.topicsEditButton.setText(UiStrings().Edit)
-        self.topicsDeleteButton.setText(UiStrings().Delete)
-        self.booksAddButton.setText(UiStrings().Add)
-        self.booksEditButton.setText(UiStrings().Edit)
-        self.booksDeleteButton.setText(UiStrings().Delete)
+class Ui_SongMaintenanceDialog(object):
+    """
+    The user interface for the song maintenance dialog
+    """
+    def setupUi(self, song_maintenance_dialog):
+        """
+        Set up the user interface for the song maintenance dialog
+        """
+        song_maintenance_dialog.setObjectName(u'song_maintenance_dialog')
+        song_maintenance_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        song_maintenance_dialog.resize(10, 350)
+        self.dialog_layout = QtGui.QGridLayout(song_maintenance_dialog)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.type_list_widget = QtGui.QListWidget(song_maintenance_dialog)
+        self.type_list_widget.setIconSize(QtCore.QSize(32, 32))
+        self.type_list_widget.setUniformItemSizes(True)
+        self.type_list_widget.setObjectName(u'type_list_widget')
+        self.authors_list_item = QtGui.QListWidgetItem(self.type_list_widget)
+        self.authors_list_item.setIcon(build_icon(u':/songs/author_maintenance.png'))
+        self.topics_list_item = QtGui.QListWidgetItem(self.type_list_widget)
+        self.topics_list_item.setIcon(build_icon(u':/songs/topic_maintenance.png'))
+        self.books_list_item = QtGui.QListWidgetItem(self.type_list_widget)
+        self.books_list_item.setIcon(build_icon(u':/songs/book_maintenance.png'))
+        self.dialog_layout.addWidget(self.type_list_widget, 0, 0)
+        self.stacked_layout = QtGui.QStackedLayout()
+        self.stacked_layout.setObjectName(u'stacked_layout')
+        # authors page
+        self.authors_page = QtGui.QWidget(song_maintenance_dialog)
+        self.authors_page.setObjectName(u'authors_page')
+        self.authors_layout = QtGui.QVBoxLayout(self.authors_page)
+        self.authors_layout.setObjectName(u'authors_layout')
+        self.authors_list_widget = QtGui.QListWidget(self.authors_page)
+        self.authors_list_widget.setObjectName(u'authors_list_widget')
+        self.authors_layout.addWidget(self.authors_list_widget)
+        self.authors_buttons_layout = QtGui.QHBoxLayout()
+        self.authors_buttons_layout.setObjectName(u'authors_buttons_layout')
+        self.authors_buttons_layout.addStretch()
+        self.add_author_button = QtGui.QPushButton(self.authors_page)
+        self.add_author_button.setIcon(build_icon(u':/songs/author_add.png'))
+        self.add_author_button.setObjectName(u'add_author_button')
+        self.authors_buttons_layout.addWidget(self.add_author_button)
+        self.edit_author_button = QtGui.QPushButton(self.authors_page)
+        self.edit_author_button.setIcon(build_icon(u':/songs/author_edit.png'))
+        self.edit_author_button.setObjectName(u'edit_author_button')
+        self.authors_buttons_layout.addWidget(self.edit_author_button)
+        self.delete_author_button = QtGui.QPushButton(self.authors_page)
+        self.delete_author_button.setIcon(build_icon(u':/songs/author_delete.png'))
+        self.delete_author_button.setObjectName(u'delete_author_button')
+        self.authors_buttons_layout.addWidget(self.delete_author_button)
+        self.authors_layout.addLayout(self.authors_buttons_layout)
+        self.stacked_layout.addWidget(self.authors_page)
+        # topics page
+        self.topics_page = QtGui.QWidget(song_maintenance_dialog)
+        self.topics_page.setObjectName(u'topics_page')
+        self.topics_layout = QtGui.QVBoxLayout(self.topics_page)
+        self.topics_layout.setObjectName(u'topics_layout')
+        self.topics_list_widget = QtGui.QListWidget(self.topics_page)
+        self.topics_list_widget.setObjectName(u'topics_list_widget')
+        self.topics_layout.addWidget(self.topics_list_widget)
+        self.topics_buttons_layout = QtGui.QHBoxLayout()
+        self.topics_buttons_layout.setObjectName(u'topicsButtonLayout')
+        self.topics_buttons_layout.addStretch()
+        self.add_topic_button = QtGui.QPushButton(self.topics_page)
+        self.add_topic_button.setIcon(build_icon(u':/songs/topic_add.png'))
+        self.add_topic_button.setObjectName(u'add_topic_button')
+        self.topics_buttons_layout.addWidget(self.add_topic_button)
+        self.edit_topic_button = QtGui.QPushButton(self.topics_page)
+        self.edit_topic_button.setIcon(build_icon(u':/songs/topic_edit.png'))
+        self.edit_topic_button.setObjectName(u'edit_topic_button')
+        self.topics_buttons_layout.addWidget(self.edit_topic_button)
+        self.delete_topic_button = QtGui.QPushButton(self.topics_page)
+        self.delete_topic_button.setIcon(build_icon(u':/songs/topic_delete.png'))
+        self.delete_topic_button.setObjectName(u'delete_topic_button')
+        self.topics_buttons_layout.addWidget(self.delete_topic_button)
+        self.topics_layout.addLayout(self.topics_buttons_layout)
+        self.stacked_layout.addWidget(self.topics_page)
+        # song books page
+        self.books_page = QtGui.QWidget(song_maintenance_dialog)
+        self.books_page.setObjectName(u'books_page')
+        self.books_layout = QtGui.QVBoxLayout(self.books_page)
+        self.books_layout.setObjectName(u'books_layout')
+        self.song_books_list_widget = QtGui.QListWidget(self.books_page)
+        self.song_books_list_widget.setObjectName(u'song_books_list_widget')
+        self.books_layout.addWidget(self.song_books_list_widget)
+        self.books_buttons_layout = QtGui.QHBoxLayout()
+        self.books_buttons_layout.setObjectName(u'booksButtonLayout')
+        self.books_buttons_layout.addStretch()
+        self.add_book_button = QtGui.QPushButton(self.books_page)
+        self.add_book_button.setIcon(build_icon(u':/songs/book_add.png'))
+        self.add_book_button.setObjectName(u'add_book_button')
+        self.books_buttons_layout.addWidget(self.add_book_button)
+        self.edit_book_button = QtGui.QPushButton(self.books_page)
+        self.edit_book_button.setIcon(build_icon(u':/songs/book_edit.png'))
+        self.edit_book_button.setObjectName(u'edit_book_button')
+        self.books_buttons_layout.addWidget(self.edit_book_button)
+        self.delete_book_button = QtGui.QPushButton(self.books_page)
+        self.delete_book_button.setIcon(build_icon(u':/songs/book_delete.png'))
+        self.delete_book_button.setObjectName(u'delete_book_button')
+        self.books_buttons_layout.addWidget(self.delete_book_button)
+        self.books_layout.addLayout(self.books_buttons_layout)
+        self.stacked_layout.addWidget(self.books_page)
+        #
+        self.dialog_layout.addLayout(self.stacked_layout, 0, 1)
+        self.button_box = create_button_box(song_maintenance_dialog, u'button_box', [u'close'])
+        self.dialog_layout.addWidget(self.button_box, 1, 0, 1, 2)
+        self.retranslateUi(song_maintenance_dialog)
+        self.stacked_layout.setCurrentIndex(0)
+        self.type_list_widget.currentRowChanged.connect(self.stacked_layout.setCurrentIndex)
+
+    def retranslateUi(self, song_maintenance_dialog):
+        """
+        Translate the UI on the fly.
+        """
+        song_maintenance_dialog.setWindowTitle(SongStrings.SongMaintenance)
+        self.authors_list_item.setText(SongStrings.Authors)
+        self.topics_list_item.setText(SongStrings.Topics)
+        self.books_list_item.setText(SongStrings.SongBooks)
+        self.add_author_button.setText(UiStrings().Add)
+        self.edit_author_button.setText(UiStrings().Edit)
+        self.delete_author_button.setText(UiStrings().Delete)
+        self.add_topic_button.setText(UiStrings().Add)
+        self.edit_topic_button.setText(UiStrings().Edit)
+        self.delete_topic_button.setText(UiStrings().Delete)
+        self.add_book_button.setText(UiStrings().Add)
+        self.edit_book_button.setText(UiStrings().Edit)
+        self.delete_book_button.setText(UiStrings().Delete)
         typeListWidth = max(self.fontMetrics().width(SongStrings.Authors),
-            self.fontMetrics().width(SongStrings.Topics),
-            self.fontMetrics().width(SongStrings.SongBooks))
-        self.typeListWidget.setFixedWidth(typeListWidth +
-            self.typeListWidget.iconSize().width() + 32)
+            self.fontMetrics().width(SongStrings.Topics), self.fontMetrics().width(SongStrings.SongBooks))
+        self.type_list_widget.setFixedWidth(typeListWidth + self.type_list_widget.iconSize().width() + 32)

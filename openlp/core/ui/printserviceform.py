@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2012 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2012 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
 # Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
 # Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
-# Frode Woldsund, Martin Zibricky                                             #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
 # --------------------------------------------------------------------------- #
 # This program is free software; you can redistribute it and/or modify it     #
 # under the terms of the GNU General Public License as published by the Free  #
@@ -26,6 +26,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+The actual print service dialog
+"""
 import cgi
 import datetime
 import os
@@ -33,9 +36,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import translate, get_text_file_string, Receiver
-from openlp.core.lib.ui import UiStrings
-from openlp.core.lib.settings import Settings
+from openlp.core.lib import Settings, UiStrings, Registry, translate, get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.utils import AppLocation
 
@@ -108,159 +109,134 @@ http://doc.trolltech.com/4.7/richtext-html-subset.html#css-properties
 }
 """
 
-class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
 
-    def __init__(self, mainWindow, serviceManager):
+class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
+    """
+    The :class:`~openlp.core.ui.printserviceform.PrintServiceForm` class displays a dialog for printing the service.
+    """
+    def __init__(self):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, mainWindow)
-        self.mainWindow = mainWindow
-        self.serviceManager = serviceManager
+        QtGui.QDialog.__init__(self, self.main_window)
         self.printer = QtGui.QPrinter()
-        self.printDialog = QtGui.QPrintDialog(self.printer, self)
+        self.print_dialog = QtGui.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
         self.zoom = 0
         self.setupUi(self)
         # Load the settings for the dialog.
         settings = Settings()
         settings.beginGroup(u'advanced')
-        self.slideTextCheckBox.setChecked(settings.value(
-            u'print slide text', QtCore.QVariant(False)).toBool())
-        self.pageBreakAfterText.setChecked(settings.value(
-            u'add page break', QtCore.QVariant(False)).toBool())
-        if not self.slideTextCheckBox.isChecked():
-            self.pageBreakAfterText.setDisabled(True)
-        self.metaDataCheckBox.setChecked(settings.value(
-            u'print file meta data', QtCore.QVariant(False)).toBool())
-        self.notesCheckBox.setChecked(settings.value(
-            u'print notes', QtCore.QVariant(False)).toBool())
-        self.zoomComboBox.setCurrentIndex(settings.value(
-            u'display size', QtCore.QVariant(0)).toInt()[0])
+        self.slide_text_check_box.setChecked(settings.value(u'print slide text'))
+        self.page_break_after_text.setChecked(settings.value(u'add page break'))
+        if not self.slide_text_check_box.isChecked():
+            self.page_break_after_text.setDisabled(True)
+        self.meta_data_check_box.setChecked(settings.value(u'print file meta data'))
+        self.notes_check_box.setChecked(settings.value(u'print notes'))
+        self.zoom_combo_box.setCurrentIndex(settings.value(u'display size'))
         settings.endGroup()
         # Signals
-        QtCore.QObject.connect(self.printButton,
-            QtCore.SIGNAL(u'triggered()'), self.printServiceOrder)
-        QtCore.QObject.connect(self.zoomOutButton,
-            QtCore.SIGNAL(u'clicked()'), self.zoomOut)
-        QtCore.QObject.connect(self.zoomInButton,
-            QtCore.SIGNAL(u'clicked()'), self.zoomIn)
-        QtCore.QObject.connect(self.zoomOriginalButton,
-            QtCore.SIGNAL(u'clicked()'), self.zoomOriginal)
-        QtCore.QObject.connect(self.previewWidget,
-            QtCore.SIGNAL(u'paintRequested(QPrinter *)'), self.paintRequested)
-        QtCore.QObject.connect(self.zoomComboBox,
-            QtCore.SIGNAL(u'currentIndexChanged(int)'), self.displaySizeChanged)
-        QtCore.QObject.connect(self.plainCopy,
-            QtCore.SIGNAL(u'triggered()'), self.copyText)
-        QtCore.QObject.connect(self.htmlCopy,
-            QtCore.SIGNAL(u'triggered()'), self.copyHtmlText)
-        QtCore.QObject.connect(self.slideTextCheckBox,
-            QtCore.SIGNAL(u'stateChanged(int)'),
-            self.onSlideTextCheckBoxChanged)
-        self.updatePreviewText()
+        self.print_button.triggered.connect(self.print_service_order)
+        self.zoom_out_button.clicked.connect(self.zoom_out)
+        self.zoom_in_button.clicked.connect(self.zoom_in)
+        self.zoom_original_button.clicked.connect(self.zoom_original)
+        self.preview_widget.paintRequested.connect(self.paint_requested)
+        self.zoom_combo_box.currentIndexChanged.connect(self.display_size_changed)
+        self.plain_copy.triggered.connect(self.copy_text)
+        self.html_copy.triggered.connect(self.copy_html_text)
+        self.slide_text_check_box.stateChanged.connect(self.on_slide_text_check_box_changed)
+        self.update_preview_text()
 
-    def toggleOptions(self, checked):
-        self.optionsWidget.setVisible(checked)
+    def toggle_options(self, checked):
+        """
+        Toggle various options
+        """
+        self.options_widget.setVisible(checked)
         if checked:
-            left = self.optionsButton.pos().x()
+            left = self.options_button.pos().x()
             top = self.toolbar.height()
-            self.optionsWidget.move(left, top)
-            self.titleLineEdit.setFocus()
+            self.options_widget.move(left, top)
+            self.title_line_edit.setFocus()
         else:
-            self.saveOptions()
-        self.updatePreviewText()
+            self.save_options()
+        self.update_preview_text()
 
-    def updatePreviewText(self):
+    def update_preview_text(self):
         """
         Creates the html text and updates the html of *self.document*.
         """
-        html_data = self._addElement(u'html')
-        self._addElement(u'head', parent=html_data)
-        self._addElement(u'title', unicode(self.titleLineEdit.text()),
-            html_data.head)
-        css_path = os.path.join(
-            AppLocation.get_data_path(), u'service_print.css')
+        html_data = self._add_element(u'html')
+        self._add_element(u'head', parent=html_data)
+        self._add_element(u'title', self.title_line_edit.text(), html_data.head)
+        css_path = os.path.join(AppLocation.get_data_path(), u'service_print.css')
         custom_css = get_text_file_string(css_path)
         if not custom_css:
             custom_css = DEFAULT_CSS
-        self._addElement(u'style', custom_css, html_data.head,
-            attribute=(u'type', u'text/css'))
-        self._addElement(u'body', parent=html_data)
-        self._addElement(u'h1', cgi.escape(unicode(self.titleLineEdit.text())),
-            html_data.body, classId=u'serviceTitle')
-        for index, item in enumerate(self.serviceManager.serviceItems):
-            self._addPreviewItem(html_data.body, item[u'service_item'], index)
+        self._add_element(u'style', custom_css, html_data.head, attribute=(u'type', u'text/css'))
+        self._add_element(u'body', parent=html_data)
+        self._add_element(u'h1', cgi.escape(self.title_line_edit.text()), html_data.body, classId=u'serviceTitle')
+        for index, item in enumerate(self.service_manager.service_items):
+            self._add_preview_item(html_data.body, item[u'service_item'], index)
         # Add the custom service notes:
-        if self.footerTextEdit.toPlainText():
-            div = self._addElement(u'div', parent=html_data.body,
-                classId=u'customNotes')
-            self._addElement(u'span', translate('OpenLP.ServiceManager',
-                'Custom Service Notes: '), div, classId=u'customNotesTitle')
-            self._addElement(u'span',
-                cgi.escape(self.footerTextEdit.toPlainText()),
-                div, classId=u'customNotesText')
+        if self.footer_text_edit.toPlainText():
+            div = self._add_element(u'div', parent=html_data.body, classId=u'customNotes')
+            self._add_element(
+                u'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId=u'customNotesTitle')
+            self._add_element(u'span', cgi.escape(self.footer_text_edit.toPlainText()), div, classId=u'customNotesText')
         self.document.setHtml(html.tostring(html_data))
-        self.previewWidget.updatePreview()
+        self.preview_widget.updatePreview()
 
-    def _addPreviewItem(self, body, item, index):
-        div = self._addElement(u'div', classId=u'item', parent=body)
+    def _add_preview_item(self, body, item, index):
+        """
+        Add a preview item
+        """
+        div = self._add_element(u'div', classId=u'item', parent=body)
         # Add the title of the service item.
-        item_title = self._addElement(u'h2', parent=div, classId=u'itemTitle')
-        self._addElement(u'img', parent=item_title,
-            attribute=(u'src', item.icon))
-        self._addElement(u'span',
-            u'&nbsp;' + cgi.escape(item.get_display_title()), item_title)
-        if self.slideTextCheckBox.isChecked():
+        item_title = self._add_element(u'h2', parent=div, classId=u'itemTitle')
+        self._add_element(u'img', parent=item_title, attribute=(u'src', item.icon))
+        self._add_element(u'span', u'&nbsp;' + cgi.escape(item.get_display_title()), item_title)
+        if self.slide_text_check_box.isChecked():
             # Add the text of the service item.
             if item.is_text():
                 verse_def = None
                 for slide in item.get_frames():
                     if not verse_def or verse_def != slide[u'verseTag']:
-                        text_div = self._addElement(u'div', parent=div,
-                            classId=u'itemText')
+                        text_div = self._add_element(u'div', parent=div, classId=u'itemText')
                     else:
-                        self._addElement(u'br', parent=text_div)
-                    self._addElement(u'span', slide[u'html'], text_div)
+                        self._add_element(u'br', parent=text_div)
+                    self._add_element(u'span', slide[u'html'], text_div)
                     verse_def = slide[u'verseTag']
                 # Break the page before the div element.
-                if index != 0 and self.pageBreakAfterText.isChecked():
+                if index != 0 and self.page_break_after_text.isChecked():
                     div.set(u'class', u'item newPage')
             # Add the image names of the service item.
             elif item.is_image():
-                ol = self._addElement(u'ol', parent=div, classId=u'imageList')
+                ol = self._add_element(u'ol', parent=div, classId=u'imageList')
                 for slide in range(len(item.get_frames())):
-                    self._addElement(u'li', item.get_frame_title(slide), ol)
+                    self._add_element(u'li', item.get_frame_title(slide), ol)
             # add footer
             foot_text = item.foot_text
             foot_text = foot_text.partition(u'<br>')[2]
             if foot_text:
                 foot_text = cgi.escape(foot_text.replace(u'<br>', u'\n'))
-                self._addElement(u'div', foot_text.replace(u'\n', u'<br>'),
-                    parent=div, classId=u'itemFooter')
+                self._add_element(u'div', foot_text.replace(u'\n', u'<br>'), parent=div, classId=u'itemFooter')
         # Add service items' notes.
-        if self.notesCheckBox.isChecked():
+        if self.notes_check_box.isChecked():
             if item.notes:
-                p = self._addElement(u'div', classId=u'itemNotes', parent=div)
-                self._addElement(u'span',
-                    translate('OpenLP.ServiceManager', 'Notes: '), p,
-                    classId=u'itemNotesTitle')
-                self._addElement(u'span',
-                    cgi.escape(unicode(item.notes)).replace(u'\n', u'<br>'), p,
-                    classId=u'itemNotesText')
+                p = self._add_element(u'div', classId=u'itemNotes', parent=div)
+                self._add_element(u'span', translate('OpenLP.ServiceManager', 'Notes: '), p, classId=u'itemNotesTitle')
+                self._add_element(u'span', cgi.escape(item.notes).replace(u'\n', u'<br>'), p, classId=u'itemNotesText')
         # Add play length of media files.
-        if item.is_media() and self.metaDataCheckBox.isChecked():
+        if item.is_media() and self.meta_data_check_box.isChecked():
             tme = item.media_length
             if item.end_time > 0:
                 tme = item.end_time - item.start_time
-            title = self._addElement(u'div', classId=u'media', parent=div)
-            self._addElement(u'span', translate('OpenLP.ServiceManager',
-                'Playing time: '), title, classId=u'mediaTitle')
-            self._addElement(u'span', unicode(datetime.timedelta(seconds=tme)),
-                title, classId=u'mediaText')
+            title = self._add_element(u'div', classId=u'media', parent=div)
+            self._add_element(
+                u'span', translate('OpenLP.ServiceManager', 'Playing time: '), title, classId=u'mediaTitle')
+            self._add_element(u'span', unicode(datetime.timedelta(seconds=tme)), title, classId=u'mediaText')
 
-    def _addElement(self, tag, text=None, parent=None, classId=None,
-        attribute=None):
+    def _add_element(self, tag, text=None, parent=None, classId=None, attribute=None):
         """
         Creates a html element. If ``text`` is given, the element's text will
         set and if a ``parent`` is given, the element is appended.
@@ -292,7 +268,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             element.set(attribute[0], attribute[1])
         return element
 
-    def paintRequested(self, printer):
+    def paint_requested(self, printer):
         """
         Paint the preview of the *self.document*.
 
@@ -301,32 +277,32 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         self.document.print_(printer)
 
-    def displaySizeChanged(self, display):
+    def display_size_changed(self, display):
         """
         The Zoom Combo box has changed so set up the size.
         """
         if display == ZoomSize.Page:
-            self.previewWidget.fitInView()
+            self.preview_widget.fitInView()
         elif display == ZoomSize.Width:
-            self.previewWidget.fitToWidth()
+            self.preview_widget.fitToWidth()
         elif display == ZoomSize.OneHundred:
-            self.previewWidget.fitToWidth()
-            self.previewWidget.zoomIn(1)
+            self.preview_widget.fitToWidth()
+            self.preview_widget.zoomIn(1)
         elif display == ZoomSize.SeventyFive:
-            self.previewWidget.fitToWidth()
-            self.previewWidget.zoomIn(0.75)
+            self.preview_widget.fitToWidth()
+            self.preview_widget.zoomIn(0.75)
         elif display == ZoomSize.Fifty:
-            self.previewWidget.fitToWidth()
-            self.previewWidget.zoomIn(0.5)
+            self.preview_widget.fitToWidth()
+            self.preview_widget.zoomIn(0.5)
         elif display == ZoomSize.TwentyFive:
-            self.previewWidget.fitToWidth()
-            self.previewWidget.zoomIn(0.25)
+            self.preview_widget.fitToWidth()
+            self.preview_widget.zoomIn(0.25)
         settings = Settings()
         settings.beginGroup(u'advanced')
-        settings.setValue(u'display size', QtCore.QVariant(display))
+        settings.setValue(u'display size', display)
         settings.endGroup()
 
-    def copyText(self):
+    def copy_text(self):
         """
         Copies the display text to the clipboard as plain text
         """
@@ -348,47 +324,47 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # remove the icon from the text
         clipboard_text = clipboard_text.replace(u'\ufffc\xa0', u'')
         # and put it all on the clipboard
-        self.mainWindow.clipboard.setText(clipboard_text)
+        self.main_window.clipboard.setText(clipboard_text)
 
-    def copyHtmlText(self):
+    def copy_html_text(self):
         """
         Copies the display text to the clipboard as Html
         """
         self.update_song_usage()
-        self.mainWindow.clipboard.setText(self.document.toHtml())
+        self.main_window.clipboard.setText(self.document.toHtml())
 
-    def printServiceOrder(self):
+    def print_service_order(self):
         """
-        Called, when the *printButton* is clicked. Opens the *printDialog*.
+        Called, when the *print_button* is clicked. Opens the *print_dialog*.
         """
-        if not self.printDialog.exec_():
+        if not self.print_dialog.exec_():
             return
         self.update_song_usage()
         # Print the document.
         self.document.print_(self.printer)
 
-    def zoomIn(self):
+    def zoom_in(self):
         """
-        Called when *zoomInButton* is clicked.
+        Called when *zoom_in_button* is clicked.
         """
-        self.previewWidget.zoomIn()
+        self.preview_widget.zoomIn()
         self.zoom -= 0.1
 
-    def zoomOut(self):
+    def zoom_out(self):
         """
-        Called when *zoomOutButton* is clicked.
+        Called when *zoom_out_button* is clicked.
         """
-        self.previewWidget.zoomOut()
+        self.preview_widget.zoomOut()
         self.zoom += 0.1
 
-    def zoomOriginal(self):
+    def zoom_original(self):
         """
-        Called when *zoomOutButton* is clicked.
+        Called when *zoom_out_button* is clicked.
         """
-        self.previewWidget.zoomIn(1 + self.zoom)
+        self.preview_widget.zoomIn(1 + self.zoom)
         self.zoom = 0
 
-    def updateTextFormat(self, value):
+    def update_text_format(self, value):
         """
         Called when html copy check box is selected.
         """
@@ -397,35 +373,53 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         else:
             self.copyTextButton.setText(UiStrings().CopyToText)
 
-    def onSlideTextCheckBoxChanged(self, state):
+    def on_slide_text_check_box_changed(self, state):
         """
-        Disable or enable the ``pageBreakAfterText`` checkbox  as it should only
-        be enabled, when the ``slideTextCheckBox`` is enabled.
+        Disable or enable the ``page_break_after_text`` checkbox  as it should only
+        be enabled, when the ``slide_text_check_box`` is enabled.
         """
-        self.pageBreakAfterText.setDisabled(state == QtCore.Qt.Unchecked)
+        self.page_break_after_text.setDisabled(state == QtCore.Qt.Unchecked)
 
-    def saveOptions(self):
+    def save_options(self):
         """
         Save the settings and close the dialog.
         """
         # Save the settings for this dialog.
         settings = Settings()
         settings.beginGroup(u'advanced')
-        settings.setValue(u'print slide text',
-            QtCore.QVariant(self.slideTextCheckBox.isChecked()))
-        settings.setValue(u'add page break',
-            QtCore.QVariant(self.pageBreakAfterText.isChecked()))
-        settings.setValue(u'print file meta data',
-            QtCore.QVariant(self.metaDataCheckBox.isChecked()))
-        settings.setValue(u'print notes',
-            QtCore.QVariant(self.notesCheckBox.isChecked()))
+        settings.setValue(u'print slide text', self.slide_text_check_box.isChecked())
+        settings.setValue(u'add page break', self.page_break_after_text.isChecked())
+        settings.setValue(u'print file meta data', self.meta_data_check_box.isChecked())
+        settings.setValue(u'print notes', self.notes_check_box.isChecked())
         settings.endGroup()
 
     def update_song_usage(self):
+        """
+        Update the song usage
+        """
         # Only continue when we include the song's text.
-        if not self.slideTextCheckBox.isChecked():
+        if not self.slide_text_check_box.isChecked():
             return
-        for item in self.serviceManager.serviceItems:
+        for item in self.service_manager.service_items:
             # Trigger Audit requests
-            Receiver.send_message(u'print_service_started',
-                [item[u'service_item']])
+            Registry().register_function(u'print_service_started', [item[u'service_item']])
+
+    def _get_service_manager(self):
+        """
+        Adds the service manager to the class dynamically
+        """
+        if not hasattr(self, u'_service_manager'):
+            self._service_manager = Registry().get(u'service_manager')
+        return self._service_manager
+
+    service_manager = property(_get_service_manager)
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)
