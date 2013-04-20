@@ -132,7 +132,7 @@ class SongShowPlusImport(SongImport):
                 else:
                     length_descriptor, = struct.unpack("B", song_data.read(1))
                 log.debug(length_descriptor_size)
-                data = song_data.read(length_descriptor)
+                data = song_data.read(length_descriptor).decode()
                 if block_key == TITLE:
                     self.title = data
                 elif block_key == AUTHOR:
