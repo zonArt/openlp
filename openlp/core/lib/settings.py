@@ -125,8 +125,7 @@ class Settings(QtCore.QSettings):
         u'core/ccli number': u'',
         u'core/has run wizard': False,
         u'core/language': u'[en]',
-        # This defaults to yesterday in order to force the update check to run when you've never run it before.
-        u'core/last version test': datetime.datetime.now().date() - datetime.timedelta(days=1),
+        u'core/last version test': u'',
         u'core/loop delay': 5,
         u'core/recent files': [],
         u'core/save prompt': False,
