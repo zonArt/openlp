@@ -62,12 +62,10 @@ class ItemCapabilities(object):
             tab when making the previous item live.
 
     ``CanEdit``
-            The capability to allow the ServiceManager to allow the item to be
-             edited
+            The capability to allow the ServiceManager to allow the item to be edited
 
     ``CanMaintain``
-            The capability to allow the ServiceManager to allow the item to be
-             reordered.
+            The capability to allow the ServiceManager to allow the item to be reordered.
 
     ``RequiresMedia``
             Determines is the service_item needs a Media Player
