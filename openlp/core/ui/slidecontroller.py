@@ -255,12 +255,12 @@ class SlideController(DisplayController):
             self.delay_spin_box.setToolTip(translate('OpenLP.SlideController', 'Delay between slides in seconds.'))
             self.toolbar.add_toolbar_widget(self.delay_spin_box)
         else:
-            self.toolbar.add_toolbar_action(u'goLive', icon=u':/general/general_live.png',
+            self.toolbar.add_toolbar_action(u'goLive', icon=u':/core/general_live.png',
                 tooltip=translate('OpenLP.SlideController', 'Move to live.'), triggers=self.onGoLive)
-            self.toolbar.add_toolbar_action(u'addToService', icon=u':/general/general_add.png',
+            self.toolbar.add_toolbar_action(u'addToService', icon=u':/core/general_add.png',
                 tooltip=translate('OpenLP.SlideController', 'Add to Service.'), triggers=self.onPreviewAddToService)
             self.toolbar.addSeparator()
-            self.toolbar.add_toolbar_action(u'editSong', icon=u':/general/general_edit.png',
+            self.toolbar.add_toolbar_action(u'editSong', icon=u':/core/general_edit.png',
                 tooltip=translate('OpenLP.SlideController', 'Edit and reload song preview.'), triggers=self.onEditSong)
         self.controller_layout.addWidget(self.toolbar)
         # Build the Media Toolbar
@@ -616,7 +616,7 @@ class SlideController(DisplayController):
         """
         Adjusts the value of the ``delay_spin_box`` to the given one.
         """
-        self.delay_spin_box.setValue(Settings().value(u'general/loop delay'))
+        self.delay_spin_box.setValue(Settings().value(u'core/loop delay'))
 
     def update_slide_limits(self):
         """
