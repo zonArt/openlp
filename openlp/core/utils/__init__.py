@@ -185,7 +185,7 @@ def check_latest_version(current_version):
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
     settings = Settings()
-    settings.beginGroup(u'general')
+    settings.beginGroup(u'core')
     last_test = settings.value(u'last version test')
     this_test = unicode(datetime.now().date())
     settings.setValue(u'last version test', this_test)
