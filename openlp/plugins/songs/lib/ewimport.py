@@ -50,7 +50,7 @@ NOTE_REGEX = re.compile(r'\(.*?\)')
 class FieldDescEntry:
     def __init__(self, name, field_type, size):
         self.name = name
-        self.type = field_type
+        self.field_type = field_type
         self.size = size
 
 
@@ -231,25 +231,25 @@ class EasyWorshipSongImport(SongImport):
         # Begin with empty field struct list
         fsl = ['>']
         for field_desc in field_descs:
-            if field_desc.type == 1:
+            if field_desc.field_type == 1:
                 # string
                 fsl.append('%ds' % field_desc.size)
-            elif field_desc.type == 3:
+            elif field_desc.field_type == 3:
                 # 16-bit int
                 fsl.append('H')
-            elif field_desc.type == 4:
+            elif field_desc.field_type == 4:
                 # 32-bit int
                 fsl.append('I')
-            elif field_desc.type == 9:
+            elif field_desc.field_type == 9:
                 # Logical
                 fsl.append('B')
-            elif field_desc.type == 0x0c:
+            elif field_desc.field_type == 0x0c:
                 # Memo
                 fsl.append('%ds' % field_desc.size)
-            elif field_desc.type == 0x0d:
+            elif field_desc.field_type == 0x0d:
                 # Blob
                 fsl.append('%ds' % field_desc.size)
-            elif field_desc.type == 0x15:
+            elif field_desc.field_type == 0x15:
                 # Timestamp
                 fsl.append('Q')
             else:
@@ -267,19 +267,19 @@ class EasyWorshipSongImport(SongImport):
         elif field == 0:
             return None
         # Format the field depending on the field type
-        if field_desc.type == 1:
+        if field_desc.field_type == 1:
             # string
             return field.rstrip('\0').decode(self.encoding)
-        elif field_desc.type == 3:
+        elif field_desc.field_type == 3:
             # 16-bit int
             return field ^ 0x8000
-        elif field_desc.type == 4:
+        elif field_desc.field_type == 4:
             # 32-bit int
             return field ^ 0x80000000
-        elif field_desc.type == 9:
+        elif field_desc.field_type == 9:
             # Logical
             return (field ^ 0x80 == 1)
-        elif field_desc.type == 0x0c or field_desc.type == 0x0d:
+        elif field_desc.field_type == 0x0c or field_desc.field_type == 0x0d:
             # Memo or Blob
             block_start, blob_size = struct.unpack_from('<II', field, len(field)-10)
             sub_block = block_start & 0xff

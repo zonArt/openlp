@@ -61,7 +61,7 @@ class EasyWorshipSongImportLogger(EasyWorshipSongImport):
 class TestFieldDesc:
     def __init__(self, name, field_type, size):
         self.name = name
-        self.type = field_type
+        self.field_type = field_type
         self.size = size
 
 TEST_DATA_ENCODING = u'cp1252'
@@ -102,7 +102,7 @@ class TestEasyWorshipSongImport(TestCase):
         # THEN:
         self.assertIsNotNone(field_desc_entry, u'Import should not be none')
         self.assertEquals(field_desc_entry.name, name, u'FieldDescEntry.name should be the same as the name argument')
-        self.assertEquals(field_desc_entry.type, field_type,
+        self.assertEquals(field_desc_entry.field_type, field_type,
             u'FieldDescEntry.type should be the same as the typeargument')
         self.assertEquals(field_desc_entry.size, size, u'FieldDescEntry.size should be the same as the size argument')
 
