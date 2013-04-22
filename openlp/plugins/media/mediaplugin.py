@@ -34,12 +34,14 @@ from PyQt4 import QtCore
 from openlp.core.lib import Plugin, Registry, StringContent, Settings, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
+
 log = logging.getLogger(__name__)
+
 
 # Some settings starting with "media" are in core, because they are needed for core functionality.
 __default_settings__ = {
-        u'media/media auto start': QtCore.Qt.Unchecked,
-        u'media/media files': []
+    u'media/media auto start': QtCore.Qt.Unchecked,
+    u'media/media files': []
 }
 
 
@@ -94,7 +96,7 @@ class MediaPlugin(Plugin):
 
     def finalise(self):
         """
-        Time to tidy up on exit
+        Time to tidy up on exit.
         """
         log.info(u'Media Finalising')
         self.media_controller.finalise()
@@ -102,19 +104,19 @@ class MediaPlugin(Plugin):
 
     def get_display_css(self):
         """
-        Add css style sheets to htmlbuilder
+        Add css style sheets to htmlbuilder.
         """
         return self.media_controller.get_media_display_css()
 
     def get_display_javascript(self):
         """
-        Add javascript functions to htmlbuilder
+        Add javascript functions to htmlbuilder.
         """
         return self.media_controller.get_media_display_javascript()
 
     def get_display_html(self):
         """
-        Add html code to htmlbuilder
+        Add html code to htmlbuilder.
         """
         return self.media_controller.get_media_display_html()
 
