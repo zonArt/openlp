@@ -89,7 +89,6 @@ MODULES = [
 
 
 OPTIONAL_MODULES = [
-    ('sqlite', ' (SQLite 2 support)'),
     ('MySQLdb', ' (MySQL support)'),
     ('psycopg2', ' (PostgreSQL support)'),
     ('nose', ' (testing framework)'),
