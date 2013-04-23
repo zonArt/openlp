@@ -35,7 +35,7 @@ import os
 import platform
 
 import sqlalchemy
-import BeautifulSoup
+from bs4 import BeautifulSoup
 from lxml import etree
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
