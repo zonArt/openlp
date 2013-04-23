@@ -72,10 +72,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin)
-        self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
-        self.openLyrics = OpenLyrics(self.plugin.manager)
         self.single_service_item = False
-        self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
         # Holds information about whether the edit is remotely triggered and
         # which Song is required.
         self.remoteSong = -1
@@ -135,6 +132,12 @@ class SongMediaItem(MediaManagerItem):
             'Maintain the lists of authors, topics and books.'))
 
     def initialise(self):
+        """
+        Initialise variables when they cannot be initialised in the constructor.
+        """
+        self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
+        self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
+        self.openLyrics = OpenLyrics(self.plugin.manager)
         self.search_text_edit.set_search_types([
             (SongSearch.Entire, u':/songs/song_search_all.png',
                 translate('SongsPlugin.MediaItem', 'Entire Song'),
