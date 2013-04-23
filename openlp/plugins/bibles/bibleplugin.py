@@ -43,25 +43,25 @@ log = logging.getLogger(__name__)
 
 
 __default_settings__ = {
-        u'bibles/db type': u'sqlite',
-        u'bibles/last search type': BibleSearch.Reference,
-        u'bibles/verse layout style': LayoutStyle.VersePerSlide,
-        u'bibles/book name language': LanguageSelection.Bible,
-        u'bibles/display brackets': DisplayStyle.NoBrackets,
-        u'bibles/display new chapter': False,
-        u'bibles/second bibles': True,
-        u'bibles/advanced bible': u'',
-        u'bibles/quick bible': u'',
-        u'bibles/proxy name': u'',
-        u'bibles/proxy address': u'',
-        u'bibles/proxy username': u'',
-        u'bibles/proxy password': u'',
-        u'bibles/bible theme': u'',
-        u'bibles/verse separator': u'',
-        u'bibles/range separator': u'',
-        u'bibles/list separator': u'',
-        u'bibles/end separator': u'',
-        u'bibles/last directory import': u''
+    u'bibles/db type': u'sqlite',
+    u'bibles/last search type': BibleSearch.Reference,
+    u'bibles/verse layout style': LayoutStyle.VersePerSlide,
+    u'bibles/book name language': LanguageSelection.Bible,
+    u'bibles/display brackets': DisplayStyle.NoBrackets,
+    u'bibles/display new chapter': False,
+    u'bibles/second bibles': True,
+    u'bibles/advanced bible': u'',
+    u'bibles/quick bible': u'',
+    u'bibles/proxy name': u'',
+    u'bibles/proxy address': u'',
+    u'bibles/proxy username': u'',
+    u'bibles/proxy password': u'',
+    u'bibles/bible theme': u'',
+    u'bibles/verse separator': u'',
+    u'bibles/range separator': u'',
+    u'bibles/list separator': u'',
+    u'bibles/end separator': u'',
+    u'bibles/last directory import': u''
 }
 
 
@@ -126,18 +126,15 @@ class BiblePlugin(Plugin):
 
     def add_export_menu_Item(self, export_menu):
         self.export_bible_item = create_action(export_menu, u'exportBibleItem',
-            text=translate('BiblesPlugin', '&Bible'),
-            visible=False)
+            text=translate('BiblesPlugin', '&Bible'), visible=False)
         export_menu.addAction(self.export_bible_item)
 
     def add_tools_menu_item(self, tools_menu):
         """
-        Give the bible plugin the opportunity to add items to the
-        **Tools** menu.
+        Give the bible plugin the opportunity to add items to the **Tools** menu.
 
         ``tools_menu``
-            The actual **Tools** menu item, so that your actions can
-            use it as their parent.
+            The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.debug(u'add tools menu')
         self.tools_upgrade_item = create_action(tools_menu, u'toolsUpgradeItem',
@@ -168,25 +165,23 @@ class BiblePlugin(Plugin):
 
     def uses_theme(self, theme):
         """
-        Called to find out if the bible plugin is currently using a theme.
-        Returns ``True`` if the theme is being used, otherwise returns
-        ``False``.
+        Called to find out if the bible plugin is currently using a theme. Returns ``True`` if the theme is being used,
+        otherwise returns ``False``.
         """
         return unicode(self.settings_tab.bible_theme) == theme
 
-    def rename_theme(self, oldTheme, newTheme):
+    def rename_theme(self, old_theme, new_theme):
         """
         Rename the theme the bible plugin is using making the plugin use the
         new name.
 
-        ``oldTheme``
-            The name of the theme the plugin should stop using. Unused for
-            this particular plugin.
+        ``old_theme``
+            The name of the theme the plugin should stop using. Unused for this particular plugin.
 
-        ``newTheme``
+        ``new_theme``
             The new name the plugin should now use.
         """
-        self.settings_tab.bible_theme = newTheme
+        self.settings_tab.bible_theme = new_theme
         self.settings_tab.save()
 
     def set_plugin_text_strings(self):
