@@ -27,7 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`slidecontroller` module contains the most important part of OpenLP - the slide controller
+The :mod:`listpreviewwidget` is a widget that lists the slides in the slide controller.
+It is based on a QTableWidget but represents its contents in list form.
 """
 
 from PyQt4 import QtCore, QtGui
@@ -37,6 +38,11 @@ from openlp.core.lib import ImageSource, Registry, ServiceItem
 
 class ListPreviewWidget(QtGui.QTableWidget):
     def __init__(self, parent, screen_ratio):
+        """
+        Initializes the widget to default state.
+        An empty ServiceItem is used per default.
+        One needs to call replace_service_manager_item() to make this widget display something.
+        """
         super(QtGui.QTableWidget, self).__init__(parent)
         self.service_item = ServiceItem()
         self.screen_ratio = screen_ratio
@@ -59,7 +65,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
     def __recalculate_layout(self):
         """
         Recalculates the layout of the table widget. It will set height and width
-        of the table cells. QTableWidget does not adapt the cells to the widget size at all.
+        of the table cells. QTableWidget does not adapt the cells to the widget size on its own.
         """
         self.setColumnWidth(0, self.viewport().width())
         if self.service_item:
@@ -81,7 +87,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         self.screen_ratio = screen_ratio
         self.__recalculate_layout()
 
-    def replace_service_manager_item(self, service_item, width, slide):
+    def replace_service_manager_item(self, service_item, width, slideNumber):
         """
         Replaces the current preview items with the ones in service_item.
         Displays the given slide.
@@ -93,7 +99,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         row = 0
         text = []
         for framenumber, frame in enumerate(self.service_item.get_frames()):
-            self.setRowCount(self.rowCount() + 1)
+            self.setRowCount(self.slide_count() + 1)
             item = QtGui.QTableWidgetItem()
             slideHeight = 0
             if self.service_item.is_text():
@@ -130,28 +136,34 @@ class ListPreviewWidget(QtGui.QTableWidget):
             self.resizeRowsToContents()
         self.setColumnWidth(0, self.viewport().width())
         self.setFocus()
-        self.change_slide(slide)
+        self.change_slide(slideNumber)
 
     def change_slide(self, slide):
         """
         Switches to the given row.
         """
-        if slide >= self.rowCount():
-            slide = self.rowCount() - 1
+        if slide >= self.slide_count():
+            slide = self.slide_count() - 1
         #Scroll to next item if possible.
-        if slide + 1 < self.rowCount():
+        if slide + 1 < self.slide_count():
             self.scrollToItem(self.item(slide + 1, 0))
         self.selectRow(slide)
 
-    def currentRow(self):
+    def current_slide_number(self):
+        """
+        Returns the position of the currently active item. Will return -1 if the widget is empty.
+        """
         return super(ListPreviewWidget, self).currentRow()
 
-    def rowCount(self):
+    def slide_count(self):
+        """
+        Returns the number of slides this widget holds.
+        """
         return super(ListPreviewWidget, self).rowCount()
 
     def _get_image_manager(self):
         """
-        Adds the image manager to the class dynamically
+        Adds the image manager to the class dynamically.
         """
         if not hasattr(self, u'_image_manager'):
             self._image_manager = Registry().get(u'image_manager')
@@ -161,7 +173,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
 
     def _get_main_window(self):
         """
-        Adds the main window to the class dynamically
+        Adds the main window to the class dynamically.
         """
         if not hasattr(self, u'_main_window'):
             self._main_window = Registry().get(u'main_window')

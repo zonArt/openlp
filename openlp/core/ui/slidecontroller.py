@@ -692,7 +692,7 @@ class SlideController(DisplayController):
         Replacement item following a remote edit
         """
         if item == self.service_item:
-            self._processItem(item, self.preview_widget.currentRow())
+            self._processItem(item, self.preview_widget.current_slide_number())
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -960,9 +960,9 @@ class SlideController(DisplayController):
         Generate the preview when you click on a slide.
         if this is the Live Controller also display on the screen
         """
-        row = self.preview_widget.currentRow()
+        row = self.preview_widget.current_slide_number()
         self.selected_row = 0
-        if -1 < row < self.preview_widget.rowCount():
+        if -1 < row < self.preview_widget.slide_count():
             if self.service_item.is_command():
                 if self.is_live and not start:
                     Registry().execute(u'%s_slide' % self.service_item.name.lower(),
@@ -1033,8 +1033,8 @@ class SlideController(DisplayController):
         if self.service_item.is_command() and self.is_live:
             self.updatePreview()
         else:
-            row = self.preview_widget.currentRow() + 1
-            if row == self.preview_widget.rowCount():
+            row = self.preview_widget.current_slide_number() + 1
+            if row == self.preview_widget.slide_count():
                 if wrap is None:
                     if self.slide_limits == SlideLimits.Wrap:
                         row = 0
@@ -1042,11 +1042,11 @@ class SlideController(DisplayController):
                         self.serviceNext()
                         return
                     else:
-                        row = self.preview_widget.rowCount() - 1
+                        row = self.preview_widget.slide_count() - 1
                 elif wrap:
                     row = 0
                 else:
-                    row = self.preview_widget.rowCount() - 1
+                    row = self.preview_widget.slide_count() - 1
             self.preview_widget.change_slide(row)
             self.slideSelected()
 
@@ -1060,10 +1060,10 @@ class SlideController(DisplayController):
         if self.service_item.is_command() and self.is_live:
             self.updatePreview()
         else:
-            row = self.preview_widget.currentRow() - 1
+            row = self.preview_widget.current_slide_number() - 1
             if row == -1:
                 if self.slide_limits == SlideLimits.Wrap:
-                    row = self.preview_widget.rowCount() - 1
+                    row = self.preview_widget.slide_count() - 1
                 elif self.is_live and self.slide_limits == SlideLimits.Next:
                     self.keypress_queue.append(ServiceItemAction.PreviousLastSlide)
                     self._process_queue()
@@ -1087,7 +1087,7 @@ class SlideController(DisplayController):
         """
         Start the timer loop running and store the timer id
         """
-        if self.preview_widget.rowCount() > 1:
+        if self.preview_widget.slide_count() > 1:
             self.timer_id = self.startTimer(int(self.delay_spin_box.value()) * 1000)
 
     def on_stop_loop(self):
@@ -1197,8 +1197,8 @@ class SlideController(DisplayController):
         """
         If preview copy slide item to live controller from Preview Controller
         """
-        row = self.preview_widget.currentRow()
-        if -1 < row < self.preview_widget.rowCount():
+        row = self.preview_widget.current_slide_number()
+        if -1 < row < self.preview_widget.slide_count():
             if self.service_item.from_service:
                 self.service_manager.preview_live(self.service_item.unique_identifier, row)
             else:
