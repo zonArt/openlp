@@ -75,7 +75,6 @@ class ListPreviewWidget(QtGui.QTableWidget):
             else:
                 # Sort out image heights.
                 for framenumber in range(len(self.service_item.get_frames())):
-                    #self.setRowHeight(framenumber, width / ratio)
                     height = self.viewport().width() / self.screen_ratio
                     self.setRowHeight(framenumber, height)
 
@@ -144,7 +143,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         """
         if slide >= self.slide_count():
             slide = self.slide_count() - 1
-        #Scroll to next item if possible.
+        # Scroll to next item if possible.
         if slide + 1 < self.slide_count():
             self.scrollToItem(self.item(slide + 1, 0))
         self.selectRow(slide)
