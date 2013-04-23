@@ -616,7 +616,7 @@ class SlideController(DisplayController):
         """
         Adjusts the value of the ``delay_spin_box`` to the given one.
         """
-        self.delay_spin_box.setValue(Settings().value(u'general/loop delay'))
+        self.delay_spin_box.setValue(Settings().value(u'core/loop delay'))
 
     def update_slide_limits(self):
         """
