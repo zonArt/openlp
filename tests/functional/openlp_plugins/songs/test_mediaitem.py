@@ -26,7 +26,7 @@ class TestMediaItem(TestCase):
         Registry().register(u'service_list', MagicMock())
 
         with patch('openlp.core.lib.mediamanageritem.MediaManagerItem.__init__'), \
-             patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__') :
+             patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
             self.media_item = SongMediaItem(MagicMock(), MagicMock())
 
         fd, self.ini_file = mkstemp(u'.ini')
@@ -42,7 +42,7 @@ class TestMediaItem(TestCase):
         try:
             os.unlink(self.ini_file)
             os.unlink(Settings().fileName())
-        except:
+        except Exception:
             pass
 
     def build_song_footer_one_author_test(self):
