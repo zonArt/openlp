@@ -36,7 +36,7 @@ import socket
 import urllib
 from HTMLParser import HTMLParseError
 
-from BeautifulSoup import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 
 from openlp.core.lib import Registry, translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -44,6 +44,9 @@ from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB, Book
 
+CLEANER_REGEX = re.compile(r'&nbsp;|<br />|\'\+\'')
+FIX_PUNKCTUATION_REGEX = re.compile(r'[ ]+([.,;])')
+REDUCE_SPACES_REGEX = re.compile(r'[ ]{2,}')
 UGLY_CHARS = {
     u'\u2014': u' - ',
     u'\u2018': u'\'',
@@ -52,6 +55,8 @@ UGLY_CHARS = {
     u'\u201d': u'"',
     u'&nbsp;': u' '
 }
+VERSE_NUMBER_REGEX = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
+
 
 log = logging.getLogger(__name__)
 
@@ -79,9 +84,9 @@ class BGExtract(object):
             An HTML class attribute for further qualification.
         """
         if class_:
-            all_tags = parent.findAll(tag, class_)
+            all_tags = parent.find_all(tag, class_)
         else:
-            all_tags = parent.findAll(tag)
+            all_tags = parent.find_all(tag)
         for element in all_tags:
             element.extract()
 
@@ -94,14 +99,15 @@ class BGExtract(object):
         """
         if isinstance(tag, NavigableString):
             return None, unicode(tag)
-        elif tag.get('class') == 'versenum' or tag.get('class') == 'versenum mid-line':
+        elif tag.get('class')[0] == "versenum" or tag.get('class')[0] == 'versenum mid-line':
             verse = unicode(tag.string).replace('[', '').replace(']', '').strip()
             return verse, None
-        elif tag.get('class') == 'chapternum':
+        elif tag.get('class')[0] == 'chapternum':
             verse = '1'
             return verse, None
         else:
-            verse, text = None, ''
+            verse = None
+            text = ''
             for child in tag.contents:
                 c_verse, c_text = self._extract_verse(child)
                 if c_verse:
@@ -138,7 +144,8 @@ class BGExtract(object):
         tags = tags[::-1]
         current_text = ''
         for tag in tags:
-            verse, text = None, ''
+            verse = None
+            text = ''
             for child in tag.contents:
                 c_verse, c_text = self._extract_verse(child)
                 if c_verse:
@@ -174,8 +181,8 @@ class BGExtract(object):
 
     def _extract_verses_old(self, div):
         """
-        Use the old style of parsing for those Bibles on BG who mysteriously
-        have not been migrated to the new (still broken) HTML.
+        Use the old style of parsing for those Bibles on BG who mysteriously have not been migrated to the new (still
+        broken) HTML.
 
         ``div``
             The parent div.
@@ -186,13 +193,12 @@ class BGExtract(object):
         if first_verse and first_verse.contents:
             verse_list[1] = unicode(first_verse.contents[0])
         for verse in div(u'sup', u'versenum'):
-            raw_verse_num = verse.next
+            raw_verse_num = verse.next_element
             clean_verse_num = 0
-            # Not all verses exist in all translations and may or may not be
-            # represented by a verse number. If they are not fine, if they are
-            # it will probably be in a format that breaks int(). We will then
-            # have no idea what garbage may be sucked in to the verse text so
-            # if we do not get a clean int() then ignore the verse completely.
+            # Not all verses exist in all translations and may or may not be represented by a verse number. If they are
+            # not fine, if they are it will probably be in a format that breaks int(). We will then have no idea what
+            # garbage may be sucked in to the verse text so if we do not get a clean int() then ignore the verse
+            # completely.
             try:
                 clean_verse_num = int(str(raw_verse_num))
             except ValueError:
@@ -202,16 +208,16 @@ class BGExtract(object):
             except TypeError:
                 log.warn(u'Illegal verse number: %s', unicode(raw_verse_num))
             if clean_verse_num:
-                verse_text = raw_verse_num.next
-                part = raw_verse_num.next.next
-                while not (isinstance(part, Tag) and part.get(u'class') == u'versenum'):
+                verse_text = raw_verse_num.next_element
+                part = raw_verse_num.next_element.next_element
+                while not (isinstance(part, Tag) and part.get(u'class')[0] == u'versenum'):
                     # While we are still in the same verse grab all the text.
                     if isinstance(part, NavigableString):
                         verse_text += part
-                    if isinstance(part.next, Tag) and part.next.name == u'div':
+                    if isinstance(part.next_element, Tag) and part.next_element.name == u'div':
                         # Run out of verses so stop.
                         break
-                    part = part.next
+                    part = part.next_element
                 verse_list[clean_verse_num] = unicode(verse_text)
         return verse_list
 
@@ -231,15 +237,14 @@ class BGExtract(object):
         log.debug(u'BGExtract.get_bible_chapter("%s", "%s", "%s")', version, book_name, chapter)
         url_book_name = urllib.quote(book_name.encode("utf-8"))
         url_params = u'search=%s+%s&version=%s' % (url_book_name, chapter, version)
-        cleaner = [(re.compile('&nbsp;|<br />|\'\+\''), lambda match: '')]
         soup = get_soup_for_bible_ref(
             u'http://www.biblegateway.com/passage/?%s' % url_params,
-            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='', cleaner=cleaner)
+            pre_parse_regex=r'<meta name.*?/>', pre_parse_substitute='')
         if not soup:
             return None
         div = soup.find('div', 'result-text-style-normal')
         self._clean_soup(div)
-        span_list = div.findAll('span', 'text')
+        span_list = div.find_all('span', 'text')
         log.debug('Span list: %s', span_list)
         if not span_list:
             # If we don't get any spans then we must have the old HTML format
@@ -283,7 +288,7 @@ class BGExtract(object):
         self.application.process_events()
         content = soup.find(u'table', u'infotable')
         if content:
-            content = content.findAll(u'tr')
+            content = content.find_all(u'tr')
         if not content:
             log.error(u'No books found in the Biblegateway response.')
             send_error_message(u'parse')
@@ -342,19 +347,17 @@ class BSExtract(object):
             log.error(u'No verses found in the Bibleserver response.')
             send_error_message(u'parse')
             return None
-        content = content.find(u'div').findAll(u'div')
-        verse_number = re.compile(r'v(\d{1,2})(\d{3})(\d{3}) verse.*')
+        content = content.find(u'div').find_all(u'div')
         verses = {}
         for verse in content:
             self.application.process_events()
-            versenumber = int(verse_number.sub(r'\3', verse[u'class']))
+            versenumber = int(VERSE_NUMBER_REGEX.sub(r'\3', u' '.join(verse[u'class'])))
             verses[versenumber] = verse.contents[1].rstrip(u'\n')
         return SearchResults(book_name, chapter, verses)
 
     def get_books_from_http(self, version):
         """
-        Load a list of all books a Bible contains from Bibleserver mobile
-        website.
+        Load a list of all books a Bible contains from Bibleserver mobile website.
 
         ``version``
             The version of the Bible like NIV for New International Version
@@ -370,8 +373,18 @@ class BSExtract(object):
             log.error(u'No books found in the Bibleserver response.')
             send_error_message(u'parse')
             return None
-        content = content.findAll(u'li')
+        content = content.find_all(u'li')
         return [book.contents[0].contents[0] for book in content]
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
 
 
 class CWExtract(object):
@@ -405,14 +418,12 @@ class CWExtract(object):
         if not soup:
             return None
         self.application.process_events()
-        html_verses = soup.findAll(u'span', u'versetext')
+        html_verses = soup.find_all(u'span', u'versetext')
         if not html_verses:
             log.error(u'No verses found in the CrossWalk response.')
             send_error_message(u'parse')
             return None
         verses = {}
-        reduce_spaces = re.compile(r'[ ]{2,}')
-        fix_punctuation = re.compile(r'[ ]+([.,;])')
         for verse in html_verses:
             self.application.process_events()
             verse_number = int(verse.contents[0].contents[0])
@@ -433,11 +444,10 @@ class CWExtract(object):
                                 if isinstance(subsub, NavigableString):
                                     verse_text += subsub
             self.application.process_events()
-            # Fix up leading and trailing spaces, multiple spaces, and spaces
-            # between text and , and .
+            # Fix up leading and trailing spaces, multiple spaces, and spaces between text and , and .
             verse_text = verse_text.strip(u'\n\r\t ')
-            verse_text = reduce_spaces.sub(u' ', verse_text)
-            verse_text = fix_punctuation.sub(r'\1', verse_text)
+            verse_text = REDUCE_SPACES_REGEX.sub(u' ', verse_text)
+            verse_text = FIX_PUNKCTUATION_REGEX.sub(r'\1', verse_text)
             verses[verse_number] = verse_text
         return SearchResults(book_name, chapter, verses)
 
@@ -459,7 +469,7 @@ class CWExtract(object):
             log.error(u'No books found in the Crosswalk response.')
             send_error_message(u'parse')
             return None
-        content = content.findAll(u'li')
+        content = content.find_all(u'li')
         books = []
         for book in content:
             book = book.find(u'a')
@@ -482,9 +492,8 @@ class HTTPBible(BibleDB):
 
     def __init__(self, parent, **kwargs):
         """
-        Finds all the bibles defined for the system
-        Creates an Interface Object for each bible containing connection
-        information
+        Finds all the bibles defined for the system. Creates an Interface Object for each bible containing connection
+        information.
 
         Throws Exception if no Bibles are found.
 
@@ -493,8 +502,7 @@ class HTTPBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.download_source = kwargs[u'download_source']
         self.download_name = kwargs[u'download_name']
-        # TODO: Clean up proxy stuff. We probably want one global proxy per
-        # connection type (HTTP and HTTPS) at most.
+        # TODO: Clean up proxy stuff. We probably want one global proxy per connection type (HTTP and HTTPS) at most.
         self.proxy_server = None
         self.proxy_username = None
         self.proxy_password = None
@@ -509,8 +517,8 @@ class HTTPBible(BibleDB):
 
     def do_import(self, bible_name=None):
         """
-        Run the import. This method overrides the parent class method. Returns
-        ``True`` on success, ``False`` on failure.
+        Run the import. This method overrides the parent class method. Returns ``True`` on success, ``False`` on
+        failure.
         """
         self.wizard.progress_bar.setMaximum(68)
         self.wizard.increment_progress_bar(translate('BiblesPlugin.HTTPBible', 'Registering Bible and loading books...'))
@@ -550,8 +558,7 @@ class HTTPBible(BibleDB):
             if self.stop_import_flag:
                 break
             self.wizard.increment_progress_bar(translate(
-                'BiblesPlugin.HTTPBible', 'Importing %s...',
-                'Importing <book name>...') % book)
+                'BiblesPlugin.HTTPBible', 'Importing %s...', 'Importing <book name>...') % book)
             book_ref_id = self.get_book_ref_id_by_name(book, len(books), language_id)
             if not book_ref_id:
                 log.exception(u'Importing books from %s - download name: "%s" '\
@@ -568,22 +575,19 @@ class HTTPBible(BibleDB):
 
     def get_verses(self, reference_list, show_error=True):
         """
-        A reimplementation of the ``BibleDB.get_verses`` method, this one is
-        specifically for web Bibles. It first checks to see if the particular
-        chapter exists in the DB, and if not it pulls it from the web. If the
-        chapter DOES exist, it simply pulls the verses from the DB using the
-        ancestor method.
+        A reimplementation of the ``BibleDB.get_verses`` method, this one is specifically for web Bibles. It first
+        checks to see if the particular chapter exists in the DB, and if not it pulls it from the web. If the chapter
+        DOES exist, it simply pulls the verses from the DB using the ancestor method.
 
         ``reference_list``
-            This is the list of references the media manager item wants. It is
-            a list of tuples, with the following format::
+            This is the list of references the media manager item wants. It is a list of tuples, with the following
+            format::
 
                 (book_reference_id, chapter, start_verse, end_verse)
 
-            Therefore, when you are looking for multiple items, simply break
-            them up into references like this, bundle them into a list. This
-            function then runs through the list, and returns an amalgamated
-            list of ``Verse`` objects. For example::
+            Therefore, when you are looking for multiple items, simply break them up into references like this, bundle
+            them into a list. This function then runs through the list, and returns an amalgamated list of ``Verse``
+            objects. For example::
 
                 [(u'35', 1, 1, 1), (u'35', 2, 2, 3)]
         """
@@ -644,7 +648,7 @@ class HTTPBible(BibleDB):
         Return the number of chapters in a particular book.
 
         ``book``
-        The book object to get the chapter count for.
+            The book object to get the chapter count for.
         """
         log.debug(u'HTTPBible.get_chapter_count("%s")', book.name)
         return BiblesResourcesDB.get_chapter_count(book.book_reference_id)
@@ -672,9 +676,7 @@ class HTTPBible(BibleDB):
 
     application = property(_get_application)
 
-
-def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
-    pre_parse_substitute=None, cleaner=None):
+def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre_parse_substitute=None):
     """
     Gets a webpage and returns a parsed and optionally cleaned soup or None.
 
@@ -685,14 +687,11 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
         An optional HTTP header to pass to the bible web server.
 
     ``pre_parse_regex``
-        A regular expression to run on the webpage. Allows manipulation of the
-        webpage before passing to BeautifulSoup for parsing.
+        A regular expression to run on the webpage. Allows manipulation of the webpage before passing to BeautifulSoup
+        for parsing.
 
     ``pre_parse_substitute``
         The text to replace any matches to the regular expression with.
-
-    ``cleaner``
-        An optional regex to use during webpage parsing.
     """
     if not reference_url:
         return None
@@ -705,10 +704,8 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None,
         page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source)
     soup = None
     try:
-        if cleaner:
-            soup = BeautifulSoup(page_source, markupMassage=cleaner)
-        else:
-            soup = BeautifulSoup(page_source)
+        soup = BeautifulSoup(page_source)
+        CLEANER_REGEX.sub(u'', unicode(soup))
     except HTMLParseError:
         log.exception(u'BeautifulSoup could not parse the bible page.')
     if not soup:

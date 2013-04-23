@@ -257,6 +257,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         # We must have at least one slide.
         if self.slide_list_view.count() == 0:
             critical_error_message_box(message=translate('CustomPlugin.EditCustomForm',
-                'You need to add at least one slide'))
+                'You need to add at least one slide.'))
             return False
         return True
