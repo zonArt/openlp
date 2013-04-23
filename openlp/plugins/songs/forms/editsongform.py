@@ -714,7 +714,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = self.song_book_combo_box.currentText()
         if item == 0 and text:
             temp_song_book = text
-        self.media_item.songMaintenanceForm.exec_(True)
+        self.media_item.song_maintenance_form.exec_(True)
         self.load_authors()
         self.load_books()
         self.load_topics()

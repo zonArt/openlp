@@ -27,8 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.plugins.alerts.lib.alertsmanager` module contains the part of
-the plugin which manages storing and displaying of alerts.
+The :mod:`~openlp.plugins.alerts.lib.alertsmanager` module contains the part of the plugin which manages storing and
+displaying of alerts.
 """
 
 import logging
@@ -58,15 +58,14 @@ class AlertsManager(QtCore.QObject):
 
     def alert_text(self, message):
         """
-        Called via a alerts_text event. Message is single element array
-        containing text
+        Called via a alerts_text event. Message is single element array containing text.
         """
         if message:
             self.display_alert(message[0])
 
     def display_alert(self, text=u''):
         """
-        Called from the Alert Tab to display an alert
+        Called from the Alert Tab to display an alert.
 
         ``text``
             display text
@@ -83,7 +82,7 @@ class AlertsManager(QtCore.QObject):
 
     def generate_alert(self):
         """
-        Format and request the Alert and start the timer
+        Format and request the Alert and start the timer.
         """
         log.debug(u'Generate Alert called')
         if not self.alert_list:
@@ -97,8 +96,7 @@ class AlertsManager(QtCore.QObject):
 
     def timerEvent(self, event):
         """
-        Time has finished so if our time then request the next Alert
-        if there is one and reset the timer.
+        Time has finished so if our time then request the next Alert if there is one and reset the timer.
 
         ``event``
             the QT event that has been triggered.

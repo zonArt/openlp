@@ -28,30 +28,25 @@
 ###############################################################################
 
 """
-Forms in OpenLP are made up of two classes. One class holds all the graphical
-elements, like buttons and lists, and the other class holds all the functional
-code, like slots and loading and saving.
+Forms in OpenLP are made up of two classes. One class holds all the graphical elements, like buttons and lists, and the
+other class holds all the functional code, like slots and loading and saving.
 
-The first class, commonly known as the **Dialog** class, is typically named
-``Ui_<name>Dialog``. It is a slightly modified version of the class that the
-``pyuic4`` command produces from Qt4's .ui file. Typical modifications will be
-converting most strings from "" to u'' and using OpenLP's ``translate()``
-function for translating strings.
+The first class, commonly known as the **Dialog** class, is typically named ``Ui_<name>Dialog``. It is a slightly
+modified version of the class that the ``pyuic4`` command produces from Qt4's .ui file. Typical modifications will be
+converting most strings from "" to u'' and using OpenLP's ``translate()`` function for translating strings.
 
-The second class, commonly known as the **Form** class, is typically named
-``<name>Form``. This class is the one which is instantiated and used. It uses
-dual inheritance to inherit from (usually) QtGui.QDialog and the Ui class
-mentioned above, like so::
+The second class, commonly known as the **Form** class, is typically named ``<name>Form``. This class is the one which
+is instantiated and used. It uses dual inheritance to inherit from (usually) QtGui.QDialog and the Ui class mentioned
+above, like so::
 
     class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
 
-        def __init__(self, parent, manager, bibleplugin):
+        def __init__(self, parent, manager, bible_plugin):
             QtGui.QWizard.__init__(self, parent)
             self.setupUi(self)
 
-This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
-them separate from the functionality, so that it is easier to recreate the GUI
-from the .ui files later if necessary.
+This allows OpenLP to use ``self.object`` for all the GUI elements while keeping them separate from the functionality,
+so that it is easier to recreate the GUI from the .ui files later if necessary.
 """
 from booknameform import BookNameForm
 from languageform import LanguageForm
@@ -59,5 +54,4 @@ from bibleimportform import BibleImportForm
 from bibleupgradeform import BibleUpgradeForm
 from editbibleform import EditBibleForm
 
-__all__ = [u'BookNameForm', u'LanguageForm', u'BibleImportForm',
-    u'BibleUpgradeForm', u'EditBibleForm']
+__all__ = [u'BookNameForm', u'LanguageForm', u'BibleImportForm', u'BibleUpgradeForm', u'EditBibleForm']

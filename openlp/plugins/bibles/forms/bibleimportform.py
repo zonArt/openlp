@@ -58,12 +58,12 @@ class WebDownload(object):
 
 class BibleImportForm(OpenLPWizard):
     """
-    This is the Bible Import Wizard, which allows easy importing of Bibles
-    into OpenLP from other formats like OSIS, CSV and OpenSong.
+    This is the Bible Import Wizard, which allows easy importing of Bibles into OpenLP from other formats like OSIS,
+    CSV and OpenSong.
     """
     log.info(u'BibleImportForm loaded')
 
-    def __init__(self, parent, manager, bibleplugin):
+    def __init__(self, parent, manager, bible_plugin):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
@@ -73,12 +73,12 @@ class BibleImportForm(OpenLPWizard):
         ``manager``
             The Bible manager.
 
-        ``bibleplugin``
+        ``bible_plugin``
             The Bible plugin.
         """
         self.manager = manager
         self.web_bible_list = {}
-        OpenLPWizard.__init__(self, parent, bibleplugin, u'bibleImportWizard', u':/wizards/wizard_importbible.bmp')
+        OpenLPWizard.__init__(self, parent, bible_plugin, u'bibleImportWizard', u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """

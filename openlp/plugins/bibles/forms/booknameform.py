@@ -66,61 +66,61 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         Set up the signals used in the booknameform.
         """
-        self.oldTestamentCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
-        self.newTestamentCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
-        self.apocryphaCheckBox.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.old_testament_check_box.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.new_testament_check_box.stateChanged.connect(self.onCheckBoxIndexChanged)
+        self.apocrypha_check_box.stateChanged.connect(self.onCheckBoxIndexChanged)
 
     def onCheckBoxIndexChanged(self, index):
         """
         Reload Combobox if CheckBox state has changed
         """
-        self.reloadComboBox()
+        self.reload_combo_box()
 
-    def reloadComboBox(self):
+    def reload_combo_box(self):
         """
         Reload the Combobox items
         """
-        self.correspondingComboBox.clear()
+        self.corresponding_combo_box.clear()
         items = BiblesResourcesDB.get_books()
         for item in items:
-            addBook = True
+            add_book = True
             for book in self.books:
                 if book.book_reference_id == item[u'id']:
-                    addBook = False
+                    add_book = False
                     break
-            if self.oldTestamentCheckBox.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 1:
-                addBook = False
-            elif self.newTestamentCheckBox.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 2:
-                addBook = False
-            elif self.apocryphaCheckBox.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 3:
-                addBook = False
-            if addBook:
-                self.correspondingComboBox.addItem(self.book_names[item[u'abbreviation']])
+            if self.old_testament_check_box.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 1:
+                add_book = False
+            elif self.new_testament_check_box.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 2:
+                add_book = False
+            elif self.apocrypha_check_box.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 3:
+                add_book = False
+            if add_book:
+                self.corresponding_combo_box.addItem(self.book_names[item[u'abbreviation']])
 
-    def exec_(self, name, books, maxbooks):
+    def exec_(self, name, books, max_books):
         self.books = books
-        log.debug(maxbooks)
-        if maxbooks <= 27:
-            self.oldTestamentCheckBox.setCheckState(QtCore.Qt.Unchecked)
-            self.apocryphaCheckBox.setCheckState(QtCore.Qt.Unchecked)
-        elif maxbooks <= 66:
-            self.apocryphaCheckBox.setCheckState(QtCore.Qt.Unchecked)
-        self.reloadComboBox()
-        self.currentBookLabel.setText(unicode(name))
-        self.correspondingComboBox.setFocus()
+        log.debug(max_books)
+        if max_books <= 27:
+            self.old_testament_check_box.setCheckState(QtCore.Qt.Unchecked)
+            self.apocrypha_check_box.setCheckState(QtCore.Qt.Unchecked)
+        elif max_books <= 66:
+            self.apocrypha_check_box.setCheckState(QtCore.Qt.Unchecked)
+        self.reload_combo_box()
+        self.current_book_label.setText(unicode(name))
+        self.corresponding_combo_box.setFocus()
         return QDialog.exec_(self)
 
     def accept(self):
-        if self.correspondingComboBox.currentText() == u'':
+        if not self.corresponding_combo_box.currentText():
             critical_error_message_box(message=translate('BiblesPlugin.BookNameForm', 'You need to select a book.'))
-            self.correspondingComboBox.setFocus()
+            self.corresponding_combo_box.setFocus()
             return False
         else:
-            cor_book = self.correspondingComboBox.currentText()
+            cor_book = self.corresponding_combo_box.currentText()
             for character in u'\\.^$*+?{}[]()':
                 cor_book = cor_book.replace(character, u'\\' + character)
-            books = filter(lambda key:
-                re.match(cor_book, unicode(self.book_names[key]), re.UNICODE), self.book_names.keys())
+            books = filter(
+                lambda key: re.match(cor_book, unicode(self.book_names[key]), re.UNICODE), self.book_names.keys())
             books = filter(None, map(BiblesResourcesDB.get_book, books))
             if books:
                 self.book_id = books[0][u'id']

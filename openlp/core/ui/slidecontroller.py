@@ -1233,7 +1233,7 @@ class SlideController(DisplayController):
         From the preview display requires the service Item to be editied
         """
         self.song_edit = True
-        new_item = Registry().get(self.service_item.name).onRemoteEdit(self.service_item.edit_id, True)
+        new_item = Registry().get(self.service_item.name).on_remote_edit(self.service_item.edit_id, True)
         if new_item:
             self.add_service_item(new_item)
 
