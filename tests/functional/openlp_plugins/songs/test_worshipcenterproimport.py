@@ -2,11 +2,12 @@
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 """
-This module contains tests for the WorshipCenter/ Pro song importer.
+This module contains tests for the WorshipCenter Pro song importer.
 """
 
 from unittest import TestCase
 from mock import patch, MagicMock
+import pyodbc
 
 from openlp.plugins.songs.lib.worshipcenterproimport import WorshipCenterProImport
 
@@ -130,12 +131,13 @@ class TestWorshipCenterProSongImport(TestCase):
             importer = WorshipCenterProImport(mocked_manager)
             importer.logError = mocked_log_error
             importer.import_source = u'import_source'
+            mocked_pyodbc.connect.side_effect = Exception(pyodbc.DatabaseError)
 
-            # WHEN: pyodbc raises and unspecified exception
-            mocked_pyodbc.connect.side_effect = Exception()
+            # WHEN: Calling the doImport method
+            return_value = importer.doImport()
 
             # THEN: doImport should return None, and pyodbc, translate & logError are called with known calls
-            self.assertIsNone(importer.doImport(), u'doImport should return None when pyodbc raises an exception.')
+            self.assertIsNone(return_value, u'doImport should return None when pyodbc raises an exception.')
             mocked_pyodbc.connect.assert_called_with( u'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
             mocked_translate.assert_called_with('SongsPlugin.WorshipCenterProImport',
                 'Unable to connect the WorshipCenter Pro database.')
@@ -145,8 +147,8 @@ class TestWorshipCenterProSongImport(TestCase):
         """
         Test that a simulated WorshipCenter Pro recordset is imported correctly
         """
-        # GIVEN: A mocked out SongImport class, a mocked out pyodbc module, a mocked out translate method,
-        #       a mocked "manager", addVerse method & mocked_finish method.
+        # GIVEN: A mocked out SongImport class, a mocked out pyodbc module with a simulated recordset, a mocked out
+        #       translate method,  a mocked "manager", addVerse method & mocked_finish method.
         with patch(u'openlp.plugins.songs.lib.worshipcenterproimport.SongImport'), \
             patch(u'openlp.plugins.songs.lib.worshipcenterproimport.pyodbc') as mocked_pyodbc, \
             patch(u'openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
@@ -154,6 +156,7 @@ class TestWorshipCenterProSongImport(TestCase):
             mocked_import_wizard = MagicMock()
             mocked_add_verse = MagicMock()
             mocked_finish = MagicMock()
+            mocked_pyodbc.connect().cursor().fetchall.return_value = RECORDSET_TEST_DATA
             mocked_translate.return_value = u'Translated Text'
             importer = WorshipCenterProImportLogger(mocked_manager)
             importer.import_source = u'import_source'
@@ -162,12 +165,13 @@ class TestWorshipCenterProSongImport(TestCase):
             importer.stop_import_flag = False
             importer.finish = mocked_finish
 
-            # WHEN: the RECORDSET_TEST_DATA is simulated as fetched
-            mocked_pyodbc.connect().cursor().fetchall.return_value = RECORDSET_TEST_DATA
+            # WHEN: Calling the doImport method
+            return_value = importer.doImport()
+
 
             # THEN: doImport should return None, and pyodbc, import_wizard, importer.title and addVerse are called with
             #       known calls
-            self.assertIsNone(importer.doImport(), u'doImport should return None when pyodbc raises an exception.')
+            self.assertIsNone(return_value, u'doImport should return None when pyodbc raises an exception.')
             mocked_pyodbc.connect.assert_called_with(u'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
             mocked_pyodbc.connect().cursor.assert_any_call()
             mocked_pyodbc.connect().cursor().execute.assert_called_with(u'SELECT ID, Field, Value FROM __SONGDATA')
@@ -183,4 +187,4 @@ class TestWorshipCenterProSongImport(TestCase):
                 for call in verse_calls:
                     mocked_add_verse.assert_any_call(call)
             self.assertEqual(mocked_add_verse.call_count, add_verse_call_count,
-                u'Inccorect number of calls made to addVerse')
+                u'Incorrect number of calls made to addVerse')

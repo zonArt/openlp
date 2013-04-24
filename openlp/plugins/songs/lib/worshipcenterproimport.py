@@ -30,10 +30,15 @@
 The :mod:`worshipcenterpro` module provides the functionality for importing
 a WorshipCenter Pro database into the OpenLP database.
 """
+import logging
+
 import pyodbc
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
+
+log = logging.getLogger(__name__)
+
 
 class WorshipCenterProImport(SongImport):
     """
@@ -52,7 +57,8 @@ class WorshipCenterProImport(SongImport):
         """
         try:
            conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s' % self.import_source)
-        except:
+        except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError), e:
+            log.warn(u'Unable to connect the WorshipCenter Pro database %s. %s', self.import_source, unicode(e))
             # Unfortunately no specific exception type
             self.logError(self.import_source,
                 translate('SongsPlugin.WorshipCenterProImport', 'Unable to connect the WorshipCenter Pro database.'))
