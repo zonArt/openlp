@@ -123,7 +123,7 @@ class TestWorshipCenterProSongImport(TestCase):
         # GIVEN: A mocked out SongImport class, a mocked out pyodbc module, a mocked out translate method,
         #       a mocked "manager" and a mocked out logError method.
         with patch(u'openlp.plugins.songs.lib.worshipcenterproimport.SongImport'), \
-            patch(u'openlp.plugins.songs.lib.worshipcenterproimport.pyodbc') as mocked_pyodbc, \
+            patch(u'openlp.plugins.songs.lib.worshipcenterproimport.pyodbc.connect') as mocked_pyodbc_connect, \
             patch(u'openlp.plugins.songs.lib.worshipcenterproimport.translate') as mocked_translate:
             mocked_manager = MagicMock()
             mocked_log_error = MagicMock()
@@ -131,17 +131,19 @@ class TestWorshipCenterProSongImport(TestCase):
             importer = WorshipCenterProImport(mocked_manager)
             importer.logError = mocked_log_error
             importer.import_source = u'import_source'
-            mocked_pyodbc.connect.side_effect = Exception(pyodbc.DatabaseError)
+            pyodbc_errors = [pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError]
+            mocked_pyodbc_connect.side_effect = pyodbc_errors
 
             # WHEN: Calling the doImport method
-            return_value = importer.doImport()
+            for effect in pyodbc_errors:
+                return_value = importer.doImport()
 
-            # THEN: doImport should return None, and pyodbc, translate & logError are called with known calls
-            self.assertIsNone(return_value, u'doImport should return None when pyodbc raises an exception.')
-            mocked_pyodbc.connect.assert_called_with( u'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
-            mocked_translate.assert_called_with('SongsPlugin.WorshipCenterProImport',
-                'Unable to connect the WorshipCenter Pro database.')
-            mocked_log_error.assert_called_with(u'import_source', u'Translated Text')
+                # THEN: doImport should return None, and pyodbc, translate & logError are called with known calls
+                self.assertIsNone(return_value, u'doImport should return None when pyodbc raises an exception.')
+                mocked_pyodbc_connect.assert_called_with( u'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=import_source')
+                mocked_translate.assert_called_with('SongsPlugin.WorshipCenterProImport',
+                    'Unable to connect the WorshipCenter Pro database.')
+                mocked_log_error.assert_called_with(u'import_source', u'Translated Text')
 
     def song_import_test(self):
         """
