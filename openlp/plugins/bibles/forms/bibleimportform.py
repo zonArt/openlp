@@ -511,7 +511,7 @@ class BibleImportForm(OpenLPWizard):
             name = bible[u'abbreviation']
             self.web_bible_list[download_type][version] = name.strip()
 
-    def preWizard(self):
+    def pre_wizard(self):
         """
         Prepare the UI for the import.
         """
