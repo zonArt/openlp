@@ -784,7 +784,7 @@ class SlideController(DisplayController):
                 if not self.service_item.is_command() and framenumber == slideno:
                     self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(frame[u'path'],
                         ImageSource.ImagePlugin)
-        self.preview_widget.replace_service_manager_item(self.service_item, width, slideno)
+        self.preview_widget.replace_service_item(self.service_item, width, slideno)
         self.enableToolBar(service_item)
         # Pass to display for viewing.
         # Postpone image build, we need to do this later to avoid the theme

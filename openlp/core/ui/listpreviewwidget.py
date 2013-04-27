@@ -86,7 +86,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         self.screen_ratio = screen_ratio
         self.__recalculate_layout()
 
-    def replace_service_manager_item(self, service_item, width, slideNumber):
+    def replace_service_item(self, service_item, width, slideNumber):
         """
         Replaces the current preview items with the ones in service_item.
         Displays the given slide.
@@ -169,14 +169,4 @@ class ListPreviewWidget(QtGui.QTableWidget):
         return self._image_manager
 
     image_manager = property(_get_image_manager)
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically.
-        """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
 
