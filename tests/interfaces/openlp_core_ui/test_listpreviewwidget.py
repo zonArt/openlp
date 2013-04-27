@@ -11,7 +11,7 @@ from openlp.core.lib import Registry, ServiceItem
 from openlp.core.ui import listpreviewwidget
 from tests.utils.osdinteraction import read_service_from_file
 
-class TestServiceManager(TestCase):
+class TestListPreviewWidget(TestCase):
 
     def setUp(self):
         """
