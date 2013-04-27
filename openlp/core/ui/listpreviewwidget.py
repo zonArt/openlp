@@ -44,9 +44,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         One needs to call replace_service_manager_item() to make this widget display something.
         """
         super(QtGui.QTableWidget, self).__init__(parent)
-        self.service_item = ServiceItem()
-        self.screen_ratio = screen_ratio
-
+        # Set up the widget.
         self.setColumnCount(1)
         self.horizontalHeader().setVisible(False)
         self.setColumnWidth(0, parent.width())
@@ -55,6 +53,9 @@ class ListPreviewWidget(QtGui.QTableWidget):
         self.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setAlternatingRowColors(True)
+        # Initialize variables.
+        self.service_item = ServiceItem()
+        self.screen_ratio = screen_ratio
 
     def resizeEvent(self, QResizeEvent):
         """
