@@ -237,7 +237,7 @@ class Ui_MainWindow(object):
         self.view_live_panel = create_action(main_window, u'viewLivePanel',
             can_shortcuts=True, checked=live_visible,
             category=UiStrings().View, triggers=self.set_live_panel_visibility)
-        self.lockPanel = create_action(main_window, u'lockPanel',
+        self.lock_panel = create_action(main_window, u'lockPanel',
             can_shortcuts=True, checked=panel_locked,
             category=UiStrings().View,
             triggers=self.set_lock_panel)
@@ -325,7 +325,7 @@ class Ui_MainWindow(object):
         add_actions(self.view_modeMenu, (self.mode_default_Item, self.mode_setup_item, self.mode_live_item))
         add_actions(self.view_menu, (self.view_modeMenu.menuAction(), None, self.view_media_manager_item,
             self.view_service_manager_item, self.view_theme_manager_item, None, self.view_preview_panel,
-            self.view_live_panel, None, self.lockPanel))
+            self.view_live_panel, None, self.lock_panel))
         # i18n add Language Actions
         add_actions(self.settings_language_menu, (self.auto_language_item, None))
         add_actions(self.settings_language_menu, self.language_group.actions())
@@ -361,12 +361,12 @@ class Ui_MainWindow(object):
         self.set_lock_panel(panel_locked)
         self.settingsImported = False
 
-    def retranslateUi(self, mainWindow):
+    def retranslateUi(self, main_window):
         """
         Set up the translation system
         """
-        mainWindow.mainTitle = UiStrings().OLPV2x
-        mainWindow.setWindowTitle(mainWindow.mainTitle)
+        main_window.mainTitle = UiStrings().OLPV2x
+        main_window.setWindowTitle(main_window.mainTitle)
         self.file_menu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
@@ -428,8 +428,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Toggle the visibility of the preview panel.'))
         self.view_live_panel.setText(translate('OpenLP.MainWindow', '&Live Panel'))
         self.view_live_panel.setToolTip(translate('OpenLP.MainWindow', 'Toggle Live Panel'))
-        self.lockPanel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
-        self.lockPanel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
+        self.lock_panel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
+        self.lock_panel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the live panel.'))
         self.settingsPluginListItem.setText(translate('OpenLP.MainWindow', '&Plugin List'))
         self.settingsPluginListItem.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
@@ -559,14 +559,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         widget = self.media_tool_box.currentWidget()
         if widget:
             widget.on_focus()
-
-    def setAutoLanguage(self, value):
-        """
-        Set the language to automatic.
-        """
-        self.language_group.setDisabled(value)
-        LanguageManager.auto_language = value
-        LanguageManager.set_language(self.language_group.checkedAction())
 
     def on_media_tool_box_changed(self, index):
         """

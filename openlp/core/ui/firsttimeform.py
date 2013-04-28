@@ -97,6 +97,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.config.readfp(io.BytesIO(files))
         self.update_screen_list_combo()
         self.was_download_cancelled = False
+        self.theme_screenshot_thread = None
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         self.cancelButton.clicked.connect(self.onCancelButtonClicked)
         self.noInternetFinishButton.clicked.connect(self.onNoInternetFinishButtonClicked)
@@ -146,8 +147,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             self.biblesTreeWidget.expandAll()
             # Download the theme screenshots.
-            self.themeScreenshotThread = ThemeScreenshotThread(self)
-            self.themeScreenshotThread.start()
+            self.theme_screenshot_thread = ThemeScreenshotThread(self)
+            self.theme_screenshot_thread.start()
         self.application.set_normal_cursor()
 
     def nextId(self):
@@ -166,7 +167,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             return FirstTimePage.Progress
         elif self.currentId() == FirstTimePage.Themes:
             self.application.set_busy_cursor()
-            while not self.themeScreenshotThread.isFinished():
+            while not self.theme_screenshot_thread.isFinished():
                 time.sleep(0.1)
                 self.application.process_events()
             # Build the screenshot icons, as this can not be done in the thread.
@@ -240,9 +241,11 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.lastId == FirstTimePage.NoInternet or (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
-        self.was_download_cancelled = True
-        while self.themeScreenshotThread.isRunning():
-            time.sleep(0.1)
+        self.was_download_cancelled = True()
+        # Was the thread created.
+        if self.theme_screenshot_thread:
+            while self.theme_screenshot_thread.isRunning():
+                time.sleep(0.1)
         self.application.set_normal_cursor()
 
     def onNoInternetFinishButtonClicked(self):
