@@ -310,7 +310,7 @@ class Ui_MainWindow(object):
             can_shortcuts=True,
             category=UiStrings().Help, triggers=self.on_online_help_clicked)
         self.web_site_item = create_action(main_window, u'webSiteItem', can_shortcuts=True, category=UiStrings().Help)
-        # Some shortcuts not connected to buttons or menu entires.
+        # Shortcuts not connected to buttons or menu entires.
         self.search_shortcut_action = create_action(main_window,
             u'searchShortcut', can_shortcuts=True, category=UiStrings().File,
             triggers=self.on_search_shortcut_triggered)
@@ -438,6 +438,9 @@ class Ui_MainWindow(object):
         if os.name == u'nt':
             self.offlineHelpItem.setText(translate('OpenLP.MainWindow', '&User Guide'))
         self.on_line_help_item.setText(translate('OpenLP.MainWindow', '&Online Help'))
+        self.search_shortcut_action.setText(UiStrings().Search)
+        self.search_shortcut_action.setToolTip(
+            translate('OpenLP.MainWindow', 'Jump to the search box of the current active plugin.'))
         self.web_site_item.setText(translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.language_group.actions():
             item.setText(item.objectName())
