@@ -241,7 +241,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.lastId == FirstTimePage.NoInternet or (self.lastId <= FirstTimePage.Plugins and not self.hasRunWizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
-        self.was_download_cancelled = True()
+        self.was_download_cancelled = True
         # Was the thread created.
         if self.theme_screenshot_thread:
             while self.theme_screenshot_thread.isRunning():
