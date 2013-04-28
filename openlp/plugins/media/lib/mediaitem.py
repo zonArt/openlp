@@ -44,10 +44,10 @@ log = logging.getLogger(__name__)
 
 
 CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
-VIDEO_ICON = build_icon(QtGui.QImage(u':/media/media_video.png'))
-AUDIO_ICON = build_icon(QtGui.QImage(u':/media/media_audio.png'))
-DVD_ICON = build_icon(QtGui.QImage(u':/media/media_video.png'))
-ERROR_ICON = build_icon(QtGui.QImage(u':/general/general_delete.png'))
+VIDEO_ICON = build_icon(u':/media/media_video.png')
+AUDIO_ICON = build_icon(u':/media/media_audio.png')
+DVD_ICON = build_icon(u':/media/media_video.png')
+ERROR_ICON = build_icon(u':/general/general_delete.png')
 
 
 class MediaMediaItem(MediaManagerItem):
