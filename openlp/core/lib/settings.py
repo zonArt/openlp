@@ -244,6 +244,7 @@ class Settings(QtCore.QSettings):
         u'shortcuts/printServiceItem': [QtGui.QKeySequence(u'Ctrl+P')],
         u'shortcuts/songExportItem': [],
         u'shortcuts/songUsageStatus': [QtGui.QKeySequence(QtCore.Qt.Key_F4)],
+        u'shortcuts/searchShortcut': [QtGui.QKeySequence(u'Ctrl+F')],
         u'shortcuts/settingsShortcutsItem': [],
         u'shortcuts/settingsImportItem': [],
         u'shortcuts/settingsPluginListItem': [QtGui.QKeySequence(u'Alt+F7')],

@@ -310,6 +310,10 @@ class Ui_MainWindow(object):
             can_shortcuts=True,
             category=UiStrings().Help, triggers=self.on_online_help_clicked)
         self.web_site_item = create_action(main_window, u'webSiteItem', can_shortcuts=True, category=UiStrings().Help)
+        # Some shortcuts not connected to buttons or menu entires.
+        self.search_shortcut_action = create_action(main_window,
+            u'searchShortcut', can_shortcuts=True, category=UiStrings().File,
+            triggers=self.on_search_shortcut_triggered)
         add_actions(self.file_import_menu, (self.settings_import_item, None, self.import_theme_item,
             self.import_language_item))
         add_actions(self.file_export_menu, (self.settings_export_item, None, self.export_theme_item,
@@ -344,6 +348,7 @@ class Ui_MainWindow(object):
             add_actions(self.help_menu, (self.on_line_help_item, None, self.web_site_item, self.about_item))
         add_actions(self.menuBar, (self.file_menu.menuAction(), self.view_menu.menuAction(),
             self.tools_menu.menuAction(), self.settings_menu.menuAction(), self.help_menu.menuAction()))
+        add_actions(self, [self.search_shortcut_action])
         # Initialise the translation
         self.retranslateUi(main_window)
         self.media_tool_box.setCurrentIndex(0)
@@ -467,8 +472,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         """
-        This constructor sets up the interface, the various managers, and the
-        plugins.
+        This constructor sets up the interface, the various managers, and the plugins.
         """
         QtGui.QMainWindow.__init__(self)
         Registry().register(u'main_window', self)
@@ -544,6 +548,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 self.media_tool_box.setCurrentIndex(savedPlugin)
         # Reset the cursor
         self.application.set_normal_cursor()
+
+    def on_search_shortcut_triggered(self):
+        """
+        Called when the search shotcut has been pressed.
+        """
+        widget = self.media_tool_box.currentWidget()
+        if widget:
+            widget.on_focus()
 
     def setAutoLanguage(self, value):
         """
@@ -966,8 +978,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.setViewMode(False, True, False, False, True, u'live')
 
-    def setViewMode(self, media=True, service=True, theme=True, preview=True,
-        live=True, mode=u''):
+    def setViewMode(self, media=True, service=True, theme=True, preview=True, live=True, mode=u''):
         """
         Set OpenLP to a different view mode.
         """
@@ -982,8 +993,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def screen_changed(self):
         """
-        The screen has changed so we have to update components such as the
-        renderer.
+        The screen has changed so we have to update components such as the renderer.
         """
         log.debug(u'screen_changed')
         self.application.set_busy_cursor()
@@ -1089,8 +1099,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def set_service_modified(self, modified, fileName):
         """
-        This method is called from the ServiceManager to set the title of the
-        main window.
+        This method is called from the ServiceManager to set the title of the main window.
 
         ``modified``
             Whether or not this service has been modified.
@@ -1137,8 +1146,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def set_preview_panel_visibility(self, visible):
         """
-        Sets the visibility of the preview panel including saving the setting
-        and updating the menu.
+        Sets the visibility of the preview panel including saving the setting and updating the menu.
 
         ``visible``
             A bool giving the state to set the panel to
@@ -1175,8 +1183,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def set_live_panel_visibility(self, visible):
         """
-        Sets the visibility of the live panel including saving the setting and
-        updating the menu.
+        Sets the visibility of the live panel including saving the setting and updating the menu.
 
         ``visible``
             A bool giving the state to set the panel to
@@ -1231,8 +1238,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def update_recent_files_menu(self):
         """
-        Updates the recent file menu with the latest list of service files
-        accessed.
+        Updates the recent file menu with the latest list of service files accessed.
         """
         recent_file_count = Settings().value(u'advanced/recent file count')
         existing_recent_files = [recentFile for recentFile in self.recent_files
