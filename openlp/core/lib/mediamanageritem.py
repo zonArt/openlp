@@ -427,7 +427,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         raise NotImplementedError(u'MediaManagerItem.on_delete_click needs to be defined by the plugin')
 
-    def onFocus(self):
+    def on_focus(self):
         """
         Run when a tab in the media manager gains focus. This gives the media
         item a chance to focus any elements it wants to.

@@ -35,7 +35,7 @@ import os
 import platform
 
 import sqlalchemy
-import BeautifulSoup
+from bs4 import BeautifulSoup
 from lxml import etree
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -59,11 +59,6 @@ try:
     ENCHANT_VERSION = enchant.__version__
 except ImportError:
     ENCHANT_VERSION = u'-'
-try:
-    import sqlite
-    SQLITE_VERSION = sqlite.version
-except ImportError:
-    SQLITE_VERSION = u'-'
 try:
     import mako
     MAKO_VERSION = mako.__version__
@@ -154,7 +149,6 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % CHARDET_VERSION + \
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
-            u'PySQLite: %s\n' % SQLITE_VERSION + \
             u'Mako: %s\n' % MAKO_VERSION + \
             u'CherryPy: %s\n' % CHERRYPY_VERSION + \
             u'pyICU: %s\n' % ICU_VERSION + \

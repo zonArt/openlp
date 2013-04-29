@@ -247,15 +247,15 @@ class ScreenList(object):
         # Add the screen settings to the settings dict. This has to be done here due to cyclic dependency.
         # Do not do this anywhere else.
         screen_settings = {
-            u'general/x position': self.current[u'size'].x(),
-            u'general/y position': self.current[u'size'].y(),
-            u'general/monitor': self.display_count - 1,
-            u'general/height': self.current[u'size'].height(),
-            u'general/width': self.current[u'size'].width()
+            u'core/x position': self.current[u'size'].x(),
+            u'core/y position': self.current[u'size'].y(),
+            u'core/monitor': self.display_count - 1,
+            u'core/height': self.current[u'size'].height(),
+            u'core/width': self.current[u'size'].width()
         }
         Settings.extend_default_settings(screen_settings)
         settings = Settings()
-        settings.beginGroup(u'general')
+        settings.beginGroup(u'core')
         monitor = settings.value(u'monitor')
         self.set_current_display(monitor)
         self.display = settings.value(u'display on monitor')
