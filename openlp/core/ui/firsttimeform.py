@@ -220,7 +220,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.application.process_events()
             # Try to give the wizard a chance to redraw itself
             time.sleep(0.2)
-            self._preWizard()
+            self._pre_wizard()
             self._performWizard()
             self._post_wizard()
             self.application.set_normal_cursor()
@@ -313,10 +313,10 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Calculate and display the download progress.
         """
         increment = (count * block_size) - self.previous_size
-        self._incrementProgressBar(None, increment)
+        self._increment_progress_bar(None, increment)
         self.previous_size = count * block_size
 
-    def _incrementProgressBar(self, status_text, increment=1):
+    def _increment_progress_bar(self, status_text, increment=1):
         """
         Update the wizard progress page.
 
@@ -332,7 +332,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progressBar.setValue(self.progressBar.value() + increment)
         self.application.process_events()
 
-    def _preWizard(self):
+    def _pre_wizard(self):
         """
         Prepare the UI for the process.
         """
@@ -413,7 +413,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Run the tasks in the wizard.
         """
         # Set plugin states
-        self._incrementProgressBar(translate('OpenLP.FirstTimeWizard', 'Enabling selected plugins...'))
+        self._increment_progress_bar(translate('OpenLP.FirstTimeWizard', 'Enabling selected plugins...'))
         self._setPluginStatus(self.songsCheckBox, u'songs/status')
         self._setPluginStatus(self.bibleCheckBox, u'bibles/status')
         # TODO Presentation plugin is not yet working on Mac OS X.
@@ -437,7 +437,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.songsListWidget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
                     filename = item.data(QtCore.Qt.UserRole)
-                    self._incrementProgressBar(self.downloading % filename, 0)
+                    self._increment_progress_bar(self.downloading % filename, 0)
                     self.previous_size = 0
                     destination = os.path.join(songs_destination, unicode(filename))
                     self.urlGetFile(u'%s%s' % (self.web, filename), destination)
@@ -448,7 +448,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = bibles_iterator.value()
                 if item.parent() and item.checkState(0) == QtCore.Qt.Checked:
                     bible = item.data(0, QtCore.Qt.UserRole)
-                    self._incrementProgressBar(self.downloading % bible, 0)
+                    self._increment_progress_bar(self.downloading % bible, 0)
                     self.previous_size = 0
                     self.urlGetFile(u'%s%s' % (self.web, bible), os.path.join(bibles_destination, bible))
                 bibles_iterator += 1
@@ -457,7 +457,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themesListWidget.item(i)
                 if item.checkState() == QtCore.Qt.Checked:
                     theme = item.data(QtCore.Qt.UserRole)
-                    self._incrementProgressBar(self.downloading % theme, 0)
+                    self._increment_progress_bar(self.downloading % theme, 0)
                     self.previous_size = 0
                     self.urlGetFile(u'%s%s' % (self.web, theme), os.path.join(themes_destination, theme))
         # Set Default Display
