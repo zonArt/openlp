@@ -74,7 +74,7 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_settings_tabs()
         plugin_manager.hook_settings_tabs()
 
-        # THEN: The create_settings_Tab() method should have been called
+        # THEN: The hook_settings_tabs() method should have been called
         assert mocked_plugin.create_media_manager_item.call_count == 0, \
             u'The create_media_manager_item() method should not have been called.'
 
@@ -94,8 +94,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_settings_tabs()
         plugin_manager.hook_settings_tabs()
 
-        # THEN: The create_settings_Tab() method should not have been called, but the plugins lists should be the same
-        assert mocked_plugin.create_settings_Tab.call_count == 0, \
+        # THEN: The create_settings_tab() method should not have been called, but the plugins lists should be the same
+        assert mocked_plugin.create_settings_tab.call_count == 0, \
             u'The create_media_manager_item() method should not have been called.'
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
             u'The plugins on the settings form should be the same as the plugins in the plugin manager')
@@ -117,7 +117,7 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The create_media_manager_item() method should have been called with the mocked settings form
-        assert mocked_plugin.create_settings_Tab.call_count == 1, \
+        assert mocked_plugin.create_settings_tab.call_count == 1, \
             u'The create_media_manager_item() method should have been called once.'
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
              u'The plugins on the settings form should be the same as the plugins in the plugin manager')
@@ -135,8 +135,8 @@ class TestPluginManager(TestCase):
         # WHEN: We run hook_settings_tabs()
         plugin_manager.hook_settings_tabs()
 
-        # THEN: The create_settings_Tab() method should have been called
-        mocked_plugin.create_settings_Tab.assert_called_with(self.mocked_settings_form)
+        # THEN: The create_settings_tab() method should have been called
+        mocked_plugin.create_settings_tab.assert_called_with(self.mocked_settings_form)
 
     def hook_import_menu_with_disabled_plugin_test(self):
         """

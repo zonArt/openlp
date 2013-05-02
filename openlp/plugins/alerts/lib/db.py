@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`db` module provides the database and schema that is the backend for
-the Alerts plugin
+The :mod:`db` module provides the database and schema that is the backend for the Alerts plugin.
 """
 
 from sqlalchemy import Column, Table, types
@@ -36,11 +35,13 @@ from sqlalchemy.orm import mapper
 
 from openlp.core.lib.db import BaseModel, init_db
 
+
 class AlertItem(BaseModel):
     """
     AlertItem model
     """
     pass
+
 
 def init_schema(url):
     """

@@ -27,6 +27,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`presentations` module provides the Presentations plugin which allows
-OpenLP to show presentations from most popular presentation packages.
+The :mod:`presentations` module provides the Presentations plugin which allows OpenLP to show presentations from most
+popular presentation packages.
 """

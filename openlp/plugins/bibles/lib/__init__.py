@@ -38,8 +38,10 @@ from openlp.core.lib import Settings, translate
 
 log = logging.getLogger(__name__)
 
+
 REFERENCE_MATCHES = {}
 REFERENCE_SEPARATORS = {}
+
 
 class LayoutStyle(object):
     """
@@ -62,8 +64,7 @@ class DisplayStyle(object):
 
 class LanguageSelection(object):
     """
-    An enumeration for bible bookname language.
-    And standard strings for use throughout the bibles plugin.
+    An enumeration for bible bookname language. And standard strings for use throughout the bibles plugin.
     """
     Bible = 0
     Application = 1
@@ -178,8 +179,7 @@ class BibleStrings(object):
 
 def update_reference_separators():
     """
-    Updates separators and matches for parsing and formating scripture
-    references.
+    Updates separators and matches for parsing and formating scripture references.
     """
     default_separators = translate('BiblesPlugin',
         ':|v|V|verse|verses;;-|to;;,|and;;end Double-semicolon delimited separators for parsing references. '
@@ -245,9 +245,8 @@ def get_reference_match(match_type):
 
 def parse_reference(reference, bible, language_selection, book_ref_id=False):
     """
-    This is the next generation über-awesome function that takes a person's
-    typed in string and converts it to a list of references to be queried from
-    the Bible database files.
+    This is the next generation über-awesome function that takes a person's typed in string and converts it to a list
+    of references to be queried from the Bible database files.
 
     ``reference``
         A string. The Bible reference to parse.
@@ -256,16 +255,14 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
         A object. The Bible database object.
 
     ``language_selection``
-        An int. The language selection the user has choosen in settings
-        section.
+        An int. The language selection the user has choosen in settings section.
 
     ``book_ref_id``
         A string. The book reference id.
 
     Returns ``None`` or a reference list.
 
-    The reference list is a list of tuples, with each tuple structured like
-    this::
+    The reference list is a list of tuples, with each tuple structured like this::
 
         (book, chapter, from_verse, to_verse)
 
@@ -275,8 +272,7 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
 
     **Reference string details:**
 
-    Each reference starts with the book name and a chapter number. These are
-    both mandatory.
+    Each reference starts with the book name and a chapter number. These are both mandatory.
 
     * ``John 3`` refers to Gospel of John chapter 3
 
@@ -289,38 +285,31 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
     * ``John 3:16`` refers to John chapter 3 verse 16
     * ``John 3:16-4:3`` refers to John chapter 3 verse 16 to chapter 4 verse 3
 
-    After a verse reference all further single values are treat as verse in
-    the last selected chapter.
+    After a verse reference all further single values are treat as verse in the last selected chapter.
 
     * ``John 3:16-18`` refers to John chapter 3 verses 16 to 18
 
-    After a list separator it is possible to refer to additional verses. They
-    are build analog to the first ones. This way it is possible to define each
-    number of verse references. It is not possible to refer to verses in
-    additional books.
+    After a list separator it is possible to refer to additional verses. They are build analog to the first ones. This
+    way it is possible to define each number of verse references. It is not possible to refer to verses in additional
+    books.
 
     * ``John 3:16,18`` refers to John chapter 3 verses 16 and 18
     * ``John 3:16-18,20`` refers to John chapter 3 verses 16 to 18 and 20
-    * ``John 3:16-18,4:1`` refers to John chapter 3 verses 16 to 18 and
-      chapter 4 verse 1
+    * ``John 3:16-18,4:1`` refers to John chapter 3 verses 16 to 18 and chapter 4 verse 1
 
-    If there is a range separator without further verse declaration the last
-    refered chapter is addressed until the end.
+    If there is a range separator without further verse declaration the last refered chapter is addressed until the end.
 
-    ``range_regex`` is a regular expression which matches for verse range
-    declarations:
+    ``range_regex`` is a regular expression which matches for verse range declarations:
 
     ``(?:(?P<from_chapter>[0-9]+)%(sep_v)s)?``
-        It starts with a optional chapter reference ``from_chapter`` followed by
-        a verse separator.
+        It starts with a optional chapter reference ``from_chapter`` followed by a verse separator.
 
     ``(?P<from_verse>[0-9]+)``
         The verse reference ``from_verse`` is manditory
 
     ``(?P<range_to>%(sep_r)s(?:`` ... ``|%(sep_e)s)?)?``
-        A ``range_to`` declaration is optional. It starts with a range separator
-        and contains optional a chapter and verse declaration or a end
-        separator.
+        A ``range_to`` declaration is optional. It starts with a range separator and contains optional a chapter and
+        verse declaration or a end separator.
 
     ``(?:(?P<to_chapter>[0-9]+)%(sep_v)s)?``
         The ``to_chapter`` reference with separator is equivalent to group 1.
@@ -328,17 +317,15 @@ def parse_reference(reference, bible, language_selection, book_ref_id=False):
     ``(?P<to_verse>[0-9]+)``
         The ``to_verse`` reference is equivalent to group 2.
 
-    The full reference is matched against get_reference_match(u'full'). This
-    regular expression looks like this:
+    The full reference is matched against get_reference_match(u'full'). This regular expression looks like this:
 
     ``^\s*(?!\s)(?P<book>[\d]*[^\d]+)(?<!\s)\s*``
-        The ``book`` group starts with the first non-whitespace character. There
-        are optional leading digits followed by non-digits. The group ends
-        before the whitspace in front of the next digit.
+        The ``book`` group starts with the first non-whitespace character. There are optional leading digits followed by
+        non-digits. The group ends before the whitspace in front of the next digit.
 
     ``(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$``
-        The second group contains all ``ranges``. This can be multiple
-        declarations of range_regex separated by a list separator.
+        The second group contains all ``ranges``. This can be multiple declarations of range_regex separated by a list
+        separator.
 
     """
     log.debug(u'parse_reference("%s")', reference)

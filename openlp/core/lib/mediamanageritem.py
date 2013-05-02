@@ -103,6 +103,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.retranslateUi()
         self.auto_select_id = -1
         Registry().register_function(u'%s_service_load' % self.plugin.name, self.service_load)
+        # Need to use event as called across threads and UI is updated
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_go_live' % self.plugin.name), self.go_live_remote)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_add_to_service' % self.plugin.name), self.add_to_service_remote)
 
     def required_icons(self):
         """
@@ -424,7 +427,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         raise NotImplementedError(u'MediaManagerItem.on_delete_click needs to be defined by the plugin')
 
-    def onFocus(self):
+    def on_focus(self):
         """
         Run when a tab in the media manager gains focus. This gives the media
         item a chance to focus any elements it wants to.
@@ -481,6 +484,15 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.go_live()
 
+    def go_live_remote(self, message):
+        """
+        Remote Call wrapper
+
+        ``message``
+            The passed data item_id:Remote.
+        """
+        self.go_live(message[0], remote=message[1])
+
     def go_live(self, item_id=None, remote=False):
         """
         Make the currently selected item go live.
@@ -522,6 +534,15 @@ class MediaManagerItem(QtGui.QWidget):
                 items = self.list_view.selectedIndexes()
                 for item in items:
                     self.add_to_service(item)
+
+    def add_to_service_remote(self, message):
+        """
+        Remote Call wrapper
+
+        ``message``
+            The passed data item:Remote.
+        """
+        self.add_to_service(message[0], remote=message[1])
 
     def add_to_service(self, item=None, replace=None, remote=False):
         """
