@@ -543,14 +543,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Registry().register_function(u'theme_update_global', self.default_theme_changed)
         Registry().register_function(u'openlp_version_check', self.version_notice)
         Registry().register_function(u'config_screen_changed', self.screen_changed)
+        Registry().register_function(u'bootstrap_post_set_up', self.restore_current_media_manager_item)
         self.renderer = Renderer()
-        log.info(u'Load data from Settings')
-        if Settings().value(u'advanced/save current plugin'):
-            savedPlugin = Settings().value(u'advanced/current media plugin')
-            if savedPlugin != -1:
-                self.media_tool_box.setCurrentIndex(savedPlugin)
         # Reset the cursor
         self.application.set_normal_cursor()
+
+    def restore_current_media_manager_item(self):
+        """
+
+        """
+        log.info(u'Load data from Settings')
+        if Settings().value(u'advanced/save current plugin'):
+            saved_plugin = Settings().value(u'advanced/current media plugin')
+            if saved_plugin != -1:
+                self.media_tool_box.setCurrentIndex(saved_plugin)
 
     def on_search_shortcut_triggered(self):
         """
