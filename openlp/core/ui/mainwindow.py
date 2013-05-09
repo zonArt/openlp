@@ -365,8 +365,7 @@ class Ui_MainWindow(object):
         """
         Set up the translation system
         """
-        main_window.mainTitle = UiStrings().OLPV2x
-        main_window.setWindowTitle(main_window.mainTitle)
+        main_window.setWindowTitle(UiStrings().OLPV2x)
         self.file_menu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
@@ -498,7 +497,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.new_data_path = None
         self.copy_data = False
         Settings().set_up_default_values()
-        self.service_not_saved = False
         self.about_form = AboutForm(self)
         self.media_controller = MediaController()
         self.settings_form = SettingsForm(self)
@@ -1076,42 +1074,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.live_controller.display.close()
             self.live_controller.display = None
 
-    def service_changed(self, reset=False, serviceName=None):
-        """
-        Hook to change the main window title when the service changes
-
-        ``reset``
-            Shows if the service has been cleared or saved
-
-        ``serviceName``
-            The name of the service (if it has one)
-        """
-        if not serviceName:
-            service_name = u'(unsaved service)'
-        else:
-            service_name = serviceName
-        if reset:
-            self.service_not_saved = False
-            title = u'%s - %s' % (self.mainTitle, service_name)
-        else:
-            self.service_not_saved = True
-            title = u'%s - %s*' % (self.mainTitle, service_name)
-        self.setWindowTitle(title)
-
-    def set_service_modified(self, modified, fileName):
+    def set_service_modified(self, modified, file_name):
         """
         This method is called from the ServiceManager to set the title of the main window.
 
         ``modified``
             Whether or not this service has been modified.
 
-        ``fileName``
+        ``file_name``
             The file name of the service file.
         """
         if modified:
-            title = u'%s - %s*' % (self.mainTitle, fileName)
+            title = u'%s - %s*' % (UiStrings().OLPV2x, file_name)
         else:
-            title = u'%s - %s' % (self.mainTitle, fileName)
+            title = u'%s - %s' % (UiStrings().OLPV2x, file_name)
         self.setWindowTitle(title)
 
     def show_status_message(self, message):

@@ -47,12 +47,12 @@ class TestMainWindow(TestCase):
         Test if the search edit has focus after CTRL+F has been pressed.
         """
         # GIVEN: Mocked widget.
-        mocked_current_widget = MagicMock()
-        self.main_window.media_tool_box.currentWidget = mocked_current_widget
+        mocked_widget = MagicMock()
+        self.main_window.media_tool_box.currentWidget.return_value = mocked_widget
 
         # WHEN: Press the shortcut.
         QtTest.QTest.keyPress(self.main_window, QtCore.Qt.Key_F, QtCore.Qt.ControlModifier)
         QtTest.QTest.keyRelease(self.main_window, QtCore.Qt.Key_F, QtCore.Qt.ControlModifier)
 
         # THEN: The on_focus method should have been called.
-        mocked_current_widget.on_focus.assert_called_with()
+        mocked_widget.on_focus.assert_called_with()
