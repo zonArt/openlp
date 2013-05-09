@@ -548,13 +548,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def restore_current_media_manager_item(self):
         """
-
+        Called on start up to restore the last active media plugin.
         """
         log.info(u'Load data from Settings')
         if Settings().value(u'advanced/save current plugin'):
-            saved_plugin = Settings().value(u'advanced/current media plugin')
-            if saved_plugin != -1:
-                self.media_tool_box.setCurrentIndex(saved_plugin)
+            saved_plugin_id = Settings().value(u'advanced/current media plugin')
+            if saved_plugin_id != -1:
+                self.media_tool_box.setCurrentIndex(saved_plugin_id)
 
     def on_search_shortcut_triggered(self):
         """
