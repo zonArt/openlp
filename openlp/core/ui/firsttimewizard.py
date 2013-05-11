@@ -66,8 +66,8 @@ class Ui_FirstTimeWizard(object):
         FirstTimeWizard.setOptions(QtGui.QWizard.IndependentPages | QtGui.QWizard.NoBackButtonOnStartPage |
             QtGui.QWizard.NoBackButtonOnLastPage | QtGui.QWizard.HaveCustomButton1)
         self.finishButton = self.button(QtGui.QWizard.FinishButton)
-        self.noInternetFinishButton = self.button(QtGui.QWizard.CustomButton1)
-        self.cancelButton = self.button(QtGui.QWizard.CancelButton)
+        self.no_internet_finish_button = self.button(QtGui.QWizard.CustomButton1)
+        self.cancel_button = self.button(QtGui.QWizard.CancelButton)
         self.nextButton = self.button(QtGui.QWizard.NextButton)
         self.backButton = self.button(QtGui.QWizard.BackButton)
         add_welcome_page(FirstTimeWizard, u':/wizards/wizard_firsttime.bmp')

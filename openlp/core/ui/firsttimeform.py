@@ -76,8 +76,7 @@ class ThemeScreenshotThread(QtCore.QThread):
 
 class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
     """
-    This is the Theme Import Wizard, which allows easy creation and editing of
-    OpenLP themes.
+    This is the Theme Import Wizard, which allows easy creation and editing of OpenLP themes.
     """
     log.info(u'ThemeWizardForm loaded')
 
@@ -99,9 +98,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.was_download_cancelled = False
         self.theme_screenshot_thread = None
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
-        self.cancelButton.clicked.connect(self.onCancelButtonClicked)
-        self.noInternetFinishButton.clicked.connect(self.onNoInternetFinishButtonClicked)
-        self.currentIdChanged.connect(self.onCurrentIdChanged)
+        self.cancel_button.clicked.connect(self.onCancelButtonClicked)
+        self.no_internet_finish_button.clicked.connect(self.onNoInternetFinishButtonClicked)
+        self.currentIdChanged.connect(self.on_current_id_changed)
         Registry().register_function(u'config_screen_changed', self.update_screen_list_combo)
 
     def exec_(self):
@@ -117,7 +116,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         self.restart()
         check_directory_exists(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
-        self.noInternetFinishButton.setVisible(False)
+        self.no_internet_finish_button.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.hasRunWizard = Settings().value(u'core/has run wizard')
         # Sort out internet access for downloads
@@ -177,7 +176,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         else:
             return self.currentId() + 1
 
-    def onCurrentIdChanged(self, pageId):
+    def on_current_id_changed(self, pageId):
         """
         Detects Page changes and updates as appropriate.
         """
@@ -211,9 +210,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         elif pageId == FirstTimePage.NoInternet:
             self.backButton.setVisible(False)
             self.nextButton.setVisible(False)
-            self.noInternetFinishButton.setVisible(True)
+            self.no_internet_finish_button.setVisible(True)
             if self.hasRunWizard:
-                self.cancelButton.setVisible(False)
+                self.cancel_button.setVisible(False)
         elif pageId == FirstTimePage.Progress:
             self.application.set_busy_cursor()
             self.repaint()
@@ -404,7 +403,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     'Click the finish button to start OpenLP.'))
         self.finishButton.setVisible(True)
         self.finishButton.setEnabled(True)
-        self.cancelButton.setVisible(False)
+        self.cancel_button.setVisible(False)
         self.nextButton.setVisible(False)
         self.application.process_events()
 
