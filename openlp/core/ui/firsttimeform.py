@@ -98,8 +98,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.was_download_cancelled = False
         self.theme_screenshot_thread = None
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
-        self.cancel_button.clicked.connect(self.onCancelButtonClicked)
-        self.no_internet_finish_button.clicked.connect(self.onNoInternetFinishButtonClicked)
+        self.cancel_button.clicked.connect(self.on_cancel_button_clicked)
+        self.no_internet_finish_button.clicked.connect(self.on_no_internet_finish_button_clicked)
         self.currentIdChanged.connect(self.on_current_id_changed)
         Registry().register_function(u'config_screen_changed', self.update_screen_list_combo)
 
@@ -170,7 +170,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 time.sleep(0.1)
                 self.application.process_events()
             # Build the screenshot icons, as this can not be done in the thread.
-            self._buildThemeScreenshots()
+            self._build_theme_screenshots()
             self.application.set_normal_cursor()
             return FirstTimePage.Defaults
         else:
@@ -219,7 +219,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             # Try to give the wizard a chance to redraw itself
             time.sleep(0.2)
             self._pre_wizard()
-            self._performWizard()
+            self._perform_wizard()
             self._post_wizard()
             self.application.set_normal_cursor()
 
@@ -232,7 +232,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.display_combo_box.addItems(self.screens.get_screen_list())
         self.display_combo_box.setCurrentIndex(self.display_combo_box.count() - 1)
 
-    def onCancelButtonClicked(self):
+    def on_cancel_button_clicked(self):
         """
         Process the triggering of the cancel button.
         """
@@ -246,39 +246,39 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 time.sleep(0.1)
         self.application.set_normal_cursor()
 
-    def onNoInternetFinishButtonClicked(self):
+    def on_no_internet_finish_button_clicked(self):
         """
         Process the triggering of the "Finish" button on the No Internet page.
         """
         self.application.set_busy_cursor()
-        self._performWizard()
+        self._perform_wizard()
         self.application.set_normal_cursor()
         Settings().setValue(u'core/has run wizard', True)
         self.close()
 
-    def urlGetFile(self, url, fpath):
+    def url_get_file(self, url, f_path):
         """"
-        Download a file given a URL.  The file is retrieved in chunks, giving
-        the ability to cancel the download at any point.
+        Download a file given a URL.  The file is retrieved in chunks, giving the ability to cancel the download at any
+        point.
         """
         block_count = 0
         block_size = 4096
-        urlfile = urllib2.urlopen(url)
-        filename = open(fpath, "wb")
+        url_file = urllib2.urlopen(url)
+        filename = open(f_path, "wb")
         # Download until finished or canceled.
         while not self.was_download_cancelled:
-            data = urlfile.read(block_size)
+            data = url_file.read(block_size)
             if not data:
                 break
             filename.write(data)
             block_count += 1
-            self._downloadProgress(block_count, block_size)
+            self._download_progress(block_count, block_size)
         filename.close()
         # Delete file if cancelled, it may be a partial file.
         if self.was_download_cancelled:
-            os.remove(fpath)
+            os.remove(f_path)
 
-    def _buildThemeScreenshots(self):
+    def _build_theme_screenshots(self):
         """
         This method builds the theme screenshots' icons for all items in the
         ``self.themes_list_widget``.
@@ -293,7 +293,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 if item.data(QtCore.Qt.UserRole) == filename:
                     break
             item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
-                    get_filesystem_encoding()), u'openlp', screenshot)))
+                get_filesystem_encoding()), u'openlp', screenshot)))
 
     def _getFileSize(self, url):
         """
@@ -306,7 +306,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         meta = site.info()
         return int(meta.getheaders("Content-Length")[0])
 
-    def _downloadProgress(self, count, block_size):
+    def _download_progress(self, count, block_size):
         """
         Calculate and display the download progress.
         """
@@ -406,24 +406,24 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.next_button.setVisible(False)
         self.application.process_events()
 
-    def _performWizard(self):
+    def _perform_wizard(self):
         """
         Run the tasks in the wizard.
         """
         # Set plugin states
         self._increment_progress_bar(translate('OpenLP.FirstTimeWizard', 'Enabling selected plugins...'))
-        self._setPluginStatus(self.songs_check_box, u'songs/status')
-        self._setPluginStatus(self.bible_check_box, u'bibles/status')
+        self._set_plugin_status(self.songs_check_box, u'songs/status')
+        self._set_plugin_status(self.bible_check_box, u'bibles/status')
         # TODO Presentation plugin is not yet working on Mac OS X.
         # For now just ignore it.
         if sys.platform != 'darwin':
-            self._setPluginStatus(self.presentation_check_box, u'presentations/status')
-        self._setPluginStatus(self.image_check_box, u'images/status')
-        self._setPluginStatus(self.media_check_box, u'media/status')
-        self._setPluginStatus(self.remote_check_box, u'remotes/status')
-        self._setPluginStatus(self.custom_check_box, u'custom/status')
-        self._setPluginStatus(self.song_usage_check_box, u'songusage/status')
-        self._setPluginStatus(self.alert_check_box, u'alerts/status')
+            self._set_plugin_status(self.presentation_check_box, u'presentations/status')
+        self._set_plugin_status(self.image_check_box, u'images/status')
+        self._set_plugin_status(self.media_check_box, u'media/status')
+        self._set_plugin_status(self.remote_check_box, u'remotes/status')
+        self._set_plugin_status(self.custom_check_box, u'custom/status')
+        self._set_plugin_status(self.song_usage_check_box, u'songusage/status')
+        self._set_plugin_status(self.alert_check_box, u'alerts/status')
         if self.web_access:
             # Build directories for downloads
             songs_destination = os.path.join(
@@ -438,7 +438,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     self._increment_progress_bar(self.downloading % filename, 0)
                     self.previous_size = 0
                     destination = os.path.join(songs_destination, unicode(filename))
-                    self.urlGetFile(u'%s%s' % (self.web, filename), destination)
+                    self.url_get_file(u'%s%s' % (self.web, filename), destination)
             # Download Bibles
             bibles_iterator = QtGui.QTreeWidgetItemIterator(
                 self.bibles_tree_widget)
@@ -448,7 +448,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     bible = item.data(0, QtCore.Qt.UserRole)
                     self._increment_progress_bar(self.downloading % bible, 0)
                     self.previous_size = 0
-                    self.urlGetFile(u'%s%s' % (self.web, bible), os.path.join(bibles_destination, bible))
+                    self.url_get_file(u'%s%s' % (self.web, bible), os.path.join(bibles_destination, bible))
                 bibles_iterator += 1
             # Download themes
             for i in xrange(self.themes_list_widget.count()):
@@ -457,7 +457,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     theme = item.data(QtCore.Qt.UserRole)
                     self._increment_progress_bar(self.downloading % theme, 0)
                     self.previous_size = 0
-                    self.urlGetFile(u'%s%s' % (self.web, theme), os.path.join(themes_destination, theme))
+                    self.url_get_file(u'%s%s' % (self.web, theme), os.path.join(themes_destination, theme))
         # Set Default Display
         if self.display_combo_box.currentIndex() != -1:
             Settings().setValue(u'core/monitor', self.display_combo_box.currentIndex())
@@ -466,7 +466,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         if self.theme_combo_box.currentIndex() != -1:
             Settings().setValue(u'themes/global theme', self.theme_combo_box.currentText())
 
-    def _setPluginStatus(self, field, tag):
+    def _set_plugin_status(self, field, tag):
         """
         Set the status of a plugin.
         """
