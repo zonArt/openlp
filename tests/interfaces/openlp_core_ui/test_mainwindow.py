@@ -49,9 +49,10 @@ class TestMainWindow(TestCase):
         # GIVEN: Mocked widget.
         mocked_widget = MagicMock()
         self.main_window.media_tool_box.currentWidget.return_value = mocked_widget
+        self.main_window.show()
 
         # WHEN: Press the shortcut.
-        QtTest.QTest.keyPress(self.main_window, QtCore.Qt.Key_F, QtCore.Qt.ControlModifier)
+        QtTest.QTest.keyPress(self.main_window, QtCore.Qt.Key_F, QtCore.Qt.ControlModifier, 100)
         QtTest.QTest.keyRelease(self.main_window, QtCore.Qt.Key_F, QtCore.Qt.ControlModifier)
 
         # THEN: The on_focus method should have been called.
