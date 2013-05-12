@@ -25,7 +25,8 @@ class TestMainWindow(TestCase):
         self.app.args =[]
         Registry().register(u'application', self.app)
         # Mock classes and methods used by mainwindow.
-        with patch(u'openlp.core.ui.mainwindow.ImageManager') as mocked_image_manager, \
+        with patch(u'openlp.core.ui.mainwindow.SettingsForm') as mocked_settings_form, \
+                patch(u'openlp.core.ui.mainwindow.ImageManager') as mocked_image_manager, \
                 patch(u'openlp.core.ui.mainwindow.SlideController') as mocked_slide_controller, \
                 patch(u'openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
                 patch(u'openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
@@ -41,6 +42,21 @@ class TestMainWindow(TestCase):
         """
         del self.main_window
         del self.app
+
+    def restore_current_media_manager_item_test(self):
+        """
+        Regression test for bug #1152509.
+        """
+        # GIVEN: Mocked Settings().value method.
+        with patch(u'openlp.core.ui.mainwindow.Settings.value') as mocked_value:
+            # save current plugin: True; current media plugin: 2
+            mocked_value.side_effect = [True, 2]
+
+            # WHEN: Call the restore method.
+            Registry().execute(u'bootstrap_post_set_up')
+
+            # THEN: The current widget should have been set.
+            self.main_window.media_tool_box.setCurrentIndex.assert_called_with(2)
 
     def on_search_shortcut_triggered_test(self):
         """
