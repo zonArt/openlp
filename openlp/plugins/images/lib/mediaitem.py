@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, ServiceItem, ServiceItemContext, Settings, \
+from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, ServiceItemContext, Settings, \
     StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, check_item_selected, \
     create_thumb, translate, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
@@ -538,76 +538,63 @@ class ImageMediaItem(MediaManagerItem):
         """
         background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))
         if item:
-            new_items = [item]
+            items = [item]
         else:
-            new_items = self.list_view.selectedItems()
-            if not new_items:
+            items = self.list_view.selectedItems()
+            if not items:
                 return False
-        for bitem in new_items:
-            new_service_item = ServiceItem(self.plugin)
-            new_service_item.add_icon(self.plugin.icon_path)
-            # Determine service item title
-            if isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageGroups):
-                new_service_item.title = bitem.text(0)
-            else:
-                new_service_item.title = unicode(self.plugin.name_strings[u'plural'])
-            new_service_item.add_capability(ItemCapabilities.CanMaintain)
-            new_service_item.add_capability(ItemCapabilities.CanPreview)
-            new_service_item.add_capability(ItemCapabilities.CanLoop)
-            new_service_item.add_capability(ItemCapabilities.CanAppend)
-            # force a nonexistent theme
-            new_service_item.theme = -1
-            sub_images = []
-            missing_items = []
-            missing_items_filenames = []
-            # Expand groups to images
+        # Determine service item title
+        if isinstance(items[0].data(0, QtCore.Qt.UserRole), ImageGroups):
+            service_item.title = items[0].text(0)
+        else:
+            service_item.title = unicode(self.plugin.name_strings[u'plural'])
+        service_item.add_capability(ItemCapabilities.CanMaintain)
+        service_item.add_capability(ItemCapabilities.CanPreview)
+        service_item.add_capability(ItemCapabilities.CanLoop)
+        service_item.add_capability(ItemCapabilities.CanAppend)
+        # force a nonexistent theme
+        service_item.theme = -1
+        missing_items = []
+        missing_items_filenames = []
+        # Expand groups to images
+        for bitem in items:
             if isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageGroups) or bitem.data(0, QtCore.Qt.UserRole) is None:
                 for index in range(0, bitem.childCount()):
                     if isinstance(bitem.child(index).data(0, QtCore.Qt.UserRole), ImageFilenames):
-                        sub_images.append(bitem.child(index))
-            if isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageFilenames):
-                sub_images.append(bitem)
-            # Don't try to display empty groups
-            if not sub_images:
-                return False
-            # Find missing files
-            for bitem in sub_images:
-                filename = bitem.data(0, QtCore.Qt.UserRole).filename
-                if not os.path.exists(filename):
-                    missing_items.append(bitem)
-                    missing_items_filenames.append(filename)
-            for item in missing_items:
-                sub_images.remove(item)
-            # We cannot continue, as all images do not exist.
-            if not sub_images:
-                if not remote:
-                    critical_error_message_box(
-                        translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                        translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s') %
-                            u'\n'.join(missing_items_filenames))
-                return False
-            # We have missing as well as existing images. We ask what to do.
-            elif missing_items and QtGui.QMessageBox.question(self,
-                translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
-                translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s\n'
-                    'Do you want to add the other images anyway?') % u'\n'.join(missing_items_filenames),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == \
-                QtGui.QMessageBox.No:
-                return False
-            # Continue with the existing images.
-            for sub_image in sub_images:
-                filename = sub_image.data(0, QtCore.Qt.UserRole).filename
-                name = os.path.split(filename)[1]
-                new_service_item.add_from_image(filename, name, background)
-            # Add the service item to the correct controller
-            if context == ServiceItemContext.Service:
-                self.service_manager.add_service_item(new_service_item)
-            elif context == ServiceItemContext.Preview:
-                self.preview_controller.add_service_item(new_service_item)
-            elif context == ServiceItemContext.Live:
-                self.live_controller.add_service_item(new_service_item)
-        # Return False because we added the service item ourselves
-        return False
+                        items.append(bitem.child(index))
+                items.remove(bitem)
+        # Don't try to display empty groups
+        if not items:
+            return False
+        # Find missing files
+        for bitem in items:
+            filename = bitem.data(0, QtCore.Qt.UserRole).filename
+            if not os.path.exists(filename):
+                missing_items.append(bitem)
+                missing_items_filenames.append(filename)
+        for item in missing_items:
+            items.remove(item)
+        # We cannot continue, as all images do not exist.
+        if not items:
+            if not remote:
+                critical_error_message_box(
+                    translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+                    translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s') %
+                        u'\n'.join(missing_items_filenames))
+            return False
+        # We have missing as well as existing images. We ask what to do.
+        elif missing_items and QtGui.QMessageBox.question(self,
+            translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
+            translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s\n'
+                'Do you want to add the other images anyway?') % u'\n'.join(missing_items_filenames),
+            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+            return False
+        # Continue with the existing images.
+        for bitem in items:
+            filename = bitem.data(0, QtCore.Qt.UserRole).filename
+            name = os.path.split(filename)[1]
+            service_item.add_from_image(filename, name, background)
+        return True
 
     def check_group_exists(self, new_group):
         """
