@@ -6,6 +6,7 @@ from unittest import TestCase
 
 from openlp.core.lib import UiStrings
 
+
 class TestUiStrings(TestCase):
 
     def check_same_instance_test(self):

@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`db` module provides the database and schema that is the backend for the Images plugin
+The :mod:`db` module provides the database and schema that is the backend for the Images plugin.
 """
 
 from sqlalchemy import Column, ForeignKey, Table, types
@@ -38,14 +38,14 @@ from openlp.core.lib.db import BaseModel, init_db
 
 class ImageGroups(BaseModel):
     """
-    ImageGroups model
+    ImageGroups model.
     """
     pass
 
 
 class ImageFilenames(BaseModel):
     """
-    ImageFilenames model
+    ImageFilenames model.
     """
     pass
 

@@ -50,13 +50,11 @@ from sundayplusimport import SundayPlusImport
 from foilpresenterimport import FoilPresenterImport
 from zionworximport import ZionWorxImport
 # Imports that might fail
+
+
 log = logging.getLogger(__name__)
-try:
-    from olp1import import OpenLP1SongImport
-    HAS_OPENLP1 = True
-except ImportError:
-    log.exception('Error importing %s', 'OpenLP1SongImport')
-    HAS_OPENLP1 = False
+
+
 try:
     from sofimport import SofImport
     HAS_SOF = True
@@ -144,23 +142,22 @@ class SongFormat(object):
     Unknown = -1
     OpenLyrics = 0
     OpenLP2 = 1
-    OpenLP1 = 2
-    Generic = 3
-    CCLI = 4
-    DreamBeam = 5
-    EasySlides = 6
-    EasyWorship = 7
-    FoilPresenter = 8
-    MediaShout = 9
-    OpenSong = 10
-    PowerSong = 11
-    SongBeamer = 12
-    SongPro = 13
-    SongShowPlus = 14
-    SongsOfFellowship = 15
-    SundayPlus = 16
-    WordsOfWorship = 17
-    ZionWorx = 18
+    Generic = 2
+    CCLI = 3
+    DreamBeam = 4
+    EasySlides = 5
+    EasyWorship = 6
+    FoilPresenter = 7
+    MediaShout = 8
+    OpenSong = 9
+    PowerSong = 10
+    SongBeamer = 11
+    SongPro = 12
+    SongShowPlus = 13
+    SongsOfFellowship = 14
+    SundayPlus = 15
+    WordsOfWorship = 16
+    ZionWorx = 17
 
     # Set optional attribute defaults
     __defaults__ = {
@@ -190,14 +187,6 @@ class SongFormat(object):
             u'prefix': u'openLP2',
             u'selectMode': SongFormatSelect.SingleFile,
             u'filter': u'%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
-        },
-        OpenLP1: {
-            u'name': UiStrings().OLPV1,
-            u'prefix': u'openLP1',
-            u'canDisable': True,
-            u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.olp)' % translate('SongsPlugin.ImportWizardForm', 'openlp.org v1.x Databases'),
-            u'disabledLabelText': WizardStrings.NoSqlite
         },
         Generic: {
             u'name': translate('SongsPlugin.ImportWizardForm', 'Generic Document/Presentation'),
@@ -332,7 +321,6 @@ class SongFormat(object):
         return [
             SongFormat.OpenLyrics,
             SongFormat.OpenLP2,
-            SongFormat.OpenLP1,
             SongFormat.Generic,
             SongFormat.CCLI,
             SongFormat.DreamBeam,
@@ -387,9 +375,7 @@ class SongFormat(object):
         """
         SongFormat.__attributes__[format][attribute] = value
 
-SongFormat.set(SongFormat.OpenLP1, u'availability', HAS_OPENLP1)
-if HAS_OPENLP1:
-    SongFormat.set(SongFormat.OpenLP1, u'class', OpenLP1SongImport)
+
 SongFormat.set(SongFormat.SongsOfFellowship, u'availability', HAS_SOF)
 if HAS_SOF:
     SongFormat.set(SongFormat.SongsOfFellowship, u'class', SofImport)

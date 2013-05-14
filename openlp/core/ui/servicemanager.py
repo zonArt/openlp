@@ -273,7 +273,6 @@ class ServiceManagerDialog(object):
         Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
         Registry().register_function(u'theme_update_global', self.theme_change)
         Registry().register_function(u'mediaitem_suffix_reset', self.reset_supported_suffixes)
-        Registry().register_function(u'servicemanager_set_item', self.on_set_item)
 
     def drag_enter_event(self, event):
         """
@@ -296,8 +295,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Sets up the service manager, toolbars, list view, et al.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.active = build_icon(QtGui.QImage(u':/media/auto-start_active.png'))
-        self.inactive = build_icon(QtGui.QImage(u':/media/auto-start_inactive.png'))
+        self.active = build_icon(u':/media/auto-start_active.png')
+        self.inactive = build_icon(u':/media/auto-start_inactive.png')
         Registry().register(u'service_manager', self)
         self.service_items = []
         self.suffixes = []
@@ -315,6 +314,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.setup_ui(self)
+        # Need to use event as called across threads and UI is updated
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'servicemanager_set_item'), self.on_set_item)
 
     def set_modified(self, modified=True):
         """
@@ -993,7 +994,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_set_item(self, message):
         """
-        Called by a signal to select a specific item.
+        Called by a signal to select a specific item and make it live usually from remote.
         """
         self.set_item(int(message))
 
@@ -1393,7 +1394,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         if self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEdit):
             new_item = Registry().get(self.service_items[item][u'service_item'].name). \
-                onRemoteEdit(self.service_items[item][u'service_item'].edit_id)
+                on_remote_edit(self.service_items[item][u'service_item'].edit_id)
             if new_item:
                 self.add_service_item(new_item, replace=True)
 

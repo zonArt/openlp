@@ -70,10 +70,10 @@ class ImagePlugin(Plugin):
 
     def app_startup(self):
         """
-        Perform tasks on application startup
+        Perform tasks on application startup.
         """
         Plugin.app_startup(self)
-        # Convert old settings-based image list to the database
+        # Convert old settings-based image list to the database.
         files_from_config = Settings().get_files_from_config(self)
         if files_from_config:
             log.debug(u'Importing images list from old config: %s' % files_from_config)
@@ -93,7 +93,7 @@ class ImagePlugin(Plugin):
 
     def set_plugin_text_strings(self):
         """
-        Called to define all translatable texts of the plugin
+        Called to define all translatable texts of the plugin.
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
@@ -117,8 +117,8 @@ class ImagePlugin(Plugin):
 
     def config_update(self):
         """
-        Triggered by saving and changing the image border.  Sets the images in image manager to require updates.
-        Actual update is triggered by the last part of saving the config.
+        Triggered by saving and changing the image border.  Sets the images in image manager to require updates. Actual
+        update is triggered by the last part of saving the config.
         """
         log.info(u'Images config_update')
         background = QtGui.QColor(Settings().value(self.settings_section + u'/background color'))

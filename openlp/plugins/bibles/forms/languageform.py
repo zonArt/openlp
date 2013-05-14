@@ -40,7 +40,9 @@ from openlp.plugins.bibles.forms.languagedialog import \
     Ui_LanguageDialog
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
+
 log = logging.getLogger(__name__)
+
 
 class LanguageForm(QDialog, Ui_LanguageDialog):
     """
@@ -56,19 +58,17 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         self.setupUi(self)
 
     def exec_(self, bible_name):
-        self.languageComboBox.addItem(u'')
+        self.language_combo_box.addItem(u'')
         if bible_name:
-            self.bibleLabel.setText(unicode(bible_name))
+            self.bible_label.setText(unicode(bible_name))
         items = BiblesResourcesDB.get_languages()
-        self.languageComboBox.addItems([item[u'name'] for item in items])
+        self.language_combo_box.addItems([item[u'name'] for item in items])
         return QDialog.exec_(self)
 
     def accept(self):
-        if not self.languageComboBox.currentText():
-            critical_error_message_box(
-                message=translate('BiblesPlugin.LanguageForm',
-                'You need to choose a language.'))
-            self.languageComboBox.setFocus()
+        if not self.language_combo_box.currentText():
+            critical_error_message_box(message=translate('BiblesPlugin.LanguageForm', 'You need to choose a language.'))
+            self.language_combo_box.setFocus()
             return False
         else:
             return QDialog.accept(self)
