@@ -440,6 +440,8 @@ class ImageMediaItem(MediaManagerItem):
                     parent_group.parent_id = 0
                     parent_group.group_name = self.choose_group_form.new_group_edit.text()
                     self.manager.save_object(parent_group)
+                    self.fill_groups_combobox(self.choose_group_form.group_combobox)
+                    self.fill_groups_combobox(self.add_group_form.parent_group_combobox)
         else:
             parent_group = target_group.data(0, QtCore.Qt.UserRole)
             if isinstance(parent_group, ImageFilenames):
