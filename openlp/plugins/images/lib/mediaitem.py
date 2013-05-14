@@ -561,6 +561,8 @@ class ImageMediaItem(MediaManagerItem):
                 for index in range(0, bitem.childCount()):
                     if isinstance(bitem.child(index).data(0, QtCore.Qt.UserRole), ImageFilenames):
                         images_filenames.append(bitem.child(index).data(0, QtCore.Qt.UserRole).filename)
+            elif isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageFilenames):
+                images_filenames.append(bitem.data(0, QtCore.Qt.UserRole).filename)
         # Don't try to display empty groups
         if not images_filenames:
             return False
