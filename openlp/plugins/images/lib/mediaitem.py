@@ -554,28 +554,23 @@ class ImageMediaItem(MediaManagerItem):
         service_item.add_capability(ItemCapabilities.CanAppend)
         # force a nonexistent theme
         service_item.theme = -1
-        missing_items = []
         missing_items_filenames = []
+        images_filenames = []
         # Expand groups to images
         for bitem in items:
             if isinstance(bitem.data(0, QtCore.Qt.UserRole), ImageGroups) or bitem.data(0, QtCore.Qt.UserRole) is None:
                 for index in range(0, bitem.childCount()):
                     if isinstance(bitem.child(index).data(0, QtCore.Qt.UserRole), ImageFilenames):
-                        items.append(bitem.child(index))
-                items.remove(bitem)
+                        images_filenames.append(bitem.child(index).data(0, QtCore.Qt.UserRole).filename)
         # Don't try to display empty groups
-        if not items:
+        if not images_filenames:
             return False
         # Find missing files
-        for bitem in items:
-            filename = bitem.data(0, QtCore.Qt.UserRole).filename
+        for filename in images_filenames:
             if not os.path.exists(filename):
-                missing_items.append(bitem)
                 missing_items_filenames.append(filename)
-        for item in missing_items:
-            items.remove(item)
         # We cannot continue, as all images do not exist.
-        if not items:
+        if not images_filenames:
             if not remote:
                 critical_error_message_box(
                     translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
@@ -583,15 +578,14 @@ class ImageMediaItem(MediaManagerItem):
                         u'\n'.join(missing_items_filenames))
             return False
         # We have missing as well as existing images. We ask what to do.
-        elif missing_items and QtGui.QMessageBox.question(self,
+        elif missing_items_filenames and QtGui.QMessageBox.question(self,
             translate('ImagePlugin.MediaItem', 'Missing Image(s)'),
             translate('ImagePlugin.MediaItem', 'The following image(s) no longer exist: %s\n'
                 'Do you want to add the other images anyway?') % u'\n'.join(missing_items_filenames),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             return False
         # Continue with the existing images.
-        for bitem in items:
-            filename = bitem.data(0, QtCore.Qt.UserRole).filename
+        for filename in images_filenames:
             name = os.path.split(filename)[1]
             service_item.add_from_image(filename, name, background)
         return True
