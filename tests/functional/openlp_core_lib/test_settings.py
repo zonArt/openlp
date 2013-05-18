@@ -30,29 +30,6 @@ class TestSettings(TestCase):
         os.unlink(self.ini_file)
         os.unlink(Settings().fileName())
 
-    def extend_default_settings_test(self):
-        """
-        Test the static extend_default_settings() method
-        """
-        # GIVEN:
-
-        # WHEN: Try to access not existing setting.
-        with self.assertRaises(KeyError) as context:
-            Settings().value(u'core/does not exist')
-
-        # THEN: An exception should be raised.
-        self.assertEqual(context.exception[0], u'core/does not exist')
-
-        # GIVEN: Extended setting.
-        Settings.extend_default_settings({u'core/does exist': True})
-
-        # WHEN: Try to access it.
-        value = Settings().value(u'core/does exist')
-
-        # THEN: The correct value should be returned.
-        assert value and isinstance(value, bool)
-
-
     def settings_basic_test(self):
         """
         Test the Settings creation and its default usage
