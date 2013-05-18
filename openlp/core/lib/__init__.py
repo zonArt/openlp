@@ -203,7 +203,8 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
         States if an icon should be build and returned from the thumb. Defaults to ``True``.
 
     ``size``
-        Allows to state a own size to use. Defaults to ``None``, which means that a default height of 88 is used.
+        Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default height of 88
+        is used.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
