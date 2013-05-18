@@ -35,7 +35,7 @@ import os
 import platform
 
 import sqlalchemy
-import BeautifulSoup
+from bs4 import BeautifulSoup
 from lxml import etree
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -60,15 +60,23 @@ try:
 except ImportError:
     ENCHANT_VERSION = u'-'
 try:
-    import sqlite
-    SQLITE_VERSION = sqlite.version
-except ImportError:
-    SQLITE_VERSION = u'-'
-try:
     import mako
     MAKO_VERSION = mako.__version__
 except ImportError:
     MAKO_VERSION = u'-'
+try:
+    import icu
+    try:
+        ICU_VERSION = icu.VERSION
+    except AttributeError:
+        ICU_VERSION = u'OK'
+except ImportError:
+    ICU_VERSION = u'-'
+try:
+    import cherrypy
+    CHERRYPY_VERSION = cherrypy.__version__
+except ImportError:
+    CHERRYPY_VERSION = u'-'
 try:
     import uno
     arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
@@ -86,6 +94,11 @@ try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
     WEBKIT_VERSION = u'-'
+try:
+    from openlp.core.ui.media.vlcplayer import VERSION
+    VLC_VERSION = VERSION
+except ImportError:
+    VLC_VERSION = u'-'
 
 
 from openlp.core.lib import UiStrings, Settings, translate
@@ -136,14 +149,18 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % CHARDET_VERSION + \
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
-            u'PySQLite: %s\n' % SQLITE_VERSION + \
             u'Mako: %s\n' % MAKO_VERSION + \
-            u'pyUNO bridge: %s\n' % UNO_VERSION
+            u'CherryPy: %s\n' % CHERRYPY_VERSION + \
+            u'pyICU: %s\n' % ICU_VERSION + \
+            u'pyUNO bridge: %s\n' % UNO_VERSION + \
+            u'VLC: %s\n' % VLC_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
                 system += u'Desktop: KDE SC\n'
             elif os.environ.get(u'GNOME_DESKTOP_SESSION_ID'):
                 system += u'Desktop: GNOME\n'
+            elif os.environ.get(u'DESKTOP_SESSION') == u'xfce':
+                system += u'Desktop: Xfce\n'
         return (openlp_version, description, traceback, system, libraries)
 
     def on_save_report_button_clicked(self):
@@ -182,8 +199,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
 
     def on_send_report_button_clicked(self):
         """
-        Opening systems default email client and inserting exception log and
-        system informations.
+        Opening systems default email client and inserting exception log and system information.
         """
         body = translate('OpenLP.ExceptionForm',
             '*OpenLP Bug Report*\n'

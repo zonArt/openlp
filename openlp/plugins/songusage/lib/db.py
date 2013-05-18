@@ -36,11 +36,13 @@ from sqlalchemy.orm import mapper
 
 from openlp.core.lib.db import BaseModel, init_db
 
+
 class SongUsageItem(BaseModel):
     """
     SongUsageItem model
     """
     pass
+
 
 def init_schema(url):
     """

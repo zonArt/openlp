@@ -93,7 +93,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if self.trigger_alert(self.alert_text_edit.text()):
             self.close()
 
-    def onDeleteButtonClicked(self):
+    def on_delete_button_clicked(self):
         """
         Deletes the selected item.
         """
@@ -160,8 +160,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
 
     def on_single_click(self):
         """
-        List item has been single clicked to add it to the edit field so it can
-        be changed.
+        List item has been single clicked to add it to the edit field so it can be changed.
         """
         item = self.alert_list_widget.selectedIndexes()[0]
         bitem = self.alert_list_widget.item(item.row())
@@ -186,7 +185,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                 translate('AlertsPlugin.AlertForm', 'No Parameter Found'),
                 translate('AlertsPlugin.AlertForm', 'You have not entered a parameter to be replaced.\n'
                     'Do you want to continue anyway?'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False
         # The ParameterEdit field is not empty, but we have not found '<>'
@@ -195,19 +194,17 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
                 translate('AlertsPlugin.AlertForm', 'No Placeholder Found'),
                 translate('AlertsPlugin.AlertForm', 'The alert text does not contain \'<>\'.\n'
                     'Do you want to continue anyway?'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
+                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False
-
         text = text.replace(u'<>', self.parameter_edit.text())
         self.plugin.alerts_manager.display_alert(text)
-        self.plugin.alertsmanager.display_alert(text)
         return True
 
     def on_current_row_changed(self, row):
         """
-        Called when the *alert_list_widget*'s current row has been changed. This
-        enables or disables buttons which require an item to act on.
+        Called when the *alert_list_widget*'s current row has been changed. This enables or disables buttons which
+        require an item to act on.
 
         ``row``
             The row (int). If there is no current row, the value is -1.

@@ -28,8 +28,7 @@
 ###############################################################################
 
 """
-Provide additional functionality required by OpenLP from the inherited
-QDockWidget.
+Provide additional functionality required by OpenLP from the inherited QDockWidget.
 """
 import logging
 
@@ -56,8 +55,8 @@ class OpenLPDockWidget(QtGui.QDockWidget):
             self.setWindowIcon(build_icon(icon))
         # Sort out the minimum width.
         screens = ScreenList()
-        mainwindow_docbars = screens.current[u'size'].width() / 5
-        if mainwindow_docbars > 300:
+        main_window_docbars = screens.current[u'size'].width() / 5
+        if main_window_docbars > 300:
             self.setMinimumWidth(300)
         else:
-            self.setMinimumWidth(mainwindow_docbars)
+            self.setMinimumWidth(main_window_docbars)

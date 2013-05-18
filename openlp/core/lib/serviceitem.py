@@ -62,12 +62,10 @@ class ItemCapabilities(object):
             tab when making the previous item live.
 
     ``CanEdit``
-            The capability to allow the ServiceManager to allow the item to be
-             edited
+            The capability to allow the ServiceManager to allow the item to be edited
 
     ``CanMaintain``
-            The capability to allow the ServiceManager to allow the item to be
-             reordered.
+            The capability to allow the ServiceManager to allow the item to be reordered.
 
     ``RequiresMedia``
             Determines is the service_item needs a Media Player
@@ -419,8 +417,8 @@ class ServiceItem(object):
             for slide in serviceitem[u'serviceitem'][u'data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            settingsSection = serviceitem[u'serviceitem'][u'header'][u'name']
-            background = QtGui.QColor(Settings().value(settingsSection + u'/background color'))
+            settings_section = serviceitem[u'serviceitem'][u'header'][u'name']
+            background = QtGui.QColor(Settings().value(settings_section + u'/background color'))
             if path:
                 self.has_original_files = False
                 for text_image in serviceitem[u'serviceitem'][u'data']:
@@ -636,14 +634,17 @@ class ServiceItem(object):
         for frame in self._raw_frames:
             if self.is_image() and not os.path.exists(frame[u'path']):
                 self.is_valid = False
+                break
             elif self.is_command():
                 file_name = os.path.join(frame[u'path'], frame[u'title'])
                 if not os.path.exists(file_name):
                     self.is_valid = False
+                    break
                 if suffix_list and not self.is_text():
                     file_suffix = frame[u'title'].split(u'.')[-1]
                     if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
+                        break
 
     def _get_renderer(self):
         """

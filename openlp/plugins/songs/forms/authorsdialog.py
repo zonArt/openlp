@@ -49,7 +49,7 @@ class Ui_AuthorsDialog(object):
         self.dialog_layout = QtGui.QVBoxLayout(authors_dialog)
         self.dialog_layout.setObjectName(u'dialog_layout')
         self.author_layout = QtGui.QFormLayout()
-        self.author_layout.setObjectName(u'authorLayout')
+        self.author_layout.setObjectName(u'author_layout')
         self.first_name_label = QtGui.QLabel(authors_dialog)
         self.first_name_label.setObjectName(u'first_name_label')
         self.first_name_edit = QtGui.QLineEdit(authors_dialog)

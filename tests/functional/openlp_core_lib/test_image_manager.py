@@ -5,7 +5,7 @@
 import os
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Registry, ImageManager, ScreenList
 
@@ -42,6 +42,12 @@ class TestImageManager(TestCase):
 
         # THEN returned record is a type of image
         self.assertEqual(isinstance(image, QtGui.QImage), True, u'The returned object should be a QImage')
+
+        # WHEN: The image bytes are requested.
+        byte_array = self.image_manager.get_image_bytes(TEST_PATH, u'church.jpg')
+
+        # THEN: Type should be a byte array.
+        self.assertEqual(isinstance(byte_array, QtCore.QByteArray), True, u'The returned object should be a QByteArray')
 
         # WHEN the image is retrieved has not been loaded
         # THEN a KeyError is thrown

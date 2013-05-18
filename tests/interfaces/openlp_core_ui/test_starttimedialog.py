@@ -18,7 +18,7 @@ class TestStartTimeDialog(TestCase):
         Create the UI
         """
         Registry.create()
-        self.app = QtGui.QApplication.instance()
+        self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
         Registry().register(u'main_window', self.main_window)
         self.form = starttimeform.StartTimeForm()
@@ -72,8 +72,8 @@ class TestStartTimeDialog(TestCase):
         self.form.item = {u'service_item': mocked_serviceitem}
         with patch(u'PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
-        okWidget = self.form.button_box.button(self.form.button_box.Ok)
-        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+        ok_widget = self.form.button_box.button(self.form.button_box.Ok)
+        QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following input values are returned
         self.assertEqual(self.form.hourSpinBox.value(), 0)
@@ -87,8 +87,8 @@ class TestStartTimeDialog(TestCase):
             self.form.exec_()
         self.form.minuteSpinBox.setValue(2)
         self.form.secondSpinBox.setValue(3)
-        okWidget = self.form.button_box.button(self.form.button_box.Ok)
-        QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
+        ok_widget = self.form.button_box.button(self.form.button_box.Ok)
+        QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following values are returned
         self.assertEqual(self.form.hourSpinBox.value(), 0)

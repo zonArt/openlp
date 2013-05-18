@@ -58,6 +58,7 @@ class UiStrings(object):
         """
         self.About = translate('OpenLP.Ui', 'About')
         self.Add = translate('OpenLP.Ui', '&Add')
+        self.AddGroup = translate('OpenLP.Ui', 'Add group')
         self.Advanced = translate('OpenLP.Ui', 'Advanced')
         self.AllFiles = translate('OpenLP.Ui', 'All Files')
         self.Automatic = translate('OpenLP.Ui', 'Automatic')
@@ -106,7 +107,6 @@ class UiStrings(object):
         self.NFSp = translate('OpenLP.Ui', 'No Files Selected', 'Plural')
         self.NISs = translate('OpenLP.Ui', 'No Item Selected', 'Singular')
         self.NISp = translate('OpenLP.Ui', 'No Items Selected', 'Plural')
-        self.OLPV1 = translate('OpenLP.Ui', 'openlp.org 1.x')
         self.OLPV2 = translate('OpenLP.Ui', 'OpenLP 2')
         self.OLPV2x = translate('OpenLP.Ui', 'OpenLP 2.1')
         self.OpenLPStart = translate('OpenLP.Ui', 'OpenLP is already running. Do you wish to continue?')

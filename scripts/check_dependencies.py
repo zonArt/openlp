@@ -40,7 +40,7 @@ import os
 import sys
 from distutils.version import LooseVersion
 
-# If we try to import uno before nose this will greate a warning. Just try to import nose first to supress the warning.
+# If we try to import uno before nose this will create a warning. Just try to import nose first to suppress the warning.
 try:
     import nose
 except ImportError:
@@ -79,15 +79,16 @@ MODULES = [
     'lxml',
     'chardet',
     'enchant',
-    'BeautifulSoup',
+    'bs4',
     'mako',
+    'cherrypy',
     'migrate',
     'uno',
+    'icu',
 ]
 
 
 OPTIONAL_MODULES = [
-    ('sqlite', ' (SQLite 2 support)'),
     ('MySQLdb', ' (MySQL support)'),
     ('psycopg2', ' (PostgreSQL support)'),
     ('nose', ' (testing framework)'),

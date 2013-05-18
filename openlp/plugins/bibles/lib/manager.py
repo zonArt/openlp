@@ -38,28 +38,21 @@ from csvbible import CSVBible
 from http import HTTPBible
 from opensong import OpenSongBible
 from osis import OSISBible
-# Imports that might fail.
-try:
-    from openlp1 import OpenLP1Bible
-    HAS_OPENLP1 = True
-except ImportError:
-    HAS_OPENLP1 = False
+
+
 
 log = logging.getLogger(__name__)
 
+
 class BibleFormat(object):
     """
-    This is a special enumeration class that holds the various types of Bibles,
-    plus a few helper functions to facilitate generic handling of Bible types
-    for importing.
+    This is a special enumeration class that holds the various types of Bibles.
     """
-    _format_availability = {}
     Unknown = -1
     OSIS = 0
     CSV = 1
     OpenSong = 2
     WebDownload = 3
-    OpenLP1 = 4
 
     @staticmethod
     def get_class(format):
@@ -77,8 +70,6 @@ class BibleFormat(object):
             return OpenSongBible
         elif format == BibleFormat.WebDownload:
             return HTTPBible
-        elif format == BibleFormat.OpenLP1:
-            return OpenLP1Bible
         else:
             return None
 
@@ -92,16 +83,7 @@ class BibleFormat(object):
             BibleFormat.CSV,
             BibleFormat.OpenSong,
             BibleFormat.WebDownload,
-            BibleFormat.OpenLP1
         ]
-
-    @staticmethod
-    def set_availability(format, available):
-        BibleFormat._format_availability[format] = available
-
-    @staticmethod
-    def get_availability(format):
-        return BibleFormat._format_availability.get(format, True)
 
 
 class BibleManager(object):
@@ -120,11 +102,11 @@ class BibleManager(object):
         """
         log.debug(u'Bible Initialising')
         self.parent = parent
-        self.settingsSection = u'bibles'
+        self.settings_section = u'bibles'
         self.web = u'Web'
         self.db_cache = None
-        self.path = AppLocation.get_section_data_path(self.settingsSection)
-        self.proxy_name = Settings().value(self.settingsSection + u'/proxy name')
+        self.path = AppLocation.get_section_data_path(self.settings_section)
+        self.proxy_name = Settings().value(self.settings_section + u'/proxy name')
         self.suffix = u'.sqlite'
         self.import_wizard = None
         self.reload_bibles()
@@ -137,7 +119,7 @@ class BibleManager(object):
         BibleDB class.
         """
         log.debug(u'Reload bibles')
-        files = AppLocation.get_files(self.settingsSection, self.suffix)
+        files = AppLocation.get_files(self.settings_section, self.suffix)
         if u'alternative_book_names.sqlite' in files:
             files.remove(u'alternative_book_names.sqlite')
         log.debug(u'Bible Files %s', files)
@@ -352,7 +334,7 @@ class BibleManager(object):
         if not language_selection or language_selection.value == "None" or language_selection.value == "-1":
             # If None is returned, it's not the singleton object but a
             # BibleMeta object with the value "None"
-            language_selection = Settings().value(self.settingsSection + u'/book name language')
+            language_selection = Settings().value(self.settings_section + u'/book name language')
         else:
             language_selection = language_selection.value
         try:
@@ -463,6 +445,5 @@ class BibleManager(object):
 
     main_window = property(_get_main_window)
 
-BibleFormat.set_availability(BibleFormat.OpenLP1, HAS_OPENLP1)
 
 __all__ = [u'BibleFormat']

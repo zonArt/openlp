@@ -44,6 +44,8 @@ from openlp.core.utils.actions import ActionList, CategoryOrder
 
 log = logging.getLogger(__name__)
 
+# Threshold which has to be trespassed to toggle.
+HIDE_MENU_THRESHOLD  = 27
 AUDIO_TIME_LABEL_STYLESHEET = u'background-color: palette(background); ' \
     u'border-top-color: palette(shadow); ' \
     u'border-left-color: palette(shadow); ' \
@@ -98,8 +100,9 @@ class SlideController(DisplayController):
             u'loop_separator',
             u'delay_spin_box'
         ]
+        # audioPauseItem is also in Settings so any changes need to be paired
         self.audio_list = [
-            u'audio_pause_item',
+            u'audioPauseItem',
             u'audio_time_label'
         ]
         self.wide_menu = [
@@ -238,7 +241,7 @@ class SlideController(DisplayController):
             self.play_slides_once = create_action(self, u'playSlidesOnce', text=UiStrings().PlaySlidesToEnd,
                 icon=u':/media/media_time.png', checked=False, can_shortcuts=True,
                 category=self.category, triggers=self.onPlaySlidesOnce)
-            if Settings().value(self.main_window.advancedSettingsSection + u'/slide limits') == SlideLimits.Wrap:
+            if Settings().value(self.main_window.advanced_settings_section + u'/slide limits') == SlideLimits.Wrap:
                 self.play_slides_menu.setDefaultAction(self.play_slides_loop)
             else:
                 self.play_slides_menu.setDefaultAction(self.play_slides_once)
@@ -357,8 +360,9 @@ class SlideController(DisplayController):
         # Signals
         self.preview_list_widget.clicked.connect(self.onSlideSelected)
         if self.is_live:
+            # Need to use event as called across threads and UI is updated
+            QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_toggle_display'), self.toggle_display)
             Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
-            Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)
             self.toolbar.set_widget_visible(self.loop_list, False)
             self.toolbar.set_widget_visible(self.wide_menu, False)
         else:
@@ -370,13 +374,16 @@ class SlideController(DisplayController):
         else:
             self.preview_list_widget.addActions([self.nextItem, self.previous_item])
         Registry().register_function(u'slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
-        Registry().register_function(u'slidecontroller_%s_next' % self.type_prefix, self.on_slide_selected_next)
-        Registry().register_function(u'slidecontroller_%s_previous' % self.type_prefix, self.on_slide_selected_previous)
         Registry().register_function(u'slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
-        Registry().register_function(u'slidecontroller_%s_set' % self.type_prefix, self.on_slide_selected_index)
         Registry().register_function(u'slidecontroller_%s_blank' % self.type_prefix, self.on_slide_blank)
         Registry().register_function(u'slidecontroller_%s_unblank' % self.type_prefix, self.on_slide_unblank)
         Registry().register_function(u'slidecontroller_update_slide_limits', self.update_slide_limits)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix),
+            self.on_slide_selected_index)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix),
+            self.on_slide_selected_next)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix),
+            self.on_slide_selected_previous)
 
     def _slideShortcutActivated(self):
         """
@@ -587,12 +594,12 @@ class SlideController(DisplayController):
         if self.is_live:
             # Space used by the toolbar.
             used_space = self.toolbar.size().width() + self.hide_menu.size().width()
-            # The + 40 is needed to prevent flickering. This can be considered a "buffer".
-            if width > used_space + 40 and self.hide_menu.isVisible():
+            # Add the threshold to prevent flickering.
+            if width > used_space + HIDE_MENU_THRESHOLD and self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.narrow_menu, False)
                 self.toolbar.set_widget_visible(self.wide_menu)
-            # The - 40 is needed to prevent flickering. This can be considered a "buffer".
-            elif width < used_space - 40 and not self.hide_menu.isVisible():
+            # Take away a threshold to prevent flickering.
+            elif width < used_space - HIDE_MENU_THRESHOLD and not self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(self.wide_menu, False)
                 self.toolbar.set_widget_visible(self.narrow_menu)
 
@@ -605,17 +612,17 @@ class SlideController(DisplayController):
         self.__updatePreviewSelection(slide_no)
         self.slideSelected()
 
-    def receive_spin_delay(self, value):
+    def receive_spin_delay(self):
         """
         Adjusts the value of the ``delay_spin_box`` to the given one.
         """
-        self.delay_spin_box.setValue(int(value))
+        self.delay_spin_box.setValue(Settings().value(u'core/loop delay'))
 
     def update_slide_limits(self):
         """
         Updates the Slide Limits variable from the settings.
         """
-        self.slide_limits = Settings().value(self.main_window.advancedSettingsSection + u'/slide limits')
+        self.slide_limits = Settings().value(self.main_window.advanced_settings_section + u'/slide limits')
 
     def enableToolBar(self, item):
         """
@@ -644,7 +651,7 @@ class SlideController(DisplayController):
         self.play_slides_loop.setChecked(False)
         self.play_slides_loop.setIcon(build_icon(u':/media/media_time.png'))
         if item.is_text():
-            if Settings().value(self.main_window.songsSettingsSection + u'/display songbar') and self.slideList:
+            if Settings().value(self.main_window.songs_settings_section + u'/display songbar') and self.slideList:
                 self.toolbar.set_widget_visible([u'song_menu'], True)
         if item.is_capable(ItemCapabilities.CanLoop) and len(item.get_frames()) > 1:
             self.toolbar.set_widget_visible(self.loop_list)
@@ -765,8 +772,8 @@ class SlideController(DisplayController):
                     action.setData(counter)
                     action.triggered.connect(self.onTrackTriggered)
                 self.display.audio_player.repeat = Settings().value(
-                    self.main_window.generalSettingsSection + u'/audio repeat list')
-                if Settings().value(self.main_window.generalSettingsSection + u'/audio start paused'):
+                    self.main_window.general_settings_section + u'/audio repeat list')
+                if Settings().value(self.main_window.general_settings_section + u'/audio start paused'):
                     self.audio_pause_item.setChecked(True)
                     self.display.audio_player.pause()
                 else:
@@ -874,7 +881,7 @@ class SlideController(DisplayController):
         Allow the main display to blank the main display at startup time
         """
         log.debug(u'mainDisplaySetBackground live = %s' % self.is_live)
-        display_type = Settings().value(self.main_window.generalSettingsSection + u'/screen blank')
+        display_type = Settings().value(self.main_window.general_settings_section + u'/screen blank')
         if self.screens.which_screen(self.window()) != self.screens.which_screen(self.display):
             # Order done to handle initial conversion
             if display_type == u'themed':
@@ -912,9 +919,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(False)
         self.desktop_screen.setChecked(False)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'blanked')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'blanked')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
         self.onToggleLoop()
@@ -931,9 +938,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(checked)
         self.desktop_screen.setChecked(False)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'themed')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'themed')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
         self.onToggleLoop()
@@ -950,9 +957,9 @@ class SlideController(DisplayController):
         self.theme_screen.setChecked(False)
         self.desktop_screen.setChecked(checked)
         if checked:
-            Settings().setValue(self.main_window.generalSettingsSection + u'/screen blank', u'hidden')
+            Settings().setValue(self.main_window.general_settings_section + u'/screen blank', u'hidden')
         else:
-            Settings().remove(self.main_window.generalSettingsSection + u'/screen blank')
+            Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
         self.onToggleLoop()
@@ -1226,7 +1233,7 @@ class SlideController(DisplayController):
         From the preview display requires the service Item to be editied
         """
         self.song_edit = True
-        new_item = Registry().get(self.service_item.name).onRemoteEdit(self.service_item.edit_id, True)
+        new_item = Registry().get(self.service_item.name).on_remote_edit(self.service_item.edit_id, True)
         if new_item:
             self.add_service_item(new_item)
 

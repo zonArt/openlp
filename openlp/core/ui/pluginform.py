@@ -79,13 +79,13 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             else:
                 # PluginStatus.Inactive
                 status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
-            item.setText(status_text % plugin.nameStrings[u'singular'])
+            item.setText(status_text % plugin.name_strings[u'singular'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
             pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
-                translate('OpenLP.PluginForm', '%s (Inactive)') % plugin.nameStrings[u'singular']))
+                translate('OpenLP.PluginForm', '%s (Inactive)') % plugin.name_strings[u'singular']))
         self.pluginListWidget.setFixedWidth(pluginListWidth + self.pluginListWidget.iconSize().width() + 48)
 
     def _clearDetails(self):
@@ -123,7 +123,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.activePlugin = None
         for plugin in self.plugin_manager.plugins:
             if plugin.status != PluginStatus.Disabled:
-                if plugin.nameStrings[u'singular'] == plugin_name_singular:
+                if plugin.name_strings[u'singular'] == plugin_name_singular:
                     self.activePlugin = plugin
                     break
         if self.activePlugin:
@@ -139,11 +139,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             return
         if status == PluginStatus.Inactive:
             self.application.set_busy_cursor()
-            self.activePlugin.toggleStatus(PluginStatus.Active)
+            self.activePlugin.toggle_status(PluginStatus.Active)
             self.application.set_normal_cursor()
             self.activePlugin.app_startup()
         else:
-            self.activePlugin.toggleStatus(PluginStatus.Inactive)
+            self.activePlugin.toggle_status(PluginStatus.Inactive)
         status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
         if self.activePlugin.status == PluginStatus.Active:
             status_text = translate('OpenLP.PluginForm', '%s (Active)')
@@ -152,7 +152,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         elif self.activePlugin.status == PluginStatus.Disabled:
             status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
         self.pluginListWidget.currentItem().setText(
-            status_text % self.activePlugin.nameStrings[u'singular'])
+            status_text % self.activePlugin.name_strings[u'singular'])
 
     def _get_plugin_manager(self):
         """

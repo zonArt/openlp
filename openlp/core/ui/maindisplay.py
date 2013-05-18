@@ -158,7 +158,6 @@ class MainDisplay(Display):
             Registry().register_function(u'live_display_hide', self.hide_display)
             Registry().register_function(u'live_display_show', self.show_display)
             Registry().register_function(u'update_display_css', self.css_changed)
-            Registry().register_function(u'config_updated', self.config_changed)
 
     def set_transparency(self, enabled):
         """
@@ -173,19 +172,10 @@ class MainDisplay(Display):
 
     def css_changed(self):
         """
-        We may need to rebuild the CSS on the live display.
+        We need to rebuild the CSS on the live display.
         """
-        self.rebuild_css = True
-
-    def config_changed(self):
-        """
-        Call the plugins to rebuild the Live display CSS as the screen has
-        not been rebuild on exit of config.
-        """
-        if self.rebuild_css and self.plugin_manager.plugins:
-            for plugin in self.plugin_manager.plugins:
-                plugin.refreshCss(self.frame)
-        self.rebuild_css = False
+        for plugin in self.plugin_manager.plugins:
+            plugin.refresh_css(self.frame)
 
     def retranslateUi(self):
         """
@@ -367,7 +357,7 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if Settings().value(u'general/display on monitor'):
+                    if Settings().value(u'core/display on monitor'):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
@@ -415,7 +405,7 @@ class MainDisplay(Display):
             self.footer(service_item.foot_text)
         # if was hidden keep it hidden
         if self.hide_mode and self.is_live and not service_item.is_media():
-            if Settings().value(u'general/auto unblank'):
+            if Settings().value(u'core/auto unblank'):
                 Registry().execute(u'slidecontroller_live_unblank')
             else:
                 self.hide_display(self.hide_mode)
@@ -437,7 +427,7 @@ class MainDisplay(Display):
         log.debug(u'hide_display mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor'):
+            if not Settings().value(u'core/display on monitor'):
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -460,7 +450,7 @@ class MainDisplay(Display):
         log.debug(u'show_display')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor'):
+            if not Settings().value(u'core/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():

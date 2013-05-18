@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`upgrade` module provides a way for the database and schema that is the
-backend for the Bibles plugin
+The :mod:`upgrade` module provides a way for the database and schema that is the backend for the Bibles plugin.
 """
 import logging
 
@@ -36,6 +35,7 @@ from sqlalchemy import Table, func, select, insert
 
 __version__ = 1
 log = logging.getLogger(__name__)
+
 
 def upgrade_setup(metadata):
     """
@@ -56,7 +56,7 @@ def upgrade_1(session, metadata, tables):
     """
     Version 1 upgrade.
 
-    This upgrade renames a number of keys to a single naming convention..
+    This upgrade renames a number of keys to a single naming convention.
     """
     metadata_table = metadata.tables[u'metadata']
     # Copy "Version" to "name" ("version" used by upgrade system)

@@ -110,8 +110,8 @@ class MediaController(object):
         Registry().register_function(u'playbackPlay', self.media_play_msg)
         Registry().register_function(u'playbackPause', self.media_pause_msg)
         Registry().register_function(u'playbackStop', self.media_stop_msg)
-        Registry().register_function(u'seekSlider', self.media_seek_msg)
-        Registry().register_function(u'volumeSlider', self.media_volume_msg)
+        Registry().register_function(u'seek_slider', self.media_seek_msg)
+        Registry().register_function(u'volume_slider', self.media_volume_msg)
         Registry().register_function(u'media_hide', self.media_hide)
         Registry().register_function(u'media_blank', self.media_blank)
         Registry().register_function(u'media_unblank', self.media_unblank)
@@ -127,7 +127,7 @@ class MediaController(object):
         """
         saved_players = get_media_players()[0]
         for player in self.media_players.keys():
-            self.media_players[player].isActive = player in saved_players
+            self.media_players[player].is_active = player in saved_players
 
     def _generate_extensions_lists(self):
         """
@@ -135,14 +135,14 @@ class MediaController(object):
         """
         self.audio_extensions_list = []
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 for item in player.audio_extensions_list:
                     if not item in self.audio_extensions_list:
                         self.audio_extensions_list.append(item)
                         self.service_manager.supported_suffixes(item[2:])
         self.video_extensions_list = []
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 for item in player.video_extensions_list:
                     if item not in self.video_extensions_list:
                         self.video_extensions_list.extend(item)
@@ -215,7 +215,7 @@ class MediaController(object):
         for source in self.current_media_players.keys():
             if self.current_media_players[source].state != MediaState.Paused:
                 display = self._define_display(self.display_controllers[source])
-                display.controller.seekSlider.setSliderPosition(0)
+                display.controller.seek_slider.setSliderPosition(0)
         self.timer.stop()
 
     def get_media_display_css(self):
@@ -224,7 +224,7 @@ class MediaController(object):
         """
         css = u''
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 css += player.get_media_display_css()
         return css
 
@@ -234,7 +234,7 @@ class MediaController(object):
         """
         js = u''
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 js += player.get_media_display_javascript()
         return js
 
@@ -244,7 +244,7 @@ class MediaController(object):
         """
         html = u''
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 html += player.get_media_display_html()
         return html
 
@@ -277,32 +277,32 @@ class MediaController(object):
         controller.mediabar.add_toolbar_action(u'playbackStop', text=u'media_playback_stop',
             icon=u':/slides/media_playback_stop.png',
             tooltip=translate('OpenLP.SlideController', 'Stop playing media.'), triggers=controller.send_to_plugins)
-        # Build the seekSlider.
-        controller.seekSlider = MediaSlider(QtCore.Qt.Horizontal, self, controller)
-        controller.seekSlider.setMaximum(1000)
-        controller.seekSlider.setTracking(True)
-        controller.seekSlider.setMouseTracking(True)
-        controller.seekSlider.setToolTip(translate('OpenLP.SlideController', 'Video position.'))
-        controller.seekSlider.setGeometry(QtCore.QRect(90, 260, 221, 24))
-        controller.seekSlider.setObjectName(u'seekSlider')
-        controller.mediabar.add_toolbar_widget(controller.seekSlider)
-        # Build the volumeSlider.
-        controller.volumeSlider = QtGui.QSlider(QtCore.Qt.Horizontal)
-        controller.volumeSlider.setTickInterval(10)
-        controller.volumeSlider.setTickPosition(QtGui.QSlider.TicksAbove)
-        controller.volumeSlider.setMinimum(0)
-        controller.volumeSlider.setMaximum(100)
-        controller.volumeSlider.setTracking(True)
-        controller.volumeSlider.setToolTip(translate('OpenLP.SlideController', 'Audio Volume.'))
-        controller.volumeSlider.setValue(controller.media_info.volume)
-        controller.volumeSlider.setGeometry(QtCore.QRect(90, 160, 221, 24))
-        controller.volumeSlider.setObjectName(u'volumeSlider')
-        controller.mediabar.add_toolbar_widget(controller.volumeSlider)
+        # Build the seek_slider.
+        controller.seek_slider = MediaSlider(QtCore.Qt.Horizontal, self, controller)
+        controller.seek_slider.setMaximum(1000)
+        controller.seek_slider.setTracking(True)
+        controller.seek_slider.setMouseTracking(True)
+        controller.seek_slider.setToolTip(translate('OpenLP.SlideController', 'Video position.'))
+        controller.seek_slider.setGeometry(QtCore.QRect(90, 260, 221, 24))
+        controller.seek_slider.setObjectName(u'seek_slider')
+        controller.mediabar.add_toolbar_widget(controller.seek_slider)
+        # Build the volume_slider.
+        controller.volume_slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        controller.volume_slider.setTickInterval(10)
+        controller.volume_slider.setTickPosition(QtGui.QSlider.TicksAbove)
+        controller.volume_slider.setMinimum(0)
+        controller.volume_slider.setMaximum(100)
+        controller.volume_slider.setTracking(True)
+        controller.volume_slider.setToolTip(translate('OpenLP.SlideController', 'Audio Volume.'))
+        controller.volume_slider.setValue(controller.media_info.volume)
+        controller.volume_slider.setGeometry(QtCore.QRect(90, 160, 221, 24))
+        controller.volume_slider.setObjectName(u'volume_slider')
+        controller.mediabar.add_toolbar_widget(controller.volume_slider)
         controller.controller_layout.addWidget(controller.mediabar)
         controller.mediabar.setVisible(False)
         # Signals
-        controller.seekSlider.valueChanged.connect(controller.send_to_plugins)
-        controller.volumeSlider.valueChanged.connect(controller.send_to_plugins)
+        controller.seek_slider.valueChanged.connect(controller.send_to_plugins)
+        controller.volume_slider.valueChanged.connect(controller.send_to_plugins)
 
     def setup_display(self, display, preview):
         """
@@ -325,7 +325,7 @@ class MediaController(object):
         if preview:
             display.has_audio = False
         for player in self.media_players.values():
-            if player.isActive:
+            if player.is_active:
                 player.setup(display)
 
     def set_controls_visible(self, controller, value):
@@ -381,7 +381,7 @@ class MediaController(object):
         # stop running videos
         self.media_reset(controller)
         controller.media_info = MediaInfo()
-        controller.media_info.volume = controller.volumeSlider.value()
+        controller.media_info.volume = controller.volume_slider.value()
         controller.media_info.is_background = video_behind_text
         controller.media_info.file_info = QtCore.QFileInfo(service_item.get_frame_path())
         display = self._define_display(controller)
@@ -415,7 +415,7 @@ class MediaController(object):
         elif not hidden or controller.media_info.is_background or service_item.will_auto_start:
             autoplay = True
         # Unblank on load set
-        elif Settings().value(u'general/auto unblank'):
+        elif Settings().value(u'core/auto unblank'):
             autoplay = True
         if autoplay:
             if not self.media_play(controller):
@@ -465,12 +465,12 @@ class MediaController(object):
         ``service_item``
             The ServiceItem containing the details to be played.
         """
-        usedPlayers = get_media_players()[0]
+        used_players = get_media_players()[0]
         if service_item.title != UiStrings().Automatic:
-            usedPlayers = [service_item.title.lower()]
+            used_players = [service_item.title.lower()]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % controller.media_info.file_info.suffix().lower()
-            for title in usedPlayers:
+            for title in used_players:
                 player = self.media_players[title]
                 if suffix in player.video_extensions_list:
                     if not controller.media_info.is_background or controller.media_info.is_background and \
@@ -486,7 +486,7 @@ class MediaController(object):
                         controller.media_info.media_type = MediaType.Audio
                         return True
         else:
-            for title in usedPlayers:
+            for title in used_players:
                 player = self.media_players[title]
                 if player.can_folder:
                     self.resize(display, player)
@@ -515,12 +515,12 @@ class MediaController(object):
             The controller to be played
         """
         log.debug(u'media_play')
-        controller.seekSlider.blockSignals(True)
-        controller.volumeSlider.blockSignals(True)
+        controller.seek_slider.blockSignals(True)
+        controller.volume_slider.blockSignals(True)
         display = self._define_display(controller)
         if not self.current_media_players[controller.controller_type].play(display):
-            controller.seekSlider.blockSignals(False)
-            controller.volumeSlider.blockSignals(False)
+            controller.seek_slider.blockSignals(False)
+            controller.volume_slider.blockSignals(False)
             return False
         if controller.media_info.is_background:
             self.media_volume(controller, 0)
@@ -543,8 +543,8 @@ class MediaController(object):
         # Start Timer for ui updates
         if not self.timer.isActive():
             self.timer.start()
-        controller.seekSlider.blockSignals(False)
-        controller.volumeSlider.blockSignals(False)
+        controller.seek_slider.blockSignals(False)
+        controller.volume_slider.blockSignals(False)
         return True
 
     def media_pause_msg(self, msg):
@@ -594,7 +594,7 @@ class MediaController(object):
             display.frame.evaluateJavaScript(u'show_blank("black");')
             self.current_media_players[controller.controller_type].stop(display)
             self.current_media_players[controller.controller_type].set_visible(display, False)
-            controller.seekSlider.setSliderPosition(0)
+            controller.seek_slider.setSliderPosition(0)
             controller.mediabar.actions[u'playbackPlay'].setVisible(True)
             controller.mediabar.actions[u'playbackStop'].setVisible(False)
             controller.mediabar.actions[u'playbackPause'].setVisible(False)
@@ -620,32 +620,35 @@ class MediaController(object):
         log.debug(u'media_volume %d' % volume)
         display = self._define_display(controller)
         self.current_media_players[controller.controller_type].volume(display, volume)
-        controller.volumeSlider.setValue(volume)
+        controller.volume_slider.setValue(volume)
 
     def media_seek_msg(self, msg):
         """
-        Responds to the request to change the seek Slider of a loaded video
+        Responds to the request to change the seek Slider of a loaded video via a message
 
         ``msg``
             First element is the controller which should be used
-            Second element is a list with the seek Value as first element
+            Second element is a list with the seek value as first element
         """
         log.debug(u'media_seek')
         controller = msg[0]
-        seekVal = msg[1][0]
-        self.media_seek(controller, seekVal)
+        seek_value = msg[1][0]
+        self.media_seek(controller, seek_value)
 
-    def media_seek(self, controller, seekVal):
+    def media_seek(self, controller, seek_value):
         """
         Responds to the request to change the seek Slider of a loaded video
 
-        ``msg``
-            First element is the controller which should be used
-            Second element is a list with the seek Value as first element
+        ``controller``
+            The controller to use.
+
+        ``seek_value``
+            The value to set.
+
         """
         log.debug(u'media_seek')
         display = self._define_display(controller)
-        self.current_media_players[controller.controller_type].seek(display, seekVal)
+        self.current_media_players[controller.controller_type].seek(display, seek_value)
 
     def media_reset(self, controller):
         """

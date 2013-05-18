@@ -115,13 +115,13 @@ HTML = """
 """
 
 __default_settings__ = {
-        u'alerts/font face': QtGui.QFont().family(),
-        u'alerts/font size': 40,
-        u'alerts/db type': u'sqlite',
-        u'alerts/location': AlertLocation.Bottom,
-        u'alerts/background color': u'#660000',
-        u'alerts/font color': u'#ffffff',
-        u'alerts/timeout': 5
+    u'alerts/font face': QtGui.QFont().family(),
+    u'alerts/font size': 40,
+    u'alerts/db type': u'sqlite',
+    u'alerts/location': AlertLocation.Bottom,
+    u'alerts/background color': u'#660000',
+    u'alerts/font color': u'#ffffff',
+    u'alerts/timeout': 5
 }
 
 
@@ -131,35 +131,32 @@ class AlertsPlugin(Plugin):
     def __init__(self):
         Plugin.__init__(self, u'alerts', __default_settings__, settings_tab_class=AlertsTab)
         self.weight = -3
-        self.iconPath = u':/plugins/plugin_alerts.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_alerts.png'
+        self.icon = build_icon(self.icon_path)
         self.alerts_manager = AlertsManager(self)
         self.manager = Manager(u'alerts', init_schema)
-        self.alertForm = AlertForm(self)
+        self.alert_form = AlertForm(self)
 
-    def addToolsMenuItem(self, tools_menu):
+    def add_tools_menu_item(self, tools_menu):
         """
-        Give the alerts plugin the opportunity to add items to the
-        **Tools** menu.
+        Give the alerts plugin the opportunity to add items to the **Tools** menu.
 
         ``tools_menu``
-            The actual **Tools** menu item, so that your actions can
-            use it as their parent.
+            The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.info(u'add tools menu')
-        self.toolsAlertItem = create_action(tools_menu, u'toolsAlertItem',
+        self.tools_alert_item = create_action(tools_menu, u'toolsAlertItem',
             text=translate('AlertsPlugin', '&Alert'), icon=u':/plugins/plugin_alerts.png',
             statustip=translate('AlertsPlugin', 'Show an alert message.'),
-            visible=False, can_shortcuts=True, triggers=self.onAlertsTrigger)
-        self.main_window.tools_menu.addAction(self.toolsAlertItem)
-
+            visible=False, can_shortcuts=True, triggers=self.on_alerts_trigger)
+        self.main_window.tools_menu.addAction(self.tools_alert_item)
 
     def initialise(self):
         log.info(u'Alerts Initialising')
         Plugin.initialise(self)
-        self.toolsAlertItem.setVisible(True)
+        self.tools_alert_item.setVisible(True)
         action_list = ActionList.get_instance()
-        action_list.add_action(self.toolsAlertItem, UiStrings().Tools)
+        action_list.add_action(self.tools_alert_item, UiStrings().Tools)
 
     def finalise(self):
         """
@@ -168,17 +165,17 @@ class AlertsPlugin(Plugin):
         log.info(u'Alerts Finalising')
         self.manager.finalise()
         Plugin.finalise(self)
-        self.toolsAlertItem.setVisible(False)
+        self.tools_alert_item.setVisible(False)
         action_list = ActionList.get_instance()
-        action_list.remove_action(self.toolsAlertItem, u'Tools')
+        action_list.remove_action(self.tools_alert_item, u'Tools')
 
-    def toggleAlertsState(self):
-        self.alertsActive = not self.alertsActive
-        Settings().setValue(self.settingsSection + u'/active', self.alertsActive)
+    def toggle_alerts_state(self):
+        self.alerts_active = not self.alerts_active
+        Settings().setValue(self.settings_section + u'/active', self.alerts_active)
 
-    def onAlertsTrigger(self):
-        self.alertForm.load_list()
-        self.alertForm.exec_()
+    def on_alerts_trigger(self):
+        self.alert_form.load_list()
+        self.alert_form.exec_()
 
     def about(self):
         about_text = translate('AlertsPlugin', '<strong>Alerts Plugin</strong>'
@@ -190,43 +187,43 @@ class AlertsPlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('AlertsPlugin', 'Alert', 'name singular'),
             u'plural': translate('AlertsPlugin', 'Alerts', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('AlertsPlugin', 'Alerts', 'container title')
         }
 
-    def getDisplayJavaScript(self):
+    def get_display_javascript(self):
         """
         Add Javascript to the main display.
         """
         return JAVASCRIPT
 
-    def getDisplayCss(self):
+    def get_display_css(self):
         """
         Add CSS to the main display.
         """
-        align = VerticalType.Names[self.settingsTab.location]
-        return CSS % (align, self.settingsTab.font_face, self.settingsTab.font_size, self.settingsTab.font_color,
-            self.settingsTab.bg_color)
+        align = VerticalType.Names[self.settings_tab.location]
+        return CSS % (align, self.settings_tab.font_face, self.settings_tab.font_size, self.settings_tab.font_color,
+            self.settings_tab.background_color)
 
-    def getDisplayHtml(self):
+    def get_display_html(self):
         """
         Add HTML to the main display.
         """
         return HTML
 
-    def refreshCss(self, frame):
+    def refresh_css(self, frame):
         """
         Trigger an update of the CSS in the maindisplay.
 
         ``frame``
             The Web frame holding the page.
         """
-        align = VerticalType.Names[self.settingsTab.location]
+        align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript(u'update_css("%s", "%s", "%s", "%s", "%s")' %
-            (align, self.settingsTab.font_face, self.settingsTab.font_size,
-            self.settingsTab.font_color, self.settingsTab.bg_color))
+            (align, self.settings_tab.font_face, self.settings_tab.font_size,
+            self.settings_tab.font_color, self.settings_tab.background_color))

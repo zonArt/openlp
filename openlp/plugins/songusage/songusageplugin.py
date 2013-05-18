@@ -48,11 +48,11 @@ if QtCore.QDate().currentDate().month() < 9:
 
 
 __default_settings__ = {
-        u'songusage/db type': u'sqlite',
-        u'songusage/active': False,
-        u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
-        u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
-        u'songusage/last directory export': u''
+    u'songusage/db type': u'sqlite',
+    u'songusage/active': False,
+    u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
+    u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
+    u'songusage/last directory export': u''
 }
 
 
@@ -64,21 +64,22 @@ class SongUsagePlugin(Plugin):
         self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
-        self.activeIcon = build_icon(u':/songusage/song_usage_active.png')
-        self.inactiveIcon = build_icon(u':/songusage/song_usage_inactive.png')
+        self.active_icon = build_icon(u':/songusage/song_usage_active.png')
+        self.inactive_icon = build_icon(u':/songusage/song_usage_inactive.png')
         self.song_usage_active = False
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
+        """
+        Check the plugin can run.
+        """
         return self.manager.session is not None
 
-    def addToolsMenuItem(self, tools_menu):
+    def add_tools_menu_item(self, tools_menu):
         """
-        Give the SongUsage plugin the opportunity to add items to the
-        **Tools** menu.
+        Give the SongUsage plugin the opportunity to add items to the **Tools** menu.
 
         ``tools_menu``
-            The actual **Tools** menu item, so that your actions can
-            use it as their parent.
+            The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.info(u'add tools menu')
         self.toolsMenu = tools_menu
@@ -106,12 +107,12 @@ class SongUsagePlugin(Plugin):
         self.song_usage_menu.addSeparator()
         self.song_usage_menu.addAction(self.song_usage_report)
         self.song_usage_menu.addAction(self.song_usage_delete)
-        self.song_usage_active_button = QtGui.QToolButton(self.main_window.statusBar)
+        self.song_usage_active_button = QtGui.QToolButton(self.main_window.status_bar)
         self.song_usage_active_button.setCheckable(True)
         self.song_usage_active_button.setAutoRaise(True)
         self.song_usage_active_button.setStatusTip(translate('SongUsagePlugin', 'Toggle the tracking of song usage.'))
         self.song_usage_active_button.setObjectName(u'song_usage_active_button')
-        self.main_window.statusBar.insertPermanentWidget(1, self.song_usage_active_button)
+        self.main_window.status_bar.insertPermanentWidget(1, self.song_usage_active_button)
         self.song_usage_active_button.hide()
         # Signals and slots
         QtCore.QObject.connect(self.song_usage_status, QtCore.SIGNAL(u'visibilityChanged(bool)'),
@@ -124,7 +125,7 @@ class SongUsagePlugin(Plugin):
         Plugin.initialise(self)
         Registry().register_function(u'slidecontroller_live_started', self.display_song_usage)
         Registry().register_function(u'print_service_started', self.print_song_usage)
-        self.song_usage_active = Settings().value(self.settingsSection + u'/active')
+        self.song_usage_active = Settings().value(self.settings_section + u'/active')
         # Set the button and checkbox state
         self.set_button_state()
         action_list = ActionList.get_instance()
@@ -158,7 +159,7 @@ class SongUsagePlugin(Plugin):
         the UI when necessary,
         """
         self.song_usage_active = not self.song_usage_active
-        Settings().setValue(self.settingsSection + u'/active', self.song_usage_active)
+        Settings().setValue(self.settings_section + u'/active', self.song_usage_active)
         self.set_button_state()
 
     def set_button_state(self):
@@ -169,12 +170,12 @@ class SongUsagePlugin(Plugin):
         self.song_usage_active_button.blockSignals(True)
         self.song_usage_status.blockSignals(True)
         if self.song_usage_active:
-            self.song_usage_active_button.setIcon(self.activeIcon)
+            self.song_usage_active_button.setIcon(self.active_icon)
             self.song_usage_status.setChecked(True)
             self.song_usage_active_button.setChecked(True)
             self.song_usage_active_button.setToolTip(translate('SongUsagePlugin', 'Song usage tracking is active.'))
         else:
-            self.song_usage_active_button.setIcon(self.inactiveIcon)
+            self.song_usage_active_button.setIcon(self.inactive_icon)
             self.song_usage_status.setChecked(False)
             self.song_usage_active_button.setChecked(False)
             self.song_usage_active_button.setToolTip(translate('SongUsagePlugin', 'Song usage tracking is inactive.'))
@@ -215,8 +216,8 @@ class SongUsagePlugin(Plugin):
         self.song_usage_detail_form.exec_()
 
     def about(self):
-        about_text = translate('SongUsagePlugin', '<strong>SongUsage Plugin'
-            '</strong><br />This plugin tracks the usage of songs in services.')
+        about_text = translate('SongUsagePlugin',
+            '<strong>SongUsage Plugin</strong><br />This plugin tracks the usage of songs in services.')
         return about_text
 
     def set_plugin_text_strings(self):
@@ -224,11 +225,11 @@ class SongUsagePlugin(Plugin):
         Called to define all translatable texts of the plugin
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('SongUsagePlugin', 'SongUsage', 'name singular'),
             u'plural': translate('SongUsagePlugin', 'SongUsage', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('SongUsagePlugin', 'SongUsage', 'container title')
         }

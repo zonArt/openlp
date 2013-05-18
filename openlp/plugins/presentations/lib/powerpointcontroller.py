@@ -26,7 +26,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+"""
+This modul is for controlling powerpiont. PPT API documentation:
+`http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx`_
+"""
 import os
 import logging
 
@@ -39,16 +42,14 @@ if os.name == u'nt':
 from openlp.core.lib import ScreenList
 from presentationcontroller import PresentationController, PresentationDocument
 
+
 log = logging.getLogger(__name__)
 
-# PPT API documentation:
-# http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx
 
 class PowerpointController(PresentationController):
     """
-    Class to control interactions with PowerPoint Presentations
-    It creates the runtime Environment , Loads the and Closes the Presentation
-    As well as triggering the correct activities based on the users input
+    Class to control interactions with PowerPoint Presentations. It creates the runtime Environment , Loads the and
+    Closes the Presentation. As well as triggering the correct activities based on the users input.
     """
     log.info(u'PowerpointController loaded')
 
@@ -63,7 +64,7 @@ class PowerpointController(PresentationController):
 
     def check_available(self):
         """
-        PowerPoint is able to run on this machine
+        PowerPoint is able to run on this machine.
         """
         log.debug(u'check_available')
         if os.name == u'nt':
@@ -77,7 +78,7 @@ class PowerpointController(PresentationController):
     if os.name == u'nt':
         def start_process(self):
             """
-            Loads PowerPoint process
+            Loads PowerPoint process.
             """
             log.debug(u'start_process')
             if not self.process:
@@ -87,7 +88,7 @@ class PowerpointController(PresentationController):
 
         def kill(self):
             """
-            Called at system exit to clean up any running presentations
+            Called at system exit to clean up any running presentations.
             """
             log.debug(u'Kill powerpoint')
             while self.docs:
@@ -105,12 +106,12 @@ class PowerpointController(PresentationController):
 
 class PowerpointDocument(PresentationDocument):
     """
-    Class which holds information and controls a single presentation
+    Class which holds information and controls a single presentation.
     """
 
     def __init__(self, controller, presentation):
         """
-        Constructor, store information about the file and initialise
+        Constructor, store information about the file and initialise.
         """
         log.debug(u'Init Presentation Powerpoint')
         PresentationDocument.__init__(self, controller, presentation)
@@ -118,8 +119,8 @@ class PowerpointDocument(PresentationDocument):
 
     def load_presentation(self):
         """
-        Called when a presentation is added to the SlideController.
-        Opens the PowerPoint file using the process created earlier.
+        Called when a presentation is added to the SlideController. Opens the PowerPoint file using the process created
+        earlier.
         """
         log.debug(u'load_presentation')
         if not self.controller.process or not self.controller.process.Visible:
@@ -142,20 +143,19 @@ class PowerpointDocument(PresentationDocument):
             self.presentation.Slides[n].Copy()
             thumbnail = QApplication.clipboard.image()
 
-        However, for the moment, we want a physical file since it makes life
-        easier elsewhere.
+        However, for the moment, we want a physical file since it makes life easier elsewhere.
         """
         log.debug(u'create_thumbnails')
         if self.check_thumbnails():
             return
         for num in range(self.presentation.Slides.Count):
-            self.presentation.Slides(num + 1).Export(os.path.join(
-                self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)), 'png', 320, 240)
+            self.presentation.Slides(num + 1).Export(
+                os.path.join(self.get_thumbnail_folder(), 'slide%d.png' % (num + 1)), 'png', 320, 240)
 
     def close_presentation(self):
         """
-        Close presentation and clean up objects. This is triggered by a new
-        object being added to SlideController or OpenLP being shut down.
+        Close presentation and clean up objects. This is triggered by a new object being added to SlideController or
+        OpenLP being shut down.
         """
         log.debug(u'ClosePresentation')
         if self.presentation:
@@ -181,7 +181,6 @@ class PowerpointDocument(PresentationDocument):
         except (AttributeError, pywintypes.com_error):
             return False
         return True
-
 
     def is_active(self):
         """
@@ -253,15 +252,14 @@ class PowerpointDocument(PresentationDocument):
                     dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except win32ui.error:
                     dpi = 96
-            rect = ScreenList().current[u'size']
+            size = ScreenList().current[u'size']
             ppt_window = self.presentation.SlideShowSettings.Run()
             if not ppt_window:
                 return
-            ppt_window.Top = rect.y() * 72 / dpi
-            ppt_window.Height = rect.height() * 72 / dpi
-            ppt_window.Left = rect.x() * 72 / dpi
-            ppt_window.Width = rect.width() * 72 / dpi
-
+            ppt_window.Top = size.y() * 72 / dpi
+            ppt_window.Height = size.height() * 72 / dpi
+            ppt_window.Left = size.x() * 72 / dpi
+            ppt_window.Width = size.width() * 72 / dpi
 
     def get_slide_number(self):
         """
@@ -318,6 +316,7 @@ class PowerpointDocument(PresentationDocument):
         """
         return _get_text_from_shapes(self.presentation.Slides(slide_no).NotesPage.Shapes)
 
+
 def _get_text_from_shapes(shapes):
     """
     Returns any text extracted from the shapes on a presentation slide.
@@ -326,8 +325,8 @@ def _get_text_from_shapes(shapes):
         A set of shapes to search for text.
     """
     text = ''
-    for idx in range(shapes.Count):
-        shape = shapes(idx + 1)
+    for index in range(shapes.Count):
+        shape = shapes(index + 1)
         if shape.HasTextFrame:
             text += shape.TextFrame.TextRange.Text + '\n'
     return text

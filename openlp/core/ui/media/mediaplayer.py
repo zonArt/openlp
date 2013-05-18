@@ -46,7 +46,7 @@ class MediaPlayer(object):
         self.parent = parent
         self.name = name
         self.available = self.check_available()
-        self.isActive = False
+        self.is_active = False
         self.can_background = False
         self.can_folder = False
         self.state = MediaState.Off
@@ -103,7 +103,7 @@ class MediaPlayer(object):
         """
         pass
 
-    def seek(self, display, seekVal):
+    def seek(self, display, seek_value):
         """
         Change playing position of current Media File
         """

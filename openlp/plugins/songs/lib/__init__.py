@@ -34,7 +34,7 @@ import re
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
-from openlp.core.utils import CONTROL_CHARS, locale_direct_compare
+from openlp.core.utils import CONTROL_CHARS
 from db import Author
 from ui import SongStrings
 
@@ -168,6 +168,7 @@ class VerseType(object):
         translate('SongsPlugin.VerseType', 'Intro'),
         translate('SongsPlugin.VerseType', 'Ending'),
         translate('SongsPlugin.VerseType', 'Other')]
+
     translated_tags = [name[0].lower() for name in translated_names]
 
     @staticmethod
@@ -386,6 +387,8 @@ def clean_song(manager, song):
     ``song``
         The song object.
     """
+    from xml import SongXML
+
     if isinstance(song.title, buffer):
         song.title = unicode(song.title)
     if isinstance(song.alternate_title, buffer):
@@ -590,37 +593,3 @@ def strip_rtf(text, default_encoding=None):
     text = u''.join(out)
     return text, default_encoding
 
-
-def natcmp(a, b):
-    """
-    Natural string comparison which mimics the behaviour of Python's internal cmp function.
-    """
-    if len(a) <= len(b):
-        for i, key in enumerate(a):
-            if isinstance(key, int) and isinstance(b[i], int):
-                result = cmp(key, b[i])
-            elif isinstance(key, int) and not isinstance(b[i], int):
-                result = locale_direct_compare(str(key), b[i])
-            elif not isinstance(key, int) and isinstance(b[i], int):
-                result = locale_direct_compare(key, str(b[i]))
-            else:
-                result = locale_direct_compare(key, b[i])
-            if result != 0:
-                return result
-        if len(a) == len(b):
-            return 0
-        else:
-            return -1
-    else:
-        for i, key in enumerate(b):
-            if isinstance(a[i], int) and isinstance(key, int):
-                result = cmp(a[i], key)
-            elif isinstance(a[i], int) and not isinstance(key, int):
-                result = locale_direct_compare(str(a[i]), key)
-            elif not isinstance(a[i], int) and isinstance(key, int):
-                result = locale_direct_compare(a[i], str(key))
-            else:
-                result = locale_direct_compare(a[i], key)
-            if result != 0:
-                return result
-        return 1

@@ -27,8 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`presentationplugin` module provides the ability for OpenLP to display
-presentations from a variety of document formats.
+The :mod:`presentationplugin` module provides the ability for OpenLP to display presentations from a variety of document
+formats.
 """
 import os
 import logging
@@ -39,7 +39,9 @@ from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.core.utils import AppLocation
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
+
 log = logging.getLogger(__name__)
+
 
 __default_settings__ = {
         u'presentations/override app': QtCore.Qt.Unchecked,
@@ -52,9 +54,8 @@ __default_settings__ = {
 
 class PresentationPlugin(Plugin):
     """
-    This plugin allowed a Presentation to be opened, controlled and displayed
-    on the output display. The plugin controls third party applications such
-    as OpenOffice.org Impress, Microsoft PowerPoint and the PowerPoint viewer
+    This plugin allowed a Presentation to be opened, controlled and displayed on the output display. The plugin controls
+    third party applications such as OpenOffice.org Impress, Microsoft PowerPoint and the PowerPoint viewer.
     """
     log = logging.getLogger(u'PresentationPlugin')
 
@@ -66,20 +67,19 @@ class PresentationPlugin(Plugin):
         self.controllers = {}
         Plugin.__init__(self, u'presentations', __default_settings__, __default_settings__)
         self.weight = -8
-        self.iconPath = u':/plugins/plugin_presentations.png'
-        self.icon = build_icon(self.iconPath)
+        self.icon_path = u':/plugins/plugin_presentations.png'
+        self.icon = build_icon(self.icon_path)
 
-    def createSettingsTab(self, parent):
+    def create_settings_tab(self, parent):
         """
-        Create the settings Tab
+        Create the settings Tab.
         """
-        visible_name = self.getString(StringContent.VisibleName)
-        self.settingsTab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers, self.iconPath)
+        visible_name = self.get_string(StringContent.VisibleName)
+        self.settings_tab = PresentationTab(parent, self.name, visible_name[u'title'], self.controllers, self.icon_path)
 
     def initialise(self):
         """
-        Initialise the plugin. Determine which controllers are enabled
-        are start their processes.
+        Initialise the plugin. Determine which controllers are enabled are start their processes.
         """
         log.info(u'Presentations Initialising')
         Plugin.initialise(self)
@@ -90,12 +90,12 @@ class PresentationPlugin(Plugin):
                 except Exception:
                     log.warn(u'Failed to start controller process')
                     self.controllers[controller].available = False
-        self.mediaItem.build_file_mask_string()
+        self.media_item.build_file_mask_string()
 
     def finalise(self):
         """
-        Finalise the plugin. Ask all the enabled presentation applications
-        to close down their applications and release resources.
+        Finalise the plugin. Ask all the enabled presentation applications to close down their applications and release
+        resources.
         """
         log.info(u'Plugin Finalise')
         # Ask each controller to tidy up.
@@ -105,49 +105,44 @@ class PresentationPlugin(Plugin):
                 controller.kill()
         Plugin.finalise(self)
 
-    def createMediaManagerItem(self):
+    def create_media_manager_item(self):
         """
-        Create the Media Manager List
+        Create the Media Manager List.
         """
-        self.mediaItem = PresentationMediaItem(
-            self.main_window.mediaDockManager.media_dock, self, self.icon, self.controllers)
+        self.media_item = PresentationMediaItem(
+            self.main_window.media_dock_manager.media_dock, self, self.icon, self.controllers)
 
-    def registerControllers(self, controller):
+    def register_controllers(self, controller):
         """
-        Register each presentation controller (Impress, PPT etc) and
-        store for later use
+        Register each presentation controller (Impress, PPT etc) and store for later use.
         """
         self.controllers[controller.name] = controller
 
-    def checkPreConditions(self):
+    def check_pre_conditions(self):
         """
-        Check to see if we have any presentation software available
-        If Not do not install the plugin.
+        Check to see if we have any presentation software available. If not do not install the plugin.
         """
-        log.debug(u'checkPreConditions')
-        controller_dir = os.path.join(
-            AppLocation.get_directory(AppLocation.PluginsDir),
-            u'presentations', u'lib')
+        log.debug(u'check_pre_conditions')
+        controller_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), u'presentations', u'lib')
         for filename in os.listdir(controller_dir):
             if filename.endswith(u'controller.py') and not filename == 'presentationcontroller.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
-                    modulename = u'openlp.plugins.presentations.lib.' + os.path.splitext(filename)[0]
-                    log.debug(u'Importing controller %s', modulename)
+                    module_name = u'openlp.plugins.presentations.lib.' + os.path.splitext(filename)[0]
+                    log.debug(u'Importing controller %s', module_name)
                     try:
-                        __import__(modulename, globals(), locals(), [])
+                        __import__(module_name, globals(), locals(), [])
                     except ImportError:
-                        log.warn(u'Failed to import %s on path %s',
-                            modulename, path)
+                        log.warn(u'Failed to import %s on path %s', module_name, path)
         controller_classes = PresentationController.__subclasses__()
         for controller_class in controller_classes:
             controller = controller_class(self)
-            self.registerControllers(controller)
+            self.register_controllers(controller)
         return bool(self.controllers)
 
     def about(self):
         """
-        Return information about this plugin
+        Return information about this plugin.
         """
         about_text = translate('PresentationPlugin', '<strong>Presentation '
             'Plugin</strong><br />The presentation plugin provides the '
@@ -158,15 +153,15 @@ class PresentationPlugin(Plugin):
 
     def set_plugin_text_strings(self):
         """
-        Called to define all translatable texts of the plugin
+        Called to define all translatable texts of the plugin.
         """
         ## Name PluginList ##
-        self.textStrings[StringContent.Name] = {
+        self.text_strings[StringContent.Name] = {
             u'singular': translate('PresentationPlugin', 'Presentation', 'name singular'),
             u'plural': translate('PresentationPlugin', 'Presentations', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
-        self.textStrings[StringContent.VisibleName] = {
+        self.text_strings[StringContent.VisibleName] = {
             u'title': translate('PresentationPlugin', 'Presentations', 'container title')
         }
         # Middle Header Bar
@@ -180,4 +175,4 @@ class PresentationPlugin(Plugin):
             u'live': translate('PresentationPlugin', 'Send the selected presentation live.'),
             u'service': translate('PresentationPlugin', 'Add the selected presentation to the service.')
         }
-        self.setPluginUiTextStrings(tooltips)
+        self.set_plugin_ui_text_strings(tooltips)

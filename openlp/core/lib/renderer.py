@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, ServiceItem, \
-    expand_tags, build_lyrics_format_css, build_lyrics_outline_css
+from openlp.core.lib import Settings, FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, \
+    ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.lib.theme import ThemeLevel
 from openlp.core.ui import MainDisplay
 
@@ -171,13 +171,14 @@ class Renderer(object):
         """
         self.theme_level = theme_level
 
-    def set_global_theme(self, global_theme_name):
+    def set_global_theme(self):
         """
         Set the global-level theme name.
 
         ``global_theme_name``
             The global-level theme's name.
         """
+        global_theme_name = Settings().value(u'themes/global theme')
         self._set_theme(global_theme_name)
         self.global_theme_name = global_theme_name
 

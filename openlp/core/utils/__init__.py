@@ -38,6 +38,7 @@ import re
 from subprocess import Popen, PIPE
 import sys
 import urllib2
+import icu
 
 from PyQt4 import QtGui, QtCore
 
@@ -56,10 +57,12 @@ from openlp.core.lib import translate
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}
 IMAGES_FILTER = None
+ICU_COLLATOR = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
 CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
 INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
+DIGITS_OR_NONDIGITS = re.compile(r'\d+|\D+', re.UNICODE)
 
 
 class VersionThread(QtCore.QThread):
@@ -182,9 +185,9 @@ def check_latest_version(current_version):
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
     settings = Settings()
-    settings.beginGroup(u'general')
+    settings.beginGroup(u'core')
     last_test = settings.value(u'last version test')
-    this_test = datetime.now().date()
+    this_test = unicode(datetime.now().date())
     settings.setValue(u'last version test', this_test)
     settings.endGroup()
     # Tell the main window whether there will ever be data to display
@@ -244,8 +247,7 @@ def get_images_filter():
     global IMAGES_FILTER
     if not IMAGES_FILTER:
         log.debug(u'Generating images filter.')
-        formats = [unicode(fmt)
-            for fmt in QtGui.QImageReader.supportedImageFormats()]
+        formats = map(unicode, QtGui.QImageReader.supportedImageFormats())
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
         IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
@@ -379,21 +381,32 @@ def format_time(text, local_time):
     return re.sub('\%[a-zA-Z]', match_formatting, text)
 
 
-def locale_compare(string1, string2):
+def get_locale_key(string):
     """
-    Compares two strings according to the current locale settings.
-
-    As any other compare function, returns a negative, or a positive value,
-    or 0, depending on whether string1 collates before or after string2 or
-    is equal to it. Comparison is case insensitive.
+    Creates a key for case insensitive, locale aware string sorting.
     """
-    # Function locale.strcoll() from standard Python library does not work properly on Windows.
-    return locale.strcoll(string1.lower(), string2.lower())
+    string = string.lower()
+    # For Python 3 on platforms other than Windows ICU is not necessary. In those cases locale.strxfrm(str) can be used.
+    global ICU_COLLATOR
+    if ICU_COLLATOR is None:
+        from languagemanager import LanguageManager
+        locale = LanguageManager.get_language()
+        icu_locale = icu.Locale(locale)
+        ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
+    return ICU_COLLATOR.getSortKey(string)
 
 
-# For performance reasons provide direct reference to compare function without wrapping it in another function making
-# the string lowercase. This is needed for sorting songs.
-locale_direct_compare = locale.strcoll
+def get_natural_key(string):
+    """
+    Generate a key for locale aware natural string sorting.
+    Returns a list of string compare keys and integers.
+    """
+    key = DIGITS_OR_NONDIGITS.findall(string)
+    key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
+    # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str and int.
+    #if string[0].isdigit():
+    #    return [''] + key
+    return key
 
 
 from applocation import AppLocation
@@ -403,4 +416,4 @@ from actions import ActionList
 
 __all__ = [u'AppLocation', u'ActionList', u'LanguageManager', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename', u'format_time', u'locale_compare', u'locale_direct_compare']
+    u'delete_file', u'clean_filename', u'format_time', u'get_locale_key', u'get_natural_key']

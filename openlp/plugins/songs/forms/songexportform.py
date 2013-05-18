@@ -37,11 +37,11 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Registry, UiStrings, create_separated_list, build_icon, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.plugins.songs.lib import natcmp
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
 
 log = logging.getLogger(__name__)
+
 
 class SongExportForm(OpenLPWizard):
     """
@@ -60,7 +60,7 @@ class SongExportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        OpenLPWizard.__init__(self, parent, plugin, u'songExportWizard', u':/wizards/wizard_exportsong.bmp')
+        OpenLPWizard.__init__(self, parent, plugin, u'song_export_wizard', u':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
         Registry().register_function(u'openlp_stop_wizard', self.stop_export)
 
@@ -77,13 +77,7 @@ class SongExportForm(OpenLPWizard):
         """
         OpenLPWizard.setupUi(self, image)
 
-    def customInit(self):
-        """
-        Song wizard specific initialisation.
-        """
-        pass
-
-    def customSignals(self):
+    def custom_signals(self):
         """
         Song wizard specific signals.
         """
@@ -93,7 +87,7 @@ class SongExportForm(OpenLPWizard):
         self.checkButton.clicked.connect(self.onCheckButtonClicked)
         self.directoryButton.clicked.connect(self.onDirectoryButtonClicked)
 
-    def addCustomPages(self):
+    def add_custom_pages(self):
         """
         Add song wizard specific pages.
         """
@@ -227,7 +221,7 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         self.application.set_busy_cursor()
         songs = self.plugin.manager.get_all_objects(Song)
-        songs.sort(cmp=natcmp, key=lambda song: song.sort_key)
+        songs.sort(key=lambda song: song.sort_key)
         for song in songs:
             # No need to export temporary songs.
             if song.temporary:

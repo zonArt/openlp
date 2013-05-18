@@ -331,27 +331,27 @@ class WebkitPlayer(MediaPlayer):
             display.frame.evaluateJavaScript(u'show_video("stop");')
         self.state = MediaState.Stopped
 
-    def volume(self, display, vol):
+    def volume(self, display, volume):
         """
         Set the volume
         """
         controller = display.controller
         # 1.0 is the highest value
         if display.has_audio:
-            vol = float(vol) / float(100)
+            vol = float(volume) / float(100)
             if not controller.media_info.is_flash:
                 display.frame.evaluateJavaScript(u'show_video(null, null, %s);' % str(vol))
 
-    def seek(self, display, seekVal):
+    def seek(self, display, seek_value):
         """
         Go to a position in the video
         """
         controller = display.controller
         if controller.media_info.is_flash:
-            seek = seekVal
+            seek = seek_value
             display.frame.evaluateJavaScript(u'show_flash("seek", null, null, "%s");' % (seek))
         else:
-            seek = float(seekVal) / 1000
+            seek = float(seek_value) / 1000
             display.frame.evaluateJavaScript(u'show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
@@ -400,11 +400,11 @@ class WebkitPlayer(MediaPlayer):
                 length = int(length * 1000)
         if current_time > 0:
             controller.media_info.length = length
-            controller.seekSlider.setMaximum(length)
-            if not controller.seekSlider.isSliderDown():
-                controller.seekSlider.blockSignals(True)
-                controller.seekSlider.setSliderPosition(current_time)
-                controller.seekSlider.blockSignals(False)
+            controller.seek_slider.setMaximum(length)
+            if not controller.seek_slider.isSliderDown():
+                controller.seek_slider.blockSignals(True)
+                controller.seek_slider.setSliderPosition(current_time)
+                controller.seek_slider.blockSignals(False)
 
     def get_info(self):
         """

@@ -59,12 +59,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
     """
     log.info(u'%s EditSongForm loaded', __name__)
 
-    def __init__(self, mediaitem, parent, manager):
+    def __init__(self, media_item, parent, manager):
         """
         Constructor
         """
         super(EditSongForm, self).__init__(parent)
-        self.mediaitem = mediaitem
+        self.media_item = media_item
         self.song = None
         # can this be automated?
         self.width = 400
@@ -84,7 +84,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_delete_button.clicked.connect(self.on_verse_delete_button_clicked)
         self.verse_list_widget.itemClicked.connect(self.on_verse_list_view_clicked)
         self.verse_order_edit.textChanged.connect(self.on_verse_order_text_changed)
-        self.theme_add_button.clicked.connect(self.theme_manager.onAddTheme)
+        self.theme_add_button.clicked.connect(self.theme_manager.on_add_theme)
         self.maintenance_button.clicked.connect(self.on_maintenance_button_clicked)
         self.from_file_button.clicked.connect(self.on_audio_add_from_file_button_clicked)
         self.from_media_button.clicked.connect(self.on_audio_add_from_media_button_clicked)
@@ -256,8 +256,8 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             A QtGui.QKeyEvent event.
         """
         if event.key() in (QtCore.Qt.Key_Enter, QtCore.Qt.Key_Return):
-            if self.authorsComboBox.hasFocus() and self.authorsComboBox.currentText():
-                self.onAuthorAddButtonClicked()
+            if self.authors_combo_box.hasFocus() and self.authors_combo_box.currentText():
+                self.on_author_add_button_clicked()
                 return
             if self.topicsComboBox.hasFocus() and self.topicsComboBox.currentText():
                 self.on_topic_add_button_clicked()
@@ -320,7 +320,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for plugin in self.plugin_manager.plugins:
             if plugin.name == u'media' and plugin.status == PluginStatus.Active:
                 self.from_media_button.setVisible(True)
-                self.media_form.populateFiles(plugin.mediaItem.getList(MediaType.Audio))
+                self.media_form.populateFiles(plugin.media_item.get_list(MediaType.Audio))
                 break
 
     def new_song(self):
@@ -578,9 +578,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.verse_delete_button.setEnabled(True)
 
     def on_verse_add_button_clicked(self):
-        self.verse_form.setVerse(u'', True)
+        self.verse_form.set_verse(u'', True)
         if self.verse_form.exec_():
-            after_text, verse_tag, verse_num = self.verse_form.getVerse()
+            after_text, verse_tag, verse_num = self.verse_form.get_verse()
             verse_def = u'%s%s' % (verse_tag, verse_num)
             item = QtGui.QTableWidgetItem(after_text)
             item.setData(QtCore.Qt.UserRole, verse_def)
@@ -596,9 +596,9 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if item:
             temp_text = item.text()
             verse_id = item.data(QtCore.Qt.UserRole)
-            self.verse_form.setVerse(temp_text, True, verse_id)
+            self.verse_form.set_verse(temp_text, True, verse_id)
             if self.verse_form.exec_():
-                after_text, verse_tag, verse_num = self.verse_form.getVerse()
+                after_text, verse_tag, verse_num = self.verse_form.get_verse()
                 verse_def = u'%s%s' % (verse_tag, verse_num)
                 item.setData(QtCore.Qt.UserRole, verse_def)
                 item.setText(after_text)
@@ -630,12 +630,12 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 verse_list += u'---[%s:%s]---\n' % (verse_tag, verse_num)
                 verse_list += item.text()
                 verse_list += u'\n'
-            self.verse_form.setVerse(verse_list)
+            self.verse_form.set_verse(verse_list)
         else:
-            self.verse_form.setVerse(u'')
+            self.verse_form.set_verse(u'')
         if not self.verse_form.exec_():
             return
-        verse_list = self.verse_form.getVerseAll()
+        verse_list = self.verse_form.get_all_verses()
         verse_list = unicode(verse_list.replace(u'\r\n', u'\n'))
         self.verse_list_widget.clear()
         self.verse_list_widget.setRowCount(0)
@@ -714,7 +714,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         text = self.song_book_combo_box.currentText()
         if item == 0 and text:
             temp_song_book = text
-        self.mediaitem.songMaintenanceForm.exec_(True)
+        self.media_item.song_maintenance_form.exec_(True)
         self.load_authors()
         self.load_books()
         self.load_topics()
@@ -797,7 +797,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         """
         Free up autocompletion memory on dialog exit
         """
-        log.debug (u'SongEditForm.clearCaches')
+        log.debug(u'SongEditForm.clearCaches')
         self.authors = []
         self.themes = []
         self.books = []
@@ -884,7 +884,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.manager.save_object(self.song)
         audio_files = map(lambda a: a.file_name, self.song.media_files)
         log.debug(audio_files)
-        save_path = os.path.join(AppLocation.get_section_data_path(self.mediaitem.plugin.name), 'audio',
+        save_path = os.path.join(AppLocation.get_section_data_path(self.media_item.plugin.name), 'audio',
             str(self.song.id))
         check_directory_exists(save_path)
         self.song.media_files = []
@@ -914,7 +914,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 log.exception(u'Could not remove directory: %s', save_path)
         clean_song(self.manager, self.song)
         self.manager.save_object(self.song)
-        self.mediaitem.autoSelectId = self.song.id
+        self.media_item.auto_select_id = self.song.id
 
     def _get_plugin_manager(self):
         """

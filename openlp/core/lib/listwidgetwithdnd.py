@@ -54,7 +54,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        Registry().register_function((u'%s_dnd' % self.mimeDataText), self.parent().loadFile)
+        Registry().register_function((u'%s_dnd' % self.mimeDataText), self.parent().load_file)
 
     def mouseMoveEvent(self, event):
         """

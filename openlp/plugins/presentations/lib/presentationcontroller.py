@@ -40,9 +40,8 @@ log = logging.getLogger(__name__)
 
 class PresentationDocument(object):
     """
-    Base class for presentation documents to inherit from.
-    Loads and closes the presentation as well as triggering the correct
-    activities based on the users input
+    Base class for presentation documents to inherit from. Loads and closes the presentation as well as triggering the
+    correct activities based on the users input
 
     **Hook Functions**
 
@@ -131,20 +130,17 @@ class PresentationDocument(object):
         """
         The location where thumbnail images will be stored
         """
-        return os.path.join(
-            self.controller.thumbnail_folder, self.get_file_name())
+        return os.path.join(self.controller.thumbnail_folder, self.get_file_name())
 
     def get_temp_folder(self):
         """
         The location where thumbnail images will be stored
         """
-        return os.path.join(
-            self.controller.temp_folder, self.get_file_name())
+        return os.path.join(self.controller.temp_folder, self.get_file_name())
 
     def check_thumbnails(self):
         """
-        Returns ``True`` if the thumbnail images exist and are more recent than
-        the powerpoint file.
+        Returns ``True`` if the thumbnail images exist and are more recent than the powerpoint file.
         """
         lastimage = self.get_thumbnail_path(self.get_slide_count(), True)
         if not (lastimage and os.path.isfile(lastimage)):
@@ -153,8 +149,7 @@ class PresentationDocument(object):
 
     def close_presentation(self):
         """
-        Close presentation and clean up objects
-        Triggered by new object being added to SlideController
+        Close presentation and clean up objects. Triggered by new object being added to SlideController
         """
         self.controller.close_presentation()
 
@@ -223,8 +218,8 @@ class PresentationDocument(object):
 
     def next_step(self):
         """
-        Triggers the next effect of slide on the running presentation
-        This might be the next animation on the current slide, or the next slide
+        Triggers the next effect of slide on the running presentation. This might be the next animation on the current
+        slide, or the next slide
         """
         pass
 
@@ -236,8 +231,7 @@ class PresentationDocument(object):
 
     def convert_thumbnail(self, file, idx):
         """
-        Convert the slide image the application made to a standard 320x240
-        .png image.
+        Convert the slide image the application made to a standard 320x240 .png image.
         """
         if self.check_thumbnails():
             return
@@ -281,7 +275,7 @@ class PresentationDocument(object):
         Returns the text on the slide
 
         ``slide_no``
-        The slide the text is required for, starting at 1
+            The slide the text is required for, starting at 1
         """
         return ''
 
@@ -290,24 +284,21 @@ class PresentationDocument(object):
         Returns the text on the slide
 
         ``slide_no``
-        The slide the notes are required for, starting at 1
+            The slide the notes are required for, starting at 1
         """
         return ''
 
 
 class PresentationController(object):
     """
-    This class is used to control interactions with presentation applications
-    by creating a runtime environment. This is a base class for presentation
-    controllers to inherit from.
+    This class is used to control interactions with presentation applications by creating a runtime environment. This is
+    a base class for presentation controllers to inherit from.
 
-    To create a new controller, take a copy of this file and name it so it ends
-    with ``controller.py``, i.e. ``foobarcontroller.py``. Make sure it inherits
-    :class:`~openlp.plugins.presentations.lib.presentationcontroller.PresentationController`,
-    and then fill in the blanks. If possible try to make sure it loads on all
-    platforms, usually by using :mod:``os.name`` checks, although
-    ``__init__``, ``check_available`` and ``presentation_deleted`` should
-    always be implemented.
+    To create a new controller, take a copy of this file and name it so it ends with ``controller.py``, i.e.
+    ``foobarcontroller.py``. Make sure it inherits
+    :class:`~openlp.plugins.presentations.lib.presentationcontroller.PresentationController`, and then fill in the
+    blanks. If possible try to make sure it loads on all platforms, usually by using :mod:``os.name`` checks, although
+    ``__init__``, ``check_available`` and ``presentation_deleted`` should always be implemented.
 
     See :class:`~openlp.plugins.presentations.lib.impresscontroller.ImpressController`,
     :class:`~openlp.plugins.presentations.lib.powerpointcontroller.PowerpointController` or
@@ -317,36 +308,34 @@ class PresentationController(object):
     **Basic Attributes**
 
     ``name``
-        The name that appears in the options and the media manager
+        The name that appears in the options and the media manager.
 
     ``enabled``
-        The controller is enabled
+        The controller is enabled.
 
     ``available``
-        The controller is available on this machine. Set by init via
-        call to check_available
+        The controller is available on this machine. Set by init via call to check_available.
 
     ``plugin``
-        The presentationplugin object
+        The presentationplugin object.
 
     ``supports``
-        The primary native file types this application supports
+        The primary native file types this application supports.
 
     ``alsosupports``
-        Other file types the application can import, although not necessarily
-        the first choice due to potential incompatibilities
+        Other file types the application can import, although not necessarily the first choice due to potential
+        incompatibilities.
 
     **Hook Functions**
 
     ``kill()``
-        Called at system exit to clean up any running presentations
+        Called at system exit to clean up any running presentations.
 
     ``check_available()``
-        Returns True if presentation application is installed/can run on this
-        machine
+        Returns True if presentation application is installed/can run on this machine.
 
     ``presentation_deleted()``
-        Deletes presentation specific files, e.g. thumbnails
+        Deletes presentation specific files, e.g. thumbnails.
 
     """
     log.info(u'PresentationController loaded')
@@ -354,9 +343,8 @@ class PresentationController(object):
     def __init__(self, plugin=None, name=u'PresentationController',
         document_class=PresentationDocument):
         """
-        This is the constructor for the presentationcontroller object. This
-        provides an easy way for descendent plugins to populate common data.
-        This method *must* be overridden, like so::
+        This is the constructor for the presentationcontroller object. This provides an easy way for descendent plugins
+        to populate common data. This method *must* be overridden, like so::
 
             class MyPresentationController(PresentationController):
                 def __init__(self, plugin):
@@ -375,7 +363,7 @@ class PresentationController(object):
         self.plugin = plugin
         self.name = name
         self.document_class = document_class
-        self.settings_section = self.plugin.settingsSection
+        self.settings_section = self.plugin.settings_section
         self.available = None
         self.temp_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), name)
         self.thumbnail_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
@@ -399,28 +387,26 @@ class PresentationController(object):
 
     def check_available(self):
         """
-        Presentation app is able to run on this machine
+        Presentation app is able to run on this machine.
         """
         return False
 
     def start_process(self):
         """
-        Loads a running version of the presentation application in the
-        background.
+        Loads a running version of the presentation application in the background.
         """
         pass
 
     def kill(self):
         """
-        Called at system exit to clean up any running presentations and
-        close the application
+        Called at system exit to clean up any running presentations and close the application.
         """
         log.debug(u'Kill')
         self.close_presentation()
 
     def add_document(self, name):
         """
-        Called when a new presentation document is opened
+        Called when a new presentation document is opened.
         """
         document = self.document_class(self, name)
         self.docs.append(document)
@@ -428,7 +414,7 @@ class PresentationController(object):
 
     def remove_doc(self, doc=None):
         """
-        Called to remove an open document from the collection
+        Called to remove an open document from the collection.
         """
         log.debug(u'remove_doc Presentation')
         if doc is None:

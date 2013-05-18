@@ -114,7 +114,7 @@ class Registry(object):
         Register an event and associated function to be called
 
         ``event``
-            The function description like "config_updated" or "live_display_hide" where a number of places in the code
+            The function description like "live_display_hide" where a number of places in the code
             will/may need to respond to a single action and the caller does not need to understand or know about the
             recipients.
 

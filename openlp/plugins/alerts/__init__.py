@@ -27,6 +27,5 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`alerts` module provides the Alerts plugin for producing impromptu
-on-screen announcements during a service.
+The :mod:`alerts` module provides the Alerts plugin for producing impromptu on-screen announcements during a service.
 """

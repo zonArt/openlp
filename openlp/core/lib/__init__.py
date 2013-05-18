@@ -38,6 +38,7 @@ from PyQt4 import QtCore, QtGui, Qt
 
 log = logging.getLogger(__name__)
 
+
 class ServiceItemContext(object):
     """
     The context in which a Service Item is being generated
@@ -154,7 +155,7 @@ def build_icon(icon):
 
     ``icon``
         The icon to build. This can be a QIcon, a resource string in the form ``:/resource/file.png``, or a file
-        location like ``/path/to/file.png``.
+        location like ``/path/to/file.png``. However, the **recommended** way is to specify a resource string.
     """
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
@@ -377,6 +378,7 @@ from uistrings import UiStrings
 from screen import ScreenList
 from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
+from treewidgetwithdnd import TreeWidgetWithDnD
 from formattingtags import FormattingTags
 from spelltextedit import SpellTextEdit
 from plugin import PluginStatus, StringContent, Plugin
