@@ -26,7 +26,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+from __future__ import division
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -85,10 +85,10 @@ class SearchEdit(QtGui.QLineEdit):
         size = self.clear_button.size()
         frame_width = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
         self.clear_button.move(self.rect().right() - frame_width - size.width(),
-            (self.rect().bottom() + 1 - size.height()) / 2)
+            (self.rect().bottom() + 1 - size.height()) // 2)
         if hasattr(self, u'menu_button'):
             size = self.menu_button.size()
-            self.menu_button.move(self.rect().left() + frame_width + 2, (self.rect().bottom() + 1 - size.height()) / 2)
+            self.menu_button.move(self.rect().left() + frame_width + 2, (self.rect().bottom() + 1 - size.height()) // 2)
 
     def current_search_type(self):
         """
