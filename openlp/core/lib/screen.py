@@ -30,6 +30,7 @@
 The :mod:`screen` module provides management functionality for a machines'
 displays.
 """
+from __future__ import division
 import logging
 import copy
 
@@ -232,8 +233,8 @@ class ScreenList(object):
         ``window``
             A QWidget we are finding the location of.
         """
-        x = window.x() + (window.width() / 2)
-        y = window.y() + (window.height() / 2)
+        x = window.x() + (window.width() // 2)
+        y = window.y() + (window.height() // 2)
         for screen in self.screen_list:
             size = screen[u'size']
             if x >= size.x() and x <= (size.x() + size.width()) and y >= size.y() and y <= (size.y() + size.height()):

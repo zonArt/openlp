@@ -26,7 +26,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+from __future__ import division
 import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
@@ -327,7 +327,7 @@ class Renderer(object):
         screen_size = self.screens.current[u'size']
         self.width = screen_size.width()
         self.height = screen_size.height()
-        self.screen_ratio = float(self.height) / float(self.width)
+        self.screen_ratio = self.height / self.width
         log.debug(u'_calculate default %s, %f' % (screen_size, self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
@@ -546,15 +546,15 @@ class Renderer(object):
         """
         smallest_index = 0
         highest_index = len(html_list) - 1
-        index = int(highest_index / 2)
+        index = highest_index // 2
         while True:
             if not self._text_fits_on_slide(previous_html + separator.join(html_list[:index + 1]).strip()):
                 # We know that it does not fit, so change/calculate the new index and highest_index accordingly.
                 highest_index = index
-                index = int(index - (index - smallest_index) / 2)
+                index = index - (index - smallest_index) // 2
             else:
                 smallest_index = index
-                index = int(index + (highest_index - index) / 2)
+                index = index + (highest_index - index) // 2
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
@@ -582,7 +582,7 @@ class Renderer(object):
                 html_list[0] = html_tags + html_list[0]
                 smallest_index = 0
                 highest_index = len(html_list) - 1
-                index = int(highest_index / 2)
+                index = highest_index // 2
         return previous_html, previous_raw
 
     def _text_fits_on_slide(self, text):
