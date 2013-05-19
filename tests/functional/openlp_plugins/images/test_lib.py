@@ -126,7 +126,7 @@ class TestImageMediaItem(TestCase):
         self.media_item.reset_action.setVisible.assert_called_with(False)
         self.media_item.live_controller.display.reset_image.assert_called_with()
 
-    def recursively_delete_group_side_effect(*args, **kwargs):
+    def _recursively_delete_group_side_effect(*args, **kwargs):
         """
         Side effect method that creates custom retun values for the recursively_delete_group method
         """
@@ -160,7 +160,7 @@ class TestImageMediaItem(TestCase):
             ImageFilenames.group_id = 1
             ImageGroups.parent_id = 1
             self.media_item.manager = MagicMock()
-            self.media_item.manager.get_all_objects.side_effect = self.recursively_delete_group_side_effect
+            self.media_item.manager.get_all_objects.side_effect = self._recursively_delete_group_side_effect
             self.media_item.servicePath = ""
             test_group = ImageGroups()
             test_group.id = 1
