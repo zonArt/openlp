@@ -1,7 +1,7 @@
 """
 Package to test the openlp.core.lib.screenlist package.
 """
-import copy
+
 from unittest import TestCase
 
 from mock import MagicMock

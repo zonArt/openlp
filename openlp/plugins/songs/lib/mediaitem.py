@@ -72,10 +72,7 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = u'songs/song'
         MediaManagerItem.__init__(self, parent, plugin)
-        self.edit_song_form = EditSongForm(self, self.main_window, self.plugin.manager)
-        self.openLyrics = OpenLyrics(self.plugin.manager)
         self.single_service_item = False
-        self.song_maintenance_form = SongMaintenanceForm(self.plugin.manager, self)
         # Holds information about whether the edit is remotely triggered and which Song is required.
         self.remote_song = -1
         self.edit_item = None
@@ -132,6 +129,12 @@ class SongMediaItem(MediaManagerItem):
             'Maintain the lists of authors, topics and books.'))
 
     def initialise(self):
+        """
+        Initialise variables when they cannot be initialised in the constructor.
+        """
+        self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
+        self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
+        self.openLyrics = OpenLyrics(self.plugin.manager)
         self.search_text_edit.set_search_types([
             (SongSearch.Entire, u':/songs/song_search_all.png',
                 translate('SongsPlugin.MediaItem', 'Entire Song'),
@@ -157,7 +160,6 @@ class SongMediaItem(MediaManagerItem):
         Settings().setValue(u'%s/last search type' % self.settings_section, self.search_text_edit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = unicode(self.search_text_edit.displayText())
-        search_results = []
         search_type = self.search_text_edit.current_search_type()
         if search_type == SongSearch.Entire:
             log.debug(u'Entire Song Search')
@@ -457,14 +459,7 @@ class SongMediaItem(MediaManagerItem):
             for slide in verses:
                 service_item.add_from_text(unicode(slide))
         service_item.title = song.title
-        author_list = [unicode(author.display_name) for author in song.authors]
-        service_item.raw_footer.append(song.title)
-        service_item.raw_footer.append(create_separated_list(author_list))
-        service_item.raw_footer.append(song.copyright)
-        if Settings().value(u'core/ccli number'):
-            service_item.raw_footer.append(translate('SongsPlugin.MediaItem', 'CCLI License: ') +
-                Settings().value(u'core/ccli number'))
-        service_item.audit = [song.title, author_list, song.copyright, unicode(song.ccli_number)]
+        author_list = self.generate_footer(service_item, song)
         service_item.data_string = {u'title': song.search_title, u'authors': u', '.join(author_list)}
         service_item.xml_version = self.openLyrics.song_to_xml(song)
         # Add the audio file to the service item.
@@ -472,6 +467,30 @@ class SongMediaItem(MediaManagerItem):
             service_item.add_capability(ItemCapabilities.HasBackgroundAudio)
             service_item.background_audio = [m.file_name for m in song.media_files]
         return True
+
+    def generate_footer(self, item, song):
+        """
+        Generates the song footer based on a song and adds details to a service item.
+        author_list is only required for initial song generation.
+
+        ``item``
+            The service item to be amended
+
+        ``song``
+            The song to be used to generate the footer
+        """
+        author_list = [unicode(author.display_name) for author in song.authors]
+        item.audit = [
+            song.title, author_list, song.copyright, unicode(song.ccli_number)
+        ]
+        item.raw_footer = []
+        item.raw_footer.append(song.title)
+        item.raw_footer.append(create_separated_list(author_list))
+        item.raw_footer.append(song.copyright)
+        if Settings().value(u'core/ccli number'):
+            item.raw_footer.append(translate('SongsPlugin.MediaItem', 'CCLI License: ') +
+                Settings().value(u'core/ccli number'))
+        return author_list
 
     def service_load(self, item):
         """
@@ -490,9 +509,8 @@ class SongMediaItem(MediaManagerItem):
         else:
             search_results = self.plugin.manager.get_all_objects(Song,
                 Song.search_title == item.data_string[u'title'], Song.search_title.asc())
-        editId = 0
+        edit_id = 0
         add_song = True
-        temporary = False
         if search_results:
             for song in search_results:
                 author_list = item.data_string[u'authors']
@@ -505,7 +523,7 @@ class SongMediaItem(MediaManagerItem):
                         break
                 if same_authors and author_list.strip(u', ') == u'':
                     add_song = False
-                    editId = song.id
+                    edit_id = song.id
                     break
                 # If there's any backing tracks, copy them over.
                 if item.background_audio:
@@ -523,11 +541,11 @@ class SongMediaItem(MediaManagerItem):
             # If there's any backing tracks, copy them over.
             if item.background_audio:
                 self._update_background_audio(song, item)
-            editId = song.id
-            temporary = True
-        # Update service with correct song id.
-        if editId:
-            self.service_manager.service_item_update(editId, item.unique_identifier, temporary)
+            edit_id = song.id
+        # Update service with correct song id and return it to caller.
+        item.edit_id = edit_id
+        self.generate_footer(item, song)
+        return item
 
     def search(self, string, showError):
         """
