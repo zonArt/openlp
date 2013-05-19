@@ -136,6 +136,8 @@ class SlideController(DisplayController):
             self.keypress_loop = False
             self.category = UiStrings().LiveToolbar
             ActionList.get_instance().add_category(unicode(self.category), CategoryOrder.standard_toolbar)
+            self.slide_count = 0
+            self.slide_image = None
         else:
             Registry().register(u'preview_controller', self)
             self.type_label.setText(UiStrings().Preview)
@@ -1050,27 +1052,28 @@ class SlideController(DisplayController):
 
     def updatePreview(self):
         """
-        This updates the preview frame, for example after changing a slide or
-        using *Blank to Theme*.
+        This updates the preview frame, for example after changing a slide or using *Blank to Theme*.
         """
         log.debug(u'updatePreview %s ' % self.screens.current[u'primary'])
         if not self.screens.current[u'primary'] and self.service_item and \
                 self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
-            # Grab now, but try again in a couple of seconds if slide change
-            # is slow
-            QtCore.QTimer.singleShot(0.5, self.grabMainDisplay)
-            QtCore.QTimer.singleShot(2.5, self.grabMainDisplay)
+            # Grab now, but try again in a couple of seconds if slide change is slow
+            QtCore.QTimer.singleShot(0.5, self.grab_maindisplay)
+            QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)
         else:
-            self.slidePreview.setPixmap(self.display.preview())
+            self.slide_image = self.display.preview()
+            self.slidePreview.setPixmap(self.slide_image)
+        self.slide_count += 1
 
-    def grabMainDisplay(self):
+    def grab_maindisplay(self):
         """
         Creates an image of the current screen and updates the preview frame.
         """
-        winid = QtGui.QApplication.desktop().winId()
+        win_id = QtGui.QApplication.desktop().winId()
         rect = self.screens.current[u'size']
-        winimg = QtGui.QPixmap.grabWindow(winid, rect.x(), rect.y(), rect.width(), rect.height())
-        self.slidePreview.setPixmap(winimg)
+        win_image = QtGui.QPixmap.grabWindow(win_id, rect.x(), rect.y(), rect.width(), rect.height())
+        self.slidePreview.setPixmap(win_image)
+        self.slide_image = win_image
 
     def on_slide_selected_next_action(self, checked):
         """

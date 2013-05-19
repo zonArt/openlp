@@ -265,9 +265,11 @@ class HttpRouter(object):
         self.routes = [
             (u'^/$', self.serve_file),
             (u'^/(stage)$', self.serve_file),
+            (u'^/(live)$', self.serve_file),
             (r'^/files/(.*)$', self.serve_file),
             (r'^/api/poll$', self.poll),
             (r'^/stage/poll$', self.poll),
+            (r'^/live/poll$', self.live_poll),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/stage/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
@@ -305,6 +307,7 @@ class HttpRouter(object):
         if response:
             return response
         else:
+            log.debug('Path not found %s', url_path)
             return self._http_not_found()
 
     def _get_service_items(self):
@@ -334,6 +337,7 @@ class HttpRouter(object):
         self.template_vars = {
             'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Remote'),
             'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Stage View'),
+            'live_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Live View'),
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
@@ -371,6 +375,8 @@ class HttpRouter(object):
             filename = u'index.html'
         elif filename == u'stage':
             filename = u'stage.html'
+        elif filename == u'live':
+            filename = u'live.html'
         path = os.path.normpath(os.path.join(self.html_dir, filename))
         if not path.startswith(self.html_dir):
             return self._http_not_found()
@@ -421,6 +427,16 @@ class HttpRouter(object):
             u'blank': self.live_controller.blank_screen.isChecked(),
             u'theme': self.live_controller.theme_screen.isChecked(),
             u'display': self.live_controller.desktop_screen.isChecked()
+        }
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': result})
+
+    def live_poll(self):
+        """
+        Poll OpenLP to determine the current display value.
+        """
+        result = {
+            u'slide_count': self.live_controller.slide_count
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': result})
