@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`http` module enables OpenLP to retrieve scripture from bible
-websites.
+The :mod:`http` module enables OpenLP to retrieve scripture from bible websites.
 """
 import logging
 import re

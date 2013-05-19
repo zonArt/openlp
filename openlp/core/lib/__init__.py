@@ -155,7 +155,7 @@ def build_icon(icon):
 
     ``icon``
         The icon to build. This can be a QIcon, a resource string in the form ``:/resource/file.png``, or a file
-        location like ``/path/to/file.png``.
+        location like ``/path/to/file.png``. However, the **recommended** way is to specify a resource string.
     """
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):

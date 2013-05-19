@@ -47,8 +47,8 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.qmList = LanguageManager.get_qm_list()
-        self.languageComboBox.addItem(u'Autodetect')
-        self.languageComboBox.addItems(sorted(self.qmList.keys()))
+        self.language_combo_box.addItem(u'Autodetect')
+        self.language_combo_box.addItems(sorted(self.qmList.keys()))
 
     def exec_(self):
         """
@@ -61,12 +61,12 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         Run when the dialog is OKed.
         """
         # It's the first row so must be Automatic
-        if self.languageComboBox.currentIndex() == 0:
+        if self.language_combo_box.currentIndex() == 0:
             LanguageManager.auto_language = True
             LanguageManager.set_language(False, False)
         else:
             LanguageManager.auto_language = False
-            action = create_action(None, self.languageComboBox.currentText())
+            action = create_action(None, self.language_combo_box.currentText())
             LanguageManager.set_language(action, False)
         return QtGui.QDialog.accept(self)
 
