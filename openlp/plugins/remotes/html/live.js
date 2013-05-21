@@ -28,49 +28,9 @@ window.OpenLP = {
     $.getJSON(
       "/live/image",
       function (data, status) {
-        OpenLP.currentSlides = data.results.slides;
-        OpenLP.currentSlide = 0;
-        OpenLP.currentTags = Array();
-        var div = $("#verseorder");
-        div.html("");
-        var tag = "";
-        var tags = 0;
-        var lastChange = 0;
-        $.each(data.results.slides, function(idx, slide) {
-          var prevtag = tag;
-          tag = slide["tag"];
-          if (tag != prevtag) {
-            // If the tag has changed, add new one to the list
-            lastChange = idx;
-            tags = tags + 1;
-            div.append("&nbsp;<span>");
-            $("#verseorder span").last().attr("id", "tag" + tags).text(tag);
-          }
-          else {
-            if ((slide["text"] == data.results.slides[lastChange]["text"]) &&
-              (data.results.slides.length > idx + (idx - lastChange))) {
-              // If the tag hasn't changed, check to see if the same verse
-              // has been repeated consecutively. Note the verse may have been
-              // split over several slides, so search through. If so, repeat the tag.
-              var match = true;
-              for (var idx2 = 0; idx2 < idx - lastChange; idx2++) {
-                if(data.results.slides[lastChange + idx2]["text"] != data.results.slides[idx + idx2]["text"]) {
-                    match = false;
-                    break;
-                }
-              }
-              if (match) {
-                lastChange = idx;
-                tags = tags + 1;
-                div.append("&nbsp;<span>");
-                $("#verseorder span").last().attr("id", "tag" + tags).text(tag);
-              }
-            }
-          }
-          OpenLP.currentTags[idx] = tags;
-          if (slide["selected"])
-            OpenLP.currentSlide = idx;
-        })
+        var img = document.getElementById('image');
+        img.src = data.results.slide_image;
+        img.style.display = 'block';
       }
     );
   },

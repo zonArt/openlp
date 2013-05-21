@@ -36,6 +36,7 @@ from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
+
 class Controller(object):
     """
     This is the Presentation listener who acts on events from the slide controller and passes the messages on the the

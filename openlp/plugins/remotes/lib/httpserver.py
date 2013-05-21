@@ -124,7 +124,7 @@ import cherrypy
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, Settings, PluginStatus, StringContent
+from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte
 from openlp.core.utils import AppLocation, translate
 
 from cherrypy._cpcompat import sha, ntob
@@ -175,9 +175,11 @@ class HttpServer(object):
         self.root = self.Public()
         self.root.files = self.Files()
         self.root.stage = self.Stage()
+        self.root.live = self.Live()
         self.root.router = self.router
         self.root.files.router = self.router
         self.root.stage.router = self.router
+        self.root.live.router = self.router
         cherrypy.tree.mount(self.root, '/', config=self.define_config())
         # Turn off the flood of access messages cause by poll
         cherrypy.log.access_log.propagate = False
@@ -213,6 +215,9 @@ class HttpServer(object):
                                      u'tools.basic_auth.on': False},
                          u'/stage': {u'tools.staticdir.on': True,
                                      u'tools.staticdir.dir': self.router.html_dir,
+                                     u'tools.basic_auth.on': False},
+                         u'/live': {u'tools.staticdir.on': True,
+                                     u'tools.staticdir.dir': self.router.html_dir,
                                      u'tools.basic_auth.on': False}}
         return directory_config
 
@@ -239,7 +244,16 @@ class HttpServer(object):
 
     class Stage(object):
         """
-        Stageview is read only so security is not relevant and would reduce it's usability
+        Stage view is read only so security is not relevant and would reduce it's usability
+        """
+        @cherrypy.expose
+        def default(self, *args, **kwargs):
+            url = urlparse.urlparse(cherrypy.url())
+            return self.router.process_http_request(url.path, *args)
+
+    class Live(object):
+        """
+        Live view is read only so security is not relevant and would reduce it's usability
         """
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -270,6 +284,7 @@ class HttpRouter(object):
             (r'^/api/poll$', self.poll),
             (r'^/stage/poll$', self.poll),
             (r'^/live/poll$', self.live_poll),
+            (r'^/live/image$', self.live_image),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/stage/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
@@ -363,12 +378,11 @@ class HttpRouter(object):
 
     def serve_file(self, filename=None):
         """
-        Send a file to the socket. For now, just a subset of file types
-        and must be top level inside the html folder.
+        Send a file to the socket. For now, just a subset of file types and must be top level inside the html folder.
         If subfolders requested return 404, easier for security for the present.
 
-        Ultimately for i18n, this could first look for xx/file.html before
-        falling back to file.html... where xx is the language, e.g. 'en'
+        Ultimately for i18n, this could first look for xx/file.html before falling back to file.html.
+        where xx is the language, e.g. 'en'
         """
         log.debug(u'serve file request %s' % filename)
         if not filename:
@@ -433,10 +447,20 @@ class HttpRouter(object):
 
     def live_poll(self):
         """
-        Poll OpenLP to determine the current display value.
+        Poll OpenLP to determine the current slide count.
         """
         result = {
             u'slide_count': self.live_controller.slide_count
+        }
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': result})
+
+    def live_image(self):
+        """
+        Return the latest display image as a byte stream.
+        """
+        result = {
+            u'slide_image': str(image_to_byte(self.live_controller.slide_image))
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': result})
