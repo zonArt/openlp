@@ -466,7 +466,7 @@ class MediaManagerItem(QtGui.QWidget):
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items to preview.'))
         else:
             log.debug(u'%s Preview requested', self.plugin.name)
-            service_item = self.build_service_item(context=ServiceItemContext.Preview)
+            service_item = self.build_service_item()
             if service_item:
                 service_item.from_plugin = True
                 self.preview_controller.add_service_item(service_item)
