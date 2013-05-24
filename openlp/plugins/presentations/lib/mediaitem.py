@@ -244,22 +244,20 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.list_view.selectedItems()
             if len(items) > 1:
                 return False
-        service_item.title = self.display_type_combo_box.currentText()
-        service_item.shortname = self.display_type_combo_box.currentText()
+        service_item.processor = self.display_type_combo_box.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
-        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
-        shortname = service_item.shortname
-        if not shortname:
+        if not self.display_type_combo_box.currentText():
             return False
         for bitem in items:
             filename = bitem.data(QtCore.Qt.UserRole)
+            (path, name) = os.path.split(filename)
+            service_item.title = name
             if os.path.exists(filename):
-                if shortname == self.Automatic:
-                    service_item.shortname = self.findControllerByType(filename)
-                    if not service_item.shortname:
+                if service_item.processor == self.Automatic:
+                    service_item.processor = self.findControllerByType(filename)
+                    if not service_item.processor:
                         return False
-                controller = self.controllers[service_item.shortname]
-                (path, name) = os.path.split(filename)
+                controller = self.controllers[service_item.processor]
                 doc = controller.add_document(filename)
                 if doc.get_thumbnail_path(1, True) is None:
                     doc.load_presentation()

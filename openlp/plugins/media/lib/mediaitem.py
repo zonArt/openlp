@@ -155,7 +155,7 @@ class MediaMediaItem(MediaManagerItem):
             if os.path.exists(filename):
                 service_item = ServiceItem()
                 service_item.title = u'webkit'
-                service_item.shortname = service_item.title
+                service_item.processor = u'webkit'
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
                 if self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True):
@@ -185,9 +185,9 @@ class MediaMediaItem(MediaManagerItem):
                     translate('MediaPlugin.MediaItem', 'Missing Media File'),
                     translate('MediaPlugin.MediaItem', 'The file %s no longer exists.') % filename)
             return False
-        service_item.title = self.display_type_combo_box.currentText()
-        service_item.shortname = service_item.title
         (path, name) = os.path.split(filename)
+        service_item.title = name
+        service_item.processor = self.display_type_combo_box.currentText()
         service_item.add_from_command(path, name, CLAPPERBOARD)
         # Only get start and end times if going to a service
         if context == ServiceItemContext.Service:
@@ -196,7 +196,6 @@ class MediaMediaItem(MediaManagerItem):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
-        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
         if Settings().value(self.settings_section + u'/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
@@ -208,6 +207,7 @@ class MediaMediaItem(MediaManagerItem):
         self.list_view.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         check_directory_exists(self.servicePath)
+        print self.settings_section + u'/media files'
         self.load_list(Settings().value(self.settings_section + u'/media files'))
         self.populateDisplayTypes()
 
@@ -260,8 +260,7 @@ class MediaMediaItem(MediaManagerItem):
             Settings().setValue(self.settings_section + u'/media files', self.get_file_list())
 
     def load_list(self, media, target_group=None):
-        # Sort the media by its filename considering language specific
-        # characters.
+        # Sort the media by its filename considering language specific characters.
         media.sort(key=lambda filename: get_locale_key(os.path.split(unicode(filename))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
