@@ -36,6 +36,7 @@ from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
+
 class Controller(object):
     """
     This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
@@ -314,7 +315,7 @@ class MessageListener(object):
         item = message[0]
         hide_mode = message[2]
         file = item.get_frame_path()
-        self.handler = item.title
+        self.handler = item.processor
         if self.handler == self.media_item.Automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
