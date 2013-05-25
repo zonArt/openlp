@@ -207,7 +207,6 @@ class MediaMediaItem(MediaManagerItem):
         self.list_view.setIconSize(QtCore.QSize(88, 50))
         self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
         check_directory_exists(self.servicePath)
-        print self.settings_section + u'/media files'
         self.load_list(Settings().value(self.settings_section + u'/media files'))
         self.populateDisplayTypes()
 
