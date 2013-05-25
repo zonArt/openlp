@@ -136,6 +136,7 @@ def make_sha_hash(password):
     """
     Create an encrypted password for the given password.
     """
+    log.debug("make_sha_hash")
     return sha(ntob(password)).hexdigest()
 
 
@@ -143,6 +144,7 @@ def fetch_password(username):
     """
     Fetch the password for a provided user.
     """
+    log.debug("Fetch Password")
     if username != Settings().value(u'remotes/user id'):
         return None
     return make_sha_hash(Settings().value(u'remotes/password'))
@@ -460,7 +462,7 @@ class HttpRouter(object):
         Return the latest display image as a byte stream.
         """
         result = {
-            u'slide_image': str(image_to_byte(self.live_controller.slide_image))
+            u'slide_image': u'data:image/png;base64,' + str(image_to_byte(self.live_controller.slide_image))
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': result})
