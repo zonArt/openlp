@@ -315,7 +315,7 @@ class MessageListener(object):
         item = message[0]
         hide_mode = message[2]
         file = item.get_frame_path()
-        self.handler = item.title
+        self.handler = item.processor
         if self.handler == self.media_item.Automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:

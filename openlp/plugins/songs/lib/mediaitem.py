@@ -132,8 +132,8 @@ class SongMediaItem(MediaManagerItem):
         """
         Initialise variables when they cannot be initialised in the constructor.
         """
-        self.songMaintenanceForm = SongMaintenanceForm(self.plugin.manager, self)
-        self.editSongForm = EditSongForm(self, self.main_window, self.plugin.manager)
+        self.song_maintenance_form = SongMaintenanceForm(self.plugin.manager, self)
+        self.edit_song_form = EditSongForm(self, self.main_window, self.plugin.manager)
         self.openLyrics = OpenLyrics(self.plugin.manager)
         self.search_text_edit.set_search_types([
             (SongSearch.Entire, u':/songs/song_search_all.png',
