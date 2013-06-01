@@ -58,8 +58,7 @@ class ItemCapabilities(object):
     Provides an enumeration of a service item's capabilities
 
     ``CanPreview``
-            The capability to allow the ServiceManager to add to the preview
-            tab when making the previous item live.
+            The capability to allow the ServiceManager to add to the preview tab when making the previous item live.
 
     ``CanEdit``
             The capability to allow the ServiceManager to allow the item to be edited
@@ -71,8 +70,7 @@ class ItemCapabilities(object):
             Determines is the service_item needs a Media Player
 
     ``CanLoop``
-            The capability to allow the SlideController to allow the loop
-            processing.
+            The capability to allow the SlideController to allow the loop processing.
 
     ``CanAppend``
             The capability to allow the ServiceManager to add leaves to the
@@ -82,22 +80,19 @@ class ItemCapabilities(object):
             The capability to remove lines breaks in the renderer
 
     ``OnLoadUpdate``
-            The capability to update MediaManager when a service Item is
-            loaded.
+            The capability to update MediaManager when a service Item is loaded.
 
     ``AddIfNewItem``
             Not Used
 
     ``ProvidesOwnDisplay``
-            The capability to tell the SlideController the service Item has a
-            different display.
+            The capability to tell the SlideController the service Item has a different display.
 
     ``HasDetailedTitleDisplay``
-            ServiceItem provides a title
+            Being Removed and decommissioned.
 
     ``HasVariableStartTime``
-            The capability to tell the ServiceManager that a change to start
-            time is possible.
+            The capability to tell the ServiceManager that a change to start time is possible.
 
     ``CanSoftBreak``
             The capability to tell the renderer that Soft Break is allowed
@@ -149,7 +144,7 @@ class ServiceItem(object):
         if plugin:
             self.name = plugin.name
         self.title = u''
-        self.shortname = u''
+        self.processor = None
         self.audit = u''
         self.items = []
         self.iconic_representation = None
@@ -353,7 +348,8 @@ class ServiceItem(object):
             u'media_length': self.media_length,
             u'background_audio': self.background_audio,
             u'theme_overwritten': self.theme_overwritten,
-            u'will_auto_start': self.will_auto_start
+            u'will_auto_start': self.will_auto_start,
+            u'processor': self.processor
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -387,7 +383,6 @@ class ServiceItem(object):
         self.title = header[u'title']
         self.name = header[u'name']
         self.service_item_type = header[u'type']
-        self.shortname = header[u'plugin']
         self.theme = header[u'theme']
         self.add_icon(header[u'icon'])
         self.raw_footer = header[u'footer']
@@ -406,7 +401,13 @@ class ServiceItem(object):
         self.auto_play_slides_loop = header.get(u'auto_play_slides_loop', False)
         self.timed_slide_interval = header.get(u'timed_slide_interval', 0)
         self.will_auto_start = header.get(u'will_auto_start', False)
+        self.processor = header.get(u'processor', None)
         self.has_original_files = True
+        #TODO Remove me in 2,3 build phase
+        if self.is_capable(ItemCapabilities.HasDetailedTitleDisplay):
+            self.capabilities.remove(ItemCapabilities.HasDetailedTitleDisplay)
+            self.processor = self.title
+            self.title = None
         if u'background_audio' in header:
             self.background_audio = []
             for filename in header[u'background_audio']:
@@ -429,6 +430,8 @@ class ServiceItem(object):
                     self.add_from_image(text_image[u'path'], text_image[u'title'], background)
         elif self.service_item_type == ServiceItemType.Command:
             for text_image in serviceitem[u'serviceitem'][u'data']:
+                if not self.title:
+                    self.title = text_image[u'title']
                 if path:
                     self.has_original_files = False
                     self.add_from_command(path, text_image[u'title'], text_image[u'image'])
@@ -443,9 +446,7 @@ class ServiceItem(object):
         if self.is_text():
             return self.title
         else:
-            if ItemCapabilities.HasDetailedTitleDisplay in self.capabilities:
-                return self._raw_frames[0][u'title']
-            elif len(self._raw_frames) > 1:
+            if len(self._raw_frames) > 1:
                 return self.title
             else:
                 return self._raw_frames[0][u'title']
