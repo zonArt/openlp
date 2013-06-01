@@ -31,7 +31,7 @@ class TestMainWindow(TestCase):
                 patch(u'openlp.core.ui.mainwindow.OpenLPDockWidget') as mocked_dock_widget, \
                 patch(u'openlp.core.ui.mainwindow.QtGui.QToolBox') as mocked_q_tool_box_class, \
                 patch(u'openlp.core.ui.mainwindow.QtGui.QMainWindow.addDockWidget') as mocked_add_dock_method, \
-                patch(u'openlp.core.ui.mainwindow.ServiceManager') as mocked_slervice_manager, \
+                patch(u'openlp.core.ui.mainwindow.ServiceManager') as mocked_service_manager, \
                 patch(u'openlp.core.ui.mainwindow.ThemeManager') as mocked_theme_manager, \
                 patch(u'openlp.core.ui.mainwindow.Renderer') as mocked_renderer:
             self.main_window = MainWindow()
