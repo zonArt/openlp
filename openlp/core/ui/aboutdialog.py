@@ -291,7 +291,7 @@ class Ui_AboutDialog(object):
             'but WITHOUT ANY WARRANTY; without even the implied warranty of '
             'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See below '
             'for more details.')
-        gpltext = ('GNU GENERAL PUBLIC LICENSE\n'
+        gpl_text = ('GNU GENERAL PUBLIC LICENSE\n'
             'Version 2, June 1991\n'
             '\n'
             'Copyright (C) 1989, 1991 Free Software Foundation, Inc., 51 '
@@ -662,7 +662,7 @@ class Ui_AboutDialog(object):
             'linking proprietary applications with the library. If this is '
             'what you want to do, use the GNU Lesser General Public License '
             'instead of this License.')
-        self.license_text_edit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' % (copyright_note, licence, disclaimer, gpltext))
+        self.license_text_edit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' % (copyright_note, licence, disclaimer, gpl_text))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.license_tab),
             translate('OpenLP.AboutForm', 'License'))
         self.volunteer_button.setText(translate('OpenLP.AboutForm', 'Volunteer'))

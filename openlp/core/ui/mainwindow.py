@@ -312,7 +312,7 @@ class Ui_MainWindow(object):
         self.web_site_item = create_action(main_window, u'webSiteItem', can_shortcuts=True, category=UiStrings().Help)
         # Shortcuts not connected to buttons or menu entires.
         self.search_shortcut_action = create_action(main_window,
-            u'searchShortcut', can_shortcuts=True, category=UiStrings().File,
+            u'searchShortcut', can_shortcuts=True, category=translate('OpenLP.MainWindow', 'General'),
             triggers=self.on_search_shortcut_triggered)
         add_actions(self.file_import_menu, (self.settings_import_item, None, self.import_theme_item,
             self.import_language_item))
