@@ -4,7 +4,7 @@ Package to test the openlp.core.ui.mainwindow package.
 from unittest import TestCase
 from mock import MagicMock, patch
 
-from PyQt4 import QtCore, QtGui, QtTest
+from PyQt4 import QtGui
 
 from openlp.core.lib import Registry
 from openlp.core.ui.mainwindow import MainWindow
@@ -58,18 +58,3 @@ class TestMainWindow(TestCase):
             # THEN: The current widget should have been set.
             self.main_window.media_tool_box.setCurrentIndex.assert_called_with(2)
 
-    def on_search_shortcut_triggered_test(self):
-        """
-        Test if the search edit has focus after CTRL+F has been pressed.
-        """
-        # GIVEN: Mocked widget.
-        mocked_widget = MagicMock()
-        self.main_window.media_tool_box.currentWidget.return_value = mocked_widget
-        self.main_window.show()
-
-        # WHEN: Press the shortcut.
-        QtTest.QTest.keyPress(self.main_window, QtCore.Qt.Key_F, QtCore.Qt.ControlModifier, 100)
-        QtTest.QTest.keyRelease(self.main_window, QtCore.Qt.Key_F, QtCore.Qt.ControlModifier)
-
-        # THEN: The on_focus method should have been called.
-        mocked_widget.on_focus.assert_called_with()
