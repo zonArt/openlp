@@ -100,10 +100,10 @@ class Ui_MainWindow(object):
         self.main_contentLayout.setMargin(0)
         self.main_contentLayout.setObjectName(u'main_contentLayout')
         main_window.setCentralWidget(self.main_content)
-        self.controlSplitter = QtGui.QSplitter(self.main_content)
-        self.controlSplitter.setOrientation(QtCore.Qt.Horizontal)
-        self.controlSplitter.setObjectName(u'controlSplitter')
-        self.main_contentLayout.addWidget(self.controlSplitter)
+        self.control_splitter = QtGui.QSplitter(self.main_content)
+        self.control_splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.control_splitter.setObjectName(u'control_splitter')
+        self.main_contentLayout.addWidget(self.control_splitter)
         # Create slide controllers
         self.preview_controller = SlideController(self)
         self.live_controller = SlideController(self, True)
@@ -113,9 +113,9 @@ class Ui_MainWindow(object):
         panel_locked = Settings().value(u'user interface/lock panel')
         self.live_controller.panel.setVisible(live_visible)
         # Create menu
-        self.menuBar = QtGui.QMenuBar(main_window)
-        self.menuBar.setObjectName(u'menuBar')
-        self.file_menu = QtGui.QMenu(self.menuBar)
+        self.menu_bar = QtGui.QMenuBar(main_window)
+        self.menu_bar.setObjectName(u'menu_bar')
+        self.file_menu = QtGui.QMenu(self.menu_bar)
         self.file_menu.setObjectName(u'fileMenu')
         self.recent_files_menu = QtGui.QMenu(self.file_menu)
         self.recent_files_menu.setObjectName(u'recentFilesMenu')
@@ -124,22 +124,22 @@ class Ui_MainWindow(object):
         self.file_export_menu = QtGui.QMenu(self.file_menu)
         self.file_export_menu.setObjectName(u'file_export_menu')
         # View Menu
-        self.view_menu = QtGui.QMenu(self.menuBar)
+        self.view_menu = QtGui.QMenu(self.menu_bar)
         self.view_menu.setObjectName(u'viewMenu')
         self.view_modeMenu = QtGui.QMenu(self.view_menu)
         self.view_modeMenu.setObjectName(u'viewModeMenu')
         # Tools Menu
-        self.tools_menu = QtGui.QMenu(self.menuBar)
+        self.tools_menu = QtGui.QMenu(self.menu_bar)
         self.tools_menu.setObjectName(u'tools_menu')
         # Settings Menu
-        self.settings_menu = QtGui.QMenu(self.menuBar)
+        self.settings_menu = QtGui.QMenu(self.menu_bar)
         self.settings_menu.setObjectName(u'settingsMenu')
         self.settings_language_menu = QtGui.QMenu(self.settings_menu)
         self.settings_language_menu.setObjectName(u'settingsLanguageMenu')
         # Help Menu
-        self.help_menu = QtGui.QMenu(self.menuBar)
+        self.help_menu = QtGui.QMenu(self.menu_bar)
         self.help_menu.setObjectName(u'helpMenu')
-        main_window.setMenuBar(self.menuBar)
+        main_window.setMenuBar(self.menu_bar)
         self.status_bar = QtGui.QStatusBar(main_window)
         self.status_bar.setObjectName(u'status_bar')
         main_window.setStatusBar(self.status_bar)
@@ -346,7 +346,7 @@ class Ui_MainWindow(object):
                 self.about_item))
         else:
             add_actions(self.help_menu, (self.on_line_help_item, None, self.web_site_item, self.about_item))
-        add_actions(self.menuBar, (self.file_menu.menuAction(), self.view_menu.menuAction(),
+        add_actions(self.menu_bar, (self.file_menu.menuAction(), self.view_menu.menuAction(),
             self.tools_menu.menuAction(), self.settings_menu.menuAction(), self.help_menu.menuAction()))
         add_actions(self, [self.search_shortcut_action])
         # Initialise the translation
@@ -1189,7 +1189,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreState(settings.value(u'main window state'))
         self.live_controller.splitter.restoreState(settings.value(u'live splitter geometry'))
         self.preview_controller.splitter.restoreState(settings.value(u'preview splitter geometry'))
-        self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
+        self.control_splitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
     def save_settings(self):
@@ -1210,7 +1210,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry', self.live_controller.splitter.saveState())
         settings.setValue(u'preview splitter geometry', self.preview_controller.splitter.saveState())
-        settings.setValue(u'main window splitter geometry', self.controlSplitter.saveState())
+        settings.setValue(u'main window splitter geometry', self.control_splitter.saveState())
         settings.endGroup()
 
     def update_recent_files_menu(self):

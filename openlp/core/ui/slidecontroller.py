@@ -119,7 +119,7 @@ class SlideController(DisplayController):
         self.service_item = None
         self.slide_limits = None
         self.update_slide_limits()
-        self.panel = QtGui.QWidget(parent.controlSplitter)
+        self.panel = QtGui.QWidget(parent.control_splitter)
         self.slideList = {}
         # Layout for holding panel
         self.panel_layout = QtGui.QVBoxLayout(self.panel)
@@ -582,7 +582,7 @@ class SlideController(DisplayController):
                 self.preview_list_widget.resizeRowsToContents()
             else:
                 # Sort out image heights.
-                width = self.main_window.controlSplitter.sizes()[self.split]
+                width = self.main_window.control_splitter.sizes()[self.split]
                 for framenumber in range(len(self.service_item.get_frames())):
                     self.preview_list_widget.setRowHeight(framenumber, width / self.ratio)
         self.onControllerSizeChanged(self.controller.width())
@@ -753,7 +753,7 @@ class SlideController(DisplayController):
             self._resetBlank()
         Registry().execute(u'%s_start' % service_item.name.lower(), [service_item, self.is_live, self.hide_mode(), slideno])
         self.slideList = {}
-        width = self.main_window.controlSplitter.sizes()[self.split]
+        width = self.main_window.control_splitter.sizes()[self.split]
         self.preview_list_widget.clear()
         self.preview_list_widget.setRowCount(0)
         self.preview_list_widget.setColumnWidth(0, width)
