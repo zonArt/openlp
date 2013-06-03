@@ -86,6 +86,12 @@ class RemoteTab(SettingsTab):
         self.stage_url.setObjectName(u'stage_url')
         self.stage_url.setOpenExternalLinks(True)
         self.http_setting_layout.addRow(self.stage_url_label, self.stage_url)
+        self.live_url_label = QtGui.QLabel(self.http_settings_group_box)
+        self.live_url_label.setObjectName(u'live_url_label')
+        self.live_url = QtGui.QLabel(self.http_settings_group_box)
+        self.live_url.setObjectName(u'live_url')
+        self.live_url.setOpenExternalLinks(True)
+        self.http_setting_layout.addRow(self.live_url_label, self.live_url)
         self.left_layout.addWidget(self.http_settings_group_box)
         self.https_settings_group_box = QtGui.QGroupBox(self.left_column)
         self.https_settings_group_box.setCheckable(True)
@@ -116,6 +122,12 @@ class RemoteTab(SettingsTab):
         self.stage_https_url.setObjectName(u'stage_https_url')
         self.stage_https_url.setOpenExternalLinks(True)
         self.https_settings_layout.addRow(self.stage_https_url_label, self.stage_https_url)
+        self.live_https_url_label = QtGui.QLabel(self.https_settings_group_box)
+        self.live_https_url_label.setObjectName(u'live_url_label')
+        self.live_https_url = QtGui.QLabel(self.https_settings_group_box)
+        self.live_https_url.setObjectName(u'live_https_url')
+        self.live_https_url.setOpenExternalLinks(True)
+        self.https_settings_layout.addRow(self.live_https_url_label, self.live_https_url)
         self.left_layout.addWidget(self.https_settings_group_box)
         self.user_login_group_box = QtGui.QGroupBox(self.left_column)
         self.user_login_group_box.setCheckable(True)
@@ -163,6 +175,7 @@ class RemoteTab(SettingsTab):
         self.port_label.setText(translate('RemotePlugin.RemoteTab', 'Port number:'))
         self.remote_url_label.setText(translate('RemotePlugin.RemoteTab', 'Remote URL:'))
         self.stage_url_label.setText(translate('RemotePlugin.RemoteTab', 'Stage view URL:'))
+        self.live_url_label.setText(translate('RemotePlugin.RemoteTab', 'Live view URL:'))
         self.twelve_hour_check_box.setText(translate('RemotePlugin.RemoteTab', 'Display stage time in 12h format'))
         self.android_app_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'Android App'))
         self.qr_description_label.setText(translate('RemotePlugin.RemoteTab',
@@ -176,6 +189,7 @@ class RemoteTab(SettingsTab):
         self.https_port_label.setText(self.port_label.text())
         self.remote_https_url_label.setText(self.remote_url_label.text())
         self.stage_https_url_label.setText(self.stage_url_label.text())
+        self.live_https_url_label.setText(self.live_url_label.text())
         self.user_login_group_box.setTitle(translate('RemotePlugin.RemoteTab', 'User Authentication'))
         self.user_id_label.setText(translate('RemotePlugin.RemoteTab', 'User id:'))
         self.password_label.setText(translate('RemotePlugin.RemoteTab', 'Password:'))
@@ -203,10 +217,14 @@ class RemoteTab(SettingsTab):
         https_url = u'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
         self.remote_url.setText(u'<a href="%s">%s</a>' % (http_url, http_url))
         self.remote_https_url.setText(u'<a href="%s">%s</a>' % (https_url, https_url))
-        http_url += u'stage'
-        https_url += u'stage'
-        self.stage_url.setText(u'<a href="%s">%s</a>' % (http_url, http_url))
-        self.stage_https_url.setText(u'<a href="%s">%s</a>' % (https_url, https_url))
+        http_url_temp = http_url + u'stage'
+        https_url_temp = https_url + u'stage'
+        self.stage_url.setText(u'<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
+        self.stage_https_url.setText(u'<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+        http_url_temp = http_url + u'live'
+        https_url_temp = https_url + u'live'
+        self.live_url.setText(u'<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
+        self.live_https_url.setText(u'<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
 
     def load(self):
         """

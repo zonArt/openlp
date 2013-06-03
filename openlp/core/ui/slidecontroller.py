@@ -89,7 +89,7 @@ class SlideController(DisplayController):
         Set up the Slide Controller.
         """
         DisplayController.__init__(self, parent, is_live)
-        Registry().register_function(u'bootstrap_post_set_up', self.screenSizeChanged)
+        Registry().register_function(u'bootstrap_post_set_up', self.screen_size_changed)
         self.screens = ScreenList()
         try:
             self.ratio = float(self.screens.current[u'size'].width()) / float(self.screens.current[u'size'].height())
@@ -323,18 +323,18 @@ class SlideController(DisplayController):
         self.slide_layout.insertWidget(0, self.preview_display)
         self.preview_display.hide()
         # Actual preview screen
-        self.slidePreview = QtGui.QLabel(self)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.slidePreview.sizePolicy().hasHeightForWidth())
-        self.slidePreview.setSizePolicy(sizePolicy)
-        self.slidePreview.setFrameShape(QtGui.QFrame.Box)
-        self.slidePreview.setFrameShadow(QtGui.QFrame.Plain)
-        self.slidePreview.setLineWidth(1)
-        self.slidePreview.setScaledContents(True)
-        self.slidePreview.setObjectName(u'slidePreview')
-        self.slide_layout.insertWidget(0, self.slidePreview)
+        self.slide_preview = QtGui.QLabel(self)
+        size_policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        size_policy.setHorizontalStretch(0)
+        size_policy.setVerticalStretch(0)
+        size_policy.setHeightForWidth(self.slide_preview.sizePolicy().hasHeightForWidth())
+        self.slide_preview.setSizePolicy(size_policy)
+        self.slide_preview.setFrameShape(QtGui.QFrame.Box)
+        self.slide_preview.setFrameShadow(QtGui.QFrame.Plain)
+        self.slide_preview.setLineWidth(1)
+        self.slide_preview.setScaledContents(True)
+        self.slide_preview.setObjectName(u'slide_preview')
+        self.slide_layout.insertWidget(0, self.slide_preview)
         self.grid.addLayout(self.slide_layout, 0, 0, 1, 1)
         if self.is_live:
             self.current_shortcut = u''
@@ -519,10 +519,9 @@ class SlideController(DisplayController):
                     self.service_manager.next_item()
             self.keypress_loop = False
 
-    def screenSizeChanged(self):
+    def screen_size_changed(self):
         """
-        Settings dialog has changed the screen size of adjust output and
-        screen previews.
+        Settings dialog has changed the screen size of adjust output and screen previews.
         """
         # rebuild display as screen size changed
         if self.display:
@@ -538,14 +537,14 @@ class SlideController(DisplayController):
         except ZeroDivisionError:
             self.ratio = 1
         self.media_controller.setup_display(self.display, False)
-        self.previewSizeChanged()
+        self.preview_size_changed()
         self.preview_display.setup()
         service_item = ServiceItem()
         self.preview_display.web_view.setHtml(build_html(service_item, self.preview_display.screen, None, self.is_live,
             plugins=self.plugin_manager.plugins))
         self.media_controller.setup_display(self.preview_display, True)
         if self.service_item:
-            self.refreshServiceItem()
+            self.refresh_service_item()
 
     def __addActionsToWidget(self, widget):
         """
@@ -556,7 +555,7 @@ class SlideController(DisplayController):
             self.previousService, self.nextService,
             self.escapeItem])
 
-    def previewSizeChanged(self):
+    def preview_size_changed(self):
         """
         Takes care of the SlidePreview's size. Is called when one of the the
         splitters is moved or when the screen size is changed. Note, that this
@@ -565,14 +564,14 @@ class SlideController(DisplayController):
         if self.ratio < float(self.preview_frame.width()) / float(self.preview_frame.height()):
             # We have to take the height as limit.
             max_height = self.preview_frame.height() - self.grid.margin() * 2
-            self.slidePreview.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
+            self.slide_preview.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
             self.preview_display.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
             self.preview_display.screen = {
                 u'size': self.preview_display.geometry()}
         else:
             # We have to take the width as limit.
             max_width = self.preview_frame.width() - self.grid.margin() * 2
-            self.slidePreview.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
+            self.slide_preview.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.screen = {
                 u'size': self.preview_display.geometry()}
@@ -626,17 +625,16 @@ class SlideController(DisplayController):
         """
         self.slide_limits = Settings().value(self.main_window.advanced_settings_section + u'/slide limits')
 
-    def enableToolBar(self, item):
+    def enable_tool_bar(self, item):
         """
-        Allows the toolbars to be reconfigured based on Controller Type
-        and ServiceItem Type
+        Allows the toolbars to be reconfigured based on Controller Type and ServiceItem Type
         """
         if self.is_live:
-            self.enableLiveToolBar(item)
+            self.enable_live_tool_bar(item)
         else:
-            self.enablePreviewToolBar(item)
+            self.enable_preview_tool_bar(item)
 
-    def enableLiveToolBar(self, item):
+    def enable_live_tool_bar(self, item):
         """
         Allows the live toolbar to be customised
         """
@@ -665,7 +663,7 @@ class SlideController(DisplayController):
         # See bug #791050
         self.toolbar.show()
 
-    def enablePreviewToolBar(self, item):
+    def enable_preview_tool_bar(self, item):
         """
         Allows the Preview toolbar to be customised
         """
@@ -684,15 +682,15 @@ class SlideController(DisplayController):
         # See bug #791050
         self.toolbar.show()
 
-    def refreshServiceItem(self):
+    def refresh_service_item(self):
         """
         Method to update the service item if the screen has changed
         """
-        log.debug(u'refreshServiceItem live = %s' % self.is_live)
+        log.debug(u'refresh_service_item live = %s' % self.is_live)
         if self.service_item.is_text() or self.service_item.is_image():
             item = self.service_item
             item.render()
-            self._processItem(item, self.selected_row)
+            self._process_item(item, self.selected_row)
 
     def add_service_item(self, item):
         """
@@ -705,14 +703,14 @@ class SlideController(DisplayController):
         if self.song_edit:
             slideno = self.selected_row
         self.song_edit = False
-        self._processItem(item, slideno)
+        self._process_item(item, slideno)
 
     def replaceServiceManagerItem(self, item):
         """
         Replacement item following a remote edit
         """
         if item == self.service_item:
-            self._processItem(item, self.preview_list_widget.currentRow())
+            self._process_item(item, self.preview_list_widget.currentRow())
 
     def addServiceManagerItem(self, item, slideno):
         """
@@ -731,7 +729,7 @@ class SlideController(DisplayController):
             self.__checkUpdateSelectedSlide(slidenum)
             self.slideSelected()
         else:
-            self._processItem(item, slidenum)
+            self._process_item(item, slidenum)
             if self.is_live and item.auto_play_slides_loop and item.timed_slide_interval > 0:
                 self.play_slides_loop.setChecked(item.auto_play_slides_loop)
                 self.delay_spin_box.setValue(int(item.timed_slide_interval))
@@ -741,7 +739,7 @@ class SlideController(DisplayController):
                 self.delay_spin_box.setValue(int(item.timed_slide_interval))
                 self.onPlaySlidesOnce()
 
-    def _processItem(self, service_item, slideno):
+    def _process_item(self, service_item, slideno):
         """
         Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
@@ -829,10 +827,9 @@ class SlideController(DisplayController):
         self.preview_list_widget.setVerticalHeaderLabels(text)
         if self.service_item.is_text():
             self.preview_list_widget.resizeRowsToContents()
-        self.preview_list_widget.setColumnWidth(0,
-            self.preview_list_widget.viewport().size().width())
+        self.preview_list_widget.setColumnWidth(0, self.preview_list_widget.viewport().size().width())
         self.__updatePreviewSelection(slideno)
-        self.enableToolBar(service_item)
+        self.enable_tool_bar(service_item)
         # Pass to display for viewing.
         # Postpone image build, we need to do this later to avoid the theme
         # flashing on the screen
@@ -1062,7 +1059,7 @@ class SlideController(DisplayController):
             QtCore.QTimer.singleShot(2.5, self.grab_maindisplay)
         else:
             self.slide_image = self.display.preview()
-            self.slidePreview.setPixmap(self.slide_image)
+            self.slide_preview.setPixmap(self.slide_image)
         self.slide_count += 1
 
     def grab_maindisplay(self):
@@ -1072,7 +1069,7 @@ class SlideController(DisplayController):
         win_id = QtGui.QApplication.desktop().winId()
         rect = self.screens.current[u'size']
         win_image = QtGui.QPixmap.grabWindow(win_id, rect.x(), rect.y(), rect.width(), rect.height())
-        self.slidePreview.setPixmap(win_image)
+        self.slide_preview.setPixmap(win_image)
         self.slide_image = win_image
 
     def on_slide_selected_next_action(self, checked):
@@ -1279,7 +1276,7 @@ class SlideController(DisplayController):
         self.media_controller.video(self.controller_type, item, self.hide_mode())
         if not self.is_live:
             self.preview_display.show()
-            self.slidePreview.hide()
+            self.slide_preview.hide()
 
     def onMediaClose(self):
         """
@@ -1288,7 +1285,7 @@ class SlideController(DisplayController):
         log.debug(u'SlideController onMediaClose')
         self.media_controller.media_reset(self)
         self.preview_display.hide()
-        self.slidePreview.show()
+        self.slide_preview.show()
 
     def _resetBlank(self):
         """
