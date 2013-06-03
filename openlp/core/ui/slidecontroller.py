@@ -121,6 +121,8 @@ class SlideController(DisplayController):
         self.update_slide_limits()
         self.panel = QtGui.QWidget(parent.controlSplitter)
         self.slideList = {}
+        self.slide_count = 0
+        self.slide_image = None
         # Layout for holding panel
         self.panel_layout = QtGui.QVBoxLayout(self.panel)
         self.panel_layout.setSpacing(0)
@@ -136,8 +138,6 @@ class SlideController(DisplayController):
             self.keypress_loop = False
             self.category = UiStrings().LiveToolbar
             ActionList.get_instance().add_category(unicode(self.category), CategoryOrder.standard_toolbar)
-            self.slide_count = 0
-            self.slide_image = None
         else:
             Registry().register(u'preview_controller', self)
             self.type_label.setText(UiStrings().Preview)
