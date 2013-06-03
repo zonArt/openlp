@@ -183,8 +183,7 @@ def image_to_byte(image):
     # use buffer to store pixmap into byteArray
     buffie = QtCore.QBuffer(byte_array)
     buffie.open(QtCore.QIODevice.WriteOnly)
-    if isinstance(image, QtGui.QImage):
-        image.save(buffie, "PNG")
+    image.save(buffie, "PNG")
     log.debug(u'image_to_byte - end')
     # convert to base64 encoding so does not get missed!
     return byte_array.toBase64()
