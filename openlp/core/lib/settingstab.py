@@ -30,6 +30,7 @@
 The :mod:`~openlp.core.lib.settingstab` module contains the base SettingsTab class which plugins use for adding their
 own tab to the settings dialog.
 """
+from __future__ import division
 
 from PyQt4 import QtGui
 
@@ -90,7 +91,7 @@ class SettingsTab(QtGui.QWidget):
             QtGui.QWidget.resizeEvent(self, event)
         width = self.width() - self.tab_layout.spacing() - \
             self.tab_layout.contentsMargins().left() - self.tab_layout.contentsMargins().right()
-        left_width = min(width - self.right_column.minimumSizeHint().width(), width / 2)
+        left_width = min(width - self.right_column.minimumSizeHint().width(), width // 2)
         left_width = max(left_width, self.left_column.minimumSizeHint().width())
         self.left_column.setFixedWidth(left_width)
 
