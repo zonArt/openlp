@@ -235,8 +235,7 @@ class SongsPlugin(Plugin):
             u'delete': translate('SongsPlugin', 'Delete the selected song.'),
             u'preview': translate('SongsPlugin', 'Preview the selected song.'),
             u'live': translate('SongsPlugin', 'Send the selected song live.'),
-            u'service': translate('SongsPlugin',
-                'Add the selected song to the service.')
+            u'service': translate('SongsPlugin', 'Add the selected song to the service.')
         }
         self.set_plugin_ui_text_strings(tooltips)
 

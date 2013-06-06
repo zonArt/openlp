@@ -39,39 +39,39 @@ class Ui_FirstTimeLanguageDialog(object):
     """
     The UI widgets of the language selection dialog.
     """
-    def setupUi(self, languageDialog):
+    def setupUi(self, language_dialog):
         """
         Set up the UI.
         """
-        languageDialog.setObjectName(u'languageDialog')
-        languageDialog.resize(300, 50)
-        self.dialogLayout = QtGui.QVBoxLayout(languageDialog)
-        self.dialogLayout.setContentsMargins(8, 8, 8, 8)
-        self.dialogLayout.setSpacing(8)
-        self.dialogLayout.setObjectName(u'dialog_layout')
-        self.infoLabel = QtGui.QLabel(languageDialog)
-        self.infoLabel.setObjectName(u'infoLabel')
-        self.dialogLayout.addWidget(self.infoLabel)
-        self.languageLayout = QtGui.QHBoxLayout()
-        self.languageLayout.setObjectName(u'languageLayout')
-        self.languageLabel = QtGui.QLabel(languageDialog)
-        self.languageLabel.setObjectName(u'languageLabel')
-        self.languageLayout.addWidget(self.languageLabel)
-        self.languageComboBox = QtGui.QComboBox(languageDialog)
-        self.languageComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.languageComboBox.setObjectName("languageComboBox")
-        self.languageLayout.addWidget(self.languageComboBox)
-        self.dialogLayout.addLayout(self.languageLayout)
-        self.button_box = create_button_box(languageDialog, u'button_box', [u'cancel', u'ok'])
-        self.dialogLayout.addWidget(self.button_box)
-        self.retranslateUi(languageDialog)
+        language_dialog.setObjectName(u'language_dialog')
+        language_dialog.resize(300, 50)
+        self.dialog_layout = QtGui.QVBoxLayout(language_dialog)
+        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
+        self.dialog_layout.setSpacing(8)
+        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.info_label = QtGui.QLabel(language_dialog)
+        self.info_label.setObjectName(u'info_label')
+        self.dialog_layout.addWidget(self.info_label)
+        self.language_layout = QtGui.QHBoxLayout()
+        self.language_layout.setObjectName(u'language_layout')
+        self.language_label = QtGui.QLabel(language_dialog)
+        self.language_label.setObjectName(u'language_label')
+        self.language_layout.addWidget(self.language_label)
+        self.language_combo_box = QtGui.QComboBox(language_dialog)
+        self.language_combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
+        self.language_combo_box.setObjectName("language_combo_box")
+        self.language_layout.addWidget(self.language_combo_box)
+        self.dialog_layout.addLayout(self.language_layout)
+        self.button_box = create_button_box(language_dialog, u'button_box', [u'cancel', u'ok'])
+        self.dialog_layout.addWidget(self.button_box)
+        self.retranslateUi(language_dialog)
         self.setMaximumHeight(self.sizeHint().height())
 
-    def retranslateUi(self, languageDialog):
+    def retranslateUi(self, language_dialog):
         """
         Translate the UI on the fly.
         """
         self.setWindowTitle(translate('OpenLP.FirstTimeLanguageForm', 'Select Translation'))
-        self.infoLabel.setText(
+        self.info_label.setText(
             translate('OpenLP.FirstTimeLanguageForm', 'Choose the translation you\'d like to use in OpenLP.'))
-        self.languageLabel.setText(translate('OpenLP.FirstTimeLanguageForm', 'Translation:'))
+        self.language_label.setText(translate('OpenLP.FirstTimeLanguageForm', 'Translation:'))

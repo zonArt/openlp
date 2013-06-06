@@ -177,9 +177,9 @@ def check_latest_version(current_version):
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
     settings = Settings()
-    settings.beginGroup(u'general')
+    settings.beginGroup(u'core')
     last_test = settings.value(u'last version test')
-    this_test = datetime.now().date()
+    this_test = unicode(datetime.now().date())
     settings.setValue(u'last version test', this_test)
     settings.endGroup()
     # Tell the main window whether there will ever be data to display
@@ -239,8 +239,7 @@ def get_images_filter():
     global IMAGES_FILTER
     if not IMAGES_FILTER:
         log.debug(u'Generating images filter.')
-        formats = [unicode(fmt)
-            for fmt in QtGui.QImageReader.supportedImageFormats()]
+        formats = map(unicode, QtGui.QImageReader.supportedImageFormats())
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
         IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)

@@ -36,10 +36,11 @@ from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
 
+
 class Controller(object):
     """
-    This is the Presentation listener who acts on events from the slide
-    controller and passes the messages on the the correct presentation handlers
+    This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
+    correct presentation handlers.
     """
     log.info(u'Controller loaded')
 
@@ -54,9 +55,8 @@ class Controller(object):
 
     def add_handler(self, controller, file, hide_mode, slide_no):
         """
-        Add a handler, which is an instance of a presentation and
-        slidecontroller combination. If the slidecontroller has a display
-        then load the presentation.
+        Add a handler, which is an instance of a presentation and slidecontroller combination. If the slidecontroller
+        has a display then load the presentation.
         """
         log.debug(u'Live = %s, add_handler %s' % (self.is_live, file))
         self.controller = controller
@@ -86,8 +86,7 @@ class Controller(object):
 
     def activate(self):
         """
-        Active the presentation, and show it on the screen.
-        Use the last slide number.
+        Active the presentation, and show it on the screen. Use the last slide number.
         """
         log.debug(u'Live = %s, activate' % self.is_live)
         if not self.doc:
@@ -130,7 +129,7 @@ class Controller(object):
 
     def first(self):
         """
-        Based on the handler passed at startup triggers the first slide
+        Based on the handler passed at startup triggers the first slide.
         """
         log.debug(u'Live = %s, first' % self.is_live)
         if not self.doc:
@@ -148,7 +147,7 @@ class Controller(object):
 
     def last(self):
         """
-        Based on the handler passed at startup triggers the last slide
+        Based on the handler passed at startup triggers the last slide.
         """
         log.debug(u'Live = %s, last' % self.is_live)
         if not self.doc:
@@ -166,7 +165,7 @@ class Controller(object):
 
     def next(self):
         """
-        Based on the handler passed at startup triggers the next slide event
+        Based on the handler passed at startup triggers the next slide event.
         """
         log.debug(u'Live = %s, next' % self.is_live)
         if not self.doc:
@@ -182,9 +181,8 @@ class Controller(object):
             return
         if not self.activate():
             return
-        # The "End of slideshow" screen is after the last slide
-        # Note, we can't just stop on the last slide, since it may
-        # contain animations that need to be stepped through.
+        # The "End of slideshow" screen is after the last slide. Note, we can't just stop on the last slide, since it
+        # may contain animations that need to be stepped through.
         if self.doc.slidenumber > self.doc.get_slide_count():
             return
         self.doc.next_step()
@@ -192,7 +190,7 @@ class Controller(object):
 
     def previous(self):
         """
-        Based on the handler passed at startup triggers the previous slide event
+        Based on the handler passed at startup triggers the previous slide event.
         """
         log.debug(u'Live = %s, previous' % self.is_live)
         if not self.doc:
@@ -213,7 +211,7 @@ class Controller(object):
 
     def shutdown(self):
         """
-        Based on the handler passed at startup triggers slide show to shut down
+        Based on the handler passed at startup triggers slide show to shut down.
         """
         log.debug(u'Live = %s, shutdown' % self.is_live)
         if not self.doc:
@@ -223,7 +221,7 @@ class Controller(object):
 
     def blank(self, hide_mode):
         """
-        Instruct the controller to blank the presentation
+        Instruct the controller to blank the presentation.
         """
         log.debug(u'Live = %s, blank' % self.is_live)
         self.hide_mode = hide_mode
@@ -244,7 +242,7 @@ class Controller(object):
 
     def stop(self):
         """
-        Instruct the controller to stop and hide the presentation
+        Instruct the controller to stop and hide the presentation.
         """
         log.debug(u'Live = %s, stop' % self.is_live)
         self.hide_mode = HideMode.Screen
@@ -260,7 +258,7 @@ class Controller(object):
 
     def unblank(self):
         """
-        Instruct the controller to unblank the presentation
+        Instruct the controller to unblank the presentation.
         """
         log.debug(u'Live = %s, unblank' % self.is_live)
         self.hide_mode = None
@@ -283,8 +281,8 @@ class Controller(object):
 
 class MessageListener(object):
     """
-    This is the Presentation listener who acts on events from the slide
-    controller and passes the messages on the the correct presentation handlers
+    This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
+    correct presentation handlers
     """
     log.info(u'Message Listener loaded')
 
@@ -310,15 +308,14 @@ class MessageListener(object):
 
     def startup(self, message):
         """
-        Start of new presentation
-        Save the handler as any new presentations start here
+        Start of new presentation. Save the handler as any new presentations start here
         """
+        log.debug(u'Startup called with message %s' % message)
         is_live = message[1]
         item = message[0]
-        log.debug(u'Startup called with message %s' % message)
         hide_mode = message[2]
         file = item.get_frame_path()
-        self.handler = item.title
+        self.handler = item.processor
         if self.handler == self.media_item.Automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
@@ -331,7 +328,7 @@ class MessageListener(object):
 
     def slide(self, message):
         """
-        React to the message to move to a specific slide
+        React to the message to move to a specific slide.
         """
         is_live = message[1]
         slide = message[2]
@@ -342,7 +339,7 @@ class MessageListener(object):
 
     def first(self, message):
         """
-        React to the message to move to the first slide
+        React to the message to move to the first slide.
         """
         is_live = message[1]
         if is_live:
@@ -352,7 +349,7 @@ class MessageListener(object):
 
     def last(self, message):
         """
-        React to the message to move to the last slide
+        React to the message to move to the last slide.
         """
         is_live = message[1]
         if is_live:
@@ -362,7 +359,7 @@ class MessageListener(object):
 
     def next(self, message):
         """
-        React to the message to move to the next animation/slide
+        React to the message to move to the next animation/slide.
         """
         is_live = message[1]
         if is_live:
@@ -372,7 +369,7 @@ class MessageListener(object):
 
     def previous(self, message):
         """
-        React to the message to move to the previous animation/slide
+        React to the message to move to the previous animation/slide.
         """
         is_live = message[1]
         if is_live:
@@ -382,8 +379,7 @@ class MessageListener(object):
 
     def shutdown(self, message):
         """
-        React to message to shutdown the presentation. I.e. end the show
-        and close the file
+        React to message to shutdown the presentation. I.e. end the show and close the file.
         """
         is_live = message[1]
         if is_live:
@@ -393,7 +389,7 @@ class MessageListener(object):
 
     def hide(self, message):
         """
-        React to the message to show the desktop
+        React to the message to show the desktop.
         """
         is_live = message[1]
         if is_live:
@@ -401,7 +397,7 @@ class MessageListener(object):
 
     def blank(self, message):
         """
-        React to the message to blank the display
+        React to the message to blank the display.
         """
         is_live = message[1]
         hide_mode = message[2]
@@ -410,7 +406,7 @@ class MessageListener(object):
 
     def unblank(self, message):
         """
-        React to the message to unblank the display
+        React to the message to unblank the display.
         """
         is_live = message[1]
         if is_live:
@@ -418,9 +414,7 @@ class MessageListener(object):
 
     def timeout(self):
         """
-        The presentation may be timed or might be controlled by the
-        application directly, rather than through OpenLP. Poll occasionally
-        to check which slide is currently displayed so the slidecontroller
-        view can be updated
+        The presentation may be timed or might be controlled by the application directly, rather than through OpenLP.
+        Poll occasionally to check which slide is currently displayed so the slidecontroller view can be updated.
         """
         self.live_handler.poll()

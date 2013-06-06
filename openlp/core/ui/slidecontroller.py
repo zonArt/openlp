@@ -360,8 +360,9 @@ class SlideController(DisplayController):
         # Signals
         self.preview_list_widget.clicked.connect(self.onSlideSelected)
         if self.is_live:
+            # Need to use event as called across threads and UI is updated
+            QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_toggle_display'), self.toggle_display)
             Registry().register_function(u'slidecontroller_live_spin_delay', self.receive_spin_delay)
-            Registry().register_function(u'slidecontroller_toggle_display', self.toggle_display)
             self.toolbar.set_widget_visible(self.loop_list, False)
             self.toolbar.set_widget_visible(self.wide_menu, False)
         else:
@@ -373,13 +374,16 @@ class SlideController(DisplayController):
         else:
             self.preview_list_widget.addActions([self.nextItem, self.previous_item])
         Registry().register_function(u'slidecontroller_%s_stop_loop' % self.type_prefix, self.on_stop_loop)
-        Registry().register_function(u'slidecontroller_%s_next' % self.type_prefix, self.on_slide_selected_next)
-        Registry().register_function(u'slidecontroller_%s_previous' % self.type_prefix, self.on_slide_selected_previous)
         Registry().register_function(u'slidecontroller_%s_change' % self.type_prefix, self.on_slide_change)
-        Registry().register_function(u'slidecontroller_%s_set' % self.type_prefix, self.on_slide_selected_index)
         Registry().register_function(u'slidecontroller_%s_blank' % self.type_prefix, self.on_slide_blank)
         Registry().register_function(u'slidecontroller_%s_unblank' % self.type_prefix, self.on_slide_unblank)
         Registry().register_function(u'slidecontroller_update_slide_limits', self.update_slide_limits)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_set' % self.type_prefix),
+            self.on_slide_selected_index)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_next' % self.type_prefix),
+            self.on_slide_selected_next)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'slidecontroller_%s_previous' % self.type_prefix),
+            self.on_slide_selected_previous)
 
     def _slideShortcutActivated(self):
         """
@@ -612,7 +616,7 @@ class SlideController(DisplayController):
         """
         Adjusts the value of the ``delay_spin_box`` to the given one.
         """
-        self.delay_spin_box.setValue(Settings().value(u'general/loop delay'))
+        self.delay_spin_box.setValue(Settings().value(u'core/loop delay'))
 
     def update_slide_limits(self):
         """
@@ -1229,7 +1233,7 @@ class SlideController(DisplayController):
         From the preview display requires the service Item to be editied
         """
         self.song_edit = True
-        new_item = Registry().get(self.service_item.name).onRemoteEdit(self.service_item.edit_id, True)
+        new_item = Registry().get(self.service_item.name).on_remote_edit(self.service_item.edit_id, True)
         if new_item:
             self.add_service_item(new_item)
 
