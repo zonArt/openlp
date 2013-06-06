@@ -82,37 +82,50 @@ def natural_sort(seq, compare=natural_compare):
     temp.sort(compare)
     return temp
 
+# NOTE: The following code is a duplicate of the code in openlp/core/utils/__init__.py. Any fix applied here should also
+# be applied there.
 try:
-    bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
+    # Get the revision of this tree.
+    bzr = Popen((u'bzr', u'revno'), stdout=PIPE)
+    tree_revision, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+        raise Exception(u'Error running bzr log')
+
+    # Get all tags.
+    bzr = Popen((u'bzr', u'tags'), stdout=PIPE)
     output, error = bzr.communicate()
     code = bzr.wait()
     if code != 0:
         raise Exception(u'Error running bzr tags')
-    lines = output.splitlines()
-    if not lines:
-        tag = u'0.0.0'
-        revision = u'0'
+    tags = output.splitlines()
+    if not tags:
+        tag_version = u'0.0.0'
+        tag_revision = u'0'
     else:
-        tag, revision = lines[-1].split()
-    bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'), stdout=PIPE)
-    output, error = bzr.communicate()
-    code = bzr.wait()
-    if code != 0:
-        raise Exception(u'Error running bzr log')
-    latest = output.split(u':')[0]
-    version = latest == revision and tag or u'%s-bzr%s' % (tag, latest)
+        # Remove any tag that has "?" as revision number. A "?" as revision number indicates, that this tag is from
+        # another series.
+        tags = [tag for tag in tags if tag.split()[-1].strip() != u'?']
+        # Get the last tag and split it in a revision and tag name.
+        tag_version, tag_revision = tags[-1].split()
+    # If they are equal, then this tree is tarball with the source for the release. We do not want the revision number
+    # in the version string.
+    if tree_revision == tag_revision:
+        version_string =  tag_version
+    else:
+        version_string =  u'%s-bzr%s' % (tag_version, tree_revision)
     ver_file = open(VERSION_FILE, u'w')
-    ver_file.write(version)
-    ver_file.close()
+    ver_file.write(version_string)
 except:
     ver_file = open(VERSION_FILE, u'r')
-    version = ver_file.read().strip()
+    version_string = ver_file.read().strip()
+finally:
     ver_file.close()
 
 
 setup(
     name='OpenLP',
-    version=version,
+    version=version_string,
     description="Open source Church presentation and lyrics projection application.",
     long_description="""\
 OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship using a computer and a data projector.""",
