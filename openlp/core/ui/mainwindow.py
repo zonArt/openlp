@@ -560,6 +560,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Called when the search shotcut has been pressed.
         """
+        # Make sure the media_dock is visible.
+        if not self.media_manager_dock.isVisible():
+            self.media_manager_dock.setVisible(True)
         widget = self.media_tool_box.currentWidget()
         if widget:
             widget.on_focus()
