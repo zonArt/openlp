@@ -459,7 +459,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         path_file_name = unicode(self.file_name())
         path, file_name = os.path.split(path_file_name)
         base_name = os.path.splitext(file_name)[0]
-        service_file_name = '%s.osjd' % base_name
+        service_file_name = '%s.osj' % base_name
         log.debug(u'ServiceManager.save_file - %s', path_file_name)
         Settings().setValue(self.main_window.service_manager_settings_section + u'/last directory', path)
         service = []
@@ -573,7 +573,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         path_file_name = unicode(self.file_name())
         path, file_name = os.path.split(path_file_name)
         base_name = os.path.splitext(file_name)[0]
-        service_file_name = '%s.osjd' % base_name
+        service_file_name = '%s.osj' % base_name
         log.debug(u'ServiceManager.save_file - %s', path_file_name)
         Settings().setValue(self.main_window.service_manager_settings_section + u'/last directory', path)
         service = []
@@ -586,7 +586,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             #TODO: check for file item on save.
             service.append({u'serviceitem': service_item})
             self.main_window.increment_progress_bar()
-        service_content = cPickle.dumps(service)
+        service_content = json.dumps(service)
         zip_file = None
         success = True
         self.main_window.increment_progress_bar()
@@ -699,11 +699,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 log.debug(u'Extract file: %s', osfile)
                 zip_info.filename = osfile
                 zip_file.extract(zip_info, self.servicePath)
-                if osfile.endswith(u'osjd') or osfile.endswith(u'osd'):
+                if osfile.endswith(u'osj') or osfile.endswith(u'osd'):
                     p_file = os.path.join(self.servicePath, osfile)
             if 'p_file' in locals():
                 file_to = open(p_file, u'r')
-                if osfile.endswith(u'osjd'):
+                if p_file.endswith(u'osj'):
                     items = json.load(file_to)
                 else:
                     items = cPickle.load(file_to)
