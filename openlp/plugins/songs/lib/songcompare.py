@@ -43,6 +43,7 @@ Finally two conditions can qualify a song tuple to be a duplicate:
    This condition should hit if one of the two songs (or both) is small (smaller
    than the min_block_size), but most of the song is contained in the other song.
 """
+from __future__ import division
 import difflib
 
 
@@ -85,7 +86,7 @@ def songs_probably_equal(song1, song2):
     for element in diff_no_typos:
         if element[0] == "equal" and _op_length(element) > length_of_longest_equal_block:
             length_of_longest_equal_block = _op_length(element)
-    if length_of_equal_blocks >= MIN_BLOCK_SIZE or length_of_longest_equal_block > len(small) * 2 / 3:
+    if length_of_equal_blocks >= MIN_BLOCK_SIZE or length_of_longest_equal_block > len(small) * 2 // 3:
         return True
     # Both checks failed. We assume the songs are not equal.
     return False

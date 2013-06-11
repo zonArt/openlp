@@ -29,6 +29,7 @@
 """
 The duplicate song removal logic for OpenLP.
 """
+from __future__ import division
 import logging
 import os
 
@@ -161,7 +162,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 self.notify_no_duplicates()
                 return
             # With x songs we have x*(x - 1) / 2 comparisons.
-            max_progress_count = max_songs * (max_songs - 1) / 2
+            max_progress_count = max_songs * (max_songs - 1) // 2
             self.duplicate_search_progress_bar.setMaximum(max_progress_count)
             songs = self.plugin.manager.get_all_objects(Song)
             for outer_song_counter in range(max_songs - 1):
@@ -193,7 +194,6 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         QtGui.QMessageBox.information(self, translate(u'Wizard', u'Information'),
             translate(u'Wizard', u'No duplicate songs have been found in the database.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-
 
     def add_duplicates_to_song_list(self, search_song, duplicate_song):
         """
