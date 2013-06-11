@@ -32,7 +32,6 @@ from PyQt4 import QtGui
 from openlp.core.lib import Registry, SettingsTab, Settings, UiStrings, translate
 
 
-
 class ImageTab(SettingsTab):
     """
     ImageTab is the images settings tab in the settings dialog.

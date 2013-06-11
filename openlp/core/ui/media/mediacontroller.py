@@ -466,8 +466,8 @@ class MediaController(object):
             The ServiceItem containing the details to be played.
         """
         used_players = get_media_players()[0]
-        if service_item.title != UiStrings().Automatic:
-            used_players = [service_item.title.lower()]
+        if service_item.processor != UiStrings().Automatic:
+            used_players = [service_item.processor.lower()]
         if controller.media_info.file_info.isFile():
             suffix = u'*.%s' % controller.media_info.file_info.suffix().lower()
             for title in used_players:
