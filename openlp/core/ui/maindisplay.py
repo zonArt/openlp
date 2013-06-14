@@ -35,6 +35,7 @@ Some of the code for this form is based on the examples at:
 * `http://html5demos.com/two-videos`_
 
 """
+from __future__ import division
 import cgi
 import logging
 import sys
@@ -207,8 +208,8 @@ class MainDisplay(Display):
             painter_image.begin(self.initial_fame)
             painter_image.fillRect(self.initial_fame.rect(), background_color)
             painter_image.drawImage(
-                (self.screen[u'size'].width() - splash_image.width()) / 2,
-                (self.screen[u'size'].height() - splash_image.height()) / 2,
+                (self.screen[u'size'].width() - splash_image.width()) // 2,
+                (self.screen[u'size'].height() - splash_image.height()) // 2,
                 splash_image)
             service_item = ServiceItem()
             service_item.bg_image_bytes = image_to_byte(self.initial_fame)
@@ -268,7 +269,7 @@ class MainDisplay(Display):
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
                 if location == AlertLocation.Middle:
-                    self.move(self.screen[u'size'].left(), (self.screen[u'size'].height() - alert_height) / 2)
+                    self.move(self.screen[u'size'].left(), (self.screen[u'size'].height() - alert_height) // 2)
                 elif location == AlertLocation.Bottom:
                     self.move(self.screen[u'size'].left(), self.screen[u'size'].height() - alert_height)
             else:

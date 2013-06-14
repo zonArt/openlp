@@ -72,3 +72,45 @@ class TestEditCustomForm(TestCase):
 
             # THEN: One slide should be added.
             assert self.form.slide_list_view.count() == 1, u'There should be one slide added.'
+
+    def validate_not_valid_part1_test(self):
+        """
+        Test the _validate() method.
+        """
+        # GIVEN: Mocked methods.
+        with patch(u'openlp.plugins.custom.forms.editcustomform.critical_error_message_box') as \
+                mocked_critical_error_message_box:
+            mocked_displayText = MagicMock()
+            mocked_displayText.return_value = u''
+            self.form.title_edit.displayText = mocked_displayText
+            mocked_setFocus = MagicMock()
+            self.form.title_edit.setFocus = mocked_setFocus
+
+            # WHEN: Call the method.
+            result = self.form._validate()
+
+            # THEN: The validate method should have returned False.
+            assert not result, u'The _validate() method should have retured False'
+            mocked_setFocus.assert_called_with()
+            mocked_critical_error_message_box.assert_called_with(message=u'You need to type in a title.')
+
+    def validate_not_valid_part2_test(self):
+        """
+        Test the _validate() method.
+        """
+        # GIVEN: Mocked methods.
+        with patch(u'openlp.plugins.custom.forms.editcustomform.critical_error_message_box') as \
+                mocked_critical_error_message_box:
+            mocked_displayText = MagicMock()
+            mocked_displayText.return_value = u'something'
+            self.form.title_edit.displayText = mocked_displayText
+            mocked_count = MagicMock()
+            mocked_count.return_value = 0
+            self.form.slide_list_view.count = mocked_count
+
+            # WHEN: Call the method.
+            result = self.form._validate()
+
+            # THEN: The validate method should have returned False.
+            assert not result, u'The _validate() method should have retured False'
+            mocked_critical_error_message_box.assert_called_with(message=u'You need to add at least one slide.')

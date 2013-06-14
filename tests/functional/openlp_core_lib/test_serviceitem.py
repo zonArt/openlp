@@ -207,7 +207,6 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        print service_item.get_rendered_frame(0)
         assert service_item.get_rendered_frame(0) == test_file, u'The first frame should match the path to the image'
         assert service_item.get_frames()[0] == frame_array, u'The return should match frame array1'
         assert service_item.get_frame_path(0) == test_file, u'The frame path should match the full path to the image'
@@ -263,3 +262,23 @@ class TestServiceItem(TestCase):
             u'This service item should be able to be run in a can be made to Loop'
         assert service_item.is_capable(ItemCapabilities.CanAppend) is True, \
             u'This service item should be able to have new items added to it'
+
+    def serviceitem_migrate_test_20_22(self):
+        """
+        Test the Service Item - migrating a media only service item from 2.0 to 2.2 format
+        """
+        # GIVEN: A new service item and a mocked add icon function
+        service_item = ServiceItem(None)
+        service_item.add_icon = MagicMock()
+
+        # WHEN: adding an media from a saved Service and mocked exists
+        line = self.convert_file_service_item(u'migrate_video_20_22.osd')
+        with patch('os.path.exists'):
+            service_item.set_from_service(line, TEST_PATH)
+
+        # THEN: We should get back a converted service item
+        assert service_item.is_valid is True, u'The new service item should be valid'
+        assert service_item.processor is None, u'The Processor should have been set'
+        assert service_item.title is None, u'The title should be set to a value'
+        assert service_item.is_capable(ItemCapabilities.HasDetailedTitleDisplay) is False, \
+            u'The Capability should have been removed'
