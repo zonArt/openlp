@@ -38,6 +38,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Registry, translate
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.core.utils import AppLocation
+from openlp.plugins.songs.lib import delete_song
 from openlp.plugins.songs.lib.db import Song, MediaFile
 from openlp.plugins.songs.forms.songreviewwidget import SongReviewWidget
 from openlp.plugins.songs.lib.songcompare import songs_probably_equal
@@ -273,23 +274,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         # Remove song from duplicate song list.
         self.duplicate_song_list[-1].remove(song_review_widget.song)
         # Remove song from the database.
-        item_id = song_review_widget.song.id
-        media_files = self.plugin.manager.get_all_objects(MediaFile,
-            MediaFile.song_id == item_id)
-        for media_file in media_files:
-            try:
-                os.remove(media_file.file_name)
-            except:
-                log.exception(u'Could not remove file: %s',
-                    media_file.file_name)
-        try:
-            save_path = os.path.join(AppLocation.get_section_data_path(
-                self.plugin.name), u'audio', str(item_id))
-            if os.path.exists(save_path):
-                os.rmdir(save_path)
-        except OSError:
-            log.exception(u'Could not remove directory: %s', save_path)
-        self.plugin.manager.delete_object(Song, item_id)
+        delete_song(song_review_widget.song.id, self.plugin)
         # Remove GUI elements for the song.
         self.review_scroll_area_layout.removeWidget(song_review_widget)
         song_review_widget.setParent(None)
