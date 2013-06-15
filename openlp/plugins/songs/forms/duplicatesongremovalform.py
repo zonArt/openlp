@@ -65,6 +65,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.duplicate_song_list = []
         self.review_current_count = 0
         self.review_total_count = 0
+        # Used to interrupt ongoing searches when cancel is clicked.
+        self.break_search = False
         OpenLPWizard.__init__(self, self.main_window, plugin, u'duplicateSongRemovalWizard',
             u':/wizards/wizard_duplicateremoval.bmp', False)
         self.setMinimumWidth(730)
@@ -154,33 +156,39 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.button(QtGui.QWizard.BackButton).hide()
         if page_id == self.searching_page_id:
             self.application.set_busy_cursor()
-            self.button(QtGui.QWizard.NextButton).hide()
-            # Search duplicate songs.
-            max_songs = self.plugin.manager.get_object_count(Song)
-            if max_songs == 0 or max_songs == 1:
-                self.duplicate_search_progress_bar.setMaximum(1)
-                self.duplicate_search_progress_bar.setValue(1)
-                self.notify_no_duplicates()
-                return
-            # With x songs we have x*(x - 1) / 2 comparisons.
-            max_progress_count = max_songs * (max_songs - 1) // 2
-            self.duplicate_search_progress_bar.setMaximum(max_progress_count)
-            songs = self.plugin.manager.get_all_objects(Song)
-            for outer_song_counter in range(max_songs - 1):
-                for inner_song_counter in range(outer_song_counter + 1, max_songs):
-                    if songs_probably_equal(songs[outer_song_counter], songs[inner_song_counter]):
-                        duplicate_added = self.add_duplicates_to_song_list(songs[outer_song_counter],
-                            songs[inner_song_counter])
-                        if duplicate_added:
-                            self.found_duplicates_edit.appendPlainText(songs[outer_song_counter].title + "  =  " +
-                                songs[inner_song_counter].title)
-                    self.duplicate_search_progress_bar.setValue(self.duplicate_search_progress_bar.value() + 1)
-            self.review_total_count = len(self.duplicate_song_list)
-            if self.review_total_count == 0:
-                self.notify_no_duplicates()
-            else:
-                self.button(QtGui.QWizard.NextButton).show()
-            self.application.set_normal_cursor()
+            try:
+                self.button(QtGui.QWizard.NextButton).hide()
+                # Search duplicate songs.
+                max_songs = self.plugin.manager.get_object_count(Song)
+                if max_songs == 0 or max_songs == 1:
+                    self.duplicate_search_progress_bar.setMaximum(1)
+                    self.duplicate_search_progress_bar.setValue(1)
+                    self.notify_no_duplicates()
+                    return
+                # With x songs we have x*(x - 1) / 2 comparisons.
+                max_progress_count = max_songs * (max_songs - 1) // 2
+                self.duplicate_search_progress_bar.setMaximum(max_progress_count)
+                songs = self.plugin.manager.get_all_objects(Song)
+                for outer_song_counter in range(max_songs - 1):
+                    for inner_song_counter in range(outer_song_counter + 1, max_songs):
+                        if songs_probably_equal(songs[outer_song_counter], songs[inner_song_counter]):
+                            duplicate_added = self.add_duplicates_to_song_list(songs[outer_song_counter],
+                                songs[inner_song_counter])
+                            if duplicate_added:
+                                self.found_duplicates_edit.appendPlainText(songs[outer_song_counter].title + "  =  " +
+                                    songs[inner_song_counter].title)
+                        self.duplicate_search_progress_bar.setValue(self.duplicate_search_progress_bar.value() + 1)
+                        # The call to process_events() will keep the GUI responsive.
+                        self.application.process_events()
+                        if self.break_search:
+                            return
+                self.review_total_count = len(self.duplicate_song_list)
+                if self.review_total_count == 0:
+                    self.notify_no_duplicates()
+                else:
+                    self.button(QtGui.QWizard.NextButton).show()
+            finally:
+                self.application.set_normal_cursor()
         elif page_id == self.review_page_id:
             self.process_current_duplicate_entry()
 
@@ -238,6 +246,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         Once the wizard is finished, refresh the song list,
         since we potentially removed songs from it.
         """
+        self.break_search = True
         self.plugin.media_item.on_search_text_button_clicked()
 
     def setDefaults(self):
@@ -337,3 +346,13 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         return self._main_window
 
     main_window = property(_get_main_window)
+
+    def _get_application(self):
+        """
+        Adds the openlp to the class dynamically
+        """
+        if not hasattr(self, u'_application'):
+            self._application = Registry().get(u'application')
+        return self._application
+
+    application = property(_get_application)
