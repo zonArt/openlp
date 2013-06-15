@@ -567,7 +567,6 @@ class SlideController(DisplayController):
             self.preview_display.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.screen = {
                 u'size': self.preview_display.geometry()}
-        # Make sure that the frames have the correct size.
         self.onControllerSizeChanged(self.controller.width())
 
     def onControllerSizeChanged(self, width):
