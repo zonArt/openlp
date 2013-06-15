@@ -591,7 +591,8 @@ class SlideController(DisplayController):
         """
         request = self.sender().text()
         slide_no = self.slideList[request]
-        self.__updatePreviewSelection(slide_no)
+        width = self.main_window.controlSplitter.sizes()[self.split]
+        self.preview_widget.replace_service_item(self.service_item, width, slide_no)
         self.slideSelected()
 
     def receive_spin_delay(self):
@@ -757,10 +758,8 @@ class SlideController(DisplayController):
                     self.display.audio_player.play()
                 self.setAudioItemsVisibility(True)
         row = 0
-        text = []
         width = self.main_window.controlSplitter.sizes()[self.split]
         for framenumber, frame in enumerate(self.service_item.get_frames()):
-            slideHeight = 0
             if self.service_item.is_text():
                 if frame[u'verseTag']:
                     # These tags are already translated.
@@ -776,7 +775,6 @@ class SlideController(DisplayController):
                     row += 1
                     self.slideList[unicode(row)] = row - 1
             else:
-                slideHeight = width * (1 / self.ratio)
                 row += 1
                 self.slideList[unicode(row)] = row - 1
                 # If current slide set background to image
@@ -867,7 +865,7 @@ class SlideController(DisplayController):
             Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
-        self.onToggleLoop()
+        self.on_toggle_loop()
 
     def onThemeDisplay(self, checked=None):
         """
@@ -886,7 +884,7 @@ class SlideController(DisplayController):
             Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.blankPlugin()
         self.updatePreview()
-        self.onToggleLoop()
+        self.on_toggle_loop()
 
     def onHideDisplay(self, checked=None):
         """
@@ -905,7 +903,7 @@ class SlideController(DisplayController):
             Settings().remove(self.main_window.general_settings_section + u'/screen blank')
         self.hidePlugin(checked)
         self.updatePreview()
-        self.onToggleLoop()
+        self.on_toggle_loop()
 
     def blankPlugin(self):
         """
@@ -1073,7 +1071,7 @@ class SlideController(DisplayController):
             self.preview_widget.change_slide(row)
             self.slideSelected()
 
-    def onToggleLoop(self):
+    def on_toggle_loop(self):
         """
         Toggles the loop state.
         """
@@ -1117,7 +1115,7 @@ class SlideController(DisplayController):
         else:
             self.play_slides_loop.setIcon(build_icon(u':/media/media_time.png'))
             self.play_slides_loop.setText(UiStrings().PlaySlidesInLoop)
-        self.onToggleLoop()
+        self.on_toggle_loop()
 
     def onPlaySlidesOnce(self, checked=None):
         """
@@ -1138,7 +1136,7 @@ class SlideController(DisplayController):
         else:
             self.play_slides_once.setIcon(build_icon(u':/media/media_time'))
             self.play_slides_once.setText(UiStrings().PlaySlidesToEnd)
-        self.onToggleLoop()
+        self.on_toggle_loop()
 
     def setAudioItemsVisibility(self, visible):
         """
