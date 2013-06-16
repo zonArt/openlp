@@ -694,9 +694,8 @@ class SlideController(DisplayController):
 
     def addServiceManagerItem(self, item, slideno):
         """
-        Method to install the service item into the controller and
-        request the correct toolbar for the plugin.
-        Called by ServiceManager
+        Method to install the service item into the controller and request the correct toolbar for the plugin. Called by
+        :class:`~openlp.core.ui.ServiceManager`
         """
         log.debug(u'addServiceManagerItem live = %s' % self.is_live)
         # If no valid slide number is specified we take the first one, but we
@@ -721,8 +720,7 @@ class SlideController(DisplayController):
 
     def _process_item(self, service_item, slideno):
         """
-        Loads a ServiceItem into the system from ServiceManager
-        Display the slide number passed
+        Loads a ServiceItem into the system from ServiceManager. Display the slide number passed.
         """
         log.debug(u'processManagerItem live = %s' % self.is_live)
         self.on_stop_loop()
@@ -758,7 +756,7 @@ class SlideController(DisplayController):
                 self.setAudioItemsVisibility(True)
         row = 0
         text = []
-        width = self.main_window.controlSplitter.sizes()[self.split]
+        width = self.main_window.control_splitter.sizes()[self.split]
         for framenumber, frame in enumerate(self.service_item.get_frames()):
             slideHeight = 0
             if self.service_item.is_text():
