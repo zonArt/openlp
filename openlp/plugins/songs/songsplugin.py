@@ -50,6 +50,8 @@ from openlp.plugins.songs.lib.importer import SongFormat
 from openlp.plugins.songs.lib.olpimport import OpenLPSongImport
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
 from openlp.plugins.songs.lib.songstab import SongsTab
+from openlp.plugins.songs.forms.duplicatesongremovalform import DuplicateSongRemovalForm
+
 
 log = logging.getLogger(__name__)
 __default_settings__ = {
@@ -97,10 +99,12 @@ class SongsPlugin(Plugin):
         self.song_import_item.setVisible(True)
         self.song_export_item.setVisible(True)
         self.tools_reindex_item.setVisible(True)
+        self.tools_find_duplicates.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.song_import_item, UiStrings().Import)
         action_list.add_action(self.song_export_item, UiStrings().Export)
         action_list.add_action(self.tools_reindex_item, UiStrings().Tools)
+        action_list.add_action(self.tools_find_duplicates, UiStrings().Tools)
 
     def add_import_menu_item(self, import_menu):
         """
@@ -136,7 +140,7 @@ class SongsPlugin(Plugin):
 
     def add_tools_menu_item(self, tools_menu):
         """
-        Give the alerts plugin the opportunity to add items to the
+        Give the Songs plugin the opportunity to add items to the
         **Tools** menu.
 
         ``tools_menu``
@@ -150,6 +154,12 @@ class SongsPlugin(Plugin):
             statustip=translate('SongsPlugin', 'Re-index the songs database to improve searching and ordering.'),
             visible=False, triggers=self.on_tools_reindex_item_triggered)
         tools_menu.addAction(self.tools_reindex_item)
+        self.tools_find_duplicates = create_action(tools_menu, u'toolsFindDuplicates',
+            text=translate('SongsPlugin', 'Find &Duplicate Songs'),
+            statustip=translate('SongsPlugin',
+            'Find and remove duplicate songs in the song database.'),
+            visible=False, triggers=self.on_tools_find_duplicates_triggered, can_shortcuts=True)
+        tools_menu.addAction(self.tools_find_duplicates)
 
     def on_tools_reindex_item_triggered(self):
         """
@@ -168,6 +178,12 @@ class SongsPlugin(Plugin):
             progress_dialog.setValue(number + 1)
         self.manager.save_objects(songs)
         self.media_item.on_search_text_button_clicked()
+
+    def on_tools_find_duplicates_triggered(self):
+        """
+        Search for duplicates in the song database.
+        """
+        DuplicateSongRemovalForm(self).exec_()
 
     def on_song_import_item_clicked(self):
         if self.media_item:
@@ -287,10 +303,12 @@ class SongsPlugin(Plugin):
         self.song_import_item.setVisible(False)
         self.song_export_item.setVisible(False)
         self.tools_reindex_item.setVisible(False)
+        self.tools_find_duplicates.setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.song_import_item, UiStrings().Import)
         action_list.remove_action(self.song_export_item, UiStrings().Export)
         action_list.remove_action(self.tools_reindex_item, UiStrings().Tools)
+        action_list.remove_action(self.tools_find_duplicates, UiStrings().Tools)
         Plugin.finalise(self)
 
     def new_service_created(self):
