@@ -43,7 +43,7 @@ class TestBibleHTTP(TestCase):
         results = handler.get_bible_chapter(u'NIV', u'John', 3)
 
         # THEN: We should get back a valid service item
-        assert len(results.verselist) == 36, u'The bible should not have had any books added or removed'
+        assert len(results.verselist) == 36, u'The book of John should not have had any verses added or removed'
 
     def crosswalk_extract_books_test(self):
         """
@@ -69,4 +69,5 @@ class TestBibleHTTP(TestCase):
         results = handler.get_bible_chapter(u'niv', u'john', 3)
 
         # THEN: We should get back a valid service item
-        assert len(results.verselist) == 36, u'The bible should not have had any books added or removed'
+        assert len(results.verselist) == 36, u'The book of John should not have had any verses added or removed'
+
