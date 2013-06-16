@@ -295,8 +295,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Sets up the service manager, toolbars, list view, et al.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.active = build_icon(QtGui.QImage(u':/media/auto-start_active.png'))
-        self.inactive = build_icon(QtGui.QImage(u':/media/auto-start_inactive.png'))
+        self.active = build_icon(u':/media/auto-start_active.png')
+        self.inactive = build_icon(u':/media/auto-start_inactive.png')
         Registry().register(u'service_manager', self)
         self.service_items = []
         self.suffixes = []
@@ -715,13 +715,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     else:
                         service_item.set_from_service(item, self.servicePath)
                     service_item.validate_item(self.suffixes)
-                    self.load_item_unique_identifier = 0
                     if service_item.is_capable(ItemCapabilities.OnLoadUpdate):
-                        Registry().execute(u'%s_service_load' % service_item.name.lower(), service_item)
-                    # if the item has been processed
-                    if service_item.unique_identifier == self.load_item_unique_identifier:
-                        service_item.edit_id = int(self.load_item_edit_id)
-                        service_item.temporary_edit = self.load_item_temporary
+                        new_item = Registry().get(service_item.name).service_load(service_item)
+                        if new_item:
+                            service_item = new_item
                     self.add_service_item(service_item, repaint=False)
                 delete_file(p_file)
                 self.main_window.add_recent_file(file_name)
@@ -1260,14 +1257,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             self.repaint_service_list(-1, -1)
         self.application.set_normal_cursor()
 
-    def service_item_update(self, edit_id, unique_identifier, temporary=False):
-        """
-        Triggered from plugins to update service items. Save the values as they will be used as part of the service load
-        """
-        self.load_item_unique_identifier = unique_identifier
-        self.load_item_edit_id = int(edit_id)
-        self.load_item_temporary = str_to_bool(temporary)
-
     def replace_service_item(self, newItem):
         """
         Using the service item passed replace the one with the same edit id if found.
@@ -1380,7 +1369,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     self.preview_controller.addServiceManagerItem(self.service_items[item][u'service_item'], 0)
                     next_item = self.service_manager_list.topLevelItem(item)
                     self.service_manager_list.setCurrentItem(next_item)
-                    self.live_controller.preview_list_widget.setFocus()
+                    self.live_controller.preview_widget.setFocus()
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
@@ -1394,7 +1383,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         if self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEdit):
             new_item = Registry().get(self.service_items[item][u'service_item'].name). \
-                onRemoteEdit(self.service_items[item][u'service_item'].edit_id)
+                on_remote_edit(self.service_items[item][u'service_item'].edit_id)
             if new_item:
                 self.add_service_item(new_item, replace=True)
 

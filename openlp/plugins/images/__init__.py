@@ -27,6 +27,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`images` module provides the Images plugin.  The Images plugin
-provides the facility to display images from OpenLP.
+The :mod:`images` module provides the Images plugin.  The Images plugin provides the facility to display images from
+OpenLP.
 """

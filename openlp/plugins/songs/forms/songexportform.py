@@ -235,7 +235,7 @@ class SongExportForm(OpenLPWizard):
             self.availableListWidget.addItem(item)
         self.application.set_normal_cursor()
 
-    def preWizard(self):
+    def pre_wizard(self):
         """
         Perform pre export tasks.
         """

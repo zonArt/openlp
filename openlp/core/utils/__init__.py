@@ -101,46 +101,38 @@ def get_application_version():
     if APPLICATION_VERSION:
         return APPLICATION_VERSION
     if u'--dev-version' in sys.argv or u'-d' in sys.argv:
-        # If we're running the dev version, let's use bzr to get the version.
-        try:
-            # If bzrlib is available, use it.
-            from bzrlib.branch import Branch
-            b = Branch.open_containing('.')[0]
-            b.lock_read()
-            try:
-                # Get the branch's latest revision number.
-                revno = b.revno()
-                # Convert said revision number into a bzr revision id.
-                revision_id = b.dotted_revno_to_revision_id((revno,))
-                # Get a dict of tags, with the revision id as the key.
-                tags = b.tags.get_reverse_tag_dict()
-                # Check if the latest
-                if revision_id in tags:
-                    full_version = u'%s' % tags[revision_id][0]
-                else:
-                    full_version = '%s-bzr%s' % (sorted(b.tags.get_tag_dict().keys())[-1], revno)
-            finally:
-                b.unlock()
-        except:
-            # Otherwise run the command line bzr client.
-            bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
-            output, error = bzr.communicate()
-            code = bzr.wait()
-            if code != 0:
-                raise Exception(u'Error running bzr tags')
-            lines = output.splitlines()
-            if not lines:
-                tag = u'0.0.0'
-                revision = u'0'
-            else:
-                tag, revision = lines[-1].split()
-            bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'), stdout=PIPE)
-            output, error = bzr.communicate()
-            code = bzr.wait()
-            if code != 0:
-                raise Exception(u'Error running bzr log')
-            latest = output.split(u':')[0]
-            full_version = latest == revision and tag or u'%s-bzr%s' % (tag, latest)
+        # NOTE: The following code is a duplicate of the code in setup.py. Any fix applied here should also be applied
+        # there.
+
+        # Get the revision of this tree.
+        bzr = Popen((u'bzr', u'revno'), stdout=PIPE)
+        tree_revision, error = bzr.communicate()
+        code = bzr.wait()
+        if code != 0:
+            raise Exception(u'Error running bzr log')
+
+        # Get all tags.
+        bzr = Popen((u'bzr', u'tags'), stdout=PIPE)
+        output, error = bzr.communicate()
+        code = bzr.wait()
+        if code != 0:
+            raise Exception(u'Error running bzr tags')
+        tags = output.splitlines()
+        if not tags:
+            tag_version = u'0.0.0'
+            tag_revision = u'0'
+        else:
+            # Remove any tag that has "?" as revision number. A "?" as revision number indicates, that this tag is from
+            # another series.
+            tags = [tag for tag in tags if tag.split()[-1].strip() != u'?']
+            # Get the last tag and split it in a revision and tag name.
+            tag_version, tag_revision = tags[-1].split()
+        # If they are equal, then this tree is tarball with the source for the release. We do not want the revision
+        # number in the full version.
+        if tree_revision == tag_revision:
+            full_version =  tag_version
+        else:
+            full_version =  u'%s-bzr%s' % (tag_version, tree_revision)
     else:
         # We're not running the development version, let's use the file.
         filepath = AppLocation.get_directory(AppLocation.VersionDir)
@@ -185,9 +177,9 @@ def check_latest_version(current_version):
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
     settings = Settings()
-    settings.beginGroup(u'general')
+    settings.beginGroup(u'core')
     last_test = settings.value(u'last version test')
-    this_test = datetime.now().date()
+    this_test = unicode(datetime.now().date())
     settings.setValue(u'last version test', this_test)
     settings.endGroup()
     # Tell the main window whether there will ever be data to display
@@ -247,8 +239,7 @@ def get_images_filter():
     global IMAGES_FILTER
     if not IMAGES_FILTER:
         log.debug(u'Generating images filter.')
-        formats = [unicode(fmt)
-            for fmt in QtGui.QImageReader.supportedImageFormats()]
+        formats = map(unicode, QtGui.QImageReader.supportedImageFormats())
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
         IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
@@ -406,7 +397,7 @@ def get_natural_key(string):
     key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
     # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str and int.
     #if string[0].isdigit():
-    #    return [''] + key 
+    #    return [''] + key
     return key
 
 

@@ -476,7 +476,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.arguments = self.application.args
         # Set up settings sections for the main application (not for use by plugins).
         self.ui_settings_section = u'user interface'
-        self.general_settings_section = u'general'
+        self.general_settings_section = u'core'
         self.advanced_settings_section = u'advanced'
         self.shortcuts_settings_section = u'shortcuts'
         self.service_manager_settings_section = u'servicemanager'
@@ -491,7 +491,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.new_data_path = None
         self.copy_data = False
         Settings().set_up_default_values()
-        Settings().remove_obsolete_settings()
         self.service_not_saved = False
         self.about_form = AboutForm(self)
         self.media_controller = MediaController()
@@ -560,7 +559,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         widget = self.media_tool_box.widget(index)
         if widget:
-            widget.onFocus()
+            widget.on_focus()
 
     def version_notice(self, version):
         """
@@ -780,8 +779,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         We need to make sure, that the SlidePreview's size is correct.
         """
-        self.preview_controller.previewSizeChanged()
-        self.live_controller.previewSizeChanged()
+        self.preview_controller.preview_size_changed()
+        self.live_controller.preview_size_changed()
 
     def on_settings_shortcuts_item_clicked(self):
         """
@@ -990,8 +989,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.application.set_busy_cursor()
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.preview_controller.screenSizeChanged()
-        self.live_controller.screenSizeChanged()
+        self.preview_controller.screen_size_changed()
+        self.live_controller.screen_size_changed()
         self.setFocus()
         self.activateWindow()
         self.application.set_normal_cursor()
