@@ -98,9 +98,9 @@ OPTIONAL_MODULES = [
 w = sys.stdout.write
 
 def check_vers(version, required, text):
-    if type(version) is not str:
+    if not isinstance(version, str):
         version = '.'.join(map(str, version))
-    if type(required) is not str:
+    if not isinstance(required, str):
         required = '.'.join(map(str, required))
     w('  %s >= %s ...    ' % (text, required))
     if LooseVersion(version) >= LooseVersion(required):
