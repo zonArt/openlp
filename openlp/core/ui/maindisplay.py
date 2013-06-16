@@ -288,7 +288,7 @@ class MainDisplay(Display):
         self.image(path)
         # Update the preview frame.
         if self.is_live:
-            self.live_controller.updatePreview()
+            self.live_controller.update_preview()
         return True
 
     def image(self, path):
