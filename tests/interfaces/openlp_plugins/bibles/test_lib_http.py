@@ -60,7 +60,7 @@ class TestBibleHTTP(TestCase):
 
     def crosswalk_extract_verse_test(self):
         """
-        Test the Crosswalk retrieval of verse list for NIV bible John 3
+        Test Crosswalk retrieval of verse list for NIV bible John 3
         """
         # GIVEN: A new Bible Gateway extraction class
         handler = CWExtract()
