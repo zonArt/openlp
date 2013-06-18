@@ -40,6 +40,7 @@ from openlp.plugins.custom.lib.db import CustomSlide
 
 log = logging.getLogger(__name__)
 
+
 class CustomSearch(object):
     """
     An enumeration for custom search methods.
@@ -214,7 +215,6 @@ class CustomMediaItem(MediaManagerItem):
         Settings().setValue(u'%s/last search type' % self.settings_section, self.search_text_edit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = self.search_text_edit.displayText()
-        search_results = []
         search_type = self.search_text_edit.current_search_type()
         if search_type == CustomSearch.Titles:
             log.debug(u'Titles Search')
@@ -252,7 +252,8 @@ class CustomMediaItem(MediaManagerItem):
             and_(CustomSlide.title == item.title, CustomSlide.theme_name == item.theme,
                 CustomSlide.credits == item.raw_footer[0][len(item.title) + 1:]))
         if custom:
-            self.service_manager.service_item_update(custom.id, item.unique_identifier)
+            item.edit_id = custom.id
+            return item
         else:
             if self.add_custom_from_service:
                 self.create_from_service_item(item)
@@ -281,8 +282,6 @@ class CustomMediaItem(MediaManagerItem):
         custom.text = unicode(custom_xml.extract_xml(), u'utf-8')
         self.plugin.manager.save_object(custom)
         self.on_search_text_button_clicked()
-        if item.name.lower() == u'custom':
-            Registry().execute(u'service_item_update', u'%s:%s:%s' % (custom.id, item.unique_identifier, False))
 
     def on_clear_text_button_click(self):
         """
