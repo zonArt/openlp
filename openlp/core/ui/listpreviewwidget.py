@@ -30,7 +30,7 @@
 The :mod:`listpreviewwidget` is a widget that lists the slides in the slide controller.
 It is based on a QTableWidget but represents its contents in list form.
 """
-
+from __future__ import division
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import ImageSource, Registry, ServiceItem
