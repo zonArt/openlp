@@ -29,6 +29,7 @@
 """
 The :mod:`slidecontroller` module contains the most important part of OpenLP - the slide controller
 """
+from __future__ import division
 import os
 import logging
 import copy
@@ -93,7 +94,7 @@ class SlideController(DisplayController):
         Registry().register_function(u'bootstrap_post_set_up', self.screen_size_changed)
         self.screens = ScreenList()
         try:
-            self.ratio = float(self.screens.current[u'size'].width()) / float(self.screens.current[u'size'].height())
+            self.ratio = self.screens.current[u'size'].width() / self.screens.current[u'size'].height()
         except ZeroDivisionError:
             self.ratio = 1
         self.loop_list = [
@@ -524,7 +525,7 @@ class SlideController(DisplayController):
             self.display.audio_player.connectSlot(QtCore.SIGNAL(u'tick(qint64)'), self.on_audio_time_remaining)
         # The SlidePreview's ratio.
         try:
-            self.ratio = float(self.screens.current[u'size'].width()) / float(self.screens.current[u'size'].height())
+            self.ratio = self.screens.current[u'size'].width() / self.screens.current[u'size'].height()
         except ZeroDivisionError:
             self.ratio = 1
         self.media_controller.setup_display(self.display, False)
@@ -553,7 +554,7 @@ class SlideController(DisplayController):
         splitters is moved or when the screen size is changed. Note, that this
         method is (also) called frequently from the mainwindow *paintEvent*.
         """
-        if self.ratio < float(self.preview_frame.width()) / float(self.preview_frame.height()):
+        if self.ratio < self.preview_frame.width() / self.preview_frame.height():
             # We have to take the height as limit.
             max_height = self.preview_frame.height() - self.grid.margin() * 2
             self.slide_preview.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
@@ -723,7 +724,7 @@ class SlideController(DisplayController):
 
     def _process_item(self, service_item, slideno):
         """
-        Loads a ServiceItem into the system from ServiceManager 
+        Loads a ServiceItem into the system from ServiceManager
         Display the slide number passed
         """
         log.debug(u'processManagerItem live = %s' % self.is_live)
