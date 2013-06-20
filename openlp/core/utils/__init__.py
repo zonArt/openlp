@@ -346,9 +346,9 @@ def get_uno_instance(resolver):
     """
     log.debug(u'get UNO Desktop Openoffice - resolve')
     if UNO_CONNECTION_TYPE == u'pipe':
-        return resolver.resolve(u'uno:pipe,name=openlp_pipe; urp;StarOffice.ComponentContext')
+        return resolver.resolve(u'uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
     else:
-        return resolver.resolve(u'uno:socket,host=localhost,port=2002; urp;StarOffice.ComponentContext')
+        return resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
 
 
 def format_time(text, local_time):
