@@ -124,7 +124,7 @@ import cherrypy
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, Settings, PluginStatus, StringContent
+from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte
 from openlp.core.utils import AppLocation, translate
 
 from cherrypy._cpcompat import sha, ntob
@@ -136,6 +136,7 @@ def make_sha_hash(password):
     """
     Create an encrypted password for the given password.
     """
+    log.debug("make_sha_hash")
     return sha(ntob(password)).hexdigest()
 
 
@@ -143,6 +144,7 @@ def fetch_password(username):
     """
     Fetch the password for a provided user.
     """
+    log.debug("Fetch Password")
     if username != Settings().value(u'remotes/user id'):
         return None
     return make_sha_hash(Settings().value(u'remotes/password'))
@@ -175,9 +177,11 @@ class HttpServer(object):
         self.root = self.Public()
         self.root.files = self.Files()
         self.root.stage = self.Stage()
+        self.root.live = self.Live()
         self.root.router = self.router
         self.root.files.router = self.router
         self.root.stage.router = self.router
+        self.root.live.router = self.router
         cherrypy.tree.mount(self.root, '/', config=self.define_config())
         # Turn off the flood of access messages cause by poll
         cherrypy.log.access_log.propagate = False
@@ -213,6 +217,9 @@ class HttpServer(object):
                                      u'tools.basic_auth.on': False},
                          u'/stage': {u'tools.staticdir.on': True,
                                      u'tools.staticdir.dir': self.router.html_dir,
+                                     u'tools.basic_auth.on': False},
+                         u'/live': {u'tools.staticdir.on': True,
+                                     u'tools.staticdir.dir': self.router.html_dir,
                                      u'tools.basic_auth.on': False}}
         return directory_config
 
@@ -239,7 +246,16 @@ class HttpServer(object):
 
     class Stage(object):
         """
-        Stageview is read only so security is not relevant and would reduce it's usability
+        Stage view is read only so security is not relevant and would reduce it's usability
+        """
+        @cherrypy.expose
+        def default(self, *args, **kwargs):
+            url = urlparse.urlparse(cherrypy.url())
+            return self.router.process_http_request(url.path, *args)
+
+    class Live(object):
+        """
+        Live view is read only so security is not relevant and would reduce it's usability
         """
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -265,13 +281,16 @@ class HttpRouter(object):
         self.routes = [
             (u'^/$', self.serve_file),
             (u'^/(stage)$', self.serve_file),
+            (u'^/(live)$', self.serve_file),
             (r'^/files/(.*)$', self.serve_file),
             (r'^/api/poll$', self.poll),
-            (r'^/stage/api/poll$', self.poll),
+            (r'^/stage/poll$', self.poll),
+            (r'^/live/poll$', self.live_poll),
+            (r'^/live/image$', self.live_image),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
-            (r'^/stage/api/controller/(live|preview)/(.*)$', self.controller),
+            (r'^/stage/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
-            (r'^/stage/api/service/(.*)$', self.service),
+            (r'^/stage/service/(.*)$', self.service),
             (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
             (r'^/api/alert$', self.alert),
             (r'^/api/plugin/(search)$', self.plugin_info),
@@ -305,6 +324,7 @@ class HttpRouter(object):
         if response:
             return response
         else:
+            log.debug('Path not found %s', url_path)
             return self._http_not_found()
 
     def _get_service_items(self):
@@ -334,6 +354,7 @@ class HttpRouter(object):
         self.template_vars = {
             'app_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Remote'),
             'stage_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Stage View'),
+            'live_title': translate('RemotePlugin.Mobile', 'OpenLP 2.1 Live View'),
             'service_manager': translate('RemotePlugin.Mobile', 'Service Manager'),
             'slide_controller': translate('RemotePlugin.Mobile', 'Slide Controller'),
             'alerts': translate('RemotePlugin.Mobile', 'Alerts'),
@@ -359,18 +380,19 @@ class HttpRouter(object):
 
     def serve_file(self, filename=None):
         """
-        Send a file to the socket. For now, just a subset of file types
-        and must be top level inside the html folder.
+        Send a file to the socket. For now, just a subset of file types and must be top level inside the html folder.
         If subfolders requested return 404, easier for security for the present.
 
-        Ultimately for i18n, this could first look for xx/file.html before
-        falling back to file.html... where xx is the language, e.g. 'en'
+        Ultimately for i18n, this could first look for xx/file.html before falling back to file.html.
+        where xx is the language, e.g. 'en'
         """
         log.debug(u'serve file request %s' % filename)
         if not filename:
             filename = u'index.html'
         elif filename == u'stage':
             filename = u'stage.html'
+        elif filename == u'live':
+            filename = u'live.html'
         path = os.path.normpath(os.path.join(self.html_dir, filename))
         if not path.startswith(self.html_dir):
             return self._http_not_found()
@@ -421,6 +443,26 @@ class HttpRouter(object):
             u'blank': self.live_controller.blank_screen.isChecked(),
             u'theme': self.live_controller.theme_screen.isChecked(),
             u'display': self.live_controller.desktop_screen.isChecked()
+        }
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': result})
+
+    def live_poll(self):
+        """
+        Poll OpenLP to determine the current slide count.
+        """
+        result = {
+            u'slide_count': self.live_controller.slide_count
+        }
+        cherrypy.response.headers['Content-Type'] = u'application/json'
+        return json.dumps({u'results': result})
+
+    def live_image(self):
+        """
+        Return the latest display image as a byte stream.
+        """
+        result = {
+            u'slide_image': u'data:image/png;base64,' + str(image_to_byte(self.live_controller.slide_image))
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': result})

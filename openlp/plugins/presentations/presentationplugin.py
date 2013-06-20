@@ -49,7 +49,7 @@ __default_settings__ = {
         u'presentations/Powerpoint': QtCore.Qt.Checked,
         u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
         u'presentations/presentations files': []
-    }
+}
 
 
 class PresentationPlugin(Plugin):

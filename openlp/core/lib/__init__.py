@@ -30,6 +30,7 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
+from __future__ import division
 from distutils.version import LooseVersion
 import logging
 import os
@@ -202,12 +203,13 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
         States if an icon should be build and returned from the thumb. Defaults to ``True``.
 
     ``size``
-        Allows to state a own size to use. Defaults to ``None``, which means that a default height of 88 is used.
+        Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default height of 88
+        is used.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
     if size is None:
-        ratio = float(reader.size().width()) / float(reader.size().height())
+        ratio = reader.size().width() / reader.size().height()
         reader.setScaledSize(QtCore.QSize(int(ratio * 88), 88))
     else:
         reader.setScaledSize(size)
@@ -260,8 +262,8 @@ def resize_image(image_path, width, height, background=u'#000000'):
     log.debug(u'resize_image - start')
     reader = QtGui.QImageReader(image_path)
     # The image's ratio.
-    image_ratio = float(reader.size().width()) / float(reader.size().height())
-    resize_ratio = float(width) / float(height)
+    image_ratio = reader.size().width() / reader.size().height()
+    resize_ratio = width / height
     # Figure out the size we want to resize the image to (keep aspect ratio).
     if image_ratio == resize_ratio:
         size = QtCore.QSize(width, height)
@@ -282,7 +284,7 @@ def resize_image(image_path, width, height, background=u'#000000'):
     new_image = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
     painter = QtGui.QPainter(new_image)
     painter.fillRect(new_image.rect(), QtGui.QColor(background))
-    painter.drawImage((width - real_width) / 2, (height - real_height) / 2, preview)
+    painter.drawImage((width - real_width) // 2, (height - real_height) // 2, preview)
     return new_image
 
 

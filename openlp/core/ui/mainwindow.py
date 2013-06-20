@@ -669,7 +669,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Check and display message if screen blank on setup.
         """
         settings = Settings()
-        self.live_controller.mainDisplaySetBackground()
+        self.live_controller.main_display_set_background()
         if settings.value(u'%s/screen blank' % self.general_settings_section):
             if settings.value(u'%s/blank warning' % self.general_settings_section):
                 QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
@@ -779,8 +779,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         We need to make sure, that the SlidePreview's size is correct.
         """
-        self.preview_controller.previewSizeChanged()
-        self.live_controller.previewSizeChanged()
+        self.preview_controller.preview_size_changed()
+        self.live_controller.preview_size_changed()
 
     def on_settings_shortcuts_item_clicked(self):
         """
@@ -989,8 +989,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.application.set_busy_cursor()
         self.image_manager.update_display()
         self.renderer.update_display()
-        self.preview_controller.screenSizeChanged()
-        self.live_controller.screenSizeChanged()
+        self.preview_controller.screen_size_changed()
+        self.live_controller.screen_size_changed()
         self.setFocus()
         self.activateWindow()
         self.application.set_normal_cursor()

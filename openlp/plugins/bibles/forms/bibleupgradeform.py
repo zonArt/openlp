@@ -105,7 +105,7 @@ class BibleUpgradeForm(OpenLPWizard):
         Perform necessary functions depending on which wizard page is active.
         """
         if self.page(pageId) == self.progress_page:
-            self.preWizard()
+            self.pre_wizard()
             self.performWizard()
             self.post_wizard()
         elif self.page(pageId) == self.selectPage and not self.files:
@@ -329,7 +329,7 @@ class BibleUpgradeForm(OpenLPWizard):
         self.cancel_button.setVisible(True)
         settings.endGroup()
 
-    def preWizard(self):
+    def pre_wizard(self):
         """
         Prepare the UI for the upgrade.
         """
