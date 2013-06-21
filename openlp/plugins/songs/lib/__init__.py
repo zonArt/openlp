@@ -29,14 +29,20 @@
 """
 The :mod:`~openlp.plugins.songs.lib` module contains a number of library functions and classes used in the Songs plugin.
 """
+
+import logging
+import os
 import re
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
-from openlp.core.utils import CONTROL_CHARS
+from openlp.core.utils import AppLocation, CONTROL_CHARS
+from openlp.plugins.songs.lib.db import MediaFile, Song
 from db import Author
 from ui import SongStrings
+
+log = logging.getLogger(__name__)
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile(u'[\'`’ʻ′]', re.UNICODE)
@@ -592,4 +598,30 @@ def strip_rtf(text, default_encoding=None):
                 out.append(tchar)
     text = u''.join(out)
     return text, default_encoding
+
+
+def delete_song(song_id, song_plugin):
+    """
+    Deletes a song from the database. Media files associated to the song
+    are removed prior to the deletion of the song.
+
+    ``song_id``
+        The ID of the song to delete.
+
+    ``song_plugin``
+        The song plugin instance.
+    """
+    media_files = song_plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == song_id)
+    for media_file in media_files:
+        try:
+            os.remove(media_file.file_name)
+        except:
+            log.exception('Could not remove file: %s', media_file.file_name)
+    try:
+        save_path = os.path.join(AppLocation.get_section_data_path(song_plugin.name), 'audio', str(song_id))
+        if os.path.exists(save_path):
+            os.rmdir(save_path)
+    except OSError:
+        log.exception(u'Could not remove directory: %s', save_path)
+    song_plugin.manager.delete_object(Song, song_id)
 

@@ -43,7 +43,7 @@ from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
 from openlp.plugins.songs.forms.songexportform import SongExportForm
-from openlp.plugins.songs.lib import VerseType, clean_string
+from openlp.plugins.songs.lib import VerseType, clean_string, delete_song
 from openlp.plugins.songs.lib.db import Author, Song, Book, MediaFile
 from openlp.plugins.songs.lib.ui import SongStrings
 from openlp.plugins.songs.lib.xml import OpenLyrics, SongXML
@@ -368,19 +368,7 @@ class SongMediaItem(MediaManagerItem):
             self.main_window.display_progress_bar(len(items))
             for item in items:
                 item_id = item.data(QtCore.Qt.UserRole)
-                media_files = self.plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == item_id)
-                for media_file in media_files:
-                    try:
-                        os.remove(media_file.file_name)
-                    except:
-                        log.exception('Could not remove file: %s', media_file.file_name)
-                try:
-                    save_path = os.path.join(AppLocation.get_section_data_path(self.plugin.name), 'audio', str(item_id))
-                    if os.path.exists(save_path):
-                        os.rmdir(save_path)
-                except OSError:
-                    log.exception(u'Could not remove directory: %s', save_path)
-                self.plugin.manager.delete_object(Song, item_id)
+                delete_song(item_id, self.plugin)
                 self.main_window.increment_progress_bar()
             self.main_window.finished_progress_bar()
             self.application.set_normal_cursor()

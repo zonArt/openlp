@@ -30,7 +30,7 @@
 The :mod:`listpreviewwidget` is a widget that lists the slides in the slide controller.
 It is based on a QTableWidget but represents its contents in list form.
 """
-
+from __future__ import division
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import ImageSource, Registry, ServiceItem
@@ -76,7 +76,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
             else:
                 # Sort out image heights.
                 for framenumber in range(len(self.service_item.get_frames())):
-                    height = self.viewport().width() / self.screen_ratio
+                    height = self.viewport().width() // self.screen_ratio
                     self.setRowHeight(framenumber, height)
 
     def screen_size_changed(self, screen_ratio):
@@ -101,7 +101,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         for framenumber, frame in enumerate(self.service_item.get_frames()):
             self.setRowCount(self.slide_count() + 1)
             item = QtGui.QTableWidgetItem()
-            slideHeight = 0
+            slide_height = 0
             if self.service_item.is_text():
                 if frame[u'verseTag']:
                     # These tags are already translated.
@@ -125,12 +125,12 @@ class ListPreviewWidget(QtGui.QTableWidget):
                     image = self.image_manager.get_image(frame[u'path'], ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.setCellWidget(framenumber, 0, label)
-                slideHeight = width / self.screen_ratio
+                slide_height = width // self.screen_ratio
                 row += 1
             text.append(unicode(row))
             self.setItem(framenumber, 0, item)
-            if slideHeight:
-                self.setRowHeight(framenumber, slideHeight)
+            if slide_height:
+                self.setRowHeight(framenumber, slide_height)
         self.setVerticalHeaderLabels(text)
         if self.service_item.is_text():
             self.resizeRowsToContents()
