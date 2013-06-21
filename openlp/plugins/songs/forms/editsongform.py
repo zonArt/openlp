@@ -685,23 +685,31 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_edit_button.setEnabled(False)
             self.verse_delete_button.setEnabled(False)
 
+
     def on_verse_order_text_changed(self, text):
-        verses = []
-        verse_names = []
-        order = self._extract_verse_order(text)
+        """
+        Checks if the verse order is complete or missing. Shows a error message according to the state of the verse
+        order.
+
+        ``text``
+            The text of the verse order edit (ignored).
+        """
+        # Extract all verses which were used in the order.
+        verses_in_order = self._extract_verse_order(self.verse_order_edit.text())
+        # Find the verses which were not used in the order.
+        verses_not_used = []
         for index in range(self.verse_list_widget.rowCount()):
             verse = self.verse_list_widget.item(index, 0)
             verse = verse.data(QtCore.Qt.UserRole)
-            if verse not in verse_names:
-                verses.append(verse)
-                verse_names.append(u'%s%s' % (VerseType.translated_tag(verse[0]), verse[1:]))
-        verses_not_used = []
-        for verse in verses:
-            if not verse in order:
+            print(verse)
+            if verse not in verses_in_order:
                 verses_not_used.append(verse)
+        # Set the label text.
         label_text = u''
-        if not self.verse_order_edit.text():
+        # No verse order was entered.
+        if not verses_in_order:
             label_text = self.no_verse_order_entered_warning
+        # The verse order does not contain all verses.
         elif verses_not_used:
             label_text = self.not_all_verses_used_warning
         self.warning_label.setText(label_text)
