@@ -64,8 +64,7 @@ class TestEditSongForm(TestCase):
         # WHEN: Call the method.
         self.form.on_verse_order_text_changed(given_verse_order)
 
-        # THEN: The warning lable should be hidden.
-        print  self.form.warning_label.text()
+        # THEN: No text should be shown.
         assert self.form.warning_label.text() == u'', u'There should be no warning.'
 
     def verse_order_incomplete_warning_test(self):
@@ -86,8 +85,8 @@ class TestEditSongForm(TestCase):
         # WHEN: Call the method.
         self.form.on_verse_order_text_changed(given_verse_order)
 
-        # THEN: The warning lable should be hidden.
-        assert self.form.warning_label.text() == u'<strong>Warning:</strong> Not all of the verses are in use.', \
+        # THEN: The verse-order-incomplete text should be shown.
+        assert self.form.warning_label.text() == self.form.not_all_verses_used_warning, \
             u'The verse-order-incomplete warning should be shown.'
 
     def bug_1170435_test(self):
@@ -101,11 +100,11 @@ class TestEditSongForm(TestCase):
         mocked_verse = MagicMock()
         mocked_verse.data = MagicMock(return_value=u'V1')
         self.form.verse_list_widget.item = MagicMock(return_value=mocked_verse)
-        self.form._extract_verse_order = MagicMock(return_value=[given_verse_order])
+        self.form._extract_verse_order = MagicMock(return_value=[])
         self.form.verse_order_edit.text = MagicMock(return_value=given_verse_order)
         # WHEN: Call the method.
         self.form.on_verse_order_text_changed(given_verse_order)
 
-        # THEN: The warning lable should be hidden.
-        assert self.form.warning_label.text() == u'<strong>Warning:</strong> You have not entered a verse order.',  \
+        # THEN: The no-verse-order message should be shown.
+        assert self.form.warning_label.text() == self.form.no_verse_order_entered_warning,  \
             u'The no-verse-order message should be shown.'

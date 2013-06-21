@@ -701,7 +701,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         for index in range(self.verse_list_widget.rowCount()):
             verse = self.verse_list_widget.item(index, 0)
             verse = verse.data(QtCore.Qt.UserRole)
-            print(verse)
             if verse not in verses_in_order:
                 verses_not_used.append(verse)
         # Set the label text.
