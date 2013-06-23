@@ -637,7 +637,7 @@ class ThemeManager(QtGui.QWidget):
         out_file = None
         try:
             out_file = open(theme_file, u'w')
-            out_file.write(theme_pretty_xml)
+            out_file.write(theme_pretty_xml.decode('UTF-8'))
         except IOError:
             log.exception(u'Saving theme to file failed')
         finally:
