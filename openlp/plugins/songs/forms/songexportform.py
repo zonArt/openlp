@@ -37,7 +37,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Registry, UiStrings, create_separated_list, build_icon, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.plugins.songs.lib import natcmp
 from openlp.plugins.songs.lib.db import Song
 from openlp.plugins.songs.lib.openlyricsexport import OpenLyricsExport
 
@@ -222,7 +221,7 @@ class SongExportForm(OpenLPWizard):
         # Load the list of songs.
         self.application.set_busy_cursor()
         songs = self.plugin.manager.get_all_objects(Song)
-        songs.sort(cmp=natcmp, key=lambda song: song.sort_key)
+        songs.sort(key=lambda song: song.sort_key)
         for song in songs:
             # No need to export temporary songs.
             if song.temporary:
@@ -236,7 +235,7 @@ class SongExportForm(OpenLPWizard):
             self.availableListWidget.addItem(item)
         self.application.set_normal_cursor()
 
-    def preWizard(self):
+    def pre_wizard(self):
         """
         Perform pre export tasks.
         """

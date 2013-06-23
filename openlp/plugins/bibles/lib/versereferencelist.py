@@ -29,8 +29,8 @@
 
 class VerseReferenceList(object):
     """
-    The VerseReferenceList class encapsulates a list of verse references, but
-    maintains the order in which they were added.
+    The VerseReferenceList class encapsulates a list of verse references, but maintains the order in which they were
+    added.
     """
 
     def __init__(self):

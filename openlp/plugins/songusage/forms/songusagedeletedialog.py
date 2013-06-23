@@ -55,7 +55,8 @@ class Ui_SongUsageDeleteDialog(object):
         self.retranslateUi(song_usage_delete_dialog)
 
     def retranslateUi(self, song_usage_delete_dialog):
-        song_usage_delete_dialog.setWindowTitle(translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Song Usage Data'))
+        song_usage_delete_dialog.setWindowTitle(
+            translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Song Usage Data'))
         self.delete_label.setText(
             translate('SongUsagePlugin.SongUsageDeleteForm', 'Select the date up to which the song usage data '
                 'should be deleted. All data recorded before this date will be permanently deleted.'))

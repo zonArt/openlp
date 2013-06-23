@@ -27,7 +27,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songusage` module contains the Song Usage plugin.  The Song Usage
-plugin provides auditing capabilities for reporting the songs you are using to
-copyright license organisations.
+The :mod:`songusage` module contains the Song Usage plugin.  The Song Usage plugin provides auditing capabilities for
+reporting the songs you are using to copyright license organisations.
 """
