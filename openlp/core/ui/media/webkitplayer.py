@@ -398,7 +398,7 @@ class WebkitPlayer(MediaPlayer):
             # check if conversion was ok and value is not 'NaN'
             if length and length != float('inf'):
                 length = int(length * 1000)
-        if current_time > 0:
+        if current_time:
             controller.media_info.length = length
             controller.seek_slider.setMaximum(length)
             if not controller.seek_slider.isSliderDown():
