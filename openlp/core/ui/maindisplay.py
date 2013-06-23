@@ -38,6 +38,7 @@ Some of the code for this form is based on the examples at:
 from __future__ import division
 import cgi
 import logging
+import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL

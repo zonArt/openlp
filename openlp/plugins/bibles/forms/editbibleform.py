@@ -28,6 +28,7 @@
 ###############################################################################
 
 import logging
+import os
 import re
 
 from PyQt4 import QtGui

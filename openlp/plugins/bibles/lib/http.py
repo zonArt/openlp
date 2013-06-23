@@ -29,6 +29,7 @@
 """
 The :mod:`http` module enables OpenLP to retrieve scripture from bible websites.
 """
+import os
 import logging
 import re
 import socket
@@ -690,6 +691,7 @@ class HTTPBible(BibleDB):
             return self._application
 
     application = property(_get_application)
+
 
 def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre_parse_substitute=None):
     """

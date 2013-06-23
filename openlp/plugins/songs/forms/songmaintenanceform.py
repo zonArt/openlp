@@ -27,6 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 import logging
+import os
 
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
