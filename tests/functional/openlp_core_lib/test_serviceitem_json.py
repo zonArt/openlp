@@ -138,6 +138,7 @@ class TestServiceItem(TestCase):
             service_item2.set_from_service(line2)
 
         # THEN: We should get back a valid service item
+
         # This test is copied from service_item.py, but is changed since to conform to
         # new layout of service item. The layout use in serviceitem_image_2.osd is actually invalid now.
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -166,8 +167,7 @@ class TestServiceItem(TestCase):
         Test the Service Item - load a osd to service_item, convert to json,
         load again to service_item and compare the old and new service_item.
         """
-        
-        # Load osd (python pickle format) from file
+        # GIVEN: A valid osd (python pickle format) service in file
         service_file = os.path.join(TEST_PATH, u'serviceitem_osd2osj.osd')
         osd_service_items = []
         try:
@@ -178,9 +178,8 @@ class TestServiceItem(TestCase):
         finally:
             open_file.close()
         
-        # Dump to json format
-        json_service_content = json.dumps(osd_service_items)
-        
+        # WHEN: Dumping loaded osd service to json format, and save to file and reloading to service
+        json_service_content = json.dumps(osd_service_items)        
         open_file = None
         open_filename = u''
         try:
@@ -195,11 +194,10 @@ class TestServiceItem(TestCase):
         finally:
             open_file.close()
             os.remove(open_filename)
-
-        
-        # Load from json format
         osj_service_items = json.loads(json_service_content)
-
+        
+        # THEN: The service loaded from osj (json format) should be the same as the service loaded from the original osd (python pickle format)
+        
         # Loop over every item and compare the osj with osd version
         for osd_item, osj_item in zip(osd_service_items, osj_service_items):
             # Create service item objects
