@@ -116,6 +116,7 @@ class Settings(QtCore.QSettings):
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
         u'crashreport/last directory': u'',
         u'displayTags/html_tags': u'',
+        u'displayTags/html_tags_json': False,
         u'core/audio repeat list': False,
         u'core/auto open': False,
         u'core/auto preview': False,
