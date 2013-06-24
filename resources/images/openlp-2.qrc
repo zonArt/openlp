@@ -19,6 +19,7 @@
     <file>topic_maintenance.png</file>
     <file>song_author_edit.png</file>
     <file>song_book_edit.png</file>
+    <file>song_delete.png</file>
   </qresource>
   <qresource prefix="images">
     <file>image_group.png</file>
@@ -101,6 +102,7 @@
     <file>wizard_importbible.bmp</file>
     <file>wizard_firsttime.bmp</file>
     <file>wizard_createtheme.bmp</file>
+    <file>wizard_duplicateremoval.bmp</file>
   </qresource>
   <qresource prefix="services">
     <file>service_collapse_all.png</file>

@@ -30,6 +30,7 @@
 The :mod:`screen` module provides management functionality for a machines'
 displays.
 """
+from __future__ import division
 import logging
 import copy
 
@@ -232,8 +233,8 @@ class ScreenList(object):
         ``window``
             A QWidget we are finding the location of.
         """
-        x = window.x() + (window.width() / 2)
-        y = window.y() + (window.height() / 2)
+        x = window.x() + (window.width() // 2)
+        y = window.y() + (window.height() // 2)
         for screen in self.screen_list:
             size = screen[u'size']
             if x >= size.x() and x <= (size.x() + size.width()) and y >= size.y() and y <= (size.y() + size.height()):
@@ -247,15 +248,15 @@ class ScreenList(object):
         # Add the screen settings to the settings dict. This has to be done here due to cyclic dependency.
         # Do not do this anywhere else.
         screen_settings = {
-            u'general/x position': self.current[u'size'].x(),
-            u'general/y position': self.current[u'size'].y(),
-            u'general/monitor': self.display_count - 1,
-            u'general/height': self.current[u'size'].height(),
-            u'general/width': self.current[u'size'].width()
+            u'core/x position': self.current[u'size'].x(),
+            u'core/y position': self.current[u'size'].y(),
+            u'core/monitor': self.display_count - 1,
+            u'core/height': self.current[u'size'].height(),
+            u'core/width': self.current[u'size'].width()
         }
         Settings.extend_default_settings(screen_settings)
         settings = Settings()
-        settings.beginGroup(u'general')
+        settings.beginGroup(u'core')
         monitor = settings.value(u'monitor')
         self.set_current_display(monitor)
         self.display = settings.value(u'display on monitor')
