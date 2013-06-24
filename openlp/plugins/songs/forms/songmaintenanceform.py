@@ -530,7 +530,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Windows needs to access the application in a dynamic manner.
         """
         if os.name == u'nt':
-            Registry().get(u'application')
+            return Registry().get(u'application')
         else:
             if not hasattr(self, u'_application'):
                 self._application = Registry().get(u'application')
