@@ -67,8 +67,8 @@ class FormattingTags(object):
                     if isinstance(tag[element], unicode):
                         tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
-        Settings().setValue(u'displayTags/html_tags', json.dumps(tags) if tags else u'')
-        Settings().setValue(u'displayTags/html_tags_json', True)
+        Settings().setValue(u'formattingTags/html_tags', json.dumps(tags) if tags else u'')
+        Settings().setValue(u'formattingTags/html_tags_json', True)
 
     @staticmethod
     def load_tags():
@@ -160,10 +160,12 @@ class FormattingTags(object):
         FormattingTags.add_html_tags(temporary_tags)
 
         # Formatting Tags were also known as display tags.
-        user_expands = Settings().value(u'displayTags/html_tags')
-        user_format_json = Settings().value(u'displayTags/html_tags_json')
+        user_format_json = Settings().value(u'formattingTags/html_tags_json')
         # cPickle only accepts str not unicode strings
-        user_expands_string = str(user_expands)
+        if user_format_json:
+            user_expands_string = str(Settings().value(u'formattingTags/html_tags'))
+        else:
+            user_expands_string = str(Settings().value(u'displayTags/html_tags'))
         if user_expands_string:
             if user_format_json:
                 user_tags = json.loads(user_expands_string)

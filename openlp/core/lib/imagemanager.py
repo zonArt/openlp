@@ -1,9 +1,14 @@
+
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
-# --------------------------------------------------------------------------- #
+
+
+
+
+    # --------------------------------------------------------------------------- #
 # Copyright (c) 2008-2013 Raoul Snyman                                        #
 # Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
