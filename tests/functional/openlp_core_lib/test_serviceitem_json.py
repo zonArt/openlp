@@ -208,11 +208,12 @@ class TestServiceItem(TestCase):
             service_item_osj.add_icon = MagicMock()
             
             with patch('os.path.exists'):
-                service_item_osd.set_from_service(osd_item, u'/dummy/path')
-            with patch('os.path.exists'):
-                service_item_osj.set_from_service(osj_item, u'/dummy/path')
+                service_item_osd.set_from_service(osd_item, TEST_PATH)
+                service_item_osj.set_from_service(osj_item, TEST_PATH)
 
             # Check that the exported/imported attributes are the same
+            assert service_item_osj.is_valid is True, u'The osj service item should be valid'
+            assert service_item_osd.is_valid is True, u'The osd service item should be valid'
             assert service_item_osj.name == service_item_osd.name , u'The osd and the osj attribute name should be the same!'
             assert service_item_osj.theme == service_item_osd.theme , u'The osd and the osj attribute theme should be the same!'
             assert service_item_osj.title == service_item_osd.title , u'The osd and the osj attribute title should be the same!'
