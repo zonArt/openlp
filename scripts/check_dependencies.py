@@ -85,6 +85,7 @@ MODULES = [
     'migrate',
     'uno',
     'icu',
+    'bs4',
 ]
 
 
