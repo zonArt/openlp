@@ -12,34 +12,35 @@ from mock import patch, MagicMock
 from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEntry
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/easyworshipsongs'))
-SONG_TEST_DATA = [{u'title': u'Amazing Grace',
-                   u'authors': [u'John Newton'],
-                   u'copyright': u'Public Domain',
-                   u'ccli_number': 0,
-                   u'verses':
-                       [(u'Amazing grace how sweet the sound,\nThat saved a wretch like me;\n'
-                         u'I once was lost, but now am found\nWas blind, but now I see.', u'v1'),
-                        (u'T\'was grace that taught my heart to fear,\nAnd grace my fears relieved;\n'
-                         u'How precious did that grace appear\nThe hour I first believed.', u'v2'),
-                        (u'Through many dangers, toil and snares,\nI have already come;\n'
-                         u'\'Tis grace has brought me safe thus far,\nAnd grace will lead me home.', u'v3'),
-                        (u'When we\'ve been there ten thousand years\nBright shining as the sun,\n'
-                         u'We\'ve no less days to sing God\'s praise\nThan when we\'ve first begun.', u'v4')],
-                   u'verse_order_list': []},
-                  {u'title': u'Beautiful Garden Of Prayer',
-                   u'authors': [u'Eleanor Allen Schroll James H. Fillmore'],
-                   u'copyright': u'Public Domain',
-                   u'ccli_number': 0,
-                   u'verses':
-                       [(u'O the beautiful garden, the garden of prayer,\nO the beautiful garden of prayer.\n'
-                         u'There my Savior awaits, and He opens the gates\nTo the beautiful garden of prayer.', u'c1'),
-                        (u'There\'s a garden where Jesus is waiting,\nThere\'s a place that is wondrously fair.\n'
-                         u'For it glows with the light of His presence,\n\'Tis the beautiful garden of prayer.', u'v1'),
-                        (u'There\'s a garden where Jesus is waiting,\nAnd I go with my burden and care.\n'
-                         u'Just to learn from His lips, words of comfort,\nIn the beautiful garden of prayer.', u'v2'),
-                        (u'There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
-                         u'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', u'v3')],
-                   u'verse_order_list': []}]
+SONG_TEST_DATA = [
+    {u'title': u'Amazing Grace',
+    u'authors': [u'John Newton'],
+    u'copyright': u'Public Domain',
+    u'ccli_number': 0,
+    u'verses':
+       [(u'Amazing grace how sweet the sound,\nThat saved a wretch like me;\n'
+         u'I once was lost, but now am found\nWas blind, but now I see.', u'v1'),
+        (u'T\'was grace that taught my heart to fear,\nAnd grace my fears relieved;\n'
+         u'How precious did that grace appear\nThe hour I first believed.', u'v2'),
+        (u'Through many dangers, toil and snares,\nI have already come;\n'
+         u'\'Tis grace has brought me safe thus far,\nAnd grace will lead me home.', u'v3'),
+        (u'When we\'ve been there ten thousand years\nBright shining as the sun,\n'
+         u'We\'ve no less days to sing God\'s praise\nThan when we\'ve first begun.', u'v4')],
+    u'verse_order_list': []},
+    {u'title': u'Beautiful Garden Of Prayer',
+    u'authors': [u'Eleanor Allen Schroll James H. Fillmore'],
+    u'copyright': u'Public Domain',
+    u'ccli_number': 0,
+    u'verses':
+       [(u'O the beautiful garden, the garden of prayer,\nO the beautiful garden of prayer.\n'
+         u'There my Savior awaits, and He opens the gates\nTo the beautiful garden of prayer.', u'c1'),
+        (u'There\'s a garden where Jesus is waiting,\nThere\'s a place that is wondrously fair.\n'
+         u'For it glows with the light of His presence,\n\'Tis the beautiful garden of prayer.', u'v1'),
+        (u'There\'s a garden where Jesus is waiting,\nAnd I go with my burden and care.\n'
+         u'Just to learn from His lips, words of comfort,\nIn the beautiful garden of prayer.', u'v2'),
+        (u'There\'s a garden where Jesus is waiting,\nAnd He bids you to come meet Him there,\n'
+         u'Just to bow and receive a new blessing,\nIn the beautiful garden of prayer.', u'v3')],
+    u'verse_order_list': []}]
 
 class EasyWorshipSongImportLogger(EasyWorshipSongImport):
     """
