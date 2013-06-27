@@ -26,7 +26,7 @@
 window.OpenLP = {
   loadService: function (event) {
     $.getJSON(
-      "/api/service/list",
+      "/stage/service/list",
       function (data, status) {
         OpenLP.nextSong = "";
         $("#notes").html("");
@@ -46,7 +46,7 @@ window.OpenLP = {
   },
   loadSlides: function (event) {
     $.getJSON(
-      "/api/controller/live/text",
+      "/stage/controller/live/text",
       function (data, status) {
         OpenLP.currentSlides = data.results.slides;
         OpenLP.currentSlide = 0;
@@ -137,7 +137,7 @@ window.OpenLP = {
   },
   pollServer: function () {
     $.getJSON(
-      "/api/poll",
+      "/stage/poll",
       function (data, status) {
         OpenLP.updateClock(data);
         if (OpenLP.currentItem != data.results.item ||

@@ -58,8 +58,6 @@ class WizardStrings(object):
     ImportingType = translate('OpenLP.Ui', 'Importing "%s"...')
     ImportSelect = translate('OpenLP.Ui', 'Select Import Source')
     ImportSelectLong = translate('OpenLP.Ui', 'Select the import format and the location to import from.')
-    NoSqlite = translate('OpenLP.Ui', 'The openlp.org 1.x importer has been disabled due to a missing Python module. '
-        'If you want to use this importer, you will need to install the "python-sqlite" module.')
     OpenTypeFile = translate('OpenLP.Ui', 'Open %s File')
     OpenTypeFolder = translate('OpenLP.Ui', 'Open %s Folder')
     PercentSymbolFormat = translate('OpenLP.Ui', '%p%')
@@ -77,13 +75,30 @@ class OpenLPWizard(QtGui.QWizard):
     """
     Generic OpenLP wizard to provide generic functionality and a unified look
     and feel.
+
+    ``parent``
+        The QWidget-derived parent of the wizard.
+
+    ``plugin``
+        Plugin this wizard is part of. The plugin will be saved in the "plugin" variable.
+        The plugin will also be used as basis for the file dialog methods this class provides.
+
+    ``name``
+        The object name this wizard should have.
+
+    ``image``
+        The image to display on the "welcome" page of the wizard. Should be 163x350.
+
+    ``add_progress_page``
+        Whether to add a progress page with a progressbar at the end of the wizard.
     """
-    def __init__(self, parent, plugin, name, image):
+    def __init__(self, parent, plugin, name, image, add_progress_page=True):
         """
         Constructor
         """
         QtGui.QWizard.__init__(self, parent)
         self.plugin = plugin
+        self.with_progress_page = add_progress_page
         self.setObjectName(name)
         self.open_icon = build_icon(u':/general/general_open.png')
         self.delete_icon = build_icon(u':/general/general_delete.png')
@@ -94,8 +109,9 @@ class OpenLPWizard(QtGui.QWizard):
         self.custom_init()
         self.custom_signals()
         self.currentIdChanged.connect(self.on_current_id_changed)
-        self.error_copy_to_button.clicked.connect(self.on_error_copy_to_button_clicked)
-        self.error_save_to_button.clicked.connect(self.on_error_save_to_button_clicked)
+        if self.with_progress_page:
+            self.error_copy_to_button.clicked.connect(self.on_error_copy_to_button_clicked)
+            self.error_save_to_button.clicked.connect(self.on_error_save_to_button_clicked)
 
     def setupUi(self, image):
         """
@@ -107,7 +123,8 @@ class OpenLPWizard(QtGui.QWizard):
             QtGui.QWizard.NoBackButtonOnStartPage | QtGui.QWizard.NoBackButtonOnLastPage)
         add_welcome_page(self, image)
         self.add_custom_pages()
-        self.add_progress_page()
+        if self.with_progress_page:
+            self.add_progress_page()
         self.retranslateUi()
 
     def register_fields(self):
@@ -187,7 +204,7 @@ class OpenLPWizard(QtGui.QWizard):
         Stop the wizard on cancel button, close button or ESC key.
         """
         log.debug(u'Wizard cancelled by user.')
-        if self.currentPage() == self.progress_page:
+        if self.with_progress_page and self.currentPage() == self.progress_page:
             Registry().execute(u'openlp_stop_wizard')
         self.done(QtGui.QDialog.Rejected)
 
@@ -195,14 +212,14 @@ class OpenLPWizard(QtGui.QWizard):
         """
         Perform necessary functions depending on which wizard page is active.
         """
-        if self.page(pageId) == self.progress_page:
+        if self.with_progress_page and self.page(pageId) == self.progress_page:
             self.pre_wizard()
             self.performWizard()
             self.post_wizard()
         else:
-            self.custom_cage_changed(pageId)
+            self.custom_page_changed(pageId)
 
-    def custom_cage_changed(self, pageId):
+    def custom_page_changed(self, pageId):
         """
         Called when changing to a page other than the progress page
         """

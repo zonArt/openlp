@@ -48,11 +48,11 @@ if QtCore.QDate().currentDate().month() < 9:
 
 
 __default_settings__ = {
-        u'songusage/db type': u'sqlite',
-        u'songusage/active': False,
-        u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
-        u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
-        u'songusage/last directory export': u''
+    u'songusage/db type': u'sqlite',
+    u'songusage/active': False,
+    u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
+    u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
+    u'songusage/last directory export': u''
 }
 
 
@@ -76,12 +76,10 @@ class SongUsagePlugin(Plugin):
 
     def add_tools_menu_item(self, tools_menu):
         """
-        Give the SongUsage plugin the opportunity to add items to the
-        **Tools** menu.
+        Give the SongUsage plugin the opportunity to add items to the **Tools** menu.
 
         ``tools_menu``
-            The actual **Tools** menu item, so that your actions can
-            use it as their parent.
+            The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.info(u'add tools menu')
         self.toolsMenu = tools_menu
@@ -218,8 +216,8 @@ class SongUsagePlugin(Plugin):
         self.song_usage_detail_form.exec_()
 
     def about(self):
-        about_text = translate('SongUsagePlugin', '<strong>SongUsage Plugin'
-            '</strong><br />This plugin tracks the usage of songs in services.')
+        about_text = translate('SongUsagePlugin',
+            '<strong>SongUsage Plugin</strong><br />This plugin tracks the usage of songs in services.')
         return about_text
 
     def set_plugin_text_strings(self):

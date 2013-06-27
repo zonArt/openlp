@@ -38,6 +38,7 @@ import re
 from subprocess import Popen, PIPE
 import sys
 import urllib2
+import icu
 
 from PyQt4 import QtGui, QtCore
 
@@ -56,10 +57,12 @@ from openlp.core.lib import translate
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}
 IMAGES_FILTER = None
+ICU_COLLATOR = None
 UNO_CONNECTION_TYPE = u'pipe'
 #UNO_CONNECTION_TYPE = u'socket'
 CONTROL_CHARS = re.compile(r'[\x00-\x1F\x7F-\x9F]', re.UNICODE)
 INVALID_FILE_CHARS = re.compile(r'[\\/:\*\?"<>\|\+\[\]%]', re.UNICODE)
+DIGITS_OR_NONDIGITS = re.compile(r'\d+|\D+', re.UNICODE)
 
 
 class VersionThread(QtCore.QThread):
@@ -98,46 +101,38 @@ def get_application_version():
     if APPLICATION_VERSION:
         return APPLICATION_VERSION
     if u'--dev-version' in sys.argv or u'-d' in sys.argv:
-        # If we're running the dev version, let's use bzr to get the version.
-        try:
-            # If bzrlib is available, use it.
-            from bzrlib.branch import Branch
-            b = Branch.open_containing('.')[0]
-            b.lock_read()
-            try:
-                # Get the branch's latest revision number.
-                revno = b.revno()
-                # Convert said revision number into a bzr revision id.
-                revision_id = b.dotted_revno_to_revision_id((revno,))
-                # Get a dict of tags, with the revision id as the key.
-                tags = b.tags.get_reverse_tag_dict()
-                # Check if the latest
-                if revision_id in tags:
-                    full_version = u'%s' % tags[revision_id][0]
-                else:
-                    full_version = '%s-bzr%s' % (sorted(b.tags.get_tag_dict().keys())[-1], revno)
-            finally:
-                b.unlock()
-        except:
-            # Otherwise run the command line bzr client.
-            bzr = Popen((u'bzr', u'tags', u'--sort', u'time'), stdout=PIPE)
-            output, error = bzr.communicate()
-            code = bzr.wait()
-            if code != 0:
-                raise Exception(u'Error running bzr tags')
-            lines = output.splitlines()
-            if not lines:
-                tag = u'0.0.0'
-                revision = u'0'
-            else:
-                tag, revision = lines[-1].split()
-            bzr = Popen((u'bzr', u'log', u'--line', u'-r', u'-1'), stdout=PIPE)
-            output, error = bzr.communicate()
-            code = bzr.wait()
-            if code != 0:
-                raise Exception(u'Error running bzr log')
-            latest = output.split(u':')[0]
-            full_version = latest == revision and tag or u'%s-bzr%s' % (tag, latest)
+        # NOTE: The following code is a duplicate of the code in setup.py. Any fix applied here should also be applied
+        # there.
+
+        # Get the revision of this tree.
+        bzr = Popen((u'bzr', u'revno'), stdout=PIPE)
+        tree_revision, error = bzr.communicate()
+        code = bzr.wait()
+        if code != 0:
+            raise Exception(u'Error running bzr log')
+
+        # Get all tags.
+        bzr = Popen((u'bzr', u'tags'), stdout=PIPE)
+        output, error = bzr.communicate()
+        code = bzr.wait()
+        if code != 0:
+            raise Exception(u'Error running bzr tags')
+        tags = output.splitlines()
+        if not tags:
+            tag_version = u'0.0.0'
+            tag_revision = u'0'
+        else:
+            # Remove any tag that has "?" as revision number. A "?" as revision number indicates, that this tag is from
+            # another series.
+            tags = [tag for tag in tags if tag.split()[-1].strip() != u'?']
+            # Get the last tag and split it in a revision and tag name.
+            tag_version, tag_revision = tags[-1].split()
+        # If they are equal, then this tree is tarball with the source for the release. We do not want the revision
+        # number in the full version.
+        if tree_revision == tag_revision:
+            full_version =  tag_version
+        else:
+            full_version =  u'%s-bzr%s' % (tag_version, tree_revision)
     else:
         # We're not running the development version, let's use the file.
         filepath = AppLocation.get_directory(AppLocation.VersionDir)
@@ -182,9 +177,9 @@ def check_latest_version(current_version):
     version_string = current_version[u'full']
     # set to prod in the distribution config file.
     settings = Settings()
-    settings.beginGroup(u'general')
+    settings.beginGroup(u'core')
     last_test = settings.value(u'last version test')
-    this_test = datetime.now().date()
+    this_test = unicode(datetime.now().date())
     settings.setValue(u'last version test', this_test)
     settings.endGroup()
     # Tell the main window whether there will ever be data to display
@@ -244,8 +239,7 @@ def get_images_filter():
     global IMAGES_FILTER
     if not IMAGES_FILTER:
         log.debug(u'Generating images filter.')
-        formats = [unicode(fmt)
-            for fmt in QtGui.QImageReader.supportedImageFormats()]
+        formats = map(unicode, QtGui.QImageReader.supportedImageFormats())
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
         IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
@@ -352,9 +346,9 @@ def get_uno_instance(resolver):
     """
     log.debug(u'get UNO Desktop Openoffice - resolve')
     if UNO_CONNECTION_TYPE == u'pipe':
-        return resolver.resolve(u'uno:pipe,name=openlp_pipe; urp;StarOffice.ComponentContext')
+        return resolver.resolve(u'uno:pipe,name=openlp_pipe;urp;StarOffice.ComponentContext')
     else:
-        return resolver.resolve(u'uno:socket,host=localhost,port=2002; urp;StarOffice.ComponentContext')
+        return resolver.resolve(u'uno:socket,host=localhost,port=2002;urp;StarOffice.ComponentContext')
 
 
 def format_time(text, local_time):
@@ -379,21 +373,32 @@ def format_time(text, local_time):
     return re.sub('\%[a-zA-Z]', match_formatting, text)
 
 
-def locale_compare(string1, string2):
+def get_locale_key(string):
     """
-    Compares two strings according to the current locale settings.
-
-    As any other compare function, returns a negative, or a positive value,
-    or 0, depending on whether string1 collates before or after string2 or
-    is equal to it. Comparison is case insensitive.
+    Creates a key for case insensitive, locale aware string sorting.
     """
-    # Function locale.strcoll() from standard Python library does not work properly on Windows.
-    return locale.strcoll(string1.lower(), string2.lower())
+    string = string.lower()
+    # For Python 3 on platforms other than Windows ICU is not necessary. In those cases locale.strxfrm(str) can be used.
+    global ICU_COLLATOR
+    if ICU_COLLATOR is None:
+        from languagemanager import LanguageManager
+        locale = LanguageManager.get_language()
+        icu_locale = icu.Locale(locale)
+        ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
+    return ICU_COLLATOR.getSortKey(string)
 
 
-# For performance reasons provide direct reference to compare function without wrapping it in another function making
-# the string lowercase. This is needed for sorting songs.
-locale_direct_compare = locale.strcoll
+def get_natural_key(string):
+    """
+    Generate a key for locale aware natural string sorting.
+    Returns a list of string compare keys and integers.
+    """
+    key = DIGITS_OR_NONDIGITS.findall(string)
+    key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
+    # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str and int.
+    #if string[0].isdigit():
+    #    return [''] + key
+    return key
 
 
 from applocation import AppLocation
@@ -403,4 +408,4 @@ from actions import ActionList
 
 __all__ = [u'AppLocation', u'ActionList', u'LanguageManager', u'get_application_version', u'check_latest_version',
     u'add_actions', u'get_filesystem_encoding', u'get_web_page', u'get_uno_command', u'get_uno_instance',
-    u'delete_file', u'clean_filename', u'format_time', u'locale_compare', u'locale_direct_compare']
+    u'delete_file', u'clean_filename', u'format_time', u'get_locale_key', u'get_natural_key']

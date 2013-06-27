@@ -29,14 +29,20 @@
 """
 The :mod:`~openlp.plugins.songs.lib` module contains a number of library functions and classes used in the Songs plugin.
 """
+
+import logging
+import os
 import re
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import translate
-from openlp.core.utils import CONTROL_CHARS, locale_direct_compare
+from openlp.core.utils import AppLocation, CONTROL_CHARS
+from openlp.plugins.songs.lib.db import MediaFile, Song
 from db import Author
 from ui import SongStrings
+
+log = logging.getLogger(__name__)
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile(u'[\'`’ʻ′]', re.UNICODE)
@@ -168,6 +174,7 @@ class VerseType(object):
         translate('SongsPlugin.VerseType', 'Intro'),
         translate('SongsPlugin.VerseType', 'Ending'),
         translate('SongsPlugin.VerseType', 'Other')]
+
     translated_tags = [name[0].lower() for name in translated_names]
 
     @staticmethod
@@ -593,36 +600,28 @@ def strip_rtf(text, default_encoding=None):
     return text, default_encoding
 
 
-def natcmp(a, b):
+def delete_song(song_id, song_plugin):
     """
-    Natural string comparison which mimics the behaviour of Python's internal cmp function.
+    Deletes a song from the database. Media files associated to the song
+    are removed prior to the deletion of the song.
+
+    ``song_id``
+        The ID of the song to delete.
+
+    ``song_plugin``
+        The song plugin instance.
     """
-    if len(a) <= len(b):
-        for i, key in enumerate(a):
-            if isinstance(key, int) and isinstance(b[i], int):
-                result = cmp(key, b[i])
-            elif isinstance(key, int) and not isinstance(b[i], int):
-                result = locale_direct_compare(str(key), b[i])
-            elif not isinstance(key, int) and isinstance(b[i], int):
-                result = locale_direct_compare(key, str(b[i]))
-            else:
-                result = locale_direct_compare(key, b[i])
-            if result != 0:
-                return result
-        if len(a) == len(b):
-            return 0
-        else:
-            return -1
-    else:
-        for i, key in enumerate(b):
-            if isinstance(a[i], int) and isinstance(key, int):
-                result = cmp(a[i], key)
-            elif isinstance(a[i], int) and not isinstance(key, int):
-                result = locale_direct_compare(str(a[i]), key)
-            elif not isinstance(a[i], int) and isinstance(key, int):
-                result = locale_direct_compare(a[i], str(key))
-            else:
-                result = locale_direct_compare(a[i], key)
-            if result != 0:
-                return result
-        return 1
+    media_files = song_plugin.manager.get_all_objects(MediaFile, MediaFile.song_id == song_id)
+    for media_file in media_files:
+        try:
+            os.remove(media_file.file_name)
+        except:
+            log.exception('Could not remove file: %s', media_file.file_name)
+    try:
+        save_path = os.path.join(AppLocation.get_section_data_path(song_plugin.name), 'audio', str(song_id))
+        if os.path.exists(save_path):
+            os.rmdir(save_path)
+    except OSError:
+        log.exception(u'Could not remove directory: %s', save_path)
+    song_plugin.manager.delete_object(Song, song_id)
+

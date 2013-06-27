@@ -118,7 +118,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         check_directory_exists(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
         self.noInternetFinishButton.setVisible(False)
         # Check if this is a re-run of the wizard.
-        self.hasRunWizard = Settings().value(u'general/has run wizard')
+        self.hasRunWizard = Settings().value(u'core/has run wizard')
         # Sort out internet access for downloads
         if self.web_access:
             songs = self.config.get(u'songs', u'languages')
@@ -252,7 +252,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.application.set_busy_cursor()
         self._performWizard()
         self.application.set_normal_cursor()
-        Settings().setValue(u'general/has run wizard', True)
+        Settings().setValue(u'core/has run wizard', True)
         self.close()
 
     def urlGetFile(self, url, fpath):
@@ -459,7 +459,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                     self.urlGetFile(u'%s%s' % (self.web, theme), os.path.join(themes_destination, theme))
         # Set Default Display
         if self.displayComboBox.currentIndex() != -1:
-            Settings().setValue(u'General/monitor', self.displayComboBox.currentIndex())
+            Settings().setValue(u'core/monitor', self.displayComboBox.currentIndex())
             self.screens.set_current_display(self.displayComboBox.currentIndex())
         # Set Global Theme
         if self.themeComboBox.currentIndex() != -1:

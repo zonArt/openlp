@@ -1,13 +1,20 @@
 """
 Package to test the openlp.core.lib package.
 """
+import os
+
 from unittest import TestCase
 from datetime import datetime, timedelta
 
 from mock import MagicMock, patch
+from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import str_to_bool, translate, check_directory_exists, get_text_file_string, build_icon, \
-    image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
+from openlp.core.lib import str_to_bool, create_thumb, translate, check_directory_exists, get_text_file_string, \
+    build_icon, image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
+
+
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
+
 
 class TestLib(TestCase):
 
@@ -15,7 +22,7 @@ class TestLib(TestCase):
         """
         Test the str_to_bool function with boolean input
         """
-        #GIVEN: A boolean value set to true
+        # GIVEN: A boolean value set to true
         true_boolean = True
 
         # WHEN: We "convert" it to a bool
@@ -25,7 +32,7 @@ class TestLib(TestCase):
         assert isinstance(true_result, bool), u'The result should be a boolean'
         assert true_result is True, u'The result should be True'
 
-        #GIVEN: A boolean value set to false
+        # GIVEN: A boolean value set to false
         false_boolean = False
 
         # WHEN: We "convert" it to a bool
@@ -125,7 +132,7 @@ class TestLib(TestCase):
         Test the check_directory_exists() function
         """
         with patch(u'openlp.core.lib.os.path.exists') as mocked_exists, \
-             patch(u'openlp.core.lib.os.makedirs') as mocked_makedirs:
+                patch(u'openlp.core.lib.os.makedirs') as mocked_makedirs:
             # GIVEN: A directory to check and a mocked out os.makedirs and os.path.exists
             directory_to_check = u'existing/directory'
 
@@ -219,7 +226,7 @@ class TestLib(TestCase):
         Test the build_icon() function with a resource URI
         """
         with patch(u'openlp.core.lib.QtGui') as MockedQtGui, \
-             patch(u'openlp.core.lib.QtGui.QPixmap') as MockedQPixmap:
+                patch(u'openlp.core.lib.QtGui.QPixmap') as MockedQPixmap:
             # GIVEN: A mocked QIcon and a mocked QPixmap
             MockedQtGui.QIcon = MagicMock
             MockedQtGui.QIcon.Normal = 1
@@ -261,9 +268,43 @@ class TestLib(TestCase):
             mocked_byte_array.toBase64.assert_called_with()
             assert result == u'base64mock', u'The result should be the return value of the mocked out base64 method'
 
+    def create_thumb_with_size_test(self):
+        """
+        Test the create_thumb() function
+        """
+        # GIVEN: An image to create a thumb of.
+        image_path = os.path.join(TEST_PATH, u'church.jpg')
+        thumb_path = os.path.join(TEST_PATH, u'church_thumb.jpg')
+        thumb_size = QtCore.QSize(10, 20)
+
+        # Remove the thumb so that the test actually tests if the thumb will be created. Maybe it was not deleted in the
+        # last test.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
+        # Only continue when the thumb does not exist.
+        assert not os.path.exists(thumb_path), u'Test was not ran, because the thumb already exists.'
+
+        # WHEN: Create the thumb.
+        icon = create_thumb(image_path, thumb_path, size=thumb_size)
+
+        # THEN: Check if the thumb was created.
+        assert os.path.exists(thumb_path), u'Test was not ran, because the thumb already exists.'
+        assert isinstance(icon, QtGui.QIcon), u'The icon should be a QIcon.'
+        assert not icon.isNull(), u'The icon should not be null.'
+        assert QtGui.QImageReader(thumb_path).size() == thumb_size, u'The thumb should have the given size.'
+
+        # Remove the thumb so that the test actually tests if the thumb will be created.
+        try:
+            os.remove(thumb_path)
+        except:
+            pass
+
     def check_item_selected_true_test(self):
         """
-        Test that the check_item_selected() function returns True when there are selected indexes.
+        Test that the check_item_selected() function returns True when there are selected indexes
         """
         # GIVEN: A mocked out QtGui module and a list widget with selected indexes
         MockedQtGui = patch(u'openlp.core.lib.QtGui')
@@ -423,7 +464,7 @@ class TestLib(TestCase):
 
     def create_separated_list_qlocate_test(self):
         """
-        Test the create_separated_list function using the Qt provided method.
+        Test the create_separated_list function using the Qt provided method
         """
         with patch(u'openlp.core.lib.Qt') as mocked_qt, \
                 patch(u'openlp.core.lib.QtCore.QLocale.createSeparatedList') as mocked_createSeparatedList:
@@ -442,7 +483,7 @@ class TestLib(TestCase):
 
     def create_separated_list_empty_list_test(self):
         """
-        Test the create_separated_list function with an empty list.
+        Test the create_separated_list function with an empty list
         """
         with patch(u'openlp.core.lib.Qt') as mocked_qt:
             # GIVEN: An empty list and the mocked Qt module.
@@ -458,7 +499,7 @@ class TestLib(TestCase):
 
     def create_separated_list_with_one_item_test(self):
         """
-        Test the create_separated_list function with a list consisting of only one entry.
+        Test the create_separated_list function with a list consisting of only one entry
         """
         with patch(u'openlp.core.lib.Qt') as mocked_qt:
             # GIVEN: A list with a string and the mocked Qt module.
@@ -474,7 +515,7 @@ class TestLib(TestCase):
 
     def create_separated_list_with_two_items_test(self):
         """
-        Test the create_separated_list function with a list of two entries.
+        Test the create_separated_list function with a list of two entries
         """
         with patch(u'openlp.core.lib.Qt') as mocked_qt, patch(u'openlp.core.lib.translate') as mocked_translate:
             # GIVEN: A list of strings and the mocked Qt module.
@@ -491,7 +532,7 @@ class TestLib(TestCase):
 
     def create_separated_list_with_three_items_test(self):
         """
-        Test the create_separated_list function with a list of three items.
+        Test the create_separated_list function with a list of three items
         """
         with patch(u'openlp.core.lib.Qt') as mocked_qt, patch(u'openlp.core.lib.translate') as mocked_translate:
             # GIVEN: A list with a string and the mocked Qt module.

@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`cvsbible` modules provides a facility to import bibles from a set of
-CSV files.
+The :mod:`cvsbible` modules provides a facility to import bibles from a set of CSV files.
 
 The module expects two mandatory files containing the books and the verses.
 
@@ -55,8 +54,7 @@ There are two acceptable formats of the verses file.  They are:
         or
         "Genesis",1,2,"And the earth was without form, and void; and...."
 
-All CSV files are expected to use a comma (',') as the delimiter and double
-quotes ('"') as the quote symbol.
+All CSV files are expected to use a comma (',') as the delimiter and double quotes ('"') as the quote symbol.
 """
 import logging
 import chardet
@@ -65,7 +63,9 @@ import csv
 from openlp.core.lib import translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
+
 log = logging.getLogger(__name__)
+
 
 class CSVBible(BibleDB):
     """
@@ -75,9 +75,8 @@ class CSVBible(BibleDB):
 
     def __init__(self, parent, **kwargs):
         """
-        Loads a Bible from a set of CSV files.
-        This class assumes the files contain all the information and
-        a clean bible is being loaded.
+        Loads a Bible from a set of CSV files. This class assumes the files contain all the information and a clean
+        bible is being loaded.
         """
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)

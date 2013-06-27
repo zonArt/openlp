@@ -96,6 +96,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
+        log.debug(u'Processing settings exit')
         for tabIndex in range(self.stacked_layout.count()):
             self.stacked_layout.widget(tabIndex).save()
         # if the display of image background are changing we need to regenerate the image cache

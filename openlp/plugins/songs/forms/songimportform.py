@@ -325,7 +325,7 @@ class SongImportForm(OpenLPWizard):
         self.error_copy_to_button.setHidden(True)
         self.error_save_to_button.setHidden(True)
 
-    def preWizard(self):
+    def pre_wizard(self):
         """
         Perform pre import tasks
         """

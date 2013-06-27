@@ -35,6 +35,7 @@ Some of the code for this form is based on the examples at:
 * `http://html5demos.com/two-videos`_
 
 """
+from __future__ import division
 import cgi
 import logging
 import sys
@@ -207,8 +208,8 @@ class MainDisplay(Display):
             painter_image.begin(self.initial_fame)
             painter_image.fillRect(self.initial_fame.rect(), background_color)
             painter_image.drawImage(
-                (self.screen[u'size'].width() - splash_image.width()) / 2,
-                (self.screen[u'size'].height() - splash_image.height()) / 2,
+                (self.screen[u'size'].width() - splash_image.width()) // 2,
+                (self.screen[u'size'].height() - splash_image.height()) // 2,
                 splash_image)
             service_item = ServiceItem()
             service_item.bg_image_bytes = image_to_byte(self.initial_fame)
@@ -268,7 +269,7 @@ class MainDisplay(Display):
                 self.resize(self.width(), alert_height)
                 self.setVisible(True)
                 if location == AlertLocation.Middle:
-                    self.move(self.screen[u'size'].left(), (self.screen[u'size'].height() - alert_height) / 2)
+                    self.move(self.screen[u'size'].left(), (self.screen[u'size'].height() - alert_height) // 2)
                 elif location == AlertLocation.Bottom:
                     self.move(self.screen[u'size'].left(), self.screen[u'size'].height() - alert_height)
             else:
@@ -287,7 +288,7 @@ class MainDisplay(Display):
         self.image(path)
         # Update the preview frame.
         if self.is_live:
-            self.live_controller.updatePreview()
+            self.live_controller.update_preview()
         return True
 
     def image(self, path):
@@ -357,7 +358,7 @@ class MainDisplay(Display):
                 # Single screen active
                 if self.screens.display_count == 1:
                     # Only make visible if setting enabled.
-                    if Settings().value(u'general/display on monitor'):
+                    if Settings().value(u'core/display on monitor'):
                         self.setVisible(True)
                 else:
                     self.setVisible(True)
@@ -405,7 +406,7 @@ class MainDisplay(Display):
             self.footer(service_item.foot_text)
         # if was hidden keep it hidden
         if self.hide_mode and self.is_live and not service_item.is_media():
-            if Settings().value(u'general/auto unblank'):
+            if Settings().value(u'core/auto unblank'):
                 Registry().execute(u'slidecontroller_live_unblank')
             else:
                 self.hide_display(self.hide_mode)
@@ -427,7 +428,7 @@ class MainDisplay(Display):
         log.debug(u'hide_display mode = %d', mode)
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor'):
+            if not Settings().value(u'core/display on monitor'):
                 return
         if mode == HideMode.Screen:
             self.frame.evaluateJavaScript(u'show_blank("desktop");')
@@ -450,7 +451,7 @@ class MainDisplay(Display):
         log.debug(u'show_display')
         if self.screens.display_count == 1:
             # Only make visible if setting enabled.
-            if not Settings().value(u'general/display on monitor'):
+            if not Settings().value(u'core/display on monitor'):
                 return
         self.frame.evaluateJavaScript('show_blank("show");')
         if self.isHidden():
