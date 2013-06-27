@@ -39,8 +39,10 @@ from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
 
+
 def replacement(match):
     return match.group(2).upper()
+
 
 class OSISBible(BibleDB):
     """
@@ -53,8 +55,7 @@ class OSISBible(BibleDB):
         BibleDB.__init__(self, parent, **kwargs)
         self.filename = kwargs[u'filename']
         self.language_regex = re.compile(r'<language.*>(.*?)</language>')
-        self.verse_regex = re.compile(
-            r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
+        self.verse_regex = re.compile(r'<verse osisID="([a-zA-Z0-9 ]*).([0-9]*).([0-9]*)">(.*?)</verse>')
         self.note_regex = re.compile(r'<note(.*?)>(.*?)</note>')
         self.title_regex = re.compile(r'<title(.*?)>(.*?)</title>')
         self.milestone_regex = re.compile(r'<milestone(.*?)/>')
@@ -68,8 +69,7 @@ class OSISBible(BibleDB):
         self.q1_regex = re.compile(r'<q(.*?)level="1"(.*?)>')
         self.q2_regex = re.compile(r'<q(.*?)level="2"(.*?)>')
         self.trans_regex = re.compile(r'<transChange(.*?)>(.*?)</transChange>')
-        self.divine_name_regex = re.compile(
-            r'<divineName(.*?)>(.*?)</divineName>')
+        self.divine_name_regex = re.compile(r'<divineName(.*?)>(.*?)</divineName>')
         self.spaces_regex = re.compile(r'([ ]{2,})')
         filepath = os.path.join(
             AppLocation.get_directory(AppLocation.PluginsDir), u'bibles', u'resources', u'osisbooks.csv')
@@ -158,10 +158,8 @@ class OSISBible(BibleDB):
                         self.wizard.increment_progress_bar(translate('BiblesPlugin.OsisImport', 'Importing %s %s...',
                             'Importing <book name> <chapter>...') % (book_details[u'name'], chapter))
                         last_chapter = chapter
-                    # All of this rigmarol below is because the mod2osis
-                    # tool from the Sword library embeds XML in the OSIS
-                    # but neglects to enclose the verse text (with XML) in
-                    # <[CDATA[ ]]> tags.
+                    # All of this rigmarol below is because the mod2osis tool from the Sword library embeds XML in the
+                    # OSIS but neglects to enclose the verse text (with XML) in <[CDATA[ ]]> tags.
                     verse_text = self.note_regex.sub(u'', verse_text)
                     verse_text = self.title_regex.sub(u'', verse_text)
                     verse_text = self.milestone_regex.sub(u'', verse_text)

@@ -29,6 +29,8 @@
 """
 The Themes configuration tab
 """
+from __future__ import division
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Registry, Settings, SettingsTab, UiStrings, translate
@@ -90,7 +92,7 @@ class ThemesTab(SettingsTab):
         self.global_level_label.setObjectName(u'global_level_label')
         self.level_layout.addRow(self.global_level_radio_button, self.global_level_label)
         label_top_margin = (self.song_level_radio_button.sizeHint().height() -
-            self.song_level_label.sizeHint().height()) / 2
+            self.song_level_label.sizeHint().height()) // 2
         for label in [self.song_level_label, self.service_level_label, self.global_level_label]:
             rect = label.rect()
             rect.setTop(rect.top() + label_top_margin)

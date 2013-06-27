@@ -31,7 +31,7 @@ The actual plugin view form
 """
 import logging
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import PluginStatus, Registry, translate
 from plugindialog import Ui_PluginViewDialog

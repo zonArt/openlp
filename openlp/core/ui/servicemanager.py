@@ -273,7 +273,6 @@ class ServiceManagerDialog(object):
         Registry().register_function(u'config_screen_changed', self.regenerate_service_Items)
         Registry().register_function(u'theme_update_global', self.theme_change)
         Registry().register_function(u'mediaitem_suffix_reset', self.reset_supported_suffixes)
-        Registry().register_function(u'servicemanager_set_item', self.on_set_item)
 
     def drag_enter_event(self, event):
         """
@@ -296,8 +295,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Sets up the service manager, toolbars, list view, et al.
         """
         QtGui.QWidget.__init__(self, parent)
-        self.active = build_icon(QtGui.QImage(u':/media/auto-start_active.png'))
-        self.inactive = build_icon(QtGui.QImage(u':/media/auto-start_inactive.png'))
+        self.active = build_icon(u':/media/auto-start_active.png')
+        self.inactive = build_icon(u':/media/auto-start_inactive.png')
         Registry().register(u'service_manager', self)
         self.service_items = []
         self.suffixes = []
@@ -315,6 +314,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.setup_ui(self)
+        # Need to use event as called across threads and UI is updated
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'servicemanager_set_item'), self.on_set_item)
 
     def set_modified(self, modified=True):
         """
@@ -714,13 +715,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     else:
                         service_item.set_from_service(item, self.servicePath)
                     service_item.validate_item(self.suffixes)
-                    self.load_item_unique_identifier = 0
                     if service_item.is_capable(ItemCapabilities.OnLoadUpdate):
-                        Registry().execute(u'%s_service_load' % service_item.name.lower(), service_item)
-                    # if the item has been processed
-                    if service_item.unique_identifier == self.load_item_unique_identifier:
-                        service_item.edit_id = int(self.load_item_edit_id)
-                        service_item.temporary_edit = self.load_item_temporary
+                        new_item = Registry().get(service_item.name).service_load(service_item)
+                        if new_item:
+                            service_item = new_item
                     self.add_service_item(service_item, repaint=False)
                 delete_file(p_file)
                 self.main_window.add_recent_file(file_name)
@@ -993,7 +991,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def on_set_item(self, message):
         """
-        Called by a signal to select a specific item.
+        Called by a signal to select a specific item and make it live usually from remote.
         """
         self.set_item(int(message))
 
@@ -1259,14 +1257,6 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             self.repaint_service_list(-1, -1)
         self.application.set_normal_cursor()
 
-    def service_item_update(self, edit_id, unique_identifier, temporary=False):
-        """
-        Triggered from plugins to update service items. Save the values as they will be used as part of the service load
-        """
-        self.load_item_unique_identifier = unique_identifier
-        self.load_item_edit_id = int(edit_id)
-        self.load_item_temporary = str_to_bool(temporary)
-
     def replace_service_item(self, newItem):
         """
         Using the service item passed replace the one with the same edit id if found.
@@ -1277,7 +1267,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaint_service_list(item_count + 1, 0)
-                self.live_controller.replaceServiceManagerItem(newItem)
+                self.live_controller.replace_service_manager_item(newItem)
                 self.set_modified()
 
     def add_service_item(self, item, rebuild=False, expand=None, replace=False, repaint=True, selected=False):
@@ -1299,7 +1289,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             item.merge(self.service_items[sitem][u'service_item'])
             self.service_items[sitem][u'service_item'] = item
             self.repaint_service_list(sitem, child)
-            self.live_controller.replaceServiceManagerItem(item)
+            self.live_controller.replace_service_manager_item(item)
         else:
             item.render()
             # nothing selected for dnd
@@ -1322,7 +1312,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 self.repaint_service_list(self.drop_position, -1)
             # if rebuilding list make sure live is fixed.
             if rebuild:
-                self.live_controller.replaceServiceManagerItem(item)
+                self.live_controller.replace_service_manager_item(item)
         self.drop_position = 0
         self.set_modified()
 
@@ -1333,7 +1323,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.application.set_busy_cursor()
         item, child = self.find_service_item()
         if self.service_items[item][u'service_item'].is_valid:
-            self.preview_controller.addServiceManagerItem(self.service_items[item][u'service_item'], child)
+            self.preview_controller.add_service_manager_item(self.service_items[item][u'service_item'], child)
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
@@ -1371,15 +1361,15 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             child = row
         self.application.set_busy_cursor()
         if self.service_items[item][u'service_item'].is_valid:
-            self.live_controller.addServiceManagerItem(self.service_items[item][u'service_item'], child)
+            self.live_controller.add_service_manager_item(self.service_items[item][u'service_item'], child)
             if Settings().value(self.main_window.general_settings_section + u'/auto preview'):
                 item += 1
                 if self.service_items and item < len(self.service_items) and \
                         self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanPreview):
-                    self.preview_controller.addServiceManagerItem(self.service_items[item][u'service_item'], 0)
+                    self.preview_controller.add_service_manager_item(self.service_items[item][u'service_item'], 0)
                     next_item = self.service_manager_list.topLevelItem(item)
                     self.service_manager_list.setCurrentItem(next_item)
-                    self.live_controller.preview_list_widget.setFocus()
+                    self.live_controller.preview_widget.setFocus()
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
@@ -1393,7 +1383,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         item = self.find_service_item()[0]
         if self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEdit):
             new_item = Registry().get(self.service_items[item][u'service_item'].name). \
-                onRemoteEdit(self.service_items[item][u'service_item'].edit_id)
+                on_remote_edit(self.service_items[item][u'service_item'].edit_id)
             if new_item:
                 self.add_service_item(new_item, replace=True)
 

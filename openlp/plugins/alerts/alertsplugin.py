@@ -115,13 +115,13 @@ HTML = """
 """
 
 __default_settings__ = {
-        u'alerts/font face': QtGui.QFont().family(),
-        u'alerts/font size': 40,
-        u'alerts/db type': u'sqlite',
-        u'alerts/location': AlertLocation.Bottom,
-        u'alerts/background color': u'#660000',
-        u'alerts/font color': u'#ffffff',
-        u'alerts/timeout': 5
+    u'alerts/font face': QtGui.QFont().family(),
+    u'alerts/font size': 40,
+    u'alerts/db type': u'sqlite',
+    u'alerts/location': AlertLocation.Bottom,
+    u'alerts/background color': u'#660000',
+    u'alerts/font color': u'#ffffff',
+    u'alerts/timeout': 5
 }
 
 
@@ -139,12 +139,10 @@ class AlertsPlugin(Plugin):
 
     def add_tools_menu_item(self, tools_menu):
         """
-        Give the alerts plugin the opportunity to add items to the
-        **Tools** menu.
+        Give the alerts plugin the opportunity to add items to the **Tools** menu.
 
         ``tools_menu``
-            The actual **Tools** menu item, so that your actions can
-            use it as their parent.
+            The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.info(u'add tools menu')
         self.tools_alert_item = create_action(tools_menu, u'toolsAlertItem',
