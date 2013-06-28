@@ -9,7 +9,7 @@ import os
 from unittest import TestCase
 from mock import patch, MagicMock
 
-from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEntry
+from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEntry, FieldType
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/easyworshipsongs'))
 SONG_TEST_DATA = [
@@ -68,9 +68,11 @@ class TestFieldDesc:
 TEST_DATA_ENCODING = u'cp1252'
 CODE_PAGE_MAPPINGS = [(852, u'cp1250'), (737, u'cp1253'), (775, u'cp1257'), (855, u'cp1251'), (857, u'cp1254'),
     (866,  u'cp1251'), (869, u'cp1253'), (862, u'cp1255'), (874, u'cp874')]
-TEST_FIELD_DESCS = [TestFieldDesc(u'Title', 1, 50), TestFieldDesc(u'Text Percentage Bottom', 3, 2),
-    TestFieldDesc(u'RecID', 4, 4), TestFieldDesc(u'Default Background', 9, 1), TestFieldDesc(u'Words', 12, 250),
-    TestFieldDesc(u'Words', 12, 250), TestFieldDesc(u'BK Bitmap', 13, 10), TestFieldDesc(u'Last Modified', 21, 10)]
+TEST_FIELD_DESCS = [TestFieldDesc(u'Title', FieldType.String, 50),
+    TestFieldDesc(u'Text Percentage Bottom', FieldType.Int16, 2), TestFieldDesc(u'RecID', FieldType.Int32, 4),
+    TestFieldDesc(u'Default Background', FieldType.Logical, 1), TestFieldDesc(u'Words', FieldType.Memo, 250),
+    TestFieldDesc(u'Words', FieldType.Memo, 250), TestFieldDesc(u'BK Bitmap', FieldType.Blob, 10),
+    TestFieldDesc(u'Last Modified', FieldType.Timestamp, 10)]
 TEST_FIELDS = ['A Heart Like Thine\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0', 32868, 2147483750,
     129, '{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
     '{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;'
@@ -94,7 +96,7 @@ class TestEasyWorshipSongImport(TestCase):
         """
         # GIVEN: Set arguments
         name = u'Title'
-        field_type = 1
+        field_type = FieldType.String
         size = 50
 
         # WHEN: A FieldDescEntry object is created.
