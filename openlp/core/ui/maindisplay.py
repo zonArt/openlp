@@ -327,6 +327,9 @@ class MainDisplay(Display):
             self.display_image(self.service_item.bg_image_bytes)
         else:
             self.display_image(None)
+        # Update the preview frame.
+        if self.is_live:
+            self.live_controller.update_preview()
         # clear the cache
         self.override = {}
 
