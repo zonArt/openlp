@@ -68,7 +68,6 @@ class FormattingTags(object):
                         tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
         Settings().setValue(u'formattingTags/html_tags', json.dumps(tags) if tags else u'')
-        Settings().setValue(u'formattingTags/html_tags_json', True)
 
     @staticmethod
     def load_tags():

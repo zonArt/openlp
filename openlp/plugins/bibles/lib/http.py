@@ -367,8 +367,8 @@ class BSExtract(object):
             The version of the Bible like NIV for New International Version
         """
         log.debug(u'BSExtract.get_books_from_http("%s")', version)
-        urlversion = urllib.quote(version.encode("utf-8"))
-        chapter_url = u'http://m.bibleserver.com/overlay/selectBook?translation=%s' % (urlversion)
+        url_version = urllib.quote(version.encode("utf-8"))
+        chapter_url = u'http://m.bibleserver.com/overlay/selectBook?translation=%s' % (url_version)
         soup = get_soup_for_bible_ref(chapter_url)
         if not soup:
             return None
@@ -611,9 +611,8 @@ class HTTPBible(BibleDB):
                 if show_error:
                     critical_error_message_box(
                         translate('BiblesPlugin', 'No Book Found'),
-                        translate('BiblesPlugin', 'No matching '
-                        'book could be found in this Bible. Check that you '
-                        'have spelled the name of the book correctly.'))
+                        translate('BiblesPlugin', 'No matching book could be found in this Bible. Check that you have '
+                        'spelled the name of the book correctly.'))
                 return []
             book = db_book.name
             if BibleDB.get_verse_count(self, book_id, reference[1]) == 0:
@@ -742,13 +741,10 @@ def send_error_message(error_type):
     if error_type == u'download':
         critical_error_message_box(
             translate('BiblesPlugin.HTTPBible', 'Download Error'),
-            translate('BiblesPlugin.HTTPBible', 'There was a '
-            'problem downloading your verse selection. Please check your '
-            'Internet connection, and if this error continues to occur '
-            'please consider reporting a bug.'))
+            translate('BiblesPlugin.HTTPBible', 'There was a problem downloading your verse selection. Please check '
+                'your Internet connection, and if this error continues to occur please consider reporting a bug.'))
     elif error_type == u'parse':
         critical_error_message_box(
             translate('BiblesPlugin.HTTPBible', 'Parse Error'),
-            translate('BiblesPlugin.HTTPBible', 'There was a '
-            'problem extracting your verse selection. If this error continues '
-            'to occur please consider reporting a bug.'))
+            translate('BiblesPlugin.HTTPBible', 'There was a problem extracting your verse selection. If this error '
+                'continues to occur please consider reporting a bug.'))
