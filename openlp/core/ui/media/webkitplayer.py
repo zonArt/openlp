@@ -44,113 +44,57 @@ VIDEO_CSS = u"""
     z-index:3;
     background-color: %(bgcolor)s;
 }
-#video1 {
-    background-color: %(bgcolor)s;
-    z-index:4;
-}
-#video2 {
+#video {
     background-color: %(bgcolor)s;
     z-index:4;
 }
 """
 
 VIDEO_JS = u"""
-    var video_timer = null;
-    var current_video = '1';
+    function show_video(state, path, volume, loop, variable_value){
+        // Sometimes  video.currentTime stops slightly short of video.duration and video.ended is intermittent!
 
-    function show_video(state, path, volume, loop, varVal){
-        // Note, the preferred method for looping would be to use the
-        // video tag loop attribute.
-        // But QtWebKit doesn't support this. Neither does it support the
-        // onended event, hence the setInterval()
-        // In addition, setting the currentTime attribute to zero to restart
-        // the video raises an INDEX_SIZE_ERROR: DOM Exception 1
-        // To complicate it further, sometimes vid.currentTime stops
-        // slightly short of vid.duration and vid.ended is intermittent!
-        //
-        // Note, currently the background may go black between loops. Not
-        // desirable. Need to investigate using two <video>'s, and hiding/
-        // preloading one, and toggle between the two when looping.
-
-        if(current_video=='1'){
-            var vid = document.getElementById('video1');
-            var vid2 = document.getElementById('video2');
-        } else {
-            var vid = document.getElementById('video2');
-            var vid2 = document.getElementById('video1');
-        }
+        var video = document.getElementById('video');
         if(volume != null){
-            vid.volume = volume;
-            vid2.volume = volume;
+            video.volume = volume;
         }
         switch(state){
-            case 'init':
-                vid.src = 'file:///' + path;
-                vid2.src = 'file:///' + path;
-                if(loop == null) loop = false;
-                vid.looping = loop;
-                vid2.looping = loop;
-                vid.load();
-                break;
             case 'load':
-                vid2.style.visibility = 'hidden';
-                vid2.load();
+                video.src = 'file:///' + path;
+                if(loop == true) {
+                    video.loop = true;
+                }
+                video.load();
                 break;
             case 'play':
-                vid.play();
-                if(vid.looping){
-                    video_timer = setInterval(
-                        function() {
-                            show_video('poll');
-                        }, 200);
-                }
+                video.play();
                 break;
             case 'pause':
-                if(video_timer!=null){
-                    clearInterval(video_timer);
-                    video_timer = null;
-                }
-                vid.pause();
+                video.pause();
                 break;
             case 'stop':
                 show_video('pause');
-                vid.currentTime = 0;
-                break;
-            case 'poll':
-                if(vid.ended||vid.currentTime+0.2>vid.duration)
-                    show_video('swap');
-                break;
-            case 'swap':
-                show_video('pause');
-                if(current_video=='1')
-                    current_video = '2';
-                else
-                    current_video = '1';
-                show_video('load');
-                show_video('play');
-                show_video('setVisible',null,null,null,'visible');
+                video.currentTime = 0;
                 break;
             case 'close':
                 show_video('stop');
-                vid.src = '';
-                vid2.src = '';
+                video.src = '';
                 break;
             case 'length':
-                return vid.duration;
-            case 'currentTime':
-                return vid.currentTime;
+                return video.duration;
+            case 'current_time':
+                return video.currentTime;
             case 'seek':
-                // doesnt work currently
-                vid.currentTime = varVal;
+                video.currentTime = variable_value;
                 break;
             case 'isEnded':
-                return vid.ended;
+                return video.ended;
             case 'setVisible':
-                vid.style.visibility = varVal;
+                video.style.visibility = variable_value;
                 break;
             case 'setBackBoard':
                 var back = document.getElementById('videobackboard');
-                back.style.visibility = varVal;
+                back.style.visibility = variable_value;
                 break;
        }
     }
@@ -158,10 +102,7 @@ VIDEO_JS = u"""
 
 VIDEO_HTML = u"""
 <div id="videobackboard" class="size" style="visibility:hidden"></div>
-<video id="video1" class="size" style="visibility:hidden" autobuffer preload>
-</video>
-<video id="video2" class="size" style="visibility:hidden" autobuffer preload>
-</video>
+<video id="video" class="size" style="visibility:hidden" autobuffer preload></video>
 """
 
 FLASH_CSS = u"""
@@ -173,25 +114,21 @@ FLASH_CSS = u"""
 FLASH_JS = u"""
     function getFlashMovieObject(movieName)
     {
-        if (window.document[movieName])
-        {
+        if (window.document[movieName]){
             return window.document[movieName];
         }
-        if (document.embeds && document.embeds[movieName])
+        if (document.embeds && document.embeds[movieName]){
             return document.embeds[movieName];
+        }
     }
 
-    function show_flash(state, path, volume, varVal){
+    function show_flash(state, path, volume, variable_value){
         var text = document.getElementById('flash');
         var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
         var src = "src = 'file:///" + path + "'";
-        var view_parm = " wmode='opaque'" +
-            " width='100%%'" +
-            " height='100%%'";
-        var swf_parm = " name='OpenLPFlashMovie'" +
-            " autostart='true' loop='false' play='true'" +
-            " hidden='false' swliveconnect='true' allowscriptaccess='always'" +
-            " volume='" + volume + "'";
+        var view_parm = " wmode='opaque'" + " width='100%%'" + " height='100%%'";
+        var swf_parm = " name='OpenLPFlashMovie'" + " autostart='true' loop='false' play='true'" +
+            " hidden='false' swliveconnect='true' allowscriptaccess='always'" + " volume='" + volume + "'";
 
         switch(state){
             case 'load':
@@ -217,15 +154,16 @@ FLASH_JS = u"""
                 break;
             case 'length':
                 return flashMovie.TotalFrames();
-            case 'currentTime':
+            case 'current_time':
                 return flashMovie.CurrentFrame();
             case 'seek':
-//                flashMovie.GotoFrame(varVal);
+//                flashMovie.GotoFrame(variable_value);
                 break;
             case 'isEnded':
-                return false;//TODO check flash end
+                //TODO check flash end
+                return false;
             case 'setVisible':
-                text.style.visibility = varVal;
+                text.style.visibility = variable_value;
                 break;
         }
     }
@@ -338,7 +276,7 @@ class WebkitPlayer(MediaPlayer):
             controller.media_info.is_flash = True
             js = u'show_flash("load","%s");' % (path.replace(u'\\', u'\\\\'))
         else:
-            js = u'show_video("init", "%s", %s, %s);' % (path.replace(u'\\', u'\\\\'), str(vol), loop)
+            js = u'show_video("load", "%s", %s, %s);' % (path.replace(u'\\', u'\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
 
@@ -447,25 +385,25 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         if controller.media_info.is_flash:
-            currentTime = display.frame.evaluateJavaScript(u'show_flash("currentTime");')
+            current_time = display.frame.evaluateJavaScript(u'show_flash("current_time");')
             length = display.frame.evaluateJavaScript(u'show_flash("length");')
         else:
             if display.frame.evaluateJavaScript(u'show_video("isEnded");'):
                 self.stop(display)
-            currentTime = display.frame.evaluateJavaScript(u'show_video("currentTime");')
+            current_time = display.frame.evaluateJavaScript(u'show_video("current_time");')
             # check if conversion was ok and value is not 'NaN'
-            if currentTime and currentTime != float('inf'):
-                currentTime = int(currentTime * 1000)
+            if current_time and current_time != float('inf'):
+                current_time = int(current_time * 1000)
             length = display.frame.evaluateJavaScript(u'show_video("length");')
             # check if conversion was ok and value is not 'NaN'
             if length and length != float('inf'):
                 length = int(length * 1000)
-        if currentTime > 0:
+        if current_time:
             controller.media_info.length = length
             controller.seek_slider.setMaximum(length)
             if not controller.seek_slider.isSliderDown():
                 controller.seek_slider.blockSignals(True)
-                controller.seek_slider.setSliderPosition(currentTime)
+                controller.seek_slider.setSliderPosition(current_time)
                 controller.seek_slider.blockSignals(False)
 
     def get_info(self):
