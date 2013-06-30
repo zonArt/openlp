@@ -1066,7 +1066,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             self.live_controller.display = None
         if os.name == u'nt':
             # Needed for Windows to stop crashes on exit
-            Registry.remove(u'application')
+            Registry().remove(u'application')
 
     def service_changed(self, reset=False, serviceName=None):
         """
