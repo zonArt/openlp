@@ -89,7 +89,7 @@ def test():
     assert not [u'C3', u'Chorus 3'] in o.verses
     assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.verses
-    print o.verse_order_list
+    print(o.verse_order_list)
     assert o.verse_order_list == [u'V1', u'C1', u'V2', u'C2', u'V3', u'B1', u'V1']
 
     o.filenames = [u'test2.opensong']
@@ -101,14 +101,14 @@ def test():
     assert o.title == u'Martins 2nd Test'
     assert o.alternate_title == u''
     assert o.song_number == u'2'
-    print o.verses
+    print(o.verses)
     assert [u'B1', u'Bridge 1\nBridge 1 line 2'] in o.verses
     assert [u'C1', u'Chorus 1'] in o.verses
     assert [u'C2', u'Chorus 2'] in o.verses
     assert not [u'C3', u'Chorus 3'] in o.verses
     assert [u'V1', u'v1 Line 1\nV1 Line 2'] in o.verses
     assert [u'V2', u'v2 Line 1\nV2 Line 2'] in o.verses
-    print o.verse_order_list
+    print(o.verse_order_list)
     assert o.verse_order_list == [u'V1', u'V2', u'B1', u'C1', u'C2']
 
     o.filenames = [u'test3.opensong']
@@ -122,10 +122,10 @@ def test():
     assert o.ccli_number == u'123456'
     assert o.verse_order_list == [u'V1']
     assert o.topics == [u'Worship: Declaration']
-    print o.verses[0]
+    print(o.verses[0])
     assert [u'V1', u'Line 1\nLine 2'] in o.verses
 
-    print "Tests passed"
+    print("Tests passed")
 
 if __name__ == "__main__":
     test()
