@@ -41,13 +41,18 @@ class CustomSlide(BaseModel):
     """
     CustomSlide model
     """
-    # By default sort the customs by its title considering language specific
-    # characters.
+    # By default sort the customs by its title considering language specific characters.
     def __lt__(self, other):
         return get_locale_key(self.title) < get_locale_key(other.title)
 
     def __eq__(self, other):
         return get_locale_key(self.title) == get_locale_key(other.title)
+
+    def __hash__(self):
+        """
+        Return the hash for a custom slide.
+        """
+        return self.id
 
 
 def init_schema(url):
