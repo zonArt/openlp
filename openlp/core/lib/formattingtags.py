@@ -158,19 +158,10 @@ class FormattingTags(object):
             u'end html': u'', u'protected': True, u'temporary': False})
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
-
         # Formatting Tags were also known as display tags.
-        user_format_json = Settings().value(u'formattingTags/html_tags_json')
-        # cPickle only accepts str not unicode strings
-        if user_format_json:
-            user_expands_string = str(Settings().value(u'formattingTags/html_tags'))
-        else:
-            user_expands_string = str(Settings().value(u'displayTags/html_tags'))
+        user_expands_string = str(Settings().value(u'formattingTags/html_tags'))
         if user_expands_string:
-            if user_format_json:
-                user_tags = json.loads(user_expands_string)
-            else:
-                user_tags = cPickle.loads(user_expands_string)
+            user_tags = json.loads(user_expands_string)
             for tag in user_tags:
                 for element in tag:
                     if isinstance(tag[element], str):
