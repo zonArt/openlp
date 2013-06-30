@@ -29,7 +29,6 @@
 """
 Provide HTML Tag management and Formatting Tag access class
 """
-import cPickle
 import json
 
 from openlp.core.lib import Settings, translate
