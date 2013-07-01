@@ -242,8 +242,6 @@ class MainDisplay(Display):
             # Windows if there are many items in the service to re-render.
             # Setting the div elements direct seems to solve the issue
             self.frame.findFirstElement("#lyricsmain").setInnerXml(slide)
-            self.frame.findFirstElement("#lyricsoutline").setInnerXml(slide)
-            self.frame.findFirstElement("#lyricsshadow").setInnerXml(slide)
 
     def alert(self, text, location):
         """
