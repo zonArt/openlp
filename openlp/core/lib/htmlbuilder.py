@@ -211,8 +211,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     """
     width = screen[u'size'].width()
     height = screen[u'size'].height()
-    theme = item.themedata
-    webkit_ver = webkit_version()
+    theme_data = item.themedata
     # Image generated and poked in
     if background:
         bgimage_src = u'src="data:image/png;base64,%s"' % background
@@ -236,10 +235,11 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
         build_background_css(item, width),
         css_additions,
         build_footer_css(item, height),
-        build_lyrics_css(item, webkit_ver),
-        u'true' if theme and theme.display_slide_transition and is_live else u'false',
+        build_lyrics_css(item),
+        u'true' if theme_data and theme_data.display_slide_transition and is_live else u'false',
         js_additions,
-        bgimage_src, image_src,
+        bgimage_src,
+        image_src,
         html_additions
     )
     return html
@@ -291,15 +291,12 @@ def build_background_css(item, width):
     return background
 
 
-def build_lyrics_css(item, webkit_ver):
+def build_lyrics_css(item):
     """
     Build the lyrics display css
 
     ``item``
         Service Item containing theme and location information
-
-    ``webkitvers``
-        The version of qtwebkit we're using
 
     """
     style = u"""
@@ -319,55 +316,41 @@ def build_lyrics_css(item, webkit_ver):
     %s
 }
     """
-    theme = item.themedata
+    theme_data = item.themedata
     lyricstable = u''
     lyrics = u''
     lyricsmain = u''
-    if theme and item.main:
+    if theme_data and item.main:
         lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
-        lyrics = build_lyrics_format_css(theme, item.main.width(), item.main.height())
-        lyricsmain += build_lyrics_outline_css(theme)
-        if theme.font_main_shadow:
-            if theme.font_main_outline and webkit_ver <= 534.3:
-                shadow = u'padding-left: %spx; padding-top: %spx;' % \
-                    (int(theme.font_main_shadow_size) + (int(theme.font_main_outline_size) * 2),
-                    theme.font_main_shadow_size)
-                shadow += build_lyrics_outline_css(theme, True)
-            else:
-                lyricsmain += u' text-shadow: %s %spx %spx;' % \
-                    (theme.font_main_shadow_color, theme.font_main_shadow_size, theme.font_main_shadow_size)
+        lyrics = build_lyrics_format_css(theme_data, item.main.width(), item.main.height())
+        lyricsmain += build_lyrics_outline_css(theme_data)
+        if theme_data.font_main_shadow:
+            lyricsmain += u' text-shadow: %s %spx %spx;' % \
+                (theme_data.font_main_shadow_color, theme_data.font_main_shadow_size, theme_data.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain)
     return lyrics_css
 
 
-def build_lyrics_outline_css(theme, is_shadow=False):
+def build_lyrics_outline_css(theme_data):
     """
     Build the css which controls the theme outline. Also used by renderer for splitting verses
 
-    ``theme``
+    ``theme_data``
         Object containing theme information
-
-    ``is_shadow``
-        If true, use the shadow colors instead
     """
-    if theme.font_main_outline:
-        size = float(theme.font_main_outline_size) / 16
-        if is_shadow:
-            fill_color = theme.font_main_shadow_color
-            outline_color = theme.font_main_shadow_color
-        else:
-            fill_color = theme.font_main_color
-            outline_color = theme.font_main_outline_color
+    if theme_data.font_main_outline:
+        size = float(theme_data.font_main_outline_size) / 16
+        fill_color = theme_data.font_main_color
+        outline_color = theme_data.font_main_outline_color
         return u' -webkit-text-stroke: %sem %s; -webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
-    else:
-        return u''
+    return u''
 
 
-def build_lyrics_format_css(theme, width, height):
+def build_lyrics_format_css(theme_data, width, height):
     """
     Build the css which controls the theme format. Also used by renderer for splitting verses
 
-    ``theme``
+    ``theme_data``
         Object containing theme information
 
     ``width``
@@ -376,17 +359,17 @@ def build_lyrics_format_css(theme, width, height):
     ``height``
         Height of the lyrics block
     """
-    align = HorizontalType.Names[theme.display_horizontal_align]
-    valign = VerticalType.Names[theme.display_vertical_align]
-    if theme.font_main_outline:
-        left_margin = int(theme.font_main_outline_size) * 2
+    align = HorizontalType.Names[theme_data.display_horizontal_align]
+    valign = VerticalType.Names[theme_data.display_vertical_align]
+    if theme_data.font_main_outline:
+        left_margin = int(theme_data.font_main_outline_size) * 2
     else:
         left_margin = 0
     justify = u'white-space:pre-wrap;'
     # fix tag incompatibilities
-    if theme.display_horizontal_align == HorizontalType.Justify:
+    if theme_data.display_horizontal_align == HorizontalType.Justify:
         justify = u''
-    if theme.display_vertical_align == VerticalType.Bottom:
+    if theme_data.display_vertical_align == VerticalType.Bottom:
         padding_bottom = u'0.5em'
     else:
         padding_bottom = u'0'
@@ -394,11 +377,12 @@ def build_lyrics_format_css(theme, width, height):
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
         'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
-        (justify, align, valign, theme.font_main_name, theme.font_main_size,
-        theme.font_main_color, 100 + int(theme.font_main_line_adjustment), padding_bottom, left_margin, width, height)
-    if theme.font_main_italics:
+        (justify, align, valign, theme_data.font_main_name, theme_data.font_main_size,
+        theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
+        left_margin, width, height)
+    if theme_data.font_main_italics:
         lyrics += u' font-style:italic; '
-    if theme.font_main_bold:
+    if theme_data.font_main_bold:
         lyrics += u' font-weight:bold; '
     return lyrics
 
