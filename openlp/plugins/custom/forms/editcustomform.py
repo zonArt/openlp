@@ -100,8 +100,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.credit_edit.setText(self.custom_slide.credits)
             custom_XML = CustomXMLParser(self.custom_slide.text)
             slide_list = custom_XML.get_verses()
-            for slide in slide_list:
-                self.slide_list_view.addItem(slide[1])
+            self.slide_list_view.addItems([slide[1] for slide in slide_list])
             theme = self.custom_slide.theme_name
             find_and_set_in_combo_box(self.theme_combo_box, theme)
         self.title_edit.setFocus()

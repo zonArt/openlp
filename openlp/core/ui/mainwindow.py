@@ -1064,6 +1064,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if self.live_controller.display:
             self.live_controller.display.close()
             self.live_controller.display = None
+        if os.name == u'nt':
+            # Needed for Windows to stop crashes on exit
+            Registry().remove(u'application')
 
     def service_changed(self, reset=False, serviceName=None):
         """
@@ -1374,10 +1377,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def _get_application(self):
         """
-        Adds the openlp to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)

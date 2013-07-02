@@ -485,6 +485,12 @@ class ServiceItem(object):
         """
         return self.unique_identifier != other.unique_identifier
 
+    def __hash__(self):
+        """
+        Return the hash for the service item.
+        """
+        return self.unique_identifier
+
     def is_media(self):
         """
         Confirms if the ServiceItem is media
