@@ -62,6 +62,7 @@ WIN32_MODULES = [
     'win32com',
     'win32ui',
     'pywintypes',
+    'pyodbc',
 ]
 
 MODULES = [
