@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from mock import MagicMock, patch
 from sqlalchemy.pool import NullPool
-from sqlalchemy.orm import ScopedSession
+from sqlalchemy.orm.scoping import ScopedSession
 from sqlalchemy import MetaData
 
 from openlp.core.lib.db import init_db, get_upgrade_op
