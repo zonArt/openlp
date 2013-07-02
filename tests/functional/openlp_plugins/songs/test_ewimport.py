@@ -11,7 +11,8 @@ from mock import patch, MagicMock
 
 from openlp.plugins.songs.lib.ewimport import EasyWorshipSongImport, FieldDescEntry, FieldType
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/easyworshipsongs'))
+TEST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), u'..', u'..', u'..', u'resources', u'easyworshipsongs'))
 SONG_TEST_DATA = [
     {u'title': u'Amazing Grace',
     u'authors': [u'John Newton'],
