@@ -115,7 +115,7 @@ class Settings(QtCore.QSettings):
         u'advanced/single click preview': False,
         u'advanced/x11 bypass wm': X11_BYPASS_DEFAULT,
         u'crashreport/last directory': u'',
-        u'displayTags/html_tags': u'',
+        u'formattingTags/html_tags': u'',
         u'core/audio repeat list': False,
         u'core/auto open': False,
         u'core/auto preview': False,

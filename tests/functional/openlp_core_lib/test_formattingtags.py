@@ -33,11 +33,11 @@ class TestFormattingTags(TestCase):
         """
         with patch(u'openlp.core.lib.translate') as mocked_translate, \
                 patch(u'openlp.core.lib.settings') as mocked_settings, \
-                patch(u'openlp.core.lib.formattingtags.pickle') as mocked_pickle:
+                patch(u'openlp.core.lib.formattingtags.json') as mocked_json:
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate, comment: string_to_translate
             mocked_settings.value.return_value = u''
-            mocked_pickle.load.return_value = []
+            mocked_json.load.return_value = []
 
             # WHEN: Get the display tags.
             FormattingTags.load_tags()
@@ -54,11 +54,11 @@ class TestFormattingTags(TestCase):
         """
         with patch(u'openlp.core.lib.translate') as mocked_translate, \
                 patch(u'openlp.core.lib.settings') as mocked_settings, \
-                patch(u'openlp.core.lib.formattingtags.pickle') as mocked_pickle:
+                patch(u'openlp.core.lib.formattingtags.json') as mocked_json:
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate: string_to_translate
             mocked_settings.value.return_value = u''
-            mocked_pickle.loads.side_effect = [[], [TAG]]
+            mocked_json.loads.side_effect = [[], [TAG]]
 
             # WHEN: Get the display tags.
             FormattingTags.load_tags()
