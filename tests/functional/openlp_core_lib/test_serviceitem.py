@@ -278,7 +278,7 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a converted service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        assert service_item.processor is not None, u'The Processor should have been set'
+        assert service_item.processor == u'VLC', u'The Processor should have been set'
         assert service_item.title is not None, u'The title should be set to a value'
         assert service_item.is_capable(ItemCapabilities.HasDetailedTitleDisplay) is False, \
             u'The Capability should have been removed'
