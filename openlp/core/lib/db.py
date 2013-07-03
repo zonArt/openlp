@@ -105,8 +105,7 @@ def upgrade_db(url, upgrade):
     if version > upgrade.__version__:
         return version, upgrade.__version__
     version += 1
-    #FIXME: python3 - dislable upgrade
-    if load_changes and False:
+    if load_changes:
         while hasattr(upgrade, u'upgrade_%d' % version):
             log.debug(u'Running upgrade_%d', version)
             try:
