@@ -38,6 +38,7 @@ Some of the code for this form is based on the examples at:
 from __future__ import division
 import cgi
 import logging
+import os
 import sys
 
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
@@ -288,7 +289,7 @@ class MainDisplay(Display):
         self.image(path)
         # Update the preview frame.
         if self.is_live:
-            self.live_controller.updatePreview()
+            self.live_controller.update_preview()
         return True
 
     def image(self, path):
@@ -494,11 +495,15 @@ class MainDisplay(Display):
 
     def _get_application(self):
         """
-        Adds the openlp to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)
 

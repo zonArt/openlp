@@ -30,8 +30,9 @@
 The actual plugin view form
 """
 import logging
+import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import PluginStatus, Registry, translate
 from plugindialog import Ui_PluginViewDialog
@@ -166,10 +167,14 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
 
     def _get_application(self):
         """
-        Adds the openlp to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)

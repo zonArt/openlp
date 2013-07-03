@@ -34,8 +34,8 @@ import re
 import os
 import platform
 
+import bs4
 import sqlalchemy
-from bs4 import BeautifulSoup
 from lxml import etree
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -145,7 +145,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'QtWebkit: %s\n' % WEBKIT_VERSION + \
             u'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
             u'SQLAlchemy Migrate: %s\n' % MIGRATE_VERSION + \
-            u'BeautifulSoup: %s\n' % BeautifulSoup.__version__ + \
+            u'BeautifulSoup: %s\n' % bs4.__version__ + \
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % CHARDET_VERSION + \
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
