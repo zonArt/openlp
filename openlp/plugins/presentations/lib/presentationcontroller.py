@@ -38,6 +38,7 @@ from openlp.core.utils import AppLocation
 
 log = logging.getLogger(__name__)
 
+
 class PresentationDocument(object):
     """
     Base class for presentation documents to inherit from. Loads and closes the presentation as well as triggering the
@@ -322,7 +323,7 @@ class PresentationController(object):
     ``supports``
         The primary native file types this application supports.
 
-    ``alsosupports``
+    ``also_supports``
         Other file types the application can import, although not necessarily the first choice due to potential
         incompatibilities.
 
@@ -358,7 +359,7 @@ class PresentationController(object):
             Name of the application, to appear in the application
         """
         self.supports = []
-        self.alsosupports = []
+        self.also_supports = []
         self.docs = []
         self.plugin = plugin
         self.name = name

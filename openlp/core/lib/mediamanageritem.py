@@ -102,7 +102,6 @@ class MediaManagerItem(QtGui.QWidget):
         self.setupUi()
         self.retranslateUi()
         self.auto_select_id = -1
-        Registry().register_function(u'%s_service_load' % self.plugin.name, self.service_load)
         # Need to use event as called across threads and UI is updated
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_go_live' % self.plugin.name), self.go_live_remote)
         QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_add_to_service' % self.plugin.name), self.add_to_service_remote)
@@ -585,12 +584,15 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             return None
 
-    def service_load(self, message):
+    def service_load(self, item):
         """
         Method to add processing when a service has been loaded and individual service items need to be processed by the
         plugins.
+
+        ``item``
+            The item to be processed and returned.
         """
-        pass
+        return item
 
     def check_search_result(self):
         """
@@ -726,10 +728,14 @@ class MediaManagerItem(QtGui.QWidget):
 
     def _get_application(self):
         """
-        Adds the openlp to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)

@@ -26,7 +26,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-
+from __future__ import division
 import logging
 
 from PyQt4 import QtWebKit
@@ -276,7 +276,7 @@ def build_background_css(item, width):
     ``item``
         Service Item containing theme and location information
     """
-    width = int(width) / 2
+    width = int(width) // 2
     theme = item.themedata
     background = u'background-color: black'
     if theme:

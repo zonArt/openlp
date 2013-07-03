@@ -80,15 +80,15 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Build the list of file extensions to be used in the Open file dialog.
         """
-        file_type = u''
+        file_type_list = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled():
                 file_types = self.controllers[controller].supports + self.controllers[controller].also_supports
                 for file_type in file_types:
                     if file_type.find(file_type) == -1:
-                        file_type += u'*.%s ' % file_type
+                        file_type_list += u'*.%s ' % file_type
                         self.service_manager.supported_suffixes(file_type)
-        self.on_new_file_masks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % file_type
+        self.on_new_file_masks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % file_type_list
 
     def required_icons(self):
         """
@@ -244,22 +244,20 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.list_view.selectedItems()
             if len(items) > 1:
                 return False
-        service_item.title = self.display_type_combo_box.currentText()
-        service_item.shortname = self.display_type_combo_box.currentText()
+        service_item.processor = self.display_type_combo_box.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
-        service_item.add_capability(ItemCapabilities.HasDetailedTitleDisplay)
-        shortname = service_item.shortname
-        if not shortname:
+        if not self.display_type_combo_box.currentText():
             return False
         for bitem in items:
             filename = bitem.data(QtCore.Qt.UserRole)
+            (path, name) = os.path.split(filename)
+            service_item.title = name
             if os.path.exists(filename):
-                if shortname == self.Automatic:
-                    service_item.shortname = self.findControllerByType(filename)
-                    if not service_item.shortname:
+                if service_item.processor == self.Automatic:
+                    service_item.processor = self.findControllerByType(filename)
+                    if not service_item.processor:
                         return False
-                controller = self.controllers[service_item.shortname]
-                (path, name) = os.path.split(filename)
+                controller = self.controllers[service_item.processor]
                 doc = controller.add_document(filename)
                 if doc.get_thumbnail_path(1, True) is None:
                     doc.load_presentation()
