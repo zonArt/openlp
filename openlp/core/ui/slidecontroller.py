@@ -121,7 +121,7 @@ class SlideController(DisplayController):
         self.service_item = None
         self.slide_limits = None
         self.update_slide_limits()
-        self.panel = QtGui.QWidget(parent.controlSplitter)
+        self.panel = QtGui.QWidget(parent.control_splitter)
         self.slideList = {}
         self.slide_count = 0
         self.slide_image = None
@@ -566,8 +566,7 @@ class SlideController(DisplayController):
             max_width = self.preview_frame.width() - self.grid.margin() * 2
             self.slide_preview.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
             self.preview_display.setFixedSize(QtCore.QSize(max_width, max_width / self.ratio))
-            self.preview_display.screen = {
-                u'size': self.preview_display.geometry()}
+            self.preview_display.screen = {u'size': self.preview_display.geometry()}
         self.on_controller_size_changed(self.controller.width())
 
     def on_controller_size_changed(self, width):
@@ -697,9 +696,8 @@ class SlideController(DisplayController):
 
     def add_service_manager_item(self, item, slide_no):
         """
-        Method to install the service item into the controller and
-        request the correct toolbar for the plugin.
-        Called by ServiceManager
+        Method to install the service item into the controller and request the correct toolbar for the plugin. Called by
+        :class:`~openlp.core.ui.ServiceManager`
         """
         log.debug(u'add_service_manager_item live = %s' % self.is_live)
         # If no valid slide number is specified we take the first one, but we remember the initial value to see if we
@@ -724,8 +722,7 @@ class SlideController(DisplayController):
 
     def _process_item(self, service_item, slideno):
         """
-        Loads a ServiceItem into the system from ServiceManager
-        Display the slide number passed
+        Loads a ServiceItem into the system from ServiceManager. Display the slide number passed.
         """
         log.debug(u'processManagerItem live = %s' % self.is_live)
         self.on_stop_loop()
@@ -734,7 +731,8 @@ class SlideController(DisplayController):
         self.service_item = copy.copy(service_item)
         if old_item and self.is_live and old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             self._reset_blank()
-        Registry().execute(u'%s_start' % service_item.name.lower(), [service_item, self.is_live, self.hide_mode(), slideno])
+        Registry().execute(
+            u'%s_start' % service_item.name.lower(), [service_item, self.is_live, self.hide_mode(), slideno])
         self.slideList = {}
         if self.is_live:
             self.song_menu.menu().clear()

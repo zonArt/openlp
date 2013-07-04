@@ -273,13 +273,13 @@ class TestServiceItem(TestCase):
         service_item.add_icon = MagicMock()
 
         # WHEN: adding an media from a saved Service and mocked exists
-        line = self.convert_file_service_item(u'migrate_video_20_22.osd')
+        line = read_service_from_file(u'migrate_video_20_22.osd')
         with patch('os.path.exists'):
-            service_item.set_from_service(line, TEST_PATH)
+            service_item.set_from_service(line[0], TEST_RESOURCES_PATH)
 
         # THEN: We should get back a converted service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        assert service_item.processor is None, u'The Processor should have been set'
-        assert service_item.title is None, u'The title should be set to a value'
+        assert service_item.processor == u'VLC', u'The Processor should have been set'
+        assert service_item.title is not None, u'The title should be set to a value'
         assert service_item.is_capable(ItemCapabilities.HasDetailedTitleDisplay) is False, \
             u'The Capability should have been removed'

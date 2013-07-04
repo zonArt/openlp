@@ -129,11 +129,18 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 continue
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
-                actionText = REMOVE_AMPERSAND.sub('', action.text())
-                actionItem = QtGui.QTreeWidgetItem([actionText])
-                actionItem.setIcon(0, action.icon())
-                actionItem.setData(0, QtCore.Qt.UserRole, action)
-                item.addChild(actionItem)
+                action_text = REMOVE_AMPERSAND.sub('', action.text())
+                action_item = QtGui.QTreeWidgetItem([action_text])
+                action_item.setIcon(0, action.icon())
+                action_item.setData(0, QtCore.Qt.UserRole, action)
+                tool_tip_text = action.toolTip()
+                # Only display tool tips if they are helpful.
+                if tool_tip_text != action_text:
+                    # Display the tool tip in all three colums.
+                    action_item.setToolTip(0, tool_tip_text)
+                    action_item.setToolTip(1, tool_tip_text)
+                    action_item.setToolTip(2, tool_tip_text)
+                item.addChild(action_item)
             self.treeWidget.addTopLevelItem(item)
             item.setExpanded(True)
         self.refreshShortcutList()
