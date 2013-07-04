@@ -263,3 +263,23 @@ class TestServiceItem(TestCase):
             u'This service item should be able to be run in a can be made to Loop'
         assert service_item.is_capable(ItemCapabilities.CanAppend) is True, \
             u'This service item should be able to have new items added to it'
+
+    def serviceitem_migrate_test_20_22(self):
+        """
+        Test the Service Item - migrating a media only service item from 2.0 to 2.2 format
+        """
+        # GIVEN: A new service item and a mocked add icon function
+        service_item = ServiceItem(None)
+        service_item.add_icon = MagicMock()
+
+        # WHEN: adding an media from a saved Service and mocked exists
+        line = read_service_from_file(u'migrate_video_20_22.osd')
+        with patch('os.path.exists'):
+            service_item.set_from_service(line[0], TEST_RESOURCES_PATH)
+
+        # THEN: We should get back a converted service item
+        assert service_item.is_valid is True, u'The new service item should be valid'
+        assert service_item.processor == u'VLC', u'The Processor should have been set'
+        assert service_item.title is not None, u'The title should be set to a value'
+        assert service_item.is_capable(ItemCapabilities.HasDetailedTitleDisplay) is False, \
+            u'The Capability should have been removed'

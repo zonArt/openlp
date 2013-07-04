@@ -100,10 +100,10 @@ class Ui_MainWindow(object):
         self.main_contentLayout.setMargin(0)
         self.main_contentLayout.setObjectName(u'main_contentLayout')
         main_window.setCentralWidget(self.main_content)
-        self.controlSplitter = QtGui.QSplitter(self.main_content)
-        self.controlSplitter.setOrientation(QtCore.Qt.Horizontal)
-        self.controlSplitter.setObjectName(u'controlSplitter')
-        self.main_contentLayout.addWidget(self.controlSplitter)
+        self.control_splitter = QtGui.QSplitter(self.main_content)
+        self.control_splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.control_splitter.setObjectName(u'control_splitter')
+        self.main_contentLayout.addWidget(self.control_splitter)
         # Create slide controllers
         self.preview_controller = SlideController(self)
         self.live_controller = SlideController(self, True)
@@ -113,9 +113,9 @@ class Ui_MainWindow(object):
         panel_locked = Settings().value(u'user interface/lock panel')
         self.live_controller.panel.setVisible(live_visible)
         # Create menu
-        self.menuBar = QtGui.QMenuBar(main_window)
-        self.menuBar.setObjectName(u'menuBar')
-        self.file_menu = QtGui.QMenu(self.menuBar)
+        self.menu_bar = QtGui.QMenuBar(main_window)
+        self.menu_bar.setObjectName(u'menu_bar')
+        self.file_menu = QtGui.QMenu(self.menu_bar)
         self.file_menu.setObjectName(u'fileMenu')
         self.recent_files_menu = QtGui.QMenu(self.file_menu)
         self.recent_files_menu.setObjectName(u'recentFilesMenu')
@@ -124,22 +124,22 @@ class Ui_MainWindow(object):
         self.file_export_menu = QtGui.QMenu(self.file_menu)
         self.file_export_menu.setObjectName(u'file_export_menu')
         # View Menu
-        self.view_menu = QtGui.QMenu(self.menuBar)
+        self.view_menu = QtGui.QMenu(self.menu_bar)
         self.view_menu.setObjectName(u'viewMenu')
         self.view_modeMenu = QtGui.QMenu(self.view_menu)
         self.view_modeMenu.setObjectName(u'viewModeMenu')
         # Tools Menu
-        self.tools_menu = QtGui.QMenu(self.menuBar)
+        self.tools_menu = QtGui.QMenu(self.menu_bar)
         self.tools_menu.setObjectName(u'tools_menu')
         # Settings Menu
-        self.settings_menu = QtGui.QMenu(self.menuBar)
+        self.settings_menu = QtGui.QMenu(self.menu_bar)
         self.settings_menu.setObjectName(u'settingsMenu')
         self.settings_language_menu = QtGui.QMenu(self.settings_menu)
         self.settings_language_menu.setObjectName(u'settingsLanguageMenu')
         # Help Menu
-        self.help_menu = QtGui.QMenu(self.menuBar)
+        self.help_menu = QtGui.QMenu(self.menu_bar)
         self.help_menu.setObjectName(u'helpMenu')
-        main_window.setMenuBar(self.menuBar)
+        main_window.setMenuBar(self.menu_bar)
         self.status_bar = QtGui.QStatusBar(main_window)
         self.status_bar.setObjectName(u'status_bar')
         main_window.setStatusBar(self.status_bar)
@@ -237,7 +237,7 @@ class Ui_MainWindow(object):
         self.view_live_panel = create_action(main_window, u'viewLivePanel',
             can_shortcuts=True, checked=live_visible,
             category=UiStrings().View, triggers=self.set_live_panel_visibility)
-        self.lockPanel = create_action(main_window, u'lockPanel',
+        self.lock_panel = create_action(main_window, u'lockPanel',
             can_shortcuts=True, checked=panel_locked,
             category=UiStrings().View,
             triggers=self.set_lock_panel)
@@ -310,6 +310,10 @@ class Ui_MainWindow(object):
             can_shortcuts=True,
             category=UiStrings().Help, triggers=self.on_online_help_clicked)
         self.web_site_item = create_action(main_window, u'webSiteItem', can_shortcuts=True, category=UiStrings().Help)
+        # Shortcuts not connected to buttons or menu entires.
+        self.search_shortcut_action = create_action(main_window,
+            u'searchShortcut', can_shortcuts=True, category=translate('OpenLP.MainWindow', 'General'),
+            triggers=self.on_search_shortcut_triggered)
         add_actions(self.file_import_menu, (self.settings_import_item, None, self.import_theme_item,
             self.import_language_item))
         add_actions(self.file_export_menu, (self.settings_export_item, None, self.export_theme_item,
@@ -321,7 +325,7 @@ class Ui_MainWindow(object):
         add_actions(self.view_modeMenu, (self.mode_default_Item, self.mode_setup_item, self.mode_live_item))
         add_actions(self.view_menu, (self.view_modeMenu.menuAction(), None, self.view_media_manager_item,
             self.view_service_manager_item, self.view_theme_manager_item, None, self.view_preview_panel,
-            self.view_live_panel, None, self.lockPanel))
+            self.view_live_panel, None, self.lock_panel))
         # i18n add Language Actions
         add_actions(self.settings_language_menu, (self.auto_language_item, None))
         add_actions(self.settings_language_menu, self.language_group.actions())
@@ -342,8 +346,9 @@ class Ui_MainWindow(object):
                 self.about_item))
         else:
             add_actions(self.help_menu, (self.on_line_help_item, None, self.web_site_item, self.about_item))
-        add_actions(self.menuBar, (self.file_menu.menuAction(), self.view_menu.menuAction(),
+        add_actions(self.menu_bar, (self.file_menu.menuAction(), self.view_menu.menuAction(),
             self.tools_menu.menuAction(), self.settings_menu.menuAction(), self.help_menu.menuAction()))
+        add_actions(self, [self.search_shortcut_action])
         # Initialise the translation
         self.retranslateUi(main_window)
         self.media_tool_box.setCurrentIndex(0)
@@ -356,12 +361,11 @@ class Ui_MainWindow(object):
         self.set_lock_panel(panel_locked)
         self.settingsImported = False
 
-    def retranslateUi(self, mainWindow):
+    def retranslateUi(self, main_window):
         """
         Set up the translation system
         """
-        mainWindow.mainTitle = UiStrings().OLPV2x
-        mainWindow.setWindowTitle(mainWindow.mainTitle)
+        main_window.setWindowTitle(UiStrings().OLPV2x)
         self.file_menu.setTitle(translate('OpenLP.MainWindow', '&File'))
         self.file_import_menu.setTitle(translate('OpenLP.MainWindow', '&Import'))
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
@@ -423,8 +427,8 @@ class Ui_MainWindow(object):
             translate('OpenLP.MainWindow', 'Toggle the visibility of the preview panel.'))
         self.view_live_panel.setText(translate('OpenLP.MainWindow', '&Live Panel'))
         self.view_live_panel.setToolTip(translate('OpenLP.MainWindow', 'Toggle Live Panel'))
-        self.lockPanel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
-        self.lockPanel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
+        self.lock_panel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
+        self.lock_panel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the live panel.'))
         self.settingsPluginListItem.setText(translate('OpenLP.MainWindow', '&Plugin List'))
         self.settingsPluginListItem.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
@@ -433,6 +437,9 @@ class Ui_MainWindow(object):
         if os.name == u'nt':
             self.offlineHelpItem.setText(translate('OpenLP.MainWindow', '&User Guide'))
         self.on_line_help_item.setText(translate('OpenLP.MainWindow', '&Online Help'))
+        self.search_shortcut_action.setText(UiStrings().Search)
+        self.search_shortcut_action.setToolTip(
+            translate('OpenLP.MainWindow', 'Jump to the search box of the current active plugin.'))
         self.web_site_item.setText(translate('OpenLP.MainWindow', '&Web Site'))
         for item in self.language_group.actions():
             item.setText(item.objectName())
@@ -467,8 +474,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         """
-        This constructor sets up the interface, the various managers, and the
-        plugins.
+        This constructor sets up the interface, the various managers, and the plugins.
         """
         QtGui.QMainWindow.__init__(self)
         Registry().register(u'main_window', self)
@@ -491,7 +497,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.new_data_path = None
         self.copy_data = False
         Settings().set_up_default_values()
-        self.service_not_saved = False
         self.about_form = AboutForm(self)
         self.media_controller = MediaController()
         self.settings_form = SettingsForm(self)
@@ -536,22 +541,31 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Registry().register_function(u'theme_update_global', self.default_theme_changed)
         Registry().register_function(u'openlp_version_check', self.version_notice)
         Registry().register_function(u'config_screen_changed', self.screen_changed)
+        Registry().register_function(u'bootstrap_post_set_up', self.restore_current_media_manager_item)
         self.renderer = Renderer()
-        log.info(u'Load data from Settings')
-        if Settings().value(u'advanced/save current plugin'):
-            savedPlugin = Settings().value(u'advanced/current media plugin')
-            if savedPlugin != -1:
-                self.media_tool_box.setCurrentIndex(savedPlugin)
         # Reset the cursor
         self.application.set_normal_cursor()
 
-    def setAutoLanguage(self, value):
+    def restore_current_media_manager_item(self):
         """
-        Set the language to automatic.
+        Called on start up to restore the last active media plugin.
         """
-        self.language_group.setDisabled(value)
-        LanguageManager.auto_language = value
-        LanguageManager.set_language(self.language_group.checkedAction())
+        log.info(u'Load data from Settings')
+        if Settings().value(u'advanced/save current plugin'):
+            saved_plugin_id = Settings().value(u'advanced/current media plugin')
+            if saved_plugin_id != -1:
+                self.media_tool_box.setCurrentIndex(saved_plugin_id)
+
+    def on_search_shortcut_triggered(self):
+        """
+        Called when the search shotcut has been pressed.
+        """
+        # Make sure the media_dock is visible.
+        if not self.media_manager_dock.isVisible():
+            self.media_manager_dock.setVisible(True)
+        widget = self.media_tool_box.currentWidget()
+        if widget:
+            widget.on_focus()
 
     def on_media_tool_box_changed(self, index):
         """
@@ -966,8 +980,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         self.setViewMode(False, True, False, False, True, u'live')
 
-    def setViewMode(self, media=True, service=True, theme=True, preview=True,
-        live=True, mode=u''):
+    def setViewMode(self, media=True, service=True, theme=True, preview=True, live=True, mode=u''):
         """
         Set OpenLP to a different view mode.
         """
@@ -982,8 +995,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def screen_changed(self):
         """
-        The screen has changed so we have to update components such as the
-        renderer.
+        The screen has changed so we have to update components such as the renderer.
         """
         log.debug(u'screen_changed')
         self.application.set_busy_cursor()
@@ -1068,43 +1080,20 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # Needed for Windows to stop crashes on exit
             Registry().remove(u'application')
 
-    def service_changed(self, reset=False, serviceName=None):
+    def set_service_modified(self, modified, file_name):
         """
-        Hook to change the main window title when the service changes
-
-        ``reset``
-            Shows if the service has been cleared or saved
-
-        ``serviceName``
-            The name of the service (if it has one)
-        """
-        if not serviceName:
-            service_name = u'(unsaved service)'
-        else:
-            service_name = serviceName
-        if reset:
-            self.service_not_saved = False
-            title = u'%s - %s' % (self.mainTitle, service_name)
-        else:
-            self.service_not_saved = True
-            title = u'%s - %s*' % (self.mainTitle, service_name)
-        self.setWindowTitle(title)
-
-    def set_service_modified(self, modified, fileName):
-        """
-        This method is called from the ServiceManager to set the title of the
-        main window.
+        This method is called from the ServiceManager to set the title of the main window.
 
         ``modified``
             Whether or not this service has been modified.
 
-        ``fileName``
+        ``file_name``
             The file name of the service file.
         """
         if modified:
-            title = u'%s - %s*' % (self.mainTitle, fileName)
+            title = u'%s - %s*' % (UiStrings().OLPV2x, file_name)
         else:
-            title = u'%s - %s' % (self.mainTitle, fileName)
+            title = u'%s - %s' % (UiStrings().OLPV2x, file_name)
         self.setWindowTitle(title)
 
     def show_status_message(self, message):
@@ -1140,8 +1129,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def set_preview_panel_visibility(self, visible):
         """
-        Sets the visibility of the preview panel including saving the setting
-        and updating the menu.
+        Sets the visibility of the preview panel including saving the setting and updating the menu.
 
         ``visible``
             A bool giving the state to set the panel to
@@ -1178,8 +1166,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def set_live_panel_visibility(self, visible):
         """
-        Sets the visibility of the live panel including saving the setting and
-        updating the menu.
+        Sets the visibility of the live panel including saving the setting and updating the menu.
 
         ``visible``
             A bool giving the state to set the panel to
@@ -1208,7 +1195,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.restoreState(settings.value(u'main window state'))
         self.live_controller.splitter.restoreState(settings.value(u'live splitter geometry'))
         self.preview_controller.splitter.restoreState(settings.value(u'preview splitter geometry'))
-        self.controlSplitter.restoreState(settings.value(u'main window splitter geometry'))
+        self.control_splitter.restoreState(settings.value(u'main window splitter geometry'))
         settings.endGroup()
 
     def save_settings(self):
@@ -1229,13 +1216,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         settings.setValue(u'main window geometry', self.saveGeometry())
         settings.setValue(u'live splitter geometry', self.live_controller.splitter.saveState())
         settings.setValue(u'preview splitter geometry', self.preview_controller.splitter.saveState())
-        settings.setValue(u'main window splitter geometry', self.controlSplitter.saveState())
+        settings.setValue(u'main window splitter geometry', self.control_splitter.saveState())
         settings.endGroup()
 
     def update_recent_files_menu(self):
         """
-        Updates the recent file menu with the latest list of service files
-        accessed.
+        Updates the recent file menu with the latest list of service files accessed.
         """
         recent_file_count = Settings().value(u'advanced/recent file count')
         existing_recent_files = [recentFile for recentFile in self.recent_files
