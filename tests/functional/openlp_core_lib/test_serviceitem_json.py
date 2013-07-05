@@ -90,7 +90,8 @@ class TestServiceItem(TestCase):
 
         # WHEN: adding an image from a saved Service and mocked exists
         line = self.convert_file_service_item(u'serviceitem_image_1.osj')
-        with patch('os.path.exists'):
+        with patch(u'openlp.core.ui.servicemanager.os.path.exists') as mocked_exists:
+            mocked_exists.return_value = True
             service_item.set_from_service(line, TEST_PATH)
 
         # THEN: We should get back a valid service item
@@ -130,18 +131,20 @@ class TestServiceItem(TestCase):
 
         # WHEN: adding an image from a saved Service and mocked exists
         line = self.convert_file_service_item(u'serviceitem_image_2.osj')
-        with patch('os.path.exists'):
+        line2 = self.convert_file_service_item(u'serviceitem_image_2.osj', 1)
+
+        with patch(u'openlp.core.ui.servicemanager.os.path.exists') as mocked_exists:
+            mocked_exists.return_value = True
+            service_item2.set_from_service(line2)
             service_item.set_from_service(line)
 
-        line2 = self.convert_file_service_item(u'serviceitem_image_2.osj', 1)
-        with patch('os.path.exists'):
-            service_item2.set_from_service(line2)
 
         # THEN: We should get back a valid service item
 
         # This test is copied from service_item.py, but is changed since to conform to
         # new layout of service item. The layout use in serviceitem_image_2.osd is actually invalid now.
-        assert service_item.is_valid is True, u'The new service item should be valid'
+        assert service_item.is_valid is True, u'The first service item should be valid'
+        assert service_item2.is_valid is True, u'The second service item should be valid'
         assert service_item.get_rendered_frame(0) == test_file1, u'The first frame should match the path to the image'
         assert service_item2.get_rendered_frame(0) == test_file2, u'The Second frame should match the path to the image'
         assert service_item.get_frames()[0] == frame_array1, u'The return should match the frame array1'
@@ -207,7 +210,8 @@ class TestServiceItem(TestCase):
             service_item_osj = ServiceItem()
             service_item_osj.add_icon = MagicMock()
             
-            with patch('os.path.exists'):
+            with patch(u'openlp.core.ui.servicemanager.os.path.exists') as mocked_exists:
+                mocked_exists.return_value = True
                 service_item_osd.set_from_service(osd_item, TEST_PATH)
                 service_item_osj.set_from_service(osj_item, TEST_PATH)
 
