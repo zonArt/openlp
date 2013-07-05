@@ -591,7 +591,7 @@ class SlideController(DisplayController):
         """
         request = self.sender().text()
         slide_no = self.slideList[request]
-        width = self.main_window.controlSplitter.sizes()[self.split]
+        width = self.main_window.control_splitter.sizes()[self.split]
         self.preview_widget.replace_service_item(self.service_item, width, slide_no)
         self.slide_selected()
 
@@ -757,7 +757,7 @@ class SlideController(DisplayController):
                     self.display.audio_player.play()
                 self.set_audio_items_visibility(True)
         row = 0
-        width = self.main_window.controlSplitter.sizes()[self.split]
+        width = self.main_window.control_splitter.sizes()[self.split]
         for framenumber, frame in enumerate(self.service_item.get_frames()):
             if self.service_item.is_text():
                 if frame[u'verseTag']:
