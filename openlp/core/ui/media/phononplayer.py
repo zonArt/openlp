@@ -45,36 +45,22 @@ from openlp.core.ui.media.mediaplayer import MediaPlayer
 log = logging.getLogger(__name__)
 
 ADDITIONAL_EXT = {
-        u'audio/ac3': [u'.ac3'],
-        u'audio/flac': [u'.flac'],
-        u'audio/x-m4a': [u'.m4a'],
-        u'audio/midi': [u'.mid', u'.midi'],
-        u'audio/x-mp3': [u'.mp3'],
-        u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-        u'audio/qcelp': [u'.qcp'],
-        u'audio/x-wma': [u'.wma'],
-        u'audio/x-ms-wma': [u'.wma'],
-        u'video/x-flv': [u'.flv'],
-        u'video/x-matroska': [u'.mpv', u'.mkv'],
-        u'video/x-wmv': [u'.wmv'],
-        u'video/x-mpg': [u'.mpg'],
-        u'video/mpeg': [u'.mp4', u'.mts', u'.mov'],
-        u'video/x-ms-wmv': [u'.wmv']}
-
-VIDEO_CSS = u"""
-#videobackboard {
-    z-index:3;
-    background-color: %(bgcolor)s;
+    u'audio/ac3': [u'.ac3'],
+    u'audio/flac': [u'.flac'],
+    u'audio/x-m4a': [u'.m4a'],
+    u'audio/midi': [u'.mid', u'.midi'],
+    u'audio/x-mp3': [u'.mp3'],
+    u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
+    u'audio/qcelp': [u'.qcp'],
+    u'audio/x-wma': [u'.wma'],
+    u'audio/x-ms-wma': [u'.wma'],
+    u'video/x-flv': [u'.flv'],
+    u'video/x-matroska': [u'.mpv', u'.mkv'],
+    u'video/x-wmv': [u'.wmv'],
+    u'video/x-mpg': [u'.mpg'],
+    u'video/mpeg': [u'.mp4', u'.mts', u'.mov'],
+    u'video/x-ms-wmv': [u'.wmv']
 }
-#video1 {
-    background-color: %(bgcolor)s;
-    z-index:4;
-}
-#video2 {
-    background-color: %(bgcolor)s;
-    z-index:4;
-}
-"""
 
 
 class PhononPlayer(MediaPlayer):
@@ -268,8 +254,7 @@ class PhononPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value(u'players/background color')).name()
-        return VIDEO_CSS % {u'bgcolor': background}
+        return u''
 
     def get_info(self):
         """
