@@ -34,12 +34,14 @@ from PyQt4 import QtCore
 from openlp.core.lib import Plugin, Registry, StringContent, Settings, build_icon, translate
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
+
 log = logging.getLogger(__name__)
+
 
 # Some settings starting with "media" are in core, because they are needed for core functionality.
 __default_settings__ = {
-        u'media/media auto start': QtCore.Qt.Unchecked,
-        u'media/media files': []
+    u'media/media auto start': QtCore.Qt.Unchecked,
+    u'media/media files': []
 }
 
 
@@ -54,7 +56,7 @@ class MediaPlugin(Plugin):
         # passed with drag and drop messages
         self.dnd_id = u'Media'
 
-    def create_settings_Tab(self, parent):
+    def create_settings_tab(self, parent):
         """
         Create the settings Tab
         """
@@ -94,7 +96,7 @@ class MediaPlugin(Plugin):
 
     def finalise(self):
         """
-        Time to tidy up on exit
+        Time to tidy up on exit.
         """
         log.info(u'Media Finalising')
         self.media_controller.finalise()
@@ -102,46 +104,21 @@ class MediaPlugin(Plugin):
 
     def get_display_css(self):
         """
-        Add css style sheets to htmlbuilder
+        Add css style sheets to htmlbuilder.
         """
         return self.media_controller.get_media_display_css()
 
     def get_display_javascript(self):
         """
-        Add javascript functions to htmlbuilder
+        Add javascript functions to htmlbuilder.
         """
         return self.media_controller.get_media_display_javascript()
 
     def get_display_html(self):
         """
-        Add html code to htmlbuilder
+        Add html code to htmlbuilder.
         """
         return self.media_controller.get_media_display_html()
-
-    def app_startup(self):
-        """
-        Do a couple of things when the app starts up. In this particular case
-        we want to check if we have the old "Use Phonon" setting, and convert
-        it to "enable Phonon" and "make it the first one in the list".
-        """
-        Plugin.app_startup(self)
-        settings = Settings()
-        settings.beginGroup(self.settings_section)
-        if settings.contains(u'use phonon'):
-            log.info(u'Found old Phonon setting')
-            players = self.media_controller.mediaPlayers.keys()
-            has_phonon = u'phonon' in players
-            if settings.value(u'use phonon')  and has_phonon:
-                log.debug(u'Converting old setting to new setting')
-                new_players = []
-                if players:
-                    new_players = [player for player in players if player != u'phonon']
-                new_players.insert(0, u'phonon')
-                self.media_controller.mediaPlayers[u'phonon'].is_active = True
-                settings.setValue(u'players', u','.join(new_players))
-                self.settingsTab.load()
-            settings.remove(u'use phonon')
-        settings.endGroup()
 
     def _get_media_controller(self):
         """

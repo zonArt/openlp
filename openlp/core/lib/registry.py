@@ -103,9 +103,6 @@ class Registry(object):
         ``key``
             The service to be deleted.
         """
-        if self.running_under_test is False:
-            log.error(u'Invalid Method call for key %s' % key)
-            raise KeyError(u'Invalid Method call for key %s' % key)
         if key in self.service_list:
             del self.service_list[key]
 

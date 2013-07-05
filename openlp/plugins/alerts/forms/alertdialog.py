@@ -71,13 +71,13 @@ class Ui_AlertDialog(object):
         self.save_button.setObjectName(u'save_button')
         self.manage_button_layout.addWidget(self.save_button)
         self.delete_button = create_button(alert_dialog, u'delete_button', role=u'delete', enabled=False,
-            click=alert_dialog.onDeleteButtonClicked)
+            click=alert_dialog.on_delete_button_clicked)
         self.manage_button_layout.addWidget(self.delete_button)
         self.manage_button_layout.addStretch()
         self.alert_dialog_layout.addLayout(self.manage_button_layout, 1, 1)
-        displayIcon = build_icon(u':/general/general_live.png')
-        self.display_button = create_button(alert_dialog, u'display_button', icon=displayIcon, enabled=False)
-        self.display_close_button = create_button(alert_dialog, u'display_close_button', icon=displayIcon,
+        display_icon = build_icon(u':/general/general_live.png')
+        self.display_button = create_button(alert_dialog, u'display_button', icon=display_icon, enabled=False)
+        self.display_close_button = create_button(alert_dialog, u'display_close_button', icon=display_icon,
             enabled=False)
         self.button_box = create_button_box(alert_dialog, u'button_box', [u'close'],
             [self.display_button, self.display_close_button])

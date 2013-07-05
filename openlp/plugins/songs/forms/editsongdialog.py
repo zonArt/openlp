@@ -275,7 +275,6 @@ class Ui_EditSongDialog(object):
         self.bottom_layout.setObjectName(u'bottom_layout')
         self.warning_label = QtGui.QLabel(edit_song_dialog)
         self.warning_label.setObjectName(u'warning_label')
-        self.warning_label.setVisible(False)
         self.bottom_layout.addWidget(self.warning_label)
         self.button_box = create_button_box(edit_song_dialog, u'button_box', [u'cancel', u'save'])
         self.bottom_layout.addWidget(self.button_box)
@@ -323,8 +322,10 @@ class Ui_EditSongDialog(object):
         self.from_media_button.setText(translate('SongsPlugin.EditSongForm', 'Add &Media'))
         self.audio_remove_button.setText(translate('SongsPlugin.EditSongForm', '&Remove'))
         self.audio_remove_all_button.setText(translate('SongsPlugin.EditSongForm', 'Remove &All'))
-        self.warning_label.setText(
-            translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong> Not all of the verses are in use.'))
+        self.not_all_verses_used_warning = \
+            translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong> Not all of the verses are in use.')
+        self.no_verse_order_entered_warning =  \
+            translate('SongsPlugin.EditSongForm', '<strong>Warning:</strong> You have not entered a verse order.')
 
 
 def create_combo_box(parent, name):

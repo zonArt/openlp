@@ -30,6 +30,7 @@
 Provide the generic plugin functionality for OpenLP plugins.
 """
 import logging
+import os
 
 from PyQt4 import QtCore
 
@@ -103,7 +104,7 @@ class Plugin(QtCore.QObject):
     ``add_export_menu_Item(export_menu)``
         Add an item to the Export menu.
 
-    ``create_settings_Tab()``
+    ``create_settings_tab()``
         Creates a new instance of SettingsTabItem to be used in the Settings
         dialog.
 
@@ -252,7 +253,7 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def create_settings_Tab(self, parent):
+    def create_settings_tab(self, parent):
         """
         Create a tab for the settings window to display the configurable options
         for this plugin to the user.
@@ -424,8 +425,11 @@ class Plugin(QtCore.QObject):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)

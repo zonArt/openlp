@@ -102,7 +102,9 @@ class MediaManagerItem(QtGui.QWidget):
         self.setupUi()
         self.retranslateUi()
         self.auto_select_id = -1
-        Registry().register_function(u'%s_service_load' % self.plugin.name, self.service_load)
+        # Need to use event as called across threads and UI is updated
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_go_live' % self.plugin.name), self.go_live_remote)
+        QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_add_to_service' % self.plugin.name), self.add_to_service_remote)
 
     def required_icons(self):
         """
@@ -424,7 +426,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         raise NotImplementedError(u'MediaManagerItem.on_delete_click needs to be defined by the plugin')
 
-    def onFocus(self):
+    def on_focus(self):
         """
         Run when a tab in the media manager gains focus. This gives the media
         item a chance to focus any elements it wants to.
@@ -481,6 +483,15 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             self.go_live()
 
+    def go_live_remote(self, message):
+        """
+        Remote Call wrapper
+
+        ``message``
+            The passed data item_id:Remote.
+        """
+        self.go_live(message[0], remote=message[1])
+
     def go_live(self, item_id=None, remote=False):
         """
         Make the currently selected item go live.
@@ -523,6 +534,15 @@ class MediaManagerItem(QtGui.QWidget):
                 for item in items:
                     self.add_to_service(item)
 
+    def add_to_service_remote(self, message):
+        """
+        Remote Call wrapper
+
+        ``message``
+            The passed data item:Remote.
+        """
+        self.add_to_service(message[0], remote=message[1])
+
     def add_to_service(self, item=None, replace=None, remote=False):
         """
         Add this item to the current service.
@@ -564,12 +584,15 @@ class MediaManagerItem(QtGui.QWidget):
         else:
             return None
 
-    def service_load(self, message):
+    def service_load(self, item):
         """
         Method to add processing when a service has been loaded and individual service items need to be processed by the
         plugins.
+
+        ``item``
+            The item to be processed and returned.
         """
-        pass
+        return item
 
     def check_search_result(self):
         """
@@ -705,10 +728,14 @@ class MediaManagerItem(QtGui.QWidget):
 
     def _get_application(self):
         """
-        Adds the openlp to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)

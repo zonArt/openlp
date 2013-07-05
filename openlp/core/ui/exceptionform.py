@@ -34,8 +34,8 @@ import re
 import os
 import platform
 
+import bs4
 import sqlalchemy
-import BeautifulSoup
 from lxml import etree
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
@@ -60,15 +60,23 @@ try:
 except ImportError:
     ENCHANT_VERSION = u'-'
 try:
-    import sqlite
-    SQLITE_VERSION = sqlite.version
-except ImportError:
-    SQLITE_VERSION = u'-'
-try:
     import mako
     MAKO_VERSION = mako.__version__
 except ImportError:
     MAKO_VERSION = u'-'
+try:
+    import icu
+    try:
+        ICU_VERSION = icu.VERSION
+    except AttributeError:
+        ICU_VERSION = u'OK'
+except ImportError:
+    ICU_VERSION = u'-'
+try:
+    import cherrypy
+    CHERRYPY_VERSION = cherrypy.__version__
+except ImportError:
+    CHERRYPY_VERSION = u'-'
 try:
     import uno
     arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
@@ -137,12 +145,13 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'QtWebkit: %s\n' % WEBKIT_VERSION + \
             u'SQLAlchemy: %s\n' % sqlalchemy.__version__ + \
             u'SQLAlchemy Migrate: %s\n' % MIGRATE_VERSION + \
-            u'BeautifulSoup: %s\n' % BeautifulSoup.__version__ + \
+            u'BeautifulSoup: %s\n' % bs4.__version__ + \
             u'lxml: %s\n' % etree.__version__ + \
             u'Chardet: %s\n' % CHARDET_VERSION + \
             u'PyEnchant: %s\n' % ENCHANT_VERSION + \
-            u'PySQLite: %s\n' % SQLITE_VERSION + \
             u'Mako: %s\n' % MAKO_VERSION + \
+            u'CherryPy: %s\n' % CHERRYPY_VERSION + \
+            u'pyICU: %s\n' % ICU_VERSION + \
             u'pyUNO bridge: %s\n' % UNO_VERSION + \
             u'VLC: %s\n' % VLC_VERSION
         if platform.system() == u'Linux':
