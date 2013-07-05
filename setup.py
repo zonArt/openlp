@@ -175,6 +175,8 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     zip_safe=False,
     install_requires=[
         # -*- Extra requirements: -*-
+        'sqlalchemy',
+        'alembic'
     ],
     entry_points="""
     # -*- Entry points: -*-
