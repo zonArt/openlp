@@ -42,7 +42,7 @@ from ConfigParser import SafeConfigParser
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import PluginStatus, Settings, Registry, build_icon, check_directory_exists, translate
-from openlp.core.utils import AppLocation, get_web_page, get_filesystem_encoding
+from openlp.core.utils import AppLocation, get_web_page
 from firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
 log = logging.getLogger(__name__)
@@ -427,8 +427,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self._set_plugin_status(self.alert_check_box, u'alerts/status')
         if self.web_access:
             # Build directories for downloads
-            songs_destination = os.path.join(
-                unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
+            songs_destination = os.path.join(gettempdir(), u'openlp')
             bibles_destination = AppLocation.get_section_data_path(u'bibles')
             themes_destination = AppLocation.get_section_data_path(u'themes')
             # Download songs
