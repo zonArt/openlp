@@ -42,7 +42,6 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
     def __init__(self):
         """
         Constructor
-
         """
         super(ServiceItemEditForm, self).__init__(Registry().get(u'main_window'))
         self.setupUi(self)
