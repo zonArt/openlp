@@ -473,7 +473,7 @@ class ImageMediaItem(MediaManagerItem):
             This boolean is set to True when the list in the interface should be reloaded after saving the new images
         """
         for filename in images_list:
-            if type(filename) is not str and type(filename) is not unicode:
+            if not isinstance(filename, basestring):
                 continue
             log.debug(u'Adding new image: %s', filename)
             imageFile = ImageFilenames()

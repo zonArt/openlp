@@ -27,11 +27,14 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from setuptools import setup, find_packages
 import re
+from setuptools import setup, find_packages
+from subprocess import Popen, PIPE
+
 
 VERSION_FILE = 'openlp/.version'
 SPLIT_ALPHA_DIGITS = re.compile(r'(\d+|\D+)')
+
 
 def try_int(s):
     """
@@ -46,6 +49,7 @@ def try_int(s):
     except Exception:
         return s
 
+
 def natural_sort_key(s):
     """
     Return a tuple by which s is sorted.
@@ -54,6 +58,7 @@ def natural_sort_key(s):
         A string value from the list we want to sort.
     """
     return map(try_int, SPLIT_ALPHA_DIGITS.findall(s))
+
 
 def natural_compare(a, b):
     """
@@ -67,6 +72,7 @@ def natural_compare(a, b):
     """
     return cmp(natural_sort_key(a), natural_sort_key(b))
 
+
 def natural_sort(seq, compare=natural_compare):
     """
     Returns a copy of seq, sorted by natural string sort.
@@ -76,38 +82,50 @@ def natural_sort(seq, compare=natural_compare):
     temp.sort(compare)
     return temp
 
+# NOTE: The following code is a duplicate of the code in openlp/core/utils/__init__.py. Any fix applied here should also
+# be applied there.
 try:
-    # Try to import Bazaar
-    from bzrlib.branch import Branch
-    b = Branch.open_containing('.')[0]
-    b.lock_read()
-    try:
-        # Get the branch's latest revision number.
-        revno = b.revno()
-        # Convert said revision number into a bzr revision id.
-        revision_id = b.dotted_revno_to_revision_id((revno,))
-        # Get a dict of tags, with the revision id as the key.
-        tags = b.tags.get_reverse_tag_dict()
-        # Check if the latest
-        if revision_id in tags:
-            version = u'%s' % tags[revision_id][0]
-        else:
-            version = '%s-bzr%s' % \
-                (natural_sort(b.tags.get_tag_dict().keys())[-1], revno)
-        ver_file = open(VERSION_FILE, u'w')
-        ver_file.write(version)
-        ver_file.close()
-    finally:
-        b.unlock()
+    # Get the revision of this tree.
+    bzr = Popen((u'bzr', u'revno'), stdout=PIPE)
+    tree_revision, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+        raise Exception(u'Error running bzr log')
+
+    # Get all tags.
+    bzr = Popen((u'bzr', u'tags'), stdout=PIPE)
+    output, error = bzr.communicate()
+    code = bzr.wait()
+    if code != 0:
+        raise Exception(u'Error running bzr tags')
+    tags = output.splitlines()
+    if not tags:
+        tag_version = u'0.0.0'
+        tag_revision = u'0'
+    else:
+        # Remove any tag that has "?" as revision number. A "?" as revision number indicates, that this tag is from
+        # another series.
+        tags = [tag for tag in tags if tag.split()[-1].strip() != u'?']
+        # Get the last tag and split it in a revision and tag name.
+        tag_version, tag_revision = tags[-1].split()
+    # If they are equal, then this tree is tarball with the source for the release. We do not want the revision number
+    # in the version string.
+    if tree_revision == tag_revision:
+        version_string =  tag_version
+    else:
+        version_string =  u'%s-bzr%s' % (tag_version, tree_revision)
+    ver_file = open(VERSION_FILE, u'w')
+    ver_file.write(version_string)
 except:
     ver_file = open(VERSION_FILE, u'r')
-    version = ver_file.read().strip()
+    version_string = ver_file.read().strip()
+finally:
     ver_file.close()
 
 
 setup(
     name='OpenLP',
-    version=version,
+    version=version_string,
     description="Open source Church presentation and lyrics projection application.",
     long_description="""\
 OpenLP (previously openlp.org) is free church presentation software, or lyrics projection software, used to display slides of songs, Bible verses, videos, images, and even presentations (if PowerPoint is installed) for church worship using a computer and a data projector.""",
@@ -157,6 +175,8 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     zip_safe=False,
     install_requires=[
         # -*- Extra requirements: -*-
+        'sqlalchemy',
+        'alembic'
     ],
     entry_points="""
     # -*- Entry points: -*-

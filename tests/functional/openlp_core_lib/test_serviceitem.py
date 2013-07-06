@@ -2,11 +2,12 @@
     Package to test the openlp.core.lib package.
 """
 import os
-import cPickle
 from unittest import TestCase
 from mock import MagicMock, patch
 
 from openlp.core.lib import ItemCapabilities, ServiceItem, Registry
+from tests.utils.osdinteraction import read_service_from_file
+from tests.utils.constants import TEST_RESOURCES_PATH
 
 
 VERSE = u'The Lord said to {r}Noah{/r}: \n'\
@@ -17,8 +18,6 @@ VERSE = u'The Lord said to {r}Noah{/r}: \n'\
         '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}'\
         'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
 FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
-
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 
 class TestServiceItem(TestCase):
@@ -78,7 +77,7 @@ class TestServiceItem(TestCase):
         service_item.name = u'test'
 
         # WHEN: adding image to a service item
-        test_image = os.path.join(TEST_PATH, u'church.jpg')
+        test_image = os.path.join(TEST_RESOURCES_PATH, u'church.jpg')
         service_item.add_from_image(test_image, u'Image Title')
 
         # THEN: We should get back a valid service item
@@ -133,8 +132,8 @@ class TestServiceItem(TestCase):
         service_item.name = u'test'
 
         # WHEN: adding image to a service item
-        test_file = os.path.join(TEST_PATH, u'church.jpg')
-        service_item.add_from_command(TEST_PATH, u'church.jpg', test_file)
+        test_file = os.path.join(TEST_RESOURCES_PATH, u'church.jpg')
+        service_item.add_from_command(TEST_RESOURCES_PATH, u'church.jpg', test_file)
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -151,7 +150,7 @@ class TestServiceItem(TestCase):
         assert len(service) == 2, u'The saved service should have two parts'
         assert service[u'header'][u'name'] == u'test', u'A test plugin should be returned'
         assert service[u'data'][0][u'title'] == u'church.jpg', u'The first title name should be "church,jpg"'
-        assert service[u'data'][0][u'path'] == TEST_PATH, u'The path should match the input path'
+        assert service[u'data'][0][u'path'] == TEST_RESOURCES_PATH, u'The path should match the input path'
         assert service[u'data'][0][u'image'] == test_file, u'The image should match the full path to image'
 
         # WHEN validating a service item
@@ -170,13 +169,12 @@ class TestServiceItem(TestCase):
         """
         Test the Service Item - adding a custom slide from a saved service
         """
-        # GIVEN: A new service item and a mocked add icon function
+        # GIVEN: A new service item
         service_item = ServiceItem(None)
-        service_item.add_icon = MagicMock()
 
         # WHEN: adding a custom from a saved Service
-        line = self.convert_file_service_item(u'serviceitem_custom_1.osd')
-        service_item.set_from_service(line)
+        service = read_service_from_file(u'serviceitem_custom_1.osd')
+        service_item.set_from_service(service[0])
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -195,18 +193,17 @@ class TestServiceItem(TestCase):
         """
         Test the Service Item - adding an image from a saved service
         """
-        # GIVEN: A new service item and a mocked add icon function
+        # GIVEN: A new service item
         image_name = u'image_1.jpg'
-        test_file = os.path.join(TEST_PATH, image_name)
+        test_file = os.path.join(TEST_RESOURCES_PATH, image_name)
         frame_array = {u'path': test_file, u'title': image_name}
 
         service_item = ServiceItem(None)
-        service_item.add_icon = MagicMock()
 
         # WHEN: adding an image from a saved Service and mocked exists
-        line = self.convert_file_service_item(u'serviceitem_image_1.osd')
+        service = read_service_from_file(u'serviceitem_image_1.osd')
         with patch('os.path.exists'):
-            service_item.set_from_service(line, TEST_PATH)
+            service_item.set_from_service(service[0], TEST_RESOURCES_PATH)
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -229,7 +226,7 @@ class TestServiceItem(TestCase):
         """
         Test the Service Item - adding an image from a saved local service
         """
-        # GIVEN: A new service item and a mocked add icon function
+        # GIVEN: A new service item
         image_name1 = u'image_1.jpg'
         image_name2 = u'image_2.jpg'
         test_file1 = os.path.join(u'/home/openlp', image_name1)
@@ -238,12 +235,11 @@ class TestServiceItem(TestCase):
         frame_array2 = {u'path': test_file2, u'title': image_name2}
 
         service_item = ServiceItem(None)
-        service_item.add_icon = MagicMock()
 
         # WHEN: adding an image from a saved Service and mocked exists
-        line = self.convert_file_service_item(u'serviceitem_image_2.osd')
+        service = read_service_from_file(u'serviceitem_image_2.osd')
         with patch('os.path.exists'):
-            service_item.set_from_service(line)
+            service_item.set_from_service(service[0])
 
         # THEN: We should get back a valid service item
         assert service_item.is_valid is True, u'The new service item should be valid'
@@ -276,26 +272,13 @@ class TestServiceItem(TestCase):
         service_item.add_icon = MagicMock()
 
         # WHEN: adding an media from a saved Service and mocked exists
-        line = self.convert_file_service_item(u'migrate_video_20_22.osd')
+        line = read_service_from_file(u'migrate_video_20_22.osd')
         with patch('os.path.exists'):
-            service_item.set_from_service(line, TEST_PATH)
+            service_item.set_from_service(line[0], TEST_RESOURCES_PATH)
 
         # THEN: We should get back a converted service item
         assert service_item.is_valid is True, u'The new service item should be valid'
-        assert service_item.processor is None, u'The Processor should have been set'
-        assert service_item.title is None, u'The title should be set to a value'
+        assert service_item.processor == u'VLC', u'The Processor should have been set'
+        assert service_item.title is not None, u'The title should be set to a value'
         assert service_item.is_capable(ItemCapabilities.HasDetailedTitleDisplay) is False, \
             u'The Capability should have been removed'
-
-    def convert_file_service_item(self, name):
-        service_file = os.path.join(TEST_PATH, name)
-        try:
-            open_file = open(service_file, u'r')
-            items = cPickle.load(open_file)
-            first_line = items[0]
-        except IOError:
-            first_line = u''
-        finally:
-            open_file.close()
-        return first_line
-

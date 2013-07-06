@@ -1271,7 +1271,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 newItem.merge(item[u'service_item'])
                 item[u'service_item'] = newItem
                 self.repaint_service_list(item_count + 1, 0)
-                self.live_controller.replaceServiceManagerItem(newItem)
+                self.live_controller.replace_service_manager_item(newItem)
                 self.set_modified()
 
     def add_service_item(self, item, rebuild=False, expand=None, replace=False, repaint=True, selected=False):
@@ -1293,7 +1293,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             item.merge(self.service_items[sitem][u'service_item'])
             self.service_items[sitem][u'service_item'] = item
             self.repaint_service_list(sitem, child)
-            self.live_controller.replaceServiceManagerItem(item)
+            self.live_controller.replace_service_manager_item(item)
         else:
             item.render()
             # nothing selected for dnd
@@ -1316,7 +1316,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 self.repaint_service_list(self.drop_position, -1)
             # if rebuilding list make sure live is fixed.
             if rebuild:
-                self.live_controller.replaceServiceManagerItem(item)
+                self.live_controller.replace_service_manager_item(item)
         self.drop_position = 0
         self.set_modified()
 
@@ -1327,7 +1327,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.application.set_busy_cursor()
         item, child = self.find_service_item()
         if self.service_items[item][u'service_item'].is_valid:
-            self.preview_controller.addServiceManagerItem(self.service_items[item][u'service_item'], child)
+            self.preview_controller.add_service_manager_item(self.service_items[item][u'service_item'], child)
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
@@ -1365,15 +1365,15 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             child = row
         self.application.set_busy_cursor()
         if self.service_items[item][u'service_item'].is_valid:
-            self.live_controller.addServiceManagerItem(self.service_items[item][u'service_item'], child)
+            self.live_controller.add_service_manager_item(self.service_items[item][u'service_item'], child)
             if Settings().value(self.main_window.general_settings_section + u'/auto preview'):
                 item += 1
                 if self.service_items and item < len(self.service_items) and \
                         self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanPreview):
-                    self.preview_controller.addServiceManagerItem(self.service_items[item][u'service_item'], 0)
+                    self.preview_controller.add_service_manager_item(self.service_items[item][u'service_item'], 0)
                     next_item = self.service_manager_list.topLevelItem(item)
                     self.service_manager_list.setCurrentItem(next_item)
-                    self.live_controller.preview_list_widget.setFocus()
+                    self.live_controller.preview_widget.setFocus()
         else:
             critical_error_message_box(translate('OpenLP.ServiceManager', 'Missing Display Handler'),
                 translate('OpenLP.ServiceManager',
@@ -1592,10 +1592,14 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
 
     def _get_application(self):
         """
-        Adds the openlp to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)
