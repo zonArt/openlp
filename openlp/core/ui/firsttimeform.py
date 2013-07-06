@@ -29,6 +29,7 @@
 """
 This module contains the first time wizard.
 """
+#FIXME: python3: remove duplicated imports.
 import io
 import logging
 import os
