@@ -11,7 +11,7 @@ import pyodbc
 
 from openlp.plugins.songs.lib.worshipcenterproimport import WorshipCenterProImport
 
-class TestRecord:
+class TestRecord(object):
     """
     Microsoft Access Driver is not available on non Microsoft Systems for this reason the :class:`TestRecord` is used
     to simulate a recordset that would be returned by pyobdc.
