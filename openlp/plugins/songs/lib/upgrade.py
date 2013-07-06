@@ -31,31 +31,15 @@ The :mod:`upgrade` module provides a way for the database and schema that is the
 backend for the Songs plugin
 """
 
-from sqlalchemy import Column, Table, types
-from sqlalchemy.sql.expression import func
-from migrate.changeset.constraint import ForeignKeyConstraint
+from sqlalchemy import Column, types
+from sqlalchemy.sql.expression import func, false, null, text
+
+from openlp.core.lib.db import get_upgrade_op
 
 __version__ = 3
 
-def upgrade_setup(metadata):
-    """
-    Set up the latest revision all tables, with reflection, needed for the
-    upgrade process. If you want to drop a table, you need to remove it from
-    here, and add it to your upgrade function.
-    """
-    tables = {
-        u'authors': Table(u'authors', metadata, autoload=True),
-        u'media_files': Table(u'media_files', metadata, autoload=True),
-        u'song_books': Table(u'song_books', metadata, autoload=True),
-        u'songs': Table(u'songs', metadata, autoload=True),
-        u'topics': Table(u'topics', metadata, autoload=True),
-        u'authors_songs': Table(u'authors_songs', metadata, autoload=True),
-        u'songs_topics': Table(u'songs_topics', metadata, autoload=True)
-    }
-    return tables
 
-
-def upgrade_1(session, metadata, tables):
+def upgrade_1(session, metadata):
     """
     Version 1 upgrade.
 
@@ -67,30 +51,35 @@ def upgrade_1(session, metadata, tables):
     added to the media_files table, and a weight column so that the media
     files can be ordered.
     """
-    Table(u'media_files_songs', metadata, autoload=True).drop(checkfirst=True)
-    Column(u'song_id', types.Integer(), default=None).create(table=tables[u'media_files'])
-    Column(u'weight', types.Integer(), default=0).create(table=tables[u'media_files'])
+    op = get_upgrade_op(session)
+    op.drop_table(u'media_files_songs')
+    op.add_column(u'media_files', Column(u'song_id', types.Integer(), server_default=null()))
+    op.add_column(u'media_files', Column(u'weight', types.Integer(), server_default=text(u'0')))
     if metadata.bind.url.get_dialect().name != 'sqlite':
         # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
-        ForeignKeyConstraint([u'song_id'], [u'songs.id'],
-            table=tables[u'media_files']).create()
+        op.create_foreign_key(u'fk_media_files_song_id', u'media_files', u'songs', [u'song_id', u'id'])
 
 
-def upgrade_2(session, metadata, tables):
+def upgrade_2(session, metadata):
     """
     Version 2 upgrade.
 
     This upgrade adds a create_date and last_modified date to the songs table
     """
-    Column(u'create_date', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
-    Column(u'last_modified', types.DateTime(), default=func.now()).create(table=tables[u'songs'])
+    op = get_upgrade_op(session)
+    op.add_column(u'songs', Column(u'create_date', types.DateTime(), default=func.now()))
+    op.add_column(u'songs', Column(u'last_modified', types.DateTime(), default=func.now()))
 
 
-def upgrade_3(session, metadata, tables):
+def upgrade_3(session, metadata):
     """
     Version 3 upgrade.
 
     This upgrade adds a temporary song flag to the songs table
     """
-    Column(u'temporary', types.Boolean(), default=False).create(table=tables[u'songs'])
+    op = get_upgrade_op(session)
+    if metadata.bind.url.get_dialect().name == 'sqlite':
+        op.add_column(u'songs', Column(u'temporary', types.Boolean(create_constraint=False), server_default=false()))
+    else:
+        op.add_column(u'songs', Column(u'temporary', types.Boolean(), server_default=false()))
 
