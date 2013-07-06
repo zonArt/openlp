@@ -240,7 +240,7 @@ class TestEasyWorshipSongImport(TestCase):
             patch(u'openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager)
-            mocked_os_path.isfile.return_value = False
+            mocked_os_path.isfile.side_effect = [True, False]
 
             # WHEN: Supplied with an import source
             importer.import_source = u'Songs.DB'
