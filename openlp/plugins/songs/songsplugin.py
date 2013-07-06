@@ -41,7 +41,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, UiStrings, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
-from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
@@ -263,7 +262,7 @@ class SongsPlugin(Plugin):
         self.application.process_events()
         self.on_tools_reindex_item_triggered()
         self.application.process_events()
-        db_dir = unicode(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
+        db_dir = os.path.join(gettempdir(), u'openlp')
         if not os.path.exists(db_dir):
             return
         song_dbs = []

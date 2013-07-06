@@ -303,9 +303,9 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         ``url``
             The URL of the file we want to download.
         """
-        site = urllib.urlopen(url)
+        site = urllib.request.urlopen(url)
         meta = site.info()
-        return int(meta.getheaders("Content-Length")[0])
+        return int(meta.get("Content-Length"))
 
     def _download_progress(self, count, block_size):
         """
