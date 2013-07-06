@@ -385,9 +385,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         # lazy xml migration for now
         self.verse_list_widget.clear()
         self.verse_list_widget.setRowCount(0)
-        # This is just because occasionally the lyrics come back as a "buffer"
-        if isinstance(self.song.lyrics, buffer):
-            self.song.lyrics = unicode(self.song.lyrics)
         verse_tags_translated = False
         if self.song.lyrics.startswith(u'<?xml version='):
             songXML = SongXML()
