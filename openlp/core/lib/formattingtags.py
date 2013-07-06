@@ -29,7 +29,7 @@
 """
 Provide HTML Tag management and Formatting Tag access class
 """
-import cPickle
+import json
 
 from openlp.core.lib import Settings, translate
 
@@ -66,7 +66,7 @@ class FormattingTags(object):
                     if isinstance(tag[element], unicode):
                         tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
-        Settings().setValue(u'displayTags/html_tags', cPickle.dumps(tags) if tags else u'')
+        Settings().setValue(u'formattingTags/html_tags', json.dumps(tags) if tags else u'')
 
     @staticmethod
     def load_tags():
@@ -156,13 +156,10 @@ class FormattingTags(object):
             u'end html': u'', u'protected': True, u'temporary': False})
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
-
         # Formatting Tags were also known as display tags.
-        user_expands = Settings().value(u'displayTags/html_tags')
-        # cPickle only accepts str not unicode strings
-        user_expands_string = str(user_expands)
+        user_expands_string = str(Settings().value(u'formattingTags/html_tags'))
         if user_expands_string:
-            user_tags = cPickle.loads(user_expands_string)
+            user_tags = json.loads(user_expands_string)
             for tag in user_tags:
                 for element in tag:
                     if isinstance(tag[element], str):

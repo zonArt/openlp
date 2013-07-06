@@ -174,13 +174,13 @@ class PPTViewer(QtGui.QWidget):
             int(self.widthEdit.text()), int(self.heightEdit.text()))
         filename = str(self.pptEdit.text().replace(u'/', u'\\'))
         folder = str(self.folderEdit.text().replace(u'/', u'\\'))
-        print filename, folder
+        print(filename, folder)
         self.pptid = self.pptdll.OpenPPT(filename, None, rect, folder)
-        print u'id: ' + unicode(self.pptid)
+        print(u'id: ' + unicode(self.pptid))
         if oldid >= 0:
             self.pptdll.ClosePPT(oldid);
         slides = self.pptdll.GetSlideCount(self.pptid)
-        print u'slidecount: ' + unicode(slides)
+        print(u'slidecount: ' + unicode(slides))
         self.total.setNum(self.pptdll.GetSlideCount(self.pptid))
         self.updateCurrSlide()
 
@@ -188,14 +188,14 @@ class PPTViewer(QtGui.QWidget):
         if self.pptid < 0:
             return
         slide = unicode(self.pptdll.GetCurrentSlide(self.pptid))
-        print u'currslide: ' + slide
+        print(u'currslide: ' + slide)
         self.slideEdit.setText(slide)
         app.processEvents()
 
     def gotoClick(self):
         if self.pptid < 0:
             return
-        print self.slideEdit.text()
+        print(self.slideEdit.text())
         self.pptdll.GotoSlide(self.pptid, int(self.slideEdit.text()))
         self.updateCurrSlide()
         app.processEvents()
@@ -207,7 +207,7 @@ class PPTViewer(QtGui.QWidget):
 if __name__ == '__main__':
     pptdll = cdll.LoadLibrary(r'pptviewlib.dll')
     pptdll.SetDebug(1)
-    print u'Begin...'
+    print(u'Begin...')
     app = QtGui.QApplication(sys.argv)
     window = PPTViewer()
     window.pptdll = pptdll

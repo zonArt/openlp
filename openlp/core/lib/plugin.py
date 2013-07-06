@@ -30,6 +30,7 @@
 Provide the generic plugin functionality for OpenLP plugins.
 """
 import logging
+import os
 
 from PyQt4 import QtCore
 
@@ -424,8 +425,11 @@ class Plugin(QtCore.QObject):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)
