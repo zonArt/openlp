@@ -67,7 +67,7 @@ class ThemeScreenshotThread(QtCore.QThread):
             filename = config.get(u'theme_%s' % theme, u'filename')
             screenshot = config.get(u'theme_%s' % theme, u'screenshot')
             urllib.urlretrieve(u'%s%s' % (self.parent().web, screenshot),
-                os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp', screenshot))
+                os.path.join(gettempdir(), u'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themes_list_widget)
             item.setData(QtCore.Qt.UserRole, filename)
             item.setCheckState(QtCore.Qt.Unchecked)
@@ -117,7 +117,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         Set up display at start of theme edit.
         """
         self.restart()
-        check_directory_exists(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
+        check_directory_exists(os.path.join(gettempdir(), u'openlp'))
         self.no_internet_finish_button.setVisible(False)
         # Check if this is a re-run of the wizard.
         self.has_run_wizard = Settings().value(u'core/has run wizard')
@@ -126,8 +126,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             songs = self.config.get(u'songs', u'languages')
             songs = songs.split(u',')
             for song in songs:
-                title = unicode(self.config.get(u'songs_%s' % song, u'title'), u'utf8')
-                filename = unicode(self.config.get(u'songs_%s' % song, u'filename'), u'utf8')
+                title = self.config.get(u'songs_%s' % song, u'title')
+                filename = self.config.get(u'songs_%s' % song, u'filename')
                 item = QtGui.QListWidgetItem(title, self.songs_list_widget)
                 item.setData(QtCore.Qt.UserRole, filename)
                 item.setCheckState(QtCore.Qt.Unchecked)
@@ -135,13 +135,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             bible_languages = self.config.get(u'bibles', u'languages')
             bible_languages = bible_languages.split(u',')
             for lang in bible_languages:
-                language = unicode(self.config.get(u'bibles_%s' % lang, u'title'), u'utf8')
+                language = self.config.get(u'bibles_%s' % lang, u'title')
                 langItem = QtGui.QTreeWidgetItem(self.bibles_tree_widget, [language])
                 bibles = self.config.get(u'bibles_%s' % lang, u'translations')
                 bibles = bibles.split(u',')
                 for bible in bibles:
-                    title = unicode(self.config.get(u'bible_%s' % bible, u'title'), u'utf8')
-                    filename = unicode(self.config.get(u'bible_%s' % bible, u'filename'))
+                    title = self.config.get(u'bible_%s' % bible, u'title')
+                    filename = self.config.get(u'bible_%s' % bible, u'filename')
                     item = QtGui.QTreeWidgetItem(langItem, [title])
                     item.setData(0, QtCore.Qt.UserRole, filename)
                     item.setCheckState(0, QtCore.Qt.Unchecked)
@@ -294,8 +294,7 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
                 item = self.themes_list_widget.item(index)
                 if item.data(QtCore.Qt.UserRole) == filename:
                     break
-            item.setIcon(build_icon(os.path.join(unicode(gettempdir(),
-                get_filesystem_encoding()), u'openlp', screenshot)))
+            item.setIcon(build_icon(os.path.join(gettempdir(), u'openlp', screenshot)))
 
     def _getFileSize(self, url):
         """
