@@ -47,8 +47,7 @@ from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
 from openlp.core.ui.media import MediaController
-from openlp.core.utils import AppLocation, LanguageManager, add_actions, get_application_version, \
-    get_filesystem_encoding
+from openlp.core.utils import AppLocation, LanguageManager, add_actions, get_application_version
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 
@@ -903,7 +902,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # Make sure it's a .conf file.
         if not export_file_name.endswith(u'conf'):
             export_file_name += u'.conf'
-        temp_file = os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp', u'exportConf.tmp')
+        temp_file = os.path.join(gettempdir(), u'openlp', u'exportConf.tmp')
         self.save_settings()
         setting_sections = []
         # Add main sections.
