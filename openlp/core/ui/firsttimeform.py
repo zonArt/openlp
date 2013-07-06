@@ -94,8 +94,6 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.web_access = get_web_page(u'%s%s' % (self.web, u'download.cfg'))
         if self.web_access:
             files = self.web_access.read()
-            #FIXME: python3 - TypeError: startswith first arg must be bytes or a tuple of bytes, not str
-            #FIXME: python3 - readfp: Deprecated, use read_file instead.
             self.config.read_string(files.decode())
         self.update_screen_list_combo()
         self.was_download_cancelled = False
