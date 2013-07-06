@@ -7,7 +7,7 @@ from unittest import TestCase
 
 from mock import patch, MagicMock
 
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Registry, ServiceItem, Settings
 
@@ -32,6 +32,7 @@ class TestMediaItem(TestCase):
         fd, self.ini_file = mkstemp(u'.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
+        QtCore.QLocale.setDefault(QtCore.QLocale('en_GB'))
 
     def tearDown(self):
         """

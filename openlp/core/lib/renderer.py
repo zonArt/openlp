@@ -107,7 +107,7 @@ class Renderer(object):
             del self._theme_dimensions[old_theme_name]
         if theme_name in self._theme_dimensions:
             del self._theme_dimensions[theme_name]
-        if not only_delete:
+        if not only_delete and theme_name:
             self._set_theme(theme_name)
 
     def _set_theme(self, theme_name):
