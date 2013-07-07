@@ -183,7 +183,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self._add_element(
                 u'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId=u'customNotesTitle')
             self._add_element(u'span', cgi.escape(self.footer_text_edit.toPlainText()), div, classId=u'customNotesText')
-        self.document.setHtml(html.tostring(html_data))
+        self.document.setHtml(html.tostring(html_data).decode())
         self.preview_widget.updatePreview()
 
     def _add_preview_item(self, body, item, index):
