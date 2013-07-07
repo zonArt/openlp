@@ -68,7 +68,7 @@ class Song(BaseModel):
     Song model
     """
     def __init__(self):
-        self.sort_key = ()
+        self.sort_key = []
 
     @reconstructor
     def init_on_load(self):
