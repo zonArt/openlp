@@ -29,14 +29,13 @@
 """
 This module contains the first time wizard.
 """
-#FIXME: python3: remove duplicated imports.
-import io
 import logging
 import os
 import sys
 import time
-import urllib
-import urllib2
+import urllib.request
+import urllib.parse
+import urllib.error
 from tempfile import gettempdir
 from ConfigParser import SafeConfigParser
 
