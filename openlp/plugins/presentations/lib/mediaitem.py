@@ -246,6 +246,7 @@ class PresentationMediaItem(MediaManagerItem):
                 return False
         service_item.processor = self.display_type_combo_box.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         if not self.display_type_combo_box.currentText():
             return False
         for bitem in items:

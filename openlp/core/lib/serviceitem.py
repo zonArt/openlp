@@ -108,8 +108,7 @@ class ItemCapabilities(object):
             The capability to ignore the do not play if display blank flag.
     
     ``CanEditTitle``
-            The capability to allow the ServiceManager to allow the title of the item to be
-             edited
+            The capability to edit the title of the item
 
     """
     CanPreview = 1

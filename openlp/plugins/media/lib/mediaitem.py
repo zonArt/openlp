@@ -196,6 +196,7 @@ class MediaMediaItem(MediaManagerItem):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
         service_item.add_capability(ItemCapabilities.RequiresMedia)
+        service_item.add_capability(ItemCapabilities.CanEditTitle)
         if Settings().value(self.settings_section + u'/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
