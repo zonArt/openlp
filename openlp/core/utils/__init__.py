@@ -246,6 +246,23 @@ def get_images_filter():
     return IMAGES_FILTER
 
 
+def is_not_image_file(file_name):
+    """
+    Validate that the file is not an image file.
+
+    ``file_name``
+        File name to be checked.
+    """
+    if file_name.isEmpty():
+        return True
+    else:
+        formats = [fmt.lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
+        file_part, file_extension = os.path.splitext(unicode(file_name))
+        if file_extension[1:].lower() in formats and os.path.exists(file_name):
+            return False
+        return True
+
+
 def split_filename(path):
     """
     Return a list of the parts in a given path.
