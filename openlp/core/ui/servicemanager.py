@@ -686,14 +686,13 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             zip_file = zipfile.ZipFile(file_name)
             for zip_info in zip_file.infolist():
                 try:
-                    ucsfile = zip_info.filename.decode(u'utf-8')
+                    ucs_file = zip_info.filename
                 except UnicodeDecodeError:
-                    log.exception(u'file_name "%s" is not valid UTF-8' %
-                        zip_info.file_name.decode(u'utf-8', u'replace'))
+                    log.exception(u'file_name "%s" is not valid UTF-8' % zip_info.file_name)
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n The content encoding is not UTF-8.'))
                     continue
-                osfile = ucsfile.replace(u'/', os.path.sep)
+                osfile = ucs_file.replace(u'/', os.path.sep)
                 if not osfile.startswith(u'audio'):
                     osfile = os.path.split(osfile)[1]
                 log.debug(u'Extract file: %s', osfile)
