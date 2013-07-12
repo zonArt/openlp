@@ -26,7 +26,7 @@
 window.OpenLP = {
   loadSlide: function (event) {
     $.getJSON(
-      "/live/image",
+      "/main/image",
       function (data, status) {
         var img = document.getElementById('image');
         img.src = data.results.slide_image;
@@ -36,7 +36,7 @@ window.OpenLP = {
   },
   pollServer: function () {
     $.getJSON(
-      "/live/poll",
+      "/main/poll",
       function (data, status) {
         if (OpenLP.slideCount != data.results.slide_count) {
           OpenLP.slideCount = data.results.slide_count;
