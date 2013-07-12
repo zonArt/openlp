@@ -340,7 +340,7 @@ class OpenLyrics(object):
                 # Do not add the break attribute to the last lines element.
                 if index < len(optional_verses) - 1:
                     lines_element.set(u'break', u'optional')
-        return self._extract_xml(song_xml)
+        return self._extract_xml(song_xml).decode()
 
     def _get_missing_tags(self, text):
         """

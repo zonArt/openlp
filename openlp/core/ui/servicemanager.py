@@ -594,7 +594,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             zip_file = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED,
                 True)
             # First we add service contents.
-            zip_file.writestr(service_file_name.encode(u'utf-8'), service_content)
+            zip_file.writestr(service_file_name, service_content)
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
             self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
