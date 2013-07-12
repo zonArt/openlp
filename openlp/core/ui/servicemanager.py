@@ -35,6 +35,7 @@ import logging
 import os
 import shutil
 import zipfile
+import json
 from tempfile import mkstemp
 from datetime import datetime, timedelta
 
@@ -458,7 +459,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         path_file_name = unicode(self.file_name())
         path, file_name = os.path.split(path_file_name)
         base_name = os.path.splitext(file_name)[0]
-        service_file_name = '%s.osd' % base_name
+        service_file_name = '%s.osj' % base_name
         log.debug(u'ServiceManager.save_file - %s', path_file_name)
         Settings().setValue(self.main_window.service_manager_settings_section + u'/last directory', path)
         service = []
@@ -512,7 +513,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             file_size = os.path.getsize(file_item)
             total_size += file_size
         log.debug(u'ServiceManager.save_file - ZIP contents size is %i bytes' % total_size)
-        service_content = cPickle.dumps(service)
+        service_content = json.dumps(service)
         # Usual Zip file cannot exceed 2GiB, file with Zip64 cannot be extracted using unzip in UNIX.
         allow_zip_64 = (total_size > 2147483648 + len(service_content))
         log.debug(u'ServiceManager.save_file - allowZip64 is %s' % allow_zip_64)
@@ -572,7 +573,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         path_file_name = unicode(self.file_name())
         path, file_name = os.path.split(path_file_name)
         base_name = os.path.splitext(file_name)[0]
-        service_file_name = '%s.osd' % base_name
+        service_file_name = '%s.osj' % base_name
         log.debug(u'ServiceManager.save_file - %s', path_file_name)
         Settings().setValue(self.main_window.service_manager_settings_section + u'/last directory', path)
         service = []
@@ -585,7 +586,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             #TODO: check for file item on save.
             service.append({u'serviceitem': service_item})
             self.main_window.increment_progress_bar()
-        service_content = cPickle.dumps(service)
+        service_content = json.dumps(service)
         zip_file = None
         success = True
         self.main_window.increment_progress_bar()
@@ -698,11 +699,14 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 log.debug(u'Extract file: %s', osfile)
                 zip_info.filename = osfile
                 zip_file.extract(zip_info, self.servicePath)
-                if osfile.endswith(u'osd'):
+                if osfile.endswith(u'osj') or osfile.endswith(u'osd'):
                     p_file = os.path.join(self.servicePath, osfile)
             if 'p_file' in locals():
                 file_to = open(p_file, u'r')
-                items = cPickle.load(file_to)
+                if p_file.endswith(u'osj'):
+                    items = json.load(file_to)
+                else:
+                    items = cPickle.load(file_to)
                 file_to.close()
                 self.new_file()
                 self.set_file_name(file_name)

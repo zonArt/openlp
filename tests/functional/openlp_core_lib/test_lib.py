@@ -16,6 +16,7 @@ from openlp.core.lib import str_to_bool, create_thumb, translate, check_director
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'..', u'..', u'resources'))
 
 
+
 class TestLib(TestCase):
 
     def str_to_bool_with_bool_test(self):

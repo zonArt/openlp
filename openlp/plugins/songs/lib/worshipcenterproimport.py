@@ -27,52 +27,59 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`db` module provides the database and schema that is the backend for
-the Custom plugin
+The :mod:`worshipcenterpro` module provides the functionality for importing
+a WorshipCenter Pro database into the OpenLP database.
 """
+import logging
 
-from sqlalchemy import Column, Table, types
-from sqlalchemy.orm import mapper
+import pyodbc
 
-from openlp.core.lib.db import BaseModel, init_db
-from openlp.core.utils import get_locale_key
+from openlp.core.lib import translate
+from openlp.plugins.songs.lib.songimport import SongImport
 
-class CustomSlide(BaseModel):
+log = logging.getLogger(__name__)
+
+
+class WorshipCenterProImport(SongImport):
     """
-    CustomSlide model
+    The :class:`WorshipCenterProImport` class provides the ability to import the
+    WorshipCenter Pro Access Database
     """
-    # By default sort the customs by its title considering language specific characters.
-    def __lt__(self, other):
-        return get_locale_key(self.title) < get_locale_key(other.title)
-
-    def __eq__(self, other):
-        return get_locale_key(self.title) == get_locale_key(other.title)
-
-    def __hash__(self):
+    def __init__(self, manager, **kwargs):
         """
-        Return the hash for a custom slide.
+        Initialise the WorshipCenter Pro importer.
         """
-        return self.id
+        SongImport.__init__(self, manager, **kwargs)
 
-
-def init_schema(url):
-    """
-    Setup the custom database connection and initialise the database schema
-
-    ``url``
-        The database to setup
-    """
-    session, metadata = init_db(url)
-
-    custom_slide_table = Table(u'custom_slide', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'title', types.Unicode(255), nullable=False),
-        Column(u'text', types.UnicodeText, nullable=False),
-        Column(u'credits', types.UnicodeText),
-        Column(u'theme_name', types.Unicode(128))
-    )
-
-    mapper(CustomSlide, custom_slide_table)
-
-    metadata.create_all(checkfirst=True)
-    return session
+    def doImport(self):
+        """
+        Receive a single file to import.
+        """
+        try:
+           conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s' % self.import_source)
+        except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError), e:
+            log.warn(u'Unable to connect the WorshipCenter Pro database %s. %s', self.import_source, unicode(e))
+            # Unfortunately no specific exception type
+            self.logError(self.import_source,
+                translate('SongsPlugin.WorshipCenterProImport', 'Unable to connect the WorshipCenter Pro database.'))
+            return
+        cursor = conn.cursor()
+        cursor.execute(u'SELECT ID, Field, Value FROM __SONGDATA')
+        records = cursor.fetchall()
+        songs = {}
+        for record in records:
+            id = record.ID
+            if not songs.has_key(id):
+                songs[id] = {}
+            songs[id][record.Field] = record.Value
+        self.import_wizard.progress_bar.setMaximum(len(songs))
+        for song in songs:
+            if self.stop_import_flag:
+                break
+            self.setDefaults()
+            self.title = songs[song][u'TITLE']
+            lyrics = songs[song][u'LYRICS'].strip(u'&crlf;&crlf;')
+            for verse in lyrics.split(u'&crlf;&crlf;'):
+                verse = verse.replace(u'&crlf;', u'\n')
+                self.addVerse(verse)
+            self.finish()

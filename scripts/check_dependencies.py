@@ -62,6 +62,7 @@ WIN32_MODULES = [
     'win32com',
     'win32ui',
     'pywintypes',
+    'pyodbc',
 ]
 
 MODULES = [
@@ -85,6 +86,7 @@ MODULES = [
     'migrate',
     'uno',
     'icu',
+    'bs4',
 ]
 
 
