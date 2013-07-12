@@ -78,7 +78,7 @@ class OpenLyricsExport(object):
             filename = u'%s.xml' % filename[0:250 - len(self.save_path)]
             # Pass a file object, because lxml does not cope with some special
             # characters in the path (see lp:757673 and lp:744337).
-            tree.write(open(os.path.join(self.save_path, filename), u'w'),
+            tree.write(open(os.path.join(self.save_path, filename), u'wb'),
                 encoding=u'utf-8', xml_declaration=True, pretty_print=True)
         return True
 
