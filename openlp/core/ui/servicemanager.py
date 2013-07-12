@@ -522,11 +522,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.main_window.increment_progress_bar()
         try:
             zip_file = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED, allow_zip_64)
-            # First we add service contents. We save ALL file_names into ZIP using UTF-8.
-            zip_file.writestr(service_file_name.encode(u'utf-8'), service_content)
+            # First we add service contents..
+            zip_file.writestr(service_file_name, service_content)
             # Finally add all the listed media files.
             for write_from in write_list:
-                zip_file.write(write_from, write_from.encode(u'utf-8'))
+                zip_file.write(write_from, write_from)
             for audio_from, audio_to in audio_files:
                 if audio_from.startswith(u'audio'):
                     # When items are saved, they get new unique_identifier. Let's copy the file to the new location.
@@ -537,7 +537,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 check_directory_exists(save_path)
                 if not os.path.exists(save_file):
                     shutil.copy(audio_from, save_file)
-                zip_file.write(audio_from, audio_to.encode(u'utf-8'))
+                zip_file.write(audio_from, audio_to)
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
             self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
