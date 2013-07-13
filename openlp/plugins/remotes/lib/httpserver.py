@@ -648,7 +648,7 @@ class HttpRouter(object):
         Set the HTTP not found return code.
         """
         cherrypy.response.status = 404
-        cherrypy.response.body = ["<html><body>Sorry, an error occurred </body></html>"]
+        cherrypy.response.body = [b'<html><body>Sorry, an error occurred </body></html>']
 
     def _get_service_manager(self):
         """
