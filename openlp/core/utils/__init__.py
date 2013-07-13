@@ -253,10 +253,10 @@ def is_not_image_file(file_name):
     ``file_name``
         File name to be checked.
     """
-    if file_name.isEmpty():
+    if not file_name:
         return True
     else:
-        formats = [fmt.lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
+        formats = [unicode(fmt).lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
         file_part, file_extension = os.path.splitext(unicode(file_name))
         if file_extension[1:].lower() in formats and os.path.exists(file_name):
             return False
