@@ -100,12 +100,11 @@ class DreamBeamImport(SongImport):
                     log.exception(u'XML syntax error in file %s' % file)
                     self.logError(file, SongStrings.XMLSyntaxError)
                     continue
-                xml = unicode(etree.tostring(parsed_file))
+                xml = etree.tostring(parsed_file).decode()
                 song_xml = objectify.fromstring(xml)
                 if song_xml.tag != u'DreamSong':
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.DreamBeamImport',
-                            ('Invalid DreamBeam song file. Missing DreamSong tag.'))))
+                    self.logError(file,
+                        translate('SongsPlugin.DreamBeamImport', 'Invalid DreamBeam song file. Missing DreamSong tag.'))
                     continue
                 if hasattr(song_xml, u'Version'):
                     self.version = float(song_xml.Version.text)
