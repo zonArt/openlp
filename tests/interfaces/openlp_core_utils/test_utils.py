@@ -1,11 +1,8 @@
 """
 Functional tests to test the AppLocation class and related methods.
 """
+import os
 from unittest import TestCase
-
-from mock import patch
-from PyQt4 import QtCore
-
 
 from openlp.core.utils import is_not_image_file
 from tests.utils.constants import TEST_RESOURCES_PATH
@@ -27,3 +24,29 @@ class TestUtils(TestCase):
 
         # THEN the result is false
         assert result is True, u'The missing file test should return True'
+
+    def is_not_image_with_image_file_test(self):
+        """
+        Test the method handles an image file
+        """
+        # Given and empty string
+        file_name = os.path.join(TEST_RESOURCES_PATH, u'church.jpg')
+
+        # WHEN testing for it
+        result = is_not_image_file(file_name)
+
+        # THEN the result is false
+        assert result is False, u'The file is present so the test should return False'
+
+    def is_not_image_with_none_image_file_test(self):
+        """
+        Test the method handles a non image file
+        """
+        # Given and empty string
+        file_name = os.path.join(TEST_RESOURCES_PATH, u'serviceitem_custom_1.osj')
+
+        # WHEN testing for it
+        result = is_not_image_file(file_name)
+
+        # THEN the result is false
+        assert result is True, u'The file is not an image file so the test should return True'
