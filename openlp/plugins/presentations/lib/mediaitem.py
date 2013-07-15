@@ -85,7 +85,7 @@ class PresentationMediaItem(MediaManagerItem):
             if self.controllers[controller].enabled():
                 file_types = self.controllers[controller].supports + self.controllers[controller].also_supports
                 for file_type in file_types:
-                    if file_type.find(file_type) == -1:
+                    if file_type_list.find(file_type) == -1:
                         file_type_list += u'*.%s ' % file_type
                         self.service_manager.supported_suffixes(file_type)
         self.on_new_file_masks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % file_type_list

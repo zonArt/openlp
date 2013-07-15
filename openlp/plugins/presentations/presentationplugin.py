@@ -48,6 +48,7 @@ __default_settings__ = {
         u'presentations/Impress': QtCore.Qt.Checked,
         u'presentations/Powerpoint': QtCore.Qt.Checked,
         u'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
+        u'presentations/Pdf': QtCore.Qt.Checked,
         u'presentations/presentations files': []
 }
 
