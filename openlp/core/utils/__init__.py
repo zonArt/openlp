@@ -385,7 +385,7 @@ def get_locale_key(string):
     if os.name == 'nt':
         global ICU_COLLATOR
         if ICU_COLLATOR is None:
-            from .languagemanager import LanguageManager
+            from languagemanager import LanguageManager
             language = LanguageManager.get_language()
             icu_locale = icu.Locale(language)
             ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
