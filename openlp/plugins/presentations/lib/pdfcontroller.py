@@ -31,9 +31,10 @@ import os
 import logging
 from tempfile import NamedTemporaryFile
 import re
-from subprocess import check_output,  call
+from subprocess import check_output, CalledProcessError
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.utils import AppLocation
 from openlp.core.lib import ScreenList
 from presentationcontroller import PresentationController, PresentationDocument
 
@@ -54,9 +55,11 @@ class PdfController(PresentationController):
         log.debug(u'Initialising')
         self.process = None
         PresentationController.__init__(self, plugin, u'Pdf', PdfDocument)
-        self.supports = [u'pdf', u'xps']
+        self.supports = [u'pdf']
         self.mudrawbin = u''
         self.gsbin = u''
+        if self.check_installed() and self.mudrawbin != u'':
+            self.also_supports = [u'xps']
         self.viewer = None
 
     def check_available(self):
@@ -70,20 +73,34 @@ class PdfController(PresentationController):
         """
         Check the viewer is installed.
         """
+        application_path = AppLocation.get_directory(AppLocation.AppDir)
+        print application_path
         log.debug(u'check_installed Pdf')
-        # First try to find mupdf
-        try:
-            self.mudrawbin = check_output([u'which', u'mudraw']).rstrip('\n')
-        except CalledProcessError:
-            self.mudrawbin = u''
-
-        # if mupdf isn't installed, fallback to ghostscript
-        if self.mudrawbin == u'':
+        if os.name != u'nt':
+            # First try to find mupdf
             try:
-                self.gsbin = check_output([u'which', u'gs']).rstrip('\n')
+                self.mudrawbin = check_output([u'which', u'mudraw']).rstrip('\n')
             except CalledProcessError:
-                self.gsbin = u''
+                self.mudrawbin = u''
+
+            # if mupdf isn't installed, fallback to ghostscript
+            if self.mudrawbin == u'':
+                try:
+                    self.gsbin = check_output([u'which', u'gs']).rstrip('\n')
+                except CalledProcessError:
+                    self.gsbin = u''
                 
+            # Last option: check if mudraw is placed in OpenLP base folder
+            if self.mudrawbin == u'' and self.gsbin == u'':
+                application_path = AppLocation.get_directory(AppLocation.AppDir)
+                if os.path.isfile(application_path + u'/../mudraw'):
+                    self.mudrawbin = application_path + u'/../mudraw'
+        else:
+            # for windows we only accept mudraw.exe in the base folder
+            application_path = AppLocation.get_directory(AppLocation.AppDir)
+            if os.path.isfile(application_path + u'/../mudraw.exe'):
+                self.mudrawbin = application_path + u'/../mudraw.exe'
+            
         if self.mudrawbin == u'' and self.gsbin == u'':
             return False
         else:
@@ -155,8 +172,8 @@ quit \n\
         height = 0
         for line in runlog.splitlines():
             try:
-                width = re.search(u'.*Size: x: (\d+), y: \d+.*', line).group(1)
-                height = re.search(u'.*Size: x: \d+, y: (\d+).*', line).group(1)
+                width = re.search(u'.*Size: x: (\d+\.?\d*), y: \d+.*', line).group(1)
+                height = re.search(u'.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line).group(1)
                 break;
             except AttributeError:
                 pass
@@ -164,11 +181,11 @@ quit \n\
         # Calculate the ratio from pdf to screen
         if width > 0 and height > 0:
             width_ratio = size.right() / float(width)
-            heigth_ratio = size.bottom() / float(height)
+            height_ratio = size.bottom() / float(height)
             
             # return the resolution that should be used. 72 is default.
-            if width_ratio > heigth_ratio:
-                return int(heigth_ratio * 72)
+            if width_ratio > height_ratio:
+                return int(height_ratio * 72)
             else:
                 return int(width_ratio * 72)
         else:
