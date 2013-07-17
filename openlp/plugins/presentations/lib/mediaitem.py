@@ -66,7 +66,7 @@ class PresentationMediaItem(MediaManagerItem):
         Registry().register_function(u'mediaitem_presentation_rebuild', self.populate_display_types)
         Registry().register_function(u'mediaitem_suffixes', self.build_file_mask_string)
         # Allow DnD from the desktop
-    #    self.list_view.activateDnD()
+        self.list_view.activateDnD()
 
     def retranslateUi(self):
         """
