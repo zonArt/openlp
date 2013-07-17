@@ -83,7 +83,6 @@ MODULES = [
     'bs4',
     'mako',
     'cherrypy',
-    'migrate',
     'uno',
     'icu',
     'bs4',
