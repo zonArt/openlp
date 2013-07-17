@@ -80,15 +80,15 @@ class PresentationMediaItem(MediaManagerItem):
         """
         Build the list of file extensions to be used in the Open file dialog.
         """
-        file_type_list = u''
+        file_type_string = u''
         for controller in self.controllers:
             if self.controllers[controller].enabled():
                 file_types = self.controllers[controller].supports + self.controllers[controller].also_supports
                 for file_type in file_types:
-                    if file_type.find(file_type) == -1:
-                        file_type_list += u'*.%s ' % file_type
+                    if file_type not in file_type_string:
+                        file_type_string += u'*.%s ' % file_type
                         self.service_manager.supported_suffixes(file_type)
-        self.on_new_file_masks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % file_type_list
+        self.on_new_file_masks = translate('PresentationPlugin.MediaItem', 'Presentations (%s)') % file_type_string
 
     def required_icons(self):
         """
