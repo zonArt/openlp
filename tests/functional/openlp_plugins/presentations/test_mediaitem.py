@@ -66,6 +66,7 @@ class TestMediaItem(TestCase):
             self.media_item.build_file_mask_string()
 
         # THEN: The file mask should be generated.
-        assert self.media_item.on_new_file_masks == u'Presentations (*.odp *.ppt )'
+        assert self.media_item.on_new_file_masks == u'Presentations (*.odp *.ppt )', \
+            u'The file mask should contain the odp and ppt extensions'
 
 
