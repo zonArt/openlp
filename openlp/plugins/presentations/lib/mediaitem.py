@@ -59,7 +59,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.controllers = controllers
         self.icon_path = u'presentations/presentation'
         self.Automatic = u''
-        MediaManagerItem.__init__(self, parent, plugin)
+        super(PresentationMediaItem, self).__init__(parent, plugin)
         self.message_listener = MessageListener(self)
         self.has_search = True
         self.single_service_item = False
