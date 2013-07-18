@@ -52,7 +52,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(ShortcutListForm, self).__init__(parent)
         self.setupUi(self)
         self.changedActions = {}
         self.action_list = ActionList.get_instance()
