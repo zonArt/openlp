@@ -42,7 +42,7 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(ThemeLayoutForm, self).__init__(parent)
         self.setupUi(self)
 
     def exec_(self, image):
