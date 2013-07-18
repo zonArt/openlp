@@ -82,7 +82,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Set up the UI for the bible wizard.
         """
-        OpenLPWizard.setupUi(self, image)
+        super(BibleUpgradeForm, self).setupUi(image)
         Registry().execute(u'openlp_stop_wizard', self.stop_import)
 
     def stop_import(self):
@@ -334,7 +334,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Prepare the UI for the upgrade.
         """
-        OpenLPWizard.pre_wizard(self)
+        super(BibleUpgradeForm, self).pre_wizard()
         self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Starting upgrade...'))
         self.application.process_events()
 
@@ -560,4 +560,4 @@ class BibleUpgradeForm(OpenLPWizard):
             self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
         # Remove temp directory.
         shutil.rmtree(self.temp_dir, True)
-        OpenLPWizard.post_wizard(self)
+        super(BibleUpgradeForm, self).post_wizard()

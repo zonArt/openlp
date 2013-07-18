@@ -67,8 +67,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.review_total_count = 0
         # Used to interrupt ongoing searches when cancel is clicked.
         self.break_search = False
-        OpenLPWizard.__init__(self, Registry().get('main_window'), plugin, u'duplicateSongRemovalWizard',
-            u':/wizards/wizard_duplicateremoval.bmp', False)
+        super(DuplicateSongRemovalForm, self).__init__(Registry().get('main_window'),
+            plugin, u'duplicateSongRemovalWizard', u':/wizards/wizard_duplicateremoval.bmp', False)
         self.setMinimumWidth(730)
 
     def custom_signals(self):
@@ -269,7 +269,7 @@ class DuplicateSongRemovalForm(OpenLPWizard):
             else:
                 self.proceed_to_next_review()
                 return False
-        return OpenLPWizard.validateCurrentPage(self)
+        return super(DuplicateSongRemovalForm, self).validateCurrentPage()
 
     def remove_button_clicked(self, song_review_widget):
         """

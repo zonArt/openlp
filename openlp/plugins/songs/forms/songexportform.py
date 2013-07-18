@@ -75,7 +75,7 @@ class SongExportForm(OpenLPWizard):
         """
         Set up the song wizard UI.
         """
-        OpenLPWizard.setupUi(self, image)
+        super(SongExportForm, self).setupUi(image)
 
     def custom_signals(self):
         """
@@ -239,7 +239,7 @@ class SongExportForm(OpenLPWizard):
         """
         Perform pre export tasks.
         """
-        OpenLPWizard.pre_wizard(self)
+        super(SongExportForm, self).pre_wizard()
         self.progress_label.setText(translate('SongsPlugin.ExportWizardForm', 'Starting export...'))
         self.application.process_events()
 

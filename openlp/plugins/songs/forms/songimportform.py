@@ -60,7 +60,7 @@ class SongImportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        OpenLPWizard.__init__(self, parent, plugin, u'songImportWizard', u':/wizards/wizard_importsong.bmp')
+        super(SongImportForm, self).__init__(parent, plugin, u'songImportWizard', u':/wizards/wizard_importsong.bmp')
         self.clipboard = self.main_window.clipboard
 
     def setupUi(self, image):
@@ -68,7 +68,7 @@ class SongImportForm(OpenLPWizard):
         Set up the song wizard UI.
         """
         self.format_widgets = dict([(song_format, {}) for song_format in SongFormat.get_format_list()])
-        OpenLPWizard.setupUi(self, image)
+        super(SongImportForm, self).setupUi(image)
         self.current_format = SongFormat.OpenLyrics
         self.format_stack.setCurrentIndex(self.current_format)
         self.format_combo_box.currentIndexChanged.connect(self.onCurrentIndexChanged)
@@ -329,7 +329,7 @@ class SongImportForm(OpenLPWizard):
         """
         Perform pre import tasks
         """
-        OpenLPWizard.pre_wizard(self)
+        super(SongImportForm, self).pre_wizard()
         self.progress_label.setText(WizardStrings.StartingImport)
         self.application.process_events()
 
