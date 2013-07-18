@@ -177,7 +177,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         """
         Constructor
         """
-        QtGui.QSyntaxHighlighter.__init__(self, *args)
+        super(Highlighter, self).__init__(*args)
         self.spelling_dictionary = None
 
     def highlightBlock(self, text):
@@ -205,5 +205,5 @@ class SpellAction(QtGui.QAction):
         """
         Constructor
         """
-        QtGui.QAction.__init__(self, *args)
+        super(SpellAction, self).__init__(*args)
         self.triggered.connect(lambda x: self.correct.emit(self.text()))

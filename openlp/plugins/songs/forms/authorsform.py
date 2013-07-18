@@ -42,7 +42,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         Set up the screen and common data
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(AuthorsForm, self).__init__(parent)
         self.setupUi(self)
         self.auto_display_name = False
         self.first_name_edit.textEdited.connect(self.on_first_name_edited)

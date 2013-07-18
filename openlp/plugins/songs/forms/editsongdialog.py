@@ -355,7 +355,7 @@ class SingleColumnTableWidget(QtGui.QTableWidget):
         """
         Constructor
         """
-        QtGui.QTableWidget.__init__(self, parent)
+        super(SingleColumnTableWidget, self).__init__(parent)
         self.horizontalHeader().setVisible(False)
         self.setColumnCount(1)
 
