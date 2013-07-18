@@ -274,7 +274,7 @@ class EasyWorshipSongImport(SongImport):
             return None
         # Format the field depending on the field type
         if field_desc.field_type == FieldType.String:
-            return field.rstrip('\0').decode(self.encoding)
+            return field.rstrip('\0')
         elif field_desc.field_type == FieldType.Int16:
             return field ^ 0x8000
         elif field_desc.field_type == FieldType.Int32:
