@@ -80,9 +80,7 @@ class TestEditCustomForm(TestCase):
         # GIVEN: Mocked methods.
         with patch(u'openlp.plugins.custom.forms.editcustomform.critical_error_message_box') as \
                 mocked_critical_error_message_box:
-            mocked_displayText = MagicMock()
-            mocked_displayText.return_value = u''
-            self.form.title_edit.displayText = mocked_displayText
+            self.form.title_edit.displayText = MagicMock(return_value=u'')
             mocked_setFocus = MagicMock()
             self.form.title_edit.setFocus = mocked_setFocus
 
@@ -101,12 +99,8 @@ class TestEditCustomForm(TestCase):
         # GIVEN: Mocked methods.
         with patch(u'openlp.plugins.custom.forms.editcustomform.critical_error_message_box') as \
                 mocked_critical_error_message_box:
-            mocked_displayText = MagicMock()
-            mocked_displayText.return_value = u'something'
-            self.form.title_edit.displayText = mocked_displayText
-            mocked_count = MagicMock()
-            mocked_count.return_value = 0
-            self.form.slide_list_view.count = mocked_count
+            self.form.title_edit.displayText = MagicMock(return_value=u'something')
+            self.form.slide_list_view.count = MagicMock(return_value=0)
 
             # WHEN: Call the method.
             result = self.form._validate()
