@@ -26,9 +26,9 @@ class TestMediaItem(TestCase):
         Registry().register(u'service_manager', MagicMock())
         Registry().register(u'main_window', MagicMock())
 
-        with patch('openlp.core.lib.mediamanageritem.MediaManagerItem.__init__'),  \
-                patch('openlp.core.lib.mediamanageritem.ListWidgetWithDnD'):
-            self.media_item = PresentationMediaItem(MagicMock(), MagicMock(), MagicMock(), MagicMock())
+        with patch('openlp.plugins.presentations.lib.mediaitem.PresentationMediaItem.__init__') as mocked_init:
+            mocked_init.return_value = None
+            self.media_item = PresentationMediaItem(MagicMock(), MagicMock, MagicMock(), MagicMock())
 
         self.application = QtGui.QApplication.instance()
 
