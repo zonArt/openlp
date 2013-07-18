@@ -45,7 +45,7 @@ class CustomTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'CustomTab')
-        SettingsTab.setupUi(self)
+        super(CustomTab, self).setupUi()
         self.custom_mode_group_box = QtGui.QGroupBox(self.left_column)
         self.custom_mode_group_box.setObjectName(u'custom_mode_group_box')
         self.custom_mode_layout = QtGui.QFormLayout(self.custom_mode_group_box)

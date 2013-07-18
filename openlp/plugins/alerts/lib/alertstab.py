@@ -42,7 +42,7 @@ class AlertsTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        SettingsTab.setupUi(self)
+        super(AlertsTab, self).setupUi()
         self.font_group_box = QtGui.QGroupBox(self.left_column)
         self.font_group_box.setObjectName(u'font_group_box')
         self.font_layout = QtGui.QFormLayout(self.font_group_box)

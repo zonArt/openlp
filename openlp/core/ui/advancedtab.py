@@ -64,7 +64,7 @@ class AdvancedTab(SettingsTab):
         Configure the UI elements for the tab.
         """
         self.setObjectName(u'AdvancedTab')
-        SettingsTab.setupUi(self)
+        super(AdvancedTab, self).setupUi()
         self.ui_group_box = QtGui.QGroupBox(self.left_column)
         self.ui_group_box.setObjectName(u'ui_group_box')
         self.ui_layout = QtGui.QFormLayout(self.ui_group_box)

@@ -42,7 +42,7 @@ class PresentationTab(SettingsTab):
         """
         self.parent = parent
         self.controllers = controllers
-        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        super(PresentationTab, self).__init__(parent, title, visible_title, icon_path)
         self.activated = False
 
     def setupUi(self):
@@ -50,7 +50,7 @@ class PresentationTab(SettingsTab):
         Create the controls for the settings tab
         """
         self.setObjectName(u'PresentationTab')
-        SettingsTab.setupUi(self)
+        super(PresentationTab, self).setupUi()
         self.controllers_group_box = QtGui.QGroupBox(self.left_column)
         self.controllers_group_box.setObjectName(u'controllers_group_box')
         self.controllers_layout = QtGui.QVBoxLayout(self.controllers_group_box)

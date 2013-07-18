@@ -53,7 +53,7 @@ class BiblesTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'BiblesTab')
-        SettingsTab.setupUi(self)
+        super(BiblesTab, self).setupUi()
         self.verse_display_group_box = QtGui.QGroupBox(self.left_column)
         self.verse_display_group_box.setObjectName(u'verse_display_group_box')
         self.verse_display_layout = QtGui.QFormLayout(self.verse_display_group_box)

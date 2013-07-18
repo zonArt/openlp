@@ -55,7 +55,7 @@ class ThemesTab(SettingsTab):
         Set up the UI
         """
         self.setObjectName(u'ThemesTab')
-        SettingsTab.setupUi(self)
+        super(ThemesTab, self).setupUi()
         self.global_group_box = QtGui.QGroupBox(self.left_column)
         self.global_group_box.setObjectName(u'global_group_box')
         self.global_group_box_layout = QtGui.QVBoxLayout(self.global_group_box)

@@ -56,7 +56,7 @@ class GeneralTab(SettingsTab):
         Create the user interface for the general settings tab
         """
         self.setObjectName(u'GeneralTab')
-        SettingsTab.setupUi(self)
+        super(GeneralTab, self).setupUi()
         self.tab_layout.setStretch(1, 1)
         # Monitors
         self.monitor_group_box = QtGui.QGroupBox(self.left_column)

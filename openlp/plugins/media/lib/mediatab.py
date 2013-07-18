@@ -50,7 +50,7 @@ class MediaTab(SettingsTab):
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
-        SettingsTab.setupUi(self)
+        super(MediaTab, self).setupUi()
         self.advanced_group_box = QtGui.QGroupBox(self.left_column)
         self.advanced_group_box.setObjectName(u'advanced_group_box')
         self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)

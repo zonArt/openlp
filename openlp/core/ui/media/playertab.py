@@ -66,7 +66,7 @@ class PlayerTab(SettingsTab):
         Set up the UI
         """
         self.setObjectName(u'MediaTab')
-        SettingsTab.setupUi(self)
+        super(PlayerTab, self).setupUi()
         self.background_color_group_box = QtGui.QGroupBox(self.left_column)
         self.background_color_group_box.setObjectName(u'background_color_group_box')
         self.form_layout = QtGui.QFormLayout(self.background_color_group_box)
