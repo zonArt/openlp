@@ -75,7 +75,8 @@ class BibleUpgradeForm(OpenLPWizard):
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.new_bibles = {}
-        OpenLPWizard.__init__(self, parent, bible_plugin, u'bibleUpgradeWizard', u':/wizards/wizard_importbible.bmp')
+        super(BibleUpgradeForm, self).__init__(
+            parent, bible_plugin, u'bibleUpgradeWizard', u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """

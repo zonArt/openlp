@@ -78,7 +78,8 @@ class BibleImportForm(OpenLPWizard):
         """
         self.manager = manager
         self.web_bible_list = {}
-        OpenLPWizard.__init__(self, parent, bible_plugin, u'bibleImportWizard', u':/wizards/wizard_importbible.bmp')
+        super(BibleImportForm, self).__init__(
+            parent, bible_plugin, u'bibleImportWizard', u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """
