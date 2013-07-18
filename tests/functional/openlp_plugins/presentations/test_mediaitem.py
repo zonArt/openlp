@@ -69,4 +69,3 @@ class TestMediaItem(TestCase):
         assert self.media_item.on_new_file_masks == u'Presentations (*.odp *.ppt )', \
             u'The file mask should contain the odp and ppt extensions'
 
-
