@@ -65,7 +65,7 @@ class Display(QtGui.QGraphicsView):
         Constructor
         """
         if live:
-            super(Display, sef).__init__()
+            super(Display, self).__init__()
             # Overwrite the parent() method.
             self.parent = lambda: parent
         else:
