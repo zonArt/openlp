@@ -46,7 +46,7 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         """
         Do some initialisation stuff
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(AboutForm, self).__init__(parent)
         application_version = get_application_version()
         self.setupUi(self)
         about_text = self.about_text_edit.toPlainText()

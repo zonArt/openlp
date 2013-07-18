@@ -475,7 +475,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         This constructor sets up the interface, the various managers, and the plugins.
         """
-        QtGui.QMainWindow.__init__(self)
+        super(MainWindow, self).__init__()
         Registry().register(u'main_window', self)
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args

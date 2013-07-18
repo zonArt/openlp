@@ -57,7 +57,7 @@ class AdvancedTab(SettingsTab):
         self.data_exists = False
         self.icon_path = u':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
-        SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
+        super(AdvancedTab, self).__init__(parent, u'Advanced', advanced_translated)
 
     def setupUi(self):
         """

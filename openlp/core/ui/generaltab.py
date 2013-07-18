@@ -49,7 +49,7 @@ class GeneralTab(SettingsTab):
         self.screens = ScreenList()
         self.icon_path = u':/icon/openlp-logo-16x16.png'
         general_translated = translate('OpenLP.GeneralTab', 'General')
-        SettingsTab.__init__(self, parent, u'Core', general_translated)
+        super(GeneralTab, self).__init__(parent, u'Core', general_translated)
 
     def setupUi(self):
         """
