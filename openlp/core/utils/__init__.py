@@ -196,7 +196,7 @@ def check_latest_version(current_version):
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
         remote_version = None
         try:
-            remote_version = unicode(urllib2.urlopen(req, None).read()).strip()
+            remote_version = unicode(urllib2.urlopen(req, None).read().decode()).strip()
         except IOError:
             log.exception(u'Failed to download the latest OpenLP version file')
         if remote_version:
