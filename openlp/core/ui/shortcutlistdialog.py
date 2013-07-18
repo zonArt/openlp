@@ -43,7 +43,7 @@ class CaptureShortcutButton(QtGui.QPushButton):
         """
         Constructor
         """
-        QtGui.QPushButton.__init__(self, *args)
+        super(CaptureShortcutButton, self).__init__(*args)
         self.setCheckable(True)
 
     def keyPressEvent(self, event):

@@ -65,7 +65,7 @@ class DisplayController(QtGui.QWidget):
         """
         Set up the general Controller.
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(DisplayController, self).__init__(parent)
         self.is_live = is_live
         self.display = None
         self.controller_type = DisplayControllerType.Plugin
