@@ -44,7 +44,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         Initialise the list widget
         """
-        QtGui.QListWidget.__init__(self, parent)
+        super(ListWidgetWithDnD, self).__init__(parent)
         self.mimeDataText = name
         assert(self.mimeDataText)
 

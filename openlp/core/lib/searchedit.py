@@ -46,7 +46,7 @@ class SearchEdit(QtGui.QLineEdit):
         """
         Constructor.
         """
-        QtGui.QLineEdit.__init__(self, parent)
+        super(SearchEdit, self).__init__(parent)
         self._current_search_type = -1
         self.clear_button = QtGui.QToolButton(self)
         self.clear_button.setIcon(build_icon(u':/system/clear_shortcut.png'))
