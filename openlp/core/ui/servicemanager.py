@@ -295,7 +295,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Sets up the service manager, toolbars, list view, et al.
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(ServiceManager, self).__init__(parent)
         self.active = build_icon(u':/media/auto-start_active.png')
         self.inactive = build_icon(u':/media/auto-start_inactive.png')
         Registry().register(u'service_manager', self)

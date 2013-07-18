@@ -98,15 +98,14 @@ VIDEO_EXT = [
 
 class VlcPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a VLC
-    display.
+    A specialised version of the MediaPlayer class, which provides a VLC display.
     """
 
     def __init__(self, parent):
         """
         Constructor
         """
-        MediaPlayer.__init__(self, parent, u'vlc')
+        super(VlcPlayer, self).__init__(parent, u'vlc')
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
         self.parent = parent

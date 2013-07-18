@@ -44,7 +44,7 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(FirstTimeLanguageForm, self).__init__(parent)
         self.setupUi(self)
         self.qmList = LanguageManager.get_qm_list()
         self.language_combo_box.addItem(u'Autodetect')

@@ -59,7 +59,7 @@ class PlayerTab(SettingsTab):
         self.saved_used_players = None
         self.icon_path = u':/media/multimedia-player.png'
         player_translated = translate('OpenLP.PlayerTab', 'Players')
-        SettingsTab.__init__(self, parent, u'Players', player_translated)
+        super(PlayerTab, self).__init__(parent, u'Players', player_translated)
 
     def setupUi(self):
         """
