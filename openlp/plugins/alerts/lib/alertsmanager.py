@@ -48,7 +48,7 @@ class AlertsManager(QtCore.QObject):
     log.info(u'Alert Manager loaded')
 
     def __init__(self, parent):
-        QtCore.QObject.__init__(self, parent)
+        super(AlertsManager, self).__init__(parent)
         Registry().register(u'alerts_manager', self)
         self.timer_id = 0
         self.alert_list = []

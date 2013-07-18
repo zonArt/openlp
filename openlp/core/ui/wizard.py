@@ -96,7 +96,7 @@ class OpenLPWizard(QtGui.QWizard):
         """
         Constructor
         """
-        QtGui.QWizard.__init__(self, parent)
+        super(OpenLPWizard, self).__init__(parent)
         self.plugin = plugin
         self.with_progress_page = add_progress_page
         self.setObjectName(name)

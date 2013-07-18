@@ -57,7 +57,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Constructor
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(ThemeManager, self).__init__(parent)
         Registry().register(u'theme_manager', self)
         Registry().register_function(u'bootstrap_initialise', self.load_first_time_themes)
         Registry().register_function(u'bootstrap_post_set_up', self._push_themes)

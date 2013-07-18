@@ -61,7 +61,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         """
         Constructor
         """
-        QtGui.QTreeWidget.__init__(self, parent)
+        super(ServiceManagerList, self).__init__(parent)
         self.serviceManager = serviceManager
 
     def keyPressEvent(self, event):
