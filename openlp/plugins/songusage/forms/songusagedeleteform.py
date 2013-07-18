@@ -43,7 +43,7 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         Constructor
         """
         self.manager = manager
-        QtGui.QDialog.__init__(self, parent)
+        super(SongUsageDeleteForm, self).__init__(parent)
         self.setupUi(self)
         self.button_box.clicked.connect(self.on_button_box_clicked)
 
