@@ -47,7 +47,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         """
         Initialise the toolbar.
         """
-        QtGui.QToolBar.__init__(self, parent)
+        super(OpenLPToolbar, self).__init__(parent)
         # useful to be able to reuse button icons...
         self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
