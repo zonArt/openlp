@@ -64,7 +64,7 @@ class SongReviewWidget(QtGui.QWidget):
         ``song``
             The Song which this SongReviewWidget should represent.
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(SongReviewWidget, self).__init__(parent)
         self.song = song
         self.setupUi()
         self.retranslateUi()

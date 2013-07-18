@@ -37,7 +37,7 @@ class PPTViewer(QtGui.QWidget):
     Standalone Test Harness for the pptviewlib library
     """
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        super(PPTViewer, self).__init__(parent)
         self.pptid = -1
         self.setWindowTitle(u'PowerPoint Viewer Test')
 

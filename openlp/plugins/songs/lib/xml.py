@@ -820,7 +820,7 @@ class OpenLyricsError(Exception):
     VerseError = 2
 
     def __init__(self, type, log_message, display_message):
-        Exception.__init__(self)
+        super(OpenLyricsError, self).__init__()
         self.type = type
         self.log_message = log_message
         self.display_message = display_message
