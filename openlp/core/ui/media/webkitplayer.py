@@ -213,7 +213,7 @@ class WebkitPlayer(MediaPlayer):
         """
         Constructor
         """
-        MediaPlayer.__init__(self, parent, u'webkit')
+        super(WebkitPlayer, self).__init__(parent, u'webkit')
         self.original_name = u'WebKit'
         self.display_name = u'&WebKit'
         self.parent = parent

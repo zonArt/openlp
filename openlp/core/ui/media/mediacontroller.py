@@ -53,7 +53,7 @@ class MediaSlider(QtGui.QSlider):
         """
         Constructor
         """
-        QtGui.QSlider.__init__(self, direction)
+        super(MediaSlider, self).__init__(direction)
         self.manager = manager
         self.controller = controller
 

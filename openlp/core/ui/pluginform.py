@@ -48,7 +48,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(PluginForm, self).__init__(parent)
         self.activePlugin = None
         self.programaticChange = False
         self.setupUi(self)

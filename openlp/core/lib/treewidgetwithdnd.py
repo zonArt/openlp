@@ -44,7 +44,7 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         """
         Initialise the tree widget
         """
-        QtGui.QTreeWidget.__init__(self, parent)
+        super(TreeWidgetWithDnD, self).__init__(parent)
         self.mimeDataText = name
         self.allow_internal_dnd = False
         self.header().close()

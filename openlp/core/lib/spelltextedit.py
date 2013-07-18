@@ -60,7 +60,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         Constructor.
         """
         global ENCHANT_AVAILABLE
-        QtGui.QPlainTextEdit.__init__(self, parent)
+        super(SpellTextEdit, self).__init__(parent)
         self.formatting_tags_allowed = formatting_tags_allowed
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:

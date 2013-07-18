@@ -58,7 +58,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         ``parent``
             The QWidget-derived parent of the wizard.
         """
-        QtGui.QWizard.__init__(self, parent)
+        super(ThemeForm, self).__init__(parent)
         self.setupUi(self)
         self.registerFields()
         self.updateThemeAllowed = True

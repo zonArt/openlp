@@ -87,7 +87,7 @@ class PhononPlayer(MediaPlayer):
         """
         Constructor
         """
-        MediaPlayer.__init__(self, parent, u'phonon')
+        super(PhononPlayer, self).__init__(parent, u'phonon')
         self.original_name = u'Phonon'
         self.display_name = u'&Phonon'
         self.parent = parent

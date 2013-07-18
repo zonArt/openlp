@@ -51,7 +51,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Registry().register(u'settings_form', self)
         Registry().register_function(u'bootstrap_post_set_up', self.post_set_up)
-        QtGui.QDialog.__init__(self, parent)
+        super(SettingsForm, self).__init__(parent)
         self.processes = []
         self.setupUi(self)
 
