@@ -51,7 +51,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(EditBibleForm, self).__init__(parent)
         self.media_item = media_item
         self.book_names = BibleStrings().BookNames
         self.setupUi(self)

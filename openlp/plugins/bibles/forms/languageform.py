@@ -54,7 +54,7 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
         """
         Constructor
         """
-        QDialog.__init__(self, parent)
+        super(LanguageForm, self).__init__(parent)
         self.setupUi(self)
 
     def exec_(self, bible_name):

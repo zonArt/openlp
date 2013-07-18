@@ -46,7 +46,7 @@ class MediaTab(SettingsTab):
     """
     def __init__(self, parent, title, visible_title, icon_path):
         self.parent = parent
-        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        super(MediaTab, self).__init__(parent, title, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'MediaTab')
