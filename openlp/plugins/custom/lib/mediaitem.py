@@ -57,7 +57,7 @@ class CustomMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin):
         self.icon_path = u'custom/custom'
-        MediaManagerItem.__init__(self, parent, plugin)
+        super(CustomMediaItem, self).__init__(parent, plugin)
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.single_service_item = False
         self.quick_preview_allowed = True
