@@ -65,11 +65,11 @@ class Display(QtGui.QGraphicsView):
         Constructor
         """
         if live:
-            QtGui.QGraphicsView.__init__(self)
+            super(Display, sef).__init__()
             # Overwrite the parent() method.
             self.parent = lambda: parent
         else:
-            QtGui.QGraphicsView.__init__(self, parent)
+            super(Display, self).__init__(parent)
         self.is_live = live
         self.controller = controller
         self.screen = {}
@@ -126,7 +126,7 @@ class MainDisplay(Display):
         """
         Constructor
         """
-        Display.__init__(self, parent, live, controller)
+        super(MainDisplay, self).__init__(parent, live, controller)
         self.screens = ScreenList()
         self.rebuild_css = False
         self.hide_mode = None
@@ -536,7 +536,7 @@ class AudioPlayer(QtCore.QObject):
             The parent widget.
         """
         log.debug(u'AudioPlayer Initialisation started')
-        QtCore.QObject.__init__(self, parent)
+        super(AudioPlayer, self).__init__(parent)
         self.currentIndex = -1
         self.playlist = []
         self.repeat = False
