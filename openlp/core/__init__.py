@@ -185,7 +185,7 @@ class OpenLP(QtGui.QApplication):
         """
         log.exception(''.join(format_exception(exctype, value, traceback)))
         if not hasattr(self, u'exception_form'):
-            self.exception_form = ExceptionForm(self.main_window)
+            self.exception_form = ExceptionForm()
         self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exctype, value, traceback)))
         self.set_normal_cursor()
         self.exception_form.exec_()
