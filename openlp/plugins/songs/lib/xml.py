@@ -592,8 +592,10 @@ class OpenLyrics(object):
             found_tags.append(openlp_tag)
         existing_tag_ids = [tag[u'start tag'] for tag in FormattingTags.get_html_tags()]
         new_tags = [tag for tag in found_tags if tag[u'start tag'] not in existing_tag_ids]
-        FormattingTags.add_html_tags(new_tags)
-        FormattingTags.save_html_tags()
+        # Do not save an empty list.
+        if new_tags:
+            FormattingTags.add_html_tags(new_tags)
+            FormattingTags.save_html_tags()
 
     def _process_lines_mixed_content(self, element, newlines=True):
         """
