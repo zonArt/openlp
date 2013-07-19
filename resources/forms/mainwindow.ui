@@ -38,12 +38,6 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QWidget" native="1" name="PreviewPane" >
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>0</height>
-        </size>
-       </property>
        <layout class="QVBoxLayout" name="PreviewPaneLayout" >
         <property name="spacing" >
          <number>0</number>
@@ -84,12 +78,6 @@
        </layout>
       </widget>
       <widget class="QWidget" native="1" name="LivePane" >
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>0</height>
-        </size>
-       </property>
        <layout class="QVBoxLayout" name="LivePaneLayout" >
         <property name="spacing" >
          <number>0</number>
