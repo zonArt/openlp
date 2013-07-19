@@ -107,6 +107,7 @@ def get_application_version():
         # Get the revision of this tree.
         bzr = Popen((u'bzr', u'revno'), stdout=PIPE)
         tree_revision, error = bzr.communicate()
+        tree_revision = tree_revision.decode()
         code = bzr.wait()
         if code != 0:
             raise Exception(u'Error running bzr log')
@@ -117,7 +118,7 @@ def get_application_version():
         code = bzr.wait()
         if code != 0:
             raise Exception(u'Error running bzr tags')
-        tags = output.splitlines()
+        tags = map(bytes.decode, output.splitlines())
         if not tags:
             tag_version = u'0.0.0'
             tag_revision = u'0'
