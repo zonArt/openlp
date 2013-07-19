@@ -71,7 +71,7 @@ class OpenLyricsExport(object):
             self.parent.increment_progress_bar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
                 song.title)
             xml = openLyrics.song_to_xml(song)
-            tree = etree.ElementTree(etree.fromstring(xml))
+            tree = etree.ElementTree(etree.fromstring(xml.encode()))
             filename = u'%s (%s)' % (song.title, u', '.join([author.display_name for author in song.authors]))
             filename = clean_filename(filename)
             # Ensure the filename isn't too long for some filesystems
