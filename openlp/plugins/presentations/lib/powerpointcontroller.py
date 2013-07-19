@@ -58,7 +58,7 @@ class PowerpointController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Powerpoint', PowerpointDocument)
+        super(PowerpointController, self).__init__(plugin, u'Powerpoint', PowerpointDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
 
@@ -114,7 +114,7 @@ class PowerpointDocument(PresentationDocument):
         Constructor, store information about the file and initialise.
         """
         log.debug(u'Init Presentation Powerpoint')
-        PresentationDocument.__init__(self, controller, presentation)
+        super(PowerpointDocument, self).__init__(controller, presentation)
         self.presentation = None
 
     def load_presentation(self):
