@@ -247,6 +247,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         self.send_report_button.setEnabled(state)
 
     def _pyuno_import(self):
+        """
+        Added here to define only when the form is actioned. The uno interface spits out lots of exception messages
+        if the import is at a file level.  If uno import is changed this could be reverted.
+        This happens in other classes but there it is localised here it is across the whole system and hides real
+        errors.
+        """
         try:
             import uno
             arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
