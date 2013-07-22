@@ -170,15 +170,14 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
                 invalid_verses.append(order_names[count])
         if invalid_verses:
             valid = create_separated_list(verse_names)
-            invalid = u', '.join(invalid_verses) if len(invalid_verses) > 1 else invalid_verses[0]
             if len(invalid_verses) > 1:
-                msg = translate('SongsPlugin.EditSongForm', 'There are no verses corresponding to "%(invalid)s".\
-Valid entries are %(valid)s.\nPlease enter the verses seperated by spaces.') %{'invalid' : u', '.join(invalid_verses),
-                                                                                'valid' : valid}
+                msg = translate('SongsPlugin.EditSongForm', 'There are no verses corresponding to "%(invalid)s".'
+                    'Valid entries are %(valid)s.\nPlease enter the verses seperated by spaces.') \
+                    % {'invalid' : u', '.join(invalid_verses), 'valid' : valid}
             else:
-                msg = translate('SongsPlugin.EditSongForm', 'There is no verse corresponding to "%(invalid)s".\
-Valid entries are %(valid)s.\nPlease enter the verses seperated by spaces.') %{'invalid' : invalid_verses[0],
-                                                                                'valid' : valid}
+                msg = translate('SongsPlugin.EditSongForm', 'There is no verse corresponding to "%(invalid)s".'
+                    'Valid entries are %(valid)s.\nPlease enter the verses seperated by spaces.') \
+                    % {'invalid' : invalid_verses[0], 'valid' : valid}
             critical_error_message_box(title=translate('SongsPlugin.EditSongForm', 'Invalid Verse Order'),
                                        message=msg)
         return len(invalid_verses) == 0
