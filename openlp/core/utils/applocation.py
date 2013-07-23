@@ -53,27 +53,25 @@ log = logging.getLogger(__name__)
 
 class AppLocation(object):
     """
-    The :class:`AppLocation` class is a static class which retrieves a
-    directory based on the directory type.
+    The :class:`AppLocation` class is a static class which retrieves a directory based on the directory type.
     """
     AppDir = 1
-    ConfigDir = 2
-    DataDir = 3
-    PluginsDir = 4
-    VersionDir = 5
-    CacheDir = 6
-    LanguageDir = 7
+    DataDir = 2
+    PluginsDir = 3
+    VersionDir = 4
+    CacheDir = 5
+    LanguageDir = 6
 
     # Base path where data/config/cache dir is located
     BaseDir = None
 
     @staticmethod
-    def get_directory(dir_type=1):
+    def get_directory(dir_type=AppDir):
         """
         Return the appropriate directory according to the directory type.
 
         ``dir_type``
-            The directory type you want, for instance the data directory.
+            The directory type you want, for instance the data directory. Default *AppLocation.AppDir*
         """
         if dir_type == AppLocation.AppDir:
             return _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
@@ -161,16 +159,13 @@ def _get_os_dir_path(dir_type):
         return os.path.join(unicode(os.getenv(u'HOME'), encoding), u'Library', u'Application Support', u'openlp')
     else:
         if dir_type == AppLocation.LanguageDir:
-            prefixes = [u'/usr/local', u'/usr']
-            for prefix in prefixes:
+            for prefix in [u'/usr/local', u'/usr']:
                 directory = os.path.join(prefix, u'share', u'openlp')
                 if os.path.exists(directory):
                     return directory
             return os.path.join(u'/usr', u'share', u'openlp')
         if XDG_BASE_AVAILABLE:
-            if dir_type == AppLocation.ConfigDir:
-                return os.path.join(unicode(BaseDirectory.xdg_config_home, encoding), u'openlp')
-            elif dir_type == AppLocation.DataDir:
+            if dir_type == AppLocation.DataDir:
                 return os.path.join(unicode(BaseDirectory.xdg_data_home, encoding), u'openlp')
             elif dir_type == AppLocation.CacheDir:
                 return os.path.join(unicode(BaseDirectory.xdg_cache_home, encoding), u'openlp')

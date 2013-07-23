@@ -30,6 +30,7 @@
 Provide the generic plugin functionality for OpenLP plugins.
 """
 import logging
+import os
 
 from PyQt4 import QtCore
 
@@ -307,12 +308,12 @@ class Plugin(QtCore.QObject):
         Perform tasks on application startup
         """
         # FIXME: Remove after 2.2 release.
-        # This is needed to load the list of images/media/presentation from the config saved
-        # before the settings rewrite.
+        # This is needed to load the list of media/presentation from the config saved before the settings rewrite.
         if self.media_item_class is not None and self.name != u'images':
             loaded_list = Settings().get_files_from_config(self)
             # Now save the list to the config using our Settings class.
-            Settings().setValue(u'%s/%s files' % (self.settings_section, self.name), loaded_list)
+            if loaded_list:
+                Settings().setValue(u'%s/%s files' % (self.settings_section, self.name), loaded_list)
 
     def uses_theme(self, theme):
         """
@@ -424,8 +425,11 @@ class Plugin(QtCore.QObject):
         """
         Adds the openlp to the class dynamically
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == u'nt':
+            return Registry().get(u'application')
+        else:
+            if not hasattr(self, u'_application'):
+                self._application = Registry().get(u'application')
+            return self._application
 
     application = property(_get_application)

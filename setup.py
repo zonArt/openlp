@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -175,6 +175,8 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     zip_safe=False,
     install_requires=[
         # -*- Extra requirements: -*-
+        'sqlalchemy',
+        'alembic'
     ],
     entry_points="""
     # -*- Entry points: -*-

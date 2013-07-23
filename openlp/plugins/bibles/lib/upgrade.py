@@ -37,28 +37,13 @@ __version__ = 1
 log = logging.getLogger(__name__)
 
 
-def upgrade_setup(metadata):
-    """
-    Set up the latest revision all tables, with reflection, needed for the
-    upgrade process. If you want to drop a table, you need to remove it from
-    here, and add it to your upgrade function.
-    """
-    # Don't define the "metadata" table, as the upgrade mechanism already
-    # defines it.
-    tables = {
-        u'book': Table(u'book', metadata, autoload=True),
-        u'verse': Table(u'verse', metadata, autoload=True)
-    }
-    return tables
-
-
-def upgrade_1(session, metadata, tables):
+def upgrade_1(session, metadata):
     """
     Version 1 upgrade.
 
     This upgrade renames a number of keys to a single naming convention.
     """
-    metadata_table = metadata.tables[u'metadata']
+    metadata_table = Table(u'metadata', metadata, autoload=True)
     # Copy "Version" to "name" ("version" used by upgrade system)
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
     session.execute(insert(metadata_table).values(
