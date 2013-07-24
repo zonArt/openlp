@@ -224,7 +224,7 @@ class FoilPresenter(object):
         song.search_lyrics = u''
         song.verse_order = u''
         song.search_title = u''
-        self.skip_song = False
+        self.save_song = False
         # Because "text" seems to be an reserved word, we have to recompile it.
         xml = re.compile(u'<text>').sub(u'<text_>', xml)
         xml = re.compile(u'</text>').sub(u'</text_>', xml)
@@ -238,7 +238,7 @@ class FoilPresenter(object):
         self._process_authors(song_xml, song)
         self._process_songbooks(song_xml, song)
         self._process_topics(song_xml, song)
-        if not self.skip_song:
+        if not self.save_song:
             clean_song(self.manager, song)
             self.manager.save_object(song)
 
@@ -427,7 +427,7 @@ class FoilPresenter(object):
             self.importer.logError(self._child(foilpresenterfolie.titel),
                 unicode(translate('SongsPlugin.FoilPresenterSongImport',
                 'Invalid Foilpresenter song file. No verses found.')))
-            self.skip_song = True
+            self.save_song = True
             return
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_) if hasattr(strophe, u'text_') else u''
