@@ -71,6 +71,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.gradientStartButton.clicked.connect(self.onGradientStartButtonClicked)
         self.gradientEndButton.clicked.connect(self.onGradientEndButtonClicked)
         self.imageBrowseButton.clicked.connect(self.onImageBrowseButtonClicked)
+        self.imageFileEdit.editingFinished.connect(self.onImageFileEditEditingFinished)
         self.mainColorButton.clicked.connect(self.onMainColorButtonClicked)
         self.outlineColorButton.clicked.connect(self.onOutlineColorButtonClicked)
         self.shadowColorButton.clicked.connect(self.onShadowColorButtonClicked)
@@ -440,6 +441,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if filename:
             self.theme.background_filename = unicode(filename)
         self.setBackgroundPageValues()
+
+    def onImageFileEditEditingFinished(self):
+        """
+        Background image path edited
+        """
+        self.theme.background_filename = unicode(self.imageFileEdit.text())
 
     def onMainColorButtonClicked(self):
         """
