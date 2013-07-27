@@ -244,45 +244,100 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.list_view.selectedItems()
             if len(items) > 1:
                 return False
-        service_item.processor = self.display_type_combo_box.currentText()
-        service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
+        
+        filename = items[0].data(QtCore.Qt.UserRole)
+        file_type = os.path.splitext(filename)[1][1:]
         if not self.display_type_combo_box.currentText():
             return False
-        for bitem in items:
-            filename = bitem.data(QtCore.Qt.UserRole)
-            (path, name) = os.path.split(filename)
-            service_item.title = name
-            if os.path.exists(filename):
-                if service_item.processor == self.Automatic:
-                    service_item.processor = self.findControllerByType(filename)
-                    if not service_item.processor:
+
+        service_item.processor = self.display_type_combo_box.currentText()
+        
+        if context == ServiceItemContext.Live and (file_type == u'pdf' or file_type == u'xps'):
+            service_item.add_capability(ItemCapabilities.CanMaintain)
+            service_item.add_capability(ItemCapabilities.CanPreview)
+            service_item.add_capability(ItemCapabilities.CanLoop)
+            service_item.add_capability(ItemCapabilities.CanAppend)
+            # force a nonexistent theme
+            service_item.theme = -1
+            
+            # Why the loop when we above return False if len(items) is > 1?
+            for bitem in items:
+                filename = bitem.data(QtCore.Qt.UserRole)
+                (path, name) = os.path.split(filename)
+                service_item.title = name
+                if os.path.exists(filename):
+                    if service_item.processor == self.Automatic:
+                        service_item.processor = self.findControllerByType(filename)
+                        if not service_item.processor:
+                            return False
+                    controller = self.controllers[service_item.processor]
+                    #service_item.processor = None
+                    doc = controller.add_document(filename)
+                    if doc.get_thumbnail_path(1, True) is None:
+                        doc.load_presentation()
+                    i = 1
+                    imagefile = u'mainslide%03d.png' % i
+                    img = os.path.join(doc.get_temp_folder(), imagefile)
+                    if os.path.isfile(img):
+                        while os.path.isfile(img):
+                            service_item.add_from_image(img, name)
+                            i += 1
+                            imagefile = u'mainslide%03d.png' % i
+                            img = os.path.join(doc.get_temp_folder(), imagefile)
+                        doc.close_presentation()
+                        return True
+                    else:
+                        # File is no longer present
+                        if not remote:
+                            critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
+                                translate('PresentationPlugin.MediaItem',
+                                    'The presentation %s is incomplete, please reload.') % filename)
                         return False
-                controller = self.controllers[service_item.processor]
-                doc = controller.add_document(filename)
-                if doc.get_thumbnail_path(1, True) is None:
-                    doc.load_presentation()
-                i = 1
-                img = doc.get_thumbnail_path(i, True)
-                if img:
-                    while img:
-                        service_item.add_from_command(path, name, img)
-                        i += 1
-                        img = doc.get_thumbnail_path(i, True)
-                    doc.close_presentation()
-                    return True
                 else:
                     # File is no longer present
                     if not remote:
                         critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
-                            translate('PresentationPlugin.MediaItem',
-                                'The presentation %s is incomplete, please reload.') % filename)
+                            translate('PresentationPlugin.MediaItem', 'The presentation %s no longer exists.') % filename)
                     return False
-            else:
-                # File is no longer present
-                if not remote:
-                    critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
-                        translate('PresentationPlugin.MediaItem', 'The presentation %s no longer exists.') % filename)
-                return False
+        else:
+            service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
+
+            # Why the loop when we above return False if len(items) is > 1?
+            for bitem in items:
+                filename = bitem.data(QtCore.Qt.UserRole)
+                (path, name) = os.path.split(filename)
+                service_item.title = name
+                if os.path.exists(filename):
+                    if service_item.processor == self.Automatic:
+                        service_item.processor = self.findControllerByType(filename)
+                        if not service_item.processor:
+                            return False
+                    controller = self.controllers[service_item.processor]
+                    doc = controller.add_document(filename)
+                    if doc.get_thumbnail_path(1, True) is None:
+                        doc.load_presentation()
+                    i = 1
+                    img = doc.get_thumbnail_path(i, True)
+                    if img:
+                        while img:
+                            service_item.add_from_command(path, name, img)
+                            i += 1
+                            img = doc.get_thumbnail_path(i, True)
+                        doc.close_presentation()
+                        return True
+                    else:
+                        # File is no longer present
+                        if not remote:
+                            critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
+                                translate('PresentationPlugin.MediaItem',
+                                    'The presentation %s is incomplete, please reload.') % filename)
+                        return False
+                else:
+                    # File is no longer present
+                    if not remote:
+                        critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
+                            translate('PresentationPlugin.MediaItem', 'The presentation %s no longer exists.') % filename)
+                    return False
 
     def findControllerByType(self, filename):
         """

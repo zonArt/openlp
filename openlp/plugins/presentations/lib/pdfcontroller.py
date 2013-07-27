@@ -60,7 +60,6 @@ class PdfController(PresentationController):
         self.gsbin = u''
         if self.check_installed() and self.mudrawbin != u'':
             self.also_supports = [u'xps']
-        self.viewer = None
 
     def check_available(self):
         """
@@ -74,7 +73,6 @@ class PdfController(PresentationController):
         Check the viewer is installed.
         """
         application_path = AppLocation.get_directory(AppLocation.AppDir)
-        print application_path
         log.debug(u'check_installed Pdf')
         if os.name != u'nt':
             # First try to find mupdf
@@ -105,30 +103,19 @@ class PdfController(PresentationController):
             return False
         else:
             return True
-
-    def start_process(self):
-        log.debug(u'start_process pdf')
-        # Setup viewer
-        try:
-            size = ScreenList().current[u'size']
-            self.viewer = PdfViewer(size)
-        except Exception as e: 
-            log.debug(e)
-            
         
     def kill(self):
         """
         Called at system exit to clean up any running presentations
         """
         log.debug(u'Kill pdfviewer')
-        self.viewer.close()
         while self.docs:
             self.docs[0].close_presentation()
 
 
 class PdfDocument(PresentationDocument):
     """
-    Class which holds information and controls a single presentation.
+    Class which holds information of a single presentation.
     """
     def __init__(self, controller, presentation):
         """
@@ -142,10 +129,12 @@ class PdfDocument(PresentationDocument):
         self.image_files = []
         self.num_pages = -1
 
-    # Only used when using ghostscript
-    # Ghostscript can't scale automaticly while keeping aspect like mupdf, so we need
-    # to get the ratio bewteen the screen size and the PDF to scale
     def gs_get_resolution(self,  size):
+        """ 
+        Only used when using ghostscript
+        Ghostscript can't scale automaticly while keeping aspect like mupdf, so we need
+        to get the ratio bewteen the screen size and the PDF to scale
+        """
         # Use a postscript script to get size of the pdf. It is assumed that all pages have same size
         postscript = u'%!PS \n\
 () = \n\
@@ -198,11 +187,11 @@ quit \n\
         log.debug(u'load_presentation pdf')
         
         # Check if the images has already been created, and if yes load them
-        if os.path.isfile(self.get_temp_folder() + u'/mainslide001.png'):
+        if os.path.isfile(os.path.join(self.get_temp_folder(), u'mainslide001.png')):
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
-                if os.path.isfile(self.get_temp_folder() + u'/' + fn):
-                    self.image_files.append(self.get_temp_folder()+ u'/' + fn)
+                if os.path.isfile(os.path.join(self.get_temp_folder(),  fn)):
+                    self.image_files.append(os.path.join(self.get_temp_folder(), fn))
             self.num_pages = len(self.image_files)
             return True
         
@@ -213,14 +202,14 @@ quit \n\
             if not os.path.isdir(self.get_temp_folder()):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin != u'':
-                runlog = check_output([self.controller.mudrawbin, u'-w', str(size.right()), u'-h', str(size.bottom()), u'-o', self.get_temp_folder() + u'/mainslide%03d.png', self.filepath])
+                runlog = check_output([self.controller.mudrawbin, u'-w', str(size.right()), u'-h', str(size.bottom()), u'-o', os.path.join(self.get_temp_folder(), u'mainslide%03d.png'), self.filepath])
             elif self.controller.gsbin != u'':
                 resolution = self.gs_get_resolution(size)
-                runlog = check_output([self.controller.gsbin, u'-dSAFER', u'-dNOPAUSE', u'-dBATCH', u'-sDEVICE=png16m', u'-r' + str(resolution), u'-dTextAlphaBits=4', u'-dGraphicsAlphaBits=4', u'-sOutputFile=' + self.get_temp_folder() + u'/mainslide%03d.png', self.filepath])
+                runlog = check_output([self.controller.gsbin, u'-dSAFER', u'-dNOPAUSE', u'-dBATCH', u'-sDEVICE=png16m', u'-r' + str(resolution), u'-dTextAlphaBits=4', u'-dGraphicsAlphaBits=4', u'-sOutputFile=' + os.path.join(self.get_temp_folder(), u'mainslide%03d.png'), self.filepath])
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
-                if os.path.isfile(self.get_temp_folder() + u'/' + fn):
-                    self.image_files.append(self.get_temp_folder()+ u'/' + fn)
+                if os.path.isfile(os.path.join(self.get_temp_folder(), fn)):
+                    self.image_files.append(os.path.join(self.get_temp_folder(), fn))
         except Exception as e: 
             log.debug(e)
             log.debug(runlog)
@@ -253,7 +242,6 @@ quit \n\
         """
         log.debug(u'close_presentation pdf')
         self.controller.remove_doc(self)
-        # TODO
         
     def is_loaded(self):
         """
@@ -271,174 +259,3 @@ quit \n\
         log.debug(u'is_active pdf')
         return self.is_loaded() and not self.hidden
 
-    def blank_screen(self):
-        """
-        Blanks the screen.
-        """
-        log.debug(u'blank_screen pdf')
-        self.blanked = True
-        self.controller.viewer.blank()
-
-    def unblank_screen(self):
-        """
-        Unblanks (restores) the presentation.
-        """
-        log.debug(u'unblank_screen pdf')
-        self.blanked = False
-        self.controller.viewer.unblank()
-
-    def is_blank(self):
-        """
-        Returns true if screen is blank.
-        """
-        log.debug(u'is blank pdf')
-        return self.blanked
-
-    def stop_presentation(self):
-        """
-        Stops the current presentation and hides the output.
-        """
-        log.debug(u'stop_presentation pdf')
-        self.hidden = True
-        self.controller.viewer.stop()
-
-    def start_presentation(self):
-        """
-        Starts a presentation from the beginning.
-        """
-        log.debug(u'start_presentation pdf')
-        if self.hidden:
-            self.hidden = False
-        self.controller.viewer.start(self.image_files)
-
-    def get_slide_number(self):
-        """
-        Return the current slide number on the screen, from 1.
-        """
-        log.debug(u'get_slide_number pdf')
-        return self.controller.viewer.get_current_page() + 1
-
-    def get_slide_count(self):
-        """
-        Returns total number of slides.
-        """
-        log.debug(u'get_slide_count pdf')
-        return self.num_pages
-
-    def goto_slide(self, slideno):
-        """
-        Moves to a specific slide in the presentation.
-        """
-        log.debug(u'goto_slide pdf' + str(slideno))
-        self.controller.viewer.show_page(slideno - 1)
-        # TODO
-
-    def next_step(self):
-        """
-        Triggers the next effect of slide on the running presentation.
-        """
-        log.debug(u'next_step pdf')
-        self.controller.viewer.next_page()
-
-    def previous_step(self):
-        """
-        Triggers the previous slide on the running presentation.
-        """
-        log.debug(u'previous_step pdf')
-        self.controller.viewer.previous_page()
-
-
-class PdfViewer(QtGui.QWidget):
-    def __init__(self, rect):
-        log.debug(u'initialised pdf viewer')
-        QtGui.QWidget.__init__(self, None)
-        self.setWindowTitle("PDF Viewer")
-        p = QtGui.QPalette()
-        p.setColor(QtGui.QPalette.Background, QtCore.Qt.black);
-        self.setPalette(p)
-        self.setGeometry(rect) # QtGui.QApplication.desktop().screenGeometry())
-        self.hide() 
-        self.num_pages = 0
-        self.pdf_images = []
-        self.image_files = []
-        self.is_blanked = False
-        self.current_page = 0
-
-    def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Down:
-            self.next_page()
-        elif event.key() == QtCore.Qt.Key_Up:
-            self.previous_page()
-        elif event.key() == QtCore.Qt.Key_Escape:
-            self.stop()
-
-    def paintEvent(self, event):
-        if self.is_blanked:
-            return
-        img = self.get_image(self.current_page)
-        if img is None:
-            return
-        x = (self.frameSize().width() - img.width()) / 2
-        y = (self.frameSize().height() - img.height()) / 2
-        painter = QtGui.QPainter(self)
-        painter.drawImage(x, y, img, 0, 0, 0, 0)
-
-    def display(self):
-        self.update()
-        self.cache_image(self.current_page + 1)
-
-    def start(self, images):
-        log.debug(u'start pdfviewer')
-        self.image_files = images
-        self.num_pages = len(self.image_files)
-        self.pdf_images = [None for i in range(self.num_pages)]
-        self.showFullScreen()
-        self.show()
-
-    def stop(self):
-        log.debug(u'stop pdfviewer')
-        self.hide()
-
-    def close(self):
-        log.debug(u'close pdfviewer')
-        self.stop()
-        self.pdf_images = None
-        self.image_files = None
-    
-    def blank(self):
-        self.is_blanked = True
-        self.update()
-
-    def unblank(self):
-        self.is_blanked = False
-        self.update()
-
-    def next_page(self):
-        if self.current_page + 1 < self.num_pages:
-            self.current_page += 1
-            self.display()
-
-    def previous_page(self):
-        if self.current_page > 0:
-            self.current_page -= 1
-            self.display()
-
-    def show_page(self, idx):
-        if idx < self.num_pages:
-            self.current_page = idx
-            self.display()
-
-    def cache_image(self, idx):        
-        if idx >= self.num_pages:
-            return
-        if self.image_files[idx] is None:
-            return
-        img = QtGui.QImage(self.image_files[idx])
-        self.pdf_images[idx] = img
-   
-    def get_image(self, idx):
-        self.cache_image(idx)
-        return self.pdf_images[idx]
-
-    def get_current_page(self):
-        return self.current_page
