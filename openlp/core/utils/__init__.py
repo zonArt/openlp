@@ -38,7 +38,6 @@ import re
 from subprocess import Popen, PIPE
 import sys
 import urllib2
-import icu
 
 from PyQt4 import QtGui, QtCore
 
@@ -403,6 +402,7 @@ def get_locale_key(string):
     if os.name == 'nt':
         global ICU_COLLATOR
         if ICU_COLLATOR is None:
+            import icu
             from languagemanager import LanguageManager
             language = LanguageManager.get_language()
             icu_locale = icu.Locale(language)

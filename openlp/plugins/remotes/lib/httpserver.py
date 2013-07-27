@@ -127,7 +127,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte
 from openlp.core.utils import AppLocation, translate
 
-from cherrypy._cpcompat import sha, ntob
+from hashlib import sha1
 
 log = logging.getLogger(__name__)
 
@@ -137,7 +137,7 @@ def make_sha_hash(password):
     Create an encrypted password for the given password.
     """
     log.debug("make_sha_hash")
-    return sha(ntob(password)).hexdigest()
+    return sha1(password.encode()).hexdigest()
 
 
 def fetch_password(username):
