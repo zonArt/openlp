@@ -96,6 +96,7 @@ import os
 
 from lxml import etree, objectify
 
+from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
@@ -115,7 +116,7 @@ class FoilPresenterImport(SongImport):
         """
         log.debug(u'initialise FoilPresenterImport')
         SongImport.__init__(self, manager, **kwargs)
-        self.FoilPresenter = FoilPresenter(self.manager)
+        self.FoilPresenter = FoilPresenter(self.manager, self)
 
     def doImport(self):
         """
@@ -201,8 +202,9 @@ class FoilPresenter(object):
         <copyright> tag.
 
     """
-    def __init__(self, manager):
+    def __init__(self, manager, importer):
         self.manager = manager
+        self.importer = importer
 
     def xml_to_song(self, xml):
         """
@@ -221,22 +223,23 @@ class FoilPresenter(object):
         song.search_lyrics = u''
         song.verse_order = u''
         song.search_title = u''
-        # Because "text" seems to be an reserverd word, we have to recompile it.
+        self.save_song = True
+        # Because "text" seems to be an reserved word, we have to recompile it.
         xml = re.compile(u'<text>').sub(u'<text_>', xml)
         xml = re.compile(u'</text>').sub(u'</text_>', xml)
         song_xml = objectify.fromstring(xml)
-        foilpresenterfolie = song_xml
-        self._process_copyright(foilpresenterfolie, song)
-        self._process_cclinumber(foilpresenterfolie, song)
-        self._process_titles(foilpresenterfolie, song)
+        self._process_copyright(song_xml, song)
+        self._process_cclinumber(song_xml, song)
+        self._process_titles(song_xml, song)
         # The verse order is processed with the lyrics!
-        self._process_lyrics(foilpresenterfolie, song)
-        self._process_comments(foilpresenterfolie, song)
-        self._process_authors(foilpresenterfolie, song)
-        self._process_songbooks(foilpresenterfolie, song)
-        self._process_topics(foilpresenterfolie, song)
-        clean_song(self.manager, song)
-        self.manager.save_object(song)
+        self._process_lyrics(song_xml, song)
+        self._process_comments(song_xml, song)
+        self._process_authors(song_xml, song)
+        self._process_songbooks(song_xml, song)
+        self._process_topics(song_xml, song)
+        if self.save_song:
+            clean_song(self.manager, song)
+            self.manager.save_object(song)
 
     def _child(self, element):
         """
@@ -419,6 +422,12 @@ class FoilPresenter(object):
             VerseType.tags[VerseType.Intro]: 1,
             VerseType.tags[VerseType.PreChorus]: 1
         }
+        if not hasattr(foilpresenterfolie.strophen, u'strophe'):
+            self.importer.logError(self._child(foilpresenterfolie.titel),
+                unicode(translate('SongsPlugin.FoilPresenterSongImport',
+                'Invalid Foilpresenter song file. No verses found.')))
+            self.save_song = False
+            return
         for strophe in foilpresenterfolie.strophen.strophe:
             text = self._child(strophe.text_) if hasattr(strophe, u'text_') else u''
             verse_name = self._child(strophe.key)
