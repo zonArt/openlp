@@ -82,7 +82,7 @@ class PresentationPlugin(Plugin):
         Initialise the plugin. Determine which controllers are enabled are start their processes.
         """
         log.info(u'Presentations Initialising')
-        Plugin.initialise(self)
+        super(PresentationPlugin, self).initialise()
         for controller in self.controllers:
             if self.controllers[controller].enabled():
                 try:
@@ -103,7 +103,7 @@ class PresentationPlugin(Plugin):
             controller = self.controllers[key]
             if controller.enabled():
                 controller.kill()
-        Plugin.finalise(self)
+        super(PresentationPlugin, self).finalise()
 
     def create_media_manager_item(self):
         """
