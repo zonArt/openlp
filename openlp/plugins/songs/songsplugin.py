@@ -94,7 +94,7 @@ class SongsPlugin(Plugin):
 
     def initialise(self):
         log.info(u'Songs Initialising')
-        Plugin.initialise(self)
+        super(SongsPlugin, self).initialise()
         self.song_import_item.setVisible(True)
         self.song_export_item.setVisible(True)
         self.tools_reindex_item.setVisible(True)
@@ -308,7 +308,7 @@ class SongsPlugin(Plugin):
         action_list.remove_action(self.song_export_item, UiStrings().Export)
         action_list.remove_action(self.tools_reindex_item, UiStrings().Tools)
         action_list.remove_action(self.tools_find_duplicates, UiStrings().Tools)
-        Plugin.finalise(self)
+        super(SongsPlugin, self).finalise()
 
     def new_service_created(self):
         """
