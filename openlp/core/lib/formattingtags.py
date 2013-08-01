@@ -62,9 +62,6 @@ class FormattingTags(object):
                 # Remove key 'temporary' from tags. It is not needed to be saved.
                 if u'temporary' in tag:
                     del tag[u'temporary']
-                for element in tag:
-                    if isinstance(tag[element], unicode):
-                        tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
         Settings().setValue(u'formattingTags/html_tags', json.dumps(tags) if tags else u'')
 
