@@ -66,7 +66,7 @@ class RemotesPlugin(Plugin):
         Initialise the remotes plugin, and start the http server
         """
         log.debug(u'initialise')
-        super(RemotePlugin, self).initialise()
+        super(RemotesPlugin, self).initialise()
         self.server = HttpServer()
         self.server.start_server()
 
@@ -75,7 +75,7 @@ class RemotesPlugin(Plugin):
         Tidy up and close down the http server
         """
         log.debug(u'finalise')
-        super(RemotePlugin, self).finalise()
+        super(RemotesPlugin, self).finalise()
         if self.server:
             self.server.close()
             self.server = None
