@@ -49,7 +49,7 @@ class MediaPlugin(Plugin):
     log.info(u'%s MediaPlugin loaded', __name__)
 
     def __init__(self):
-        Plugin.__init__(self, u'media', __default_settings__, MediaMediaItem)
+        super(MediaPlugin, self).__init__(u'media', __default_settings__, MediaMediaItem)
         self.weight = -6
         self.icon_path = u':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)

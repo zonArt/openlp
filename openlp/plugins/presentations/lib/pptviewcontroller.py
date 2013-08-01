@@ -109,7 +109,7 @@ class PptviewDocument(PresentationDocument):
         Constructor, store information about the file and initialise.
         """
         log.debug(u'Init Presentation PowerPoint')
-        PresentationDocument.__init__(self, controller, presentation)
+        super(PptviewDocument, self).__init__(controller, presentation)
         self.presentation = None
         self.ppt_id = None
         self.blanked = False
