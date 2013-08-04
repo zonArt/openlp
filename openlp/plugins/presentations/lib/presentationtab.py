@@ -29,8 +29,9 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Settings, SettingsTab, UiStrings, translate
-
+from openlp.core.lib import Settings, SettingsTab, UiStrings, translate, build_icon
+from openlp.core.lib.ui import critical_error_message_box
+from pdfcontroller import check_binary
 
 class PresentationTab(SettingsTab):
     """
@@ -63,6 +64,7 @@ class PresentationTab(SettingsTab):
             self.presenter_check_boxes[controller.name] = checkbox
             self.controllers_layout.addWidget(checkbox)
         self.left_layout.addWidget(self.controllers_group_box)
+        # Advanced
         self.advanced_group_box = QtGui.QGroupBox(self.left_column)
         self.advanced_group_box.setObjectName(u'advanced_group_box')
         self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
@@ -70,7 +72,33 @@ class PresentationTab(SettingsTab):
         self.override_app_check_box = QtGui.QCheckBox(self.advanced_group_box)
         self.override_app_check_box.setObjectName(u'override_app_check_box')
         self.advanced_layout.addWidget(self.override_app_check_box)
+
+        # Pdf options
+        self.pdf_group_box = QtGui.QGroupBox(self.left_column)
+        self.pdf_group_box.setObjectName(u'pdf_group_box')
+        self.pdf_layout = QtGui.QFormLayout(self.pdf_group_box)
+        self.pdf_layout.setObjectName(u'pdf_layout')
+        self.pdf_program_check_box = QtGui.QCheckBox(self.pdf_group_box)
+        self.pdf_program_check_box.setObjectName(u'pdf_program_check_box')
+        self.pdf_layout.addWidget(self.pdf_program_check_box)
+        self.pdf_program_path_layout = QtGui.QHBoxLayout()
+        self.pdf_program_path_layout.setObjectName(u'pdf_program_path_layout')
+        self.pdf_program_path = QtGui.QLineEdit(self.pdf_group_box)
+        self.pdf_program_path.setObjectName(u'pdf_program_path')
+        self.pdf_program_path.setReadOnly(True)
+        self.pdf_program_path.setPalette(self.get_grey_text_palette(True))
+        self.pdf_program_path_layout.addWidget(self.pdf_program_path)
+        self.pdf_program_browse_button = QtGui.QToolButton(self.pdf_group_box)
+        self.pdf_program_browse_button.setObjectName(u'pdf_program_browse_button')
+        self.pdf_program_browse_button.setIcon(build_icon(u':/general/general_open.png'))
+        self.pdf_program_browse_button.setEnabled(False)
+        self.pdf_program_path_layout.addWidget(self.pdf_program_browse_button)
+        self.pdf_layout.addRow(self.pdf_program_path_layout)
+        self.pdf_program_path.editingFinished.connect(self.on_pdf_program_path_edit_finished)
+        self.pdf_program_browse_button.clicked.connect(self.on_pdf_program_browse_button_clicked)
+        self.pdf_program_check_box.clicked.connect(self.on_pdf_program_check_box_clicked)
         self.left_layout.addWidget(self.advanced_group_box)
+        self.left_layout.addWidget(self.pdf_group_box)
         self.left_layout.addStretch()
         self.right_layout.addStretch()
 
@@ -84,8 +112,12 @@ class PresentationTab(SettingsTab):
             checkbox = self.presenter_check_boxes[controller.name]
             self.set_controller_text(checkbox, controller)
         self.advanced_group_box.setTitle(UiStrings().Advanced)
+        self.pdf_group_box.setTitle(translate('PresentationPlugin.PresentationTab', 'PDF options'))
         self.override_app_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Allow presentation application to be overridden'))
+        self.pdf_program_check_box.setText(
+            translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
+
 
     def set_controller_text(self, checkbox, controller):
         if checkbox.isEnabled():
@@ -102,6 +134,15 @@ class PresentationTab(SettingsTab):
             checkbox = self.presenter_check_boxes[controller.name]
             checkbox.setChecked(Settings().value(self.settings_section + u'/' + controller.name))
         self.override_app_check_box.setChecked(Settings().value(self.settings_section + u'/override app'))
+        # load pdf-program settings
+        enable_given_pdf_program = Settings().value(self.settings_section + u'/enable_given_pdf_program')
+        self.pdf_program_check_box.setChecked(enable_given_pdf_program)
+        self.pdf_program_path.setReadOnly(not enable_given_pdf_program)
+        self.pdf_program_path.setPalette(self.get_grey_text_palette(not enable_given_pdf_program))
+        self.pdf_program_browse_button.setEnabled(enable_given_pdf_program)
+        pdf_program = Settings().value(self.settings_section + u'/given_pdf_program')
+        if pdf_program:
+            self.pdf_program_path.setText(pdf_program)
 
     def save(self):
         """
@@ -127,10 +168,25 @@ class PresentationTab(SettingsTab):
         if Settings().value(setting_key) != self.override_app_check_box.checkState():
             Settings().setValue(setting_key, self.override_app_check_box.checkState())
             changed = True
+        
+        # Save pdf-settings
+        pdf_program = self.pdf_program_path.text()
+        enable_given_pdf_program = self.pdf_program_check_box.checkState()
+        # If the given program is blank disable using the program
+        if pdf_program == u'':
+            enable_given_pdf_program = 0
+        if pdf_program != Settings().value(self.settings_section + u'/given_pdf_program'):
+            Settings().setValue(self.settings_section + u'/given_pdf_program',  pdf_program)
+            changed = True
+        if enable_given_pdf_program != Settings().value(self.settings_section + u'/enable_given_pdf_program'):
+            Settings().setValue(self.settings_section + u'/enable_given_pdf_program',  enable_given_pdf_program)
+            changed = True
+        
         if changed:
             self.settings_form.register_post_process(u'mediaitem_suffix_reset')
             self.settings_form.register_post_process(u'mediaitem_presentation_rebuild')
             self.settings_form.register_post_process(u'mediaitem_suffixes')
+                
 
     def tab_visible(self):
         """
@@ -142,3 +198,44 @@ class PresentationTab(SettingsTab):
             checkbox = self.presenter_check_boxes[controller.name]
             checkbox.setEnabled(controller.is_available())
             self.set_controller_text(checkbox, controller)
+        
+    def on_pdf_program_path_edit_finished(self):
+        """
+        After selecting/typing in a program it is validated that it is a actually ghostscript or mudraw
+        """
+        type = None 
+        if self.pdf_program_path.text() != u'':
+            type = check_binary(self.pdf_program_path.text())
+            if not type:
+                critical_error_message_box(UiStrings().Error, 
+                        translate('PresentationPlugin.PresentationTab', 'The program is not ghostscript or mudraw which is required.'))
+                self.pdf_program_path.setFocus()
+
+    def on_pdf_program_browse_button_clicked(self):
+        """
+        Select the mudraw or ghostscript binary that should be used.
+        """
+        filename = QtGui.QFileDialog.getOpenFileName(self, translate('PresentationPlugin.PresentationTab', 'Select mudraw or ghostscript binary.'))
+        if filename:
+            self.pdf_program_path.setText(filename)
+        self.pdf_program_path.setFocus()
+
+    def on_pdf_program_check_box_clicked(self, checked):
+        """
+        When checkbox for manual entering pdf-program is clicked,
+        enable or disable the textbox for the programpath and the browse-button.
+        """
+        self.pdf_program_path.setReadOnly(not checked)
+        self.pdf_program_path.setPalette(self.get_grey_text_palette(not checked))
+        self.pdf_program_browse_button.setEnabled(checked)
+
+    def get_grey_text_palette(self, greyed):
+        """
+        Returns a QPalette with greyed out text as used for placeholderText.
+        """
+        palette = QtGui.QPalette()
+        color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Text)
+        if greyed:
+            color.setAlpha(128)
+        palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Text, color)
+        return palette

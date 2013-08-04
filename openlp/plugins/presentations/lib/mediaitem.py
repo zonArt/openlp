@@ -249,8 +249,6 @@ class PresentationMediaItem(MediaManagerItem):
         file_type = os.path.splitext(filename)[1][1:]
         if not self.display_type_combo_box.currentText():
             return False
-
-        service_item.processor = self.display_type_combo_box.currentText()
         
         if context == ServiceItemContext.Live and (file_type == u'pdf' or file_type == u'xps'):
             service_item.add_capability(ItemCapabilities.CanMaintain)
@@ -266,12 +264,11 @@ class PresentationMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 service_item.title = name
                 if os.path.exists(filename):
-                    if service_item.processor == self.Automatic:
-                        service_item.processor = self.findControllerByType(filename)
-                        if not service_item.processor:
-                            return False
-                    controller = self.controllers[service_item.processor]
-                    #service_item.processor = None
+                    processor = self.findControllerByType(filename)
+                    if not processor:
+                        return False
+                    controller = self.controllers[processor]
+                    service_item.processor = None
                     doc = controller.add_document(filename)
                     if doc.get_thumbnail_path(1, True) is None:
                         doc.load_presentation()
@@ -300,6 +297,7 @@ class PresentationMediaItem(MediaManagerItem):
                             translate('PresentationPlugin.MediaItem', 'The presentation %s no longer exists.') % filename)
                     return False
         else:
+            service_item.processor = self.display_type_combo_box.currentText()
             service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
 
             # Why the loop when we above return False if len(items) is > 1?

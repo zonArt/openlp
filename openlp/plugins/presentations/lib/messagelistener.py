@@ -324,7 +324,12 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
+        # when presenting PDF, we're using the image presentation code, 
+        # so handler & processor is set to None, and we skip adding the handler.
+        if self.handler == None:
+            self.controller = controller
+        else: 
+            controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
 
     def slide(self, message):
         """

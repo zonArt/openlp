@@ -31,16 +31,40 @@ import os
 import logging
 from tempfile import NamedTemporaryFile
 import re
-from subprocess import check_output, CalledProcessError
+from subprocess import check_output, CalledProcessError, STDOUT
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import AppLocation
-from openlp.core.lib import ScreenList
+from openlp.core.lib import ScreenList, Settings
 from presentationcontroller import PresentationController, PresentationDocument
 
 
 log = logging.getLogger(__name__)
 
+def check_binary(program_path):
+    """
+    Function that checks whether a binary is either ghostscript or mudraw or neither.
+    """
+    program_type = None
+    runlog = u''
+    try:
+        runlog = check_output([program_path,  u'--help'], stderr=STDOUT)
+    except CalledProcessError as e:
+        runlog = e.output
+    except Exception:
+        runlog = u''
+        
+    # Analyse the output to see it the program is mudraw, ghostscript or neither
+    for line in runlog.splitlines():
+        found_mudraw = re.search(u'usage: mudraw.*', line)
+        if found_mudraw:
+            program_type = u'mudraw'
+            break
+        found_gs = re.search(u'GPL Ghostscript.*', line)
+        if found_gs:
+            program_type = u'gs'
+            break
+    return program_type
 
 class PdfController(PresentationController):
     """
@@ -72,8 +96,20 @@ class PdfController(PresentationController):
         """
         Check the viewer is installed.
         """
-        application_path = AppLocation.get_directory(AppLocation.AppDir)
         log.debug(u'check_installed Pdf')
+        # Use the user defined program if given
+        if (Settings().value(u'presentations/enable_given_pdf_program')):
+            given_pdf_program = Settings().value(u'presentations/given_pdf_program')
+            type = check_binary(given_pdf_program)
+            if type == u'gs':
+                self.gsbin = given_pdf_program
+                return True
+            elif type == u'mudraw':
+                self.mudrawbin = given_pdf_program
+                return True
+
+        # Fallback to autodetection
+        application_path = AppLocation.get_directory(AppLocation.AppDir)
         if os.name != u'nt':
             # First try to find mupdf
             try:
@@ -153,7 +189,12 @@ quit \n\
         tmpfile.close()
         
         # Run the script on the pdf to get the size
-        runlog = check_output([self.controller.gsbin, u'-dNOPAUSE', u'-dNODISPLAY', u'-dBATCH', u'-sFile=' + self.filepath, tmpfile.name])
+        runlog = []
+        try:
+            runlog = check_output([self.controller.gsbin, u'-dNOPAUSE', u'-dNODISPLAY', u'-dBATCH', u'-sFile=' + self.filepath, tmpfile.name])
+        except CalledProcessError as e:
+            log.debug(u' '.join(e.cmd))
+            log.debug(e.output)
         os.unlink(tmpfile.name)
         
         # Extract the pdf resolution from output, the format is " Size: x: <width>, y: <height>"
