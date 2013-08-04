@@ -45,13 +45,14 @@ class OpenSongImport(SongImport):
     Import songs exported from OpenSong
 
     The format is described loosly on the `OpenSong File Format Specification
-    <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on
-    the OpenSong web site. However, it doesn't describe the <lyrics> section,
-    so here's an attempt:
+    <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on the OpenSong web site. However, it
+    doesn't describe the <lyrics> section, so here's an attempt:
 
-    Verses can be expressed in one of 2 ways, either in complete verses, or by
-    line grouping, i.e. grouping all line 1's of a verse together, all line 2's
-    of a verse together, and so on.
+    If the first charachter of a line is a space, then the rest of that line is lyrics. If it is not a space the
+    following applies.
+
+    Verses can be expressed in one of 2 ways, either in complete verses, or by line grouping, i.e. grouping all line 1's
+    of a verse together, all line 2's of a verse together, and so on.
 
     An example of complete verses::
 
@@ -78,9 +79,8 @@ class OpenSongImport(SongImport):
         2etc...
         </lyrics>
 
-    Either or both forms can be used in one song. The number does not
-    necessarily appear at the start of the line. Additionally, the [v1] labels
-    can have either upper or lower case Vs.
+    Either or both forms can be used in one song. The number does not necessarily appear at the start of the line.
+    Additionally, the [v1] labels can have either upper or lower case Vs.
 
     Other labels can be used also:
 
@@ -92,18 +92,16 @@ class OpenSongImport(SongImport):
 
     All verses are imported and tagged appropriately.
 
-    Guitar chords can be provided "above" the lyrics (the line is preceeded by
-    a period "."), and one or more "_" can be used to signify long-drawn-out
-    words. Chords and "_" are removed by this importer. For example::
+    Guitar chords can be provided "above" the lyrics (the line is preceeded by a period "."), and one or more "_" can
+    be used to signify long-drawn-out words. Chords and "_" are removed by this importer. For example::
 
         . A7        Bm
         1 Some____ Words
 
-    The <presentation> tag is used to populate the OpenLP verse display order
-    field. The Author and Copyright tags are also imported to the appropriate
-    places.
-
+    The <presentation> tag is used to populate the OpenLP verse display order field. The Author and Copyright tags are
+    also imported to the appropriate places.
     """
+
     def __init__(self, manager, **kwargs):
         """
         Initialise the class.
@@ -169,12 +167,10 @@ class OpenSongImport(SongImport):
         else:
             lyrics = u''
         for this_line in lyrics.split(u'\n'):
-            # remove comments
-            semicolon = this_line.find(u';')
-            if semicolon >= 0:
-                this_line = this_line[:semicolon]
-            this_line = this_line.strip()
             if not this_line:
+                continue
+            # skip this line if it is a comment
+            if this_line.startswith(u';'):
                 continue
             # skip guitar chords and page and column breaks
             if this_line.startswith(u'.') or this_line.startswith(u'---') or this_line.startswith(u'-!!'):
@@ -204,7 +200,6 @@ class OpenSongImport(SongImport):
             if this_line[0].isdigit():
                 verse_num = this_line[0]
                 this_line = this_line[1:].strip()
-                our_verse_order.append([verse_tag, verse_num, inst])
             verses.setdefault(verse_tag, {})
             verses[verse_tag].setdefault(verse_num, {})
             if inst not in verses[verse_tag][verse_num]:
@@ -214,6 +209,7 @@ class OpenSongImport(SongImport):
             this_line = self.tidyText(this_line)
             this_line = this_line.replace(u'_', u'')
             this_line = this_line.replace(u'|', u'\n')
+            this_line = this_line.strip()
             verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order
