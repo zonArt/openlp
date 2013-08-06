@@ -270,26 +270,18 @@ class PresentationMediaItem(MediaManagerItem):
                     controller = self.controllers[processor]
                     service_item.processor = None
                     doc = controller.add_document(filename)
-                    if doc.get_thumbnail_path(1, True) is None:
+                    if doc.get_thumbnail_path(1, True) is None or not os.path.isfile(os.path.join(doc.get_temp_folder(), u'mainslide001.png')):
                         doc.load_presentation()
                     i = 1
                     imagefile = u'mainslide%03d.png' % i
                     img = os.path.join(doc.get_temp_folder(), imagefile)
-                    if os.path.isfile(img):
-                        while os.path.isfile(img):
-                            service_item.add_from_image(img, name)
-                            i += 1
-                            imagefile = u'mainslide%03d.png' % i
-                            img = os.path.join(doc.get_temp_folder(), imagefile)
-                        doc.close_presentation()
-                        return True
-                    else:
-                        # File is no longer present
-                        if not remote:
-                            critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
-                                translate('PresentationPlugin.MediaItem',
-                                    'The presentation %s is incomplete, please reload.') % filename)
-                        return False
+                    while os.path.isfile(img):
+                        service_item.add_from_image(img, name)
+                        i += 1
+                        imagefile = u'mainslide%03d.png' % i
+                        img = os.path.join(doc.get_temp_folder(), imagefile)
+                    doc.close_presentation()
+                    return True
                 else:
                     # File is no longer present
                     if not remote:
