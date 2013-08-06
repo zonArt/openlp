@@ -37,6 +37,9 @@ import platform
 import bs4
 import sqlalchemy
 from lxml import etree
+
+from openlp.core.lib import Registry
+
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 
 try:
@@ -77,19 +80,7 @@ try:
     CHERRYPY_VERSION = cherrypy.__version__
 except ImportError:
     CHERRYPY_VERSION = u'-'
-try:
-    import uno
-    arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
-    arg.Name = u'nodepath'
-    arg.Value = u'/org.openoffice.Setup/Product'
-    context = uno.getComponentContext()
-    provider = context.ServiceManager.createInstance(u'com.sun.star.configuration.ConfigurationProvider')
-    node = provider.createInstanceWithArguments(u'com.sun.star.configuration.ConfigurationAccess', (arg,))
-    UNO_VERSION = node.getByName(u'ooSetupVersion')
-except ImportError:
-    UNO_VERSION = u'-'
-except:
-    UNO_VERSION = u'- (Possible non-standard UNO installation)'
+
 try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
@@ -99,7 +90,6 @@ try:
     VLC_VERSION = VERSION
 except ImportError:
     VLC_VERSION = u'-'
-
 
 from openlp.core.lib import UiStrings, Settings, translate
 from openlp.core.utils import get_application_version
@@ -113,11 +103,11 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
     """
     The exception dialog
     """
-    def __init__(self, parent):
+    def __init__(self):
         """
         Constructor.
         """
-        QtGui.QDialog.__init__(self, parent)
+        QtGui.QDialog.__init__(self, self.main_window)
         self.setupUi(self)
         self.settings_section = u'crashreport'
 
@@ -152,7 +142,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             u'Mako: %s\n' % MAKO_VERSION + \
             u'CherryPy: %s\n' % CHERRYPY_VERSION + \
             u'pyICU: %s\n' % ICU_VERSION + \
-            u'pyUNO bridge: %s\n' % UNO_VERSION + \
+            u'pyUNO bridge: %s\n' % self._pyuno_import() + \
             u'VLC: %s\n' % VLC_VERSION
         if platform.system() == u'Linux':
             if os.environ.get(u'KDE_FULL_SESSION') == u'true':
@@ -256,3 +246,34 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         self.save_report_button.setEnabled(state)
         self.send_report_button.setEnabled(state)
+
+    def _pyuno_import(self):
+        """
+        Added here to define only when the form is actioned. The uno interface spits out lots of exception messages
+        if the import is at a file level.  If uno import is changed this could be reverted.
+        This happens in other classes but there it is localised here it is across the whole system and hides real
+        errors.
+        """
+        try:
+            import uno
+            arg = uno.createUnoStruct(u'com.sun.star.beans.PropertyValue')
+            arg.Name = u'nodepath'
+            arg.Value = u'/org.openoffice.Setup/Product'
+            context = uno.getComponentContext()
+            provider = context.ServiceManager.createInstance(u'com.sun.star.configuration.ConfigurationProvider')
+            node = provider.createInstanceWithArguments(u'com.sun.star.configuration.ConfigurationAccess', (arg,))
+            return node.getByName(u'ooSetupVersion')
+        except ImportError:
+            return u'-'
+        except:
+            return u'- (Possible non-standard UNO installation)'
+
+    def _get_main_window(self):
+        """
+        Adds the main window to the class dynamically
+        """
+        if not hasattr(self, u'_main_window'):
+            self._main_window = Registry().get(u'main_window')
+        return self._main_window
+
+    main_window = property(_get_main_window)

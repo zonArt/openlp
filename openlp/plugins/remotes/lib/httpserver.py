@@ -177,11 +177,11 @@ class HttpServer(object):
         self.root = self.Public()
         self.root.files = self.Files()
         self.root.stage = self.Stage()
-        self.root.live = self.Live()
+        self.root.main = self.Main()
         self.root.router = self.router
         self.root.files.router = self.router
         self.root.stage.router = self.router
-        self.root.live.router = self.router
+        self.root.main.router = self.router
         cherrypy.tree.mount(self.root, '/', config=self.define_config())
         # Turn off the flood of access messages cause by poll
         cherrypy.log.access_log.propagate = False
@@ -218,7 +218,7 @@ class HttpServer(object):
                          u'/stage': {u'tools.staticdir.on': True,
                                      u'tools.staticdir.dir': self.router.html_dir,
                                      u'tools.basic_auth.on': False},
-                         u'/live': {u'tools.staticdir.on': True,
+                         u'/main': {u'tools.staticdir.on': True,
                                      u'tools.staticdir.dir': self.router.html_dir,
                                      u'tools.basic_auth.on': False}}
         return directory_config
@@ -253,9 +253,9 @@ class HttpServer(object):
             url = urlparse.urlparse(cherrypy.url())
             return self.router.process_http_request(url.path, *args)
 
-    class Live(object):
+    class Main(object):
         """
-        Live view is read only so security is not relevant and would reduce it's usability
+        Main view is read only so security is not relevant and would reduce it's usability
         """
         @cherrypy.expose
         def default(self, *args, **kwargs):
@@ -281,12 +281,12 @@ class HttpRouter(object):
         self.routes = [
             (u'^/$', self.serve_file),
             (u'^/(stage)$', self.serve_file),
-            (u'^/(live)$', self.serve_file),
+            (u'^/(main)$', self.serve_file),
             (r'^/files/(.*)$', self.serve_file),
             (r'^/api/poll$', self.poll),
             (r'^/stage/poll$', self.poll),
-            (r'^/live/poll$', self.live_poll),
-            (r'^/live/image$', self.live_image),
+            (r'^/main/poll$', self.main_poll),
+            (r'^/main/image$', self.main_image),
             (r'^/api/controller/(live|preview)/(.*)$', self.controller),
             (r'^/stage/controller/(live|preview)/(.*)$', self.controller),
             (r'^/api/service/(.*)$', self.service),
@@ -378,7 +378,7 @@ class HttpRouter(object):
             'slides': translate('RemotePlugin.Mobile', 'Slides')
         }
 
-    def serve_file(self, filename=None):
+    def serve_file(self, file_name=None):
         """
         Send a file to the socket. For now, just a subset of file types and must be top level inside the html folder.
         If subfolders requested return 404, easier for security for the present.
@@ -386,17 +386,17 @@ class HttpRouter(object):
         Ultimately for i18n, this could first look for xx/file.html before falling back to file.html.
         where xx is the language, e.g. 'en'
         """
-        log.debug(u'serve file request %s' % filename)
-        if not filename:
-            filename = u'index.html'
-        elif filename == u'stage':
-            filename = u'stage.html'
-        elif filename == u'live':
-            filename = u'live.html'
-        path = os.path.normpath(os.path.join(self.html_dir, filename))
+        log.debug(u'serve file request %s' % file_name)
+        if not file_name:
+            file_name = u'index.html'
+        elif file_name == u'stage':
+            file_name = u'stage.html'
+        elif file_name == u'main':
+            file_name = u'main.html'
+        path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
             return self._http_not_found()
-        ext = os.path.splitext(filename)[1]
+        ext = os.path.splitext(file_name)[1]
         html = None
         if ext == u'.html':
             mimetype = u'text/html'
@@ -447,7 +447,7 @@ class HttpRouter(object):
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': result})
 
-    def live_poll(self):
+    def main_poll(self):
         """
         Poll OpenLP to determine the current slide count.
         """
@@ -457,7 +457,7 @@ class HttpRouter(object):
         cherrypy.response.headers['Content-Type'] = u'application/json'
         return json.dumps({u'results': result})
 
-    def live_image(self):
+    def main_image(self):
         """
         Return the latest display image as a byte stream.
         """

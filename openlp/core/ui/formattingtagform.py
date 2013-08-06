@@ -31,7 +31,7 @@ The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are pro
 Custom tags can be defined and saved. The Custom Tag arrays are saved in a pickle so QSettings works on them. Base Tags
 cannot be changed.
 """
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import FormattingTags, translate
 from openlp.core.lib.ui import critical_error_message_box

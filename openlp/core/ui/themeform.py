@@ -38,7 +38,7 @@ from openlp.core.lib import UiStrings, Registry, translate
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
-from openlp.core.utils import get_images_filter
+from openlp.core.utils import get_images_filter, is_not_image_file
 from themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
@@ -71,6 +71,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.gradientStartButton.clicked.connect(self.onGradientStartButtonClicked)
         self.gradientEndButton.clicked.connect(self.onGradientEndButtonClicked)
         self.imageBrowseButton.clicked.connect(self.onImageBrowseButtonClicked)
+        self.imageFileEdit.editingFinished.connect(self.onImageFileEditEditingFinished)
         self.mainColorButton.clicked.connect(self.onMainColorButtonClicked)
         self.outlineColorButton.clicked.connect(self.onOutlineColorButtonClicked)
         self.shadowColorButton.clicked.connect(self.onShadowColorButtonClicked)
@@ -178,7 +179,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         background_image = BackgroundType.to_string(BackgroundType.Image)
         if self.page(self.currentId()) == self.backgroundPage and \
-                self.theme.background_type == background_image and not self.imageFileEdit.text():
+                self.theme.background_type == background_image and is_not_image_file(self.theme.background_filename):
             QtGui.QMessageBox.critical(self, translate('OpenLP.ThemeWizard', 'Background Image Empty'),
                 translate('OpenLP.ThemeWizard', 'You have not selected a '
                     'background image. Please select one before continuing.'))
@@ -440,6 +441,12 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if filename:
             self.theme.background_filename = unicode(filename)
         self.setBackgroundPageValues()
+
+    def onImageFileEditEditingFinished(self):
+        """
+        Background image path edited
+        """
+        self.theme.background_filename = unicode(self.imageFileEdit.text())
 
     def onMainColorButtonClicked(self):
         """
