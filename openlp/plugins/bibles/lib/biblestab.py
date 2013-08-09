@@ -64,7 +64,7 @@ class BiblesTab(SettingsTab):
         self.display_style_label = QtGui.QLabel(self.verse_display_group_box)
         self.display_style_label.setObjectName(u'display_style_label')
         self.display_style_combo_box = QtGui.QComboBox(self.verse_display_group_box)
-        self.display_style_combo_box.addItems([u'', u'', u'', u''])
+        self.display_style_combo_box.addItems([u'', u'', u'', u'', u''])
         self.display_style_combo_box.setObjectName(u'display_style_combo_box')
         self.verse_display_layout.addRow(self.display_style_label, self.display_style_combo_box)
         self.layout_style_label = QtGui.QLabel(self.verse_display_group_box)
@@ -171,6 +171,8 @@ class BiblesTab(SettingsTab):
             translate('BiblesPlugin.BiblesTab', '{ And }'))
         self.display_style_combo_box.setItemText(DisplayStyle.Square,
             translate('BiblesPlugin.BiblesTab', '[ And ]'))
+        self.display_style_combo_box.setItemText(DisplayStyle.NoDisplay,
+            translate('BiblesPlugin.BiblesTab', 'Hide verse numbers'))
         self.change_note_label.setText(translate('BiblesPlugin.BiblesTab',
             'Note:\nChanges do not affect verses already in the service.'))
         self.bible_second_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Display second Bible verses'))
