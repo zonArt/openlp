@@ -954,7 +954,7 @@ class BibleMediaItem(MediaManagerItem):
         elif self.settings.display_style == DisplayStyle.Square:
             return u'{su}[%s]{/su}' % verse_text
         else:
-            return u'{su}{/su}'
+            return u''
         return u'{su}%s{/su}' % verse_text
 
     def search(self, string, showError):
