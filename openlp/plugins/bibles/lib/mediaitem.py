@@ -953,7 +953,7 @@ class BibleMediaItem(MediaManagerItem):
             return u'{su}{%s}{/su}' % verse_text
         elif self.settings.display_style == DisplayStyle.Square:
             return u'{su}[%s]{/su}' % verse_text
-        else:
+        elif self.settings.display_style == DisplayStyle.NoDisplay:
             return u''
         return u'{su}%s{/su}' % verse_text
 
