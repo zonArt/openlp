@@ -60,7 +60,6 @@ class DisplayStyle(object):
     Round = 1
     Curly = 2
     Square = 3
-    NoDisplay = 4
 
 
 class LanguageSelection(object):
