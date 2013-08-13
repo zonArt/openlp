@@ -135,41 +135,41 @@ class SongShowPlusImport(SongImport):
                 log.debug(length_descriptor_size)
                 data = song_data.read(length_descriptor)
                 if block_key == TITLE:
-                    self.title = unicode(data, chardet.detect(data)['encoding'])
+                    self.title = self.decode(data)
                 elif block_key == AUTHOR:
                     authors = data.split(" / ")
                     for author in authors:
                         if author.find(",") !=-1:
                             authorParts = author.split(", ")
                             author = authorParts[1] + " " + authorParts[0]
-                        self.parse_author(unicode(author, chardet.detect(data)['encoding']))
+                        self.parse_author(self.decode(author))
                 elif block_key == COPYRIGHT:
-                    self.addCopyright(unicode(data, chardet.detect(data)['encoding']))
+                    self.addCopyright(self.decode(data))
                 elif block_key == CCLI_NO:
                     self.ccliNumber = int(data)
                 elif block_key == VERSE:
-                    self.addVerse(unicode(data, chardet.detect(data)['encoding']), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
+                    self.addVerse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Verse], verse_no))
                 elif block_key == CHORUS:
-                    self.addVerse(unicode(data, chardet.detect(data)['encoding']), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
+                    self.addVerse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Chorus], verse_no))
                 elif block_key == BRIDGE:
-                    self.addVerse(unicode(data, chardet.detect(data)['encoding']), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
+                    self.addVerse(self.decode(data), "%s%s" % (VerseType.tags[VerseType.Bridge], verse_no))
                 elif block_key == TOPIC:
-                    self.topics.append(unicode(data, chardet.detect(data)['encoding']))
+                    self.topics.append(self.decode(data))
                 elif block_key == COMMENTS:
-                    self.comments = unicode(data, chardet.detect(data)['encoding'])
+                    self.comments = self.decode(data)
                 elif block_key == VERSE_ORDER:
                     verse_tag = self.to_openlp_verse_tag(data, True)
                     if verse_tag:
                         if not isinstance(verse_tag, unicode):
-                            verse_tag = unicode(verse_tag, chardet.detect(data)['encoding'])
+                            verse_tag = self.decode(verse_tag)
                         self.ssp_verse_order_list.append(verse_tag)
                 elif block_key == SONG_BOOK:
-                    self.songBookName = unicode(data, chardet.detect(data)['encoding'])
+                    self.songBookName = self.decode(data)
                 elif block_key == SONG_NUMBER:
                     self.songNumber = ord(data)
                 elif block_key == CUSTOM_VERSE:
                     verse_tag = self.to_openlp_verse_tag(verse_name)
-                    self.addVerse(unicode(data, chardet.detect(data)['encoding']), verse_tag)
+                    self.addVerse(self.decode(data), verse_tag)
                 else:
                     log.debug("Unrecognised blockKey: %s, data: %s" % (block_key, data))
                     song_data.seek(next_block_starts)
@@ -207,3 +207,13 @@ class SongShowPlusImport(SongImport):
             verse_tag = VerseType.tags[VerseType.Other]
             verse_number = self.other_list[verse_name]
         return verse_tag + verse_number
+
+    def decode(self, data):
+        try:
+            return unicode(data, chardet.detect(data)['encoding'])
+        except:
+            while True:
+                try:
+                    return unicode(data, self.encoding)
+                except:
+                    self.encoding = retrieve_windows_encoding()
