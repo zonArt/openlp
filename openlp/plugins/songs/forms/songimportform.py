@@ -35,7 +35,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, Settings, UiStrings, translate
+from openlp.core.lib import FileDialog, Registry, Settings, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect
@@ -244,7 +244,7 @@ class SongImportForm(OpenLPWizard):
         if filters:
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
-        filenames = QtGui.QFileDialog.getOpenFileNames(self, title,
+        filenames = FileDialog().getOpenFileNames(self, title,
             Settings().value(self.plugin.settings_section + u'/last directory import'), filters)
         if filenames:
             listbox.addItems(filenames)

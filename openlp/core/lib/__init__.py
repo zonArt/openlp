@@ -377,6 +377,7 @@ def create_separated_list(stringlist):
 
 from registry import Registry
 from uistrings import UiStrings
+from filedialog import FileDialog
 from screen import ScreenList
 from settings import Settings
 from listwidgetwithdnd import ListWidgetWithDnD
