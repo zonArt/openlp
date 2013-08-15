@@ -348,6 +348,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.load_topics()
         self.load_books()
         self.load_media_files()
+        self.theme_combo_box.setEditText(u'')
         self.theme_combo_box.setCurrentIndex(0)
         # it's a new song to preview is not possible
         self.preview_button.setVisible(False)
@@ -376,8 +377,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
             find_and_set_in_combo_box(self.song_book_combo_box, unicode(book_name.name))
+        else:
+            self.song_book_combo_box.setEditText(u'')
+            self.song_book_combo_box.setCurrentIndex(0)
         if self.song.theme_name:
             find_and_set_in_combo_box(self.theme_combo_box, unicode(self.song.theme_name))
+        else:
+            # Clear the theme combo box in case it was previously set (bug #1212801)
+            self.theme_combo_box.setEditText(u'')
+            self.theme_combo_box.setCurrentIndex(0)
         self.copyright_edit.setText(self.song.copyright if self.song.copyright else u'')
         self.comments_edit.setPlainText(self.song.comments if self.song.comments else u'')
         self.ccli_number_edit.setText(self.song.ccli_number if self.song.ccli_number else u'')

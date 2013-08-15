@@ -221,6 +221,7 @@ def update_reference_separators():
         u'(?P<ranges>(?:%(range_regex)s(?:%(sep_l)s(?!\s*$)|(?=\s*$)))+)\s*$' \
         % dict(REFERENCE_SEPARATORS.items() + [(u'range_regex', range_regex)]), re.UNICODE)
 
+
 def get_reference_separator(separator_type):
     """
     Provides separators for parsing and formatting scripture references.
@@ -232,6 +233,7 @@ def get_reference_separator(separator_type):
         update_reference_separators()
     return REFERENCE_SEPARATORS[separator_type]
 
+
 def get_reference_match(match_type):
     """
     Provides matches for parsing scripture references strings.
@@ -242,6 +244,7 @@ def get_reference_match(match_type):
     if not REFERENCE_MATCHES:
         update_reference_separators()
     return REFERENCE_MATCHES[match_type]
+
 
 def parse_reference(reference, bible, language_selection, book_ref_id=False):
     """
@@ -402,7 +405,7 @@ class SearchResults(object):
     """
     Encapsulate a set of search results. This is Bible-type independent.
     """
-    def __init__(self, book, chapter, verselist):
+    def __init__(self, book, chapter, verse_list):
         """
         Create the search result object.
 
@@ -412,19 +415,19 @@ class SearchResults(object):
         ``chapter``
             The chapter of the book.
 
-        ``verselist``
+        ``verse_list``
             The list of verses for this reading.
 
         """
         self.book = book
         self.chapter = chapter
-        self.verselist = verselist
+        self.verse_list = verse_list
 
-    def has_verselist(self):
+    def has_verse_list(self):
         """
         Returns whether or not the verse list contains verses.
         """
-        return len(self.verselist) > 0
+        return len(self.verse_list) > 0
 
 
 from versereferencelist import VerseReferenceList

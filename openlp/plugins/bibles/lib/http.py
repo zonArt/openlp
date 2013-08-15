@@ -618,7 +618,7 @@ class HTTPBible(BibleDB):
             if BibleDB.get_verse_count(self, book_id, reference[1]) == 0:
                 self.application.set_busy_cursor()
                 search_results = self.get_chapter(book, reference[1])
-                if search_results and search_results.has_verselist():
+                if search_results and search_results.has_verse_list():
                     ## We have found a book of the bible lets check to see
                     ## if it was there. By reusing the returned book name
                     ## we get a correct book. For example it is possible
@@ -627,7 +627,7 @@ class HTTPBible(BibleDB):
                     self.application.process_events()
                     # Check to see if book/chapter exists.
                     db_book = self.get_book(book_name)
-                    self.create_chapter(db_book.id, search_results.chapter, search_results.verselist)
+                    self.create_chapter(db_book.id, search_results.chapter, search_results.verse_list)
                     self.application.process_events()
                 self.application.set_normal_cursor()
             self.application.process_events()
