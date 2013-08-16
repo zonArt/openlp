@@ -943,8 +943,7 @@ class BibleMediaItem(MediaManagerItem):
             The verse number (int).
         """
         verse_separator = get_reference_separator(u'sep_v_display')
-        
-        if self.settings.verse_number_display:
+        if self.settings.is_verse_number_visible:
             if not self.settings.show_new_chapters or old_chapter != chapter:
                 verse_text = unicode(chapter) + verse_separator + unicode(verse)
             else:

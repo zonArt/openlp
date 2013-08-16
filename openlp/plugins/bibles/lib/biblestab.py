@@ -58,9 +58,9 @@ class BiblesTab(SettingsTab):
         self.verse_display_group_box.setObjectName(u'verse_display_group_box')
         self.verse_display_layout = QtGui.QFormLayout(self.verse_display_group_box)
         self.verse_display_layout.setObjectName(u'verse_display_layout')
-        self.verse_number_display_check_box = QtGui.QCheckBox(self.verse_display_group_box)
-        self.verse_number_display_check_box.setObjectName(u'verse_display_check_box')
-        self.verse_display_layout.addRow(self.verse_number_display_check_box)
+        self.is_verse_number_visible_check_box = QtGui.QCheckBox(self.verse_display_group_box)
+        self.is_verse_number_visible_check_box.setObjectName(u'verse_display_check_box')
+        self.verse_display_layout.addRow(self.is_verse_number_visible_check_box)
         self.new_chapters_check_box = QtGui.QCheckBox(self.verse_display_group_box)
         self.new_chapters_check_box.setObjectName(u'new_chapters_check_box')
         self.verse_display_layout.addRow(self.new_chapters_check_box)
@@ -137,7 +137,7 @@ class BiblesTab(SettingsTab):
         self.left_layout.addStretch()
         self.right_layout.addStretch()
         # Signals and slots
-        self.verse_number_display_check_box.stateChanged.connect(self.on_verse_number_display_check_box_changed)
+        self.is_verse_number_visible_check_box.stateChanged.connect(self.on_is_verse_number_visible_check_box_changed)
         self.new_chapters_check_box.stateChanged.connect(self.on_new_chapters_check_box_changed)
         self.display_style_combo_box.activated.connect(self.on_display_style_combo_box_changed)
         self.bible_theme_combo_box.activated.connect(self.on_bible_theme_combo_box_changed)
@@ -160,7 +160,7 @@ class BiblesTab(SettingsTab):
 
     def retranslateUi(self):
         self.verse_display_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Verse Display'))
-        self.verse_number_display_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Display verse numbers'))
+        self.is_verse_number_visible_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Is verse number visible'))
         self.new_chapters_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Only show new chapter numbers'))
         self.layout_style_label.setText(UiStrings().LayoutStyle)
         self.display_style_label.setText(UiStrings().DisplayStyle)
@@ -213,12 +213,12 @@ class BiblesTab(SettingsTab):
     def on_language_selection_combo_box_changed(self):
         self.language_selection = self.language_selection_combo_box.currentIndex()
 
-    def on_verse_number_display_check_box_changed(self, check_state):
-        self.verse_number_display = False
+    def on_is_verse_number_visible_check_box_changed(self, check_state):
+        self.is_verse_number_visible = False
         # We have a set value convert to True/False.
         if check_state == QtCore.Qt.Checked:
-            self.verse_number_display = True
-        self.check_verse_number_display()
+            self.is_verse_number_visible = True
+        self.check_is_verse_number_visible()
 
     def on_new_chapters_check_box_changed(self, check_state):
         self.show_new_chapters = False
@@ -311,14 +311,14 @@ class BiblesTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.verse_number_display = settings.value(u'verse number display')
+        self.is_verse_number_visible = settings.value(u'is verse number visible')
         self.show_new_chapters = settings.value(u'display new chapter')
         self.display_style = settings.value(u'display brackets')
         self.layout_style = settings.value(u'verse layout style')
         self.bible_theme = settings.value(u'bible theme')
         self.second_bibles = settings.value(u'second bibles')
-        self.verse_number_display_check_box.setChecked(self.verse_number_display)
-        self.check_verse_number_display()
+        self.is_verse_number_visible_check_box.setChecked(self.is_verse_number_visible)
+        self.check_is_verse_number_visible()
         self.new_chapters_check_box.setChecked(self.show_new_chapters)
         self.display_style_combo_box.setCurrentIndex(self.display_style)
         self.layout_style_combo_box.setCurrentIndex(self.layout_style)
@@ -366,7 +366,7 @@ class BiblesTab(SettingsTab):
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        settings.setValue(u'verse number display', self.verse_number_display)
+        settings.setValue(u'is verse number visible', self.is_verse_number_visible)
         settings.setValue(u'display new chapter', self.show_new_chapters)
         settings.setValue(u'display brackets', self.display_style)
         settings.setValue(u'verse layout style', self.layout_style)
@@ -422,11 +422,11 @@ class BiblesTab(SettingsTab):
         palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Text, color)
         return palette
     
-    def check_verse_number_display(self):
+    def check_is_verse_number_visible(self):
         """
-        Enables / Disables verse settings dependent on verse_number_display
+        Enables / Disables verse settings dependent on is_verse_number_visible
         """
-        self.new_chapters_check_box.setEnabled(self.verse_number_display)
-        self.display_style_label.setEnabled(self.verse_number_display)
-        self.display_style_combo_box.setEnabled(self.verse_number_display)
+        self.new_chapters_check_box.setEnabled(self.is_verse_number_visible)
+        self.display_style_label.setEnabled(self.is_verse_number_visible)
+        self.display_style_combo_box.setEnabled(self.is_verse_number_visible)
 
