@@ -244,7 +244,7 @@ class SongImportForm(OpenLPWizard):
         if filters:
             filters += u';;'
         filters += u'%s (*)' % UiStrings().AllFiles
-        filenames = FileDialog().getOpenFileNames(self, title,
+        filenames = FileDialog.getOpenFileNames(self, title,
             Settings().value(self.plugin.settings_section + u'/last directory import'), filters)
         if filenames:
             listbox.addItems(filenames)

@@ -374,7 +374,7 @@ class ThemeManager(QtGui.QWidget):
         Opens a file dialog to select the theme file(s) to import before attempting to extract OpenLP themes from
         those files. This process will load both OpenLP version 1 and version 2 themes.
         """
-        files = FileDialog().getOpenFileNames(self,
+        files = FileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             Settings().value(self.settings_section + u'/last directory import'),
             translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))

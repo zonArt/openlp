@@ -66,6 +66,6 @@ class TestFileDialog(TestCase):
         #       called. The returned result should corrilate with the input.
         self.mocked_os.path.exists.assert_has_calls([call(u'/Valid File'), call(u'/url%20encoded%20file%20%231'),
             call(u'/url encoded file #1'), call(u'/non-existing'), call(u'/non-existing')])
-        self.mocked_qt_gui.QmessageBox.information.called_with(self.mocked_parent, UiStrings().FNFT,
-            UiStrings().FNF % u'/non-existing')
+        self.mocked_qt_gui.QmessageBox.information.called_with(self.mocked_parent, UiStrings().FileNotFound,
+            UiStrings().FileNotFoundMessage % u'/non-existing')
         self.assertEqual(result, [u'/Valid File', u'/url encoded file #1'], u'The returned file list is incorrect')
