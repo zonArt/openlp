@@ -214,6 +214,9 @@ class BiblesTab(SettingsTab):
         self.language_selection = self.language_selection_combo_box.currentIndex()
 
     def on_is_verse_number_visible_check_box_changed(self, check_state):
+        """
+        Event handler for the 'verse number visible' check box
+        """
         self.is_verse_number_visible = False
         # We have a set value convert to True/False.
         if check_state == QtCore.Qt.Checked:
