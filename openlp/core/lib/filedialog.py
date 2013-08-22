@@ -28,7 +28,7 @@
 ###############################################################################
 
 """
-Provide a work around for a bug in QFileDialog (#1209515)
+Provide a work around for a bug in QFileDialog <https://bugs.launchpad.net/openlp/+bug/1209515>
 """
 import logging
 import os
@@ -42,7 +42,7 @@ log = logging.getLogger(__name__)
 
 class FileDialog(QtGui.QFileDialog):
     """
-    Inherit form QFileDialog
+    Subclass QFileDialog to work round a bug
     """
     @staticmethod
     def getOpenFileNames(parent, *args, **kwargs):
@@ -59,7 +59,8 @@ class FileDialog(QtGui.QFileDialog):
                 file = urllib.unquote(unicode(file))
                 if not os.path.exists(file):
                     log.error(u'File %s not found.' % file)
-                    QtGui.QMessageBox.information(parent, UiStrings().FNFT, UiStrings().FNF % file)
+                    QtGui.QMessageBox.information(parent, UiStrings().FileNotFound,
+                        UiStrings().FileNotFoundMessage % file)
                     continue
                 log.info(u'File %s found.')
             file_list.append(file)
