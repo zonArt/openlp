@@ -1195,6 +1195,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.live_controller.splitter.restoreState(settings.value(u'live splitter geometry'))
         self.preview_controller.splitter.restoreState(settings.value(u'preview splitter geometry'))
         self.control_splitter.restoreState(settings.value(u'main window splitter geometry'))
+        #This needs to be called after restoreState(), because saveState() also saves the "Collapsible" property
+        #which was True (by default) < OpenLP 2.1.
+        self.control_splitter.setChildrenCollapsible(False)
         settings.endGroup()
 
     def save_settings(self):
