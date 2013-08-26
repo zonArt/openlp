@@ -42,6 +42,16 @@ from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 
 
+class EDITCOLUMN(object):
+    """
+    Hides the magic numbers for the table columns
+    """
+    Description = 0
+    Tag = 1
+    StartHtml = 2
+    EndHtml = 3
+
+
 class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
     """
     The :class:`FormattingTagForm` manages the settings tab .
@@ -58,7 +68,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             r'|(?P<procinst>\?(?:(?!\?>).)*\?)'
             r'|(?P<comment>!--(?:(?!-->).)*--))>', re.UNICODE)
         self.html_regex = re.compile(r'^(?:[^<>]*%s)*[^<>]*$' % self.html_tag_regex.pattern)
-        #self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
+        self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
         self.new_button.clicked.connect(self.on_new_clicked)
         #self.save_push_button.clicked.connect(self.on_saved_clicked)
         self.delete_button.clicked.connect(self.on_delete_clicked)
@@ -66,7 +76,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.button_box.rejected.connect(self.close)
         # Forces reloading of tags from openlp configuration.
         FormattingTags.load_tags()
-        self.pause_validation = False
 
     def exec_(self):
         """
@@ -80,76 +89,33 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Table Row selected so display items and set field state.
         """
-        #self.save_push_button.setEnabled(False)
-        self.selected = self.tag_table_widget.currentRow()
-        html = FormattingTags.get_html_tags()[self.selected]
-        self.description_line_edit.setText(html[u'desc'])
-        self.tag_line_edit.setText(self._strip(html[u'start tag']))
-        self.start_tag_line_edit.setText(html[u'start html'])
-        self.end_tag_line_edit.setText(html[u'end html'])
-        if html[u'protected']:
-            self.description_line_edit.setEnabled(False)
-            self.tag_line_edit.setEnabled(False)
-            self.start_tag_line_edit.setEnabled(False)
-            self.end_tag_line_edit.setEnabled(False)
-            self.delete_push_button.setEnabled(False)
-        else:
-            self.description_line_edit.setEnabled(True)
-            self.tag_line_edit.setEnabled(True)
-            self.start_tag_line_edit.setEnabled(True)
-            self.end_tag_line_edit.setEnabled(True)
-            self.delete_push_button.setEnabled(True)
-
-    def on_text_edited(self, text):
-        """
-        Enable the ``save_push_button`` when any of the selected tag's properties
-        has been changed.
-        """
-        self.save_push_button.setEnabled(True)
+        self.delete_button.setEnabled(True)
 
     def on_new_clicked(self):
         """
-        Add a new tag to list only if it is not a duplicate.
+        Add a new tag to edit list and select it for editing.
         """
-        last_row = self.tag_table_widget.rowCount() - 1
-        self.tag_table_widget.selectRow(last_row)
-        self.tag_table_widget.setCurrentCell(last_row, 0)
-        for html in FormattingTags.get_html_tags():
-            if self._strip(html[u'start tag']) == u'n':
-                critical_error_message_box(
-                    translate('OpenLP.FormattingTagForm', 'Update Error'),
-                    translate('OpenLP.FormattingTagForm', 'Tag "n" already defined.'))
-                return
-        # Add new tag to list
-        tag = {
-            u'desc': translate('OpenLP.FormattingTagForm', 'New Tag'),
-            u'start tag': u'{n%s}' % unicode(last_row + 1),
-            u'start html': translate('OpenLP.FormattingTagForm', '<HTML here>'),
-            u'end tag': u'{/n%s}' % unicode(last_row + 1),
-            u'end html': translate('OpenLP.FormattingTagForm', '</and here>'),
-            u'protected': False,
-            u'temporary': False
-        }
-        #FormattingTags.add_html_tags([tag])
-        #FormattingTags.save_html_tags()
-        #self._reloadTable()
-        # Highlight new row
-        #self.tag_table_widget.selectRow(self.tag_table_widget.rowCount() - 1)
-        #self.on_row_selected()
+        new_row = self.tag_table_widget.rowCount()
+        self.tag_table_widget.insertRow(new_row)
+        self.tag_table_widget.setItem(new_row, 0,
+            QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', 'New Tag')))
+        self.tag_table_widget.setItem(new_row, 1,
+            QtGui.QTableWidgetItem('n%s' % unicode(new_row)))
+        self.tag_table_widget.setItem(new_row, 2,
+            QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
+        self.tag_table_widget.setItem(new_row, 3,
+            QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '</and here>')))
+        self.tag_table_widget.resizeRowsToContents()
         self.tag_table_widget.scrollToBottom()
+        self.tag_table_widget.selectRow(new_row)
 
     def on_delete_clicked(self):
         """
-        Delete selected custom tag.
+        Delete selected custom row.
         """
-        if self.selected != -1:
-            FormattingTags.remove_html_tag(self.selected)
-            # As the first items are protected we should not have to take care
-            # of negative indexes causing tracebacks.
-            self.tag_table_widget.selectRow(self.selected - 1)
-            self.selected = -1
-            FormattingTags.save_html_tags()
-            self._reloadTable()
+        selected = self.tag_table_widget.currentRow()
+        if selected != -1:
+            self.tag_table_widget.removeRow(selected)
 
     def on_saved_clicked(self):
         """
@@ -217,12 +183,10 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         # only process for editable rows
         pre_row_item = self.tag_table_widget.item(pre_row, 0)
         edit_item = None
-        if pre_row_item and (pre_row_item.flags() & QtCore.Qt.ItemIsEditable) and not self.pause_validation:
-            data = self.item_to_data_dict(pre_row_item)
+        if pre_row_item and (pre_row_item.flags() & QtCore.Qt.ItemIsEditable):
             item = self.tag_table_widget.item(pre_row, pre_col)
             text = unicode(item.text())
-            if pre_col is 0:
-                # Tag name edited
+            if pre_col is EDITCOLUMN.Tag:
                 if text:
                     for row in range(self.tag_table_widget.rowCount()):
                         counting_item = self.tag_table_widget.item(row, 0)
@@ -233,33 +197,10 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
                                     'Tag %s is already defined. Please pick a different one.' % text),
                                 QtGui.QMessageBox.Discard|QtGui.QMessageBox.Ok)
                             if answer == QtGui.QMessageBox.Discard:
-                                item.setText(data.get(u'tag'))
+                                break
                             else:
                                 edit_item = item
                                 break
-                    if not edit_item:
-                        data[u'tag'] = text
-                        data.setdefault(u'description', u'')
-                        data.setdefault(u'html', u'')
-                        pre_row_item.setData(QtCore.Qt.UserRole, data)
-                        flags = self.tag_table_widget.item(pre_row, 1).flags()
-                        if not (flags & QtCore.Qt.ItemIsEditable):
-                            # if description cell is read only, the user is adding a new tag.
-                            #   So we add another empty row and enable editing for description and html.
-                            new_row = self.tag_table_widget.rowCount()
-                            self.tag_table_widget.insertRow(new_row)
-                            for column in range(4):
-                                new_item = QtGui.QTableWidgetItem(u'')
-                                if column != 0:
-                                    new_item.setFlags(flags)
-                                self.tag_table_widget.setItem(new_row, column, new_item)
-                            for column in [1, 2]:
-                                self.tag_table_widget.item(pre_row, column).setFlags(item.flags())
-                            # trigger edit as editing might have been enabled after selecting
-                            if cur_row == pre_row and cur_col in [1, 2]:
-                                cur_item = self.tag_table_widget.item(cur_row, cur_col)
-                                self.tag_table_widget.editItem(cur_item)
-                            self.tag_table_widget.resizeRowsToContents()
                 else:
                     answer = None
                     if self.tag_table_widget.item(pre_row, 1).text() or self.tag_table_widget.item(pre_row, 2).text():
@@ -268,43 +209,32 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
                             translate('OpenLP.FormattingTagForm',
                                 'No tag name defined. Do you want to delete the whole tag?'),
                             QtGui.QMessageBox.Yes|QtGui.QMessageBox.Discard|QtGui.QMessageBox.Cancel)
-                    if answer == QtGui.QMessageBox.Discard:
-                        item.setText(data.get(u'tag'))
-                    if answer == QtGui.QMessageBox.Cancel:
-                        edit_item = item
+                    #if answer == QtGui.QMessageBox.Discard:
+                    #    item.setText(data.get(u'tag'))
+                    #if answer == QtGui.QMessageBox.Cancel:
+                    #    edit_item = item
                     elif pre_row < self.tag_table_widget.rowCount() - 1:
                         self.tag_table_widget.removeRow(pre_row)
-            elif pre_col is 1:
-                # Description edited
-                data[u'description'] = text
-                pre_row_item.setData(QtCore.Qt.UserRole, data)
-            elif pre_col is 2:
+            #elif pre_col is EDITCOLUMN.StartHtml:
                 # HTML edited
-                end_html = self.start_html_to_end_html(text)
-                if end_html is not None:
-                    item.setToolTip(cgi.escape(text))
-                    if self.tag_table_widget.item(pre_row, 3) is None:
-                        self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(end_html))
-                    else:
-                        self.tag_table_widget.item(pre_row, 3).setText(end_html)
-                    self.tag_table_widget.item(pre_row, 3).setToolTip(cgi.escape(end_html))
-                    data[u'html'] = text
-                    pre_row_item.setData(QtCore.Qt.UserRole, data)
-                    self.tag_table_widget.resizeRowsToContents()
-                elif QtGui.QMessageBox.question(self,
-                        translate('OpenLP.FormattingTagForm', 'Validation Error'),
-                        translate('OpenLP.FormattingTagForm', 'The entered HTML is not valid. Please enter valid HTML.'),
-                        QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel) == QtGui.QMessageBox.Cancel:
-                    item.setText(data.get(u'html'))
-                else:
-                    edit_item = item
-        if not edit_item:
-            # select the tag cell in a empty row
-            cur_row_item = self.tag_table_widget.item(cur_row, 0)
-            if cur_row_item and (cur_row_item.flags() & QtCore.Qt.ItemIsEditable) and cur_row_item.text().isEmpty():
-                edit_item = cur_row_item
-        if edit_item:
-            self.tag_table_widget.setCurrentItem(edit_item)
+                #end_html = self.start_html_to_end_html(text)
+                #if end_html is not None:
+                #    item.setToolTip(cgi.escape(text))
+                ##    if self.tag_table_widget.item(pre_row, 3) is None:
+                #        self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(end_html))
+                #   else:
+                #        self.tag_table_widget.item(pre_row, 3).setText(end_html)
+                #    self.tag_table_widget.item(pre_row, 3).setToolTip(cgi.escape(end_html))
+                #    #data[u'html'] = text
+                #    #pre_row_item.setData(QtCore.Qt.UserRole, data)
+                # #   self.tag_table_widget.resizeRowsToContents()
+        #if not edit_item:
+        #    # select the tag cell in a empty row
+        #    cur_row_item = self.tag_table_widget.item(cur_row, 0)
+        #    if cur_row_item and (cur_row_item.flags() & QtCore.Qt.ItemIsEditable) and cur_row_item.text().isEmpty():
+        #        edit_item = cur_row_item
+        #if edit_item:
+        #    self.tag_table_widget.setCurrentItem(edit_item)
         # enable delete_button for editable rows
         cur_row = self.tag_table_widget.currentRow()
         cur_row_item = self.tag_table_widget.item(cur_row, 0)
