@@ -943,19 +943,19 @@ class BibleMediaItem(MediaManagerItem):
             The verse number (int).
         """
         verse_separator = get_reference_separator(u'sep_v_display')
-        if self.settings.is_verse_number_visible:
-            if not self.settings.show_new_chapters or old_chapter != chapter:
-                verse_text = unicode(chapter) + verse_separator + unicode(verse)
-            else:
-                verse_text = unicode(verse)
-            if self.settings.display_style == DisplayStyle.Round:
-                return u'{su}(%s){/su}' % verse_text
-            elif self.settings.display_style == DisplayStyle.Curly:
-                return u'{su}{%s}{/su}' % verse_text
-            elif self.settings.display_style == DisplayStyle.Square:
-                return u'{su}[%s]{/su}' % verse_text
-            return u'{su}%s{/su}' % verse_text
-        return u''
+        if not self.settings.is_verse_number_visible:
+            return u''
+        if not self.settings.show_new_chapters or old_chapter != chapter:
+            verse_text = unicode(chapter) + verse_separator + unicode(verse)
+        else:
+            verse_text = unicode(verse)
+        if self.settings.display_style == DisplayStyle.Round:
+            return u'{su}(%s){/su}' % verse_text
+        elif self.settings.display_style == DisplayStyle.Curly:
+            return u'{su}{%s}{/su}' % verse_text
+        elif self.settings.display_style == DisplayStyle.Square:
+            return u'{su}[%s]{/su}' % verse_text
+        return u'{su}%s{/su}' % verse_text
 
     def search(self, string, showError):
         """

@@ -59,7 +59,7 @@ class BiblesTab(SettingsTab):
         self.verse_display_layout = QtGui.QFormLayout(self.verse_display_group_box)
         self.verse_display_layout.setObjectName(u'verse_display_layout')
         self.is_verse_number_visible_check_box = QtGui.QCheckBox(self.verse_display_group_box)
-        self.is_verse_number_visible_check_box.setObjectName(u'verse_display_check_box')
+        self.is_verse_number_visible_check_box.setObjectName(u'is_verse_number_visible_check_box')
         self.verse_display_layout.addRow(self.is_verse_number_visible_check_box)
         self.new_chapters_check_box = QtGui.QCheckBox(self.verse_display_group_box)
         self.new_chapters_check_box.setObjectName(u'new_chapters_check_box')
@@ -160,7 +160,7 @@ class BiblesTab(SettingsTab):
 
     def retranslateUi(self):
         self.verse_display_group_box.setTitle(translate('BiblesPlugin.BiblesTab', 'Verse Display'))
-        self.is_verse_number_visible_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Is verse number visible'))
+        self.is_verse_number_visible_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Show verse numbers'))
         self.new_chapters_check_box.setText(translate('BiblesPlugin.BiblesTab', 'Only show new chapter numbers'))
         self.layout_style_label.setText(UiStrings().LayoutStyle)
         self.display_style_label.setText(UiStrings().DisplayStyle)
