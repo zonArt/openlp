@@ -706,7 +706,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                     items = json.load(file_to)
                 else:
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
-                        'File is not in a supported format.\n The use OpenLP 2.0.2 or greater to create file.'))
+                        'The service file you are trying to open is in an old format.\n '
+                        'Please save it using OpenLP 2.0.2 or greater.'))
                     return
                 file_to.close()
                 self.new_file()
