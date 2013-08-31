@@ -46,20 +46,20 @@ class MediaTab(SettingsTab):
     """
     def __init__(self, parent, title, visible_title, icon_path):
         self.parent = parent
-        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        super(MediaTab, self).__init__(parent, title, visible_title, icon_path)
 
     def setupUi(self):
-        self.setObjectName(u'MediaTab')
-        SettingsTab.setupUi(self)
+        self.setObjectName('MediaTab')
+        super(MediaTab, self).setupUi()
         self.advanced_group_box = QtGui.QGroupBox(self.left_column)
-        self.advanced_group_box.setObjectName(u'advanced_group_box')
+        self.advanced_group_box.setObjectName('advanced_group_box')
         self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
-        self.advanced_layout.setObjectName(u'advanced_layout')
+        self.advanced_layout.setObjectName('advanced_layout')
         self.override_player_check_box = QtGui.QCheckBox(self.advanced_group_box)
-        self.override_player_check_box.setObjectName(u'override_player_check_box')
+        self.override_player_check_box.setObjectName('override_player_check_box')
         self.advanced_layout.addWidget(self.override_player_check_box)
         self.auto_start_check_box = QtGui.QCheckBox(self.advanced_group_box)
-        self.auto_start_check_box.setObjectName(u'auto_start_check_box')
+        self.auto_start_check_box.setObjectName('auto_start_check_box')
         self.advanced_layout.addWidget(self.auto_start_check_box)
         self.left_layout.addWidget(self.advanced_group_box)
         self.left_layout.addStretch()
@@ -71,16 +71,16 @@ class MediaTab(SettingsTab):
         self.auto_start_check_box.setText(translate('MediaPlugin.MediaTab', 'Start Live items automatically'))
 
     def load(self):
-        self.override_player_check_box.setChecked(Settings().value(self.settings_section + u'/override player'))
-        self.auto_start_check_box.setChecked(Settings().value(self.settings_section + u'/media auto start'))
+        self.override_player_check_box.setChecked(Settings().value(self.settings_section + '/override player'))
+        self.auto_start_check_box.setChecked(Settings().value(self.settings_section + '/media auto start'))
 
     def save(self):
-        setting_key = self.settings_section + u'/override player'
+        setting_key = self.settings_section + '/override player'
         if Settings().value(setting_key) != self.override_player_check_box.checkState():
             Settings().setValue(setting_key, self.override_player_check_box.checkState())
-            self.settings_form.register_post_process(u'mediaitem_suffix_reset')
-            self.settings_form.register_post_process(u'mediaitem_media_rebuild')
-            self.settings_form.register_post_process(u'mediaitem_suffixes')
-        setting_key = self.settings_section + u'/media auto start'
+            self.settings_form.register_post_process('mediaitem_suffix_reset')
+            self.settings_form.register_post_process('mediaitem_media_rebuild')
+            self.settings_form.register_post_process('mediaitem_suffixes')
+        setting_key = self.settings_section + '/media auto start'
         if Settings().value(setting_key) != self.auto_start_check_box.checkState():
             Settings().setValue(setting_key, self.auto_start_check_box.checkState())

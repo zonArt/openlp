@@ -42,10 +42,10 @@ from openlp.plugins.custom.lib.mediaitem import CustomSearch
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        u'custom/db type': u'sqlite',
-        u'custom/last search type':  CustomSearch.Titles,
-        u'custom/display footer': True,
-        u'custom/add custom from service': True
+        'custom/db type': 'sqlite',
+        'custom/last search type':  CustomSearch.Titles,
+        'custom/display footer': True,
+        'custom/add custom from service': True
 }
 
 
@@ -58,13 +58,13 @@ class CustomPlugin(Plugin):
     the songs plugin has become restrictive. Examples could be
     Welcome slides, Bible Reading information, Orders of service.
     """
-    log.info(u'Custom Plugin loaded')
+    log.info('Custom Plugin loaded')
 
     def __init__(self):
-        Plugin.__init__(self, u'custom', __default_settings__, CustomMediaItem, CustomTab)
+        super(CustomPlugin, self).__init__('custom', __default_settings__, CustomMediaItem, CustomTab)
         self.weight = -5
-        self.manager = Manager(u'custom', init_schema)
-        self.icon_path = u':/plugins/plugin_custom.png'
+        self.manager = Manager('custom', init_schema)
+        self.icon_path = ':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
 
     def about(self):
@@ -105,23 +105,23 @@ class CustomPlugin(Plugin):
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
-            u'singular': translate('CustomPlugin', 'Custom Slide', 'name singular'),
-            u'plural': translate('CustomPlugin', 'Custom Slides', 'name plural')
+            'singular': translate('CustomPlugin', 'Custom Slide', 'name singular'),
+            'plural': translate('CustomPlugin', 'Custom Slides', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.text_strings[StringContent.VisibleName] = {
-            u'title': translate('CustomPlugin', 'Custom Slides', 'container title')
+            'title': translate('CustomPlugin', 'Custom Slides', 'container title')
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('CustomPlugin', 'Load a new custom slide.'),
-            u'import': translate('CustomPlugin', 'Import a custom slide.'),
-            u'new': translate('CustomPlugin', 'Add a new custom slide.'),
-            u'edit': translate('CustomPlugin', 'Edit the selected custom slide.'),
-            u'delete': translate('CustomPlugin', 'Delete the selected custom slide.'),
-            u'preview': translate('CustomPlugin', 'Preview the selected custom slide.'),
-            u'live': translate('CustomPlugin', 'Send the selected custom slide live.'),
-            u'service': translate('CustomPlugin', 'Add the selected custom slide to the service.')
+            'load': translate('CustomPlugin', 'Load a new custom slide.'),
+            'import': translate('CustomPlugin', 'Import a custom slide.'),
+            'new': translate('CustomPlugin', 'Add a new custom slide.'),
+            'edit': translate('CustomPlugin', 'Edit the selected custom slide.'),
+            'delete': translate('CustomPlugin', 'Delete the selected custom slide.'),
+            'preview': translate('CustomPlugin', 'Preview the selected custom slide.'),
+            'live': translate('CustomPlugin', 'Send the selected custom slide live.'),
+            'service': translate('CustomPlugin', 'Add the selected custom slide to the service.')
         }
         self.set_plugin_ui_text_strings(tooltips)
 
@@ -129,6 +129,6 @@ class CustomPlugin(Plugin):
         """
         Time to tidy up on exit
         """
-        log.info(u'Custom Finalising')
+        log.info('Custom Finalising')
         self.manager.finalise()
         Plugin.finalise(self)

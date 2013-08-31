@@ -42,24 +42,24 @@ log = logging.getLogger(__name__)
 
 class SongBeamerTypes(object):
     MarkTypes = {
-        u'Refrain': VerseType.tags[VerseType.Chorus],
-        u'Chorus': VerseType.tags[VerseType.Chorus],
-        u'Vers': VerseType.tags[VerseType.Verse],
-        u'Verse': VerseType.tags[VerseType.Verse],
-        u'Strophe': VerseType.tags[VerseType.Verse],
-        u'Intro': VerseType.tags[VerseType.Intro],
-        u'Coda': VerseType.tags[VerseType.Ending],
-        u'Ending': VerseType.tags[VerseType.Ending],
-        u'Bridge': VerseType.tags[VerseType.Bridge],
-        u'Interlude': VerseType.tags[VerseType.Bridge],
-        u'Zwischenspiel': VerseType.tags[VerseType.Bridge],
-        u'Pre-Chorus': VerseType.tags[VerseType.PreChorus],
-        u'Pre-Refrain': VerseType.tags[VerseType.PreChorus],
-        u'Pre-Bridge': VerseType.tags[VerseType.Other],
-        u'Pre-Coda': VerseType.tags[VerseType.Other],
-        u'Unbekannt': VerseType.tags[VerseType.Other],
-        u'Unknown': VerseType.tags[VerseType.Other],
-        u'Unbenannt': VerseType.tags[VerseType.Other]
+        'Refrain': VerseType.tags[VerseType.Chorus],
+        'Chorus': VerseType.tags[VerseType.Chorus],
+        'Vers': VerseType.tags[VerseType.Verse],
+        'Verse': VerseType.tags[VerseType.Verse],
+        'Strophe': VerseType.tags[VerseType.Verse],
+        'Intro': VerseType.tags[VerseType.Intro],
+        'Coda': VerseType.tags[VerseType.Ending],
+        'Ending': VerseType.tags[VerseType.Ending],
+        'Bridge': VerseType.tags[VerseType.Bridge],
+        'Interlude': VerseType.tags[VerseType.Bridge],
+        'Zwischenspiel': VerseType.tags[VerseType.Bridge],
+        'Pre-Chorus': VerseType.tags[VerseType.PreChorus],
+        'Pre-Refrain': VerseType.tags[VerseType.PreChorus],
+        'Pre-Bridge': VerseType.tags[VerseType.Other],
+        'Pre-Coda': VerseType.tags[VerseType.Other],
+        'Unbekannt': VerseType.tags[VerseType.Other],
+        'Unknown': VerseType.tags[VerseType.Other],
+        'Unbenannt': VerseType.tags[VerseType.Other]
     }
 
 
@@ -69,27 +69,27 @@ class SongBeamerImport(SongImport):
     written.
     """
     HTML_TAG_PAIRS = [
-        (re.compile(u'<b>'), u'{st}'),
-        (re.compile(u'</b>'), u'{/st}'),
-        (re.compile(u'<i>'), u'{it}'),
-        (re.compile(u'</i>'), u'{/it}'),
-        (re.compile(u'<u>'), u'{u}'),
-        (re.compile(u'</u>'), u'{/u}'),
-        (re.compile(u'<p>'), u'{p}'),
-        (re.compile(u'</p>'), u'{/p}'),
-        (re.compile(u'<super>'), u'{su}'),
-        (re.compile(u'</super>'), u'{/su}'),
-        (re.compile(u'<sub>'), u'{sb}'),
-        (re.compile(u'</sub>'), u'{/sb}'),
-        (re.compile(u'<br.*?>'), u'{br}'),
-        (re.compile(u'<[/]?wordwrap>'), u''),
-        (re.compile(u'<[/]?strike>'), u''),
-        (re.compile(u'<[/]?h.*?>'), u''),
-        (re.compile(u'<[/]?s.*?>'), u''),
-        (re.compile(u'<[/]?linespacing.*?>'), u''),
-        (re.compile(u'<[/]?c.*?>'), u''),
-        (re.compile(u'<align.*?>'), u''),
-        (re.compile(u'<valign.*?>'), u'')
+        (re.compile('<b>'), '{st}'),
+        (re.compile('</b>'), '{/st}'),
+        (re.compile('<i>'), '{it}'),
+        (re.compile('</i>'), '{/it}'),
+        (re.compile('<u>'), '{u}'),
+        (re.compile('</u>'), '{/u}'),
+        (re.compile('<p>'), '{p}'),
+        (re.compile('</p>'), '{/p}'),
+        (re.compile('<super>'), '{su}'),
+        (re.compile('</super>'), '{/su}'),
+        (re.compile('<sub>'), '{sb}'),
+        (re.compile('</sub>'), '{/sb}'),
+        (re.compile('<br.*?>'), '{br}'),
+        (re.compile('<[/]?wordwrap>'), ''),
+        (re.compile('<[/]?strike>'), ''),
+        (re.compile('<[/]?h.*?>'), ''),
+        (re.compile('<[/]?s.*?>'), ''),
+        (re.compile('<[/]?linespacing.*?>'), ''),
+        (re.compile('<[/]?c.*?>'), ''),
+        (re.compile('<align.*?>'), ''),
+        (re.compile('<valign.*?>'), '')
     ]
 
     def __init__(self, manager, **kwargs):
@@ -110,15 +110,15 @@ class SongBeamerImport(SongImport):
             if self.stop_import_flag:
                 return
             self.setDefaults()
-            self.currentVerse = u''
+            self.currentVerse = ''
             self.currentVerseType = VerseType.tags[VerseType.Verse]
             read_verses = False
             file_name = os.path.split(file)[1]
             if os.path.isfile(file):
-                detect_file = open(file, u'r')
+                detect_file = open(file, 'r')
                 details = chardet.detect(detect_file.read())
                 detect_file.close()
-                infile = codecs.open(file, u'r', details['encoding'])
+                infile = codecs.open(file, 'r', details['encoding'])
                 song_data = infile.readlines()
                 infile.close()
             else:
@@ -127,14 +127,14 @@ class SongBeamerImport(SongImport):
             read_verses = False
             for line in song_data:
                 # Just make sure that the line is of the type 'Unicode'.
-                line = unicode(line).strip()
-                if line.startswith(u'#') and not read_verses:
+                line = str(line).strip()
+                if line.startswith('#') and not read_verses:
                     self.parseTags(line)
-                elif line.startswith(u'---'):
+                elif line.startswith('---'):
                     if self.currentVerse:
                         self.replaceHtmlTags()
                         self.addVerse(self.currentVerse, self.currentVerseType)
-                        self.currentVerse = u''
+                        self.currentVerse = ''
                         self.currentVerseType = VerseType.tags[VerseType.Verse]
                     read_verses = True
                     verse_start = True
@@ -142,9 +142,9 @@ class SongBeamerImport(SongImport):
                     if verse_start:
                         verse_start = False
                         if not self.checkVerseMarks(line):
-                            self.currentVerse = line + u'\n'
+                            self.currentVerse = line + '\n'
                     else:
-                        self.currentVerse += line + u'\n'
+                        self.currentVerse += line + '\n'
             if self.currentVerse:
                 self.replaceHtmlTags()
                 self.addVerse(self.currentVerse, self.currentVerseType)
@@ -167,102 +167,102 @@ class SongBeamerImport(SongImport):
 
                 u'#Title=Nearer my God to Thee'
         """
-        tag_val = line.split(u'=', 1)
+        tag_val = line.split('=', 1)
         if len(tag_val) == 1:
             return
         if not tag_val[0] or not tag_val[1]:
             return
-        if tag_val[0] == u'#(c)':
+        if tag_val[0] == '#(c)':
             self.addCopyright(tag_val[1])
-        elif tag_val[0] == u'#AddCopyrightInfo':
+        elif tag_val[0] == '#AddCopyrightInfo':
             pass
-        elif tag_val[0] == u'#Author':
+        elif tag_val[0] == '#Author':
             self.parse_author(tag_val[1])
-        elif tag_val[0] == u'#BackgroundImage':
+        elif tag_val[0] == '#BackgroundImage':
             pass
-        elif tag_val[0] == u'#Bible':
+        elif tag_val[0] == '#Bible':
             pass
-        elif tag_val[0] == u'#Categories':
+        elif tag_val[0] == '#Categories':
             self.topics = tag_val[1].split(',')
-        elif tag_val[0] == u'#CCLI':
+        elif tag_val[0] == '#CCLI':
             self.ccliNumber = tag_val[1]
-        elif tag_val[0] == u'#Chords':
+        elif tag_val[0] == '#Chords':
             pass
-        elif tag_val[0] == u'#ChurchSongID':
+        elif tag_val[0] == '#ChurchSongID':
             pass
-        elif tag_val[0] == u'#ColorChords':
+        elif tag_val[0] == '#ColorChords':
             pass
-        elif tag_val[0] == u'#Comments':
+        elif tag_val[0] == '#Comments':
             self.comments = tag_val[1]
-        elif tag_val[0] == u'#Editor':
+        elif tag_val[0] == '#Editor':
             pass
-        elif tag_val[0] == u'#Font':
+        elif tag_val[0] == '#Font':
             pass
-        elif tag_val[0] == u'#FontLang2':
+        elif tag_val[0] == '#FontLang2':
             pass
-        elif tag_val[0] == u'#FontSize':
+        elif tag_val[0] == '#FontSize':
             pass
-        elif tag_val[0] == u'#Format':
+        elif tag_val[0] == '#Format':
             pass
-        elif tag_val[0] == u'#Format_PreLine':
+        elif tag_val[0] == '#Format_PreLine':
             pass
-        elif tag_val[0] == u'#Format_PrePage':
+        elif tag_val[0] == '#Format_PrePage':
             pass
-        elif tag_val[0] == u'#ID':
+        elif tag_val[0] == '#ID':
             pass
-        elif tag_val[0] == u'#Key':
+        elif tag_val[0] == '#Key':
             pass
-        elif tag_val[0] == u'#Keywords':
+        elif tag_val[0] == '#Keywords':
             pass
-        elif tag_val[0] == u'#LangCount':
+        elif tag_val[0] == '#LangCount':
             pass
-        elif tag_val[0] == u'#Melody':
+        elif tag_val[0] == '#Melody':
             self.parse_author(tag_val[1])
-        elif tag_val[0] == u'#NatCopyright':
+        elif tag_val[0] == '#NatCopyright':
             pass
-        elif tag_val[0] == u'#OTitle':
+        elif tag_val[0] == '#OTitle':
             pass
-        elif tag_val[0] == u'#OutlineColor':
+        elif tag_val[0] == '#OutlineColor':
             pass
-        elif tag_val[0] == u'#OutlinedFont':
+        elif tag_val[0] == '#OutlinedFont':
             pass
-        elif tag_val[0] == u'#QuickFind':
+        elif tag_val[0] == '#QuickFind':
             pass
-        elif tag_val[0] == u'#Rights':
+        elif tag_val[0] == '#Rights':
             song_book_pub = tag_val[1]
-        elif tag_val[0] == u'#Songbook' or tag_val[0] == u'#SongBook':
-            book_data = tag_val[1].split(u'/')
+        elif tag_val[0] == '#Songbook' or tag_val[0] == '#SongBook':
+            book_data = tag_val[1].split('/')
             self.songBookName = book_data[0].strip()
             if len(book_data) == 2:
                 number = book_data[1].strip()
-                self.songNumber = number if number.isdigit() else u''
-        elif tag_val[0] == u'#Speed':
+                self.songNumber = number if number.isdigit() else ''
+        elif tag_val[0] == '#Speed':
             pass
-        elif tag_val[0] == u'Tempo':
+        elif tag_val[0] == 'Tempo':
             pass
-        elif tag_val[0] == u'#TextAlign':
+        elif tag_val[0] == '#TextAlign':
             pass
-        elif tag_val[0] == u'#Title':
-            self.title = unicode(tag_val[1])
-        elif tag_val[0] == u'#TitleAlign':
+        elif tag_val[0] == '#Title':
+            self.title = str(tag_val[1])
+        elif tag_val[0] == '#TitleAlign':
             pass
-        elif tag_val[0] == u'#TitleFontSize':
+        elif tag_val[0] == '#TitleFontSize':
             pass
-        elif tag_val[0] == u'#TitleLang2':
+        elif tag_val[0] == '#TitleLang2':
             pass
-        elif tag_val[0] == u'#TitleLang3':
+        elif tag_val[0] == '#TitleLang3':
             pass
-        elif tag_val[0] == u'#TitleLang4':
+        elif tag_val[0] == '#TitleLang4':
             pass
-        elif tag_val[0] == u'#Translation':
+        elif tag_val[0] == '#Translation':
             pass
-        elif tag_val[0] == u'#Transpose':
+        elif tag_val[0] == '#Transpose':
             pass
-        elif tag_val[0] == u'#TransposeAccidental':
+        elif tag_val[0] == '#TransposeAccidental':
             pass
-        elif tag_val[0] == u'#Version':
+        elif tag_val[0] == '#Version':
             pass
-        elif tag_val[0] == u'#VerseOrder':
+        elif tag_val[0] == '#VerseOrder':
             # TODO: add the verse order.
             pass
 
@@ -274,7 +274,7 @@ class SongBeamerImport(SongImport):
         ``line``
             The line to check for marks (unicode).
         """
-        marks = line.split(u' ')
+        marks = line.split(' ')
         if len(marks) <= 2 and marks[0] in SongBeamerTypes.MarkTypes:
             self.currentVerseType = SongBeamerTypes.MarkTypes[marks[0]]
             if len(marks) == 2:

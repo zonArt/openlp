@@ -49,7 +49,7 @@ try:
     VLC_AVAILABLE = bool(vlc.get_default_instance())
 except (ImportError, NameError, NotImplementedError):
     pass
-except OSError, e:
+except OSError as e:
     if sys.platform.startswith('win'):
         if not isinstance(e, WindowsError) and e.winerror != 126:
             raise
@@ -58,55 +58,56 @@ except OSError, e:
 
 if VLC_AVAILABLE:
     try:
-        VERSION = vlc.libvlc_get_version()
+        VERSION = vlc.libvlc_get_version().decode('UTF-8')
     except:
-        VERSION = u'0.0.0'
-    if LooseVersion(VERSION) < LooseVersion('1.1.0'):
+        VERSION = '0.0.0'
+    # LooseVersion does not work when a string contains letter and digits (e. g. 2.0.5 Twoflower).
+    # http://bugs.python.org/issue14894
+    if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
-        log.debug(u'VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
+        log.debug('VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
 
-AUDIO_EXT = [u'*.mp3', u'*.wav', u'*.wma', u'*.ogg']
+AUDIO_EXT = ['*.mp3', '*.wav', '*.wma', '*.ogg']
 
 VIDEO_EXT = [
-    u'*.3gp',
-    u'*.asf', u'*.wmv',
-    u'*.au',
-    u'*.avi',
-    u'*.flv',
-    u'*.mov',
-    u'*.mp4', u'*.m4v',
-    u'*.ogm', u'*.ogv',
-    u'*.mkv', u'*.mka',
-    u'*.ts', u'*.mpg',
-    u'*.mpg', u'*.mp2',
-    u'*.nsc',
-    u'*.nsv',
-    u'*.nut',
-    u'*.ra', u'*.ram', u'*.rm', u'*.rv', u'*.rmbv',
-    u'*.a52', u'*.dts', u'*.aac', u'*.flac', u'*.dv', u'*.vid',
-    u'*.tta', u'*.tac',
-    u'*.ty',
-    u'*.dts',
-    u'*.xa',
-    u'*.iso',
-    u'*.vob',
-    u'*.webm'
+    '*.3gp',
+    '*.asf', '*.wmv',
+    '*.au',
+    '*.avi',
+    '*.flv',
+    '*.mov',
+    '*.mp4', '*.m4v',
+    '*.ogm', '*.ogv',
+    '*.mkv', '*.mka',
+    '*.ts', '*.mpg',
+    '*.mpg', '*.mp2',
+    '*.nsc',
+    '*.nsv',
+    '*.nut',
+    '*.ra', '*.ram', '*.rm', '*.rv', '*.rmbv',
+    '*.a52', '*.dts', '*.aac', '*.flac', '*.dv', '*.vid',
+    '*.tta', '*.tac',
+    '*.ty',
+    '*.dts',
+    '*.xa',
+    '*.iso',
+    '*.vob',
+    '*.webm'
 ]
 
 
 class VlcPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a VLC
-    display.
+    A specialised version of the MediaPlayer class, which provides a VLC display.
     """
 
     def __init__(self, parent):
         """
         Constructor
         """
-        MediaPlayer.__init__(self, parent, u'vlc')
-        self.original_name = u'VLC'
-        self.display_name = u'&VLC'
+        super(VlcPlayer, self).__init__(parent, 'vlc')
+        self.original_name = 'VLC'
+        self.display_name = '&VLC'
         self.parent = parent
         self.can_folder = True
         self.audio_extensions_list = AUDIO_EXT
@@ -119,11 +120,11 @@ class VlcPlayer(MediaPlayer):
         display.vlcWidget = QtGui.QFrame(display)
         display.vlcWidget.setFrameStyle(QtGui.QFrame.NoFrame)
         # creating a basic vlc instance
-        command_line_options = u'--no-video-title-show'
+        command_line_options = '--no-video-title-show'
         if not display.has_audio:
-            command_line_options += u' --no-audio --no-video-title-show'
-        if Settings().value(u'advanced/hide mouse') and display.controller.is_live:
-            command_line_options += u' --mouse-hide-timeout=0'
+            command_line_options += ' --no-audio --no-video-title-show'
+        if Settings().value('advanced/hide mouse') and display.controller.is_live:
+            command_line_options += ' --mouse-hide-timeout=0'
         display.vlcInstance = vlc.Instance(command_line_options)
         # creating an empty vlc media player
         display.vlcMediaPlayer = display.vlcInstance.media_player_new()
@@ -157,7 +158,7 @@ class VlcPlayer(MediaPlayer):
         """
         Load a video into VLC
         """
-        log.debug(u'load vid in Vlc Controller')
+        log.debug('load vid in Vlc Controller')
         controller = display.controller
         volume = controller.media_info.volume
         file_path = str(controller.media_info.file_info.absoluteFilePath())
@@ -286,7 +287,7 @@ class VlcPlayer(MediaPlayer):
         """
         return(translate('Media.player', 'VLC is an external player which '
             'supports a number of different formats.') +
-            u'<br/> <strong>' + translate('Media.player', 'Audio') +
-            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
-            translate('Media.player', 'Video') + u'</strong><br/>' +
-            unicode(VIDEO_EXT) + u'<br/>')
+            '<br/> <strong>' + translate('Media.player', 'Audio') +
+            '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
+            translate('Media.player', 'Video') + '</strong><br/>' +
+            str(VIDEO_EXT) + '<br/>')

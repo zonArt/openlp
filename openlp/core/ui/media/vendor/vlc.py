@@ -52,9 +52,9 @@ build_date  = "Mon Apr  1 23:47:38 2013"
 
 if sys.version_info[0] > 2:
     str = str
-    unicode = str
+    str = str
     bytes = bytes
-    basestring = (str, bytes)
+    str = (str, bytes)
     PYTHON3 = True
     def str_to_bytes(s):
         """Translate string or bytes to bytes.
@@ -73,14 +73,14 @@ if sys.version_info[0] > 2:
             return b
 else:
     str = str
-    unicode = unicode
+    str = str
     bytes = str
-    basestring = basestring
+    str = str
     PYTHON3 = False
     def str_to_bytes(s):
         """Translate string or bytes to bytes.
         """
-        if isinstance(s, unicode):
+        if isinstance(s, str):
             return s.encode(sys.getfilesystemencoding())
         else:
             return s
@@ -89,7 +89,7 @@ else:
         """Translate bytes to unicode string.
         """
         if isinstance(b, str):
-            return unicode(b, sys.getfilesystemencoding())
+            return str(b, sys.getfilesystemencoding())
         else:
             return b
 
@@ -110,7 +110,7 @@ def find_lib():
         p = find_library('libvlc.dll')
         if p is None:
             try:  # some registry settings
-                import _winreg as w  # leaner than win32api, win32con
+                import winreg as w  # leaner than win32api, win32con
                 for r in w.HKEY_LOCAL_MACHINE, w.HKEY_CURRENT_USER:
                     try:
                         r = w.OpenKey(r, 'Software\\VideoLAN\\VLC')
@@ -168,7 +168,7 @@ class VLCException(Exception):
     pass
 
 try:
-    _Ints = (int, long)
+    _Ints = (int, int)
 except NameError:  # no long in Python 3+
     _Ints =  int
 _Seqs = (list, tuple)
@@ -1294,7 +1294,7 @@ class Instance(_Ctype):
             i = args[0]
             if isinstance(i, _Ints):
                 return _Constructor(cls, i)
-            elif isinstance(i, basestring):
+            elif isinstance(i, str):
                 args = i.strip().split()
             elif isinstance(i, _Seqs):
                 args = i
@@ -2078,7 +2078,7 @@ class MediaList(_Ctype):
         @param mrl: a media instance or a MRL.
         @return: 0 on success, -1 if the media list is read-only.
         """
-        if isinstance(mrl, basestring):
+        if isinstance(mrl, str):
             mrl = (self.get_instance() or get_default_instance()).media_new(mrl)
         return libvlc_media_list_add_media(self, mrl)
 
@@ -5910,9 +5910,9 @@ def debug_callback(event, *args, **kwds):
     '''
     l = ['event %s' % (event.type,)]
     if args:
-        l.extend(map(str, args))
+        l.extend(list(map(str, args)))
     if kwds:
-        l.extend(sorted('%s=%s' % t for t in kwds.items()))
+        l.extend(sorted('%s=%s' % t for t in list(kwds.items())))
     print('Debug callback (%s)' % ', '.join(l))
 
 if __name__ == '__main__':

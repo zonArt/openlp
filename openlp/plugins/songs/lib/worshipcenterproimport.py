@@ -56,20 +56,20 @@ class WorshipCenterProImport(SongImport):
         Receive a single file to import.
         """
         try:
-           conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s' % self.import_source)
-        except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError), e:
-            log.warn(u'Unable to connect the WorshipCenter Pro database %s. %s', self.import_source, unicode(e))
+           conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s' % self.import_source)
+        except (pyodbc.DatabaseError, pyodbc.IntegrityError, pyodbc.InternalError, pyodbc.OperationalError) as e:
+            log.warn('Unable to connect the WorshipCenter Pro database %s. %s', self.import_source, str(e))
             # Unfortunately no specific exception type
             self.logError(self.import_source,
                 translate('SongsPlugin.WorshipCenterProImport', 'Unable to connect the WorshipCenter Pro database.'))
             return
         cursor = conn.cursor()
-        cursor.execute(u'SELECT ID, Field, Value FROM __SONGDATA')
+        cursor.execute('SELECT ID, Field, Value FROM __SONGDATA')
         records = cursor.fetchall()
         songs = {}
         for record in records:
             id = record.ID
-            if not songs.has_key(id):
+            if id not in songs:
                 songs[id] = {}
             songs[id][record.Field] = record.Value
         self.import_wizard.progress_bar.setMaximum(len(songs))
@@ -77,9 +77,9 @@ class WorshipCenterProImport(SongImport):
             if self.stop_import_flag:
                 break
             self.setDefaults()
-            self.title = songs[song][u'TITLE']
-            lyrics = songs[song][u'LYRICS'].strip(u'&crlf;&crlf;')
-            for verse in lyrics.split(u'&crlf;&crlf;'):
-                verse = verse.replace(u'&crlf;', u'\n')
+            self.title = songs[song]['TITLE']
+            lyrics = songs[song]['LYRICS'].strip('&crlf;&crlf;')
+            for verse in lyrics.split('&crlf;&crlf;'):
+                verse = verse.replace('&crlf;', '\n')
                 self.addVerse(verse)
             self.finish()

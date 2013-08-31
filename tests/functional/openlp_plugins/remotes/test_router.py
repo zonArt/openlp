@@ -12,14 +12,14 @@ from openlp.plugins.remotes.lib.httpserver import HttpRouter, fetch_password, ma
 from PyQt4 import QtGui
 
 __default_settings__ = {
-    u'remotes/twelve hour': True,
-    u'remotes/port': 4316,
-    u'remotes/https port': 4317,
-    u'remotes/https enabled': False,
-    u'remotes/user id': u'openlp',
-    u'remotes/password': u'password',
-    u'remotes/authentication enabled': False,
-    u'remotes/ip address': u'0.0.0.0'
+    'remotes/twelve hour': True,
+    'remotes/port': 4316,
+    'remotes/https port': 4317,
+    'remotes/https enabled': False,
+    'remotes/user id': 'openlp',
+    'remotes/password': 'password',
+    'remotes/authentication enabled': False,
+    'remotes/ip address': '0.0.0.0'
 }
 
 
@@ -31,7 +31,7 @@ class TestRouter(TestCase):
         """
         Create the UI
         """
-        fd, self.ini_file = mkstemp(u'.ini')
+        fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         Settings().extend_default_settings(__default_settings__)
@@ -50,10 +50,10 @@ class TestRouter(TestCase):
         """
         # GIVEN: A default configuration
         # WHEN: called with the defined userid
-        password = fetch_password(u'itwinkle')
+        password = fetch_password('itwinkle')
 
         # THEN: the function should return None
-        self.assertEqual(password, None, u'The result for fetch_password should be None')
+        self.assertEqual(password, None, 'The result for fetch_password should be None')
 
     def fetch_password_known_test(self):
         """
@@ -61,11 +61,11 @@ class TestRouter(TestCase):
         """
         # GIVEN: A default configuration
         # WHEN: called with the defined userid
-        password = fetch_password(u'openlp')
-        required_password = make_sha_hash(u'password')
+        password = fetch_password('openlp')
+        required_password = make_sha_hash('password')
 
         # THEN: the function should return the correct password
-        self.assertEqual(password, required_password, u'The result for fetch_password should be the defined password')
+        self.assertEqual(password, required_password, 'The result for fetch_password should be the defined password')
 
     def sha_password_encrypter_test(self):
         """
@@ -73,12 +73,12 @@ class TestRouter(TestCase):
         """
         # GIVEN: A default configuration
         # WHEN: called with the defined userid
-        required_password = make_sha_hash(u'password')
-        test_value = u'5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
+        required_password = make_sha_hash('password')
+        test_value = '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8'
 
         # THEN: the function should return the correct password
         self.assertEqual(required_password, test_value,
-            u'The result for make_sha_hash should return the correct encrypted password')
+            'The result for make_sha_hash should return the correct encrypted password')
 
     def process_http_request_test(self):
         """
@@ -92,8 +92,8 @@ class TestRouter(TestCase):
         self.router.routes = test_route
 
         # WHEN: called with a poll route
-        self.router.process_http_request(u'/stage/api/poll', None)
+        self.router.process_http_request('/stage/api/poll', None)
 
         # THEN: the function should have been called only once
         assert mocked_function.call_count == 1, \
-            u'The mocked function should have been matched and called once.'
+            'The mocked function should have been matched and called once.'

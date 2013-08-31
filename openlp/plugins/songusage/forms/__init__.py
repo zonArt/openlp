@@ -27,5 +27,5 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from songusagedeleteform import SongUsageDeleteForm
-from songusagedetailform import SongUsageDetailForm
+from .songusagedeleteform import SongUsageDeleteForm
+from .songusagedetailform import SongUsageDetailForm

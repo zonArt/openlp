@@ -80,21 +80,21 @@ def get_media_players():
     This method extracts the configured media players and overridden player
     from the settings.
     """
-    log.debug(u'get_media_players')
-    saved_players = Settings().value(u'media/players')
+    log.debug('get_media_players')
+    saved_players = Settings().value('media/players')
     reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
-    if Settings().value(u'media/override player') == QtCore.Qt.Checked:
+    if Settings().value('media/override player') == QtCore.Qt.Checked:
         if reg_ex.exactMatch(saved_players):
-            overridden_player = u'%s' % reg_ex.cap(1)
+            overridden_player = '%s' % reg_ex.cap(1)
         else:
-            overridden_player = u'auto'
+            overridden_player = 'auto'
     else:
-        overridden_player = u''
-    saved_players_list = saved_players.replace(u'[', u'').replace(u']', u'').split(u',')
+        overridden_player = ''
+    saved_players_list = saved_players.replace('[', '').replace(']', '').split(',')
     return saved_players_list, overridden_player
 
 
-def set_media_players(players_list, overridden_player=u'auto'):
+def set_media_players(players_list, overridden_player='auto'):
     """
     This method saves the configured media players and overridden player to the
     settings
@@ -105,13 +105,13 @@ def set_media_players(players_list, overridden_player=u'auto'):
     ``overridden_player``
         Here an special media player is chosen for all media actions.
     """
-    log.debug(u'set_media_players')
-    players = u','.join(players_list)
-    if Settings().value(u'media/override player') == QtCore.Qt.Checked and overridden_player != u'auto':
-        players = players.replace(overridden_player, u'[%s]' % overridden_player)
-    Settings().setValue(u'media/players', players)
+    log.debug('set_media_players')
+    players = ','.join(players_list)
+    if Settings().value('media/override player') == QtCore.Qt.Checked and overridden_player != 'auto':
+        players = players.replace(overridden_player, '[%s]' % overridden_player)
+    Settings().setValue('media/players', players)
 
-from mediacontroller import MediaController
-from playertab import PlayerTab
+from .mediacontroller import MediaController
+from .playertab import PlayerTab
 
-__all__ = [u'MediaController', u'PlayerTab']
+__all__ = ['MediaController', 'PlayerTab']

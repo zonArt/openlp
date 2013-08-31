@@ -42,7 +42,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         """
         Set up the screen and common data
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(AuthorsForm, self).__init__(parent)
         self.setupUi(self)
         self.auto_display_name = False
         self.first_name_edit.textEdited.connect(self.on_first_name_edited)
@@ -75,7 +75,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         if not self.auto_display_name:
             return
         if self.last_name_edit.text():
-            display_name = display_name + u' ' + self.last_name_edit.text()
+            display_name = display_name + ' ' + self.last_name_edit.text()
         self.display_edit.setText(display_name)
 
     def on_last_name_edited(self, display_name):
@@ -91,7 +91,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
         if not self.auto_display_name:
             return
         if self.first_name_edit.text():
-            display_name = self.first_name_edit.text() + u' ' + display_name
+            display_name = self.first_name_edit.text() + ' ' + display_name
         self.display_edit.setText(display_name)
 
     def accept(self):
@@ -113,7 +113,7 @@ class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
                 message=translate('SongsPlugin.AuthorsForm',
                     'You have not set a display name for the author, combine the first and last names?'),
                 parent=self, question=True) == QtGui.QMessageBox.Yes:
-                self.display_edit.setText(self.first_name_edit.text() + u' ' + self.last_name_edit.text())
+                self.display_edit.setText(self.first_name_edit.text() + ' ' + self.last_name_edit.text())
                 return QtGui.QDialog.accept(self)
             else:
                 self.display_edit.setFocus()

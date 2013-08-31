@@ -48,24 +48,24 @@ if QtCore.QDate().currentDate().month() < 9:
 
 
 __default_settings__ = {
-    u'songusage/db type': u'sqlite',
-    u'songusage/active': False,
-    u'songusage/to date': QtCore.QDate(YEAR, 8, 31),
-    u'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
-    u'songusage/last directory export': u''
+    'songusage/db type': 'sqlite',
+    'songusage/active': False,
+    'songusage/to date': QtCore.QDate(YEAR, 8, 31),
+    'songusage/from date': QtCore.QDate(YEAR - 1, 9, 1),
+    'songusage/last directory export': ''
 }
 
 
 class SongUsagePlugin(Plugin):
-    log.info(u'SongUsage Plugin loaded')
+    log.info('SongUsage Plugin loaded')
 
     def __init__(self):
-        Plugin.__init__(self, u'songusage', __default_settings__)
-        self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
+        super(SongUsagePlugin, self).__init__('songusage', __default_settings__)
+        self.manager = Manager('songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
-        self.icon = build_icon(u':/plugins/plugin_songusage.png')
-        self.active_icon = build_icon(u':/songusage/song_usage_active.png')
-        self.inactive_icon = build_icon(u':/songusage/song_usage_inactive.png')
+        self.icon = build_icon(':/plugins/plugin_songusage.png')
+        self.active_icon = build_icon(':/songusage/song_usage_active.png')
+        self.inactive_icon = build_icon(':/songusage/song_usage_inactive.png')
         self.song_usage_active = False
 
     def check_pre_conditions(self):
@@ -81,23 +81,23 @@ class SongUsagePlugin(Plugin):
         ``tools_menu``
             The actual **Tools** menu item, so that your actions can use it as their parent.
         """
-        log.info(u'add tools menu')
+        log.info('add tools menu')
         self.toolsMenu = tools_menu
         self.song_usage_menu = QtGui.QMenu(tools_menu)
-        self.song_usage_menu.setObjectName(u'song_usage_menu')
+        self.song_usage_menu.setObjectName('song_usage_menu')
         self.song_usage_menu.setTitle(translate('SongUsagePlugin', '&Song Usage Tracking'))
         # SongUsage Delete
-        self.song_usage_delete = create_action(tools_menu, u'songUsageDelete',
+        self.song_usage_delete = create_action(tools_menu, 'songUsageDelete',
             text=translate('SongUsagePlugin', '&Delete Tracking Data'),
             statustip=translate('SongUsagePlugin', 'Delete song usage data up to a specified date.'),
             triggers=self.on_song_usage_delete)
         # SongUsage Report
-        self.song_usage_report = create_action(tools_menu, u'songUsageReport',
+        self.song_usage_report = create_action(tools_menu, 'songUsageReport',
             text=translate('SongUsagePlugin', '&Extract Tracking Data'),
             statustip=translate('SongUsagePlugin', 'Generate a report on song usage.'),
             triggers=self.on_song_usage_report)
         # SongUsage activation
-        self.song_usage_status = create_action(tools_menu, u'songUsageStatus',
+        self.song_usage_status = create_action(tools_menu, 'songUsageStatus',
             text=translate('SongUsagePlugin', 'Toggle Tracking'),
             statustip=translate('SongUsagePlugin', 'Toggle the tracking of song usage.'), checked=False,
             can_shortcuts=True, triggers=self.toggle_song_usage_state)
@@ -111,21 +111,21 @@ class SongUsagePlugin(Plugin):
         self.song_usage_active_button.setCheckable(True)
         self.song_usage_active_button.setAutoRaise(True)
         self.song_usage_active_button.setStatusTip(translate('SongUsagePlugin', 'Toggle the tracking of song usage.'))
-        self.song_usage_active_button.setObjectName(u'song_usage_active_button')
+        self.song_usage_active_button.setObjectName('song_usage_active_button')
         self.main_window.status_bar.insertPermanentWidget(1, self.song_usage_active_button)
         self.song_usage_active_button.hide()
         # Signals and slots
-        QtCore.QObject.connect(self.song_usage_status, QtCore.SIGNAL(u'visibilityChanged(bool)'),
+        QtCore.QObject.connect(self.song_usage_status, QtCore.SIGNAL('visibilityChanged(bool)'),
             self.song_usage_status.setChecked)
         self.song_usage_active_button.toggled.connect(self.toggle_song_usage_state)
         self.song_usage_menu.menuAction().setVisible(False)
 
     def initialise(self):
-        log.info(u'SongUsage Initialising')
-        Plugin.initialise(self)
-        Registry().register_function(u'slidecontroller_live_started', self.display_song_usage)
-        Registry().register_function(u'print_service_started', self.print_song_usage)
-        self.song_usage_active = Settings().value(self.settings_section + u'/active')
+        log.info('SongUsage Initialising')
+        super(SongUsagePlugin, self).initialise()
+        Registry().register_function('slidecontroller_live_started', self.display_song_usage)
+        Registry().register_function('print_service_started', self.print_song_usage)
+        self.song_usage_active = Settings().value(self.settings_section + '/active')
         # Set the button and checkbox state
         self.set_button_state()
         action_list = ActionList.get_instance()
@@ -141,9 +141,9 @@ class SongUsagePlugin(Plugin):
         """
         Tidy up on exit
         """
-        log.info(u'Plugin Finalise')
+        log.info('Plugin Finalise')
         self.manager.finalise()
-        Plugin.finalise(self)
+        super(SongUsagePlugin, self).finalise()
         self.song_usage_menu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.song_usage_status, translate('SongUsagePlugin', 'Song Usage'))
@@ -159,7 +159,7 @@ class SongUsagePlugin(Plugin):
         the UI when necessary,
         """
         self.song_usage_active = not self.song_usage_active
-        Settings().setValue(self.settings_section + u'/active', self.song_usage_active)
+        Settings().setValue(self.settings_section + '/active', self.song_usage_active)
         self.set_button_state()
 
     def set_button_state(self):
@@ -203,7 +203,7 @@ class SongUsagePlugin(Plugin):
             song_usage_item.title = audit[0]
             song_usage_item.copyright = audit[2]
             song_usage_item.ccl_number = audit[3]
-            song_usage_item.authors = u' '.join(audit[1])
+            song_usage_item.authors = ' '.join(audit[1])
             song_usage_item.plugin_name = item[0].name
             song_usage_item.source = source
             self.manager.save_object(song_usage_item)
@@ -226,10 +226,10 @@ class SongUsagePlugin(Plugin):
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
-            u'singular': translate('SongUsagePlugin', 'SongUsage', 'name singular'),
-            u'plural': translate('SongUsagePlugin', 'SongUsage', 'name plural')
+            'singular': translate('SongUsagePlugin', 'SongUsage', 'name singular'),
+            'plural': translate('SongUsagePlugin', 'SongUsage', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.text_strings[StringContent.VisibleName] = {
-            u'title': translate('SongUsagePlugin', 'SongUsage', 'container title')
+            'title': translate('SongUsagePlugin', 'SongUsage', 'container title')
         }

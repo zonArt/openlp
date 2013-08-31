@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from mediafilesdialog import Ui_MediaFilesDialog
+from .mediafilesdialog import Ui_MediaFilesDialog
 
 log = logging.getLogger(__name__)
 
@@ -41,10 +41,10 @@ class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
     """
     Class to show a list of files from the
     """
-    log.info(u'%s MediaFilesForm loaded', __name__)
+    log.info('%s MediaFilesForm loaded', __name__)
 
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self)
+        super(MediaFilesForm, self).__init__()
         self.setupUi(self)
 
     def populateFiles(self, files):
@@ -55,6 +55,5 @@ class MediaFilesForm(QtGui.QDialog, Ui_MediaFilesDialog):
             self.file_list_widget.addItem(item)
 
     def getSelectedFiles(self):
-        return map(lambda item: item.data(QtCore.Qt.UserRole),
-            self.file_list_widget.selectedItems())
+        return [item.data(QtCore.Qt.UserRole) for item in self.file_list_widget.selectedItems()]
 

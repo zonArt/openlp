@@ -95,57 +95,56 @@ class DreamBeamImport(SongImport):
                 self.setDefaults()
                 parser = etree.XMLParser(remove_blank_text=True)
                 try:
-                    parsed_file = etree.parse(open(file, u'r'), parser)
+                    parsed_file = etree.parse(open(file, 'r'), parser)
                 except etree.XMLSyntaxError:
-                    log.exception(u'XML syntax error in file %s' % file)
+                    log.exception('XML syntax error in file %s' % file)
                     self.logError(file, SongStrings.XMLSyntaxError)
                     continue
-                xml = unicode(etree.tostring(parsed_file))
+                xml = etree.tostring(parsed_file).decode()
                 song_xml = objectify.fromstring(xml)
-                if song_xml.tag != u'DreamSong':
-                    self.logError(file, unicode(
-                        translate('SongsPlugin.DreamBeamImport',
-                            ('Invalid DreamBeam song file. Missing DreamSong tag.'))))
+                if song_xml.tag != 'DreamSong':
+                    self.logError(file,
+                        translate('SongsPlugin.DreamBeamImport', 'Invalid DreamBeam song file. Missing DreamSong tag.'))
                     continue
-                if hasattr(song_xml, u'Version'):
+                if hasattr(song_xml, 'Version'):
                     self.version = float(song_xml.Version.text)
                 else:
                     self.version = 0
                 # Version numbers found in DreamBeam Source /FileTypes/Song.cs
                 if self.version >= 0.5:
-                    if hasattr(song_xml, u'Title'):
-                        self.title = unicode(song_xml.Title.text)
-                    if hasattr(song_xml, u'Author'):
+                    if hasattr(song_xml, 'Title'):
+                        self.title = str(song_xml.Title.text)
+                    if hasattr(song_xml, 'Author'):
                         author_copyright = song_xml.Author.text
-                    if hasattr(song_xml, u'SongLyrics'):
+                    if hasattr(song_xml, 'SongLyrics'):
                         for lyrics_item in song_xml.SongLyrics.iterchildren():
-                            verse_type =  lyrics_item.get(u'Type')
-                            verse_number = lyrics_item.get(u'Number')
-                            verse_text = unicode(lyrics_item.text)
-                            self.addVerse(verse_text, (u'%s%s' % (verse_type[:1], verse_number)))
-                    if hasattr(song_xml, u'Collection'):
-                        self.songBookName = unicode(song_xml.Collection.text)
-                    if hasattr(song_xml, u'Number'):
-                        self.songNumber = unicode(song_xml.Number.text)
-                    if hasattr(song_xml, u'Sequence'):
+                            verse_type =  lyrics_item.get('Type')
+                            verse_number = lyrics_item.get('Number')
+                            verse_text = str(lyrics_item.text)
+                            self.addVerse(verse_text, ('%s%s' % (verse_type[:1], verse_number)))
+                    if hasattr(song_xml, 'Collection'):
+                        self.songBookName = str(song_xml.Collection.text)
+                    if hasattr(song_xml, 'Number'):
+                        self.songNumber = str(song_xml.Number.text)
+                    if hasattr(song_xml, 'Sequence'):
                         for LyricsSequenceItem in (song_xml.Sequence.iterchildren()):
-                            self.verseOrderList.append("%s%s" % (LyricsSequenceItem.get(u'Type')[:1],
-                                LyricsSequenceItem.get(u'Number')))
-                    if hasattr(song_xml, u'Notes'):
-                        self.comments = unicode(song_xml.Notes.text)
+                            self.verseOrderList.append("%s%s" % (LyricsSequenceItem.get('Type')[:1],
+                                LyricsSequenceItem.get('Number')))
+                    if hasattr(song_xml, 'Notes'):
+                        self.comments = str(song_xml.Notes.text)
                 else:
-                    if hasattr(song_xml.Text0, u'Text'):
-                        self.title = unicode(song_xml.Text0.Text.text)
-                    if hasattr(song_xml.Text1, u'Text'):
-                        self.lyrics = unicode(song_xml.Text1.Text.text)
-                        for verse in self.lyrics.split(u'\n\n\n'):
+                    if hasattr(song_xml.Text0, 'Text'):
+                        self.title = str(song_xml.Text0.Text.text)
+                    if hasattr(song_xml.Text1, 'Text'):
+                        self.lyrics = str(song_xml.Text1.Text.text)
+                        for verse in self.lyrics.split('\n\n\n'):
                             self.addVerse(verse)
-                    if hasattr(song_xml.Text2, u'Text'):
+                    if hasattr(song_xml.Text2, 'Text'):
                         author_copyright = song_xml.Text2.Text.text
                 if author_copyright:
-                    author_copyright = unicode(author_copyright)
+                    author_copyright = str(author_copyright)
                     if author_copyright.find(
-                        unicode(SongStrings.CopyrightSymbol)) >= 0:
+                        str(SongStrings.CopyrightSymbol)) >= 0:
                         self.addCopyright(author_copyright)
                     else:
                         self.parse_author(author_copyright)
