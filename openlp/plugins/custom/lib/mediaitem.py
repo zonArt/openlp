@@ -53,10 +53,10 @@ class CustomMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Custom Slides.
     """
-    log.info(u'Custom Media Item loaded')
+    log.info('Custom Media Item loaded')
 
     def __init__(self, parent, plugin):
-        self.icon_path = u'custom/custom'
+        self.icon_path = 'custom/custom'
         super(CustomMediaItem, self).__init__(parent, plugin)
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.single_service_item = False
@@ -71,32 +71,32 @@ class CustomMediaItem(MediaManagerItem):
         self.toolbar.addSeparator()
         self.add_search_to_toolbar()
         # Signals and slots
-        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'cleared()'), self.on_clear_text_button_click)
-        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL(u'searchTypeChanged(int)'),
+        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL('cleared()'), self.on_clear_text_button_click)
+        QtCore.QObject.connect(self.search_text_edit, QtCore.SIGNAL('searchTypeChanged(int)'),
             self.on_search_text_button_clicked)
-        Registry().register_function(u'custom_load_list', self.load_list)
-        Registry().register_function(u'custom_preview', self.on_preview_click)
-        Registry().register_function(u'custom_create_from_service', self.create_from_service_item)
+        Registry().register_function('custom_load_list', self.load_list)
+        Registry().register_function('custom_preview', self.on_preview_click)
+        Registry().register_function('custom_create_from_service', self.create_from_service_item)
 
     def config_update(self):
         """
         Config has been updated so reload values
         """
-        log.debug(u'Config loaded')
-        self.add_custom_from_service = Settings().value(self.settings_section + u'/add custom from service')
+        log.debug('Config loaded')
+        self.add_custom_from_service = Settings().value(self.settings_section + '/add custom from service')
 
     def retranslateUi(self):
-        self.search_text_label.setText(u'%s:' % UiStrings().Search)
+        self.search_text_label.setText('%s:' % UiStrings().Search)
         self.search_text_button.setText(UiStrings().Search)
 
     def initialise(self):
         self.search_text_edit.set_search_types([
-            (CustomSearch.Titles, u':/songs/song_search_title.png',
+            (CustomSearch.Titles, ':/songs/song_search_title.png',
             translate('SongsPlugin.MediaItem', 'Titles'),
             translate('SongsPlugin.MediaItem', 'Search Titles...')),
-            (CustomSearch.Themes, u':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
+            (CustomSearch.Themes, ':/slides/slide_theme.png', UiStrings().Themes, UiStrings().SearchThemes)
         ])
-        self.search_text_edit.set_current_search_type(Settings().value(u'%s/last search type' % self.settings_section))
+        self.search_text_edit.set_current_search_type(Settings().value('%s/last search type' % self.settings_section))
         self.load_list(self.manager.get_all_objects(CustomSlide, order_by_ref=CustomSlide.title))
         self.config_update()
 
@@ -204,28 +204,28 @@ class CustomMediaItem(MediaManagerItem):
         service_item.title = title
         for slide in raw_slides:
             service_item.add_from_text(slide)
-        if Settings().value(self.settings_section + u'/display footer') or credit:
-            service_item.raw_footer.append(u' '.join([title, credit]))
+        if Settings().value(self.settings_section + '/display footer') or credit:
+            service_item.raw_footer.append(' '.join([title, credit]))
         else:
-            service_item.raw_footer.append(u'')
+            service_item.raw_footer.append('')
         return True
 
     def on_search_text_button_clicked(self):
         # Save the current search type to the configuration.
-        Settings().setValue(u'%s/last search type' % self.settings_section, self.search_text_edit.current_search_type())
+        Settings().setValue('%s/last search type' % self.settings_section, self.search_text_edit.current_search_type())
         # Reload the list considering the new search type.
         search_keywords = self.search_text_edit.displayText()
         search_type = self.search_text_edit.current_search_type()
         if search_type == CustomSearch.Titles:
-            log.debug(u'Titles Search')
+            log.debug('Titles Search')
             search_results = self.plugin.manager.get_all_objects(CustomSlide,
-                CustomSlide.title.like(u'%' + self.whitespace.sub(u' ', search_keywords) + u'%'),
+                CustomSlide.title.like('%' + self.whitespace.sub(' ', search_keywords) + '%'),
                     order_by_ref=CustomSlide.title)
             self.load_list(search_results)
         elif search_type == CustomSearch.Themes:
-            log.debug(u'Theme Search')
+            log.debug('Theme Search')
             search_results = self.plugin.manager.get_all_objects(CustomSlide,
-                CustomSlide.theme_name.like(u'%' + self.whitespace.sub(u' ', search_keywords) + u'%'),
+                CustomSlide.theme_name.like('%' + self.whitespace.sub(' ', search_keywords) + '%'),
                     order_by_ref=CustomSlide.title)
             self.load_list(search_results)
         self.check_search_result()
@@ -245,7 +245,7 @@ class CustomMediaItem(MediaManagerItem):
         """
         Triggered by a song being loaded by the service manager.
         """
-        log.debug(u'service_load')
+        log.debug('service_load')
         if self.plugin.status != PluginStatus.Active:
             return
         custom = self.plugin.manager.get_object_filtered(CustomSlide,
@@ -267,19 +267,19 @@ class CustomMediaItem(MediaManagerItem):
         if item.theme:
             custom.theme_name = item.theme
         else:
-            custom.theme_name = u''
-        footer = u' '.join(item.raw_footer)
+            custom.theme_name = ''
+        footer = ' '.join(item.raw_footer)
         if footer:
             if footer.startswith(item.title):
                 custom.credits = footer[len(item.title) + 1:]
             else:
                 custom.credits = footer
         else:
-            custom.credits = u''
+            custom.credits = ''
         custom_xml = CustomXMLBuilder()
         for (idx, slide) in enumerate(item._raw_frames):
-            custom_xml.add_verse_to_lyrics(u'custom', unicode(idx + 1), slide['raw_slide'])
-        custom.text = unicode(custom_xml.extract_xml(), u'utf-8')
+            custom_xml.add_verse_to_lyrics('custom', str(idx + 1), slide['raw_slide'])
+        custom.text = str(custom_xml.extract_xml(), 'utf-8')
         self.plugin.manager.save_object(custom)
         self.on_search_text_button_clicked()
 
@@ -292,8 +292,8 @@ class CustomMediaItem(MediaManagerItem):
 
     def search(self, string, showError):
         search_results = self.manager.get_all_objects(CustomSlide,
-            or_(func.lower(CustomSlide.title).like(u'%' + string.lower() + u'%'),
-                func.lower(CustomSlide.text).like(u'%' + string.lower() + u'%')),
+            or_(func.lower(CustomSlide.title).like('%' + string.lower() + '%'),
+                func.lower(CustomSlide.text).like('%' + string.lower() + '%')),
             order_by_ref=CustomSlide.title)
         return [[custom.id, custom.title] for custom in search_results]
 

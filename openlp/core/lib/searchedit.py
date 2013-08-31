@@ -26,7 +26,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-from __future__ import division
+
 import logging
 
 from PyQt4 import QtCore, QtGui
@@ -49,9 +49,9 @@ class SearchEdit(QtGui.QLineEdit):
         super(SearchEdit, self).__init__(parent)
         self._current_search_type = -1
         self.clear_button = QtGui.QToolButton(self)
-        self.clear_button.setIcon(build_icon(u':/system/clear_shortcut.png'))
+        self.clear_button.setIcon(build_icon(':/system/clear_shortcut.png'))
         self.clear_button.setCursor(QtCore.Qt.ArrowCursor)
-        self.clear_button.setStyleSheet(u'QToolButton { border: none; padding: 0px; }')
+        self.clear_button.setStyleSheet('QToolButton { border: none; padding: 0px; }')
         self.clear_button.resize(18, 18)
         self.clear_button.hide()
         self.clear_button.clicked.connect(self._on_clear_button_clicked)
@@ -65,11 +65,11 @@ class SearchEdit(QtGui.QLineEdit):
         """
         frame_width = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
         right_padding = self.clear_button.width() + frame_width
-        if hasattr(self, u'menu_button'):
+        if hasattr(self, 'menu_button'):
             left_padding = self.menu_button.width()
-            stylesheet = u'QLineEdit { padding-left: %spx; padding-right: %spx; } ' % (left_padding, right_padding)
+            stylesheet = 'QLineEdit { padding-left: %spx; padding-right: %spx; } ' % (left_padding, right_padding)
         else:
-            stylesheet = u'QLineEdit { padding-right: %spx; } ' % right_padding
+            stylesheet = 'QLineEdit { padding-right: %spx; } ' % right_padding
         self.setStyleSheet(stylesheet)
         msz = self.minimumSizeHint()
         self.setMinimumSize(max(msz.width(), self.clear_button.width() + (frame_width * 2) + 2),
@@ -86,7 +86,7 @@ class SearchEdit(QtGui.QLineEdit):
         frame_width = self.style().pixelMetric(QtGui.QStyle.PM_DefaultFrameWidth)
         self.clear_button.move(self.rect().right() - frame_width - size.width(),
             (self.rect().bottom() + 1 - size.height()) // 2)
-        if hasattr(self, u'menu_button'):
+        if hasattr(self, 'menu_button'):
             size = self.menu_button.size()
             self.menu_button.move(self.rect().left() + frame_width + 2, (self.rect().bottom() + 1 - size.height()) // 2)
 
@@ -114,7 +114,7 @@ class SearchEdit(QtGui.QLineEdit):
                     pass
                 self.menu_button.setDefaultAction(action)
                 self._current_search_type = identifier
-                self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), identifier)
+                self.emit(QtCore.SIGNAL('searchTypeChanged(int)'), identifier)
                 return True
 
     def set_search_types(self, items):
@@ -145,12 +145,12 @@ class SearchEdit(QtGui.QLineEdit):
             if first is None:
                 first = action
                 self._current_search_type = identifier
-        if not hasattr(self, u'menu_button'):
+        if not hasattr(self, 'menu_button'):
             self.menu_button = QtGui.QToolButton(self)
-            self.menu_button.setIcon(build_icon(u':/system/clear_shortcut.png'))
+            self.menu_button.setIcon(build_icon(':/system/clear_shortcut.png'))
             self.menu_button.setCursor(QtCore.Qt.ArrowCursor)
             self.menu_button.setPopupMode(QtGui.QToolButton.InstantPopup)
-            self.menu_button.setStyleSheet(u'QToolButton { border: none; padding: 0px 10px 0px 0px; }')
+            self.menu_button.setStyleSheet('QToolButton { border: none; padding: 0px 10px 0px 0px; }')
             self.menu_button.resize(QtCore.QSize(28, 18))
         self.menu_button.setMenu(menu)
         self.menu_button.setDefaultAction(first)
@@ -174,7 +174,7 @@ class SearchEdit(QtGui.QLineEdit):
         line edit.
         """
         self.clear()
-        self.emit(QtCore.SIGNAL(u'cleared()'))
+        self.emit(QtCore.SIGNAL('cleared()'))
 
     def _on_menu_action_triggered(self):
         """
@@ -193,4 +193,4 @@ class SearchEdit(QtGui.QLineEdit):
             self.setPlaceholderText(self.menu_button.defaultAction().placeholder_text)
         except AttributeError:
             pass
-        self.emit(QtCore.SIGNAL(u'searchTypeChanged(int)'), self._current_search_type)
+        self.emit(QtCore.SIGNAL('searchTypeChanged(int)'), self._current_search_type)

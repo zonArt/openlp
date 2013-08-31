@@ -41,7 +41,7 @@ import logging
 import os
 import time
 
-if os.name == u'nt':
+if os.name == 'nt':
     from win32com.client import Dispatch
     import pywintypes
     # Declare an empty exception to match the exception imported from UNO
@@ -60,7 +60,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import ScreenList
 from openlp.core.utils import delete_file, get_uno_command, get_uno_instance
-from presentationcontroller import PresentationController, PresentationDocument
+from .presentationcontroller import PresentationController, PresentationDocument
 
 
 log = logging.getLogger(__name__)
@@ -71,16 +71,16 @@ class ImpressController(PresentationController):
     Class to control interactions with Impress presentations. It creates the runtime environment, loads and closes the
     presentation as well as triggering the correct activities based on the users input.
     """
-    log.info(u'ImpressController loaded')
+    log.info('ImpressController loaded')
 
     def __init__(self, plugin):
         """
         Initialise the class
         """
-        log.debug(u'Initialising')
-        super(ImpressController, self).__init__(plugin, u'Impress', ImpressDocument)
-        self.supports = [u'odp']
-        self.also_supports = [u'ppt', u'pps', u'pptx', u'ppsx']
+        log.debug('Initialising')
+        super(ImpressController, self).__init__(plugin, 'Impress', ImpressDocument)
+        self.supports = ['odp']
+        self.also_supports = ['ppt', 'pps', 'pptx', 'ppsx']
         self.process = None
         self.desktop = None
         self.manager = None
@@ -89,8 +89,8 @@ class ImpressController(PresentationController):
         """
         Impress is able to run on this machine.
         """
-        log.debug(u'check_available')
-        if os.name == u'nt':
+        log.debug('check_available')
+        if os.name == 'nt':
             return self.get_com_servicemanager() is not None
         else:
             return uno_available
@@ -100,11 +100,11 @@ class ImpressController(PresentationController):
         Loads a running version of OpenOffice in the background. It is not displayed to the user but is available to the
         UNO interface when required.
         """
-        log.debug(u'start process Openoffice')
-        if os.name == u'nt':
+        log.debug('start process Openoffice')
+        if os.name == 'nt':
             self.manager = self.get_com_servicemanager()
-            self.manager._FlagAsMethod(u'Bridge_GetStruct')
-            self.manager._FlagAsMethod(u'Bridge_GetValueObject')
+            self.manager._FlagAsMethod('Bridge_GetStruct')
+            self.manager._FlagAsMethod('Bridge_GetValueObject')
         else:
             # -headless
             cmd = get_uno_command()
@@ -115,69 +115,69 @@ class ImpressController(PresentationController):
         """
         On non-Windows platforms, use Uno. Get the OpenOffice desktop which will be used to manage impress.
         """
-        log.debug(u'get UNO Desktop Openoffice')
+        log.debug('get UNO Desktop Openoffice')
         uno_instance = None
         loop = 0
-        log.debug(u'get UNO Desktop Openoffice - getComponentContext')
+        log.debug('get UNO Desktop Openoffice - getComponentContext')
         context = uno.getComponentContext()
-        log.debug(u'get UNO Desktop Openoffice - createInstaneWithContext - UnoUrlResolver')
-        resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
+        log.debug('get UNO Desktop Openoffice - createInstaneWithContext - UnoUrlResolver')
+        resolver = context.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', context)
         while uno_instance is None and loop < 3:
             try:
                 uno_instance = get_uno_instance(resolver)
             except:
-                log.warn(u'Unable to find running instance ')
+                log.warn('Unable to find running instance ')
                 self.start_process()
                 loop += 1
         try:
             self.manager = uno_instance.ServiceManager
-            log.debug(u'get UNO Desktop Openoffice - createInstanceWithContext - Desktop')
+            log.debug('get UNO Desktop Openoffice - createInstanceWithContext - Desktop')
             desktop = self.manager.createInstanceWithContext("com.sun.star.frame.Desktop", uno_instance)
             return desktop
         except:
-            log.warn(u'Failed to get UNO desktop')
+            log.warn('Failed to get UNO desktop')
             return None
 
     def get_com_desktop(self):
         """
         On Windows platforms, use COM. Return the desktop object which will be used to manage Impress.
         """
-        log.debug(u'get COM Desktop OpenOffice')
+        log.debug('get COM Desktop OpenOffice')
         if not self.manager:
             return None
         desktop = None
         try:
-            desktop = self.manager.createInstance(u'com.sun.star.frame.Desktop')
+            desktop = self.manager.createInstance('com.sun.star.frame.Desktop')
         except (AttributeError, pywintypes.com_error):
-            log.warn(u'Failure to find desktop - Impress may have closed')
+            log.warn('Failure to find desktop - Impress may have closed')
         return desktop if desktop else None
 
     def get_com_servicemanager(self):
         """
         Return the OOo service manager for windows.
         """
-        log.debug(u'get_com_servicemanager openoffice')
+        log.debug('get_com_servicemanager openoffice')
         try:
-            return Dispatch(u'com.sun.star.ServiceManager')
+            return Dispatch('com.sun.star.ServiceManager')
         except pywintypes.com_error:
-            log.warn(u'Failed to get COM service manager. Impress Controller has been disabled')
+            log.warn('Failed to get COM service manager. Impress Controller has been disabled')
             return None
 
     def kill(self):
         """
         Called at system exit to clean up any running presentations.
         """
-        log.debug(u'Kill OpenOffice')
+        log.debug('Kill OpenOffice')
         while self.docs:
             self.docs[0].close_presentation()
         desktop = None
         try:
-            if os.name != u'nt':
+            if os.name != 'nt':
                 desktop = self.get_uno_desktop()
             else:
                 desktop = self.get_com_desktop()
         except:
-            log.warn(u'Failed to find an OpenOffice desktop to terminate')
+            log.warn('Failed to find an OpenOffice desktop to terminate')
         if not desktop:
             return
         docs = desktop.getComponents()
@@ -186,16 +186,16 @@ class ImpressController(PresentationController):
             list = docs.createEnumeration()
             while list.hasMoreElements():
                 doc = list.nextElement()
-                if doc.getImplementationName() != u'com.sun.star.comp.framework.BackingComp':
+                if doc.getImplementationName() != 'com.sun.star.comp.framework.BackingComp':
                     cnt += 1
         if cnt > 0:
-            log.debug(u'OpenOffice not terminated as docs are still open')
+            log.debug('OpenOffice not terminated as docs are still open')
         else:
             try:
                 desktop.terminate()
-                log.debug(u'OpenOffice killed')
+                log.debug('OpenOffice killed')
             except:
-                log.warn(u'Failed to terminate OpenOffice')
+                log.warn('Failed to terminate OpenOffice')
 
 
 class ImpressDocument(PresentationDocument):
@@ -207,7 +207,7 @@ class ImpressDocument(PresentationDocument):
         """
         Constructor, store information about the file and initialise.
         """
-        log.debug(u'Init Presentation OpenOffice')
+        log.debug('Init Presentation OpenOffice')
         super(ImpressDocument, self).__init__(controller, presentation)
         self.document = None
         self.presentation = None
@@ -219,13 +219,13 @@ class ImpressDocument(PresentationDocument):
         the background OpenOffice task started earlier. If OpenOffice is not present is is started. Once the environment
         is available the presentation is loaded and started.
         """
-        log.debug(u'Load Presentation OpenOffice')
-        if os.name == u'nt':
+        log.debug('Load Presentation OpenOffice')
+        if os.name == 'nt':
             desktop = self.controller.get_com_desktop()
             if desktop is None:
                 self.controller.start_process()
                 desktop = self.controller.get_com_desktop()
-            url = u'file:///' + self.filepath.replace(u'\\', u'/').replace(u':', u'|').replace(u' ', u'%20')
+            url = 'file:///' + self.filepath.replace('\\', '/').replace(':', '|').replace(' ', '%20')
         else:
             desktop = self.controller.get_uno_desktop()
             url = uno.systemPathToFileUrl(self.filepath)
@@ -233,23 +233,23 @@ class ImpressDocument(PresentationDocument):
             return False
         self.desktop = desktop
         properties = []
-        if os.name != u'nt':
+        if os.name != 'nt':
             # Recent versions of Impress on Windows won't start the presentation if it starts as minimized. It seems OK
             # on Linux though.
-            properties.append(self.create_property(u'Minimized', True))
+            properties.append(self.create_property('Minimized', True))
         properties = tuple(properties)
         try:
-            self.document = desktop.loadComponentFromURL(url, u'_blank', 0, properties)
+            self.document = desktop.loadComponentFromURL(url, '_blank', 0, properties)
         except:
-            log.warn(u'Failed to load presentation %s' % url)
+            log.warn('Failed to load presentation %s' % url)
             return False
-        if os.name == u'nt':
+        if os.name == 'nt':
             # As we can't start minimized the Impress window gets in the way.
             # Either window.setPosSize(0, 0, 200, 400, 12) or .setVisible(False)
             window = self.document.getCurrentController().getFrame().getContainerWindow()
             window.setVisible(False)
         self.presentation = self.document.getPresentation()
-        self.presentation.Display = ScreenList().current[u'number'] + 1
+        self.presentation.Display = ScreenList().current['number'] + 1
         self.control = None
         self.create_thumbnails()
         return True
@@ -258,16 +258,16 @@ class ImpressDocument(PresentationDocument):
         """
         Create thumbnail images for presentation.
         """
-        log.debug(u'create thumbnails OpenOffice')
+        log.debug('create thumbnails OpenOffice')
         if self.check_thumbnails():
             return
-        if os.name == u'nt':
-            thumb_dir_url = u'file:///' + self.get_temp_folder().replace(u'\\', u'/') \
-                .replace(u':', u'|').replace(u' ', u'%20')
+        if os.name == 'nt':
+            thumb_dir_url = 'file:///' + self.get_temp_folder().replace('\\', '/') \
+                .replace(':', '|').replace(' ', '%20')
         else:
             thumb_dir_url = uno.systemPathToFileUrl(self.get_temp_folder())
         properties = []
-        properties.append(self.create_property(u'FilterName', u'impress_png_Export'))
+        properties.append(self.create_property('FilterName', 'impress_png_Export'))
         properties = tuple(properties)
         doc = self.document
         pages = doc.getDrawPages()
@@ -278,24 +278,24 @@ class ImpressDocument(PresentationDocument):
         for index in range(pages.getCount()):
             page = pages.getByIndex(index)
             doc.getCurrentController().setCurrentPage(page)
-            url_path = u'%s/%s.png' % (thumb_dir_url, unicode(index + 1))
-            path = os.path.join(self.get_temp_folder(), unicode(index + 1) + u'.png')
+            url_path = '%s/%s.png' % (thumb_dir_url, str(index + 1))
+            path = os.path.join(self.get_temp_folder(), str(index + 1) + '.png')
             try:
                 doc.storeToURL(url_path, properties)
                 self.convert_thumbnail(path, index + 1)
                 delete_file(path)
-            except ErrorCodeIOException, exception:
-                log.exception(u'ERROR! ErrorCodeIOException %d' % exception.ErrCode)
+            except ErrorCodeIOException as exception:
+                log.exception('ERROR! ErrorCodeIOException %d' % exception.ErrCode)
             except:
-                log.exception(u'%s - Unable to store openoffice preview' % path)
+                log.exception('%s - Unable to store openoffice preview' % path)
 
     def create_property(self, name, value):
         """
         Create an OOo style property object which are passed into some Uno methods.
         """
-        log.debug(u'create property OpenOffice')
-        if os.name == u'nt':
-            property_object = self.controller.manager.Bridge_GetStruct(u'com.sun.star.beans.PropertyValue')
+        log.debug('create property OpenOffice')
+        if os.name == 'nt':
+            property_object = self.controller.manager.Bridge_GetStruct('com.sun.star.beans.PropertyValue')
         else:
             property_object = PropertyValue()
         property_object.Name = name
@@ -307,7 +307,7 @@ class ImpressDocument(PresentationDocument):
         Close presentation and clean up objects. Triggered by new object being added to SlideController or OpenLP being
         shutdown.
         """
-        log.debug(u'close Presentation OpenOffice')
+        log.debug('close Presentation OpenOffice')
         if self.document:
             if self.presentation:
                 try:
@@ -323,7 +323,7 @@ class ImpressDocument(PresentationDocument):
         """
         Returns true if a presentation is loaded.
         """
-        log.debug(u'is loaded OpenOffice')
+        log.debug('is loaded OpenOffice')
         if self.presentation is None or self.document is None:
             log.debug("is_loaded: no presentation or document")
             return False
@@ -340,7 +340,7 @@ class ImpressDocument(PresentationDocument):
         """
         Returns true if a presentation is active and running.
         """
-        log.debug(u'is active OpenOffice')
+        log.debug('is active OpenOffice')
         if not self.is_loaded():
             return False
         return self.control.isRunning() if self.control else False
@@ -349,21 +349,21 @@ class ImpressDocument(PresentationDocument):
         """
         Unblanks the screen.
         """
-        log.debug(u'unblank screen OpenOffice')
+        log.debug('unblank screen OpenOffice')
         return self.control.resume()
 
     def blank_screen(self):
         """
         Blanks the screen.
         """
-        log.debug(u'blank screen OpenOffice')
+        log.debug('blank screen OpenOffice')
         self.control.blankScreen(0)
 
     def is_blank(self):
         """
         Returns true if screen is blank.
         """
-        log.debug(u'is blank OpenOffice')
+        log.debug('is blank OpenOffice')
         if self.control and self.control.isRunning():
             return self.control.isPaused()
         else:
@@ -373,7 +373,7 @@ class ImpressDocument(PresentationDocument):
         """
         Stop the presentation, remove from screen.
         """
-        log.debug(u'stop presentation OpenOffice')
+        log.debug('stop presentation OpenOffice')
         # deactivate should hide the screen according to docs, but doesn't
         #self.control.deactivate()
         self.presentation.end()
@@ -383,7 +383,7 @@ class ImpressDocument(PresentationDocument):
         """
         Start the presentation from the beginning.
         """
-        log.debug(u'start presentation OpenOffice')
+        log.debug('start presentation OpenOffice')
         if self.control is None or not self.control.isRunning():
             self.presentation.start()
             self.control = self.presentation.getController()

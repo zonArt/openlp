@@ -164,9 +164,9 @@ def verify_pyqt():
     w('Qt4 image formats... ')
     try:
         from PyQt4 import QtGui
-        read_f = ', '.join([unicode(format).lower()
+        read_f = ', '.join([str(format).lower()
            for format in QtGui.QImageReader.supportedImageFormats()])
-        write_f = ', '.join([unicode(format).lower()
+        write_f = ', '.join([str(format).lower()
             for format in QtGui.QImageWriter.supportedImageFormats()])
         w(os.linesep)
         print('  read: %s' % read_f)
@@ -194,5 +194,5 @@ def main():
     verify_pyqt()
     verify_pyenchant()
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
     main()

@@ -31,7 +31,7 @@ The form layout
 """
 from PyQt4 import QtGui, QtCore
 
-from themelayoutdialog import Ui_ThemeLayoutDialog
+from .themelayoutdialog import Ui_ThemeLayoutDialog
 
 
 class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):

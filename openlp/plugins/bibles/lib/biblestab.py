@@ -43,7 +43,7 @@ class BiblesTab(SettingsTab):
     """
     BiblesTab is the Bibles settings tab in the settings dialog.
     """
-    log.info(u'Bible Tab loaded')
+    log.info('Bible Tab loaded')
 
     def _init_(self, parent, title, visible_title, icon_path):
         self.paragraph_style = True
@@ -52,82 +52,82 @@ class BiblesTab(SettingsTab):
         super(BiblesTab, self).__init__(parent, title, visible_title, icon_path)
 
     def setupUi(self):
-        self.setObjectName(u'BiblesTab')
+        self.setObjectName('BiblesTab')
         super(BiblesTab, self).setupUi()
         self.verse_display_group_box = QtGui.QGroupBox(self.left_column)
-        self.verse_display_group_box.setObjectName(u'verse_display_group_box')
+        self.verse_display_group_box.setObjectName('verse_display_group_box')
         self.verse_display_layout = QtGui.QFormLayout(self.verse_display_group_box)
-        self.verse_display_layout.setObjectName(u'verse_display_layout')
+        self.verse_display_layout.setObjectName('verse_display_layout')
         self.new_chapters_check_box = QtGui.QCheckBox(self.verse_display_group_box)
-        self.new_chapters_check_box.setObjectName(u'new_chapters_check_box')
+        self.new_chapters_check_box.setObjectName('new_chapters_check_box')
         self.verse_display_layout.addRow(self.new_chapters_check_box)
         self.display_style_label = QtGui.QLabel(self.verse_display_group_box)
-        self.display_style_label.setObjectName(u'display_style_label')
+        self.display_style_label.setObjectName('display_style_label')
         self.display_style_combo_box = QtGui.QComboBox(self.verse_display_group_box)
-        self.display_style_combo_box.addItems([u'', u'', u'', u''])
-        self.display_style_combo_box.setObjectName(u'display_style_combo_box')
+        self.display_style_combo_box.addItems(['', '', '', ''])
+        self.display_style_combo_box.setObjectName('display_style_combo_box')
         self.verse_display_layout.addRow(self.display_style_label, self.display_style_combo_box)
         self.layout_style_label = QtGui.QLabel(self.verse_display_group_box)
-        self.layout_style_label.setObjectName(u'layout_style_label')
+        self.layout_style_label.setObjectName('layout_style_label')
         self.layout_style_combo_box = QtGui.QComboBox(self.verse_display_group_box)
-        self.layout_style_combo_box.setObjectName(u'layout_style_combo_box')
-        self.layout_style_combo_box.addItems([u'', u'', u''])
+        self.layout_style_combo_box.setObjectName('layout_style_combo_box')
+        self.layout_style_combo_box.addItems(['', '', ''])
         self.verse_display_layout.addRow(self.layout_style_label, self.layout_style_combo_box)
         self.bible_second_check_box = QtGui.QCheckBox(self.verse_display_group_box)
-        self.bible_second_check_box.setObjectName(u'bible_second_check_box')
+        self.bible_second_check_box.setObjectName('bible_second_check_box')
         self.verse_display_layout.addRow(self.bible_second_check_box)
         self.bible_theme_label = QtGui.QLabel(self.verse_display_group_box)
-        self.bible_theme_label.setObjectName(u'BibleTheme_label')
+        self.bible_theme_label.setObjectName('BibleTheme_label')
         self.bible_theme_combo_box = QtGui.QComboBox(self.verse_display_group_box)
         self.bible_theme_combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.bible_theme_combo_box.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.bible_theme_combo_box.addItem(u'')
-        self.bible_theme_combo_box.setObjectName(u'BibleThemecombo_box')
+        self.bible_theme_combo_box.addItem('')
+        self.bible_theme_combo_box.setObjectName('BibleThemecombo_box')
         self.verse_display_layout.addRow(self.bible_theme_label, self.bible_theme_combo_box)
         self.change_note_label = QtGui.QLabel(self.verse_display_group_box)
         self.change_note_label.setWordWrap(True)
-        self.change_note_label.setObjectName(u'change_note_label')
+        self.change_note_label.setObjectName('change_note_label')
         self.verse_display_layout.addRow(self.change_note_label)
         self.left_layout.addWidget(self.verse_display_group_box)
         self.scripture_reference_group_box = QtGui.QGroupBox(self.left_column)
-        self.scripture_reference_group_box.setObjectName(u'scripture_reference_group_box')
+        self.scripture_reference_group_box.setObjectName('scripture_reference_group_box')
         self.scripture_reference_layout = QtGui.QGridLayout(self.scripture_reference_group_box)
         self.verse_separator_check_box = QtGui.QCheckBox(self.scripture_reference_group_box)
-        self.verse_separator_check_box.setObjectName(u'verse_separator_check_box')
+        self.verse_separator_check_box.setObjectName('verse_separator_check_box')
         self.scripture_reference_layout.addWidget(self.verse_separator_check_box, 0, 0)
         self.verse_separator_line_edit = QtGui.QLineEdit(self.scripture_reference_group_box)
-        self.verse_separator_line_edit.setObjectName(u'verse_separator_line_edit')
+        self.verse_separator_line_edit.setObjectName('verse_separator_line_edit')
         self.scripture_reference_layout.addWidget(self.verse_separator_line_edit, 0, 1)
         self.range_separator_check_box = QtGui.QCheckBox(self.scripture_reference_group_box)
-        self.range_separator_check_box.setObjectName(u'range_separator_check_box')
+        self.range_separator_check_box.setObjectName('range_separator_check_box')
         self.scripture_reference_layout.addWidget(self.range_separator_check_box, 1, 0)
         self.range_separator_line_edit = QtGui.QLineEdit(self.scripture_reference_group_box)
-        self.range_separator_line_edit.setObjectName(u'range_separator_line_edit')
+        self.range_separator_line_edit.setObjectName('range_separator_line_edit')
         self.scripture_reference_layout.addWidget(self.range_separator_line_edit, 1, 1)
         self.list_separator_check_box = QtGui.QCheckBox(self.scripture_reference_group_box)
-        self.list_separator_check_box.setObjectName(u'list_separator_check_box')
+        self.list_separator_check_box.setObjectName('list_separator_check_box')
         self.scripture_reference_layout.addWidget(self.list_separator_check_box, 2, 0)
         self.list_separator_line_edit = QtGui.QLineEdit(self.scripture_reference_group_box)
-        self.list_separator_line_edit.setObjectName(u'list_separator_line_edit')
+        self.list_separator_line_edit.setObjectName('list_separator_line_edit')
         self.scripture_reference_layout.addWidget(self.list_separator_line_edit, 2, 1)
         self.end_separator_check_box = QtGui.QCheckBox(self.scripture_reference_group_box)
-        self.end_separator_check_box.setObjectName(u'end_separator_check_box')
+        self.end_separator_check_box.setObjectName('end_separator_check_box')
         self.scripture_reference_layout.addWidget(self.end_separator_check_box, 3, 0)
         self.end_separator_line_edit = QtGui.QLineEdit(self.scripture_reference_group_box)
-        self.end_separator_line_edit.setObjectName(u'end_separator_line_edit')
+        self.end_separator_line_edit.setObjectName('end_separator_line_edit')
         self.end_separator_line_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^0-9]*'),
             self.end_separator_line_edit))
         self.scripture_reference_layout.addWidget(self.end_separator_line_edit, 3, 1)
         self.left_layout.addWidget(self.scripture_reference_group_box)
         self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.language_selection_group_box = QtGui.QGroupBox(self.right_column)
-        self.language_selection_group_box.setObjectName(u'language_selection_group_box')
+        self.language_selection_group_box.setObjectName('language_selection_group_box')
         self.language_selection_layout = QtGui.QVBoxLayout(self.language_selection_group_box)
         self.language_selection_label = QtGui.QLabel(self.language_selection_group_box)
-        self.language_selection_label.setObjectName(u'language_selection_label')
+        self.language_selection_label.setObjectName('language_selection_label')
         self.language_selection_combo_box = QtGui.QComboBox(self.language_selection_group_box)
-        self.language_selection_combo_box.setObjectName(u'language_selection_combo_box')
-        self.language_selection_combo_box.addItems([u'', u'', u''])
+        self.language_selection_combo_box.setObjectName('language_selection_combo_box')
+        self.language_selection_combo_box.addItems(['', '', ''])
         self.language_selection_layout.addWidget(self.language_selection_label)
         self.language_selection_layout.addWidget(self.language_selection_combo_box)
         self.right_layout.addWidget(self.language_selection_group_box)
@@ -151,7 +151,7 @@ class BiblesTab(SettingsTab):
         self.end_separator_check_box.clicked.connect(self.on_end_separator_check_box_clicked)
         self.end_separator_line_edit.textEdited.connect(self.on_end_separator_line_edit_edited)
         self.end_separator_line_edit.editingFinished.connect(self.on_end_separator_line_edit_finished)
-        Registry().register_function(u'theme_update_list', self.update_theme_list)
+        Registry().register_function('theme_update_list', self.update_theme_list)
         self.language_selection_combo_box.activated.connect(self.on_language_selection_combo_box_changed)
 
     def retranslateUi(self):
@@ -224,7 +224,7 @@ class BiblesTab(SettingsTab):
         if checked:
             self.verse_separator_line_edit.setFocus()
         else:
-            self.verse_separator_line_edit.setText(get_reference_separator(u'sep_v_default'))
+            self.verse_separator_line_edit.setText(get_reference_separator('sep_v_default'))
         self.verse_separator_line_edit.setPalette(self.getGreyTextPalette(not checked))
 
     def on_verse_separator_line_edit_edited(self, text):
@@ -234,16 +234,16 @@ class BiblesTab(SettingsTab):
     def on_verse_separator_line_edit_finished(self):
         if self.verse_separator_line_edit.isModified():
             text = self.verse_separator_line_edit.text()
-            if text == get_reference_separator(u'sep_v_default') or not text.replace(u'|', u''):
+            if text == get_reference_separator('sep_v_default') or not text.replace('|', ''):
                 self.verse_separator_check_box.setChecked(False)
-                self.verse_separator_line_edit.setText(get_reference_separator(u'sep_v_default'))
+                self.verse_separator_line_edit.setText(get_reference_separator('sep_v_default'))
                 self.verse_separator_line_edit.setPalette(self.getGreyTextPalette(True))
 
     def on_range_separator_check_box_clicked(self, checked):
         if checked:
             self.range_separator_line_edit.setFocus()
         else:
-            self.range_separator_line_edit.setText(get_reference_separator(u'sep_r_default'))
+            self.range_separator_line_edit.setText(get_reference_separator('sep_r_default'))
         self.range_separator_line_edit.setPalette(self.getGreyTextPalette(not checked))
 
     def on_range_separator_line_edit_edited(self, text):
@@ -253,16 +253,16 @@ class BiblesTab(SettingsTab):
     def on_range_separator_line_edit_finished(self):
         if self.range_separator_line_edit.isModified():
             text = self.range_separator_line_edit.text()
-            if text == get_reference_separator(u'sep_r_default') or not text.replace(u'|', u''):
+            if text == get_reference_separator('sep_r_default') or not text.replace('|', ''):
                 self.range_separator_check_box.setChecked(False)
-                self.range_separator_line_edit.setText(get_reference_separator(u'sep_r_default'))
+                self.range_separator_line_edit.setText(get_reference_separator('sep_r_default'))
                 self.range_separator_line_edit.setPalette(self.getGreyTextPalette(True))
 
     def on_list_separator_check_box_clicked(self, checked):
         if checked:
             self.list_separator_line_edit.setFocus()
         else:
-            self.list_separator_line_edit.setText(get_reference_separator(u'sep_l_default'))
+            self.list_separator_line_edit.setText(get_reference_separator('sep_l_default'))
         self.list_separator_line_edit.setPalette(self.getGreyTextPalette(not checked))
 
     def on_list_separator_line_edit_edited(self, text):
@@ -272,16 +272,16 @@ class BiblesTab(SettingsTab):
     def on_list_separator_line_edit_finished(self):
         if self.list_separator_line_edit.isModified():
             text = self.list_separator_line_edit.text()
-            if text == get_reference_separator(u'sep_l_default') or not text.replace(u'|', u''):
+            if text == get_reference_separator('sep_l_default') or not text.replace('|', ''):
                 self.list_separator_check_box.setChecked(False)
-                self.list_separator_line_edit.setText(get_reference_separator(u'sep_l_default'))
+                self.list_separator_line_edit.setText(get_reference_separator('sep_l_default'))
                 self.list_separator_line_edit.setPalette(self.getGreyTextPalette(True))
 
     def on_end_separator_check_box_clicked(self, checked):
         if checked:
             self.end_separator_line_edit.setFocus()
         else:
-            self.end_separator_line_edit.setText(get_reference_separator(u'sep_e_default'))
+            self.end_separator_line_edit.setText(get_reference_separator('sep_e_default'))
         self.end_separator_line_edit.setPalette(self.getGreyTextPalette(not checked))
 
     def on_end_separator_line_edit_edited(self, text):
@@ -291,94 +291,94 @@ class BiblesTab(SettingsTab):
     def on_end_separator_line_edit_finished(self):
         if self.end_separator_line_edit.isModified():
             text = self.end_separator_line_edit.text()
-            if text == get_reference_separator(u'sep_e_default') or not text.replace(u'|', u''):
+            if text == get_reference_separator('sep_e_default') or not text.replace('|', ''):
                 self.end_separator_check_box.setChecked(False)
-                self.end_separator_line_edit.setText(get_reference_separator(u'sep_e_default'))
+                self.end_separator_line_edit.setText(get_reference_separator('sep_e_default'))
                 self.end_separator_line_edit.setPalette(self.getGreyTextPalette(True))
 
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.show_new_chapters = settings.value(u'display new chapter')
-        self.display_style = settings.value(u'display brackets')
-        self.layout_style = settings.value(u'verse layout style')
-        self.bible_theme = settings.value(u'bible theme')
-        self.second_bibles = settings.value(u'second bibles')
+        self.show_new_chapters = settings.value('display new chapter')
+        self.display_style = settings.value('display brackets')
+        self.layout_style = settings.value('verse layout style')
+        self.bible_theme = settings.value('bible theme')
+        self.second_bibles = settings.value('second bibles')
         self.new_chapters_check_box.setChecked(self.show_new_chapters)
         self.display_style_combo_box.setCurrentIndex(self.display_style)
         self.layout_style_combo_box.setCurrentIndex(self.layout_style)
         self.bible_second_check_box.setChecked(self.second_bibles)
-        verse_separator = settings.value(u'verse separator')
-        if (verse_separator.strip(u'|') == u'') or (verse_separator == get_reference_separator(u'sep_v_default')):
-            self.verse_separator_line_edit.setText(get_reference_separator(u'sep_v_default'))
+        verse_separator = settings.value('verse separator')
+        if (verse_separator.strip('|') == '') or (verse_separator == get_reference_separator('sep_v_default')):
+            self.verse_separator_line_edit.setText(get_reference_separator('sep_v_default'))
             self.verse_separator_line_edit.setPalette(self.getGreyTextPalette(True))
             self.verse_separator_check_box.setChecked(False)
         else:
             self.verse_separator_line_edit.setText(verse_separator)
             self.verse_separator_line_edit.setPalette(self.getGreyTextPalette(False))
             self.verse_separator_check_box.setChecked(True)
-        range_separator = settings.value(u'range separator')
-        if (range_separator.strip(u'|') == u'') or (range_separator == get_reference_separator(u'sep_r_default')):
-            self.range_separator_line_edit.setText(get_reference_separator(u'sep_r_default'))
+        range_separator = settings.value('range separator')
+        if (range_separator.strip('|') == '') or (range_separator == get_reference_separator('sep_r_default')):
+            self.range_separator_line_edit.setText(get_reference_separator('sep_r_default'))
             self.range_separator_line_edit.setPalette(self.getGreyTextPalette(True))
             self.range_separator_check_box.setChecked(False)
         else:
             self.range_separator_line_edit.setText(range_separator)
             self.range_separator_line_edit.setPalette(self.getGreyTextPalette(False))
             self.range_separator_check_box.setChecked(True)
-        list_separator = settings.value(u'list separator')
-        if (list_separator.strip(u'|') == u'') or (list_separator == get_reference_separator(u'sep_l_default')):
-            self.list_separator_line_edit.setText(get_reference_separator(u'sep_l_default'))
+        list_separator = settings.value('list separator')
+        if (list_separator.strip('|') == '') or (list_separator == get_reference_separator('sep_l_default')):
+            self.list_separator_line_edit.setText(get_reference_separator('sep_l_default'))
             self.list_separator_line_edit.setPalette(self.getGreyTextPalette(True))
             self.list_separator_check_box.setChecked(False)
         else:
             self.list_separator_line_edit.setText(list_separator)
             self.list_separator_line_edit.setPalette(self.getGreyTextPalette(False))
             self.list_separator_check_box.setChecked(True)
-        end_separator = settings.value(u'end separator')
-        if (end_separator.strip(u'|') == u'') or (end_separator == get_reference_separator(u'sep_e_default')):
-            self.end_separator_line_edit.setText(get_reference_separator(u'sep_e_default'))
+        end_separator = settings.value('end separator')
+        if (end_separator.strip('|') == '') or (end_separator == get_reference_separator('sep_e_default')):
+            self.end_separator_line_edit.setText(get_reference_separator('sep_e_default'))
             self.end_separator_line_edit.setPalette(self.getGreyTextPalette(True))
             self.end_separator_check_box.setChecked(False)
         else:
             self.end_separator_line_edit.setText(end_separator)
             self.end_separator_line_edit.setPalette(self.getGreyTextPalette(False))
             self.end_separator_check_box.setChecked(True)
-        self.language_selection = settings.value(u'book name language')
+        self.language_selection = settings.value('book name language')
         self.language_selection_combo_box.setCurrentIndex(self.language_selection)
         settings.endGroup()
 
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        settings.setValue(u'display new chapter', self.show_new_chapters)
-        settings.setValue(u'display brackets', self.display_style)
-        settings.setValue(u'verse layout style', self.layout_style)
-        settings.setValue(u'second bibles', self.second_bibles)
-        settings.setValue(u'bible theme', self.bible_theme)
+        settings.setValue('display new chapter', self.show_new_chapters)
+        settings.setValue('display brackets', self.display_style)
+        settings.setValue('verse layout style', self.layout_style)
+        settings.setValue('second bibles', self.second_bibles)
+        settings.setValue('bible theme', self.bible_theme)
         if self.verse_separator_check_box.isChecked():
-            settings.setValue(u'verse separator', self.verse_separator_line_edit.text())
+            settings.setValue('verse separator', self.verse_separator_line_edit.text())
         else:
-            settings.remove(u'verse separator')
+            settings.remove('verse separator')
         if self.range_separator_check_box.isChecked():
-            settings.setValue(u'range separator', self.range_separator_line_edit.text())
+            settings.setValue('range separator', self.range_separator_line_edit.text())
         else:
-            settings.remove(u'range separator')
+            settings.remove('range separator')
         if self.list_separator_check_box.isChecked():
-            settings.setValue(u'list separator', self.list_separator_line_edit.text())
+            settings.setValue('list separator', self.list_separator_line_edit.text())
         else:
-            settings.remove(u'list separator')
+            settings.remove('list separator')
         if self.end_separator_check_box.isChecked():
-            settings.setValue(u'end separator', self.end_separator_line_edit.text())
+            settings.setValue('end separator', self.end_separator_line_edit.text())
         else:
-            settings.remove(u'end separator')
+            settings.remove('end separator')
         update_reference_separators()
-        if self.language_selection != settings.value(u'book name language'):
-            settings.setValue(u'book name language', self.language_selection)
-            self.settings_form.register_post_process(u'bibles_load_list')
+        if self.language_selection != settings.value('book name language'):
+            settings.setValue('book name language', self.language_selection)
+            self.settings_form.register_post_process('bibles_load_list')
         settings.endGroup()
         if self.tab_visited:
-            self.settings_form.register_post_process(u'bibles_config_updated')
+            self.settings_form.register_post_process('bibles_config_updated')
         self.tab_visited = False
 
     def update_theme_list(self, theme_list):
@@ -391,7 +391,7 @@ class BiblesTab(SettingsTab):
                 [u'Bible Theme', u'Song Theme']
         """
         self.bible_theme_combo_box.clear()
-        self.bible_theme_combo_box.addItem(u'')
+        self.bible_theme_combo_box.addItem('')
         self.bible_theme_combo_box.addItems(theme_list)
         find_and_set_in_combo_box(self.bible_theme_combo_box, self.bible_theme)
 

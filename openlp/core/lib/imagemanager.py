@@ -35,7 +35,7 @@ wait for the conversion to happen.
 import logging
 import os
 import time
-import Queue
+import queue
 
 from PyQt4 import QtCore
 
@@ -134,7 +134,7 @@ class Image(object):
         Image.secondary_priority += 1
 
 
-class PriorityQueue(Queue.PriorityQueue):
+class PriorityQueue(queue.PriorityQueue):
     """
     Customised ``Queue.PriorityQueue``.
 
@@ -177,42 +177,42 @@ class ImageManager(QtCore.QObject):
     """
     Image Manager handles the conversion and sizing of images.
     """
-    log.info(u'Image Manager loaded')
+    log.info('Image Manager loaded')
 
     def __init__(self):
         """
         Constructor for the image manager.
         """
         super(ImageManager, self).__init__()
-        Registry().register(u'image_manager', self)
+        Registry().register('image_manager', self)
         current_screen = ScreenList().current
-        self.width = current_screen[u'size'].width()
-        self.height = current_screen[u'size'].height()
+        self.width = current_screen['size'].width()
+        self.height = current_screen['size'].height()
         self._cache = {}
         self.image_thread = ImageThread(self)
         self._conversion_queue = PriorityQueue()
         self.stop_manager = False
-        Registry().register_function(u'images_regenerate', self.process_updates)
+        Registry().register_function('images_regenerate', self.process_updates)
 
     def update_display(self):
         """
         Screen has changed size so rebuild the cache to new size.
         """
-        log.debug(u'update_display')
+        log.debug('update_display')
         current_screen = ScreenList().current
-        self.width = current_screen[u'size'].width()
-        self.height = current_screen[u'size'].height()
+        self.width = current_screen['size'].width()
+        self.height = current_screen['size'].height()
         # Mark the images as dirty for a rebuild by setting the image and byte stream to None.
-        for image in self._cache.values():
+        for image in list(self._cache.values()):
             self._reset_image(image)
 
     def update_images_border(self, source, background):
         """
         Border has changed so update all the images affected.
         """
-        log.debug(u'update_images_border')
+        log.debug('update_images_border')
         # Mark the images as dirty for a rebuild by setting the image and byte stream to None.
-        for image in self._cache.values():
+        for image in list(self._cache.values()):
             if image.source == source:
                 image.background = background
                 self._reset_image(image)
@@ -221,7 +221,7 @@ class ImageManager(QtCore.QObject):
         """
         Border has changed so update the image affected.
         """
-        log.debug(u'update_image_border')
+        log.debug('update_image_border')
         # Mark the image as dirty for a rebuild by setting the image and byte stream to None.
         image = self._cache[(path, source)]
         if image.source == source:
@@ -248,14 +248,14 @@ class ImageManager(QtCore.QObject):
         """
         Return the ``QImage`` from the cache. If not present wait for the background thread to process it.
         """
-        log.debug(u'getImage %s' % path)
+        log.debug('getImage %s' % path)
         image = self._cache[(path, source)]
         if image.image is None:
             self._conversion_queue.modify_priority(image, Priority.High)
             # make sure we are running and if not give it a kick
             self.process_updates()
             while image.image is None:
-                log.debug(u'getImage - waiting')
+                log.debug('getImage - waiting')
                 time.sleep(0.1)
         elif image.image_bytes is None:
             # Set the priority to Low, because the image was requested but the byte stream was not generated yet.
@@ -268,14 +268,14 @@ class ImageManager(QtCore.QObject):
         """
         Returns the byte string for an image. If not present wait for the background thread to process it.
         """
-        log.debug(u'get_image_bytes %s' % path)
+        log.debug('get_image_bytes %s' % path)
         image = self._cache[(path, source)]
         if image.image_bytes is None:
             self._conversion_queue.modify_priority(image, Priority.Urgent)
             # make sure we are running and if not give it a kick
             self.process_updates()
             while image.image_bytes is None:
-                log.debug(u'getImageBytes - waiting')
+                log.debug('getImageBytes - waiting')
                 time.sleep(0.1)
         return image.image_bytes
 
@@ -283,13 +283,13 @@ class ImageManager(QtCore.QObject):
         """
         Add image to cache if it is not already there.
         """
-        log.debug(u'add_image %s' % path)
+        log.debug('add_image %s' % path)
         if not (path, source) in self._cache:
             image = Image(path, source, background)
             self._cache[(path, source)] = image
             self._conversion_queue.put((image.priority, image.secondary_priority, image))
         # Check if the there are any images with the same path and check if the timestamp has changed.
-        for image in self._cache.values():
+        for image in list(self._cache.values()):
             if os.path.exists(path):
                 if image.path == path and image.timestamp != os.stat(path).st_mtime:
                     image.timestamp = os.stat(path).st_mtime
@@ -302,16 +302,16 @@ class ImageManager(QtCore.QObject):
         """
         Controls the processing called from a ``QtCore.QThread``.
         """
-        log.debug(u'_process - started')
+        log.debug('_process - started')
         while not self._conversion_queue.empty() and not self.stop_manager:
             self._process_cache()
-        log.debug(u'_process - ended')
+        log.debug('_process - ended')
 
     def _process_cache(self):
         """
         Actually does the work.
         """
-        log.debug(u'_processCache')
+        log.debug('_processCache')
         image = self._conversion_queue.get()[2]
         # Generate the QImage for the image.
         if image.image is None:

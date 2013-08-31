@@ -39,7 +39,7 @@ from openlp.core.ui.media.mediaplayer import MediaPlayer
 
 log = logging.getLogger(__name__)
 
-VIDEO_CSS = u"""
+VIDEO_CSS = """
 #videobackboard {
     z-index:3;
     background-color: %(bgcolor)s;
@@ -50,7 +50,7 @@ VIDEO_CSS = u"""
 }
 """
 
-VIDEO_JS = u"""
+VIDEO_JS = """
     function show_video(state, path, volume, loop, variable_value){
         // Sometimes  video.currentTime stops slightly short of video.duration and video.ended is intermittent!
 
@@ -100,18 +100,18 @@ VIDEO_JS = u"""
     }
 """
 
-VIDEO_HTML = u"""
+VIDEO_HTML = """
 <div id="videobackboard" class="size" style="visibility:hidden"></div>
 <video id="video" class="size" style="visibility:hidden" autobuffer preload></video>
 """
 
-FLASH_CSS = u"""
+FLASH_CSS = """
 #flash {
     z-index:5;
 }
 """
 
-FLASH_JS = u"""
+FLASH_JS = """
     function getFlashMovieObject(movieName)
     {
         if (window.document[movieName]){
@@ -169,37 +169,37 @@ FLASH_JS = u"""
     }
 """
 
-FLASH_HTML = u"""
+FLASH_HTML = """
 <div id="flash" class="size" style="visibility:hidden"></div>
 """
 
 VIDEO_EXT = [
-    u'*.3gp',
-    u'*.3gpp',
-    u'*.3g2',
-    u'*.3gpp2',
-    u'*.aac',
-    u'*.flv',
-    u'*.f4a',
-    u'*.f4b',
-    u'*.f4p',
-    u'*.f4v',
-    u'*.mov',
-    u'*.m4a',
-    u'*.m4b',
-    u'*.m4p',
-    u'*.m4v',
-    u'*.mkv',
-    u'*.mp4',
-    u'*.ogv',
-    u'*.webm',
-    u'*.mpg', u'*.wmv', u'*.mpeg', u'*.avi',
-    u'*.swf'
+    '*.3gp',
+    '*.3gpp',
+    '*.3g2',
+    '*.3gpp2',
+    '*.aac',
+    '*.flv',
+    '*.f4a',
+    '*.f4b',
+    '*.f4p',
+    '*.f4v',
+    '*.mov',
+    '*.m4a',
+    '*.m4b',
+    '*.m4p',
+    '*.m4v',
+    '*.mkv',
+    '*.mp4',
+    '*.ogv',
+    '*.webm',
+    '*.mpg', '*.wmv', '*.mpeg', '*.avi',
+    '*.swf'
 ]
 
 AUDIO_EXT = [
-    u'*.mp3',
-    u'*.ogg'
+    '*.mp3',
+    '*.ogg'
 ]
 
 
@@ -213,9 +213,9 @@ class WebkitPlayer(MediaPlayer):
         """
         Constructor
         """
-        super(WebkitPlayer, self).__init__(parent, u'webkit')
-        self.original_name = u'WebKit'
-        self.display_name = u'&WebKit'
+        super(WebkitPlayer, self).__init__(parent, 'webkit')
+        self.original_name = 'WebKit'
+        self.display_name = '&WebKit'
         self.parent = parent
         self.can_background = True
         self.audio_extensions_list = AUDIO_EXT
@@ -225,8 +225,8 @@ class WebkitPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value(u'players/background color')).name()
-        css = VIDEO_CSS % {u'bgcolor': background}
+        background = QtGui.QColor(Settings().value('players/background color')).name()
+        css = VIDEO_CSS % {'bgcolor': background}
         return css + FLASH_CSS
 
     def get_media_display_javascript(self):
@@ -259,7 +259,7 @@ class WebkitPlayer(MediaPlayer):
         """
         Load a video
         """
-        log.debug(u'load vid in Webkit Controller')
+        log.debug('load vid in Webkit Controller')
         controller = display.controller
         if display.has_audio and not controller.media_info.is_background:
             volume = controller.media_info.volume
@@ -268,15 +268,15 @@ class WebkitPlayer(MediaPlayer):
             vol = 0
         path = controller.media_info.file_info.absoluteFilePath()
         if controller.media_info.is_background:
-            loop = u'true'
+            loop = 'true'
         else:
-            loop = u'false'
+            loop = 'false'
         display.web_view.setVisible(True)
-        if controller.media_info.file_info.suffix() == u'swf':
+        if controller.media_info.file_info.suffix() == 'swf':
             controller.media_info.is_flash = True
-            js = u'show_flash("load","%s");' % (path.replace(u'\\', u'\\\\'))
+            js = 'show_flash("load","%s");' % (path.replace('\\', '\\\\'))
         else:
-            js = u'show_video("load", "%s", %s, %s);' % (path.replace(u'\\', u'\\\\'), str(vol), loop)
+            js = 'show_video("load", "%s", %s, %s);' % (path.replace('\\', '\\\\'), str(vol), loop)
         display.frame.evaluateJavaScript(js)
         return True
 
@@ -298,9 +298,9 @@ class WebkitPlayer(MediaPlayer):
             start_time = controller.media_info.start_time
         self.set_visible(display, True)
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash("play");')
+            display.frame.evaluateJavaScript('show_flash("play");')
         else:
-            display.frame.evaluateJavaScript(u'show_video("play");')
+            display.frame.evaluateJavaScript('show_video("play");')
         if start_time > 0:
             self.seek(display, controller.media_info.start_time * 1000)
         # TODO add playing check and get the correct media length
@@ -315,9 +315,9 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash("pause");')
+            display.frame.evaluateJavaScript('show_flash("pause");')
         else:
-            display.frame.evaluateJavaScript(u'show_video("pause");')
+            display.frame.evaluateJavaScript('show_video("pause");')
         self.state = MediaState.Paused
 
     def stop(self, display):
@@ -326,9 +326,9 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash("stop");')
+            display.frame.evaluateJavaScript('show_flash("stop");')
         else:
-            display.frame.evaluateJavaScript(u'show_video("stop");')
+            display.frame.evaluateJavaScript('show_video("stop");')
         self.state = MediaState.Stopped
 
     def volume(self, display, volume):
@@ -340,7 +340,7 @@ class WebkitPlayer(MediaPlayer):
         if display.has_audio:
             vol = float(volume) / float(100)
             if not controller.media_info.is_flash:
-                display.frame.evaluateJavaScript(u'show_video(null, null, %s);' % str(vol))
+                display.frame.evaluateJavaScript('show_video(null, null, %s);' % str(vol))
 
     def seek(self, display, seek_value):
         """
@@ -349,10 +349,10 @@ class WebkitPlayer(MediaPlayer):
         controller = display.controller
         if controller.media_info.is_flash:
             seek = seek_value
-            display.frame.evaluateJavaScript(u'show_flash("seek", null, null, "%s");' % (seek))
+            display.frame.evaluateJavaScript('show_flash("seek", null, null, "%s");' % (seek))
         else:
             seek = float(seek_value) / 1000
-            display.frame.evaluateJavaScript(u'show_video("seek", null, null, null, "%f");' % (seek))
+            display.frame.evaluateJavaScript('show_video("seek", null, null, null, "%f");' % (seek))
 
     def reset(self, display):
         """
@@ -360,9 +360,9 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash("close");')
+            display.frame.evaluateJavaScript('show_flash("close");')
         else:
-            display.frame.evaluateJavaScript(u'show_video("close");')
+            display.frame.evaluateJavaScript('show_video("close");')
         self.state = MediaState.Off
 
     def set_visible(self, display, status):
@@ -375,9 +375,9 @@ class WebkitPlayer(MediaPlayer):
         else:
             is_visible = "hidden"
         if controller.media_info.is_flash:
-            display.frame.evaluateJavaScript(u'show_flash("setVisible", null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript('show_flash("setVisible", null, null, "%s");' % (is_visible))
         else:
-            display.frame.evaluateJavaScript(u'show_video("setVisible", null, null, null, "%s");' % (is_visible))
+            display.frame.evaluateJavaScript('show_video("setVisible", null, null, null, "%s");' % (is_visible))
 
     def update_ui(self, display):
         """
@@ -385,16 +385,16 @@ class WebkitPlayer(MediaPlayer):
         """
         controller = display.controller
         if controller.media_info.is_flash:
-            current_time = display.frame.evaluateJavaScript(u'show_flash("current_time");')
-            length = display.frame.evaluateJavaScript(u'show_flash("length");')
+            current_time = display.frame.evaluateJavaScript('show_flash("current_time");')
+            length = display.frame.evaluateJavaScript('show_flash("length");')
         else:
-            if display.frame.evaluateJavaScript(u'show_video("isEnded");'):
+            if display.frame.evaluateJavaScript('show_video("isEnded");'):
                 self.stop(display)
-            current_time = display.frame.evaluateJavaScript(u'show_video("current_time");')
+            current_time = display.frame.evaluateJavaScript('show_video("current_time");')
             # check if conversion was ok and value is not 'NaN'
             if current_time and current_time != float('inf'):
                 current_time = int(current_time * 1000)
-            length = display.frame.evaluateJavaScript(u'show_video("length");')
+            length = display.frame.evaluateJavaScript('show_video("length");')
             # check if conversion was ok and value is not 'NaN'
             if length and length != float('inf'):
                 length = int(length * 1000)
@@ -413,7 +413,7 @@ class WebkitPlayer(MediaPlayer):
         return(translate('Media.player', 'Webkit is a media player which runs '
             'inside a web browser. This player allows text over video to be '
             'rendered.') +
-            u'<br/> <strong>' + translate('Media.player', 'Audio') +
-            u'</strong><br/>' + unicode(AUDIO_EXT) + u'<br/><strong>' +
-            translate('Media.player', 'Video') + u'</strong><br/>' +
-            unicode(VIDEO_EXT) + u'<br/>')
+            '<br/> <strong>' + translate('Media.player', 'Audio') +
+            '</strong><br/>' + str(AUDIO_EXT) + '<br/><strong>' +
+            translate('Media.player', 'Video') + '</strong><br/>' +
+            str(VIDEO_EXT) + '<br/>')

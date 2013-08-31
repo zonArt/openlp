@@ -40,7 +40,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
     """
     Provide a list widget to store objects and handle drag and drop events
     """
-    def __init__(self, parent=None, name=u''):
+    def __init__(self, parent=None, name=''):
         """
         Initialise the list widget
         """
@@ -54,7 +54,7 @@ class ListWidgetWithDnD(QtGui.QListWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        Registry().register_function((u'%s_dnd' % self.mimeDataText), self.parent().load_file)
+        Registry().register_function(('%s_dnd' % self.mimeDataText), self.parent().load_file)
 
     def mouseMoveEvent(self, event):
         """
@@ -111,6 +111,6 @@ class ListWidgetWithDnD(QtGui.QListWidget):
                     listing = os.listdir(localFile)
                     for file in listing:
                         files.append(os.path.join(localFile, file))
-            Registry().execute(u'%s_dnd' % self.mimeDataText, files)
+            Registry().execute('%s_dnd' % self.mimeDataText, files)
         else:
             event.ignore()

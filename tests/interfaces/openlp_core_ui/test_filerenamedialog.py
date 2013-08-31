@@ -18,7 +18,7 @@ class TestStartFileRenameForm(TestCase):
         Registry.create()
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
-        Registry().register(u'main_window', self.main_window)
+        Registry().register('main_window', self.main_window)
         self.form = filerenameform.FileRenameForm()
 
     def tearDown(self):
@@ -34,25 +34,25 @@ class TestStartFileRenameForm(TestCase):
         Test the windowTitle of the FileRenameDialog
         """
         # GIVEN: A mocked QDialog.exec_() method
-        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
 
             # WHEN: The form is executed with no args
             self.form.exec_()
 
             # THEN: the window title is set correctly
-            self.assertEqual(self.form.windowTitle(), u'File Rename', u'The window title should be "File Rename"')
+            self.assertEqual(self.form.windowTitle(), 'File Rename', 'The window title should be "File Rename"')
 
             # WHEN: The form is executed with False arg
             self.form.exec_(False)
 
             # THEN: the window title is set correctly
-            self.assertEqual(self.form.windowTitle(), u'File Rename', u'The window title should be "File Rename"')
+            self.assertEqual(self.form.windowTitle(), 'File Rename', 'The window title should be "File Rename"')
 
             # WHEN: The form is executed with True arg
             self.form.exec_(True)
 
             # THEN: the window title is set correctly
-            self.assertEqual(self.form.windowTitle(), u'File Copy', u'The window title should be "File Copy"')
+            self.assertEqual(self.form.windowTitle(), 'File Copy', 'The window title should be "File Copy"')
 
     def line_edit_focus_test(self):
         """
@@ -60,7 +60,7 @@ class TestStartFileRenameForm(TestCase):
         Test that the file_name_edit setFocus has called with True when executed
         """
         # GIVEN: A mocked QDialog.exec_() method and mocked file_name_edit.setFocus() method.
-        with patch(u'PyQt4.QtGui.QDialog.exec_') as mocked_exec:
+        with patch('PyQt4.QtGui.QDialog.exec_') as mocked_exec:
             mocked_set_focus = MagicMock()
             self.form.file_name_edit.setFocus = mocked_set_focus
 
@@ -77,8 +77,8 @@ class TestStartFileRenameForm(TestCase):
         # GIVEN: QLineEdit with a validator set with illegal file name characters.
 
         # WHEN: 'Typing' a string containing invalid file characters.
-        QtTest.QTest.keyClicks(self.form.file_name_edit, u'I/n\\v?a*l|i<d> \F[i\l]e" :N+a%me')
+        QtTest.QTest.keyClicks(self.form.file_name_edit, 'I/n\\v?a*l|i<d> \F[i\l]e" :N+a%me')
 
         # THEN: The text in the QLineEdit should be the same as the input string with the invalid characters filtered
         # out.
-        self.assertEqual(self.form.file_name_edit.text(), u'Invalid File Name')
+        self.assertEqual(self.form.file_name_edit.text(), 'Invalid File Name')

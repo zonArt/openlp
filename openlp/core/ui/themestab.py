@@ -29,7 +29,7 @@
 """
 The Themes configuration tab
 """
-from __future__ import division
+
 
 from PyQt4 import QtCore, QtGui
 
@@ -46,50 +46,50 @@ class ThemesTab(SettingsTab):
         """
         Constructor
         """
-        self.icon_path = u':/themes/theme_new.png'
+        self.icon_path = ':/themes/theme_new.png'
         theme_translated = translate('OpenLP.ThemesTab', 'Themes')
-        super(ThemesTab, self).__init__(parent, u'Themes', theme_translated)
+        super(ThemesTab, self).__init__(parent, 'Themes', theme_translated)
 
     def setupUi(self):
         """
         Set up the UI
         """
-        self.setObjectName(u'ThemesTab')
+        self.setObjectName('ThemesTab')
         super(ThemesTab, self).setupUi()
         self.global_group_box = QtGui.QGroupBox(self.left_column)
-        self.global_group_box.setObjectName(u'global_group_box')
+        self.global_group_box.setObjectName('global_group_box')
         self.global_group_box_layout = QtGui.QVBoxLayout(self.global_group_box)
-        self.global_group_box_layout.setObjectName(u'global_group_box_layout')
+        self.global_group_box_layout.setObjectName('global_group_box_layout')
         self.default_combo_box = QtGui.QComboBox(self.global_group_box)
         self.default_combo_box.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToMinimumContentsLength)
         self.default_combo_box.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.default_combo_box.setObjectName(u'default_combo_box')
+        self.default_combo_box.setObjectName('default_combo_box')
         self.global_group_box_layout.addWidget(self.default_combo_box)
         self.default_list_view = QtGui.QLabel(self.global_group_box)
-        self.default_list_view.setObjectName(u'default_list_view')
+        self.default_list_view.setObjectName('default_list_view')
         self.global_group_box_layout.addWidget(self.default_list_view)
         self.left_layout.addWidget(self.global_group_box)
         self.left_layout.addStretch()
         self.level_group_box = QtGui.QGroupBox(self.right_column)
-        self.level_group_box.setObjectName(u'level_group_box')
+        self.level_group_box.setObjectName('level_group_box')
         self.level_layout = QtGui.QFormLayout(self.level_group_box)
         self.level_layout.setLabelAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.level_layout.setFormAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.level_layout.setObjectName(u'level_layout')
+        self.level_layout.setObjectName('level_layout')
         self.song_level_radio_button = QtGui.QRadioButton(self.level_group_box)
-        self.song_level_radio_button.setObjectName(u'song_level_radio_button')
+        self.song_level_radio_button.setObjectName('song_level_radio_button')
         self.song_level_label = QtGui.QLabel(self.level_group_box)
-        self.song_level_label.setObjectName(u'song_level_label')
+        self.song_level_label.setObjectName('song_level_label')
         self.level_layout.addRow(self.song_level_radio_button, self.song_level_label)
         self.service_level_radio_button = QtGui.QRadioButton(self.level_group_box)
-        self.service_level_radio_button.setObjectName(u'service_level_radio_button')
+        self.service_level_radio_button.setObjectName('service_level_radio_button')
         self.service_level_label = QtGui.QLabel(self.level_group_box)
-        self.service_level_label.setObjectName(u'service_level_label')
+        self.service_level_label.setObjectName('service_level_label')
         self.level_layout.addRow(self.service_level_radio_button, self.service_level_label)
         self.global_level_radio_button = QtGui.QRadioButton(self.level_group_box)
-        self.global_level_radio_button.setObjectName(u'global_level_radio_button')
+        self.global_level_radio_button.setObjectName('global_level_radio_button')
         self.global_level_label = QtGui.QLabel(self.level_group_box)
-        self.global_level_label.setObjectName(u'global_level_label')
+        self.global_level_label.setObjectName('global_level_label')
         self.level_layout.addRow(self.global_level_radio_button, self.global_level_label)
         label_top_margin = (self.song_level_radio_button.sizeHint().height() -
             self.song_level_label.sizeHint().height()) // 2
@@ -104,7 +104,7 @@ class ThemesTab(SettingsTab):
         self.service_level_radio_button.clicked.connect(self.on_service_level_button_clicked)
         self.global_level_radio_button.clicked.connect(self.on_global_level_button_clicked)
         self.default_combo_box.activated.connect(self.on_default_combo_box_changed)
-        Registry().register_function(u'theme_update_list', self.update_theme_list)
+        Registry().register_function('theme_update_list', self.update_theme_list)
 
     def retranslateUi(self):
         """
@@ -132,8 +132,8 @@ class ThemesTab(SettingsTab):
         """
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.theme_level = settings.value(u'theme level')
-        self.global_theme = settings.value(u'global theme')
+        self.theme_level = settings.value('theme level')
+        self.global_theme = settings.value('global theme')
         settings.endGroup()
         if self.theme_level == ThemeLevel.Global:
             self.global_level_radio_button.setChecked(True)
@@ -148,19 +148,19 @@ class ThemesTab(SettingsTab):
         """
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        settings.setValue(u'theme level', self.theme_level)
-        settings.setValue(u'global theme', self.global_theme)
+        settings.setValue('theme level', self.theme_level)
+        settings.setValue('global theme', self.global_theme)
         settings.endGroup()
         self.renderer.set_theme_level(self.theme_level)
         if self.tab_visited:
-            self.settings_form.register_post_process(u'theme_update_global')
+            self.settings_form.register_post_process('theme_update_global')
         self.tab_visited = False
 
     def post_set_up(self):
         """
         After setting things up...
         """
-        Registry().execute(u'theme_update_global')
+        Registry().execute('theme_update_global')
 
     def on_song_level_button_clicked(self):
         """
@@ -198,13 +198,13 @@ class ThemesTab(SettingsTab):
                 [u'Bible Theme', u'Song Theme']
         """
         # Reload as may have been triggered by the ThemeManager.
-        self.global_theme = Settings().value(self.settings_section + u'/global theme')
+        self.global_theme = Settings().value(self.settings_section + '/global theme')
         self.default_combo_box.clear()
         self.default_combo_box.addItems(theme_list)
         find_and_set_in_combo_box(self.default_combo_box, self.global_theme)
         self.renderer.set_global_theme()
         self.renderer.set_theme_level(self.theme_level)
-        if self.global_theme is not u'':
+        if self.global_theme is not '':
             self._preview_global_theme()
 
     def _preview_global_theme(self):
@@ -212,7 +212,7 @@ class ThemesTab(SettingsTab):
         Utility method to update the global theme preview image.
         """
         image = self.theme_manager.get_preview_image(self.global_theme)
-        preview = QtGui.QPixmap(unicode(image))
+        preview = QtGui.QPixmap(str(image))
         if not preview.isNull():
             preview = preview.scaled(300, 255, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         self.default_list_view.setPixmap(preview)

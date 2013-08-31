@@ -35,7 +35,7 @@ from sqlalchemy.sql import and_
 
 from openlp.core.lib import Registry, Settings, translate, check_directory_exists
 from openlp.plugins.songusage.lib.db import SongUsageItem
-from songusagedetaildialog import Ui_SongUsageDetailDialog
+from .songusagedetaildialog import Ui_SongUsageDetailDialog
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
     """
     Class documentation goes here.
     """
-    log.info(u'SongUsage Detail Form Loaded')
+    log.info('SongUsage Detail Form Loaded')
 
     def __init__(self, plugin, parent):
         """
@@ -58,9 +58,9 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         We need to set up the screen
         """
-        self.from_date_calendar.setSelectedDate(Settings().value(self.plugin.settings_section + u'/from date'))
-        self.to_date_calendar.setSelectedDate(Settings().value(self.plugin.settings_section + u'/to date'))
-        self.file_line_edit.setText(Settings().value(self.plugin.settings_section + u'/last directory export'))
+        self.from_date_calendar.setSelectedDate(Settings().value(self.plugin.settings_section + '/from date'))
+        self.to_date_calendar.setSelectedDate(Settings().value(self.plugin.settings_section + '/to date'))
+        self.file_line_edit.setText(Settings().value(self.plugin.settings_section + '/last directory export'))
 
     def define_output_location(self):
         """
@@ -68,16 +68,16 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         path = QtGui.QFileDialog.getExistingDirectory(self,
             translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
-            Settings().value(self.plugin.settings_section + u'/last directory export'))
+            Settings().value(self.plugin.settings_section + '/last directory export'))
         if path:
-            Settings().setValue(self.plugin.settings_section + u'/last directory export', path)
+            Settings().setValue(self.plugin.settings_section + '/last directory export', path)
             self.file_line_edit.setText(path)
 
     def accept(self):
         """
         Ok was triggered so lets save the data and run the report
         """
-        log.debug(u'accept')
+        log.debug('accept')
         path = self.file_line_edit.text()
         if not path:
             self.main_window.error_message(
@@ -88,10 +88,10 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             return
         check_directory_exists(path)
         file_name = translate('SongUsagePlugin.SongUsageDetailForm', 'usage_detail_%s_%s.txt') % (
-            self.from_date_calendar.selectedDate().toString(u'ddMMyyyy'),
-            self.to_date_calendar.selectedDate().toString(u'ddMMyyyy'))
-        Settings().setValue(self.plugin.settings_section + u'/from date', self.from_date_calendar.selectedDate())
-        Settings().setValue(self.plugin.settings_section + u'/to date', self.to_date_calendar.selectedDate())
+            self.from_date_calendar.selectedDate().toString('ddMMyyyy'),
+            self.to_date_calendar.selectedDate().toString('ddMMyyyy'))
+        Settings().setValue(self.plugin.settings_section + '/from date', self.from_date_calendar.selectedDate())
+        Settings().setValue(self.plugin.settings_section + '/to date', self.to_date_calendar.selectedDate())
         usage = self.plugin.manager.get_all_objects(
             SongUsageItem, and_(
             SongUsageItem.usagedate >= self.from_date_calendar.selectedDate().toPyDate(),
@@ -100,20 +100,20 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         report_file_name = os.path.join(path, file_name)
         file_handle = None
         try:
-            file_handle = open(report_file_name, u'w')
+            file_handle = open(report_file_name, 'w')
             for instance in usage:
-                record = u'\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
-                    u'\"%s\",\"%s\"\n' % (instance.usagedate,
+                record = '\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",' \
+                    '\"%s\",\"%s\"\n' % (instance.usagedate,
                     instance.usagetime, instance.title, instance.copyright,
                     instance.ccl_number, instance.authors, instance.plugin_name, instance.source)
-                file_handle.write(record.encode(u'utf-8'))
+                file_handle.write(record.encode('utf-8'))
             self.main_window.information_message(
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation'),
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
                     'has been successfully created. ') % report_file_name
             )
         except IOError:
-            log.exception(u'Failed to write out song usage records')
+            log.exception('Failed to write out song usage records')
         finally:
             if file_handle:
                 file_handle.close()
@@ -123,8 +123,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)

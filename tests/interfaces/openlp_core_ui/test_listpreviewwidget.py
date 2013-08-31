@@ -24,7 +24,7 @@ class TestListPreviewWidget(TestCase):
         self.image = QtGui.QImage(1, 1, QtGui.QImage.Format_RGB32)
         self.image_manager = MagicMock()
         self.image_manager.get_image.return_value = self.image
-        Registry().register(u'image_manager', self.image_manager)
+        Registry().register('image_manager', self.image_manager)
         self.preview_widget = listpreviewwidget.ListPreviewWidget(self.main_window, 2)
 
     def tearDown(self):
@@ -42,7 +42,7 @@ class TestListPreviewWidget(TestCase):
         # GIVEN: A new ListPreviewWidget instance.
         # WHEN: No SlideItem has been added yet.
         # THEN: The count of items should be zero.
-        self.assertEqual(self.preview_widget.slide_count(), 0, u'The slide list should be empty.')
+        self.assertEqual(self.preview_widget.slide_count(), 0, 'The slide list should be empty.')
 
     def initial_slide_number_test(self):
         """
@@ -51,7 +51,7 @@ class TestListPreviewWidget(TestCase):
         # GIVEN: A new ListPreviewWidget instance.
         # WHEN: No SlideItem has been added yet.
         # THEN: The number of the current item should be -1.
-        self.assertEqual(self.preview_widget.current_slide_number(), -1, u'The slide number should be -1.')
+        self.assertEqual(self.preview_widget.current_slide_number(), -1, 'The slide number should be -1.')
 
     def replace_service_item_test(self):
         """
@@ -59,14 +59,14 @@ class TestListPreviewWidget(TestCase):
         """
         # GIVEN: A ServiceItem with two frames.
         service_item = ServiceItem(None)
-        service = read_service_from_file(u'serviceitem_image_3.osj')
+        service = read_service_from_file('serviceitem_image_3.osj')
         with patch('os.path.exists'):
             service_item.set_from_service(service[0])
         # WHEN: Added to the preview widget.
         self.preview_widget.replace_service_item(service_item, 1, 1)
         # THEN: The slide count and number should fit.
-        self.assertEqual(self.preview_widget.slide_count(), 2, u'The slide count should be 2.')
-        self.assertEqual(self.preview_widget.current_slide_number(), 1, u'The current slide number should  be 1.')
+        self.assertEqual(self.preview_widget.slide_count(), 2, 'The slide count should be 2.')
+        self.assertEqual(self.preview_widget.current_slide_number(), 1, 'The current slide number should  be 1.')
 
     def change_slide_test(self):
         """
@@ -74,11 +74,11 @@ class TestListPreviewWidget(TestCase):
         """
         # GIVEN: A ServiceItem with two frames content.
         service_item = ServiceItem(None)
-        service = read_service_from_file(u'serviceitem_image_3.osj')
+        service = read_service_from_file('serviceitem_image_3.osj')
         with patch('os.path.exists'):
             service_item.set_from_service(service[0])
         # WHEN: Added to the preview widget and switched to the second frame.
         self.preview_widget.replace_service_item(service_item, 1, 0)
         self.preview_widget.change_slide(1)
         # THEN: The current_slide_number should reflect the change.
-        self.assertEqual(self.preview_widget.current_slide_number(), 1, u'The current slide number should  be 1.')
+        self.assertEqual(self.preview_widget.current_slide_number(), 1, 'The current slide number should  be 1.')
