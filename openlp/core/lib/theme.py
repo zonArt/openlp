@@ -111,26 +111,26 @@ class BackgroundType(object):
         Return a string representation of a background type.
         """
         if background_type == BackgroundType.Solid:
-            return u'solid'
+            return 'solid'
         elif background_type == BackgroundType.Gradient:
-            return u'gradient'
+            return 'gradient'
         elif background_type == BackgroundType.Image:
-            return u'image'
+            return 'image'
         elif background_type == BackgroundType.Transparent:
-            return u'transparent'
+            return 'transparent'
 
     @staticmethod
     def from_string(type_string):
         """
         Return a background type for the given string.
         """
-        if type_string == u'solid':
+        if type_string == 'solid':
             return BackgroundType.Solid
-        elif type_string == u'gradient':
+        elif type_string == 'gradient':
             return BackgroundType.Gradient
-        elif type_string == u'image':
+        elif type_string == 'image':
             return BackgroundType.Image
-        elif type_string == u'transparent':
+        elif type_string == 'transparent':
             return BackgroundType.Transparent
 
 
@@ -150,30 +150,30 @@ class BackgroundGradientType(object):
         Return a string representation of a background gradient type.
         """
         if gradient_type == BackgroundGradientType.Horizontal:
-            return u'horizontal'
+            return 'horizontal'
         elif gradient_type == BackgroundGradientType.Vertical:
-            return u'vertical'
+            return 'vertical'
         elif gradient_type == BackgroundGradientType.Circular:
-            return u'circular'
+            return 'circular'
         elif gradient_type == BackgroundGradientType.LeftTop:
-            return u'leftTop'
+            return 'leftTop'
         elif gradient_type == BackgroundGradientType.LeftBottom:
-            return u'leftBottom'
+            return 'leftBottom'
 
     @staticmethod
     def from_string(type_string):
         """
         Return a background gradient type for the given string.
         """
-        if type_string == u'horizontal':
+        if type_string == 'horizontal':
             return BackgroundGradientType.Horizontal
-        elif type_string == u'vertical':
+        elif type_string == 'vertical':
             return BackgroundGradientType.Vertical
-        elif type_string == u'circular':
+        elif type_string == 'circular':
             return BackgroundGradientType.Circular
-        elif type_string == u'leftTop':
+        elif type_string == 'leftTop':
             return BackgroundGradientType.LeftTop
-        elif type_string == u'leftBottom':
+        elif type_string == 'leftBottom':
             return BackgroundGradientType.LeftBottom
 
 
@@ -186,7 +186,7 @@ class HorizontalType(object):
     Center = 2
     Justify = 3
 
-    Names = [u'left', u'right', u'center', u'justify']
+    Names = ['left', 'right', 'center', 'justify']
 
 
 class VerticalType(object):
@@ -197,21 +197,21 @@ class VerticalType(object):
     Middle = 1
     Bottom = 2
 
-    Names = [u'top', u'middle', u'bottom']
+    Names = ['top', 'middle', 'bottom']
 
 
-BOOLEAN_LIST = [u'bold', u'italics', u'override', u'outline', u'shadow', u'slide_transition']
+BOOLEAN_LIST = ['bold', 'italics', 'override', 'outline', 'shadow', 'slide_transition']
 
-INTEGER_LIST = [u'size', u'line_adjustment', u'x', u'height', u'y', u'width', u'shadow_size', u'outline_size',
-    u'horizontal_align', u'vertical_align', u'wrap_style']
+INTEGER_LIST = ['size', 'line_adjustment', 'x', 'height', 'y', 'width', 'shadow_size', 'outline_size',
+    'horizontal_align', 'vertical_align', 'wrap_style']
 
 
 class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
     """
-    FIRST_CAMEL_REGEX = re.compile(u'(.)([A-Z][a-z]+)')
-    SECOND_CAMEL_REGEX = re.compile(u'([a-z0-9])([A-Z])')
+    FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
+    SECOND_CAMEL_REGEX = re.compile('([a-z0-9])([A-Z])')
 
     def __init__(self):
         """
@@ -228,7 +228,7 @@ class ThemeXML(object):
         ``path``
             The path name to be added.
         """
-        if self.background_type == u'image':
+        if self.background_type == 'image':
             if self.background_filename and path:
                 self.theme_name = self.theme_name.strip()
                 self.background_filename = self.background_filename.strip()
@@ -239,10 +239,10 @@ class ThemeXML(object):
         Create a new theme XML document.
         """
         self.theme_xml = Document()
-        self.theme = self.theme_xml.createElement(u'theme')
+        self.theme = self.theme_xml.createElement('theme')
         self.theme_xml.appendChild(self.theme)
-        self.theme.setAttribute(u'version', u'2.0')
-        self.name = self.theme_xml.createElement(u'name')
+        self.theme.setAttribute('version', '2.0')
+        self.name = self.theme_xml.createElement('name')
         text_node = self.theme_xml.createTextNode(name)
         self.name.appendChild(text_node)
         self.theme.appendChild(self.name)
@@ -251,8 +251,8 @@ class ThemeXML(object):
         """
         Add a transparent background.
         """
-        background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'type', u'transparent')
+        background = self.theme_xml.createElement('background')
+        background.setAttribute('type', 'transparent')
         self.theme.appendChild(background)
 
     def add_background_solid(self, bkcolor):
@@ -262,10 +262,10 @@ class ThemeXML(object):
         ``bkcolor``
             The color of the background.
         """
-        background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'type', u'solid')
+        background = self.theme_xml.createElement('background')
+        background.setAttribute('type', 'solid')
         self.theme.appendChild(background)
-        self.child_element(background, u'color', unicode(bkcolor))
+        self.child_element(background, 'color', str(bkcolor))
 
     def add_background_gradient(self, startcolor, endcolor, direction):
         """
@@ -280,15 +280,15 @@ class ThemeXML(object):
         ``direction``
             The direction of the gradient.
         """
-        background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'type', u'gradient')
+        background = self.theme_xml.createElement('background')
+        background.setAttribute('type', 'gradient')
         self.theme.appendChild(background)
         # Create startColor element
-        self.child_element(background, u'startColor', unicode(startcolor))
+        self.child_element(background, 'startColor', str(startcolor))
         # Create endColor element
-        self.child_element(background, u'endColor', unicode(endcolor))
+        self.child_element(background, 'endColor', str(endcolor))
         # Create direction element
-        self.child_element(background, u'direction', unicode(direction))
+        self.child_element(background, 'direction', str(direction))
 
     def add_background_image(self, filename, borderColor):
         """
@@ -297,17 +297,17 @@ class ThemeXML(object):
         ``filename``
             The file name of the image.
         """
-        background = self.theme_xml.createElement(u'background')
-        background.setAttribute(u'type', u'image')
+        background = self.theme_xml.createElement('background')
+        background.setAttribute('type', 'image')
         self.theme.appendChild(background)
         # Create Filename element
-        self.child_element(background, u'filename', filename)
+        self.child_element(background, 'filename', filename)
         # Create endColor element
-        self.child_element(background, u'borderColor', unicode(borderColor))
+        self.child_element(background, 'borderColor', str(borderColor))
 
-    def add_font(self, name, color, size, override, fonttype=u'main', bold=u'False', italics=u'False',
-        line_adjustment=0, xpos=0, ypos=0, width=0, height=0, outline=u'False', outline_color=u'#ffffff',
-        outline_pixel=2, shadow=u'False', shadow_color=u'#ffffff', shadow_pixel=5):
+    def add_font(self, name, color, size, override, fonttype='main', bold='False', italics='False',
+        line_adjustment=0, xpos=0, ypos=0, width=0, height=0, outline='False', outline_color='#ffffff',
+        outline_pixel=2, shadow='False', shadow_color='#ffffff', shadow_pixel=5):
         """
         Add a Font.
 
@@ -363,41 +363,41 @@ class ThemeXML(object):
             How big the Shadow is
 
         """
-        background = self.theme_xml.createElement(u'font')
-        background.setAttribute(u'type', fonttype)
+        background = self.theme_xml.createElement('font')
+        background.setAttribute('type', fonttype)
         self.theme.appendChild(background)
         # Create Font name element
-        self.child_element(background, u'name', name)
+        self.child_element(background, 'name', name)
         # Create Font color element
-        self.child_element(background, u'color', unicode(color))
+        self.child_element(background, 'color', str(color))
         # Create Proportion name element
-        self.child_element(background, u'size', unicode(size))
+        self.child_element(background, 'size', str(size))
         # Create weight name element
-        self.child_element(background, u'bold', unicode(bold))
+        self.child_element(background, 'bold', str(bold))
         # Create italics name element
-        self.child_element(background, u'italics', unicode(italics))
+        self.child_element(background, 'italics', str(italics))
         # Create indentation name element
-        self.child_element(background, u'line_adjustment', unicode(line_adjustment))
+        self.child_element(background, 'line_adjustment', str(line_adjustment))
         # Create Location element
-        element = self.theme_xml.createElement(u'location')
-        element.setAttribute(u'override', unicode(override))
-        element.setAttribute(u'x', unicode(xpos))
-        element.setAttribute(u'y', unicode(ypos))
-        element.setAttribute(u'width', unicode(width))
-        element.setAttribute(u'height', unicode(height))
+        element = self.theme_xml.createElement('location')
+        element.setAttribute('override', str(override))
+        element.setAttribute('x', str(xpos))
+        element.setAttribute('y', str(ypos))
+        element.setAttribute('width', str(width))
+        element.setAttribute('height', str(height))
         background.appendChild(element)
         # Shadow
-        element = self.theme_xml.createElement(u'shadow')
-        element.setAttribute(u'shadowColor', unicode(shadow_color))
-        element.setAttribute(u'shadowSize', unicode(shadow_pixel))
-        value = self.theme_xml.createTextNode(unicode(shadow))
+        element = self.theme_xml.createElement('shadow')
+        element.setAttribute('shadowColor', str(shadow_color))
+        element.setAttribute('shadowSize', str(shadow_pixel))
+        value = self.theme_xml.createTextNode(str(shadow))
         element.appendChild(value)
         background.appendChild(element)
         # Outline
-        element = self.theme_xml.createElement(u'outline')
-        element.setAttribute(u'outlineColor', unicode(outline_color))
-        element.setAttribute(u'outlineSize', unicode(outline_pixel))
-        value = self.theme_xml.createTextNode(unicode(outline))
+        element = self.theme_xml.createElement('outline')
+        element.setAttribute('outlineColor', str(outline_color))
+        element.setAttribute('outlineSize', str(outline_pixel))
+        value = self.theme_xml.createTextNode(str(outline))
         element.appendChild(value)
         background.appendChild(element)
 
@@ -415,21 +415,21 @@ class ThemeXML(object):
             Whether the slide transition is active.
 
         """
-        background = self.theme_xml.createElement(u'display')
+        background = self.theme_xml.createElement('display')
         self.theme.appendChild(background)
         # Horizontal alignment
-        element = self.theme_xml.createElement(u'horizontalAlign')
-        value = self.theme_xml.createTextNode(unicode(horizontal))
+        element = self.theme_xml.createElement('horizontalAlign')
+        value = self.theme_xml.createTextNode(str(horizontal))
         element.appendChild(value)
         background.appendChild(element)
         # Vertical alignment
-        element = self.theme_xml.createElement(u'verticalAlign')
-        value = self.theme_xml.createTextNode(unicode(vertical))
+        element = self.theme_xml.createElement('verticalAlign')
+        value = self.theme_xml.createTextNode(str(vertical))
         element.appendChild(value)
         background.appendChild(element)
         # Slide Transition
-        element = self.theme_xml.createElement(u'slideTransition')
-        value = self.theme_xml.createTextNode(unicode(transition))
+        element = self.theme_xml.createElement('slideTransition')
+        value = self.theme_xml.createTextNode(str(transition))
         element.appendChild(value)
         background.appendChild(element)
 
@@ -449,24 +449,24 @@ class ThemeXML(object):
         """
         current_screen = ScreenList().current
         self.font_main_y = 0
-        self.font_main_width = current_screen[u'size'].width() - 20
-        self.font_main_height = current_screen[u'size'].height() * 9 / 10
-        self.font_footer_width = current_screen[u'size'].width() - 20
-        self.font_footer_y = current_screen[u'size'].height() * 9 / 10
-        self.font_footer_height = current_screen[u'size'].height() / 10
+        self.font_main_width = current_screen['size'].width() - 20
+        self.font_main_height = current_screen['size'].height() * 9 / 10
+        self.font_footer_width = current_screen['size'].width() - 20
+        self.font_footer_y = current_screen['size'].height() * 9 / 10
+        self.font_footer_height = current_screen['size'].height() / 10
 
     def dump_xml(self):
         """
         Dump the XML to file used for debugging
         """
-        return self.theme_xml.toprettyxml(indent=u'  ')
+        return self.theme_xml.toprettyxml(indent='  ')
 
     def extract_xml(self):
         """
         Print out the XML string.
         """
         self._build_xml_from_attrs()
-        return self.theme_xml.toxml(u'utf-8').decode(u'utf-8')
+        return self.theme_xml.toxml('utf-8').decode('utf-8')
 
     def extract_formatted_xml(self):
         """
@@ -482,7 +482,7 @@ class ThemeXML(object):
         ``xml``
             The XML string to parse.
         """
-        self.parse_xml(unicode(xml))
+        self.parse_xml(str(xml))
 
     def parse_xml(self, xml):
         """
@@ -492,31 +492,31 @@ class ThemeXML(object):
             The XML string to parse.
         """
         # remove encoding string
-        line = xml.find(u'?>')
+        line = xml.find('?>')
         if line:
             xml = xml[line + 2:]
         try:
             theme_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
-            log.exception(u'Invalid xml %s', xml)
+            log.exception('Invalid xml %s', xml)
             return
         xml_iter = theme_xml.getiterator()
         for element in xml_iter:
-            master = u''
-            if element.tag == u'background':
+            master = ''
+            if element.tag == 'background':
                 if element.attrib:
                     for attr in element.attrib:
                         self._create_attr(element.tag, attr, element.attrib[attr])
             parent = element.getparent()
             if parent is not None:
-                if parent.tag == u'font':
-                    master = parent.tag + u'_' + parent.attrib[u'type']
+                if parent.tag == 'font':
+                    master = parent.tag + '_' + parent.attrib['type']
                 # set up Outline and Shadow Tags and move to font_main
-                if parent.tag == u'display':
-                    if element.tag.startswith(u'shadow') or element.tag.startswith(u'outline'):
-                        self._create_attr(u'font_main', element.tag, element.text)
+                if parent.tag == 'display':
+                    if element.tag.startswith('shadow') or element.tag.startswith('outline'):
+                        self._create_attr('font_main', element.tag, element.text)
                     master = parent.tag
-                if parent.tag == u'background':
+                if parent.tag == 'background':
                     master = parent.tag
             if master:
                 self._create_attr(master, element.tag, element.text)
@@ -524,13 +524,13 @@ class ThemeXML(object):
                     for attr in element.attrib:
                         base_element = attr
                         # correction for the shadow and outline tags
-                        if element.tag == u'shadow' or element.tag == u'outline':
+                        if element.tag == 'shadow' or element.tag == 'outline':
                             if not attr.startswith(element.tag):
-                                base_element = element.tag + u'_' + attr
+                                base_element = element.tag + '_' + attr
                         self._create_attr(master, base_element, element.attrib[attr])
             else:
-                if element.tag == u'name':
-                    self._create_attr(u'theme', element.tag, element.text)
+                if element.tag == 'name':
+                    self._create_attr('theme', element.tag, element.text)
 
     def _translate_tags(self, master, element, value):
         """
@@ -538,21 +538,21 @@ class ThemeXML(object):
         """
         master = master.strip().lstrip()
         element = element.strip().lstrip()
-        value = unicode(value).strip().lstrip()
-        if master == u'display':
-            if element == u'wrapStyle':
+        value = str(value).strip().lstrip()
+        if master == 'display':
+            if element == 'wrapStyle':
                 return True, None, None, None
-            if element.startswith(u'shadow') or element.startswith(u'outline'):
-                master = u'font_main'
+            if element.startswith('shadow') or element.startswith('outline'):
+                master = 'font_main'
         # fix bold font
-        if element == u'weight':
-            element = u'bold'
-            if value == u'Normal':
+        if element == 'weight':
+            element = 'bold'
+            if value == 'Normal':
                 value = False
             else:
                 value = True
-        if element == u'proportion':
-            element = u'size'
+        if element == 'proportion':
+            element = 'size'
         return False, master, element, value
 
     def _create_attr(self, master, element, value):
@@ -563,19 +563,19 @@ class ThemeXML(object):
         if reject:
             return
         field = self._de_hump(element)
-        tag = master + u'_' + field
+        tag = master + '_' + field
         if field in BOOLEAN_LIST:
             setattr(self, tag, str_to_bool(value))
         elif field in INTEGER_LIST:
             setattr(self, tag, int(value))
         else:
             # make string value unicode
-            if not isinstance(value, unicode):
-                value = unicode(str(value), u'utf-8')
+            if not isinstance(value, str):
+                value = str(str(value), 'utf-8')
             # None means an empty string so lets have one.
-            if value == u'None':
-                value = u''
-            setattr(self, tag, unicode(value).strip().lstrip())
+            if value == 'None':
+                value = ''
+            setattr(self, tag, str(value).strip().lstrip())
 
     def __str__(self):
         """
@@ -583,9 +583,9 @@ class ThemeXML(object):
         """
         theme_strings = []
         for key in dir(self):
-            if key[0:1] != u'_':
-                theme_strings.append(u'%30s: %s' % (key, getattr(self, key)))
-        return u'\n'.join(theme_strings)
+            if key[0:1] != '_':
+                theme_strings.append('%30s: %s' % (key, getattr(self, key)))
+        return '\n'.join(theme_strings)
 
     def _de_hump(self, name):
         """
@@ -616,7 +616,7 @@ class ThemeXML(object):
             self.font_main_name,
             self.font_main_color,
             self.font_main_size,
-            self.font_main_override, u'main',
+            self.font_main_override, 'main',
             self.font_main_bold,
             self.font_main_italics,
             self.font_main_line_adjustment,
@@ -635,7 +635,7 @@ class ThemeXML(object):
             self.font_footer_name,
             self.font_footer_color,
             self.font_footer_size,
-            self.font_footer_override, u'footer',
+            self.font_footer_override, 'footer',
             self.font_footer_bold,
             self.font_footer_italics,
             0,  # line adjustment

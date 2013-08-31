@@ -185,7 +185,7 @@ class SongShowPlusImport(SongImport):
         else:
             # otherwise we assume number 1 and take the whole prefix as the verse tag
             verse_type = verse_name
-            verse_number = u'1'
+            verse_number = '1'
         verse_type = verse_type.lower()
         if verse_type == "verse":
             verse_tag = VerseType.tags[VerseType.Verse]

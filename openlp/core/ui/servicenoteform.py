@@ -43,7 +43,7 @@ class ServiceNoteForm(QtGui.QDialog):
         """
         Constructor
         """
-        super(ServiceNoteForm, self).__init__(Registry().get(u'main_window'))
+        super(ServiceNoteForm, self).__init__(Registry().get('main_window'))
         self.setupUi()
         self.retranslateUi()
 
@@ -58,15 +58,15 @@ class ServiceNoteForm(QtGui.QDialog):
         """
         Set up the UI of the dialog
         """
-        self.setObjectName(u'serviceNoteEdit')
+        self.setObjectName('serviceNoteEdit')
         self.dialog_layout = QtGui.QVBoxLayout(self)
         self.dialog_layout.setContentsMargins(8, 8, 8, 8)
         self.dialog_layout.setSpacing(8)
-        self.dialog_layout.setObjectName(u'verticalLayout')
+        self.dialog_layout.setObjectName('verticalLayout')
         self.text_edit = SpellTextEdit(self, False)
-        self.text_edit.setObjectName(u'textEdit')
+        self.text_edit.setObjectName('textEdit')
         self.dialog_layout.addWidget(self.text_edit)
-        self.button_box = create_button_box(self, u'button_box', [u'cancel', u'save'])
+        self.button_box = create_button_box(self, 'button_box', ['cancel', 'save'])
         self.dialog_layout.addWidget(self.button_box)
 
     def retranslateUi(self):
@@ -79,8 +79,8 @@ class ServiceNoteForm(QtGui.QDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)

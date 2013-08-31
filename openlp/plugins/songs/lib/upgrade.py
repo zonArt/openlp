@@ -52,12 +52,12 @@ def upgrade_1(session, metadata):
     files can be ordered.
     """
     op = get_upgrade_op(session)
-    op.drop_table(u'media_files_songs')
-    op.add_column(u'media_files', Column(u'song_id', types.Integer(), server_default=null()))
-    op.add_column(u'media_files', Column(u'weight', types.Integer(), server_default=text(u'0')))
+    op.drop_table('media_files_songs')
+    op.add_column('media_files', Column('song_id', types.Integer(), server_default=null()))
+    op.add_column('media_files', Column('weight', types.Integer(), server_default=text('0')))
     if metadata.bind.url.get_dialect().name != 'sqlite':
         # SQLite doesn't support ALTER TABLE ADD CONSTRAINT
-        op.create_foreign_key(u'fk_media_files_song_id', u'media_files', u'songs', [u'song_id', u'id'])
+        op.create_foreign_key('fk_media_files_song_id', 'media_files', 'songs', ['song_id', 'id'])
 
 
 def upgrade_2(session, metadata):
@@ -67,8 +67,8 @@ def upgrade_2(session, metadata):
     This upgrade adds a create_date and last_modified date to the songs table
     """
     op = get_upgrade_op(session)
-    op.add_column(u'songs', Column(u'create_date', types.DateTime(), default=func.now()))
-    op.add_column(u'songs', Column(u'last_modified', types.DateTime(), default=func.now()))
+    op.add_column('songs', Column('create_date', types.DateTime(), default=func.now()))
+    op.add_column('songs', Column('last_modified', types.DateTime(), default=func.now()))
 
 
 def upgrade_3(session, metadata):
@@ -79,7 +79,7 @@ def upgrade_3(session, metadata):
     """
     op = get_upgrade_op(session)
     if metadata.bind.url.get_dialect().name == 'sqlite':
-        op.add_column(u'songs', Column(u'temporary', types.Boolean(create_constraint=False), server_default=false()))
+        op.add_column('songs', Column('temporary', types.Boolean(create_constraint=False), server_default=false()))
     else:
-        op.add_column(u'songs', Column(u'temporary', types.Boolean(), server_default=false()))
+        op.add_column('songs', Column('temporary', types.Boolean(), server_default=false()))
 

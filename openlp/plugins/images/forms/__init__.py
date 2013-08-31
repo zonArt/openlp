@@ -48,5 +48,5 @@ This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
 so that it is easier to recreate the GUI from the .ui files later if necessary.
 """
 
-from addgroupform import AddGroupForm
-from choosegroupform import ChooseGroupForm
+from .addgroupform import AddGroupForm
+from .choosegroupform import ChooseGroupForm

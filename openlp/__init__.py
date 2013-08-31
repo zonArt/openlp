@@ -33,4 +33,4 @@ The :mod:`openlp` module contains all the project produced OpenLP functionality
 import openlp.core
 import openlp.plugins
 
-__all__ = [u'core', u'plugins']
+__all__ = ['core', 'plugins']

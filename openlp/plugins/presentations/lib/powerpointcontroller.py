@@ -33,14 +33,14 @@ This modul is for controlling powerpiont. PPT API documentation:
 import os
 import logging
 
-if os.name == u'nt':
+if os.name == 'nt':
     from win32com.client import Dispatch
-    import _winreg
+    import winreg
     import win32ui
     import pywintypes
 
 from openlp.core.lib import ScreenList
-from presentationcontroller import PresentationController, PresentationDocument
+from .presentationcontroller import PresentationController, PresentationDocument
 
 
 log = logging.getLogger(__name__)
@@ -51,38 +51,38 @@ class PowerpointController(PresentationController):
     Class to control interactions with PowerPoint Presentations. It creates the runtime Environment , Loads the and
     Closes the Presentation. As well as triggering the correct activities based on the users input.
     """
-    log.info(u'PowerpointController loaded')
+    log.info('PowerpointController loaded')
 
     def __init__(self, plugin):
         """
         Initialise the class
         """
-        log.debug(u'Initialising')
-        super(PowerpointController, self).__init__(plugin, u'Powerpoint', PowerpointDocument)
-        self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
+        log.debug('Initialising')
+        super(PowerpointController, self).__init__(plugin, 'Powerpoint', PowerpointDocument)
+        self.supports = ['ppt', 'pps', 'pptx', 'ppsx']
         self.process = None
 
     def check_available(self):
         """
         PowerPoint is able to run on this machine.
         """
-        log.debug(u'check_available')
-        if os.name == u'nt':
+        log.debug('check_available')
+        if os.name == 'nt':
             try:
-                _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, u'PowerPoint.Application').Close()
+                winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, 'PowerPoint.Application').Close()
                 return True
             except WindowsError:
                 pass
         return False
 
-    if os.name == u'nt':
+    if os.name == 'nt':
         def start_process(self):
             """
             Loads PowerPoint process.
             """
-            log.debug(u'start_process')
+            log.debug('start_process')
             if not self.process:
-                self.process = Dispatch(u'PowerPoint.Application')
+                self.process = Dispatch('PowerPoint.Application')
             self.process.Visible = True
             self.process.WindowState = 2
 
@@ -90,7 +90,7 @@ class PowerpointController(PresentationController):
             """
             Called at system exit to clean up any running presentations.
             """
-            log.debug(u'Kill powerpoint')
+            log.debug('Kill powerpoint')
             while self.docs:
                 self.docs[0].close_presentation()
             if self.process is None:
@@ -113,7 +113,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Constructor, store information about the file and initialise.
         """
-        log.debug(u'Init Presentation Powerpoint')
+        log.debug('Init Presentation Powerpoint')
         super(PowerpointDocument, self).__init__(controller, presentation)
         self.presentation = None
 
@@ -122,13 +122,13 @@ class PowerpointDocument(PresentationDocument):
         Called when a presentation is added to the SlideController. Opens the PowerPoint file using the process created
         earlier.
         """
-        log.debug(u'load_presentation')
+        log.debug('load_presentation')
         if not self.controller.process or not self.controller.process.Visible:
             self.controller.start_process()
         try:
             self.controller.process.Presentations.Open(self.filepath, False, False, True)
         except pywintypes.com_error:
-            log.debug(u'PPT open failed')
+            log.debug('PPT open failed')
             return False
         self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
         self.create_thumbnails()
@@ -145,7 +145,7 @@ class PowerpointDocument(PresentationDocument):
 
         However, for the moment, we want a physical file since it makes life easier elsewhere.
         """
-        log.debug(u'create_thumbnails')
+        log.debug('create_thumbnails')
         if self.check_thumbnails():
             return
         for num in range(self.presentation.Slides.Count):
@@ -157,7 +157,7 @@ class PowerpointDocument(PresentationDocument):
         Close presentation and clean up objects. This is triggered by a new object being added to SlideController or
         OpenLP being shut down.
         """
-        log.debug(u'ClosePresentation')
+        log.debug('ClosePresentation')
         if self.presentation:
             try:
                 self.presentation.Close()
@@ -170,7 +170,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns ``True`` if a presentation is loaded.
         """
-        log.debug(u'is_loaded')
+        log.debug('is_loaded')
         try:
             if not self.controller.process.Visible:
                 return False
@@ -186,7 +186,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns ``True`` if a presentation is currently active.
         """
-        log.debug(u'is_active')
+        log.debug('is_active')
         if not self.is_loaded():
             return False
         try:
@@ -202,11 +202,11 @@ class PowerpointDocument(PresentationDocument):
         """
         Unblanks (restores) the presentation.
         """
-        log.debug(u'unblank_screen')
+        log.debug('unblank_screen')
         self.presentation.SlideShowSettings.Run()
         self.presentation.SlideShowWindow.View.State = 1
         self.presentation.SlideShowWindow.Activate()
-        if self.presentation.Application.Version == u'14.0':
+        if self.presentation.Application.Version == '14.0':
             # Unblanking is broken in PowerPoint 2010, need to redisplay
             slide = self.presentation.SlideShowWindow.View.CurrentShowPosition
             click = self.presentation.SlideShowWindow.View.GetClickIndex()
@@ -218,14 +218,14 @@ class PowerpointDocument(PresentationDocument):
         """
         Blanks the screen.
         """
-        log.debug(u'blank_screen')
+        log.debug('blank_screen')
         self.presentation.SlideShowWindow.View.State = 3
 
     def is_blank(self):
         """
         Returns ``True`` if screen is blank.
         """
-        log.debug(u'is_blank')
+        log.debug('is_blank')
         if self.is_active():
             return self.presentation.SlideShowWindow.View.State == 3
         else:
@@ -235,15 +235,15 @@ class PowerpointDocument(PresentationDocument):
         """
         Stops the current presentation and hides the output.
         """
-        log.debug(u'stop_presentation')
+        log.debug('stop_presentation')
         self.presentation.SlideShowWindow.View.Exit()
 
-    if os.name == u'nt':
+    if os.name == 'nt':
         def start_presentation(self):
             """
             Starts a presentation from the beginning.
             """
-            log.debug(u'start_presentation')
+            log.debug('start_presentation')
             #SlideShowWindow measures its size/position by points, not pixels
             try:
                 dpi = win32ui.GetActiveWindow().GetDC().GetDeviceCaps(88)
@@ -252,7 +252,7 @@ class PowerpointDocument(PresentationDocument):
                     dpi = win32ui.GetForegroundWindow().GetDC().GetDeviceCaps(88)
                 except win32ui.error:
                     dpi = 96
-            size = ScreenList().current[u'size']
+            size = ScreenList().current['size']
             ppt_window = self.presentation.SlideShowSettings.Run()
             if not ppt_window:
                 return
@@ -265,28 +265,28 @@ class PowerpointDocument(PresentationDocument):
         """
         Returns the current slide number.
         """
-        log.debug(u'get_slide_number')
+        log.debug('get_slide_number')
         return self.presentation.SlideShowWindow.View.CurrentShowPosition
 
     def get_slide_count(self):
         """
         Returns total number of slides.
         """
-        log.debug(u'get_slide_count')
+        log.debug('get_slide_count')
         return self.presentation.Slides.Count
 
     def goto_slide(self, slideno):
         """
         Moves to a specific slide in the presentation.
         """
-        log.debug(u'goto_slide')
+        log.debug('goto_slide')
         self.presentation.SlideShowWindow.View.GotoSlide(slideno)
 
     def next_step(self):
         """
         Triggers the next effect of slide on the running presentation.
         """
-        log.debug(u'next_step')
+        log.debug('next_step')
         self.presentation.SlideShowWindow.View.Next()
         if self.get_slide_number() > self.get_slide_count():
             self.previous_step()
@@ -295,7 +295,7 @@ class PowerpointDocument(PresentationDocument):
         """
         Triggers the previous slide on the running presentation.
         """
-        log.debug(u'previous_step')
+        log.debug('previous_step')
         self.presentation.SlideShowWindow.View.Previous()
 
     def get_slide_text(self, slide_no):

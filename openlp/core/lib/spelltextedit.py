@@ -70,7 +70,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
                 self.highlighter.spelling_dictionary = self.dictionary
             except (Error, DictNotFoundError):
                 ENCHANT_AVAILABLE = False
-                log.debug(u'Could not load default dictionary')
+                log.debug('Could not load default dictionary')
 
     def mousePressEvent(self, event):
         """
@@ -117,7 +117,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         tag_menu = QtGui.QMenu(translate('OpenLP.SpellTextEdit', 'Formatting Tags'))
         if self.formatting_tags_allowed:
             for html in FormattingTags.get_html_tags():
-                action = SpellAction(html[u'desc'], tag_menu)
+                action = SpellAction(html['desc'], tag_menu)
                 action.correct.connect(self.html_tag)
                 tag_menu.addAction(action)
             popup_menu.insertSeparator(popup_menu.actions()[0])
@@ -151,27 +151,27 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         Replaces the selected text with word.
         """
         for html in FormattingTags.get_html_tags():
-            if tag == html[u'desc']:
+            if tag == html['desc']:
                 cursor = self.textCursor()
                 if self.textCursor().hasSelection():
                     text = cursor.selectedText()
                     cursor.beginEditBlock()
                     cursor.removeSelectedText()
-                    cursor.insertText(html[u'start tag'])
+                    cursor.insertText(html['start tag'])
                     cursor.insertText(text)
-                    cursor.insertText(html[u'end tag'])
+                    cursor.insertText(html['end tag'])
                     cursor.endEditBlock()
                 else:
                     cursor = self.textCursor()
-                    cursor.insertText(html[u'start tag'])
-                    cursor.insertText(html[u'end tag'])
+                    cursor.insertText(html['start tag'])
+                    cursor.insertText(html['end tag'])
 
 
 class Highlighter(QtGui.QSyntaxHighlighter):
     """
     Provides a text highlighter for pointing out spelling errors in text.
     """
-    WORDS = u'(?iu)[\w\']+'
+    WORDS = '(?iu)[\w\']+'
 
     def __init__(self, *args):
         """
@@ -186,7 +186,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         """
         if not self.spelling_dictionary:
             return
-        text = unicode(text)
+        text = str(text)
         char_format = QtGui.QTextCharFormat()
         char_format.setUnderlineColor(QtCore.Qt.red)
         char_format.setUnderlineStyle(QtGui.QTextCharFormat.SpellCheckUnderline)
@@ -199,7 +199,7 @@ class SpellAction(QtGui.QAction):
     """
     A special QAction that returns the text in a signal.
     """
-    correct = QtCore.pyqtSignal(unicode)
+    correct = QtCore.pyqtSignal(str)
 
     def __init__(self, *args):
         """

@@ -26,7 +26,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-from __future__ import division
+
 import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
@@ -38,15 +38,15 @@ from openlp.core.ui import MainDisplay
 
 log = logging.getLogger(__name__)
 
-VERSE = u'The Lord said to {r}Noah{/r}: \n' \
+VERSE = 'The Lord said to {r}Noah{/r}: \n' \
     'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
     'The Lord said to {g}Noah{/g}:\n' \
     'There\'s gonna be a {st}floody{/st}, {it}floody{/it}\n' \
     'Get those children out of the muddy, muddy \n' \
     '{r}C{/r}{b}h{/b}{bl}i{/bl}{y}l{/y}{g}d{/g}{pk}' \
     'r{/pk}{o}e{/o}{pp}n{/pp} of the Lord\n'
-VERSE_FOR_LINE_COUNT = u'\n'.join(map(unicode, xrange(100)))
-FOOTER = [u'Arky Arky (Unknown)', u'Public Domain', u'CCLI 123456']
+VERSE_FOR_LINE_COUNT = '\n'.join(map(str, range(100)))
+FOOTER = ['Arky Arky (Unknown)', 'Public Domain', 'CCLI 123456']
 
 
 class Renderer(object):
@@ -54,25 +54,25 @@ class Renderer(object):
     Class to pull all Renderer interactions into one place. The plugins will call helper methods to do the rendering but
     this class will provide display defense code.
     """
-    log.info(u'Renderer Loaded')
+    log.info('Renderer Loaded')
 
     def __init__(self):
         """
         Initialise the renderer.
         """
-        log.debug(u'Initialisation started')
+        log.debug('Initialisation started')
         self.screens = ScreenList()
-        Registry().register(u'renderer', self)
+        Registry().register('renderer', self)
         self.theme_level = ThemeLevel.Global
-        self.global_theme_name = u''
-        self.service_theme_name = u''
-        self.item_theme_name = u''
+        self.global_theme_name = ''
+        self.service_theme_name = ''
+        self.item_theme_name = ''
         self.force_page = False
         self.display = MainDisplay(None, False, self)
         self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
-        Registry().register_function(u'theme_update_global', self.set_global_theme)
+        Registry().register_function('theme_update_global', self.set_global_theme)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web_frame = self.web.page().mainFrame()
@@ -81,7 +81,7 @@ class Renderer(object):
         """
         Updates the renderer's information about the current screen.
         """
-        log.debug(u'Update Display')
+        log.debug('Update Display')
         self._calculate_default()
         if self.display:
             self.display.close()
@@ -178,7 +178,7 @@ class Renderer(object):
         ``global_theme_name``
             The global-level theme's name.
         """
-        global_theme_name = Settings().value(u'themes/global theme')
+        global_theme_name = Settings().value('themes/global theme')
         self._set_theme(global_theme_name)
         self.global_theme_name = global_theme_name
 
@@ -212,7 +212,7 @@ class Renderer(object):
         ``force_page``
             Flag to tell message lines per page need to be generated.
         """
-        log.debug(u'generate preview')
+        log.debug('generate preview')
         # save value for use in format_slide
         self.force_page = force_page
         # build a service item to generate preview
@@ -250,72 +250,72 @@ class Renderer(object):
         ``item``
             The :class:`~openlp.core.lib.serviceitem.ServiceItem` item object.
         """
-        log.debug(u'format slide')
+        log.debug('format slide')
         # Add line endings after each line of text used for bibles.
-        line_end = u'<br>'
+        line_end = '<br>'
         if item.is_capable(ItemCapabilities.NoLineBreaks):
-            line_end = u' '
+            line_end = ' '
         # Bibles
         if item.is_capable(ItemCapabilities.CanWordSplit):
-            pages = self._paginate_slide_words(text.split(u'\n'), line_end)
+            pages = self._paginate_slide_words(text.split('\n'), line_end)
         # Songs and Custom
         elif item.is_capable(ItemCapabilities.CanSoftBreak):
             pages = []
-            if u'[---]' in text:
+            if '[---]' in text:
                 while True:
-                    slides = text.split(u'\n[---]\n', 2)
+                    slides = text.split('\n[---]\n', 2)
                     # If there are (at least) two occurrences of [---] we use the first two slides (and neglect the last
                     # for now).
                     if len(slides) == 3:
-                        html_text = expand_tags(u'\n'.join(slides[:2]))
+                        html_text = expand_tags('\n'.join(slides[:2]))
                     # We check both slides to determine if the optional split is needed (there is only one optional
                     # split).
                     else:
-                        html_text = expand_tags(u'\n'.join(slides))
-                    html_text = html_text.replace(u'\n', u'<br>')
+                        html_text = expand_tags('\n'.join(slides))
+                    html_text = html_text.replace('\n', '<br>')
                     if self._text_fits_on_slide(html_text):
                         # The first two optional slides fit (as a whole) on one slide. Replace the first occurrence
                         # of [---].
-                        text = text.replace(u'\n[---]', u'', 1)
+                        text = text.replace('\n[---]', '', 1)
                     else:
                         # The first optional slide fits, which means we have to render the first optional slide.
-                        text_contains_split = u'[---]' in text
+                        text_contains_split = '[---]' in text
                         if text_contains_split:
                             try:
-                                text_to_render, text = text.split(u'\n[---]\n', 1)
+                                text_to_render, text = text.split('\n[---]\n', 1)
                             except ValueError:
-                                text_to_render = text.split(u'\n[---]\n')[0]
-                                text = u''
+                                text_to_render = text.split('\n[---]\n')[0]
+                                text = ''
                             text_to_render, raw_tags, html_tags = self._get_start_tags(text_to_render)
                             if text:
                                 text = raw_tags + text
                         else:
                             text_to_render = text
-                            text = u''
-                        lines = text_to_render.strip(u'\n').split(u'\n')
+                            text = ''
+                        lines = text_to_render.strip('\n').split('\n')
                         slides = self._paginate_slide(lines, line_end)
                         if len(slides) > 1 and text:
                             # Add all slides apart from the last one the list.
                             pages.extend(slides[:-1])
                             if  text_contains_split:
-                                text = slides[-1] + u'\n[---]\n' + text
+                                text = slides[-1] + '\n[---]\n' + text
                             else:
-                                text = slides[-1] + u'\n' + text
-                            text = text.replace(u'<br>', u'\n')
+                                text = slides[-1] + '\n' + text
+                            text = text.replace('<br>', '\n')
                         else:
                             pages.extend(slides)
-                    if u'[---]' not in text:
-                        lines = text.strip(u'\n').split(u'\n')
+                    if '[---]' not in text:
+                        lines = text.strip('\n').split('\n')
                         pages.extend(self._paginate_slide(lines, line_end))
                         break
             else:
                 # Clean up line endings.
-                pages = self._paginate_slide(text.split(u'\n'), line_end)
+                pages = self._paginate_slide(text.split('\n'), line_end)
         else:
-            pages = self._paginate_slide(text.split(u'\n'), line_end)
+            pages = self._paginate_slide(text.split('\n'), line_end)
         new_pages = []
         for page in pages:
-            while page.endswith(u'<br>'):
+            while page.endswith('<br>'):
                 page = page[:-4]
             new_pages.append(page)
         return new_pages
@@ -324,11 +324,11 @@ class Renderer(object):
         """
         Calculate the default dimensions of the screen.
         """
-        screen_size = self.screens.current[u'size']
+        screen_size = self.screens.current['size']
         self.width = screen_size.width()
         self.height = screen_size.height()
         self.screen_ratio = self.height / self.width
-        log.debug(u'_calculate default %s, %f' % (screen_size, self.screen_ratio))
+        log.debug('_calculate default %s, %f' % (screen_size, self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
@@ -371,7 +371,7 @@ class Renderer(object):
         ``rect_footer``
             The footer text block.
         """
-        log.debug(u'_set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        log.debug('_set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
@@ -387,7 +387,7 @@ class Renderer(object):
         self.web.resize(self.page_width, self.page_height)
         self.web_frame = self.web.page().mainFrame()
         # Adjust width and height to account for shadow. outline done in css.
-        html = u"""<!DOCTYPE html><html><head><script>
+        html = """<!DOCTYPE html><html><head><script>
             function show_text(newtext) {
                 var main = document.getElementById('main');
                 main.innerHTML = newtext;
@@ -416,20 +416,20 @@ class Renderer(object):
         ``line_end``
             The text added after each line. Either ``u' '`` or ``u'<br>``.
         """
-        log.debug(u'_paginate_slide - Start')
+        log.debug('_paginate_slide - Start')
         formatted = []
-        previous_html = u''
-        previous_raw = u''
-        separator = u'<br>'
-        html_lines = map(expand_tags, lines)
+        previous_html = ''
+        previous_raw = ''
+        separator = '<br>'
+        html_lines = list(map(expand_tags, lines))
         # Text too long so go to next page.
         if not self._text_fits_on_slide(separator.join(html_lines)):
             html_text, previous_raw = self._binary_chop(
-                formatted, previous_html, previous_raw, html_lines, lines, separator, u'')
+                formatted, previous_html, previous_raw, html_lines, lines, separator, '')
         else:
             previous_raw = separator.join(lines)
         formatted.append(previous_raw)
-        log.debug(u'_paginate_slide - End')
+        log.debug('_paginate_slide - End')
         return formatted
 
     def _paginate_slide_words(self, lines, line_end):
@@ -444,10 +444,10 @@ class Renderer(object):
         ``line_end``
             The text added after each line. Either ``u' '`` or ``u'<br>``. This is needed for **bibles**.
         """
-        log.debug(u'_paginate_slide_words - Start')
+        log.debug('_paginate_slide_words - Start')
         formatted = []
-        previous_html = u''
-        previous_raw = u''
+        previous_html = ''
+        previous_raw = ''
         for line in lines:
             line = line.strip()
             html_line = expand_tags(line)
@@ -457,8 +457,8 @@ class Renderer(object):
                 if previous_html:
                     if self._text_fits_on_slide(previous_html):
                         formatted.append(previous_raw)
-                        previous_html = u''
-                        previous_raw = u''
+                        previous_html = ''
+                        previous_raw = ''
                         # Now check if the current verse will fit, if it does not we have to start to process the verse
                         # word by word.
                         if self._text_fits_on_slide(html_line):
@@ -467,14 +467,14 @@ class Renderer(object):
                             continue
                 # Figure out how many words of the line will fit on screen as the line will not fit as a whole.
                 raw_words = self._words_split(line)
-                html_words = map(expand_tags, raw_words)
+                html_words = list(map(expand_tags, raw_words))
                 previous_html, previous_raw = \
-                    self._binary_chop(formatted, previous_html, previous_raw, html_words, raw_words, u' ', line_end)
+                    self._binary_chop(formatted, previous_html, previous_raw, html_words, raw_words, ' ', line_end)
             else:
                 previous_html += html_line + line_end
                 previous_raw += line + line_end
         formatted.append(previous_raw)
-        log.debug(u'_paginate_slide_words - End')
+        log.debug('_paginate_slide_words - End')
         return formatted
 
     def _get_start_tags(self, raw_text):
@@ -494,11 +494,11 @@ class Renderer(object):
         raw_tags = []
         html_tags = []
         for tag in FormattingTags.get_html_tags():
-            if tag[u'start tag'] == u'{br}':
+            if tag['start tag'] == '{br}':
                 continue
-            if raw_text.count(tag[u'start tag']) != raw_text.count(tag[u'end tag']):
-                raw_tags.append((raw_text.find(tag[u'start tag']), tag[u'start tag'], tag[u'end tag']))
-                html_tags.append((raw_text.find(tag[u'start tag']), tag[u'start html']))
+            if raw_text.count(tag['start tag']) != raw_text.count(tag['end tag']):
+                raw_tags.append((raw_text.find(tag['start tag']), tag['start tag'], tag['end tag']))
+                html_tags.append((raw_text.find(tag['start tag']), tag['start html']))
         # Sort the lists, so that the tags which were opened first on the first slide (the text we are checking) will be
         # opened first on the next slide as well.
         raw_tags.sort(key=lambda tag: tag[0])
@@ -512,7 +512,7 @@ class Renderer(object):
         end_tags.reverse()
         # Remove the indexes.
         html_tags = [tag[1] for tag in html_tags]
-        return raw_text + u''.join(end_tags), u''.join(start_tags), u''.join(html_tags)
+        return raw_text + ''.join(end_tags), ''.join(start_tags), ''.join(html_tags)
 
     def _binary_chop(self, formatted, previous_html, previous_raw, html_list, raw_list, separator, line_end):
         """
@@ -558,14 +558,14 @@ class Renderer(object):
             # We found the number of words which will fit.
             if smallest_index == index or highest_index == index:
                 index = smallest_index
-                text = previous_raw.rstrip(u'<br>') + separator.join(raw_list[:index + 1])
+                text = previous_raw.rstrip('<br>') + separator.join(raw_list[:index + 1])
                 text, raw_tags, html_tags = self._get_start_tags(text)
                 formatted.append(text)
-                previous_html = u''
-                previous_raw = u''
+                previous_html = ''
+                previous_raw = ''
                 # Stop here as the theme line count was requested.
                 if self.force_page:
-                    Registry().execute(u'theme_line_count', index + 1)
+                    Registry().execute('theme_line_count', index + 1)
                     break
             else:
                 continue
@@ -592,7 +592,7 @@ class Renderer(object):
         ``text``
             The text to check. It may contain HTML tags.
         """
-        self.web_frame.evaluateJavaScript(u'show_text("%s")' % text.replace(u'\\', u'\\\\').replace(u'\"', u'\\\"'))
+        self.web_frame.evaluateJavaScript('show_text("%s")' % text.replace('\\', '\\\\').replace('\"', '\\\"'))
         return self.web_frame.contentsSize().height() <= self.empty_height
 
     def _words_split(self, line):
@@ -600,15 +600,15 @@ class Renderer(object):
         Split the slide up by word so can wrap better
         """
         # this parse we are to be wordy
-        line = line.replace(u'\n', u' ')
-        return line.split(u' ')
+        line = line.replace('\n', ' ')
+        return line.split(' ')
 
     def _get_image_manager(self):
         """
         Adds the image manager to the class dynamically
         """
-        if not hasattr(self, u'_image_manager'):
-            self._image_manager = Registry().get(u'image_manager')
+        if not hasattr(self, '_image_manager'):
+            self._image_manager = Registry().get('image_manager')
         return self._image_manager
 
     image_manager = property(_get_image_manager)
@@ -617,8 +617,8 @@ class Renderer(object):
         """
         Adds the theme manager to the class dynamically
         """
-        if not hasattr(self, u'_theme_manager'):
-            self._theme_manager = Registry().get(u'theme_manager')
+        if not hasattr(self, '_theme_manager'):
+            self._theme_manager = Registry().get('theme_manager')
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)

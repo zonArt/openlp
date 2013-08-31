@@ -53,7 +53,7 @@ class Book(BaseModel):
     Book model
     """
     def __repr__(self):
-        return u'<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
+        return '<Book id="%s" name="%s" publisher="%s" />' % (str(self.id), self.name, self.publisher)
 
 
 class MediaFile(BaseModel):
@@ -173,72 +173,72 @@ def init_schema(url):
     session, metadata = init_db(url)
 
     # Definition of the "authors" table
-    authors_table = Table(u'authors', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'first_name', types.Unicode(128)),
-        Column(u'last_name', types.Unicode(128)),
-        Column(u'display_name', types.Unicode(255), index=True, nullable=False)
+    authors_table = Table('authors', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('first_name', types.Unicode(128)),
+        Column('last_name', types.Unicode(128)),
+        Column('display_name', types.Unicode(255), index=True, nullable=False)
     )
 
     # Definition of the "media_files" table
-    media_files_table = Table(u'media_files', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'song_id', types.Integer(), ForeignKey(u'songs.id'),
+    media_files_table = Table('media_files', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('song_id', types.Integer(), ForeignKey('songs.id'),
             default=None),
-        Column(u'file_name', types.Unicode(255), nullable=False),
-        Column(u'type', types.Unicode(64), nullable=False, default=u'audio'),
-        Column(u'weight', types.Integer(), default=0)
+        Column('file_name', types.Unicode(255), nullable=False),
+        Column('type', types.Unicode(64), nullable=False, default='audio'),
+        Column('weight', types.Integer(), default=0)
     )
 
     # Definition of the "song_books" table
-    song_books_table = Table(u'song_books', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'name', types.Unicode(128), nullable=False),
-        Column(u'publisher', types.Unicode(128))
+    song_books_table = Table('song_books', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('name', types.Unicode(128), nullable=False),
+        Column('publisher', types.Unicode(128))
     )
 
     # Definition of the "songs" table
-    songs_table = Table(u'songs', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'song_book_id', types.Integer(),
-            ForeignKey(u'song_books.id'), default=None),
-        Column(u'title', types.Unicode(255), nullable=False),
-        Column(u'alternate_title', types.Unicode(255)),
-        Column(u'lyrics', types.UnicodeText, nullable=False),
-        Column(u'verse_order', types.Unicode(128)),
-        Column(u'copyright', types.Unicode(255)),
-        Column(u'comments', types.UnicodeText),
-        Column(u'ccli_number', types.Unicode(64)),
-        Column(u'song_number', types.Unicode(64)),
-        Column(u'theme_name', types.Unicode(128)),
-        Column(u'search_title', types.Unicode(255), index=True, nullable=False),
-        Column(u'search_lyrics', types.UnicodeText, nullable=False),
-        Column(u'create_date', types.DateTime(), default=func.now()),
-        Column(u'last_modified', types.DateTime(), default=func.now(),
+    songs_table = Table('songs', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('song_book_id', types.Integer(),
+            ForeignKey('song_books.id'), default=None),
+        Column('title', types.Unicode(255), nullable=False),
+        Column('alternate_title', types.Unicode(255)),
+        Column('lyrics', types.UnicodeText, nullable=False),
+        Column('verse_order', types.Unicode(128)),
+        Column('copyright', types.Unicode(255)),
+        Column('comments', types.UnicodeText),
+        Column('ccli_number', types.Unicode(64)),
+        Column('song_number', types.Unicode(64)),
+        Column('theme_name', types.Unicode(128)),
+        Column('search_title', types.Unicode(255), index=True, nullable=False),
+        Column('search_lyrics', types.UnicodeText, nullable=False),
+        Column('create_date', types.DateTime(), default=func.now()),
+        Column('last_modified', types.DateTime(), default=func.now(),
             onupdate=func.now()),
-        Column(u'temporary', types.Boolean(), default=False)
+        Column('temporary', types.Boolean(), default=False)
     )
 
     # Definition of the "topics" table
-    topics_table = Table(u'topics', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'name', types.Unicode(128), index=True, nullable=False)
+    topics_table = Table('topics', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('name', types.Unicode(128), index=True, nullable=False)
     )
 
     # Definition of the "authors_songs" table
-    authors_songs_table = Table(u'authors_songs', metadata,
-        Column(u'author_id', types.Integer(),
-            ForeignKey(u'authors.id'), primary_key=True),
-        Column(u'song_id', types.Integer(),
-            ForeignKey(u'songs.id'), primary_key=True)
+    authors_songs_table = Table('authors_songs', metadata,
+        Column('author_id', types.Integer(),
+            ForeignKey('authors.id'), primary_key=True),
+        Column('song_id', types.Integer(),
+            ForeignKey('songs.id'), primary_key=True)
     )
 
     # Definition of the "songs_topics" table
-    songs_topics_table = Table(u'songs_topics', metadata,
-        Column(u'song_id', types.Integer(),
-            ForeignKey(u'songs.id'), primary_key=True),
-        Column(u'topic_id', types.Integer(),
-            ForeignKey(u'topics.id'), primary_key=True)
+    songs_topics_table = Table('songs_topics', metadata,
+        Column('song_id', types.Integer(),
+            ForeignKey('songs.id'), primary_key=True),
+        Column('topic_id', types.Integer(),
+            ForeignKey('topics.id'), primary_key=True)
     )
 
     mapper(Author, authors_table)

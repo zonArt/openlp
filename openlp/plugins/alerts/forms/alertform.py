@@ -32,7 +32,7 @@ from PyQt4 import QtGui, QtCore
 from openlp.core.lib import translate
 from openlp.plugins.alerts.lib.db import AlertItem
 
-from alertdialog import Ui_AlertDialog
+from .alertdialog import Ui_AlertDialog
 
 
 class AlertForm(QtGui.QDialog, Ui_AlertDialog):
@@ -64,7 +64,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         self.display_button.setEnabled(False)
         self.display_close_button.setEnabled(False)
-        self.alert_text_edit.setText(u'')
+        self.alert_text_edit.setText('')
         return QtGui.QDialog.exec_(self)
 
     def load_list(self):
@@ -77,7 +77,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             item_name = QtGui.QListWidgetItem(alert.text)
             item_name.setData(QtCore.Qt.UserRole, alert.id)
             self.alert_list_widget.addItem(item_name)
-            if alert.text == unicode(self.alert_text_edit.text()):
+            if alert.text == str(self.alert_text_edit.text()):
                 self.item_id = alert.id
                 self.alert_list_widget.setCurrentRow(self.alert_list_widget.row(item_name))
 
@@ -105,7 +105,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             row = self.alert_list_widget.row(item)
             self.alert_list_widget.takeItem(row)
         self.item_id = None
-        self.alert_text_edit.setText(u'')
+        self.alert_text_edit.setText('')
 
     def on_new_click(self):
         """
@@ -168,8 +168,8 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.alert_text_edit.setText(bitem.text())
         self.item_id = bitem.data(QtCore.Qt.UserRole)
         # If the alert does not contain '<>' we clear the ParameterEdit field.
-        if self.alert_text_edit.text().find(u'<>') == -1:
-            self.parameter_edit.setText(u'')
+        if self.alert_text_edit.text().find('<>') == -1:
+            self.parameter_edit.setText('')
         self.save_button.setEnabled(False)
 
     def trigger_alert(self, text):
@@ -182,7 +182,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         if not text:
             return False
         # We found '<>' in the alert text, but the ParameterEdit field is empty.
-        if text.find(u'<>') != -1 and not self.parameter_edit.text() and QtGui.QMessageBox.question(self,
+        if text.find('<>') != -1 and not self.parameter_edit.text() and QtGui.QMessageBox.question(self,
                 translate('AlertsPlugin.AlertForm', 'No Parameter Found'),
                 translate('AlertsPlugin.AlertForm', 'You have not entered a parameter to be replaced.\n'
                     'Do you want to continue anyway?'),
@@ -191,14 +191,14 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
             return False
         # The ParameterEdit field is not empty, but we have not found '<>'
         # in the alert text.
-        elif text.find(u'<>') == -1 and self.parameter_edit.text() and QtGui.QMessageBox.question(self,
+        elif text.find('<>') == -1 and self.parameter_edit.text() and QtGui.QMessageBox.question(self,
                 translate('AlertsPlugin.AlertForm', 'No Placeholder Found'),
                 translate('AlertsPlugin.AlertForm', 'The alert text does not contain \'<>\'.\n'
                     'Do you want to continue anyway?'),
                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)) == QtGui.QMessageBox.No:
             self.parameter_edit.setFocus()
             return False
-        text = text.replace(u'<>', self.parameter_edit.text())
+        text = text.replace('<>', self.parameter_edit.text())
         self.plugin.alerts_manager.display_alert(text)
         return True
 

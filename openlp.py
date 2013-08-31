@@ -32,7 +32,7 @@ import sys
 from openlp.core import main
 
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
     """
     Instantiate and run the application.
     """
@@ -41,5 +41,5 @@ if __name__ == u'__main__':
     # conflict with other OpenLP arguments. Since we do not use this
     # argument we can delete it to avoid any potential conflicts.
     if sys.platform.startswith('darwin'):
-        sys.argv = filter(lambda x: not x.startswith('-psn'), sys.argv)
+        sys.argv = [x for x in sys.argv if not x.startswith('-psn')]
     main()

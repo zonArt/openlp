@@ -51,7 +51,7 @@ class OpenLPToolbar(QtGui.QToolBar):
         # useful to be able to reuse button icons...
         self.setIconSize(QtCore.QSize(20, 20))
         self.actions = {}
-        log.debug(u'Init done for %s' % parent.__class__.__name__)
+        log.debug('Init done for %s' % parent.__class__.__name__)
 
     def add_toolbar_action(self, name, **kwargs):
         """
@@ -84,4 +84,4 @@ class OpenLPToolbar(QtGui.QToolBar):
             if handle in self.actions:
                 self.actions[handle].setVisible(visible)
             else:
-                log.warn(u'No handle "%s" in actions list.', unicode(handle))
+                log.warn('No handle "%s" in actions list.', str(handle))

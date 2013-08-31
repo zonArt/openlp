@@ -54,106 +54,106 @@ class FormattingTags(object):
         """
         tags = []
         for tag in FormattingTags.html_expands:
-            if not tag[u'protected'] and not tag.get(u'temporary'):
+            if not tag['protected'] and not tag.get('temporary'):
                 # Using dict ensures that copy is made and encoding of values a little later does not affect tags in
                 # the original list
                 tags.append(dict(tag))
                 tag = tags[-1]
                 # Remove key 'temporary' from tags. It is not needed to be saved.
-                if u'temporary' in tag:
-                    del tag[u'temporary']
+                if 'temporary' in tag:
+                    del tag['temporary']
         # Formatting Tags were also known as display tags.
-        Settings().setValue(u'formattingTags/html_tags', json.dumps(tags) if tags else u'')
+        Settings().setValue('formattingTags/html_tags', json.dumps(tags) if tags else '')
 
     @staticmethod
     def load_tags():
         """
         Load the Tags from store so can be used in the system or used to update the display.
         """
-        temporary_tags = [tag for tag in FormattingTags.html_expands if tag.get(u'temporary')]
+        temporary_tags = [tag for tag in FormattingTags.html_expands if tag.get('temporary')]
         FormattingTags.html_expands = []
         base_tags = []
         # Append the base tags.
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Red'),
-            u'start tag': u'{r}',
-            u'start html': u'<span style="-webkit-text-fill-color:red">',
-            u'end tag': u'{/r}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Black'),
-            u'start tag': u'{b}',
-            u'start html': u'<span style="-webkit-text-fill-color:black">',
-            u'end tag': u'{/b}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Blue'),
-            u'start tag': u'{bl}',
-            u'start html': u'<span style="-webkit-text-fill-color:blue">',
-            u'end tag': u'{/bl}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Yellow'),
-            u'start tag': u'{y}',
-            u'start html': u'<span style="-webkit-text-fill-color:yellow">',
-            u'end tag': u'{/y}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Green'),
-            u'start tag': u'{g}',
-            u'start html': u'<span style="-webkit-text-fill-color:green">',
-            u'end tag': u'{/g}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Pink'),
-            u'start tag': u'{pk}',
-            u'start html': u'<span style="-webkit-text-fill-color:#FFC0CB">',
-            u'end tag': u'{/pk}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Orange'),
-            u'start tag': u'{o}',
-            u'start html': u'<span style="-webkit-text-fill-color:#FFA500">',
-            u'end tag': u'{/o}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Purple'),
-            u'start tag': u'{pp}',
-            u'start html': u'<span style="-webkit-text-fill-color:#800080">',
-            u'end tag': u'{/pp}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'White'),
-            u'start tag': u'{w}',
-            u'start html': u'<span style="-webkit-text-fill-color:white">',
-            u'end tag': u'{/w}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Red'),
+            'start tag': '{r}',
+            'start html': '<span style="-webkit-text-fill-color:red">',
+            'end tag': '{/r}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Black'),
+            'start tag': '{b}',
+            'start html': '<span style="-webkit-text-fill-color:black">',
+            'end tag': '{/b}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Blue'),
+            'start tag': '{bl}',
+            'start html': '<span style="-webkit-text-fill-color:blue">',
+            'end tag': '{/bl}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Yellow'),
+            'start tag': '{y}',
+            'start html': '<span style="-webkit-text-fill-color:yellow">',
+            'end tag': '{/y}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Green'),
+            'start tag': '{g}',
+            'start html': '<span style="-webkit-text-fill-color:green">',
+            'end tag': '{/g}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Pink'),
+            'start tag': '{pk}',
+            'start html': '<span style="-webkit-text-fill-color:#FFC0CB">',
+            'end tag': '{/pk}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Orange'),
+            'start tag': '{o}',
+            'start html': '<span style="-webkit-text-fill-color:#FFA500">',
+            'end tag': '{/o}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Purple'),
+            'start tag': '{pp}',
+            'start html': '<span style="-webkit-text-fill-color:#800080">',
+            'end tag': '{/pp}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'White'),
+            'start tag': '{w}',
+            'start html': '<span style="-webkit-text-fill-color:white">',
+            'end tag': '{/w}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
         base_tags.append({
-            u'desc': translate('OpenLP.FormattingTags', 'Superscript'),
-            u'start tag': u'{su}', u'start html': u'<sup>',
-            u'end tag': u'{/su}', u'end html': u'</sup>', u'protected': True,
-            u'temporary': False})
+            'desc': translate('OpenLP.FormattingTags', 'Superscript'),
+            'start tag': '{su}', 'start html': '<sup>',
+            'end tag': '{/su}', 'end html': '</sup>', 'protected': True,
+            'temporary': False})
         base_tags.append({
-            u'desc': translate('OpenLP.FormattingTags', 'Subscript'),
-            u'start tag': u'{sb}', u'start html': u'<sub>',
-            u'end tag': u'{/sb}', u'end html': u'</sub>', u'protected': True,
-            u'temporary': False})
+            'desc': translate('OpenLP.FormattingTags', 'Subscript'),
+            'start tag': '{sb}', 'start html': '<sub>',
+            'end tag': '{/sb}', 'end html': '</sub>', 'protected': True,
+            'temporary': False})
         base_tags.append({
-            u'desc': translate('OpenLP.FormattingTags', 'Paragraph'),
-            u'start tag': u'{p}', u'start html': u'<p>', u'end tag': u'{/p}',
-            u'end html': u'</p>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Bold'),
-            u'start tag': u'{st}', u'start html': u'<strong>',
-            u'end tag': u'{/st}', u'end html': u'</strong>',
-            u'protected': True, u'temporary': False})
+            'desc': translate('OpenLP.FormattingTags', 'Paragraph'),
+            'start tag': '{p}', 'start html': '<p>', 'end tag': '{/p}',
+            'end html': '</p>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Bold'),
+            'start tag': '{st}', 'start html': '<strong>',
+            'end tag': '{/st}', 'end html': '</strong>',
+            'protected': True, 'temporary': False})
         base_tags.append({
-            u'desc': translate('OpenLP.FormattingTags', 'Italics'),
-            u'start tag': u'{it}', u'start html': u'<em>', u'end tag': u'{/it}',
-            u'end html': u'</em>', u'protected': True, u'temporary': False})
+            'desc': translate('OpenLP.FormattingTags', 'Italics'),
+            'start tag': '{it}', 'start html': '<em>', 'end tag': '{/it}',
+            'end html': '</em>', 'protected': True, 'temporary': False})
         base_tags.append({
-            u'desc': translate('OpenLP.FormattingTags', 'Underline'),
-            u'start tag': u'{u}',
-            u'start html': u'<span style="text-decoration: underline;">',
-            u'end tag': u'{/u}', u'end html': u'</span>', u'protected': True,
-            u'temporary': False})
-        base_tags.append({u'desc': translate('OpenLP.FormattingTags', 'Break'),
-            u'start tag': u'{br}', u'start html': u'<br>', u'end tag': u'',
-            u'end html': u'', u'protected': True, u'temporary': False})
+            'desc': translate('OpenLP.FormattingTags', 'Underline'),
+            'start tag': '{u}',
+            'start html': '<span style="text-decoration: underline;">',
+            'end tag': '{/u}', 'end html': '</span>', 'protected': True,
+            'temporary': False})
+        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Break'),
+            'start tag': '{br}', 'start html': '<br>', 'end tag': '',
+            'end html': '', 'protected': True, 'temporary': False})
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
-        user_expands_string = str(Settings().value(u'formattingTags/html_tags'))
+        user_expands_string = str(Settings().value('formattingTags/html_tags'))
         # If we have some user ones added them as well
         if user_expands_string:
             user_tags = json.loads(user_expands_string)

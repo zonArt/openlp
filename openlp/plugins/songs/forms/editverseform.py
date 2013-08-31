@@ -33,7 +33,7 @@ import logging
 from PyQt4 import QtCore, QtGui
 
 from openlp.plugins.songs.lib import VerseType
-from editversedialog import Ui_EditVerseDialog
+from .editversedialog import Ui_EditVerseDialog
 
 log = logging.getLogger(__name__)
 
@@ -61,19 +61,19 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def insert_verse(self, verse_tag, verse_num=1):
         if self.verse_text_edit.textCursor().columnNumber() != 0:
-            self.verse_text_edit.insertPlainText(u'\n')
+            self.verse_text_edit.insertPlainText('\n')
         verse_tag = VerseType.translated_name(verse_tag)
-        self.verse_text_edit.insertPlainText(u'---[%s:%s]---\n' % (verse_tag, verse_num))
+        self.verse_text_edit.insertPlainText('---[%s:%s]---\n' % (verse_tag, verse_num))
         self.verse_text_edit.setFocus()
 
     def on_split_button_clicked(self):
         text = self.verse_text_edit.toPlainText()
         position = self.verse_text_edit.textCursor().position()
-        insert_string = u'[---]'
-        if position and text[position-1] != u'\n':
-            insert_string = u'\n' + insert_string
-        if position ==  len(text) or text[position] != u'\n':
-            insert_string += u'\n'
+        insert_string = '[---]'
+        if position and text[position-1] != '\n':
+            insert_string = '\n' + insert_string
+        if position ==  len(text) or text[position] != '\n':
+            insert_string += '\n'
         self.verse_text_edit.insertPlainText(insert_string)
         self.verse_text_edit.setFocus()
 
@@ -97,12 +97,12 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.verse_type_combo_box.currentIndex()]
         if not text:
             return
-        position = text.rfind(u'---[%s' % verse_name, 0, position)
+        position = text.rfind('---[%s' % verse_name, 0, position)
         if position == -1:
             self.verse_number_box.setValue(1)
             return
         text = text[position:]
-        position = text.find(u']---')
+        position = text.find(']---')
         if position == -1:
             return
         text = text[:position + 4]
@@ -116,7 +116,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
                 verse_num = 1
             self.verse_number_box.setValue(verse_num)
 
-    def set_verse(self, text, single=False, tag=u'%s1' % VerseType.tags[VerseType.Verse]):
+    def set_verse(self, text, single=False, tag='%s1' % VerseType.tags[VerseType.Verse]):
         self.has_single_verse = single
         if single:
             verse_type_index = VerseType.from_tag(tag[0], None)
@@ -127,7 +127,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
             self.insert_button.setVisible(False)
         else:
             if not text:
-                text = u'---[%s:1]---\n' % VerseType.translated_names[VerseType.Verse]
+                text = '---[%s:1]---\n' % VerseType.translated_names[VerseType.Verse]
             self.verse_type_combo_box.setCurrentIndex(0)
             self.verse_number_box.setValue(1)
             self.insert_button.setVisible(True)
@@ -137,10 +137,10 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
 
     def get_verse(self):
         return self.verse_text_edit.toPlainText(), VerseType.tags[self.verse_type_combo_box.currentIndex()], \
-            unicode(self.verse_number_box.value())
+            str(self.verse_number_box.value())
 
     def get_all_verses(self):
         text = self.verse_text_edit.toPlainText()
-        if not text.startswith(u'---['):
-            text = u'---[%s:1]---\n%s' % (VerseType.translated_names[VerseType.Verse], text)
+        if not text.startswith('---['):
+            text = '---[%s:1]---\n%s' % (VerseType.translated_names[VerseType.Verse], text)
         return text

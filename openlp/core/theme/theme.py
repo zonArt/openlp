@@ -37,22 +37,22 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtGui
 
 DELPHI_COLORS = {
-    u'clAqua': 0x00FFFF,
-    u'clBlack': 0x000000,
-    u'clBlue': 0x0000FF,
-    u'clFuchsia': 0xFF00FF,
-    u'clGray': 0x808080,
-    u'clGreen': 0x008000,
-    u'clLime': 0x00FF00,
-    u'clMaroon': 0x800000,
-    u'clNavy': 0x000080,
-    u'clOlive': 0x808000,
-    u'clPurple': 0x800080,
-    u'clRed': 0xFF0000,
-    u'clSilver': 0xC0C0C0,
-    u'clTeal': 0x008080,
-    u'clWhite': 0xFFFFFF,
-    u'clYellow': 0xFFFF00
+    'clAqua': 0x00FFFF,
+    'clBlack': 0x000000,
+    'clBlue': 0x0000FF,
+    'clFuchsia': 0xFF00FF,
+    'clGray': 0x808080,
+    'clGreen': 0x008000,
+    'clLime': 0x00FF00,
+    'clMaroon': 0x800000,
+    'clNavy': 0x000080,
+    'clOlive': 0x808000,
+    'clPurple': 0x800080,
+    'clRed': 0xFF0000,
+    'clSilver': 0xC0C0C0,
+    'clTeal': 0x008080,
+    'clWhite': 0xFFFFFF,
+    'clYellow': 0xFFFF00
 }
 
 BLANK_STYLE_XML = \
@@ -195,9 +195,9 @@ class Theme(object):
         keys = dir(self)
         keys.sort()
         for key in keys:
-            if key[0:1] != u'_':
-                theme_strings.append(u'_%s_' % (getattr(self, key)))
-        return u''.join(theme_strings)
+            if key[0:1] != '_':
+                theme_strings.append('_%s_' % (getattr(self, key)))
+        return ''.join(theme_strings)
 
     def _set_from_xml(self, xml):
         """
@@ -206,18 +206,18 @@ class Theme(object):
         ``xml``
             The data to apply to the theme
         """
-        root = ElementTree(element=XML(xml.encode(u'ascii', u'xmlcharrefreplace')))
+        root = ElementTree(element=XML(xml.encode('ascii', 'xmlcharrefreplace')))
         xml_iter = root.getiterator()
         for element in xml_iter:
             delphi_color_change = False
-            if element.tag != u'Theme':
+            if element.tag != 'Theme':
                 element_text = element.text
                 val = 0
                 if element_text is None:
                     val = element_text
                 # strings need special handling to sort the colours out
-                if isinstance(element_text, basestring):
-                    if element_text[0] == u'$':
+                if isinstance(element_text, str):
+                    if element_text[0] == '$':
                         # might be a hex number
                         try:
                             val = int(element_text[1:], 16)
@@ -232,7 +232,7 @@ class Theme(object):
                             val = int(element_text)
                         except ValueError:
                             val = element_text
-                if (element.tag.find(u'Color') > 0 or (element.tag.find(u'BackgroundParameter') == 0 and
+                if (element.tag.find('Color') > 0 or (element.tag.find('BackgroundParameter') == 0 and
                     isinstance(val, int))):
                     # convert to a wx.Colour
                     if not delphi_color_change:
@@ -247,6 +247,6 @@ class Theme(object):
         """
         theme_strings = []
         for key in dir(self):
-            if key[0:1] != u'_':
-                theme_strings.append(u'%30s : %s' % (key, getattr(self, key)))
-        return u'\n'.join(theme_strings)
+            if key[0:1] != '_':
+                theme_strings.append('%30s : %s' % (key, getattr(self, key)))
+        return '\n'.join(theme_strings)

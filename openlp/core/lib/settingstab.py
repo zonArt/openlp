@@ -30,7 +30,7 @@
 The :mod:`~openlp.core.lib.settingstab` module contains the base SettingsTab class which plugins use for adding their
 own tab to the settings dialog.
 """
-from __future__ import division
+
 
 from PyQt4 import QtGui
 
@@ -69,18 +69,18 @@ class SettingsTab(QtGui.QWidget):
         Setup the tab's interface.
         """
         self.tab_layout = QtGui.QHBoxLayout(self)
-        self.tab_layout.setObjectName(u'tab_layout')
+        self.tab_layout.setObjectName('tab_layout')
         self.left_column = QtGui.QWidget(self)
-        self.left_column.setObjectName(u'left_column')
+        self.left_column.setObjectName('left_column')
         self.left_layout = QtGui.QVBoxLayout(self.left_column)
         self.left_layout.setMargin(0)
-        self.left_layout.setObjectName(u'left_layout')
+        self.left_layout.setObjectName('left_layout')
         self.tab_layout.addWidget(self.left_column)
         self.right_column = QtGui.QWidget(self)
-        self.right_column.setObjectName(u'right_column')
+        self.right_column.setObjectName('right_column')
         self.right_layout = QtGui.QVBoxLayout(self.right_column)
         self.right_layout.setMargin(0)
-        self.right_layout.setObjectName(u'right_layout')
+        self.right_layout.setObjectName('right_layout')
         self.tab_layout.addWidget(self.right_column)
 
     def resizeEvent(self, event=None):
@@ -145,8 +145,8 @@ class SettingsTab(QtGui.QWidget):
         """
         Adds the service manager to the class dynamically
         """
-        if not hasattr(self, u'_service_manager'):
-            self._service_manager = Registry().get(u'service_manager')
+        if not hasattr(self, '_service_manager'):
+            self._service_manager = Registry().get('service_manager')
         return self._service_manager
 
     service_manager = property(_get_service_manager)
@@ -155,8 +155,8 @@ class SettingsTab(QtGui.QWidget):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)
@@ -165,8 +165,8 @@ class SettingsTab(QtGui.QWidget):
         """
         Adds the Renderer to the class dynamically
         """
-        if not hasattr(self, u'_renderer'):
-            self._renderer = Registry().get(u'renderer')
+        if not hasattr(self, '_renderer'):
+            self._renderer = Registry().get('renderer')
         return self._renderer
 
     renderer = property(_get_renderer)
@@ -175,8 +175,8 @@ class SettingsTab(QtGui.QWidget):
         """
         Adds the theme manager to the class dynamically
         """
-        if not hasattr(self, u'_theme_manager'):
-            self._theme_manager = Registry().get(u'theme_manager')
+        if not hasattr(self, '_theme_manager'):
+            self._theme_manager = Registry().get('theme_manager')
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
@@ -185,8 +185,8 @@ class SettingsTab(QtGui.QWidget):
         """
         Adds the media controller to the class dynamically
         """
-        if not hasattr(self, u'_media_controller'):
-            self._media_controller = Registry().get(u'media_controller')
+        if not hasattr(self, '_media_controller'):
+            self._media_controller = Registry().get('media_controller')
         return self._media_controller
 
     media_controller = property(_get_media_controller)
@@ -195,8 +195,8 @@ class SettingsTab(QtGui.QWidget):
         """
         Adds the plugin manager to the class dynamically
         """
-        if not hasattr(self, u'_settings_form'):
-            self._settings_form = Registry().get(u'settings_form')
+        if not hasattr(self, '_settings_form'):
+            self._settings_form = Registry().get('settings_form')
         return self._settings_form
 
     settings_form = property(_get_settings_form)

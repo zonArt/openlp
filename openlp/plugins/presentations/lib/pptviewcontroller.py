@@ -30,12 +30,12 @@
 import os
 import logging
 
-if os.name == u'nt':
+if os.name == 'nt':
     from ctypes import cdll
     from ctypes.wintypes import RECT
 
 from openlp.core.lib import ScreenList
-from presentationcontroller import PresentationController, PresentationDocument
+from .presentationcontroller import PresentationController, PresentationDocument
 
 
 log = logging.getLogger(__name__)
@@ -46,32 +46,32 @@ class PptviewController(PresentationController):
     Class to control interactions with PowerPoint Viewer Presentations. It creates the runtime Environment , Loads the
     and Closes the Presentation. As well as triggering the correct activities based on the users input
     """
-    log.info(u'PPTViewController loaded')
+    log.info('PPTViewController loaded')
 
     def __init__(self, plugin):
         """
         Initialise the class
         """
-        log.debug(u'Initialising')
+        log.debug('Initialising')
         self.process = None
-        super(PptviewController, self).__init__(plugin, u'Powerpoint Viewer', PptviewDocument)
-        self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
+        super(PptviewController, self).__init__(plugin, 'Powerpoint Viewer', PptviewDocument)
+        self.supports = ['ppt', 'pps', 'pptx', 'ppsx']
 
     def check_available(self):
         """
         PPT Viewer is able to run on this machine.
         """
-        log.debug(u'check_available')
-        if os.name != u'nt':
+        log.debug('check_available')
+        if os.name != 'nt':
             return False
         return self.check_installed()
 
-    if os.name == u'nt':
+    if os.name == 'nt':
         def check_installed(self):
             """
             Check the viewer is installed.
             """
-            log.debug(u'Check installed')
+            log.debug('Check installed')
             try:
                 self.start_process()
                 return self.process.CheckInstalled()
@@ -84,9 +84,9 @@ class PptviewController(PresentationController):
             """
             if self.process:
                 return
-            log.debug(u'start PPTView')
+            log.debug('start PPTView')
             dll_path = os.path.join(
-                self.plugin_manager.base_path, u'presentations', u'lib', u'pptviewlib', u'pptviewlib.dll')
+                self.plugin_manager.base_path, 'presentations', 'lib', 'pptviewlib', 'pptviewlib.dll')
             self.process = cdll.LoadLibrary(dll_path)
             if log.isEnabledFor(logging.DEBUG):
                 self.process.SetDebug(1)
@@ -95,7 +95,7 @@ class PptviewController(PresentationController):
             """
             Called at system exit to clean up any running presentations
             """
-            log.debug(u'Kill pptviewer')
+            log.debug('Kill pptviewer')
             while self.docs:
                 self.docs[0].close_presentation()
 
@@ -108,7 +108,7 @@ class PptviewDocument(PresentationDocument):
         """
         Constructor, store information about the file and initialise.
         """
-        log.debug(u'Init Presentation PowerPoint')
+        log.debug('Init Presentation PowerPoint')
         super(PptviewDocument, self).__init__(controller, presentation)
         self.presentation = None
         self.ppt_id = None
@@ -120,10 +120,10 @@ class PptviewDocument(PresentationDocument):
         Called when a presentation is added to the SlideController. It builds the environment, starts communication with
         the background PptView task started earlier.
         """
-        log.debug(u'LoadPresentation')
-        size = ScreenList().current[u'size']
+        log.debug('LoadPresentation')
+        size = ScreenList().current['size']
         rect = RECT(size.x(), size.y(), size.right(), size.bottom())
-        filepath = str(self.filepath.replace(u'/', u'\\'))
+        filepath = str(self.filepath.replace('/', '\\'))
         if not os.path.isdir(self.get_temp_folder()):
             os.makedirs(self.get_temp_folder())
         self.ppt_id = self.controller.process.OpenPPT(filepath, None, rect, str(self.get_temp_folder()) + '\\slide')
@@ -138,12 +138,12 @@ class PptviewDocument(PresentationDocument):
         """
         PPTviewLib creates large BMP's, but we want small PNG's for consistency. Convert them here.
         """
-        log.debug(u'create_thumbnails')
+        log.debug('create_thumbnails')
         if self.check_thumbnails():
             return
-        log.debug(u'create_thumbnails proceeding')
+        log.debug('create_thumbnails proceeding')
         for idx in range(self.get_slide_count()):
-            path = u'%s\\slide%s.bmp' % (self.get_temp_folder(), unicode(idx + 1))
+            path = '%s\\slide%s.bmp' % (self.get_temp_folder(), str(idx + 1))
             self.convert_thumbnail(path, idx + 1)
 
     def close_presentation(self):
@@ -151,7 +151,7 @@ class PptviewDocument(PresentationDocument):
         Close presentation and clean up objects. Triggered by new object being added to SlideController or OpenLP being
         shut down.
         """
-        log.debug(u'ClosePresentation')
+        log.debug('ClosePresentation')
         if self.controller.process:
             self.controller.process.ClosePPT(self.ppt_id)
             self.ppt_id = -1
@@ -191,7 +191,7 @@ class PptviewDocument(PresentationDocument):
         """
         Returns true if screen is blank.
         """
-        log.debug(u'is blank OpenOffice')
+        log.debug('is blank OpenOffice')
         return self.blanked
 
     def stop_presentation(self):
