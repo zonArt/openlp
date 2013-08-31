@@ -30,7 +30,6 @@
 The service manager sets up, loads, saves and manages services.
 """
 import cgi
-import cPickle
 import logging
 import os
 import shutil
@@ -706,7 +705,10 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 if p_file.endswith(u'osj'):
                     items = json.load(file_to)
                 else:
-                    items = cPickle.load(file_to)
+                    critical_error_message_box(message=translate('OpenLP.ServiceManager',
+                        'The service file you are trying to open is in an old format.\n '
+                        'Please save it using OpenLP 2.0.2 or greater.'))
+                    return
                 file_to.close()
                 self.new_file()
                 self.set_file_name(file_name)

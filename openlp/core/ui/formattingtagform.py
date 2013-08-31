@@ -28,8 +28,8 @@
 ###############################################################################
 """
 The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are protected and included each time loaded.
-Custom tags can be defined and saved. The Custom Tag arrays are saved in a pickle so QSettings works on them. Base Tags
-cannot be changed.
+Custom tags can be defined and saved. The Custom Tag arrays are saved in a json string so QSettings works on them.
+Base Tags cannot be changed.
 """
 
 import cgi

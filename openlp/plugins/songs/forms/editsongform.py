@@ -171,13 +171,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if invalid_verses:
             valid = create_separated_list(verse_names)
             if len(invalid_verses) > 1:
-                critical_error_message_box(message=translate('SongsPlugin.EditSongForm',
-                    'The verse order is invalid. There are no verses corresponding to %s. Valid entries are %s.') %
-                    (u', '.join(invalid_verses), valid))
+                msg = translate('SongsPlugin.EditSongForm', 'There are no verses corresponding to "%(invalid)s".'
+                    'Valid entries are %(valid)s.\nPlease enter the verses seperated by spaces.') \
+                    % {'invalid' : u', '.join(invalid_verses), 'valid' : valid}
             else:
-                critical_error_message_box(message=translate('SongsPlugin.EditSongForm',
-                    'The verse order is invalid. There is no verse corresponding to %s. Valid entries are %s.') %
-                    (invalid_verses[0], valid))
+                msg = translate('SongsPlugin.EditSongForm', 'There is no verse corresponding to "%(invalid)s".'
+                    'Valid entries are %(valid)s.\nPlease enter the verses seperated by spaces.') \
+                    % {'invalid' : invalid_verses[0], 'valid' : valid}
+            critical_error_message_box(title=translate('SongsPlugin.EditSongForm', 'Invalid Verse Order'),
+                                       message=msg)
         return len(invalid_verses) == 0
 
     def _validate_song(self):
@@ -348,6 +350,7 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         self.load_topics()
         self.load_books()
         self.load_media_files()
+        self.theme_combo_box.setEditText(u'')
         self.theme_combo_box.setCurrentIndex(0)
         # it's a new song to preview is not possible
         self.preview_button.setVisible(False)
@@ -376,8 +379,15 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
         if self.song.song_book_id != 0:
             book_name = self.manager.get_object(Book, self.song.song_book_id)
             find_and_set_in_combo_box(self.song_book_combo_box, unicode(book_name.name))
+        else:
+            self.song_book_combo_box.setEditText(u'')
+            self.song_book_combo_box.setCurrentIndex(0)
         if self.song.theme_name:
             find_and_set_in_combo_box(self.theme_combo_box, unicode(self.song.theme_name))
+        else:
+            # Clear the theme combo box in case it was previously set (bug #1212801)
+            self.theme_combo_box.setEditText(u'')
+            self.theme_combo_box.setCurrentIndex(0)
         self.copyright_edit.setText(self.song.copyright if self.song.copyright else u'')
         self.comments_edit.setPlainText(self.song.comments if self.song.comments else u'')
         self.ccli_number_edit.setText(self.song.ccli_number if self.song.ccli_number else u'')
