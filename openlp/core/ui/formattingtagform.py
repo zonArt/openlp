@@ -185,7 +185,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         pre_row_item = self.tag_table_widget.item(pre_row, 0)
         if pre_row_item:
             item = self.tag_table_widget.item(pre_row, pre_col)
-            text = unicode(item.text())
+            text = item.text()
             if pre_col is EDITCOLUMN.Tag:
                 if text:
                     for row in range(self.tag_table_widget.rowCount()):
@@ -198,9 +198,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                                 QtGui.QMessageBox.Discard|QtGui.QMessageBox.Ok)
                             if answer == QtGui.QMessageBox.Discard:
                                 break
-                            else:
-                                edit_item = item
-                                break
                 else:
                     answer = None
                     if self.tag_table_widget.item(pre_row, 1).text() or self.tag_table_widget.item(pre_row, 2).text():
@@ -212,7 +209,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
             elif pre_col is EDITCOLUMN.StartHtml:
                 # HTML edited
                 item = self.tag_table_widget.item(pre_row, 3)
-                end_html = unicode(item.text())
+                end_html = item.text()
                 errors, tag = self.services.start_tag_changed(text, end_html)
                 if tag:
                     self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
@@ -225,9 +222,3 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         #if edit_item:
         #    self.tag_table_widget.setCurrentItem(edit_item)
         # enable delete_button for editable rows
-        cur_row = self.tag_table_widget.currentRow()
-        cur_row_item = self.tag_table_widget.item(cur_row, 0)
-        delete_enabled = bool(cur_row_item) and bool(cur_row_item.flags() & QtCore.Qt.ItemIsEditable)
-        delete_enabled &= cur_row < self.tag_table_widget.rowCount() - 1
-        self.delete_button.setEnabled(delete_enabled)
-
