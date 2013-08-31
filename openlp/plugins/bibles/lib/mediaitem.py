@@ -944,7 +944,7 @@ class BibleMediaItem(MediaManagerItem):
         """
         verse_separator = get_reference_separator('sep_v_display')
         if not self.settings.is_verse_number_visible:
-            return u''
+            return ''
         if not self.settings.show_new_chapters or old_chapter != chapter:
             verse_text = str(chapter) + verse_separator + str(verse)
         else:
@@ -955,7 +955,7 @@ class BibleMediaItem(MediaManagerItem):
             return '{su}{%s}{/su}' % verse_text
         if self.settings.display_style == DisplayStyle.Square:
             return '{su}[%s]{/su}' % verse_text
-        return u'{su}%s{/su}' % verse_text
+        return '{su}%s{/su}' % verse_text
 
     def search(self, string, showError):
         """
