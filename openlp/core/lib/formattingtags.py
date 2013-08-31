@@ -62,9 +62,6 @@ class FormattingTags(object):
                 # Remove key 'temporary' from tags. It is not needed to be saved.
                 if u'temporary' in tag:
                     del tag[u'temporary']
-                for element in tag:
-                    if isinstance(tag[element], unicode):
-                        tag[element] = tag[element].encode('utf8')
         # Formatting Tags were also known as display tags.
         Settings().setValue(u'formattingTags/html_tags', json.dumps(tags) if tags else u'')
 
@@ -156,15 +153,10 @@ class FormattingTags(object):
             u'end html': u'', u'protected': True, u'temporary': False})
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
-        # Formatting Tags were also known as display tags.
         user_expands_string = str(Settings().value(u'formattingTags/html_tags'))
+        # If we have some user ones added them as well
         if user_expands_string:
             user_tags = json.loads(user_expands_string)
-            for tag in user_tags:
-                for element in tag:
-                    if isinstance(tag[element], str):
-                        tag[element] = tag[element].decode('utf8')
-            # If we have some user ones added them as well
             FormattingTags.add_html_tags(user_tags)
 
     @staticmethod

@@ -42,7 +42,7 @@ above, like so::
     class BibleImportForm(QtGui.QWizard, Ui_BibleImportWizard):
 
         def __init__(self, parent, manager, bible_plugin):
-            QtGui.QWizard.__init__(self, parent)
+            super(BibleImportForm, self).__init__(parent)
             self.setupUi(self)
 
 This allows OpenLP to use ``self.object`` for all the GUI elements while keeping them separate from the functionality,

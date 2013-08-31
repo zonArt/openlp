@@ -48,14 +48,14 @@ class ThemesTab(SettingsTab):
         """
         self.icon_path = u':/themes/theme_new.png'
         theme_translated = translate('OpenLP.ThemesTab', 'Themes')
-        SettingsTab.__init__(self, parent, u'Themes', theme_translated)
+        super(ThemesTab, self).__init__(parent, u'Themes', theme_translated)
 
     def setupUi(self):
         """
         Set up the UI
         """
         self.setObjectName(u'ThemesTab')
-        SettingsTab.setupUi(self)
+        super(ThemesTab, self).setupUi()
         self.global_group_box = QtGui.QGroupBox(self.left_column)
         self.global_group_box.setObjectName(u'global_group_box')
         self.global_group_box_layout = QtGui.QVBoxLayout(self.global_group_box)

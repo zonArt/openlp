@@ -60,7 +60,7 @@ class SongExportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        OpenLPWizard.__init__(self, parent, plugin, u'song_export_wizard', u':/wizards/wizard_exportsong.bmp')
+        super(SongExportForm, self).__init__(parent, plugin, u'song_export_wizard', u':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
         Registry().register_function(u'openlp_stop_wizard', self.stop_export)
 
@@ -75,7 +75,7 @@ class SongExportForm(OpenLPWizard):
         """
         Set up the song wizard UI.
         """
-        OpenLPWizard.setupUi(self, image)
+        super(SongExportForm, self).setupUi(image)
 
     def custom_signals(self):
         """
@@ -239,7 +239,7 @@ class SongExportForm(OpenLPWizard):
         """
         Perform pre export tasks.
         """
-        OpenLPWizard.pre_wizard(self)
+        super(SongExportForm, self).pre_wizard()
         self.progress_label.setText(translate('SongsPlugin.ExportWizardForm', 'Starting export...'))
         self.application.process_events()
 

@@ -43,7 +43,7 @@ class ServiceNoteForm(QtGui.QDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super(ServiceNoteForm, self).__init__(Registry().get(u'main_window'))
         self.setupUi()
         self.retranslateUi()
 

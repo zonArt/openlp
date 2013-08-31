@@ -50,7 +50,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         Initialise the form
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(SongUsageDetailForm, self).__init__(parent)
         self.plugin = plugin
         self.setupUi(self)
 

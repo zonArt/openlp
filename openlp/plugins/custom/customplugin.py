@@ -61,7 +61,7 @@ class CustomPlugin(Plugin):
     log.info(u'Custom Plugin loaded')
 
     def __init__(self):
-        Plugin.__init__(self, u'custom', __default_settings__, CustomMediaItem, CustomTab)
+        super(CustomPlugin, self).__init__(u'custom', __default_settings__, CustomMediaItem, CustomTab)
         self.weight = -5
         self.manager = Manager(u'custom', init_schema)
         self.icon_path = u':/plugins/plugin_custom.png'

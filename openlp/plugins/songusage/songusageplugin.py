@@ -60,7 +60,7 @@ class SongUsagePlugin(Plugin):
     log.info(u'SongUsage Plugin loaded')
 
     def __init__(self):
-        Plugin.__init__(self, u'songusage', __default_settings__)
+        super(SongUsagePlugin, self).__init__(u'songusage', __default_settings__)
         self.manager = Manager(u'songusage', init_schema, upgrade_mod=upgrade)
         self.weight = -4
         self.icon = build_icon(u':/plugins/plugin_songusage.png')
@@ -122,7 +122,7 @@ class SongUsagePlugin(Plugin):
 
     def initialise(self):
         log.info(u'SongUsage Initialising')
-        Plugin.initialise(self)
+        super(SongUsagePlugin, self).initialise()
         Registry().register_function(u'slidecontroller_live_started', self.display_song_usage)
         Registry().register_function(u'print_service_started', self.print_song_usage)
         self.song_usage_active = Settings().value(self.settings_section + u'/active')
@@ -143,7 +143,7 @@ class SongUsagePlugin(Plugin):
         """
         log.info(u'Plugin Finalise')
         self.manager.finalise()
-        Plugin.finalise(self)
+        super(SongUsagePlugin, self).finalise()
         self.song_usage_menu.menuAction().setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.song_usage_status, translate('SongUsagePlugin', 'Song Usage'))

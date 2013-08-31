@@ -54,7 +54,7 @@ class PptviewController(PresentationController):
         """
         log.debug(u'Initialising')
         self.process = None
-        PresentationController.__init__(self, plugin, u'Powerpoint Viewer', PptviewDocument)
+        super(PptviewController, self).__init__(plugin, u'Powerpoint Viewer', PptviewDocument)
         self.supports = [u'ppt', u'pps', u'pptx', u'ppsx']
 
     def check_available(self):
@@ -109,7 +109,7 @@ class PptviewDocument(PresentationDocument):
         Constructor, store information about the file and initialise.
         """
         log.debug(u'Init Presentation PowerPoint')
-        PresentationDocument.__init__(self, controller, presentation)
+        super(PptviewDocument, self).__init__(controller, presentation)
         self.presentation = None
         self.ppt_id = None
         self.blanked = False

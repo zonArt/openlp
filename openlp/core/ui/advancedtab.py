@@ -57,14 +57,14 @@ class AdvancedTab(SettingsTab):
         self.data_exists = False
         self.icon_path = u':/system/system_settings.png'
         advanced_translated = translate('OpenLP.AdvancedTab', 'Advanced')
-        SettingsTab.__init__(self, parent, u'Advanced', advanced_translated)
+        super(AdvancedTab, self).__init__(parent, u'Advanced', advanced_translated)
 
     def setupUi(self):
         """
         Configure the UI elements for the tab.
         """
         self.setObjectName(u'AdvancedTab')
-        SettingsTab.setupUi(self)
+        super(AdvancedTab, self).setupUi()
         self.ui_group_box = QtGui.QGroupBox(self.left_column)
         self.ui_group_box.setObjectName(u'ui_group_box')
         self.ui_layout = QtGui.QFormLayout(self.ui_group_box)

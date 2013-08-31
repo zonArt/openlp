@@ -129,7 +129,7 @@ class AlertsPlugin(Plugin):
     log.info(u'Alerts Plugin loaded')
 
     def __init__(self):
-        Plugin.__init__(self, u'alerts', __default_settings__, settings_tab_class=AlertsTab)
+        super(AlertsPlugin, self).__init__(u'alerts', __default_settings__, settings_tab_class=AlertsTab)
         self.weight = -3
         self.icon_path = u':/plugins/plugin_alerts.png'
         self.icon = build_icon(self.icon_path)
@@ -153,7 +153,7 @@ class AlertsPlugin(Plugin):
 
     def initialise(self):
         log.info(u'Alerts Initialising')
-        Plugin.initialise(self)
+        super(AlertsPlugin, self).initialise()
         self.tools_alert_item.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.tools_alert_item, UiStrings().Tools)
@@ -164,7 +164,7 @@ class AlertsPlugin(Plugin):
         """
         log.info(u'Alerts Finalising')
         self.manager.finalise()
-        Plugin.finalise(self)
+        super(AlertsPlugin, self).finalise()
         self.tools_alert_item.setVisible(False)
         action_list = ActionList.get_instance()
         action_list.remove_action(self.tools_alert_item, u'Tools')

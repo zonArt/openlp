@@ -55,18 +55,18 @@ class PlayerTab(SettingsTab):
         """
         Constructor
         """
-        self.media_players = self.media_controller.media_players
+        self.media_players = Registry().get('media_controller').media_players
         self.saved_used_players = None
         self.icon_path = u':/media/multimedia-player.png'
         player_translated = translate('OpenLP.PlayerTab', 'Players')
-        SettingsTab.__init__(self, parent, u'Players', player_translated)
+        super(PlayerTab, self).__init__(parent, u'Players', player_translated)
 
     def setupUi(self):
         """
         Set up the UI
         """
         self.setObjectName(u'MediaTab')
-        SettingsTab.setupUi(self)
+        super(PlayerTab, self).setupUi()
         self.background_color_group_box = QtGui.QGroupBox(self.left_column)
         self.background_color_group_box.setObjectName(u'background_color_group_box')
         self.form_layout = QtGui.QFormLayout(self.background_color_group_box)

@@ -70,7 +70,7 @@ class OpenLyricsImport(SongImport):
                 # Pass a file object, because lxml does not cope with some
                 # special characters in the path (see lp:757673 and lp:744337).
                 parsed_file = etree.parse(open(file_path, u'r'), parser)
-                xml = unicode(etree.tostring(parsed_file))
+                xml = etree.tostring(parsed_file).decode()
                 self.openLyrics.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 log.exception(u'XML syntax error in file %s' % file_path)

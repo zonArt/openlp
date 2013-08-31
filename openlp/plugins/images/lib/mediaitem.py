@@ -52,7 +52,7 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin):
         self.icon_path = u'images/image'
-        MediaManagerItem.__init__(self, parent, plugin)
+        super(ImageMediaItem, self).__init__(parent, plugin)
         self.quick_preview_allowed = True
         self.has_search = True
         self.manager = plugin.manager

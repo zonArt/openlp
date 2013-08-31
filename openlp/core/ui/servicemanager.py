@@ -60,7 +60,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         """
         Constructor
         """
-        QtGui.QTreeWidget.__init__(self, parent)
+        super(ServiceManagerList, self).__init__(parent)
         self.serviceManager = serviceManager
 
     def keyPressEvent(self, event):
@@ -294,7 +294,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Sets up the service manager, toolbars, list view, et al.
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(ServiceManager, self).__init__(parent)
         self.active = build_icon(u':/media/auto-start_active.png')
         self.inactive = build_icon(u':/media/auto-start_inactive.png')
         Registry().register(u'service_manager', self)
@@ -521,11 +521,11 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.main_window.increment_progress_bar()
         try:
             zip_file = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED, allow_zip_64)
-            # First we add service contents. We save ALL file_names into ZIP using UTF-8.
-            zip_file.writestr(service_file_name.encode(u'utf-8'), service_content)
+            # First we add service contents..
+            zip_file.writestr(service_file_name, service_content)
             # Finally add all the listed media files.
             for write_from in write_list:
-                zip_file.write(write_from, write_from.encode(u'utf-8'))
+                zip_file.write(write_from, write_from)
             for audio_from, audio_to in audio_files:
                 if audio_from.startswith(u'audio'):
                     # When items are saved, they get new unique_identifier. Let's copy the file to the new location.
@@ -536,7 +536,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 check_directory_exists(save_path)
                 if not os.path.exists(save_file):
                     shutil.copy(audio_from, save_file)
-                zip_file.write(audio_from, audio_to.encode(u'utf-8'))
+                zip_file.write(audio_from, audio_to)
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
             self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
@@ -593,7 +593,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             zip_file = zipfile.ZipFile(temp_file_name, 'w', zipfile.ZIP_STORED,
                 True)
             # First we add service contents.
-            zip_file.writestr(service_file_name.encode(u'utf-8'), service_content)
+            zip_file.writestr(service_file_name, service_content)
         except IOError:
             log.exception(u'Failed to save service to disk: %s', temp_file_name)
             self.main_window.error_message(translate(u'OpenLP.ServiceManager', u'Error Saving File'),
@@ -685,14 +685,13 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             zip_file = zipfile.ZipFile(file_name)
             for zip_info in zip_file.infolist():
                 try:
-                    ucsfile = zip_info.filename.decode(u'utf-8')
+                    ucs_file = zip_info.filename
                 except UnicodeDecodeError:
-                    log.exception(u'file_name "%s" is not valid UTF-8' %
-                        zip_info.file_name.decode(u'utf-8', u'replace'))
+                    log.exception(u'file_name "%s" is not valid UTF-8' % zip_info.file_name)
                     critical_error_message_box(message=translate('OpenLP.ServiceManager',
                         'File is not a valid service.\n The content encoding is not UTF-8.'))
                     continue
-                osfile = ucsfile.replace(u'/', os.path.sep)
+                osfile = ucs_file.replace(u'/', os.path.sep)
                 if not osfile.startswith(u'audio'):
                     osfile = os.path.split(osfile)[1]
                 log.debug(u'Extract file: %s', osfile)

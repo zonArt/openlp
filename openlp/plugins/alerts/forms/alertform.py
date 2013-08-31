@@ -46,6 +46,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         self.manager = plugin.manager
         self.plugin = plugin
         self.item_id = None
+        # TODO: Use Registry()
         super(AlertForm, self).__init__(self.plugin.main_window)
         self.setupUi(self)
         self.display_button.clicked.connect(self.on_display_clicked)

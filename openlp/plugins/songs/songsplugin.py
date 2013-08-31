@@ -41,7 +41,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, UiStrings, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
-from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
@@ -81,7 +80,7 @@ class SongsPlugin(Plugin):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'songs', __default_settings__, SongMediaItem, SongsTab)
+        super(SongsPlugin, self).__init__(u'songs', __default_settings__, SongMediaItem, SongsTab)
         self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
         self.icon_path = u':/plugins/plugin_songs.png'
@@ -95,7 +94,7 @@ class SongsPlugin(Plugin):
 
     def initialise(self):
         log.info(u'Songs Initialising')
-        Plugin.initialise(self)
+        super(SongsPlugin, self).initialise()
         self.song_import_item.setVisible(True)
         self.song_export_item.setVisible(True)
         self.tools_reindex_item.setVisible(True)
@@ -263,7 +262,7 @@ class SongsPlugin(Plugin):
         self.application.process_events()
         self.on_tools_reindex_item_triggered()
         self.application.process_events()
-        db_dir = unicode(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
+        db_dir = os.path.join(gettempdir(), u'openlp')
         if not os.path.exists(db_dir):
             return
         song_dbs = []
@@ -309,7 +308,7 @@ class SongsPlugin(Plugin):
         action_list.remove_action(self.song_export_item, UiStrings().Export)
         action_list.remove_action(self.tools_reindex_item, UiStrings().Tools)
         action_list.remove_action(self.tools_find_duplicates, UiStrings().Tools)
-        Plugin.finalise(self)
+        super(SongsPlugin, self).finalise()
 
     def new_service_created(self):
         """

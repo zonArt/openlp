@@ -128,7 +128,7 @@ class Plugin(QtCore.QObject):
 
             class MyPlugin(Plugin):
                 def __init__(self):
-                    Plugin.__init__(self, u'MyPlugin', version=u'0.1')
+                    super(MyPlugin, self).__init__('MyPlugin', version=u'0.1')
 
         ``name``
             Defaults to *None*. The name of the plugin.
@@ -146,7 +146,7 @@ class Plugin(QtCore.QObject):
             Defaults to *None*, which means that the same version number is used as OpenLP's version number.
         """
         log.debug(u'Plugin %s initialised' % name)
-        QtCore.QObject.__init__(self)
+        super(Plugin, self).__init__()
         self.name = name
         self.text_strings = {}
         self.set_plugin_text_strings()

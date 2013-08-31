@@ -78,7 +78,7 @@ class ImpressController(PresentationController):
         Initialise the class
         """
         log.debug(u'Initialising')
-        PresentationController.__init__(self, plugin, u'Impress', ImpressDocument)
+        super(ImpressController, self).__init__(plugin, u'Impress', ImpressDocument)
         self.supports = [u'odp']
         self.also_supports = [u'ppt', u'pps', u'pptx', u'ppsx']
         self.process = None
@@ -208,7 +208,7 @@ class ImpressDocument(PresentationDocument):
         Constructor, store information about the file and initialise.
         """
         log.debug(u'Init Presentation OpenOffice')
-        PresentationDocument.__init__(self, controller, presentation)
+        super(ImpressDocument, self).__init__(controller, presentation)
         self.document = None
         self.presentation = None
         self.control = None

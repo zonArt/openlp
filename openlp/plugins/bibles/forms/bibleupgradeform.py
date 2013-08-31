@@ -39,7 +39,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Registry, Settings, UiStrings, translate, check_directory_exists
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation, delete_file, get_filesystem_encoding
+from openlp.core.utils import AppLocation, delete_file
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta, OldBibleDB, BiblesResourcesDB
 from openlp.plugins.bibles.lib.http import BSExtract, BGExtract, CWExtract
 
@@ -71,17 +71,18 @@ class BibleUpgradeForm(OpenLPWizard):
         self.suffix = u'.sqlite'
         self.settings_section = u'bibles'
         self.path = AppLocation.get_section_data_path(self.settings_section)
-        self.temp_dir = os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp')
+        self.temp_dir = os.path.join(gettempdir(), u'openlp')
         self.files = self.manager.old_bible_databases
         self.success = {}
         self.new_bibles = {}
-        OpenLPWizard.__init__(self, parent, bible_plugin, u'bibleUpgradeWizard', u':/wizards/wizard_importbible.bmp')
+        super(BibleUpgradeForm, self).__init__(
+            parent, bible_plugin, u'bibleUpgradeWizard', u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """
         Set up the UI for the bible wizard.
         """
-        OpenLPWizard.setupUi(self, image)
+        super(BibleUpgradeForm, self).setupUi(image)
         Registry().execute(u'openlp_stop_wizard', self.stop_import)
 
     def stop_import(self):
@@ -333,7 +334,7 @@ class BibleUpgradeForm(OpenLPWizard):
         """
         Prepare the UI for the upgrade.
         """
-        OpenLPWizard.pre_wizard(self)
+        super(BibleUpgradeForm, self).pre_wizard()
         self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Starting upgrade...'))
         self.application.process_events()
 
@@ -559,4 +560,4 @@ class BibleUpgradeForm(OpenLPWizard):
             self.progress_label.setText(translate('BiblesPlugin.UpgradeWizardForm', 'Upgrade failed.'))
         # Remove temp directory.
         shutil.rmtree(self.temp_dir, True)
-        OpenLPWizard.post_wizard(self)
+        super(BibleUpgradeForm, self).post_wizard()

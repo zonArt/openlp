@@ -107,7 +107,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Constructor.
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super(ExceptionForm, self).__init__(self.main_window)
         self.setupUi(self)
         self.settings_section = u'crashreport'
 

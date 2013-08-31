@@ -60,7 +60,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         Constructor.
         """
         global ENCHANT_AVAILABLE
-        QtGui.QPlainTextEdit.__init__(self, parent)
+        super(SpellTextEdit, self).__init__(parent)
         self.formatting_tags_allowed = formatting_tags_allowed
         # Default dictionary based on the current locale.
         if ENCHANT_AVAILABLE:
@@ -177,7 +177,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         """
         Constructor
         """
-        QtGui.QSyntaxHighlighter.__init__(self, *args)
+        super(Highlighter, self).__init__(*args)
         self.spelling_dictionary = None
 
     def highlightBlock(self, text):
@@ -205,5 +205,5 @@ class SpellAction(QtGui.QAction):
         """
         Constructor
         """
-        QtGui.QAction.__init__(self, *args)
+        super(SpellAction, self).__init__(*args)
         self.triggered.connect(lambda x: self.correct.emit(self.text()))

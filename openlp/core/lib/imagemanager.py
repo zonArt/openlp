@@ -56,7 +56,7 @@ class ImageThread(QtCore.QThread):
         ``manager``
             The image manager.
         """
-        QtCore.QThread.__init__(self, None)
+        super(ImageThread, self).__init__(None)
         self.image_manager = manager
 
     def run(self):
@@ -183,7 +183,7 @@ class ImageManager(QtCore.QObject):
         """
         Constructor for the image manager.
         """
-        QtCore.QObject.__init__(self)
+        super(ImageManager, self).__init__()
         Registry().register(u'image_manager', self)
         current_screen = ScreenList().current
         self.width = current_screen[u'size'].width()

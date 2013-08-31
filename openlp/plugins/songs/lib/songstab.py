@@ -41,7 +41,7 @@ class SongsTab(SettingsTab):
         Set up the configuration tab UI.
         """
         self.setObjectName(u'SongsTab')
-        SettingsTab.setupUi(self)
+        super(SongsTab, self).setupUi()
         self.mode_group_box = QtGui.QGroupBox(self.left_column)
         self.mode_group_box.setObjectName(u'mode_group_box')
         self.mode_layout = QtGui.QVBoxLayout(self.mode_group_box)

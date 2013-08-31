@@ -48,7 +48,7 @@ class EditVerseForm(QtGui.QDialog, Ui_EditVerseDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(EditVerseForm, self).__init__(parent)
         self.setupUi(self)
         self.verse_text_edit.customContextMenuRequested.connect(self.context_menu)
         self.insert_button.clicked.connect(self.on_insert_button_clicked)

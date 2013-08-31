@@ -38,7 +38,6 @@ import re
 from subprocess import Popen, PIPE
 import sys
 import urllib2
-import icu
 
 from PyQt4 import QtGui, QtCore
 
@@ -107,6 +106,7 @@ def get_application_version():
         # Get the revision of this tree.
         bzr = Popen((u'bzr', u'revno'), stdout=PIPE)
         tree_revision, error = bzr.communicate()
+        tree_revision = tree_revision.decode()
         code = bzr.wait()
         if code != 0:
             raise Exception(u'Error running bzr log')
@@ -117,7 +117,7 @@ def get_application_version():
         code = bzr.wait()
         if code != 0:
             raise Exception(u'Error running bzr tags')
-        tags = output.splitlines()
+        tags = map(bytes.decode, output.splitlines())
         if not tags:
             tag_version = u'0.0.0'
             tag_revision = u'0'
@@ -196,7 +196,7 @@ def check_latest_version(current_version):
         req.add_header(u'User-Agent', u'OpenLP/%s' % current_version[u'full'])
         remote_version = None
         try:
-            remote_version = unicode(urllib2.urlopen(req, None).read()).strip()
+            remote_version = unicode(urllib2.urlopen(req, None).read().decode()).strip()
         except IOError:
             log.exception(u'Failed to download the latest OpenLP version file')
         if remote_version:
@@ -239,7 +239,7 @@ def get_images_filter():
     global IMAGES_FILTER
     if not IMAGES_FILTER:
         log.debug(u'Generating images filter.')
-        formats = map(unicode, QtGui.QImageReader.supportedImageFormats())
+        formats = list(map(bytes.decode, map(bytes, QtGui.QImageReader.supportedImageFormats())))
         visible_formats = u'(*.%s)' % u'; *.'.join(formats)
         actual_formats = u'(*.%s)' % u' *.'.join(formats)
         IMAGES_FILTER = u'%s %s %s' % (translate('OpenLP', 'Image Files'), visible_formats, actual_formats)
@@ -393,16 +393,22 @@ def format_time(text, local_time):
 def get_locale_key(string):
     """
     Creates a key for case insensitive, locale aware string sorting.
+
+    ``string``
+        The corresponding string.
     """
     string = string.lower()
     # For Python 3 on platforms other than Windows ICU is not necessary. In those cases locale.strxfrm(str) can be used.
-    global ICU_COLLATOR
-    if ICU_COLLATOR is None:
-        from languagemanager import LanguageManager
-        locale = LanguageManager.get_language()
-        icu_locale = icu.Locale(locale)
-        ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
-    return ICU_COLLATOR.getSortKey(string)
+    if os.name == 'nt':
+        global ICU_COLLATOR
+        if ICU_COLLATOR is None:
+            import icu
+            from languagemanager import LanguageManager
+            language = LanguageManager.get_language()
+            icu_locale = icu.Locale(language)
+            ICU_COLLATOR = icu.Collator.createInstance(icu_locale)
+        return ICU_COLLATOR.getSortKey(string)
+    return locale.strxfrm(string).encode()
 
 
 def get_natural_key(string):
@@ -412,9 +418,10 @@ def get_natural_key(string):
     """
     key = DIGITS_OR_NONDIGITS.findall(string)
     key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
-    # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str and int.
-    #if string[0].isdigit():
-    #    return [''] + key
+    # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str
+    # and int.
+    if string[0].isdigit():
+        return [b''] + key
     return key
 
 

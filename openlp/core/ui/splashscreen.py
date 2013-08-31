@@ -41,7 +41,7 @@ class SplashScreen(QtGui.QSplashScreen):
         """
         Constructor
         """
-        QtGui.QSplashScreen.__init__(self)
+        super(SplashScreen, self).__init__()
         self.setupUi()
 
     def setupUi(self):

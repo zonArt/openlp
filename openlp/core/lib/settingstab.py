@@ -52,7 +52,7 @@ class SettingsTab(QtGui.QWidget):
         ``visible_title``
             The title of the tab, which is usually displayed on the tab.
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(SettingsTab, self).__init__(parent)
         self.tab_title = title
         self.tab_title_visible = visible_title
         self.settings_section = self.tab_title.lower()

@@ -340,7 +340,7 @@ class OpenLyrics(object):
                 # Do not add the break attribute to the last lines element.
                 if index < len(optional_verses) - 1:
                     lines_element.set(u'break', u'optional')
-        return self._extract_xml(song_xml)
+        return self._extract_xml(song_xml).decode()
 
     def _get_missing_tags(self, text):
         """
@@ -592,8 +592,10 @@ class OpenLyrics(object):
             found_tags.append(openlp_tag)
         existing_tag_ids = [tag[u'start tag'] for tag in FormattingTags.get_html_tags()]
         new_tags = [tag for tag in found_tags if tag[u'start tag'] not in existing_tag_ids]
-        FormattingTags.add_html_tags(new_tags)
-        FormattingTags.save_html_tags()
+        # Do not save an empty list.
+        if new_tags:
+            FormattingTags.add_html_tags(new_tags)
+            FormattingTags.save_html_tags()
 
     def _process_lines_mixed_content(self, element, newlines=True):
         """
@@ -820,7 +822,7 @@ class OpenLyricsError(Exception):
     VerseError = 2
 
     def __init__(self, type, log_message, display_message):
-        Exception.__init__(self)
+        super(OpenLyricsError, self).__init__()
         self.type = type
         self.log_message = log_message
         self.display_message = display_message

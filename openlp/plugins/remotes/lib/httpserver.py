@@ -127,7 +127,7 @@ from PyQt4 import QtCore
 from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte
 from openlp.core.utils import AppLocation, translate
 
-from cherrypy._cpcompat import sha, ntob
+from hashlib import sha1
 
 log = logging.getLogger(__name__)
 
@@ -137,7 +137,7 @@ def make_sha_hash(password):
     Create an encrypted password for the given password.
     """
     log.debug("make_sha_hash")
-    return sha(ntob(password)).hexdigest()
+    return sha1(password.encode()).hexdigest()
 
 
 def fetch_password(username):
@@ -445,7 +445,7 @@ class HttpRouter(object):
             u'display': self.live_controller.desktop_screen.isChecked()
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps({u'results': result})
+        return json.dumps({u'results': result}).encode()
 
     def main_poll(self):
         """
@@ -455,7 +455,7 @@ class HttpRouter(object):
             u'slide_count': self.live_controller.slide_count
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps({u'results': result})
+        return json.dumps({u'results': result}).encode()
 
     def main_image(self):
         """
@@ -465,7 +465,7 @@ class HttpRouter(object):
             u'slide_image': u'data:image/png;base64,' + str(image_to_byte(self.live_controller.slide_image))
         }
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps({u'results': result})
+        return json.dumps({u'results': result}).encode()
 
     def display(self, action):
         """
@@ -477,7 +477,7 @@ class HttpRouter(object):
         """
         self.live_controller.emit(QtCore.SIGNAL(u'slidecontroller_toggle_display'), action)
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps({u'results': {u'success': True}})
+        return json.dumps({u'results': {u'success': True}}).encode()
 
     def alert(self):
         """
@@ -495,7 +495,7 @@ class HttpRouter(object):
         else:
             success = False
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps({u'results': {u'success': success}})
+        return json.dumps({u'results': {u'success': success}}).encode()
 
     def controller(self, display_type, action):
         """
@@ -543,7 +543,7 @@ class HttpRouter(object):
                 self.live_controller.emit(QtCore.SIGNAL(event))
             json_data = {u'results': {u'success': True}}
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps(json_data)
+        return json.dumps(json_data).encode()
 
     def service(self, action):
         """
@@ -555,7 +555,7 @@ class HttpRouter(object):
         event = u'servicemanager_%s' % action
         if action == u'list':
             cherrypy.response.headers['Content-Type'] = u'application/json'
-            return json.dumps({u'results': {u'items': self._get_service_items()}})
+            return json.dumps({u'results': {u'items': self._get_service_items()}}).encode()
         event += u'_item'
         if self.request_data:
             try:
@@ -566,7 +566,7 @@ class HttpRouter(object):
         else:
             Registry().execute(event)
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps({u'results': {u'success': True}})
+        return json.dumps({u'results': {u'success': True}}).encode()
 
     def plugin_info(self, action):
         """
@@ -582,7 +582,7 @@ class HttpRouter(object):
                 if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
                     searches.append([plugin.name, unicode(plugin.text_strings[StringContent.Name][u'plural'])])
             cherrypy.response.headers['Content-Type'] = u'application/json'
-            return json.dumps({u'results': {u'items': searches}})
+            return json.dumps({u'results': {u'items': searches}}).encode()
 
     def search(self, plugin_name):
         """
@@ -602,7 +602,7 @@ class HttpRouter(object):
         else:
             results = []
         cherrypy.response.headers['Content-Type'] = u'application/json'
-        return json.dumps({u'results': {u'items': results}})
+        return json.dumps({u'results': {u'items': results}}).encode()
 
     def go_live(self, plugin_name):
         """
@@ -648,7 +648,7 @@ class HttpRouter(object):
         Set the HTTP not found return code.
         """
         cherrypy.response.status = 404
-        cherrypy.response.body = ["<html><body>Sorry, an error occurred </body></html>"]
+        cherrypy.response.body = [b'<html><body>Sorry, an error occurred </body></html>']
 
     def _get_service_manager(self):
         """

@@ -103,12 +103,6 @@ class CategoryActionList(object):
             self.index += 1
             return self.actions[self.index - 1][1]
 
-    def next(self):
-        """
-        Python 2 "next" method.
-        """
-        return self.__next__()
-
     def has_key(self, key):
         """
         Implement the has_key() method to make this class a dictionary type
@@ -167,12 +161,6 @@ class CategoryList(object):
                 return category
         raise KeyError(u'Category "%s" does not exist.' % key)
 
-    def __contains__(self, item):
-        """
-        Implement the __contains__() method to make this class like a dictionary
-        """
-        return self.has_key(item)
-
     def __len__(self):
         """
         Implement the __len__() method to make this class like a dictionary
@@ -195,12 +183,6 @@ class CategoryList(object):
         else:
             self.index += 1
             return self.categories[self.index - 1]
-
-    def next(self):
-        """
-        Python 2 "next" method for iterator.
-        """
-        return self.__next__()
 
     def has_key(self, key):
         """

@@ -78,13 +78,14 @@ class BibleImportForm(OpenLPWizard):
         """
         self.manager = manager
         self.web_bible_list = {}
-        OpenLPWizard.__init__(self, parent, bible_plugin, u'bibleImportWizard', u':/wizards/wizard_importbible.bmp')
+        super(BibleImportForm, self).__init__(
+            parent, bible_plugin, u'bibleImportWizard', u':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """
         Set up the UI for the bible wizard.
         """
-        OpenLPWizard.setupUi(self, image)
+        super(BibleImportForm, self).setupUi(image)
         self.formatComboBox.currentIndexChanged.connect(self.onCurrentIndexChanged)
 
     def onCurrentIndexChanged(self, index):
@@ -515,7 +516,7 @@ class BibleImportForm(OpenLPWizard):
         """
         Prepare the UI for the import.
         """
-        OpenLPWizard.pre_wizard(self)
+        super(BibleImportForm, self).pre_wizard()
         bible_type = self.field(u'source_format')
         if bible_type == BibleFormat.WebDownload:
             self.progress_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Registering Bible...'))

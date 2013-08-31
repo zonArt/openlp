@@ -49,14 +49,14 @@ class GeneralTab(SettingsTab):
         self.screens = ScreenList()
         self.icon_path = u':/icon/openlp-logo-16x16.png'
         general_translated = translate('OpenLP.GeneralTab', 'General')
-        SettingsTab.__init__(self, parent, u'Core', general_translated)
+        super(GeneralTab, self).__init__(parent, u'Core', general_translated)
 
     def setupUi(self):
         """
         Create the user interface for the general settings tab
         """
         self.setObjectName(u'GeneralTab')
-        SettingsTab.setupUi(self)
+        super(GeneralTab, self).setupUi()
         self.tab_layout.setStretch(1, 1)
         # Monitors
         self.monitor_group_box = QtGui.QGroupBox(self.left_column)

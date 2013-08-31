@@ -46,7 +46,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(FormattingTagForm, self).__init__(parent)
         self.setupUi(self)
         self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
         self.new_push_button.clicked.connect(self.on_new_clicked)

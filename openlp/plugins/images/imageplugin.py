@@ -48,7 +48,7 @@ class ImagePlugin(Plugin):
     log.info(u'Image Plugin loaded')
 
     def __init__(self):
-        Plugin.__init__(self, u'images', __default_settings__, ImageMediaItem, ImageTab)
+        super(ImagePlugin, self).__init__(u'images', __default_settings__, ImageMediaItem, ImageTab)
         self.manager = Manager(u'images', init_schema)
         self.weight = -7
         self.icon_path = u':/plugins/plugin_images.png'

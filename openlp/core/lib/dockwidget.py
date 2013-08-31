@@ -49,7 +49,7 @@ class OpenLPDockWidget(QtGui.QDockWidget):
         Initialise the DockWidget
         """
         log.debug(u'Initialise the %s widget' % name)
-        QtGui.QDockWidget.__init__(self, parent)
+        super(OpenLPDockWidget, self).__init__(parent)
         if name:
             self.setObjectName(name)
         if icon:

@@ -46,11 +46,11 @@ class TestImageManager(TestCase):
         # WHEN: The image bytes are requested.
         byte_array = self.image_manager.get_image_bytes(TEST_PATH, u'church.jpg')
 
-        # THEN: Type should be a byte array.
-        self.assertEqual(isinstance(byte_array, QtCore.QByteArray), True, u'The returned object should be a QByteArray')
+        # THEN: Type should be a str.
+        self.assertEqual(isinstance(byte_array, str), True, u'The returned object should be a str')
 
         # WHEN the image is retrieved has not been loaded
         # THEN a KeyError is thrown
         with self.assertRaises(KeyError) as context:
             self.image_manager.get_image(TEST_PATH, u'church1.jpg')
-        self.assertNotEquals(context.exception[0], u'', u'KeyError exception should have been thrown for missing image')
+        self.assertNotEquals(context.exception, u'', u'KeyError exception should have been thrown for missing image')

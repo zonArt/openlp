@@ -31,14 +31,14 @@ class TestRegistry(TestCase):
         # THEN  and I will get an exception
         with self.assertRaises(KeyError) as context:
             Registry().register(u'test1', mock_1)
-        self.assertEqual(context.exception[0], u'Duplicate service exception test1',
+        self.assertEqual(context.exception.args[0], u'Duplicate service exception test1',
             u'KeyError exception should have been thrown for duplicate service')
 
         # WHEN I try to get back a non existent component
         # THEN I will get an exception
         with self.assertRaises(KeyError) as context:
             temp = Registry().get(u'test2')
-        self.assertEqual(context.exception[0], u'Service test2 not found in list',
+        self.assertEqual(context.exception.args[0], u'Service test2 not found in list',
             u'KeyError exception should have been thrown for missing service')
 
         # WHEN I try to replace a component I should be allowed (testing only)
@@ -46,7 +46,7 @@ class TestRegistry(TestCase):
         # THEN I will get an exception
         with self.assertRaises(KeyError) as context:
             temp = Registry().get(u'test1')
-        self.assertEqual(context.exception[0], u'Service test1 not found in list',
+        self.assertEqual(context.exception.args[0], u'Service test1 not found in list',
             u'KeyError exception should have been thrown for deleted service')
 
     def registry_function_test(self):
@@ -82,3 +82,4 @@ class TestRegistry(TestCase):
 
     def dummy_function_2(self):
         return "function_2"
+

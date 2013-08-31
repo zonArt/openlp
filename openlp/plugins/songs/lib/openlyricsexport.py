@@ -71,14 +71,14 @@ class OpenLyricsExport(object):
             self.parent.increment_progress_bar(translate('SongsPlugin.OpenLyricsExport', 'Exporting "%s"...') %
                 song.title)
             xml = openLyrics.song_to_xml(song)
-            tree = etree.ElementTree(etree.fromstring(xml))
+            tree = etree.ElementTree(etree.fromstring(xml.encode()))
             filename = u'%s (%s)' % (song.title, u', '.join([author.display_name for author in song.authors]))
             filename = clean_filename(filename)
             # Ensure the filename isn't too long for some filesystems
             filename = u'%s.xml' % filename[0:250 - len(self.save_path)]
             # Pass a file object, because lxml does not cope with some special
             # characters in the path (see lp:757673 and lp:744337).
-            tree.write(open(os.path.join(self.save_path, filename), u'w'),
+            tree.write(open(os.path.join(self.save_path, filename), u'wb'),
                 encoding=u'utf-8', xml_declaration=True, pretty_print=True)
         return True
 

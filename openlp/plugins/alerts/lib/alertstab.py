@@ -38,11 +38,11 @@ class AlertsTab(SettingsTab):
     AlertsTab is the alerts settings tab in the settings dialog.
     """
     def __init__(self, parent, name, visible_title, icon_path):
-        SettingsTab.__init__(self, parent, name, visible_title, icon_path)
+        super(AlertsTab, self).__init__(parent, name, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'AlertsTab')
-        SettingsTab.setupUi(self)
+        super(AlertsTab, self).setupUi()
         self.font_group_box = QtGui.QGroupBox(self.left_column)
         self.font_group_box.setObjectName(u'font_group_box')
         self.font_layout = QtGui.QFormLayout(self.font_group_box)

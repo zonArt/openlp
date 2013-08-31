@@ -395,12 +395,6 @@ def clean_song(manager, song):
     """
     from xml import SongXML
 
-    if isinstance(song.title, buffer):
-        song.title = unicode(song.title)
-    if isinstance(song.alternate_title, buffer):
-        song.alternate_title = unicode(song.alternate_title)
-    if isinstance(song.lyrics, buffer):
-        song.lyrics = unicode(song.lyrics)
     if song.title:
         song.title = clean_title(song.title)
     else:

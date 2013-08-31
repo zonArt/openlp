@@ -60,7 +60,7 @@ class MediaMediaItem(MediaManagerItem):
         self.icon_path = u'images/image'
         self.background = False
         self.automatic = u''
-        MediaManagerItem.__init__(self, parent, plugin)
+        super(MediaMediaItem, self).__init__(parent, plugin)
         self.single_service_item = False
         self.has_search = True
         self.media_object = None

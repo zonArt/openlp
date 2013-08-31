@@ -65,7 +65,7 @@ class DisplayController(QtGui.QWidget):
         """
         Set up the general Controller.
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(DisplayController, self).__init__(parent)
         self.is_live = is_live
         self.display = None
         self.controller_type = DisplayControllerType.Plugin
@@ -90,7 +90,7 @@ class SlideController(DisplayController):
         """
         Set up the Slide Controller.
         """
-        DisplayController.__init__(self, parent, is_live)
+        super(SlideController, self).__init__(parent, is_live)
         Registry().register_function(u'bootstrap_post_set_up', self.screen_size_changed)
         self.screens = ScreenList()
         try:

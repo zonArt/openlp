@@ -58,10 +58,12 @@ except OSError, e:
 
 if VLC_AVAILABLE:
     try:
-        VERSION = vlc.libvlc_get_version()
+        VERSION = vlc.libvlc_get_version().decode('UTF-8')
     except:
         VERSION = u'0.0.0'
-    if LooseVersion(VERSION) < LooseVersion('1.1.0'):
+    # LooseVersion does not work when a string contains letter and digits (e. g. 2.0.5 Twoflower).
+    # http://bugs.python.org/issue14894
+    if LooseVersion(VERSION.split()[0]) < LooseVersion('1.1.0'):
         VLC_AVAILABLE = False
         log.debug(u'VLC could not be loaded, because the vlc version is too old: %s' % VERSION)
 
@@ -96,15 +98,14 @@ VIDEO_EXT = [
 
 class VlcPlayer(MediaPlayer):
     """
-    A specialised version of the MediaPlayer class, which provides a VLC
-    display.
+    A specialised version of the MediaPlayer class, which provides a VLC display.
     """
 
     def __init__(self, parent):
         """
         Constructor
         """
-        MediaPlayer.__init__(self, parent, u'vlc')
+        super(VlcPlayer, self).__init__(parent, u'vlc')
         self.original_name = u'VLC'
         self.display_name = u'&VLC'
         self.parent = parent

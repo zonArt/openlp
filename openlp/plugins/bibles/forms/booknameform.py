@@ -56,7 +56,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         """
         Constructor
         """
-        QDialog.__init__(self, parent)
+        super(BookNameForm, self).__init__(parent)
         self.setupUi(self)
         self.custom_signals()
         self.book_names = BibleStrings().BookNames

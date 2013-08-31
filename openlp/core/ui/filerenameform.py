@@ -45,7 +45,7 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super(FileRenameForm, self).__init__(Registry().get(u'main_window'))
         self.setupUi(self)
 
     def exec_(self, copy=False):

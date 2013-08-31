@@ -57,7 +57,7 @@ class ThemeManager(QtGui.QWidget):
         """
         Constructor
         """
-        QtGui.QWidget.__init__(self, parent)
+        super(ThemeManager, self).__init__(parent)
         Registry().register(u'theme_manager', self)
         Registry().register_function(u'bootstrap_initialise', self.load_first_time_themes)
         Registry().register_function(u'bootstrap_post_set_up', self._push_themes)
@@ -514,23 +514,17 @@ class ThemeManager(QtGui.QWidget):
                 else:
                     abort_import = False
                 for name in theme_zip.namelist():
-                    try:
-                        uname = unicode(name, u'utf-8')
-                    except UnicodeDecodeError:
-                        log.exception(u'Theme file contains non utf-8 filename "%s"' %
-                            name.decode(u'utf-8', u'replace'))
-                        raise Exception(u'validation')
-                    uname = uname.replace(u'/', os.path.sep)
-                    split_name = uname.split(os.path.sep)
+                    name = name.replace(u'/', os.path.sep)
+                    split_name = name.split(os.path.sep)
                     if split_name[-1] == u'' or len(split_name) == 1:
                         # is directory or preview file
                         continue
-                    full_name = os.path.join(directory, uname)
+                    full_name = os.path.join(directory, name)
                     check_directory_exists(os.path.dirname(full_name))
-                    if os.path.splitext(uname)[1].lower() == u'.xml':
+                    if os.path.splitext(name)[1].lower() == u'.xml':
                         file_xml = unicode(theme_zip.read(name), u'utf-8')
                         out_file = open(full_name, u'w')
-                        out_file.write(file_xml.encode(u'utf-8'))
+                        out_file.write(file_xml)
                     else:
                         out_file = open(full_name, u'wb')
                         out_file.write(theme_zip.read(name))
@@ -637,7 +631,7 @@ class ThemeManager(QtGui.QWidget):
         out_file = None
         try:
             out_file = open(theme_file, u'w')
-            out_file.write(theme_pretty_xml)
+            out_file.write(theme_pretty_xml.decode('UTF-8'))
         except IOError:
             log.exception(u'Saving theme to file failed')
         finally:

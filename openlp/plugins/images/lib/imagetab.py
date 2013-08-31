@@ -37,11 +37,11 @@ class ImageTab(SettingsTab):
     ImageTab is the images settings tab in the settings dialog.
     """
     def __init__(self, parent, name, visible_title, icon_path):
-        SettingsTab.__init__(self, parent, name, visible_title, icon_path)
+        super(ImageTab, self).__init__(parent, name, visible_title, icon_path)
 
     def setupUi(self):
         self.setObjectName(u'ImagesTab')
-        SettingsTab.setupUi(self)
+        super(ImageTab, self).setupUi()
         self.background_color_group_box = QtGui.QGroupBox(self.left_column)
         self.background_color_group_box.setObjectName(u'background_color_group_box')
         self.form_layout = QtGui.QFormLayout(self.background_color_group_box)
