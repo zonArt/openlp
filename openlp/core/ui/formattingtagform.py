@@ -182,31 +182,11 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         print cur_row, cur_col, pre_col, pre_col
         # only process for editable rows
-        pre_row_item = self.tag_table_widget.item(pre_row, 0)
-        if pre_row_item:
+        if self.tag_table_widget.item(pre_row, 0):
             item = self.tag_table_widget.item(pre_row, pre_col)
             text = item.text()
-            if pre_col is EDITCOLUMN.Tag:
-                if text:
-                    for row in range(self.tag_table_widget.rowCount()):
-                        counting_item = self.tag_table_widget.item(row, 0)
-                        if row != pre_row and counting_item and counting_item.text() == text:
-                            answer = QtGui.QMessageBox.warning(self,
-                                translate('OpenLP.FormattingTagForm', 'Validation Error'),
-                                translate('OpenLP.FormattingTagForm',
-                                    'Tag %s is already defined. Please pick a different one.' % text),
-                                QtGui.QMessageBox.Discard|QtGui.QMessageBox.Ok)
-                            if answer == QtGui.QMessageBox.Discard:
-                                break
-                else:
-                    answer = None
-                    if self.tag_table_widget.item(pre_row, 1).text() or self.tag_table_widget.item(pre_row, 2).text():
-                        answer = QtGui.QMessageBox.warning(self,
-                            translate('OpenLP.FormattingTagForm', 'Validation Error'),
-                            translate('OpenLP.FormattingTagForm',
-                                'No tag name defined. Do you want to delete the whole tag?'),
-                            QtGui.QMessageBox.Yes|QtGui.QMessageBox.Discard|QtGui.QMessageBox.Cancel)
-            elif pre_col is EDITCOLUMN.StartHtml:
+            errors = None
+            if pre_col is EDITCOLUMN.StartHtml:
                 # HTML edited
                 item = self.tag_table_widget.item(pre_row, 3)
                 end_html = item.text()
@@ -214,11 +194,15 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                 if tag:
                     self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
                 self.tag_table_widget.resizeRowsToContents()
-        #if not edit_item:
-        #    # select the tag cell in a empty row
-        #    cur_row_item = self.tag_table_widget.item(cur_row, 0)
-        #    if cur_row_item and (cur_row_item.flags() & QtCore.Qt.ItemIsEditable) and cur_row_item.text().isEmpty():
-        #        edit_item = cur_row_item
-        #if edit_item:
-        #    self.tag_table_widget.setCurrentItem(edit_item)
-        # enable delete_button for editable rows
+            elif pre_col is EDITCOLUMN.EndHtml:
+                # HTML edited
+                item = self.tag_table_widget.item(pre_row, 2)
+                start_html = item.text()
+                errors, tag = self.services.end_tag_changed(start_html, text)
+                if tag:
+                    self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
+            if errors:
+                QtGui.QMessageBox.warning(self,
+                    translate('OpenLP.FormattingTagForm', 'Validation Error'), errors,
+                    QtGui.QMessageBox.Yes|QtGui.QMessageBox.Discard|QtGui.QMessageBox.Cancel)
+            self.tag_table_widget.resizeRowsToContents()

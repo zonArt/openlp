@@ -33,9 +33,8 @@ cannot be changed.
 """
 
 import re
-import cgi
 
-from openlp.core.lib import translate
+from openlp.core.lib import FormattingTags, translate
 
 
 class FormattingTagController(object):
@@ -54,16 +53,33 @@ class FormattingTagController(object):
         self.html_regex = re.compile(r'^(?:[^<>]*%s)*[^<>]*$' % self.html_tag_regex.pattern)
 
     def pre_save(self):
+        """
+        Cleanup the array before save validation runs
+        """
+        self.protected_tags = [tag for tag in FormattingTags.html_expands if tag.get(u'protected')]
         self.custom_tags = []
 
     def validate_for_save(self, desc, tag, start_html, end_html):
+        """
+        Validate a custom tag and add to the tags array if valid..
+
+        `description`
+            Explanation of the tag.
+
+        `tag`
+            The tag in the song used to mark the text.
+
+        `start_html`
+            The start html tag.
+
+        `end_html`
+            The end html tag.
+
+        """
         if not desc:
             pass
         print desc
         print self.start_html_to_end_html(start_html)
-
-    def html_start_validate(self, start, end):
-        pass
 
     def _strip(self, tag):
         """
@@ -76,6 +92,10 @@ class FormattingTagController(object):
     def start_html_to_end_html(self, start_html):
         """
         Return the end HTML for a given start HTML or None if invalid.
+
+        `start_html`
+            The start html tag.
+
         """
         end_tags = []
         match = self.html_regex.match(start_html)
@@ -93,6 +113,38 @@ class FormattingTagController(object):
             return u''.join(map(lambda tag: u'</%s>' % tag, reversed(end_tags)))
 
     def start_tag_changed(self, start_html, end_html):
+        """
+        Validate the HTML tags when the start tag has been changed.
+
+        `start_html`
+            The start html tag.
+
+        `end_html`
+            The end html tag.
+
+        """
+        end = self.start_html_to_end_html(start_html)
+        if not end_html:
+            if not end:
+                return translate('OpenLP.FormattingTagForm', 'Start tag %s is not valid HTML' % start_html), None
+            return None, end
+        return None, None
+
+    def end_tag_changed(self, start_html, end_html):
+        """
+        Validate the HTML tags when the end tag has been changed.
+
+        `start_html`
+            The start html tag.
+
+        `end_html`
+            The end html tag.
+
+        """
         end = self.start_html_to_end_html(start_html)
         if not end_html:
             return None, end
+        if end and end != end_html:
+            return translate('OpenLP.FormattingTagForm',
+                'End tag %s does not match end tag for start tag %s' % (end, start_html)), None
+        return None, None

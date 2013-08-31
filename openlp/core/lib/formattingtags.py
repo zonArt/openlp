@@ -36,7 +36,7 @@ from openlp.core.lib import Settings, translate
 
 class FormattingTags(object):
     """
-    Static Class to HTML Tags to be access around the code the list is managed by the Options Tab.
+    Static Class for HTML Tags to be access around the code the list is managed by the Options Tab.
     """
     html_expands = []
 
