@@ -32,7 +32,7 @@ class TestFormattingTagForm(TestCase):
         self.qdialog_patcher.stop()
         self.ui_formatting_tag_dialog_patcher.stop()
 
-    def on_text_edited_test(self):
+    def test_on_text_edited(self):
         """
         Test that the appropriate actions are preformed when on_text_edited is called
         """
