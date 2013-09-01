@@ -53,16 +53,16 @@ def init_schema(url):
     """
     session, metadata = init_db(url)
 
-    songusage_table = Table(u'songusage_data', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'usagedate', types.Date, index=True, nullable=False),
-        Column(u'usagetime', types.Time, index=True, nullable=False),
-        Column(u'title', types.Unicode(255), nullable=False),
-        Column(u'authors', types.Unicode(255), nullable=False),
-        Column(u'copyright', types.Unicode(255)),
-        Column(u'ccl_number', types.Unicode(65)),
-        Column(u'plugin_name', types.Unicode(20)),
-        Column(u'source', types.Unicode(10))
+    songusage_table = Table('songusage_data', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('usagedate', types.Date, index=True, nullable=False),
+        Column('usagetime', types.Time, index=True, nullable=False),
+        Column('title', types.Unicode(255), nullable=False),
+        Column('authors', types.Unicode(255), nullable=False),
+        Column('copyright', types.Unicode(255)),
+        Column('ccl_number', types.Unicode(65)),
+        Column('plugin_name', types.Unicode(20)),
+        Column('source', types.Unicode(10))
     )
 
     mapper(SongUsageItem, songusage_table)

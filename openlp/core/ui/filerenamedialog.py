@@ -43,18 +43,18 @@ class Ui_FileRenameDialog(object):
         """
         Set up the UI
         """
-        file_rename_dialog.setObjectName(u'file_rename_dialog')
+        file_rename_dialog.setObjectName('file_rename_dialog')
         file_rename_dialog.resize(300, 10)
         self.dialog_layout = QtGui.QGridLayout(file_rename_dialog)
-        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.dialog_layout.setObjectName('dialog_layout')
         self.file_name_label = QtGui.QLabel(file_rename_dialog)
-        self.file_name_label.setObjectName(u'file_name_label')
+        self.file_name_label.setObjectName('file_name_label')
         self.dialog_layout.addWidget(self.file_name_label, 0, 0)
         self.file_name_edit = QtGui.QLineEdit(file_rename_dialog)
         self.file_name_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(r'[^/\\?*|<>\[\]":+%]+'), self))
-        self.file_name_edit.setObjectName(u'file_name_edit')
+        self.file_name_edit.setObjectName('file_name_edit')
         self.dialog_layout.addWidget(self.file_name_edit, 0, 1)
-        self.button_box = create_button_box(file_rename_dialog, u'button_box', [u'cancel', u'ok'])
+        self.button_box = create_button_box(file_rename_dialog, 'button_box', ['cancel', 'ok'])
         self.dialog_layout.addWidget(self.button_box, 1, 0, 1, 2)
         self.retranslateUi(file_rename_dialog)
         self.setMaximumHeight(self.sizeHint().height())

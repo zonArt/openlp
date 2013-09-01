@@ -34,11 +34,11 @@ from PyQt4 import QtCore
 
 from openlp.core.utils import get_uno_command, get_uno_instance
 from openlp.core.lib import translate
-from songimport import SongImport
+from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
-if os.name == u'nt':
+if os.name == 'nt':
     from win32com.client import Dispatch
     NoConnectException = Exception
 else:
@@ -79,7 +79,7 @@ class OooImport(SongImport):
         for filename in self.import_source:
             if self.stop_import_flag:
                 break
-            filename = unicode(filename)
+            filename = str(filename)
             if os.path.isfile(filename):
                 self.openOooFile(filename)
                 if self.document:
@@ -106,12 +106,12 @@ class OooImport(SongImport):
         Start OpenOffice.org process
         TODO: The presentation/Impress plugin may already have it running
         """
-        if os.name == u'nt':
+        if os.name == 'nt':
             self.startOooProcess()
-            self.desktop = self.oooManager.createInstance(u'com.sun.star.frame.Desktop')
+            self.desktop = self.oooManager.createInstance('com.sun.star.frame.Desktop')
         else:
             context = uno.getComponentContext()
-            resolver = context.ServiceManager.createInstanceWithContext(u'com.sun.star.bridge.UnoUrlResolver', context)
+            resolver = context.ServiceManager.createInstanceWithContext('com.sun.star.bridge.UnoUrlResolver', context)
             uno_instance = None
             loop = 0
             while uno_instance is None and loop < 5:
@@ -130,10 +130,10 @@ class OooImport(SongImport):
 
     def startOooProcess(self):
         try:
-            if os.name == u'nt':
-                self.oooManager = Dispatch(u'com.sun.star.ServiceManager')
-                self.oooManager._FlagAsMethod(u'Bridge_GetStruct')
-                self.oooManager._FlagAsMethod(u'Bridge_GetValueObject')
+            if os.name == 'nt':
+                self.oooManager = Dispatch('com.sun.star.ServiceManager')
+                self.oooManager._FlagAsMethod('Bridge_GetStruct')
+                self.oooManager._FlagAsMethod('Bridge_GetValueObject')
             else:
                 cmd = get_uno_command()
                 process = QtCore.QProcess()
@@ -147,22 +147,22 @@ class OooImport(SongImport):
         Open the passed file in OpenOffice.org Impress
         """
         self.filepath = filepath
-        if os.name == u'nt':
-            url = filepath.replace(u'\\', u'/')
-            url = url.replace(u':', u'|').replace(u' ', u'%20')
-            url = u'file:///' + url
+        if os.name == 'nt':
+            url = filepath.replace('\\', '/')
+            url = url.replace(':', '|').replace(' ', '%20')
+            url = 'file:///' + url
         else:
             url = uno.systemPathToFileUrl(filepath)
         properties = []
         properties = tuple(properties)
         try:
-            self.document = self.desktop.loadComponentFromURL(url, u'_blank',
+            self.document = self.desktop.loadComponentFromURL(url, '_blank',
                 0, properties)
             if not self.document.supportsService("com.sun.star.presentation.PresentationDocument") and not \
                     self.document.supportsService("com.sun.star.text.TextDocument"):
                 self.closeOooFile()
             else:
-                self.import_wizard.increment_progress_bar(u'Processing file ' + filepath, 0)
+                self.import_wizard.increment_progress_bar('Processing file ' + filepath, 0)
         except AttributeError:
             log.exception("openOooFile failed: %s", url)
         return
@@ -187,20 +187,20 @@ class OooImport(SongImport):
         """
         doc = self.document
         slides = doc.getDrawPages()
-        text = u''
+        text = ''
         for slide_no in range(slides.getCount()):
             if self.stop_import_flag:
-                self.import_wizard.increment_progress_bar(u'Import cancelled', 0)
+                self.import_wizard.increment_progress_bar('Import cancelled', 0)
                 return
             slide = slides.getByIndex(slide_no)
-            slidetext = u''
+            slidetext = ''
             for idx in range(slide.getCount()):
                 shape = slide.getByIndex(idx)
                 if shape.supportsService("com.sun.star.drawing.Text"):
-                    if shape.getString().strip() != u'':
-                        slidetext += shape.getString().strip() + u'\n\n'
-            if slidetext.strip() == u'':
-                slidetext = u'\f'
+                    if shape.getString().strip() != '':
+                        slidetext += shape.getString().strip() + '\n\n'
+            if slidetext.strip() == '':
+                slidetext = '\f'
             text += slidetext
         self.processSongsText(text)
         return
@@ -209,25 +209,25 @@ class OooImport(SongImport):
         """
         Process the doc file, a paragraph at a time
         """
-        text = u''
+        text = ''
         paragraphs = self.document.getText().createEnumeration()
         while paragraphs.hasMoreElements():
-            paratext = u''
+            paratext = ''
             paragraph = paragraphs.nextElement()
             if paragraph.supportsService("com.sun.star.text.Paragraph"):
                 textportions = paragraph.createEnumeration()
                 while textportions.hasMoreElements():
                     textportion = textportions.nextElement()
                     if textportion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
-                        paratext += u'\f'
+                        paratext += '\f'
                     paratext += textportion.getString()
                     if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
-                        paratext += u'\f'
-            text += paratext + u'\n'
+                        paratext += '\f'
+            text += paratext + '\n'
         self.processSongsText(text)
 
     def processSongsText(self, text):
-        songtexts = self.tidyText(text).split(u'\f')
+        songtexts = self.tidyText(text).split('\f')
         self.setDefaults()
         for songtext in songtexts:
             if songtext.strip():

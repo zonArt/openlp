@@ -94,11 +94,10 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.tag_table_widget.insertRow(new_row)
         self.tag_table_widget.setItem(new_row, 0,
             QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', 'New Tag')))
-        self.tag_table_widget.setItem(new_row, 1,
-            QtGui.QTableWidgetItem('n%s' % unicode(new_row)))
+        self.tag_table_widget.setItem(new_row, 1, QtGui.QTableWidgetItem('n%s' % str(new_row)))
         self.tag_table_widget.setItem(new_row, 2,
             QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
-        self.tag_table_widget.setItem(new_row, 3, QtGui.QTableWidgetItem(u""))
+        self.tag_table_widget.setItem(new_row, 3, QtGui.QTableWidgetItem(''))
         self.tag_table_widget.resizeRowsToContents()
         self.tag_table_widget.scrollToBottom()
         self.tag_table_widget.selectRow(new_row)
@@ -144,6 +143,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         #FormattingTags.save_html_tags()
         #self._reloadTable()
 
+
     def _reloadTable(self):
         """
         Reset List for loading.
@@ -158,14 +158,12 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
             if html[u'protected']:
                 line = self.tag_table_widget_read.rowCount()
                 self.tag_table_widget_read.setRowCount(line + 1)
-                print linenumber, self.tag_table_widget_read.rowCount()
                 self.tag_table_widget_read.setItem(line, 0, QtGui.QTableWidgetItem(html[u'desc']))
                 self.tag_table_widget_read.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
                 self.tag_table_widget_read.setItem(line, 2, QtGui.QTableWidgetItem(html[u'start html']))
                 self.tag_table_widget_read.setItem(line, 3, QtGui.QTableWidgetItem(html[u'end html']))
                 self.tag_table_widget_read.resizeRowsToContents()
             else:
-                print self.tag_table_widget.rowCount(), html
                 line = self.tag_table_widget.rowCount()
                 self.tag_table_widget.setRowCount(line + 1)
                 self.tag_table_widget.setItem(line, 0, QtGui.QTableWidgetItem(html[u'desc']))
@@ -180,7 +178,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         This function processes all user edits in the table. It is called on each cell change.
         """
-        print cur_row, cur_col, pre_col, pre_col
+        print (cur_row, cur_col, pre_col, pre_col)
         # only process for editable rows
         if self.tag_table_widget.item(pre_row, 0):
             item = self.tag_table_widget.item(pre_row, pre_col)
@@ -206,3 +204,4 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                     translate('OpenLP.FormattingTagForm', 'Validation Error'), errors,
                     QtGui.QMessageBox.Yes|QtGui.QMessageBox.Discard|QtGui.QMessageBox.Cancel)
             self.tag_table_widget.resizeRowsToContents()
+

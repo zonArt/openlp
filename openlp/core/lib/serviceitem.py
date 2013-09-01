@@ -132,7 +132,7 @@ class ServiceItem(object):
     the service manager, the slide controller, and the projection screen
     compositor.
     """
-    log.info(u'Service Item created')
+    log.info('Service Item created')
 
     def __init__(self, plugin=None):
         """
@@ -143,19 +143,19 @@ class ServiceItem(object):
         """
         if plugin:
             self.name = plugin.name
-        self.title = u''
+        self.title = ''
         self.processor = None
-        self.audit = u''
+        self.audit = ''
         self.items = []
         self.iconic_representation = None
         self.raw_footer = []
-        self.foot_text = u''
+        self.foot_text = ''
         self.theme = None
         self.service_item_type = None
         self._raw_frames = []
         self._display_frames = []
         self.unique_identifier = 0
-        self.notes = u''
+        self.notes = ''
         self.from_plugin = False
         self.capabilities = []
         self.is_valid = True
@@ -164,15 +164,15 @@ class ServiceItem(object):
         self.main = None
         self.footer = None
         self.bg_image_bytes = None
-        self.search_string = u''
-        self.data_string = u''
+        self.search_string = ''
+        self.data_string = ''
         self.edit_id = None
         self.xml_version = None
         self.start_time = 0
         self.end_time = 0
         self.media_length = 0
         self.from_service = False
-        self.image_border = u'#000000'
+        self.image_border = '#000000'
         self.background_audio = []
         self.theme_overwritten = False
         self.temporary_edit = False
@@ -188,7 +188,7 @@ class ServiceItem(object):
         Method to set the internal id of the item. This is used to compare
         service items to see if they are the same.
         """
-        self.unique_identifier = unicode(uuid.uuid1())
+        self.unique_identifier = str(uuid.uuid1())
         self.validate_item()
 
     def add_capability(self, capability):
@@ -232,45 +232,45 @@ class ServiceItem(object):
             the renderer knows the correct theme data. However, this is needed
             for the theme manager.
         """
-        log.debug(u'Render called')
+        log.debug('Render called')
         self._display_frames = []
         self.bg_image_bytes = None
         if not provides_own_theme_data:
             self.renderer.set_item_theme(self.theme)
             self.themedata, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
-            log.debug(u'Formatting slides: %s' % self.title)
+            log.debug('Formatting slides: %s' % self.title)
             # Save rendered pages to this dict. In the case that a slide is used
             # twice we can use the pages saved to the dict instead of rendering
             # them again.
             previous_pages = {}
             for slide in self._raw_frames:
-                verse_tag = slide[u'verseTag']
-                if verse_tag in previous_pages and previous_pages[verse_tag][0] == slide[u'raw_slide']:
+                verse_tag = slide['verseTag']
+                if verse_tag in previous_pages and previous_pages[verse_tag][0] == slide['raw_slide']:
                     pages = previous_pages[verse_tag][1]
                 else:
-                    pages = self.renderer.format_slide(slide[u'raw_slide'], self)
-                    previous_pages[verse_tag] = (slide[u'raw_slide'], pages)
+                    pages = self.renderer.format_slide(slide['raw_slide'], self)
+                    previous_pages[verse_tag] = (slide['raw_slide'], pages)
                 for page in pages:
-                    page = page.replace(u'<br>', u'{br}')
+                    page = page.replace('<br>', '{br}')
                     html = expand_tags(cgi.escape(page.rstrip()))
                     self._display_frames.append({
-                        u'title': clean_tags(page),
-                        u'text': clean_tags(page.rstrip()),
-                        u'html': html.replace(u'&amp;nbsp;', u'&nbsp;'),
-                        u'verseTag': verse_tag
+                        'title': clean_tags(page),
+                        'text': clean_tags(page.rstrip()),
+                        'html': html.replace('&amp;nbsp;', '&nbsp;'),
+                        'verseTag': verse_tag
                     })
         elif self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command:
             pass
         else:
-            log.error(u'Invalid value renderer: %s' % self.service_item_type)
+            log.error('Invalid value renderer: %s' % self.service_item_type)
         self.title = clean_tags(self.title)
         # The footer should never be None, but to be compatible with a few
         # nightly builds between 1.9.4 and 1.9.5, we have to correct this to
         # avoid tracebacks.
         if self.raw_footer is None:
             self.raw_footer = []
-        self.foot_text = u'<br>'.join(filter(None, self.raw_footer))
+        self.foot_text = '<br>'.join([_f for _f in self.raw_footer if _f])
 
     def add_from_image(self, path, title, background=None):
         """
@@ -285,7 +285,7 @@ class ServiceItem(object):
         if background:
             self.image_border = background
         self.service_item_type = ServiceItemType.Image
-        self._raw_frames.append({u'title': title, u'path': path})
+        self._raw_frames.append({'title': title, 'path': path})
         self.image_manager.add_image(path, ImageSource.ImagePlugin, self.image_border)
         self._new_item()
 
@@ -299,8 +299,8 @@ class ServiceItem(object):
         if verse_tag:
             verse_tag = verse_tag.upper()
         self.service_item_type = ServiceItemType.Text
-        title = raw_slide[:30].split(u'\n')[0]
-        self._raw_frames.append({u'title': title, u'raw_slide': raw_slide, u'verseTag': verse_tag})
+        title = raw_slide[:30].split('\n')[0]
+        self._raw_frames.append({'title': title, 'raw_slide': raw_slide, 'verseTag': verse_tag})
         self._new_item()
 
     def add_from_command(self, path, file_name, image):
@@ -317,7 +317,7 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
-        self._raw_frames.append({u'title': file_name, u'image': image, u'path': path})
+        self._raw_frames.append({'title': file_name, 'image': image, 'path': path})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -326,30 +326,30 @@ class ServiceItem(object):
         file to represent this item.
         """
         service_header = {
-            u'name': self.name,
-            u'plugin': self.name,
-            u'theme': self.theme,
-            u'title': self.title,
-            u'icon': self.icon,
-            u'footer': self.raw_footer,
-            u'type': self.service_item_type,
-            u'audit': self.audit,
-            u'notes': self.notes,
-            u'from_plugin': self.from_plugin,
-            u'capabilities': self.capabilities,
-            u'search': self.search_string,
-            u'data': self.data_string,
-            u'xml_version': self.xml_version,
-            u'auto_play_slides_once': self.auto_play_slides_once,
-            u'auto_play_slides_loop': self.auto_play_slides_loop,
-            u'timed_slide_interval': self.timed_slide_interval,
-            u'start_time': self.start_time,
-            u'end_time': self.end_time,
-            u'media_length': self.media_length,
-            u'background_audio': self.background_audio,
-            u'theme_overwritten': self.theme_overwritten,
-            u'will_auto_start': self.will_auto_start,
-            u'processor': self.processor
+            'name': self.name,
+            'plugin': self.name,
+            'theme': self.theme,
+            'title': self.title,
+            'icon': self.icon,
+            'footer': self.raw_footer,
+            'type': self.service_item_type,
+            'audit': self.audit,
+            'notes': self.notes,
+            'from_plugin': self.from_plugin,
+            'capabilities': self.capabilities,
+            'search': self.search_string,
+            'data': self.data_string,
+            'xml_version': self.xml_version,
+            'auto_play_slides_once': self.auto_play_slides_once,
+            'auto_play_slides_loop': self.auto_play_slides_loop,
+            'timed_slide_interval': self.timed_slide_interval,
+            'start_time': self.start_time,
+            'end_time': self.end_time,
+            'media_length': self.media_length,
+            'background_audio': self.background_audio,
+            'theme_overwritten': self.theme_overwritten,
+            'will_auto_start': self.will_auto_start,
+            'processor': self.processor
         }
         service_data = []
         if self.service_item_type == ServiceItemType.Text:
@@ -357,13 +357,13 @@ class ServiceItem(object):
         elif self.service_item_type == ServiceItemType.Image:
             if lite_save:
                 for slide in self._raw_frames:
-                    service_data.append({u'title': slide[u'title'], u'path': slide[u'path']})
+                    service_data.append({'title': slide['title'], 'path': slide['path']})
             else:
-                service_data = [slide[u'title'] for slide in self._raw_frames]
+                service_data = [slide['title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                service_data.append({u'title': slide[u'title'], u'image': slide[u'image'], u'path': slide[u'path']})
-        return {u'header': service_header, u'data': service_data}
+                service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path']})
+        return {'header': service_header, 'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
         """
@@ -378,65 +378,65 @@ class ServiceItem(object):
             which have their files saved with them or None when the saved
             service is lite and the original file paths need to be preserved..
         """
-        log.debug(u'set_from_service called with path %s' % path)
-        header = serviceitem[u'serviceitem'][u'header']
-        self.title = header[u'title']
-        self.name = header[u'name']
-        self.service_item_type = header[u'type']
-        self.theme = header[u'theme']
-        self.add_icon(header[u'icon'])
-        self.raw_footer = header[u'footer']
-        self.audit = header[u'audit']
-        self.notes = header[u'notes']
-        self.from_plugin = header[u'from_plugin']
-        self.capabilities = header[u'capabilities']
+        log.debug('set_from_service called with path %s' % path)
+        header = serviceitem['serviceitem']['header']
+        self.title = header['title']
+        self.name = header['name']
+        self.service_item_type = header['type']
+        self.theme = header['theme']
+        self.add_icon(header['icon'])
+        self.raw_footer = header['footer']
+        self.audit = header['audit']
+        self.notes = header['notes']
+        self.from_plugin = header['from_plugin']
+        self.capabilities = header['capabilities']
         # Added later so may not be present in older services.
-        self.search_string = header.get(u'search', u'')
-        self.data_string = header.get(u'data', u'')
-        self.xml_version = header.get(u'xml_version')
-        self.start_time = header.get(u'start_time', 0)
-        self.end_time = header.get(u'end_time', 0)
-        self.media_length = header.get(u'media_length', 0)
-        self.auto_play_slides_once = header.get(u'auto_play_slides_once', False)
-        self.auto_play_slides_loop = header.get(u'auto_play_slides_loop', False)
-        self.timed_slide_interval = header.get(u'timed_slide_interval', 0)
-        self.will_auto_start = header.get(u'will_auto_start', False)
-        self.processor = header.get(u'processor', None)
+        self.search_string = header.get('search', '')
+        self.data_string = header.get('data', '')
+        self.xml_version = header.get('xml_version')
+        self.start_time = header.get('start_time', 0)
+        self.end_time = header.get('end_time', 0)
+        self.media_length = header.get('media_length', 0)
+        self.auto_play_slides_once = header.get('auto_play_slides_once', False)
+        self.auto_play_slides_loop = header.get('auto_play_slides_loop', False)
+        self.timed_slide_interval = header.get('timed_slide_interval', 0)
+        self.will_auto_start = header.get('will_auto_start', False)
+        self.processor = header.get('processor', None)
         self.has_original_files = True
         #TODO Remove me in 2,3 build phase
         if self.is_capable(ItemCapabilities.HasDetailedTitleDisplay):
             self.capabilities.remove(ItemCapabilities.HasDetailedTitleDisplay)
             self.processor = self.title
             self.title = None
-        if u'background_audio' in header:
+        if 'background_audio' in header:
             self.background_audio = []
-            for filename in header[u'background_audio']:
+            for filename in header['background_audio']:
                 # Give them real file paths
                 self.background_audio.append(os.path.join(path, filename))
-        self.theme_overwritten = header.get(u'theme_overwritten', False)
+        self.theme_overwritten = header.get('theme_overwritten', False)
         if self.service_item_type == ServiceItemType.Text:
-            for slide in serviceitem[u'serviceitem'][u'data']:
+            for slide in serviceitem['serviceitem']['data']:
                 self._raw_frames.append(slide)
         elif self.service_item_type == ServiceItemType.Image:
-            settings_section = serviceitem[u'serviceitem'][u'header'][u'name']
-            background = QtGui.QColor(Settings().value(settings_section + u'/background color'))
+            settings_section = serviceitem['serviceitem']['header']['name']
+            background = QtGui.QColor(Settings().value(settings_section + '/background color'))
             if path:
                 self.has_original_files = False
-                for text_image in serviceitem[u'serviceitem'][u'data']:
+                for text_image in serviceitem['serviceitem']['data']:
                     filename = os.path.join(path, text_image)
                     self.add_from_image(filename, text_image, background)
             else:
-                for text_image in serviceitem[u'serviceitem'][u'data']:
-                    self.add_from_image(text_image[u'path'], text_image[u'title'], background)
+                for text_image in serviceitem['serviceitem']['data']:
+                    self.add_from_image(text_image['path'], text_image['title'], background)
         elif self.service_item_type == ServiceItemType.Command:
-            for text_image in serviceitem[u'serviceitem'][u'data']:
+            for text_image in serviceitem['serviceitem']['data']:
                 if not self.title:
-                    self.title = text_image[u'title']
+                    self.title = text_image['title']
                 if path:
                     self.has_original_files = False
-                    self.add_from_command(path, text_image[u'title'], text_image[u'image'])
+                    self.add_from_command(path, text_image['title'], text_image['image'])
                 else:
-                    self.add_from_command(text_image[u'path'], text_image[u'title'], text_image[u'image'])
+                    self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
         self._new_item()
 
     def get_display_title(self):
@@ -449,7 +449,7 @@ class ServiceItem(object):
             if len(self._raw_frames) > 1:
                 return self.title
             else:
-                return self._raw_frames[0][u'title']
+                return self._raw_frames[0]['title']
 
     def merge(self, other):
         """
@@ -548,20 +548,20 @@ class ServiceItem(object):
             The service item slide to be returned
         """
         if self.service_item_type == ServiceItemType.Text:
-            return self._display_frames[row][u'html'].split(u'\n')[0]
+            return self._display_frames[row]['html'].split('\n')[0]
         elif self.service_item_type == ServiceItemType.Image:
-            return self._raw_frames[row][u'path']
+            return self._raw_frames[row]['path']
         else:
-            return self._raw_frames[row][u'image']
+            return self._raw_frames[row]['image']
 
     def get_frame_title(self, row=0):
         """
         Returns the title of the raw frame
         """
         try:
-            return self._raw_frames[row][u'title']
+            return self._raw_frames[row]['title']
         except IndexError:
-            return u''
+            return ''
 
     def get_frame_path(self, row=0, frame=None):
         """
@@ -571,11 +571,11 @@ class ServiceItem(object):
             try:
                 frame = self._raw_frames[row]
             except IndexError:
-                return u''
+                return ''
         if self.is_image():
-            path_from = frame[u'path']
+            path_from = frame['path']
         else:
-            path_from = os.path.join(frame[u'path'], frame[u'title'])
+            path_from = os.path.join(frame['path'], frame['title'])
         return path_from
 
     def remove_frame(self, frame):
@@ -593,18 +593,18 @@ class ServiceItem(object):
         end = None
         if self.start_time != 0:
             start = translate('OpenLP.ServiceItem', '<strong>Start</strong>: %s') % \
-                unicode(datetime.timedelta(seconds=self.start_time))
+                str(datetime.timedelta(seconds=self.start_time))
         if self.media_length != 0:
             end = translate('OpenLP.ServiceItem', '<strong>Length</strong>: %s') % \
-                unicode(datetime.timedelta(seconds=self.media_length))
+                str(datetime.timedelta(seconds=self.media_length))
         if not start and not end:
-            return u''
+            return ''
         elif start and not end:
             return start
         elif not start and end:
             return end
         else:
-            return u'%s <br>%s' % (start, end)
+            return '%s <br>%s' % (start, end)
 
     def update_theme(self, theme):
         """
@@ -639,16 +639,16 @@ class ServiceItem(object):
         """
         self.is_valid = True
         for frame in self._raw_frames:
-            if self.is_image() and not os.path.exists(frame[u'path']):
+            if self.is_image() and not os.path.exists(frame['path']):
                 self.is_valid = False
                 break
             elif self.is_command():
-                file_name = os.path.join(frame[u'path'], frame[u'title'])
+                file_name = os.path.join(frame['path'], frame['title'])
                 if not os.path.exists(file_name):
                     self.is_valid = False
                     break
                 if suffix_list and not self.is_text():
-                    file_suffix = frame[u'title'].split(u'.')[-1]
+                    file_suffix = frame['title'].split('.')[-1]
                     if file_suffix.lower() not in suffix_list:
                         self.is_valid = False
                         break
@@ -657,8 +657,8 @@ class ServiceItem(object):
         """
         Adds the Renderer to the class dynamically
         """
-        if not hasattr(self, u'_renderer'):
-            self._renderer = Registry().get(u'renderer')
+        if not hasattr(self, '_renderer'):
+            self._renderer = Registry().get('renderer')
         return self._renderer
 
     renderer = property(_get_renderer)
@@ -667,8 +667,8 @@ class ServiceItem(object):
         """
         Adds the image manager to the class dynamically
         """
-        if not hasattr(self, u'_image_manager'):
-            self._image_manager = Registry().get(u'image_manager')
+        if not hasattr(self, '_image_manager'):
+            self._image_manager = Registry().get('image_manager')
         return self._image_manager
 
     image_manager = property(_get_image_manager)

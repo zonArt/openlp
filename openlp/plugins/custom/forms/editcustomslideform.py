@@ -32,7 +32,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from editcustomslidedialog import Ui_CustomSlideEditDialog
+from .editcustomslidedialog import Ui_CustomSlideEditDialog
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
     """
     Class documentation goes here.
     """
-    log.info(u'Custom Verse Editor loaded')
+    log.info('Custom Verse Editor loaded')
 
     def __init__(self, parent=None):
         """
@@ -69,20 +69,20 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         Returns a list with all slides.
         """
-        return self.slide_text_edit.toPlainText().split(u'\n[===]\n')
+        return self.slide_text_edit.toPlainText().split('\n[===]\n')
 
     def on_insert_button_clicked(self):
         """
         Adds a slide split at the cursor.
         """
-        self.insert_single_line_text_at_cursor(u'[===]')
+        self.insert_single_line_text_at_cursor('[===]')
         self.slide_text_edit.setFocus()
 
     def on_split_button_clicked(self):
         """
         Adds an optional split at cursor.
         """
-        self.insert_single_line_text_at_cursor(u'[---]')
+        self.insert_single_line_text_at_cursor('[---]')
         self.slide_text_edit.setFocus()
 
     def insert_single_line_text_at_cursor(self, text):
@@ -91,8 +91,8 @@ class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
         """
         full_text = self.slide_text_edit.toPlainText()
         position = self.slide_text_edit.textCursor().position()
-        if position and full_text[position - 1] != u'\n':
-            text = u'\n' + text
-        if position == len(full_text) or full_text[position] != u'\n':
-            text += u'\n'
+        if position and full_text[position - 1] != '\n':
+            text = '\n' + text
+        if position == len(full_text) or full_text[position] != '\n':
+            text += '\n'
         self.slide_text_edit.insertPlainText(text)

@@ -56,7 +56,7 @@ class FormattingTagController(object):
         """
         Cleanup the array before save validation runs
         """
-        self.protected_tags = [tag for tag in FormattingTags.html_expands if tag.get(u'protected')]
+        self.protected_tags = [tag for tag in FormattingTags.html_expands if tag.get('protected')]
         self.custom_tags = []
 
     def validate_for_save(self, desc, tag, start_html, end_html):
@@ -78,15 +78,13 @@ class FormattingTagController(object):
         """
         if not desc:
             pass
-        print desc
-        print self.start_html_to_end_html(start_html)
 
     def _strip(self, tag):
         """
         Remove tag wrappers for editing.
         """
-        tag = tag.replace(u'{', u'')
-        tag = tag.replace(u'}', u'')
+        tag = tag.replace('{', '')
+        tag = tag.replace('}', '')
         return tag
 
     def start_html_to_end_html(self, start_html):
@@ -102,15 +100,15 @@ class FormattingTagController(object):
         if match:
             match = self.html_tag_regex.search(start_html)
             while match:
-                if match.group(u'tag'):
-                    tag = match.group(u'tag').lower()
-                    if match.group(u'close'):
-                        if match.group(u'empty') or not end_tags or end_tags.pop() != tag:
+                if match.group('tag'):
+                    tag = match.group('tag').lower()
+                    if match.group('close'):
+                        if match.group('empty') or not end_tags or end_tags.pop() != tag:
                             return
-                    elif not match.group(u'empty'):
+                    elif not match.group('empty'):
                         end_tags.append(tag)
                 match = self.html_tag_regex.search(start_html, match.end())
-            return u''.join(map(lambda tag: u'</%s>' % tag, reversed(end_tags)))
+            return u''.join(map(lambda tag: '</%s>' % tag, reversed(end_tags)))
 
     def start_tag_changed(self, start_html, end_html):
         """

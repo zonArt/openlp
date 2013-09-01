@@ -118,7 +118,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super(PrintServiceForm, self).__init__(Registry().get('main_window'))
         self.printer = QtGui.QPrinter()
         self.print_dialog = QtGui.QPrintDialog(self.printer, self)
         self.document = QtGui.QTextDocument()
@@ -126,14 +126,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         self.setupUi(self)
         # Load the settings for the dialog.
         settings = Settings()
-        settings.beginGroup(u'advanced')
-        self.slide_text_check_box.setChecked(settings.value(u'print slide text'))
-        self.page_break_after_text.setChecked(settings.value(u'add page break'))
+        settings.beginGroup('advanced')
+        self.slide_text_check_box.setChecked(settings.value('print slide text'))
+        self.page_break_after_text.setChecked(settings.value('add page break'))
         if not self.slide_text_check_box.isChecked():
             self.page_break_after_text.setDisabled(True)
-        self.meta_data_check_box.setChecked(settings.value(u'print file meta data'))
-        self.notes_check_box.setChecked(settings.value(u'print notes'))
-        self.zoom_combo_box.setCurrentIndex(settings.value(u'display size'))
+        self.meta_data_check_box.setChecked(settings.value('print file meta data'))
+        self.notes_check_box.setChecked(settings.value('print notes'))
+        self.zoom_combo_box.setCurrentIndex(settings.value('display size'))
         settings.endGroup()
         # Signals
         self.print_button.triggered.connect(self.print_service_order)
@@ -165,76 +165,76 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Creates the html text and updates the html of *self.document*.
         """
-        html_data = self._add_element(u'html')
-        self._add_element(u'head', parent=html_data)
-        self._add_element(u'title', self.title_line_edit.text(), html_data.head)
-        css_path = os.path.join(AppLocation.get_data_path(), u'service_print.css')
+        html_data = self._add_element('html')
+        self._add_element('head', parent=html_data)
+        self._add_element('title', self.title_line_edit.text(), html_data.head)
+        css_path = os.path.join(AppLocation.get_data_path(), 'service_print.css')
         custom_css = get_text_file_string(css_path)
         if not custom_css:
             custom_css = DEFAULT_CSS
-        self._add_element(u'style', custom_css, html_data.head, attribute=(u'type', u'text/css'))
-        self._add_element(u'body', parent=html_data)
-        self._add_element(u'h1', cgi.escape(self.title_line_edit.text()), html_data.body, classId=u'serviceTitle')
+        self._add_element('style', custom_css, html_data.head, attribute=('type', 'text/css'))
+        self._add_element('body', parent=html_data)
+        self._add_element('h1', cgi.escape(self.title_line_edit.text()), html_data.body, classId='serviceTitle')
         for index, item in enumerate(self.service_manager.service_items):
-            self._add_preview_item(html_data.body, item[u'service_item'], index)
+            self._add_preview_item(html_data.body, item['service_item'], index)
         # Add the custom service notes:
         if self.footer_text_edit.toPlainText():
-            div = self._add_element(u'div', parent=html_data.body, classId=u'customNotes')
+            div = self._add_element('div', parent=html_data.body, classId='customNotes')
             self._add_element(
-                u'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId=u'customNotesTitle')
-            self._add_element(u'span', cgi.escape(self.footer_text_edit.toPlainText()), div, classId=u'customNotesText')
-        self.document.setHtml(html.tostring(html_data))
+                'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId='customNotesTitle')
+            self._add_element('span', cgi.escape(self.footer_text_edit.toPlainText()), div, classId='customNotesText')
+        self.document.setHtml(html.tostring(html_data).decode())
         self.preview_widget.updatePreview()
 
     def _add_preview_item(self, body, item, index):
         """
         Add a preview item
         """
-        div = self._add_element(u'div', classId=u'item', parent=body)
+        div = self._add_element('div', classId='item', parent=body)
         # Add the title of the service item.
-        item_title = self._add_element(u'h2', parent=div, classId=u'itemTitle')
-        self._add_element(u'img', parent=item_title, attribute=(u'src', item.icon))
-        self._add_element(u'span', u'&nbsp;' + cgi.escape(item.get_display_title()), item_title)
+        item_title = self._add_element('h2', parent=div, classId='itemTitle')
+        self._add_element('img', parent=item_title, attribute=('src', item.icon))
+        self._add_element('span', '&nbsp;' + cgi.escape(item.get_display_title()), item_title)
         if self.slide_text_check_box.isChecked():
             # Add the text of the service item.
             if item.is_text():
                 verse_def = None
                 for slide in item.get_frames():
-                    if not verse_def or verse_def != slide[u'verseTag']:
-                        text_div = self._add_element(u'div', parent=div, classId=u'itemText')
+                    if not verse_def or verse_def != slide['verseTag']:
+                        text_div = self._add_element('div', parent=div, classId='itemText')
                     else:
-                        self._add_element(u'br', parent=text_div)
-                    self._add_element(u'span', slide[u'html'], text_div)
-                    verse_def = slide[u'verseTag']
+                        self._add_element('br', parent=text_div)
+                    self._add_element('span', slide['html'], text_div)
+                    verse_def = slide['verseTag']
                 # Break the page before the div element.
                 if index != 0 and self.page_break_after_text.isChecked():
-                    div.set(u'class', u'item newPage')
+                    div.set('class', 'item newPage')
             # Add the image names of the service item.
             elif item.is_image():
-                ol = self._add_element(u'ol', parent=div, classId=u'imageList')
+                ol = self._add_element('ol', parent=div, classId='imageList')
                 for slide in range(len(item.get_frames())):
-                    self._add_element(u'li', item.get_frame_title(slide), ol)
+                    self._add_element('li', item.get_frame_title(slide), ol)
             # add footer
             foot_text = item.foot_text
-            foot_text = foot_text.partition(u'<br>')[2]
+            foot_text = foot_text.partition('<br>')[2]
             if foot_text:
-                foot_text = cgi.escape(foot_text.replace(u'<br>', u'\n'))
-                self._add_element(u'div', foot_text.replace(u'\n', u'<br>'), parent=div, classId=u'itemFooter')
+                foot_text = cgi.escape(foot_text.replace('<br>', '\n'))
+                self._add_element('div', foot_text.replace('\n', '<br>'), parent=div, classId='itemFooter')
         # Add service items' notes.
         if self.notes_check_box.isChecked():
             if item.notes:
-                p = self._add_element(u'div', classId=u'itemNotes', parent=div)
-                self._add_element(u'span', translate('OpenLP.ServiceManager', 'Notes: '), p, classId=u'itemNotesTitle')
-                self._add_element(u'span', cgi.escape(item.notes).replace(u'\n', u'<br>'), p, classId=u'itemNotesText')
+                p = self._add_element('div', classId='itemNotes', parent=div)
+                self._add_element('span', translate('OpenLP.ServiceManager', 'Notes: '), p, classId='itemNotesTitle')
+                self._add_element('span', cgi.escape(item.notes).replace('\n', '<br>'), p, classId='itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.meta_data_check_box.isChecked():
             tme = item.media_length
             if item.end_time > 0:
                 tme = item.end_time - item.start_time
-            title = self._add_element(u'div', classId=u'media', parent=div)
+            title = self._add_element('div', classId='media', parent=div)
             self._add_element(
-                u'span', translate('OpenLP.ServiceManager', 'Playing time: '), title, classId=u'mediaTitle')
-            self._add_element(u'span', unicode(datetime.timedelta(seconds=tme)), title, classId=u'mediaText')
+                'span', translate('OpenLP.ServiceManager', 'Playing time: '), title, classId='mediaTitle')
+            self._add_element('span', str(datetime.timedelta(seconds=tme)), title, classId='mediaText')
 
     def _add_element(self, tag, text=None, parent=None, classId=None, attribute=None):
         """
@@ -257,13 +257,13 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             Tuple name/value pair to add as an optional attribute
         """
         if text is not None:
-            element = html.fragment_fromstring(unicode(text), create_parent=tag)
+            element = html.fragment_fromstring(str(text), create_parent=tag)
         else:
             element = html.Element(tag)
         if parent is not None:
             parent.append(element)
         if classId is not None:
-            element.set(u'class', classId)
+            element.set('class', classId)
         if attribute is not None:
             element.set(attribute[0], attribute[1])
         return element
@@ -298,8 +298,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self.preview_widget.fitToWidth()
             self.preview_widget.zoomIn(0.25)
         settings = Settings()
-        settings.beginGroup(u'advanced')
-        settings.setValue(u'display size', display)
+        settings.beginGroup('advanced')
+        settings.setValue('display size', display)
         settings.endGroup()
 
     def copy_text(self):
@@ -312,17 +312,17 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         clipboard_text = cursor.selectedText()
         # We now have the unprocessed unicode service text in the cursor
         # So we replace u2028 with \n and u2029 with \n\n and a few others
-        clipboard_text = clipboard_text.replace(u'\u2028', u'\n')
-        clipboard_text = clipboard_text.replace(u'\u2029', u'\n\n')
-        clipboard_text = clipboard_text.replace(u'\u2018', u'\'')
-        clipboard_text = clipboard_text.replace(u'\u2019', u'\'')
-        clipboard_text = clipboard_text.replace(u'\u201c', u'"')
-        clipboard_text = clipboard_text.replace(u'\u201d', u'"')
-        clipboard_text = clipboard_text.replace(u'\u2026', u'...')
-        clipboard_text = clipboard_text.replace(u'\u2013', u'-')
-        clipboard_text = clipboard_text.replace(u'\u2014', u'-')
+        clipboard_text = clipboard_text.replace('\u2028', '\n')
+        clipboard_text = clipboard_text.replace('\u2029', '\n\n')
+        clipboard_text = clipboard_text.replace('\u2018', '\'')
+        clipboard_text = clipboard_text.replace('\u2019', '\'')
+        clipboard_text = clipboard_text.replace('\u201c', '"')
+        clipboard_text = clipboard_text.replace('\u201d', '"')
+        clipboard_text = clipboard_text.replace('\u2026', '...')
+        clipboard_text = clipboard_text.replace('\u2013', '-')
+        clipboard_text = clipboard_text.replace('\u2014', '-')
         # remove the icon from the text
-        clipboard_text = clipboard_text.replace(u'\ufffc\xa0', u'')
+        clipboard_text = clipboard_text.replace('\ufffc\xa0', '')
         # and put it all on the clipboard
         self.main_window.clipboard.setText(clipboard_text)
 
@@ -386,11 +386,11 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         # Save the settings for this dialog.
         settings = Settings()
-        settings.beginGroup(u'advanced')
-        settings.setValue(u'print slide text', self.slide_text_check_box.isChecked())
-        settings.setValue(u'add page break', self.page_break_after_text.isChecked())
-        settings.setValue(u'print file meta data', self.meta_data_check_box.isChecked())
-        settings.setValue(u'print notes', self.notes_check_box.isChecked())
+        settings.beginGroup('advanced')
+        settings.setValue('print slide text', self.slide_text_check_box.isChecked())
+        settings.setValue('add page break', self.page_break_after_text.isChecked())
+        settings.setValue('print file meta data', self.meta_data_check_box.isChecked())
+        settings.setValue('print notes', self.notes_check_box.isChecked())
         settings.endGroup()
 
     def update_song_usage(self):
@@ -402,14 +402,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             return
         for item in self.service_manager.service_items:
             # Trigger Audit requests
-            Registry().register_function(u'print_service_started', [item[u'service_item']])
+            Registry().register_function('print_service_started', [item['service_item']])
 
     def _get_service_manager(self):
         """
         Adds the service manager to the class dynamically
         """
-        if not hasattr(self, u'_service_manager'):
-            self._service_manager = Registry().get(u'service_manager')
+        if not hasattr(self, '_service_manager'):
+            self._service_manager = Registry().get('service_manager')
         return self._service_manager
 
     service_manager = property(_get_service_manager)
@@ -418,8 +418,8 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)
