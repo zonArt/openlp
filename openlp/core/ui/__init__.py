@@ -95,6 +95,7 @@ from aboutform import AboutForm
 from pluginform import PluginForm
 from settingsform import SettingsForm
 from formattingtagform import FormattingTagForm
+from formattingtagcontroller import FormattingTagController
 from shortcutlistform import ShortcutListForm
 from mediadockmanager import MediaDockManager
 from servicemanager import ServiceManager
