@@ -32,12 +32,9 @@ Custom tags can be defined and saved. The Custom Tag arrays are saved in a json 
 Base Tags cannot be changed.
 """
 
-import cgi
-
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 
 from openlp.core.lib import FormattingTags, translate
-from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 from openlp.core.ui.formattingtagcontroller import FormattingTagController
 
@@ -65,7 +62,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.services = FormattingTagController()
         self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
         self.new_button.clicked.connect(self.on_new_clicked)
-        self.save_button.clicked.connect(self.on_saved_clicked)
+        #self.save_button.clicked.connect(self.on_saved_clicked)
         self.delete_button.clicked.connect(self.on_delete_clicked)
         self.tag_table_widget.currentCellChanged.connect(self.on_current_cell_changed)
         self.button_box.rejected.connect(self.close)
@@ -110,39 +107,24 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         if selected != -1:
             self.tag_table_widget.removeRow(selected)
 
-    def on_saved_clicked(self):
+    def accept(self):
         """
         Update Custom Tag details if not duplicate and save the data.
         """
         count = 0
         self.services.pre_save()
         while count < self.tag_table_widget.rowCount():
-            result = self.services.validate_for_save(self.tag_table_widget.item(count, 0).text(),
+            error = self.services.validate_for_save(self.tag_table_widget.item(count, 0).text(),
                 self.tag_table_widget.item(count, 1).text(), self.tag_table_widget.item(count, 2).text(),
                 self.tag_table_widget.item(count, 3).text())
+            if error:
+                QtGui.QMessageBox.warning(self,
+                    translate('OpenLP.FormattingTagForm', 'Validation Error'), error, QtGui.QMessageBox.Ok)
+                self.tag_table_widget.selectRow(count)
+                return
             count += 1
-
-        html_expands = FormattingTags.get_html_tags()
-        #if self.selected != -1:
-        #    html = html_expands[self.selected]
-        #    tag = self.tag_line_edit.text()
-        #    for linenumber, html1 in enumerate(html_expands):
-        #        if self._strip(html1[u'start tag']) == tag and linenumber != self.selected:
-        #            critical_error_message_box(
-        #                translate('OpenLP.FormattingTagForm', 'Update Error'),
-        #                translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag)
-        #            return
-        #    html[u'desc'] = self.description_line_edit.text()
-        #    html[u'start html'] = self.start_tag_line_edit.text()
-        #    html[u'end html'] = self.end_tag_line_edit.text()
-        #    html[u'start tag'] = u'{%s}' % tag
-        #    html[u'end tag'] = u'{/%s}' % tag
-        #    # Keep temporary tags when the user changes one.
-        #    html[u'temporary'] = False
-        #    self.selected = -1
-        #FormattingTags.save_html_tags()
-        #self._reloadTable()
-
+        self.services.save_tags()
+        QtGui.QDialog.accept(self)
 
     def _reloadTable(self):
         """
@@ -201,7 +183,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                     self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
             if errors:
                 QtGui.QMessageBox.warning(self,
-                    translate('OpenLP.FormattingTagForm', 'Validation Error'), errors,
-                    QtGui.QMessageBox.Yes|QtGui.QMessageBox.Discard|QtGui.QMessageBox.Cancel)
+                    translate('OpenLP.FormattingTagForm', 'Validation Error'), errors, QtGui.QMessageBox.Ok)
             self.tag_table_widget.resizeRowsToContents()
 

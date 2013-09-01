@@ -63,7 +63,7 @@ class FormattingTagController(object):
         """
         Validate a custom tag and add to the tags array if valid..
 
-        `description`
+        `desc`
             Explanation of the tag.
 
         `tag`
@@ -78,6 +78,29 @@ class FormattingTagController(object):
         """
         if not desc:
             pass
+        for linenumber, html1 in enumerate(self.protected_tags):
+            if self._strip(html1[u'start tag']) == tag:
+                return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
+        for linenumber, html1 in enumerate(self.custom_tags):
+            if self._strip(html1[u'start tag']) == tag:
+                return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
+        tag = {
+            'desc': desc,
+            'start tag': '{%s}' % tag,
+            'start html': start_html,
+            'end tag': '{/%s}' % tag,
+            'end html': end_html,
+            'protected': False,
+            'temporary': False
+        }
+        self.custom_tags.append(tag)
+
+    def save_tags(self):
+        """
+        Save the new tags if they are valid.
+        """
+        FormattingTags.save_html_tags(self.custom_tags)
+        FormattingTags.load_tags()
 
     def _strip(self, tag):
         """
