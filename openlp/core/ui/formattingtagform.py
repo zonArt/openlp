@@ -160,13 +160,18 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         This function processes all user edits in the table. It is called on each cell change.
         """
-        print (cur_row, cur_col, pre_col, pre_col)
         # only process for editable rows
         if self.tag_table_widget.item(pre_row, 0):
             item = self.tag_table_widget.item(pre_row, pre_col)
             text = item.text()
             errors = None
-            if pre_col is EDITCOLUMN.StartHtml:
+            if pre_col is EDITCOLUMN.Description:
+                if not text:
+                    errors = translate('OpenLP.FormattingTagForm', 'Description is missing')
+            elif pre_col is EDITCOLUMN.Tag:
+                if not text:
+                    errors = translate('OpenLP.FormattingTagForm', 'Tag is missing')
+            elif pre_col is EDITCOLUMN.StartHtml:
                 # HTML edited
                 item = self.tag_table_widget.item(pre_row, 3)
                 end_html = item.text()
@@ -184,5 +189,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
             if errors:
                 QtGui.QMessageBox.warning(self,
                     translate('OpenLP.FormattingTagForm', 'Validation Error'), errors, QtGui.QMessageBox.Ok)
+            #self.tag_table_widget.selectRow(pre_row - 1)
             self.tag_table_widget.resizeRowsToContents()
 

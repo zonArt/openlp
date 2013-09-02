@@ -76,14 +76,16 @@ class FormattingTagController(object):
             The end html tag.
 
         """
-        if not desc:
-            pass
         for linenumber, html1 in enumerate(self.protected_tags):
             if self._strip(html1[u'start tag']) == tag:
                 return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
+            if self._strip(html1[u'desc']) == desc:
+                return translate('OpenLP.FormattingTagForm', 'Description %s already defined.') % tag
         for linenumber, html1 in enumerate(self.custom_tags):
             if self._strip(html1[u'start tag']) == tag:
                 return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
+            if self._strip(html1[u'desc']) == desc:
+                return translate('OpenLP.FormattingTagForm', 'Description %s already defined.') % tag
         tag = {
             'desc': desc,
             'start tag': '{%s}' % tag,
