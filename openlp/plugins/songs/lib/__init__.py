@@ -538,6 +538,8 @@ def strip_rtf(text, default_encoding=None):
                 out.append('\xA0')
             elif char in '{}\\' and not ignorable:
                 out.append(char)
+            elif char in '\r\n' and not ignorable:
+                out.append(SPECIAL_CHARS['par'])
             elif char == '-' and not ignorable:
                 out.append('\u00AD')
             elif char == '_' and not ignorable:
