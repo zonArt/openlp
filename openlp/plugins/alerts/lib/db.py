@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -52,9 +52,9 @@ def init_schema(url):
     """
     session, metadata = init_db(url)
 
-    alerts_table = Table(u'alerts', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'text', types.UnicodeText, nullable=False))
+    alerts_table = Table('alerts', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('text', types.UnicodeText, nullable=False))
 
     mapper(AlertItem, alerts_table)
 

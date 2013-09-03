@@ -79,17 +79,17 @@ def init_schema(url):
     session, metadata = init_db(url)
 
     # Definition of the "image_groups" table
-    image_groups_table = Table(u'image_groups', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'parent_id', types.Integer()),
-        Column(u'group_name', types.Unicode(128))
+    image_groups_table = Table('image_groups', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('parent_id', types.Integer()),
+        Column('group_name', types.Unicode(128))
     )
 
     # Definition of the "image_filenames" table
-    image_filenames_table = Table(u'image_filenames', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'group_id', types.Integer(), ForeignKey(u'image_groups.id'), default=None),
-        Column(u'filename', types.Unicode(255), nullable=False)
+    image_filenames_table = Table('image_filenames', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('group_id', types.Integer(), ForeignKey('image_groups.id'), default=None),
+        Column('filename', types.Unicode(255), nullable=False)
     )
 
     mapper(ImageGroups, image_groups_table)

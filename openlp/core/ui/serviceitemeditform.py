@@ -32,7 +32,7 @@ The service item edit dialog
 from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Registry
 
-from serviceitemeditdialog import Ui_ServiceItemEditDialog
+from .serviceitemeditdialog import Ui_ServiceItemEditDialog
 
 
 class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
@@ -43,7 +43,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super(ServiceItemEditForm, self).__init__(Registry().get('main_window'))
         self.setupUi(self)
         self.item_list = []
         self.list_widget.currentRowChanged.connect(self.on_current_row_changed)
@@ -68,7 +68,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
             self.item._raw_frames = []
             if self.item.is_image():
                 for item in self.item_list:
-                    self.item.add_from_image(item[u'path'], item[u'title'])
+                    self.item.add_from_image(item['path'], item['title'])
             self.item.render()
         return self.item
 
@@ -78,7 +78,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         self.list_widget.clear()
         for frame in self.item_list:
-            item_name = QtGui.QListWidgetItem(frame[u'title'])
+            item_name = QtGui.QListWidgetItem(frame['title'])
             self.list_widget.addItem(item_name)
 
     def on_delete_button_clicked(self):
@@ -99,15 +99,15 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         Move the current row up in the list.
         """
-        self.__move_item(u'up')
+        self.__move_item('up')
 
     def on_down_button_clicked(self):
         """
         Move the current row down in the list
         """
-        self.__move_item(u'down')
+        self.__move_item('down')
 
-    def __move_item(self, direction=u''):
+    def __move_item(self, direction=''):
         """
         Move the current item.
         """
@@ -119,7 +119,7 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         row = self.list_widget.row(item)
         temp = self.item_list[row]
         self.item_list.pop(row)
-        if direction == u'up':
+        if direction == 'up':
             row -= 1
         else:
             row += 1
@@ -156,8 +156,8 @@ class ServiceItemEditForm(QtGui.QDialog, Ui_ServiceItemEditDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)

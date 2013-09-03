@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -39,7 +39,7 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 from test_opensongimport import wizard_stub
 
 def test(filenames):
-    manager = Manager(u'songs', init_schema)
+    manager = Manager('songs', init_schema)
     o = OpenSongImport(manager, filenames=filenames)
     o.import_wizard = wizard_stub()
     o.commit = False

@@ -40,11 +40,11 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
     """
     Provide a tree widget to store objects and handle drag and drop events
     """
-    def __init__(self, parent=None, name=u''):
+    def __init__(self, parent=None, name=''):
         """
         Initialise the tree widget
         """
-        QtGui.QTreeWidget.__init__(self, parent)
+        super(TreeWidgetWithDnD, self).__init__(parent)
         self.mimeDataText = name
         self.allow_internal_dnd = False
         self.header().close()
@@ -59,8 +59,8 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
         """
         self.setAcceptDrops(True)
         self.setDragDropMode(QtGui.QAbstractItemView.DragDrop)
-        Registry().register_function((u'%s_dnd' % self.mimeDataText), self.parent().load_file)
-        Registry().register_function((u'%s_dnd_internal' % self.mimeDataText), self.parent().dnd_move_internal)
+        Registry().register_function(('%s_dnd' % self.mimeDataText), self.parent().load_file)
+        Registry().register_function(('%s_dnd_internal' % self.mimeDataText), self.parent().dnd_move_internal)
 
     def mouseMoveEvent(self, event):
         """
@@ -132,11 +132,11 @@ class TreeWidgetWithDnD(QtGui.QTreeWidget):
                     listing = os.listdir(local_file)
                     for file_name in listing:
                         files.append(os.path.join(local_file, file_name))
-            Registry().execute(u'%s_dnd' % self.mimeDataText, {'files': files, 'target': self.itemAt(event.pos())})
+            Registry().execute('%s_dnd' % self.mimeDataText, {'files': files, 'target': self.itemAt(event.pos())})
         elif self.allow_internal_dnd:
             event.setDropAction(QtCore.Qt.CopyAction)
             event.accept()
-            Registry().execute(u'%s_dnd_internal' % self.mimeDataText, self.itemAt(event.pos()))
+            Registry().execute('%s_dnd_internal' % self.mimeDataText, self.itemAt(event.pos()))
         else:
             event.ignore()
 

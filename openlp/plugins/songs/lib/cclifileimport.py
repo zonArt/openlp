@@ -34,7 +34,7 @@ import codecs
 
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
-from songimport import SongImport
+from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
@@ -61,40 +61,40 @@ class CCLIFileImport(SongImport):
         """
         Import either a ``.usr`` or a ``.txt`` SongSelect file.
         """
-        log.debug(u'Starting CCLI File Import')
+        log.debug('Starting CCLI File Import')
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for filename in self.import_source:
-            filename = unicode(filename)
-            log.debug(u'Importing CCLI File: %s', filename)
+            filename = str(filename)
+            log.debug('Importing CCLI File: %s', filename)
             lines = []
             if os.path.isfile(filename):
-                detect_file = open(filename, u'r')
+                detect_file = open(filename, 'r')
                 detect_content = detect_file.read(2048)
                 try:
-                    unicode(detect_content, u'utf-8')
+                    str(detect_content, 'utf-8')
                     details = {'confidence': 1, 'encoding': 'utf-8'}
                 except UnicodeDecodeError:
                     details = chardet.detect(detect_content)
                 detect_file.close()
-                infile = codecs.open(filename, u'r', details['encoding'])
-                if not infile.read(1) == u'\ufeff':
+                infile = codecs.open(filename, 'r', details['encoding'])
+                if not infile.read(1) == '\ufeff':
                     # not UTF or no BOM was found
                     infile.seek(0)
                 lines = infile.readlines()
                 infile.close()
                 ext = os.path.splitext(filename)[1]
-                if ext.lower() == u'.usr':
-                    log.info(u'SongSelect .usr format file found: %s', filename)
+                if ext.lower() == '.usr':
+                    log.info('SongSelect .usr format file found: %s', filename)
                     if not self.doImportUsrFile(lines):
                         self.logError(filename)
-                elif ext.lower() == u'.txt':
-                    log.info(u'SongSelect .txt format file found: %s', filename)
+                elif ext.lower() == '.txt':
+                    log.info('SongSelect .txt format file found: %s', filename)
                     if not self.doImportTxtFile(lines):
                         self.logError(filename)
                 else:
                     self.logError(filename,
                         translate('SongsPlugin.CCLIFileImport', 'The file does not have a valid extension.'))
-                    log.info(u'Extension %s is not valid', filename)
+                    log.info('Extension %s is not valid', filename)
             if self.stop_import_flag:
                 return
 
@@ -156,75 +156,75 @@ class CCLIFileImport(SongImport):
             e.g. *Words=Above all powers....* [/n = CR, /n/t = CRLF]
 
         """
-        log.debug(u'USR file text: %s', textList)
-        song_author = u''
-        song_topics = u''
+        log.debug('USR file text: %s', textList)
+        song_author = ''
+        song_topics = ''
         for line in textList:
-            if line.startswith(u'[S '):
-                ccli, line = line.split(u']', 1)
-                if ccli.startswith(u'[S A'):
+            if line.startswith('[S '):
+                ccli, line = line.split(']', 1)
+                if ccli.startswith('[S A'):
                     self.ccliNumber = ccli[4:].strip()
                 else:
                     self.ccliNumber = ccli[3:].strip()
-            if line.startswith(u'Title='):
+            if line.startswith('Title='):
                 self.title = line[6:].strip()
-            elif line.startswith(u'Author='):
+            elif line.startswith('Author='):
                 song_author = line[7:].strip()
-            elif line.startswith(u'Copyright='):
+            elif line.startswith('Copyright='):
                 self.copyright = line[10:].strip()
-            elif line.startswith(u'Themes='):
-                song_topics = line[7:].strip().replace(u' | ', u'/t')
-            elif line.startswith(u'Fields='):
+            elif line.startswith('Themes='):
+                song_topics = line[7:].strip().replace(' | ', '/t')
+            elif line.startswith('Fields='):
                 # Fields contain single line indicating verse, chorus, etc,
                 # /t delimited, same as with words field. store seperately
                 # and process at end.
                 song_fields = line[7:].strip()
-            elif line.startswith(u'Words='):
+            elif line.startswith('Words='):
                 song_words = line[6:].strip()
             # Unhandled usr keywords: Type, Version, Admin, Keys
         # Process Fields and words sections.
         check_first_verse_line = False
-        field_list = song_fields.split(u'/t')
-        words_list = song_words.split(u'/t')
+        field_list = song_fields.split('/t')
+        words_list = song_words.split('/t')
         for counter in range(len(field_list)):
-            if field_list[counter].startswith(u'Ver'):
+            if field_list[counter].startswith('Ver'):
                 verse_type = VerseType.tags[VerseType.Verse]
-            elif field_list[counter].startswith(u'Ch'):
+            elif field_list[counter].startswith('Ch'):
                 verse_type = VerseType.tags[VerseType.Chorus]
-            elif field_list[counter].startswith(u'Br'):
+            elif field_list[counter].startswith('Br'):
                 verse_type = VerseType.tags[VerseType.Bridge]
             else:
                 verse_type = VerseType.tags[VerseType.Other]
                 check_first_verse_line = True
-            verse_text = unicode(words_list[counter])
-            verse_text = verse_text.replace(u'/n', u'\n')
-            verse_text = verse_text.replace(u' | ', u'\n')
-            verse_lines = verse_text.split(u'\n', 1)
+            verse_text = str(words_list[counter])
+            verse_text = verse_text.replace('/n', '\n')
+            verse_text = verse_text.replace(' | ', '\n')
+            verse_lines = verse_text.split('\n', 1)
             if check_first_verse_line:
-                if verse_lines[0].startswith(u'(PRE-CHORUS'):
+                if verse_lines[0].startswith('(PRE-CHORUS'):
                     verse_type = VerseType.tags[VerseType.PreChorus]
-                    log.debug(u'USR verse PRE-CHORUS: %s', verse_lines[0])
+                    log.debug('USR verse PRE-CHORUS: %s', verse_lines[0])
                     verse_text = verse_lines[1]
-                elif verse_lines[0].startswith(u'(BRIDGE'):
+                elif verse_lines[0].startswith('(BRIDGE'):
                     verse_type = VerseType.tags[VerseType.Bridge]
-                    log.debug(u'USR verse BRIDGE')
+                    log.debug('USR verse BRIDGE')
                     verse_text = verse_lines[1]
-                elif verse_lines[0].startswith(u'('):
+                elif verse_lines[0].startswith('('):
                     verse_type = VerseType.tags[VerseType.Other]
                     verse_text = verse_lines[1]
             if verse_text:
                 self.addVerse(verse_text, verse_type)
             check_first_verse_line = False
         # Handle multiple authors
-        author_list = song_author.split(u'/')
+        author_list = song_author.split('/')
         if len(author_list) < 2:
-            author_list = song_author.split(u'|')
+            author_list = song_author.split('|')
         for author in author_list:
-            separated = author.split(u',')
+            separated = author.split(',')
             if len(separated) > 1:
-                author = u' '.join(map(unicode.strip, reversed(separated)))
+                author = ' '.join(map(str.strip, reversed(separated)))
             self.addAuthor(author.strip())
-        self.topics = [topic.strip() for topic in song_topics.split(u'/t')]
+        self.topics = [topic.strip() for topic in song_topics.split('/t')]
         return self.finish()
 
     def doImportTxtFile(self, textList):
@@ -259,11 +259,11 @@ class CCLIFileImport(SongImport):
                 # e.g. CCL-Liedlizenznummer: 14 / CCLI License No. 14
 
         """
-        log.debug(u'TXT file text: %s', textList)
+        log.debug('TXT file text: %s', textList)
         line_number = 0
         check_first_verse_line = False
-        verse_text = u''
-        song_author = u''
+        verse_text = ''
+        song_author = ''
         verse_start = False
         for line in textList:
             clean_line = line.strip()
@@ -273,7 +273,7 @@ class CCLIFileImport(SongImport):
                 elif verse_start:
                     if verse_text:
                         self.addVerse(verse_text, verse_type)
-                        verse_text = u''
+                        verse_text = ''
                         verse_start = False
             else:
                 #line_number=0, song title
@@ -283,19 +283,19 @@ class CCLIFileImport(SongImport):
                 #line_number=1, verses
                 elif line_number == 1:
                     #line_number=1, ccli number, first line after verses
-                    if clean_line.startswith(u'CCLI'):
+                    if clean_line.startswith('CCLI'):
                         line_number += 1
                         ccli_parts = clean_line.split(' ')
                         self.ccliNumber = ccli_parts[len(ccli_parts) - 1]
                     elif not verse_start:
                         # We have the verse descriptor
-                        verse_desc_parts = clean_line.split(u' ')
+                        verse_desc_parts = clean_line.split(' ')
                         if len(verse_desc_parts) == 2:
-                            if verse_desc_parts[0].startswith(u'Ver'):
+                            if verse_desc_parts[0].startswith('Ver'):
                                 verse_type = VerseType.tags[VerseType.Verse]
-                            elif verse_desc_parts[0].startswith(u'Ch'):
+                            elif verse_desc_parts[0].startswith('Ch'):
                                 verse_type = VerseType.tags[VerseType.Chorus]
-                            elif verse_desc_parts[0].startswith(u'Br'):
+                            elif verse_desc_parts[0].startswith('Br'):
                                 verse_type = VerseType.tags[VerseType.Bridge]
                             else:
                                 # we need to analyse the next line for
@@ -310,12 +310,12 @@ class CCLIFileImport(SongImport):
                     else:
                         # check first line for verse type
                         if check_first_verse_line:
-                            if line.startswith(u'(PRE-CHORUS'):
+                            if line.startswith('(PRE-CHORUS'):
                                 verse_type = VerseType.tags[VerseType.PreChorus]
-                            elif line.startswith(u'(BRIDGE'):
+                            elif line.startswith('(BRIDGE'):
                                 verse_type = VerseType.tags[VerseType.Bridge]
                             # Handle all other misc types
-                            elif line.startswith(u'('):
+                            elif line.startswith('('):
                                 verse_type = VerseType.tags[VerseType.Other]
                             else:
                                 verse_text = verse_text + line
@@ -328,7 +328,7 @@ class CCLIFileImport(SongImport):
                     #line_number=2, copyright
                     if line_number == 2:
                         line_number += 1
-                        if clean_line.startswith(u'©'):
+                        if clean_line.startswith('©'):
                             self.copyright = clean_line
                         else:
                             song_author = clean_line
@@ -340,12 +340,12 @@ class CCLIFileImport(SongImport):
                         else:
                             song_author = clean_line
                     #line_number=4, comments lines before last line
-                    elif line_number == 4 and not clean_line.startswith(u'CCL'):
+                    elif line_number == 4 and not clean_line.startswith('CCL'):
                         self.comments += clean_line
         # split on known separators
-        author_list = song_author.split(u'/')
+        author_list = song_author.split('/')
         if len(author_list) < 2:
-            author_list = song_author.split(u'|')
+            author_list = song_author.split('|')
         # Clean spaces before and after author names.
         for author_name in author_list:
             self.addAuthor(author_name.strip())

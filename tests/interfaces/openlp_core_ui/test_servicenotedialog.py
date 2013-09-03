@@ -19,7 +19,7 @@ class TestStartNoteDialog(TestCase):
         Registry.create()
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
-        Registry().register(u'main_window', self.main_window)
+        Registry().register('main_window', self.main_window)
         self.form = servicenoteform.ServiceNoteForm()
 
     def tearDown(self):
@@ -35,36 +35,36 @@ class TestStartNoteDialog(TestCase):
         Test Service Note form functionality
         """
         # GIVEN: A dialog with an empty text box
-        self.form.text_edit.setPlainText(u'')
+        self.form.text_edit.setPlainText('')
 
         # WHEN displaying the UI and pressing enter
-        with patch(u'PyQt4.QtGui.QDialog.exec_'):
+        with patch('PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
         ok_widget = self.form.button_box.button(self.form.button_box.Save)
         QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following input text is returned
-        self.assertEqual(self.form.text_edit.toPlainText(), u'', u'The returned text should be empty')
+        self.assertEqual(self.form.text_edit.toPlainText(), '', 'The returned text should be empty')
 
         # WHEN displaying the UI, having set the text and pressing enter
-        text = u'OpenLP is the best worship software'
+        text = 'OpenLP is the best worship software'
         self.form.text_edit.setPlainText(text)
-        with patch(u'PyQt4.QtGui.QDialog.exec_'):
+        with patch('PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
         ok_widget = self.form.button_box.button(self.form.button_box.Save)
         QtTest.QTest.mouseClick(ok_widget, QtCore.Qt.LeftButton)
 
         # THEN the following text is returned
-        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The text originally entered should still be there')
+        self.assertEqual(self.form.text_edit.toPlainText(), text, 'The text originally entered should still be there')
 
         # WHEN displaying the UI, having set the text and pressing enter
-        self.form.text_edit.setPlainText(u'')
-        with patch(u'PyQt4.QtGui.QDialog.exec_'):
+        self.form.text_edit.setPlainText('')
+        with patch('PyQt4.QtGui.QDialog.exec_'):
             self.form.exec_()
             self.form.text_edit.setPlainText(text)
         okWidget = self.form.button_box.button(self.form.button_box.Save)
         QtTest.QTest.mouseClick(okWidget, QtCore.Qt.LeftButton)
 
         # THEN the following text is returned
-        self.assertEqual(self.form.text_edit.toPlainText(), text, u'The new text should be returned')
+        self.assertEqual(self.form.text_edit.toPlainText(), text, 'The new text should be returned')
 

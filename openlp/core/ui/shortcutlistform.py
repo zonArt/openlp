@@ -36,7 +36,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Registry, Settings
 from openlp.core.utils import translate
 from openlp.core.utils.actions import ActionList
-from shortcutlistdialog import Ui_ShortcutListDialog
+from .shortcutlistdialog import Ui_ShortcutListDialog
 
 REMOVE_AMPERSAND = re.compile(r'&{1}')
 
@@ -52,7 +52,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(ShortcutListForm, self).__init__(parent)
         self.setupUi(self)
         self.changedActions = {}
         self.action_list = ActionList.get_instance()
@@ -94,13 +94,13 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             return
         key_string = QtGui.QKeySequence(key).toString()
         if event.modifiers() & QtCore.Qt.ControlModifier == QtCore.Qt.ControlModifier:
-            key_string = u'Ctrl+' + key_string
+            key_string = 'Ctrl+' + key_string
         if event.modifiers() & QtCore.Qt.AltModifier == QtCore.Qt.AltModifier:
-            key_string = u'Alt+' + key_string
+            key_string = 'Alt+' + key_string
         if event.modifiers() & QtCore.Qt.ShiftModifier == QtCore.Qt.ShiftModifier:
-            key_string = u'Shift+' + key_string
+            key_string = 'Shift+' + key_string
         if event.modifiers() & QtCore.Qt.MetaModifier == QtCore.Qt.MetaModifier:
-            key_string = u'Meta+' + key_string
+            key_string = 'Meta+' + key_string
         key_sequence = QtGui.QKeySequence(key_string)
         if self._validiate_shortcut(self._currentItemAction(), key_sequence):
             if self.primaryPushButton.isChecked():
@@ -114,8 +114,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         self.changedActions = {}
         self.reloadShortcutList()
-        self._adjustButton(self.primaryPushButton, False, False, u'')
-        self._adjustButton(self.alternatePushButton, False, False, u'')
+        self._adjustButton(self.primaryPushButton, False, False, '')
+        self._adjustButton(self.alternatePushButton, False, False, '')
         return QtGui.QDialog.exec_(self)
 
     def reloadShortcutList(self):
@@ -129,11 +129,18 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 continue
             item = QtGui.QTreeWidgetItem([category.name])
             for action in category.actions:
-                actionText = REMOVE_AMPERSAND.sub('', action.text())
-                actionItem = QtGui.QTreeWidgetItem([actionText])
-                actionItem.setIcon(0, action.icon())
-                actionItem.setData(0, QtCore.Qt.UserRole, action)
-                item.addChild(actionItem)
+                action_text = REMOVE_AMPERSAND.sub('', action.text())
+                action_item = QtGui.QTreeWidgetItem([action_text])
+                action_item.setIcon(0, action.icon())
+                action_item.setData(0, QtCore.Qt.UserRole, action)
+                tool_tip_text = action.toolTip()
+                # Only display tool tips if they are helpful.
+                if tool_tip_text != action_text:
+                    # Display the tool tip in all three colums.
+                    action_item.setToolTip(0, tool_tip_text)
+                    action_item.setToolTip(1, tool_tip_text)
+                    action_item.setToolTip(2, tool_tip_text)
+                item.addChild(action_item)
             self.treeWidget.addTopLevelItem(item)
             item.setExpanded(True)
         self.refreshShortcutList()
@@ -152,11 +159,11 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 continue
             shortcuts = self._actionShortcuts(action)
             if not shortcuts:
-                item.setText(1, u'')
-                item.setText(2, u'')
+                item.setText(1, '')
+                item.setText(2, '')
             elif len(shortcuts) == 1:
                 item.setText(1, shortcuts[0].toString())
-                item.setText(2, u'')
+                item.setText(2, '')
             else:
                 item.setText(1, shortcuts[0].toString())
                 item.setText(2, shortcuts[1].toString())
@@ -169,7 +176,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.customRadioButton.setChecked(True)
         if toggled:
             self.alternatePushButton.setChecked(False)
-            self.primaryPushButton.setText(u'')
+            self.primaryPushButton.setText('')
             return
         action = self._currentItemAction()
         if action is None:
@@ -188,7 +195,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.customRadioButton.setChecked(True)
         if toggled:
             self.primaryPushButton.setChecked(False)
-            self.alternatePushButton.setText(u'')
+            self.alternatePushButton.setText('')
             return
         action = self._currentItemAction()
         if action is None:
@@ -203,7 +210,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
             # When we do not have a primary shortcut, the just entered alternate shortcut will automatically become the
             # primary shortcut. That is why we have to adjust the primary button's text.
             self.primaryPushButton.setText(self.alternatePushButton.text())
-            self.alternatePushButton.setText(u'')
+            self.alternatePushButton.setText('')
         self.refreshShortcutList()
 
     def onItemDoubleClicked(self, item, column):
@@ -217,10 +224,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         self.primaryPushButton.setChecked(column in [0, 1])
         self.alternatePushButton.setChecked(column not in [0, 1])
         if column in [0, 1]:
-            self.primaryPushButton.setText(u'')
+            self.primaryPushButton.setText('')
             self.primaryPushButton.setFocus()
         else:
-            self.alternatePushButton.setText(u'')
+            self.alternatePushButton.setText('')
             self.alternatePushButton.setFocus()
 
     def onCurrentItemChanged(self, item=None, previousItem=None):
@@ -230,10 +237,10 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         action = self._currentItemAction(item)
         self.primaryPushButton.setEnabled(action is not None)
         self.alternatePushButton.setEnabled(action is not None)
-        primary_text = u''
-        alternate_text = u''
-        primary_label_text = u''
-        alternate_label_text = u''
+        primary_text = ''
+        alternate_text = ''
+        primary_label_text = ''
+        alternate_label_text = ''
         if action is None:
             self.primaryPushButton.setChecked(False)
             self.alternatePushButton.setChecked(False)
@@ -255,9 +262,9 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 alternate_text = shortcuts[1].toString()
         # When we are capturing a new shortcut, we do not want, the buttons to display the current shortcut.
         if self.primaryPushButton.isChecked():
-            primary_text = u''
+            primary_text = ''
         if self.alternatePushButton.isChecked():
-            alternate_text = u''
+            alternate_text = ''
         self.primaryPushButton.setText(primary_text)
         self.alternatePushButton.setText(alternate_text)
         self.primaryLabel.setText(primary_label_text)
@@ -281,8 +288,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
                 'shortcuts to their defaults?'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)) == QtGui.QMessageBox.No:
             return
-        self._adjustButton(self.primaryPushButton, False, text=u'')
-        self._adjustButton(self.alternatePushButton, False, text=u'')
+        self._adjustButton(self.primaryPushButton, False, text='')
+        self._adjustButton(self.alternatePushButton, False, text='')
         for category in self.action_list.categories:
             for action in category.actions:
                 self.changedActions[action] = action.defaultShortcuts
@@ -301,8 +308,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         temp_shortcuts = self._actionShortcuts(action)
         self.changedActions[action] = action.defaultShortcuts
         self.refreshShortcutList()
-        primary_button_text = u''
-        alternate_button_text = u''
+        primary_button_text = ''
+        alternate_button_text = ''
         if temp_shortcuts:
             primary_button_text = temp_shortcuts[0].toString()
         if len(temp_shortcuts) == 2:
@@ -327,14 +334,14 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         :class:`~openlp.core.utils.ActionList`.
         """
         settings = Settings()
-        settings.beginGroup(u'shortcuts')
+        settings.beginGroup('shortcuts')
         for category in self.action_list.categories:
             # Check if the category is for internal use only.
             if category.name is None:
                 continue
             for action in category.actions:
                 if action in self.changedActions:
-                    old_shortcuts = map(QtGui.QKeySequence.toString, action.shortcuts())
+                    old_shortcuts = list(map(QtGui.QKeySequence.toString, action.shortcuts()))
                     action.setShortcuts(self.changedActions[action])
                     self.action_list.update_shortcut_map(action, old_shortcuts)
                 settings.setValue(action.objectName(), action.shortcuts())
@@ -461,8 +468,8 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)

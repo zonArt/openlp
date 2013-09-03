@@ -40,28 +40,28 @@ log = logging.getLogger(__name__)
 
 # Some settings starting with "media" are in core, because they are needed for core functionality.
 __default_settings__ = {
-    u'media/media auto start': QtCore.Qt.Unchecked,
-    u'media/media files': []
+    'media/media auto start': QtCore.Qt.Unchecked,
+    'media/media files': []
 }
 
 
 class MediaPlugin(Plugin):
-    log.info(u'%s MediaPlugin loaded', __name__)
+    log.info('%s MediaPlugin loaded', __name__)
 
     def __init__(self):
-        Plugin.__init__(self, u'media', __default_settings__, MediaMediaItem)
+        super(MediaPlugin, self).__init__('media', __default_settings__, MediaMediaItem)
         self.weight = -6
-        self.icon_path = u':/plugins/plugin_media.png'
+        self.icon_path = ':/plugins/plugin_media.png'
         self.icon = build_icon(self.icon_path)
         # passed with drag and drop messages
-        self.dnd_id = u'Media'
+        self.dnd_id = 'Media'
 
     def create_settings_tab(self, parent):
         """
         Create the settings Tab
         """
         visible_name = self.get_string(StringContent.VisibleName)
-        self.settings_tab = MediaTab(parent, self.name, visible_name[u'title'], self.icon_path)
+        self.settings_tab = MediaTab(parent, self.name, visible_name['title'], self.icon_path)
 
     def about(self):
         about_text = translate('MediaPlugin', '<strong>Media Plugin</strong>'
@@ -74,23 +74,23 @@ class MediaPlugin(Plugin):
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
-            u'singular': translate('MediaPlugin', 'Media', 'name singular'),
-            u'plural': translate('MediaPlugin', 'Media', 'name plural')
+            'singular': translate('MediaPlugin', 'Media', 'name singular'),
+            'plural': translate('MediaPlugin', 'Media', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.text_strings[StringContent.VisibleName] = {
-            u'title': translate('MediaPlugin', 'Media', 'container title')
+            'title': translate('MediaPlugin', 'Media', 'container title')
         }
         # Middle Header Bar
         tooltips = {
-            u'load': translate('MediaPlugin', 'Load new media.'),
-            u'import': u'',
-            u'new': translate('MediaPlugin', 'Add new media.'),
-            u'edit': translate('MediaPlugin', 'Edit the selected media.'),
-            u'delete': translate('MediaPlugin', 'Delete the selected media.'),
-            u'preview': translate('MediaPlugin', 'Preview the selected media.'),
-            u'live': translate('MediaPlugin', 'Send the selected media live.'),
-            u'service': translate('MediaPlugin', 'Add the selected media to the service.')
+            'load': translate('MediaPlugin', 'Load new media.'),
+            'import': '',
+            'new': translate('MediaPlugin', 'Add new media.'),
+            'edit': translate('MediaPlugin', 'Edit the selected media.'),
+            'delete': translate('MediaPlugin', 'Delete the selected media.'),
+            'preview': translate('MediaPlugin', 'Preview the selected media.'),
+            'live': translate('MediaPlugin', 'Send the selected media live.'),
+            'service': translate('MediaPlugin', 'Add the selected media to the service.')
         }
         self.set_plugin_ui_text_strings(tooltips)
 
@@ -98,7 +98,7 @@ class MediaPlugin(Plugin):
         """
         Time to tidy up on exit.
         """
-        log.info(u'Media Finalising')
+        log.info('Media Finalising')
         self.media_controller.finalise()
         Plugin.finalise(self)
 
@@ -124,8 +124,8 @@ class MediaPlugin(Plugin):
         """
         Adds the media controller to the class dynamically
         """
-        if not hasattr(self, u'_media_controller'):
-            self._media_controller = Registry().get(u'media_controller')
+        if not hasattr(self, '_media_controller'):
+            self._media_controller = Registry().get('media_controller')
         return self._media_controller
 
     media_controller = property(_get_media_controller)
