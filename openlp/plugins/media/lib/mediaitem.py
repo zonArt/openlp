@@ -43,24 +43,24 @@ from openlp.core.utils import AppLocation, get_locale_key
 log = logging.getLogger(__name__)
 
 
-CLAPPERBOARD = u':/media/slidecontroller_multimedia.png'
-VIDEO_ICON = build_icon(u':/media/media_video.png')
-AUDIO_ICON = build_icon(u':/media/media_audio.png')
-DVD_ICON = build_icon(u':/media/media_video.png')
-ERROR_ICON = build_icon(u':/general/general_delete.png')
+CLAPPERBOARD = ':/media/slidecontroller_multimedia.png'
+VIDEO_ICON = build_icon(':/media/media_video.png')
+AUDIO_ICON = build_icon(':/media/media_audio.png')
+DVD_ICON = build_icon(':/media/media_video.png')
+ERROR_ICON = build_icon(':/general/general_delete.png')
 
 
 class MediaMediaItem(MediaManagerItem):
     """
     This is the custom media manager item for Media Slides.
     """
-    log.info(u'%s MediaMediaItem loaded', __name__)
+    log.info('%s MediaMediaItem loaded', __name__)
 
     def __init__(self, parent, plugin):
-        self.icon_path = u'images/image'
+        self.icon_path = 'images/image'
         self.background = False
-        self.automatic = u''
-        MediaManagerItem.__init__(self, parent, plugin)
+        self.automatic = ''
+        super(MediaMediaItem, self).__init__(parent, plugin)
         self.single_service_item = False
         self.has_search = True
         self.media_object = None
@@ -71,12 +71,12 @@ class MediaMediaItem(MediaManagerItem):
         self.display_controller.preview_display = Display(self.display_controller, False, self.display_controller)
         self.display_controller.preview_display.hide()
         self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
-        self.display_controller.preview_display.screen = {u'size': self.display_controller.preview_display.geometry()}
+        self.display_controller.preview_display.screen = {'size': self.display_controller.preview_display.geometry()}
         self.display_controller.preview_display.setup()
         self.media_controller.setup_display(self.display_controller.preview_display, False)
-        Registry().register_function(u'video_background_replaced', self.video_background_replaced)
-        Registry().register_function(u'mediaitem_media_rebuild', self.rebuild_players)
-        Registry().register_function(u'config_screen_changed', self.display_setup)
+        Registry().register_function('video_background_replaced', self.video_background_replaced)
+        Registry().register_function('mediaitem_media_rebuild', self.rebuild_players)
+        Registry().register_function('config_screen_changed', self.display_setup)
         # Allow DnD from the desktop
         self.list_view.activateDnD()
 
@@ -105,19 +105,19 @@ class MediaMediaItem(MediaManagerItem):
 
     def add_end_header_bar(self):
         # Replace backgrounds do not work at present so remove functionality.
-        self.replace_action = self.toolbar.add_toolbar_action(u'replace_action', icon=u':/slides/slide_blank.png',
+        self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_blank.png',
             triggers=self.onReplaceClick)
-        self.reset_action = self.toolbar.add_toolbar_action(u'reset_action', icon=u':/system/system_close.png',
+        self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
             visible=False, triggers=self.onResetClick)
         self.media_widget = QtGui.QWidget(self)
-        self.media_widget.setObjectName(u'media_widget')
+        self.media_widget.setObjectName('media_widget')
         self.display_layout = QtGui.QFormLayout(self.media_widget)
         self.display_layout.setMargin(self.display_layout.spacing())
-        self.display_layout.setObjectName(u'display_layout')
+        self.display_layout.setObjectName('display_layout')
         self.display_type_label = QtGui.QLabel(self.media_widget)
-        self.display_type_label.setObjectName(u'display_type_label')
+        self.display_type_label.setObjectName('display_type_label')
         self.display_type_combo_box = create_horizontal_adjusting_combo_box(
-            self.media_widget, u'display_type_combo_box')
+            self.media_widget, 'display_type_combo_box')
         self.display_type_label.setBuddy(self.display_type_combo_box)
         self.display_layout.addRow(self.display_type_label, self.display_type_combo_box)
         # Add the Media widget to the page layout.
@@ -154,8 +154,8 @@ class MediaMediaItem(MediaManagerItem):
             filename = item.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
                 service_item = ServiceItem()
-                service_item.title = u'webkit'
-                service_item.processor = u'webkit'
+                service_item.title = 'webkit'
+                service_item.processor = 'webkit'
                 (path, name) = os.path.split(filename)
                 service_item.add_from_command(path, name,CLAPPERBOARD)
                 if self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True):
@@ -195,9 +195,9 @@ class MediaMediaItem(MediaManagerItem):
             if not self.media_controller.media_length(service_item):
                 return False
         service_item.add_capability(ItemCapabilities.CanAutoStartForLive)
-        service_item.add_capability(ItemCapabilities.RequiresMedia)
         service_item.add_capability(ItemCapabilities.CanEditTitle)
-        if Settings().value(self.settings_section + u'/media auto start') == QtCore.Qt.Checked:
+        service_item.add_capability(ItemCapabilities.RequiresMedia)
+        if Settings().value(self.settings_section + '/media auto start') == QtCore.Qt.Checked:
             service_item.will_auto_start = True
             # force a non-existent theme
         service_item.theme = -1
@@ -206,9 +206,9 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.list_view.clear()
         self.list_view.setIconSize(QtCore.QSize(88, 50))
-        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
+        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
         check_directory_exists(self.servicePath)
-        self.load_list(Settings().value(self.settings_section + u'/media files'))
+        self.load_list(Settings().value(self.settings_section + '/media files'))
         self.populateDisplayTypes()
 
     def rebuild_players(self):
@@ -217,8 +217,8 @@ class MediaMediaItem(MediaManagerItem):
         """
         self.populateDisplayTypes()
         self.on_new_file_masks = translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)') % (
-            u' '.join(self.media_controller.video_extensions_list),
-            u' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
+            ' '.join(self.media_controller.video_extensions_list),
+            ' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
 
     def display_setup(self):
         self.media_controller.setup_display(self.display_controller.preview_display, False)
@@ -257,28 +257,28 @@ class MediaMediaItem(MediaManagerItem):
             row_list.sort(reverse=True)
             for row in row_list:
                 self.list_view.takeItem(row)
-            Settings().setValue(self.settings_section + u'/media files', self.get_file_list())
+            Settings().setValue(self.settings_section + '/media files', self.get_file_list())
 
     def load_list(self, media, target_group=None):
         # Sort the media by its filename considering language specific characters.
-        media.sort(key=lambda filename: get_locale_key(os.path.split(unicode(filename))[1]))
+        media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
             if not os.path.exists(track):
-                filename = os.path.split(unicode(track))[1]
+                filename = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(ERROR_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
             elif track_info.isFile():
-                filename = os.path.split(unicode(track))[1]
+                filename = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
-                if u'*.%s' % (filename.split(u'.')[-1].lower()) in self.media_controller.audio_extensions_list:
+                if '*.%s' % (filename.split('.')[-1].lower()) in self.media_controller.audio_extensions_list:
                     item_name.setIcon(AUDIO_ICON)
                 else:
                     item_name.setIcon(VIDEO_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
             else:
-                filename = os.path.split(unicode(track))[1]
+                filename = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(DVD_ICON))
                 item_name.setData(QtCore.Qt.UserRole, track)
@@ -286,23 +286,23 @@ class MediaMediaItem(MediaManagerItem):
             self.list_view.addItem(item_name)
 
     def get_list(self, type=MediaType.Audio):
-        media = Settings().value(self.settings_section + u'/media files')
-        media.sort(key=lambda filename: get_locale_key(os.path.split(unicode(filename))[1]))
+        media = Settings().value(self.settings_section + '/media files')
+        media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
         extension = []
         if type == MediaType.Audio:
             extension = self.media_controller.audio_extensions_list
         else:
             extension = self.media_controller.video_extensions_list
-        extension = map(lambda x: x[1:], extension)
-        media = filter(lambda x: os.path.splitext(x)[1] in extension, media)
+        extension = [x[1:] for x in extension]
+        media = [x for x in media if os.path.splitext(x)[1] in extension]
         return media
 
     def search(self, string, showError):
-        files = Settings().value(self.settings_section + u'/media files')
+        files = Settings().value(self.settings_section + '/media files')
         results = []
         string = string.lower()
         for file in files:
-            filename = os.path.split(unicode(file))[1]
+            filename = os.path.split(str(file))[1]
             if filename.lower().find(string) > -1:
                 results.append([file, filename])
         return results

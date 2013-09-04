@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -30,7 +30,7 @@
 The :mod:`openlp` module contains all the project produced OpenLP functionality
 """
 
-import core
-import plugins
+import openlp.core
+import openlp.plugins
 
-__all__ = [u'core', u'plugins']
+__all__ = ['core', 'plugins']

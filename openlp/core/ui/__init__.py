@@ -77,28 +77,28 @@ class DisplayControllerType(object):
     Plugin = 2
 
 
-from firsttimeform import FirstTimeForm
-from firsttimelanguageform import FirstTimeLanguageForm
-from themelayoutform import ThemeLayoutForm
-from themeform import ThemeForm
-from filerenameform import FileRenameForm
-from starttimeform import StartTimeForm
-from maindisplay import MainDisplay, Display
-from servicenoteform import ServiceNoteForm
-from serviceitemeditform import ServiceItemEditForm
-from slidecontroller import SlideController, DisplayController
-from splashscreen import SplashScreen
-from generaltab import GeneralTab
-from themestab import ThemesTab
-from advancedtab import AdvancedTab
-from aboutform import AboutForm
-from pluginform import PluginForm
-from settingsform import SettingsForm
-from formattingtagform import FormattingTagForm
-from shortcutlistform import ShortcutListForm
-from mediadockmanager import MediaDockManager
-from servicemanager import ServiceManager
-from thememanager import ThemeManager
+from .firsttimeform import FirstTimeForm
+from .firsttimelanguageform import FirstTimeLanguageForm
+from .themelayoutform import ThemeLayoutForm
+from .themeform import ThemeForm
+from .filerenameform import FileRenameForm
+from .starttimeform import StartTimeForm
+from .maindisplay import MainDisplay, Display
+from .servicenoteform import ServiceNoteForm
+from .serviceitemeditform import ServiceItemEditForm
+from .slidecontroller import SlideController, DisplayController
+from .splashscreen import SplashScreen
+from .generaltab import GeneralTab
+from .themestab import ThemesTab
+from .advancedtab import AdvancedTab
+from .aboutform import AboutForm
+from .pluginform import PluginForm
+from .settingsform import SettingsForm
+from .formattingtagform import FormattingTagForm
+from .shortcutlistform import ShortcutListForm
+from .mediadockmanager import MediaDockManager
+from .servicemanager import ServiceManager
+from .thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
     'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',

@@ -50,13 +50,13 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
     Class to manage a dialog which help the user to refer a book name a
     to a english book name
     """
-    log.info(u'BookNameForm loaded')
+    log.info('BookNameForm loaded')
 
     def __init__(self, parent = None):
         """
         Constructor
         """
-        QDialog.__init__(self, parent)
+        super(BookNameForm, self).__init__(parent)
         self.setupUi(self)
         self.custom_signals()
         self.book_names = BibleStrings().BookNames
@@ -85,17 +85,17 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         for item in items:
             add_book = True
             for book in self.books:
-                if book.book_reference_id == item[u'id']:
+                if book.book_reference_id == item['id']:
                     add_book = False
                     break
-            if self.old_testament_check_box.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 1:
+            if self.old_testament_check_box.checkState() == QtCore.Qt.Unchecked and item['testament_id'] == 1:
                 add_book = False
-            elif self.new_testament_check_box.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 2:
+            elif self.new_testament_check_box.checkState() == QtCore.Qt.Unchecked and item['testament_id'] == 2:
                 add_book = False
-            elif self.apocrypha_check_box.checkState() == QtCore.Qt.Unchecked and item[u'testament_id'] == 3:
+            elif self.apocrypha_check_box.checkState() == QtCore.Qt.Unchecked and item['testament_id'] == 3:
                 add_book = False
             if add_book:
-                self.corresponding_combo_box.addItem(self.book_names[item[u'abbreviation']])
+                self.corresponding_combo_box.addItem(self.book_names[item['abbreviation']])
 
     def exec_(self, name, books, max_books):
         self.books = books
@@ -106,7 +106,7 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
         elif max_books <= 66:
             self.apocrypha_check_box.setCheckState(QtCore.Qt.Unchecked)
         self.reload_combo_box()
-        self.current_book_label.setText(unicode(name))
+        self.current_book_label.setText(str(name))
         self.corresponding_combo_box.setFocus()
         return QDialog.exec_(self)
 
@@ -117,11 +117,10 @@ class BookNameForm(QDialog, Ui_BookNameDialog):
             return False
         else:
             cor_book = self.corresponding_combo_box.currentText()
-            for character in u'\\.^$*+?{}[]()':
-                cor_book = cor_book.replace(character, u'\\' + character)
-            books = filter(
-                lambda key: re.match(cor_book, unicode(self.book_names[key]), re.UNICODE), self.book_names.keys())
-            books = filter(None, map(BiblesResourcesDB.get_book, books))
+            for character in '\\.^$*+?{}[]()':
+                cor_book = cor_book.replace(character, '\\' + character)
+            books = [key for key in list(self.book_names.keys()) if re.match(cor_book, str(self.book_names[key]), re.UNICODE)]
+            books = [_f for _f in map(BiblesResourcesDB.get_book, books) if _f]
             if books:
-                self.book_id = books[0][u'id']
+                self.book_id = books[0]['id']
             return QDialog.accept(self)

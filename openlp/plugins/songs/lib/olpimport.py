@@ -41,7 +41,7 @@ from openlp.core.lib.db import BaseModel
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song
 from openlp.plugins.songs.lib.db import Author, Book, Song, Topic, MediaFile
-from songimport import SongImport
+from .songimport import SongImport
 
 log = logging.getLogger(__name__)
 
@@ -106,30 +106,30 @@ class OpenLPSongImport(SongImport):
             pass
 
         # Check the file type
-        if not self.import_source.endswith(u'.sqlite'):
+        if not self.import_source.endswith('.sqlite'):
             self.logError(self.import_source,
                 translate('SongsPlugin.OpenLPSongImport', 'Not a valid OpenLP 2.0 song database.'))
             return
-        self.import_source = u'sqlite:///%s' % self.import_source
+        self.import_source = 'sqlite:///%s' % self.import_source
         # Load the db file
         engine = create_engine(self.import_source)
         source_meta = MetaData()
         source_meta.reflect(engine)
         self.sourceSession = scoped_session(sessionmaker(bind=engine))
-        if u'media_files' in source_meta.tables.keys():
+        if 'media_files' in list(source_meta.tables.keys()):
             has_media_files = True
         else:
             has_media_files = False
-        source_authors_table = source_meta.tables[u'authors']
-        source_song_books_table = source_meta.tables[u'song_books']
-        source_songs_table = source_meta.tables[u'songs']
-        source_topics_table = source_meta.tables[u'topics']
-        source_authors_songs_table = source_meta.tables[u'authors_songs']
-        source_songs_topics_table = source_meta.tables[u'songs_topics']
+        source_authors_table = source_meta.tables['authors']
+        source_song_books_table = source_meta.tables['song_books']
+        source_songs_table = source_meta.tables['songs']
+        source_topics_table = source_meta.tables['topics']
+        source_authors_songs_table = source_meta.tables['authors_songs']
+        source_songs_topics_table = source_meta.tables['songs_topics']
         source_media_files_songs_table = None
         if has_media_files:
-            source_media_files_table = source_meta.tables[u'media_files']
-            source_media_files_songs_table = source_meta.tables.get(u'media_files_songs')
+            source_media_files_table = source_meta.tables['media_files']
+            source_media_files_songs_table = source_meta.tables.get('media_files_songs')
             try:
                 class_mapper(OldMediaFile)
             except UnmappedClassError:
@@ -177,12 +177,12 @@ class OpenLPSongImport(SongImport):
             if has_media_files and hasattr(song, 'alternate_title'):
                 new_song.alternate_title = song.alternate_title
             else:
-                old_titles = song.search_title.split(u'@')
+                old_titles = song.search_title.split('@')
                 if len(old_titles) > 1:
                     new_song.alternate_title = old_titles[1]
             # Values will be set when cleaning the song.
-            new_song.search_title = u''
-            new_song.search_lyrics = u''
+            new_song.search_title = ''
+            new_song.search_lyrics = ''
             new_song.song_number = song.song_number
             new_song.lyrics = song.lyrics
             new_song.verse_order = song.verse_order

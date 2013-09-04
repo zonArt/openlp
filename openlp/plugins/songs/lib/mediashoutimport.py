@@ -35,7 +35,7 @@ import pyodbc
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
-VERSE_TAGS = [u'V', u'C', u'B', u'O', u'P', u'I', u'E']
+VERSE_TAGS = ['V', 'C', 'B', 'O', 'P', 'I', 'E']
 
 class MediaShoutImport(SongImport):
     """
@@ -53,34 +53,34 @@ class MediaShoutImport(SongImport):
         Receive a single file to import.
         """
         try:
-           conn = pyodbc.connect(u'DRIVER={Microsoft Access Driver (*.mdb)};'
-            u'DBQ=%s;PWD=6NOZ4eHK7k' % self.import_source)
+           conn = pyodbc.connect('DRIVER={Microsoft Access Driver (*.mdb)};'
+            'DBQ=%s;PWD=6NOZ4eHK7k' % self.import_source)
         except:
             # Unfortunately no specific exception type
             self.logError(self.import_source,
                 translate('SongsPlugin.MediaShoutImport', 'Unable to open the MediaShout database.'))
             return
         cursor = conn.cursor()
-        cursor.execute(u'SELECT Record, Title, Author, Copyright, '
-                       u'SongID, CCLI, Notes FROM Songs ORDER BY Title')
+        cursor.execute('SELECT Record, Title, Author, Copyright, '
+                       'SongID, CCLI, Notes FROM Songs ORDER BY Title')
         songs = cursor.fetchall()
         self.import_wizard.progress_bar.setMaximum(len(songs))
         for song in songs:
             if self.stop_import_flag:
                 break
-            cursor.execute(u'SELECT Type, Number, Text FROM Verses '
-                u'WHERE Record = %s ORDER BY Type, Number' % song.Record)
+            cursor.execute('SELECT Type, Number, Text FROM Verses '
+                'WHERE Record = %s ORDER BY Type, Number' % song.Record)
             verses = cursor.fetchall()
-            cursor.execute(u'SELECT Type, Number, POrder FROM PlayOrder '
-                u'WHERE Record = %s ORDER BY POrder' % song.Record)
+            cursor.execute('SELECT Type, Number, POrder FROM PlayOrder '
+                'WHERE Record = %s ORDER BY POrder' % song.Record)
             verse_order = cursor.fetchall()
-            cursor.execute(u'SELECT Name FROM Themes INNER JOIN SongThemes '
-                u'ON SongThemes.ThemeId = Themes.ThemeId '
-                u'WHERE SongThemes.Record = %s' % song.Record)
+            cursor.execute('SELECT Name FROM Themes INNER JOIN SongThemes '
+                'ON SongThemes.ThemeId = Themes.ThemeId '
+                'WHERE SongThemes.Record = %s' % song.Record)
             topics = cursor.fetchall()
-            cursor.execute(u'SELECT Name FROM Groups INNER JOIN SongGroups '
-                u'ON SongGroups.GroupId = Groups.GroupId '
-                u'WHERE SongGroups.Record = %s' % song.Record)
+            cursor.execute('SELECT Name FROM Groups INNER JOIN SongGroups '
+                'ON SongGroups.GroupId = Groups.GroupId '
+                'WHERE SongGroups.Record = %s' % song.Record)
             topics += cursor.fetchall()
             self.processSong(song, verses, verse_order, topics)
 
@@ -95,14 +95,14 @@ class MediaShoutImport(SongImport):
         self.comments = song.Notes
         for topic in topics:
             self.topics.append(topic.Name)
-        if u'-' in song.SongID:
-            self.songBookName, self.songNumber = song.SongID.split(u'-', 1)
+        if '-' in song.SongID:
+            self.songBookName, self.songNumber = song.SongID.split('-', 1)
         else:
             self.songBookName = song.SongID
         for verse in verses:
-            tag = VERSE_TAGS[verse.Type] + unicode(verse.Number) if verse.Type < len(VERSE_TAGS) else u'O'
+            tag = VERSE_TAGS[verse.Type] + str(verse.Number) if verse.Type < len(VERSE_TAGS) else 'O'
             self.addVerse(verse.Text, tag)
         for order in verse_order:
             if order.Type < len(VERSE_TAGS):
-                self.verseOrderList.append(VERSE_TAGS[order.Type] + unicode(order.Number))
+                self.verseOrderList.append(VERSE_TAGS[order.Type] + str(order.Number))
         self.finish()

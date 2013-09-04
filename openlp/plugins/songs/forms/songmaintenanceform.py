@@ -27,6 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 import logging
+import os
 
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
@@ -37,7 +38,7 @@ from openlp.plugins.songs.forms.authorsform import AuthorsForm
 from openlp.plugins.songs.forms.topicsform import TopicsForm
 from openlp.plugins.songs.forms.songbookform import SongBookForm
 from openlp.plugins.songs.lib.db import Author, Book, Topic, Song
-from songmaintenancedialog import Ui_SongMaintenanceDialog
+from .songmaintenancedialog import Ui_SongMaintenanceDialog
 
 log = logging.getLogger(__name__)
 
@@ -133,7 +134,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             if author.display_name:
                 author_name = QtGui.QListWidgetItem(author.display_name)
             else:
-                author_name = QtGui.QListWidgetItem(u' '.join([author.first_name, author.last_name]))
+                author_name = QtGui.QListWidgetItem(' '.join([author.first_name, author.last_name]))
             author_name.setData(QtCore.Qt.UserRole, author.id)
             self.authors_list_widget.addItem(author_name)
 
@@ -155,7 +156,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         self.song_books_list_widget.clear()
         books = self.manager.get_all_objects(Book, order_by_ref=Book.name)
         for book in books:
-            book_name = QtGui.QListWidgetItem(u'%s (%s)' % (book.name, book.publisher))
+            book_name = QtGui.QListWidgetItem('%s (%s)' % (book.name, book.publisher))
             book_name.setData(QtCore.Qt.UserRole, book.id)
             self.song_books_list_widget.addItem(book_name)
 
@@ -287,7 +288,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 if self.manager.save_object(author):
                     self.reset_authors()
                     if not self.from_song_edit:
-                        Registry().execute(u'songs_load_list')
+                        Registry().execute('songs_load_list')
                 else:
                     critical_error_message_box(
                         message=translate('SongsPlugin.SongMaintenanceForm', 'Could not save your changes.'))
@@ -348,7 +349,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
             return
         book = self.manager.get_object(Book, book_id)
         if book.publisher is None:
-            book.publisher = u''
+            book.publisher = ''
         self.song_book_form.name_edit.setText(book.name)
         self.song_book_form.publisher_edit.setText(book.publisher)
         # Save the book's name and publisher for the case that they have to
@@ -382,7 +383,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         merge(db_object)
         reset()
         if not self.from_song_edit:
-            Registry().execute(u'songs_load_list')
+            Registry().execute('songs_load_list')
         self.application.set_normal_cursor()
 
     def merge_authors(self, old_author):
@@ -525,10 +526,14 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
 
     def _get_application(self):
         """
-        Adds the application to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == 'nt':
+            return Registry().get('application')
+        else:
+            if not hasattr(self, '_application'):
+                self._application = Registry().get('application')
+            return self._application
 
     application = property(_get_application)

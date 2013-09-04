@@ -28,13 +28,14 @@
 ###############################################################################
 
 import logging
+import os
 import re
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import Registry, UiStrings, translate
 from openlp.core.lib.ui import critical_error_message_box
-from editbibledialog import Ui_EditBibleDialog
+from .editbibledialog import Ui_EditBibleDialog
 from openlp.plugins.bibles.lib import BibleStrings
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB
 
@@ -44,13 +45,13 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
     """
     Class to manage the editing of a bible
     """
-    log.info(u'%s EditBibleForm loaded', __name__)
+    log.info('%s EditBibleForm loaded', __name__)
 
     def __init__(self, media_item, parent, manager):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(EditBibleForm, self).__init__(parent)
         self.media_item = media_item
         self.book_names = BibleStrings().BookNames
         self.setupUi(self)
@@ -63,16 +64,16 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         ``bible``
             The name of the bible.
         """
-        log.debug(u'Load Bible')
+        log.debug('Load Bible')
         self.bible = bible
-        self.version_name_edit.setText(self.manager.get_meta_data(self.bible, u'name').value)
-        self.copyright_edit.setText(self.manager.get_meta_data(self.bible, u'copyright').value)
-        self.permissions_edit.setText(self.manager.get_meta_data(self.bible, u'permissions').value)
-        book_name_language = self.manager.get_meta_data(self.bible, u'book_name_language')
-        if book_name_language and book_name_language.value != u'None':
+        self.version_name_edit.setText(self.manager.get_meta_data(self.bible, 'name').value)
+        self.copyright_edit.setText(self.manager.get_meta_data(self.bible, 'copyright').value)
+        self.permissions_edit.setText(self.manager.get_meta_data(self.bible, 'permissions').value)
+        book_name_language = self.manager.get_meta_data(self.bible, 'book_name_language')
+        if book_name_language and book_name_language.value != 'None':
             self.language_selection_combo_box.setCurrentIndex(int(book_name_language.value) + 1)
         self.books = {}
-        self.webbible = self.manager.get_meta_data(self.bible, u'download_source')
+        self.webbible = self.manager.get_meta_data(self.bible, 'download_source')
         if self.webbible:
             self.book_name_notice.setText(translate('BiblesPlugin.EditBibleForm',
                 'This is a Web Download Bible.\nIt is not possible to customize the Book Names.'))
@@ -82,22 +83,22 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 'To use the customized book names, "Bible language" must be selected on the Meta Data tab or, '
                 'if "Global settings" is selected, on the Bible page in Configure OpenLP.'))
             for book in BiblesResourcesDB.get_books():
-                self.books[book[u'abbreviation']] = self.manager.get_book_by_id(self.bible, book[u'id'])
-                if self.books[book[u'abbreviation']] and not self.webbible:
-                    self.book_name_edit[book[u'abbreviation']].setText(self.books[book[u'abbreviation']].name)
+                self.books[book['abbreviation']] = self.manager.get_book_by_id(self.bible, book['id'])
+                if self.books[book['abbreviation']] and not self.webbible:
+                    self.book_name_edit[book['abbreviation']].setText(self.books[book['abbreviation']].name)
                 else:
                     # It is necessary to remove the Widget otherwise there still
                     # exists the vertical spacing in QFormLayout
-                    self.book_name_widget_layout.removeWidget(self.book_name_label[book[u'abbreviation']])
-                    self.book_name_label[book[u'abbreviation']].hide()
-                    self.book_name_widget_layout.removeWidget(self.book_name_edit[book[u'abbreviation']])
-                    self.book_name_edit[book[u'abbreviation']].hide()
+                    self.book_name_widget_layout.removeWidget(self.book_name_label[book['abbreviation']])
+                    self.book_name_label[book['abbreviation']].hide()
+                    self.book_name_widget_layout.removeWidget(self.book_name_edit[book['abbreviation']])
+                    self.book_name_edit[book['abbreviation']].hide()
 
     def reject(self):
         """
         Exit Dialog and do not save
         """
-        log.debug(u'BibleEditForm.reject')
+        log.debug('BibleEditForm.reject')
         self.bible = None
         QtGui.QDialog.reject(self)
 
@@ -105,7 +106,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         Exit Dialog and save data
         """
-        log.debug(u'BibleEditForm.accept')
+        log.debug('BibleEditForm.accept')
         version = self.version_name_edit.text()
         copyright = self.copyright_edit.text()
         permissions = self.permissions_edit.text()
@@ -116,7 +117,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
             return
         if not self.webbible:
             custom_names = {}
-            for abbr, book in self.books.iteritems():
+            for abbr, book in self.books.items():
                 if book:
                     custom_names[abbr] = self.book_name_edit[abbr].text()
                     if book.name != custom_names[abbr]:
@@ -125,7 +126,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         self.application.set_busy_cursor()
         self.manager.save_meta_data(self.bible, version, copyright, permissions, book_name_language)
         if not self.webbible:
-            for abbr, book in self.books.iteritems():
+            for abbr, book in self.books.items():
                 if book:
                     if book.name != custom_names[abbr]:
                         book.name = custom_names[abbr]
@@ -149,7 +150,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                 translate('BiblesPlugin.BibleEditForm',
                 'You need to set a copyright for your Bible. Bibles in the Public Domain need to be marked as such.'))
             return False
-        elif self.manager.exists(name) and self.manager.get_meta_data(self.bible, u'name').value != \
+        elif self.manager.exists(name) and self.manager.get_meta_data(self.bible, 'name').value != \
             name:
             self.version_name_edit.setFocus()
             critical_error_message_box(translate('BiblesPlugin.BibleEditForm', 'Bible Exists'),
@@ -162,7 +163,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
         """
         Validate a book.
         """
-        book_regex = re.compile(u'[\d]*[^\d]+$')
+        book_regex = re.compile('[\d]*[^\d]+$')
         if not new_book_name:
             self.book_name_edit[abbreviation].setFocus()
             critical_error_message_box(UiStrings().EmptyField,
@@ -176,7 +177,7 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
                     'The book name "%s" is not correct.\nNumbers can only be used at the beginning and must\nbe '
                     'followed by one or more non-numeric characters.') % new_book_name)
             return False
-        for abbr, book in self.books.iteritems():
+        for abbr, book in self.books.items():
             if book:
                 if abbr == abbreviation:
                     continue
@@ -191,10 +192,14 @@ class EditBibleForm(QtGui.QDialog, Ui_EditBibleDialog):
 
     def _get_application(self):
         """
-        Adds the openlp to the class dynamically
+        Adds the openlp to the class dynamically.
+        Windows needs to access the application in a dynamic manner.
         """
-        if not hasattr(self, u'_application'):
-            self._application = Registry().get(u'application')
-        return self._application
+        if os.name == 'nt':
+            return Registry().get('application')
+        else:
+            if not hasattr(self, '_application'):
+                self._application = Registry().get('application')
+            return self._application
 
     application = property(_get_application)

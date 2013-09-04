@@ -24,9 +24,9 @@ class TestPluginManager(TestCase):
         self.mocked_main_window.file_export_menu.return_value = None
         self.mocked_settings_form = MagicMock()
         Registry.create()
-        Registry().register(u'service_list', MagicMock())
-        Registry().register(u'main_window', self.mocked_main_window)
-        Registry().register(u'settings_form', self.mocked_settings_form)
+        Registry().register('service_list', MagicMock())
+        Registry().register('main_window', self.mocked_main_window)
+        Registry().register('settings_form', self.mocked_settings_form)
 
     def hook_media_manager_with_disabled_plugin_test(self):
         """
@@ -43,7 +43,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The create_media_manager_item() method should have been called
         assert mocked_plugin.create_media_manager_item.call_count == 0, \
-            u'The create_media_manager_item() method should not have been called.'
+            'The create_media_manager_item() method should not have been called.'
 
     def hook_media_manager_with_active_plugin_test(self):
         """
@@ -76,7 +76,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The hook_settings_tabs() method should have been called
         assert mocked_plugin.create_media_manager_item.call_count == 0, \
-            u'The create_media_manager_item() method should not have been called.'
+            'The create_media_manager_item() method should not have been called.'
 
     def hook_settings_tabs_with_disabled_plugin_and_mocked_form_test(self):
         """
@@ -96,9 +96,9 @@ class TestPluginManager(TestCase):
 
         # THEN: The create_settings_tab() method should not have been called, but the plugins lists should be the same
         assert mocked_plugin.create_settings_tab.call_count == 0, \
-            u'The create_media_manager_item() method should not have been called.'
+            'The create_media_manager_item() method should not have been called.'
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
-            u'The plugins on the settings form should be the same as the plugins in the plugin manager')
+            'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_mocked_form_test(self):
         """
@@ -118,9 +118,9 @@ class TestPluginManager(TestCase):
 
         # THEN: The create_media_manager_item() method should have been called with the mocked settings form
         assert mocked_plugin.create_settings_tab.call_count == 1, \
-            u'The create_media_manager_item() method should have been called once.'
+            'The create_media_manager_item() method should have been called once.'
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
-             u'The plugins on the settings form should be the same as the plugins in the plugin manager')
+             'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_no_form_test(self):
         """
@@ -153,7 +153,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The create_media_manager_item() method should have been called
         assert mocked_plugin.add_import_menu_item.call_count == 0, \
-            u'The add_import_menu_item() method should not have been called.'
+            'The add_import_menu_item() method should not have been called.'
 
     def hook_import_menu_with_active_plugin_test(self):
         """
@@ -186,7 +186,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The add_export_menu_Item() method should not have been called
         assert mocked_plugin.add_export_menu_Item.call_count == 0, \
-            u'The add_export_menu_Item() method should not have been called.'
+            'The add_export_menu_Item() method should not have been called.'
 
     def hook_export_menu_with_active_plugin_test(self):
         """
@@ -220,7 +220,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The upgrade_settings() method should not have been called
         assert mocked_plugin.upgrade_settings.call_count == 0, \
-            u'The upgrade_settings() method should not have been called.'
+            'The upgrade_settings() method should not have been called.'
 
     def hook_upgrade_plugin_settings_with_active_plugin_test(self):
         """
@@ -254,7 +254,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The add_tools_menu_item() method should have been called
         assert mocked_plugin.add_tools_menu_item.call_count == 0, \
-            u'The add_tools_menu_item() method should not have been called.'
+            'The add_tools_menu_item() method should not have been called.'
 
     def hook_tools_menu_with_active_plugin_test(self):
         """
@@ -288,7 +288,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The is_active() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.initialise.call_count == 0, u'The initialise() method should not have been called.'
+        assert mocked_plugin.initialise.call_count == 0, 'The initialise() method should not have been called.'
 
     def initialise_plugins_with_active_plugin_test(self):
         """
@@ -324,7 +324,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The is_active() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.finalise.call_count == 0, u'The finalise() method should not have been called.'
+        assert mocked_plugin.finalise.call_count == 0, 'The finalise() method should not have been called.'
 
     def finalise_plugins_with_active_plugin_test(self):
         """
@@ -358,7 +358,7 @@ class TestPluginManager(TestCase):
         result = plugin_manager.get_plugin_by_name('Missing Plugin')
 
         # THEN: The is_active() and finalise() methods should have been called
-        self.assertIsNone(result, u'The result for get_plugin_by_name should be None')
+        self.assertIsNone(result, 'The result for get_plugin_by_name should be None')
 
     def get_plugin_by_name_exists_test(self):
         """
@@ -374,7 +374,7 @@ class TestPluginManager(TestCase):
         result = plugin_manager.get_plugin_by_name('Mocked Plugin')
 
         # THEN: The is_active() and finalise() methods should have been called
-        self.assertEqual(result, mocked_plugin, u'The result for get_plugin_by_name should be the mocked plugin')
+        self.assertEqual(result, mocked_plugin, 'The result for get_plugin_by_name should be the mocked plugin')
 
     def new_service_created_with_disabled_plugin_test(self):
         """
@@ -393,7 +393,7 @@ class TestPluginManager(TestCase):
         # THEN: The isActive() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
         assert mocked_plugin.new_service_created.call_count == 0,\
-            u'The new_service_created() method should not have been called.'
+            'The new_service_created() method should not have been called.'
 
     def new_service_created_with_active_plugin_test(self):
         """
