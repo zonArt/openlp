@@ -1405,8 +1405,8 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         if not self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEditTitle):
             return
         title = self.service_items[item][u'service_item'].title
-        title, ok = QtGui.QInputDialog.getText(self, translate('OpenLP.ServiceManager', 'Rename item title'), 
-            translate('OpenLP.ServiceManager', 'Title:'),  QtGui.QLineEdit.Normal, self.trUtf8(title))
+        title, ok = QtGui.QInputDialog.getText(self, translate('OpenLP.ServiceManager', 'Rename item title'),
+            translate('OpenLP.ServiceManager', 'Title:'), QtGui.QLineEdit.Normal, self.trUtf8(title))
         if ok:
             self.service_items[item][u'service_item'].title = unicode(title)
             self.repaint_service_list(item, -1)
