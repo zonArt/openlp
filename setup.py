@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -57,7 +57,7 @@ def natural_sort_key(s):
     ``s``
         A string value from the list we want to sort.
     """
-    return map(try_int, SPLIT_ALPHA_DIGITS.findall(s))
+    return list(map(try_int, SPLIT_ALPHA_DIGITS.findall(s)))
 
 
 def natural_compare(a, b):
@@ -86,26 +86,26 @@ def natural_sort(seq, compare=natural_compare):
 # be applied there.
 try:
     # Get the revision of this tree.
-    bzr = Popen((u'bzr', u'revno'), stdout=PIPE)
+    bzr = Popen(('bzr', 'revno'), stdout=PIPE)
     tree_revision, error = bzr.communicate()
     code = bzr.wait()
     if code != 0:
-        raise Exception(u'Error running bzr log')
+        raise Exception('Error running bzr log')
 
     # Get all tags.
-    bzr = Popen((u'bzr', u'tags'), stdout=PIPE)
+    bzr = Popen(('bzr', 'tags'), stdout=PIPE)
     output, error = bzr.communicate()
     code = bzr.wait()
     if code != 0:
-        raise Exception(u'Error running bzr tags')
+        raise Exception('Error running bzr tags')
     tags = output.splitlines()
     if not tags:
-        tag_version = u'0.0.0'
-        tag_revision = u'0'
+        tag_version = '0.0.0'
+        tag_revision = '0'
     else:
         # Remove any tag that has "?" as revision number. A "?" as revision number indicates, that this tag is from
         # another series.
-        tags = [tag for tag in tags if tag.split()[-1].strip() != u'?']
+        tags = [tag for tag in tags if tag.split()[-1].strip() != '?']
         # Get the last tag and split it in a revision and tag name.
         tag_version, tag_revision = tags[-1].split()
     # If they are equal, then this tree is tarball with the source for the release. We do not want the revision number
@@ -113,11 +113,11 @@ try:
     if tree_revision == tag_revision:
         version_string =  tag_version
     else:
-        version_string =  u'%s-bzr%s' % (tag_version, tree_revision)
-    ver_file = open(VERSION_FILE, u'w')
+        version_string =  '%s-bzr%s' % (tag_version, tree_revision)
+    ver_file = open(VERSION_FILE, 'w')
     ver_file.write(version_string)
 except:
-    ver_file = open(VERSION_FILE, u'r')
+    ver_file = open(VERSION_FILE, 'r')
     version_string = ver_file.read().strip()
 finally:
     ver_file.close()
@@ -175,6 +175,8 @@ OpenLP (previously openlp.org) is free church presentation software, or lyrics p
     zip_safe=False,
     install_requires=[
         # -*- Extra requirements: -*-
+        'sqlalchemy',
+        'alembic'
     ],
     entry_points="""
     # -*- Entry points: -*-

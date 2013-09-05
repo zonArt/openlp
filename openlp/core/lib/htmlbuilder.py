@@ -26,7 +26,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
-from __future__ import division
+
 import logging
 
 from PyQt4 import QtWebKit
@@ -35,7 +35,7 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType, Vertic
 
 log = logging.getLogger(__name__)
 
-HTMLSRC = u"""
+HTMLSRC = """
 <!DOCTYPE html>
 <html>
 <head>
@@ -209,23 +209,23 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     ``plugins``
         The List of available plugins
     """
-    width = screen[u'size'].width()
-    height = screen[u'size'].height()
+    width = screen['size'].width()
+    height = screen['size'].height()
     theme_data = item.themedata
     # Image generated and poked in
     if background:
-        bgimage_src = u'src="data:image/png;base64,%s"' % background
+        bgimage_src = 'src="data:image/png;base64,%s"' % background
     elif item.bg_image_bytes:
-        bgimage_src = u'src="data:image/png;base64,%s"' % item.bg_image_bytes
+        bgimage_src = 'src="data:image/png;base64,%s"' % item.bg_image_bytes
     else:
-        bgimage_src = u'style="display:none;"'
+        bgimage_src = 'style="display:none;"'
     if image:
-        image_src = u'src="data:image/png;base64,%s"' % image
+        image_src = 'src="data:image/png;base64,%s"' % image
     else:
-        image_src = u'style="display:none;"'
-    css_additions = u''
-    js_additions = u''
-    html_additions = u''
+        image_src = 'style="display:none;"'
+    css_additions = ''
+    js_additions = ''
+    html_additions = ''
     if plugins:
         for plugin in plugins:
             css_additions += plugin.get_display_css()
@@ -236,7 +236,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
         css_additions,
         build_footer_css(item, height),
         build_lyrics_css(item),
-        u'true' if theme_data and theme_data.display_slide_transition and is_live else u'false',
+        'true' if theme_data and theme_data.display_slide_transition and is_live else 'false',
         js_additions,
         bgimage_src,
         image_src,
@@ -251,7 +251,7 @@ def webkit_version():
     """
     try:
         webkit_ver = float(QtWebKit.qWebKitVersion())
-        log.debug(u'Webkit version = %s' % webkit_ver)
+        log.debug('Webkit version = %s' % webkit_ver)
     except AttributeError:
         webkit_ver = 0
     return webkit_ver
@@ -266,27 +266,27 @@ def build_background_css(item, width):
     """
     width = int(width) // 2
     theme = item.themedata
-    background = u'background-color: black'
+    background = 'background-color: black'
     if theme:
         if theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
-            background = u''
+            background = ''
         elif theme.background_type == BackgroundType.to_string(BackgroundType.Solid):
-            background = u'background-color: %s' % theme.background_color
+            background = 'background-color: %s' % theme.background_color
         else:
             if theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
-                background = u'background: -webkit-gradient(linear, left top, left bottom, from(%s), to(%s)) fixed' \
+                background = 'background: -webkit-gradient(linear, left top, left bottom, from(%s), to(%s)) fixed' \
                     % (theme.background_start_color, theme.background_end_color)
             elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.LeftTop):
-                background = u'background: -webkit-gradient(linear, left top, right bottom, from(%s), to(%s)) fixed' \
+                background = 'background: -webkit-gradient(linear, left top, right bottom, from(%s), to(%s)) fixed' \
                     % (theme.background_start_color, theme.background_end_color)
             elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.LeftBottom):
-                background = u'background: -webkit-gradient(linear, left bottom, right top, from(%s), to(%s)) fixed' \
+                background = 'background: -webkit-gradient(linear, left bottom, right top, from(%s), to(%s)) fixed' \
                     % (theme.background_start_color, theme.background_end_color)
             elif theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Vertical):
-                background = u'background: -webkit-gradient(linear, left top, right top, from(%s), to(%s)) fixed' % \
+                background = 'background: -webkit-gradient(linear, left top, right top, from(%s), to(%s)) fixed' % \
                     (theme.background_start_color, theme.background_end_color)
             else:
-                background = u'background: -webkit-gradient(radial, %s 50%%, 100, %s 50%%, %s, from(%s), to(%s)) fixed'\
+                background = 'background: -webkit-gradient(radial, %s 50%%, 100, %s 50%%, %s, from(%s), to(%s)) fixed'\
                     % (width, width, width, theme.background_start_color, theme.background_end_color)
     return background
 
@@ -299,7 +299,7 @@ def build_lyrics_css(item):
         Service Item containing theme and location information
 
     """
-    style = u"""
+    style = """
 .lyricstable {
     z-index: 5;
     position: absolute;
@@ -317,15 +317,15 @@ def build_lyrics_css(item):
 }
     """
     theme_data = item.themedata
-    lyricstable = u''
-    lyrics = u''
-    lyricsmain = u''
+    lyricstable = ''
+    lyrics = ''
+    lyricsmain = ''
     if theme_data and item.main:
-        lyricstable = u'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
+        lyricstable = 'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
         lyrics = build_lyrics_format_css(theme_data, item.main.width(), item.main.height())
         lyricsmain += build_lyrics_outline_css(theme_data)
         if theme_data.font_main_shadow:
-            lyricsmain += u' text-shadow: %s %spx %spx;' % \
+            lyricsmain += ' text-shadow: %s %spx %spx;' % \
                 (theme_data.font_main_shadow_color, theme_data.font_main_shadow_size, theme_data.font_main_shadow_size)
     lyrics_css = style % (lyricstable, lyrics, lyricsmain)
     return lyrics_css
@@ -342,8 +342,8 @@ def build_lyrics_outline_css(theme_data):
         size = float(theme_data.font_main_outline_size) / 16
         fill_color = theme_data.font_main_color
         outline_color = theme_data.font_main_outline_color
-        return u' -webkit-text-stroke: %sem %s; -webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
-    return u''
+        return ' -webkit-text-stroke: %sem %s; -webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
+    return ''
 
 
 def build_lyrics_format_css(theme_data, width, height):
@@ -365,15 +365,15 @@ def build_lyrics_format_css(theme_data, width, height):
         left_margin = int(theme_data.font_main_outline_size) * 2
     else:
         left_margin = 0
-    justify = u'white-space:pre-wrap;'
+    justify = 'white-space:pre-wrap;'
     # fix tag incompatibilities
     if theme_data.display_horizontal_align == HorizontalType.Justify:
-        justify = u''
+        justify = ''
     if theme_data.display_vertical_align == VerticalType.Bottom:
-        padding_bottom = u'0.5em'
+        padding_bottom = '0.5em'
     else:
-        padding_bottom = u'0'
-    lyrics = u'%s word-wrap: break-word; ' \
+        padding_bottom = '0'
+    lyrics = '%s word-wrap: break-word; ' \
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
         'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
@@ -381,9 +381,9 @@ def build_lyrics_format_css(theme_data, width, height):
         theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
         left_margin, width, height)
     if theme_data.font_main_italics:
-        lyrics += u' font-style:italic; '
+        lyrics += ' font-style:italic; '
     if theme_data.font_main_bold:
-        lyrics += u' font-weight:bold; '
+        lyrics += ' font-weight:bold; '
     return lyrics
 
 
@@ -394,7 +394,7 @@ def build_footer_css(item, height):
     ``item``
         Service Item to be processed.
     """
-    style = u"""
+    style = """
     left: %spx;
     bottom: %spx;
     width: %spx;
@@ -406,7 +406,7 @@ def build_footer_css(item, height):
     """
     theme = item.themedata
     if not theme or not item.footer:
-        return u''
+        return ''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     lyrics_html = style % (item.footer.x(), bottom, item.footer.width(),
         theme.font_footer_name, theme.font_footer_size, theme.font_footer_color)

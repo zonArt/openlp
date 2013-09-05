@@ -28,10 +28,10 @@
 ###############################################################################
 """
 The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are protected and included each time loaded.
-Custom tags can be defined and saved. The Custom Tag arrays are saved in a pickle so QSettings works on them. Base Tags
-cannot be changed.
+Custom tags can be defined and saved. The Custom Tag arrays are saved in a json string so QSettings works on them.
+Base Tags cannot be changed.
 """
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 from openlp.core.lib import FormattingTags, translate
 from openlp.core.lib.ui import critical_error_message_box
@@ -46,7 +46,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(FormattingTagForm, self).__init__(parent)
         self.setupUi(self)
         self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
         self.new_push_button.clicked.connect(self.on_new_clicked)
@@ -76,11 +76,11 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.save_push_button.setEnabled(False)
         self.selected = self.tag_table_widget.currentRow()
         html = FormattingTags.get_html_tags()[self.selected]
-        self.description_line_edit.setText(html[u'desc'])
-        self.tag_line_edit.setText(self._strip(html[u'start tag']))
-        self.start_tag_line_edit.setText(html[u'start html'])
-        self.end_tag_line_edit.setText(html[u'end html'])
-        if html[u'protected']:
+        self.description_line_edit.setText(html['desc'])
+        self.tag_line_edit.setText(self._strip(html['start tag']))
+        self.start_tag_line_edit.setText(html['start html'])
+        self.end_tag_line_edit.setText(html['end html'])
+        if html['protected']:
             self.description_line_edit.setEnabled(False)
             self.tag_line_edit.setEnabled(False)
             self.start_tag_line_edit.setEnabled(False)
@@ -105,20 +105,20 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         Add a new tag to list only if it is not a duplicate.
         """
         for html in FormattingTags.get_html_tags():
-            if self._strip(html[u'start tag']) == u'n':
+            if self._strip(html['start tag']) == 'n':
                 critical_error_message_box(
                     translate('OpenLP.FormattingTagForm', 'Update Error'),
                     translate('OpenLP.FormattingTagForm', 'Tag "n" already defined.'))
                 return
         # Add new tag to list
         tag = {
-            u'desc': translate('OpenLP.FormattingTagForm', 'New Tag'),
-            u'start tag': u'{n}',
-            u'start html': translate('OpenLP.FormattingTagForm', '<HTML here>'),
-            u'end tag': u'{/n}',
-            u'end html': translate('OpenLP.FormattingTagForm', '</and here>'),
-            u'protected': False,
-            u'temporary': False
+            'desc': translate('OpenLP.FormattingTagForm', 'New Tag'),
+            'start tag': '{n}',
+            'start html': translate('OpenLP.FormattingTagForm', '<HTML here>'),
+            'end tag': '{/n}',
+            'end html': translate('OpenLP.FormattingTagForm', '</and here>'),
+            'protected': False,
+            'temporary': False
         }
         FormattingTags.add_html_tags([tag])
         FormattingTags.save_html_tags()
@@ -150,18 +150,18 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
             html = html_expands[self.selected]
             tag = self.tag_line_edit.text()
             for linenumber, html1 in enumerate(html_expands):
-                if self._strip(html1[u'start tag']) == tag and linenumber != self.selected:
+                if self._strip(html1['start tag']) == tag and linenumber != self.selected:
                     critical_error_message_box(
                         translate('OpenLP.FormattingTagForm', 'Update Error'),
                         translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag)
                     return
-            html[u'desc'] = self.description_line_edit.text()
-            html[u'start html'] = self.start_tag_line_edit.text()
-            html[u'end html'] = self.end_tag_line_edit.text()
-            html[u'start tag'] = u'{%s}' % tag
-            html[u'end tag'] = u'{/%s}' % tag
+            html['desc'] = self.description_line_edit.text()
+            html['start html'] = self.start_tag_line_edit.text()
+            html['end html'] = self.end_tag_line_edit.text()
+            html['start tag'] = '{%s}' % tag
+            html['end tag'] = '{/%s}' % tag
             # Keep temporary tags when the user changes one.
-            html[u'temporary'] = False
+            html['temporary'] = False
             self.selected = -1
         FormattingTags.save_html_tags()
         self._reloadTable()
@@ -177,18 +177,18 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         self.delete_push_button.setEnabled(False)
         for linenumber, html in enumerate(FormattingTags.get_html_tags()):
             self.tag_table_widget.setRowCount(self.tag_table_widget.rowCount() + 1)
-            self.tag_table_widget.setItem(linenumber, 0, QtGui.QTableWidgetItem(html[u'desc']))
-            self.tag_table_widget.setItem(linenumber, 1, QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
-            self.tag_table_widget.setItem(linenumber, 2, QtGui.QTableWidgetItem(html[u'start html']))
-            self.tag_table_widget.setItem(linenumber, 3, QtGui.QTableWidgetItem(html[u'end html']))
+            self.tag_table_widget.setItem(linenumber, 0, QtGui.QTableWidgetItem(html['desc']))
+            self.tag_table_widget.setItem(linenumber, 1, QtGui.QTableWidgetItem(self._strip(html['start tag'])))
+            self.tag_table_widget.setItem(linenumber, 2, QtGui.QTableWidgetItem(html['start html']))
+            self.tag_table_widget.setItem(linenumber, 3, QtGui.QTableWidgetItem(html['end html']))
             # Permanent (persistent) tags do not have this key.
-            if u'temporary' not in html:
-                html[u'temporary'] = False
+            if 'temporary' not in html:
+                html['temporary'] = False
             self.tag_table_widget.resizeRowsToContents()
-        self.description_line_edit.setText(u'')
-        self.tag_line_edit.setText(u'')
-        self.start_tag_line_edit.setText(u'')
-        self.end_tag_line_edit.setText(u'')
+        self.description_line_edit.setText('')
+        self.tag_line_edit.setText('')
+        self.start_tag_line_edit.setText('')
+        self.end_tag_line_edit.setText('')
         self.description_line_edit.setEnabled(False)
         self.tag_line_edit.setEnabled(False)
         self.start_tag_line_edit.setEnabled(False)
@@ -198,6 +198,6 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Remove tag wrappers for editing.
         """
-        tag = tag.replace(u'{', u'')
-        tag = tag.replace(u'}', u'')
+        tag = tag.replace('{', '')
+        tag = tag.replace('}', '')
         return tag

@@ -40,7 +40,7 @@ class Registry(object):
     This is the Component Registry.  It is a singleton object and is used to provide a look up service for common
     objects.
     """
-    log.info(u'Registry loaded')
+    log.info('Registry loaded')
     __instance__ = None
 
     def __new__(cls):
@@ -56,13 +56,13 @@ class Registry(object):
         """
         The constructor for the component registry providing a single registry of objects.
         """
-        log.info(u'Registry Initialising')
+        log.info('Registry Initialising')
         registry = cls()
         registry.service_list = {}
         registry.functions_list = {}
         registry.running_under_test = False
         # Allow the tests to remove Registry entries but not the live system
-        if u'nose' in sys.argv[0]:
+        if 'nose' in sys.argv[0]:
             registry.running_under_test = True
         return registry
 
@@ -76,8 +76,8 @@ class Registry(object):
         if key in self.service_list:
             return self.service_list[key]
         else:
-            log.error(u'Service %s not found in list' % key)
-            raise KeyError(u'Service %s not found in list' % key)
+            log.error('Service %s not found in list' % key)
+            raise KeyError('Service %s not found in list' % key)
 
     def register(self, key, reference):
         """
@@ -90,8 +90,8 @@ class Registry(object):
             The service address to be saved.
         """
         if key in self.service_list:
-            log.error(u'Duplicate service exception %s' % key)
-            raise KeyError(u'Duplicate service exception %s' % key)
+            log.error('Duplicate service exception %s' % key)
+            raise KeyError('Duplicate service exception %s' % key)
         else:
             self.service_list[key] = reference
 
@@ -134,8 +134,8 @@ class Registry(object):
             The function to be called when the event happens.
         """
         if self.running_under_test is False:
-            log.error(u'Invalid Method call for key %s' % event)
-            raise KeyError(u'Invalid Method call for key %s' % event)
+            log.error('Invalid Method call for key %s' % event)
+            raise KeyError('Invalid Method call for key %s' % event)
         if event in self.functions_list:
             self.functions_list[event].remove(function)
 
@@ -163,5 +163,5 @@ class Registry(object):
                     # Who has called me can help in debugging
                     import inspect
                     log.debug(inspect.currentframe().f_back.f_locals)
-                    log.exception(u'Exception for function %s', function)
+                    log.exception('Exception for function %s', function)
         return results

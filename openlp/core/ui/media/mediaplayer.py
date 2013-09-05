@@ -41,7 +41,7 @@ class MediaPlayer(object):
     pluggable media display framework.
     """
 
-    def __init__(self, parent, name=u'media_player'):
+    def __init__(self, parent, name='media_player'):
         """
         Constructor
         """
@@ -133,36 +133,36 @@ class MediaPlayer(object):
         """
         Add css style sheets to htmlbuilder
         """
-        return u''
+        return ''
 
     def get_media_display_javascript(self):
         """
         Add javascript functions to htmlbuilder
         """
-        return u''
+        return ''
 
     def get_media_display_html(self):
         """
         Add html code to htmlbuilder
         """
-        return u''
+        return ''
 
     def get_info(self):
         """
         Returns Information about the player
         """
-        return u''
+        return ''
 
     def _get_application(self):
         """
         Adds the openlp to the class dynamically.
         Windows needs to access the application in a dynamic manner.
         """
-        if os.name == u'nt':
-            return Registry().get(u'application')
+        if os.name == 'nt':
+            return Registry().get('application')
         else:
-            if not hasattr(self, u'_application'):
-                self._application = Registry().get(u'application')
+            if not hasattr(self, '_application'):
+                self._application = Registry().get('application')
             return self._application
 
     application = property(_get_application)

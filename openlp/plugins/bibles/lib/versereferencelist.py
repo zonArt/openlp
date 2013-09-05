@@ -40,61 +40,61 @@ class VerseReferenceList(object):
 
     def add(self, book, chapter, verse, version, copyright, permission):
         self.add_version(version, copyright, permission)
-        if not self.verse_list or self.verse_list[self.current_index][u'book'] != book:
-            self.verse_list.append({u'version': version, u'book': book,
-                u'chapter': chapter, u'start': verse, u'end': verse})
+        if not self.verse_list or self.verse_list[self.current_index]['book'] != book:
+            self.verse_list.append({'version': version, 'book': book,
+                'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
-        elif self.verse_list[self.current_index][u'chapter'] != chapter:
-            self.verse_list.append({u'version': version, u'book': book,
-                u'chapter': chapter, u'start': verse, u'end': verse})
+        elif self.verse_list[self.current_index]['chapter'] != chapter:
+            self.verse_list.append({'version': version, 'book': book,
+                'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
-        elif (self.verse_list[self.current_index][u'end'] + 1) == verse:
-            self.verse_list[self.current_index][u'end'] = verse
+        elif (self.verse_list[self.current_index]['end'] + 1) == verse:
+            self.verse_list[self.current_index]['end'] = verse
         else:
-            self.verse_list.append({u'version': version, u'book': book,
-                u'chapter': chapter, u'start': verse, u'end': verse})
+            self.verse_list.append({'version': version, 'book': book,
+                'chapter': chapter, 'start': verse, 'end': verse})
             self.current_index += 1
 
     def add_version(self, version, copyright, permission):
         for bible_version in self.version_list:
-            if bible_version[u'version'] == version:
+            if bible_version['version'] == version:
                 return
-        self.version_list.append({u'version': version, u'copyright': copyright, u'permission': permission})
+        self.version_list.append({'version': version, 'copyright': copyright, 'permission': permission})
 
     def format_verses(self):
-        result = u''
+        result = ''
         for index, verse in enumerate(self.verse_list):
             if index == 0:
-                result = u'%s %s:%s' % (verse[u'book'], verse[u'chapter'], verse[u'start'])
-                if verse[u'start'] != verse[u'end']:
-                    result = u'%s-%s' % (result, verse[u'end'])
+                result = '%s %s:%s' % (verse['book'], verse['chapter'], verse['start'])
+                if verse['start'] != verse['end']:
+                    result = '%s-%s' % (result, verse['end'])
                 continue
             prev = index - 1
-            if self.verse_list[prev][u'version'] != verse[u'version']:
-                result = u'%s (%s)' % (result, self.verse_list[prev][u'version'])
-            result += u', '
-            if self.verse_list[prev][u'book'] != verse[u'book']:
-                result = u'%s%s %s:' % (result, verse[u'book'], verse[u'chapter'])
-            elif self.verse_list[prev][u'chapter'] != verse[u'chapter']:
-                result = u'%s%s:' % (result, verse[u'chapter'])
-            result += str(verse[u'start'])
-            if verse[u'start'] != verse[u'end']:
-                result = u'%s-%s' % (result, verse[u'end'])
+            if self.verse_list[prev]['version'] != verse['version']:
+                result = '%s (%s)' % (result, self.verse_list[prev]['version'])
+            result += ', '
+            if self.verse_list[prev]['book'] != verse['book']:
+                result = '%s%s %s:' % (result, verse['book'], verse['chapter'])
+            elif self.verse_list[prev]['chapter'] != verse['chapter']:
+                result = '%s%s:' % (result, verse['chapter'])
+            result += str(verse['start'])
+            if verse['start'] != verse['end']:
+                result = '%s-%s' % (result, verse['end'])
         if len(self.version_list) > 1:
-            result = u'%s (%s)' % (result, verse[u'version'])
+            result = '%s (%s)' % (result, verse['version'])
         return result
 
     def format_versions(self):
-        result = u''
+        result = ''
         for index, version in enumerate(self.version_list):
             if index > 0:
-                if result[-1] not in [u';', u',', u'.']:
-                    result += u';'
-                result += u' '
-            result = u'%s%s, %s' % (result, version[u'version'], version[u'copyright'])
-            if version[u'permission'].strip():
-                result = result + u', ' + version[u'permission']
+                if result[-1] not in [';', ',', '.']:
+                    result += ';'
+                result += ' '
+            result = '%s%s, %s' % (result, version['version'], version['copyright'])
+            if version['permission'].strip():
+                result = result + ', ' + version['permission']
         result = result.rstrip()
-        if result.endswith(u','):
+        if result.endswith(','):
             return result[:len(result)-1]
         return result

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -37,36 +37,36 @@ class PPTViewer(QtGui.QWidget):
     Standalone Test Harness for the pptviewlib library
     """
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        super(PPTViewer, self).__init__(parent)
         self.pptid = -1
-        self.setWindowTitle(u'PowerPoint Viewer Test')
+        self.setWindowTitle('PowerPoint Viewer Test')
 
-        ppt_label = QtGui.QLabel(u'Open PowerPoint file')
-        slide_label = QtGui.QLabel(u'Go to slide #')
+        ppt_label = QtGui.QLabel('Open PowerPoint file')
+        slide_label = QtGui.QLabel('Go to slide #')
         self.pptEdit = QtGui.QLineEdit()
         self.slideEdit = QtGui.QLineEdit()
-        x_label = QtGui.QLabel(u'X pos')
-        y_label = QtGui.QLabel(u'Y pos')
-        width_label = QtGui.QLabel(u'Width')
-        height_label = QtGui.QLabel(u'Height')
-        self.xEdit = QtGui.QLineEdit(u'100')
-        self.yEdit = QtGui.QLineEdit(u'100')
-        self.widthEdit = QtGui.QLineEdit(u'900')
-        self.heightEdit = QtGui.QLineEdit(u'700')
+        x_label = QtGui.QLabel('X pos')
+        y_label = QtGui.QLabel('Y pos')
+        width_label = QtGui.QLabel('Width')
+        height_label = QtGui.QLabel('Height')
+        self.xEdit = QtGui.QLineEdit('100')
+        self.yEdit = QtGui.QLineEdit('100')
+        self.widthEdit = QtGui.QLineEdit('900')
+        self.heightEdit = QtGui.QLineEdit('700')
         self.total = QtGui.QLabel()
-        ppt_btn = QtGui.QPushButton(u'Open')
-        ppt_dlg_btn = QtGui.QPushButton(u'...')
-        folder_label = QtGui.QLabel(u'Slide .bmp path')
-        self.folderEdit = QtGui.QLineEdit(u'slide')
-        slide_btn = QtGui.QPushButton(u'Go')
-        prev = QtGui.QPushButton(u'Prev')
-        next = QtGui.QPushButton(u'Next')
-        blank = QtGui.QPushButton(u'Blank')
-        unblank = QtGui.QPushButton(u'Unblank')
-        restart = QtGui.QPushButton(u'Restart')
-        close = QtGui.QPushButton(u'Close')
-        resume = QtGui.QPushButton(u'Resume')
-        stop = QtGui.QPushButton(u'Stop')
+        ppt_btn = QtGui.QPushButton('Open')
+        ppt_dlg_btn = QtGui.QPushButton('...')
+        folder_label = QtGui.QLabel('Slide .bmp path')
+        self.folderEdit = QtGui.QLineEdit('slide')
+        slide_btn = QtGui.QPushButton('Go')
+        prev = QtGui.QPushButton('Prev')
+        next = QtGui.QPushButton('Next')
+        blank = QtGui.QPushButton('Blank')
+        unblank = QtGui.QPushButton('Unblank')
+        restart = QtGui.QPushButton('Restart')
+        close = QtGui.QPushButton('Close')
+        resume = QtGui.QPushButton('Resume')
+        stop = QtGui.QPushButton('Stop')
         grid = QtGui.QGridLayout()
         row = 0
         grid.addWidget(folder_label, 0, 0)
@@ -102,17 +102,17 @@ class PPTViewer(QtGui.QWidget):
         row += 1
         grid.addWidget(stop, row, 0)
         grid.addWidget(resume, row, 1)
-        self.connect(ppt_btn, QtCore.SIGNAL(u'clicked()'), self.openClick)
-        self.connect(ppt_dlg_btn, QtCore.SIGNAL(u'clicked()'), self.openDialog)
-        self.connect(slide_btn, QtCore.SIGNAL(u'clicked()'), self.gotoClick)
-        self.connect(prev, QtCore.SIGNAL(u'clicked()'), self.prevClick)
-        self.connect(next, QtCore.SIGNAL(u'clicked()'), self.nextClick)
-        self.connect(blank, QtCore.SIGNAL(u'clicked()'), self.blankClick)
-        self.connect(unblank, QtCore.SIGNAL(u'clicked()'), self.unblankClick)
-        self.connect(restart, QtCore.SIGNAL(u'clicked()'), self.restartClick)
-        self.connect(close, QtCore.SIGNAL(u'clicked()'), self.closeClick)
-        self.connect(stop, QtCore.SIGNAL(u'clicked()'), self.stopClick)
-        self.connect(resume, QtCore.SIGNAL(u'clicked()'), self.resumeClick)
+        self.connect(ppt_btn, QtCore.SIGNAL('clicked()'), self.openClick)
+        self.connect(ppt_dlg_btn, QtCore.SIGNAL('clicked()'), self.openDialog)
+        self.connect(slide_btn, QtCore.SIGNAL('clicked()'), self.gotoClick)
+        self.connect(prev, QtCore.SIGNAL('clicked()'), self.prevClick)
+        self.connect(next, QtCore.SIGNAL('clicked()'), self.nextClick)
+        self.connect(blank, QtCore.SIGNAL('clicked()'), self.blankClick)
+        self.connect(unblank, QtCore.SIGNAL('clicked()'), self.unblankClick)
+        self.connect(restart, QtCore.SIGNAL('clicked()'), self.restartClick)
+        self.connect(close, QtCore.SIGNAL('clicked()'), self.closeClick)
+        self.connect(stop, QtCore.SIGNAL('clicked()'), self.stopClick)
+        self.connect(resume, QtCore.SIGNAL('clicked()'), self.resumeClick)
         self.setLayout(grid)
         self.resize(300, 150)
 
@@ -172,23 +172,23 @@ class PPTViewer(QtGui.QWidget):
         oldid = self.pptid;
         rect = RECT(int(self.xEdit.text()), int(self.yEdit.text()),
             int(self.widthEdit.text()), int(self.heightEdit.text()))
-        filename = str(self.pptEdit.text().replace(u'/', u'\\'))
-        folder = str(self.folderEdit.text().replace(u'/', u'\\'))
+        filename = str(self.pptEdit.text().replace('/', '\\'))
+        folder = str(self.folderEdit.text().replace('/', '\\'))
         print(filename, folder)
         self.pptid = self.pptdll.OpenPPT(filename, None, rect, folder)
-        print(u'id: ' + unicode(self.pptid))
+        print('id: ' + str(self.pptid))
         if oldid >= 0:
             self.pptdll.ClosePPT(oldid);
         slides = self.pptdll.GetSlideCount(self.pptid)
-        print(u'slidecount: ' + unicode(slides))
+        print('slidecount: ' + str(slides))
         self.total.setNum(self.pptdll.GetSlideCount(self.pptid))
         self.updateCurrSlide()
 
     def updateCurrSlide(self):
         if self.pptid < 0:
             return
-        slide = unicode(self.pptdll.GetCurrentSlide(self.pptid))
-        print(u'currslide: ' + slide)
+        slide = str(self.pptdll.GetCurrentSlide(self.pptid))
+        print('currslide: ' + slide)
         self.slideEdit.setText(slide)
         app.processEvents()
 
@@ -202,12 +202,12 @@ class PPTViewer(QtGui.QWidget):
 
     def openDialog(self):
         self.pptEdit.setText(QtGui.QFileDialog.getOpenFileName(self,
-            u'Open file'))
+            'Open file'))
 
 if __name__ == '__main__':
     pptdll = cdll.LoadLibrary(r'pptviewlib.dll')
     pptdll.SetDebug(1)
-    print(u'Begin...')
+    print('Begin...')
     app = QtGui.QApplication(sys.argv)
     window = PPTViewer()
     window.pptdll = pptdll

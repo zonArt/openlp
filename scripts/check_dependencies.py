@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -62,6 +62,7 @@ WIN32_MODULES = [
     'win32com',
     'win32ui',
     'pywintypes',
+    'pyodbc',
 ]
 
 MODULES = [
@@ -82,7 +83,6 @@ MODULES = [
     'bs4',
     'mako',
     'cherrypy',
-    'migrate',
     'uno',
     'icu',
     'bs4',
@@ -164,9 +164,9 @@ def verify_pyqt():
     w('Qt4 image formats... ')
     try:
         from PyQt4 import QtGui
-        read_f = ', '.join([unicode(format).lower()
+        read_f = ', '.join([str(format).lower()
            for format in QtGui.QImageReader.supportedImageFormats()])
-        write_f = ', '.join([unicode(format).lower()
+        write_f = ', '.join([str(format).lower()
             for format in QtGui.QImageWriter.supportedImageFormats()])
         w(os.linesep)
         print('  read: %s' % read_f)
@@ -194,5 +194,5 @@ def main():
     verify_pyqt()
     verify_pyenchant()
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
     main()

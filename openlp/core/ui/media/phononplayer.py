@@ -45,21 +45,21 @@ from openlp.core.ui.media.mediaplayer import MediaPlayer
 log = logging.getLogger(__name__)
 
 ADDITIONAL_EXT = {
-    u'audio/ac3': [u'.ac3'],
-    u'audio/flac': [u'.flac'],
-    u'audio/x-m4a': [u'.m4a'],
-    u'audio/midi': [u'.mid', u'.midi'],
-    u'audio/x-mp3': [u'.mp3'],
-    u'audio/mpeg': [u'.mp3', u'.mp2', u'.mpga', u'.mpega', u'.m4a'],
-    u'audio/qcelp': [u'.qcp'],
-    u'audio/x-wma': [u'.wma'],
-    u'audio/x-ms-wma': [u'.wma'],
-    u'video/x-flv': [u'.flv'],
-    u'video/x-matroska': [u'.mpv', u'.mkv'],
-    u'video/x-wmv': [u'.wmv'],
-    u'video/x-mpg': [u'.mpg'],
-    u'video/mpeg': [u'.mp4', u'.mts', u'.mov'],
-    u'video/x-ms-wmv': [u'.wmv']
+    'audio/ac3': ['.ac3'],
+    'audio/flac': ['.flac'],
+    'audio/x-m4a': ['.m4a'],
+    'audio/midi': ['.mid', '.midi'],
+    'audio/x-mp3': ['.mp3'],
+    'audio/mpeg': ['.mp3', '.mp2', '.mpga', '.mpega', '.m4a'],
+    'audio/qcelp': ['.qcp'],
+    'audio/x-wma': ['.wma'],
+    'audio/x-ms-wma': ['.wma'],
+    'video/x-flv': ['.flv'],
+    'video/x-matroska': ['.mpv', '.mkv'],
+    'video/x-wmv': ['.wmv'],
+    'video/x-mpg': ['.mpg'],
+    'video/mpeg': ['.mp4', '.mts', '.mov'],
+    'video/x-ms-wmv': ['.wmv']
 }
 
 
@@ -73,17 +73,17 @@ class PhononPlayer(MediaPlayer):
         """
         Constructor
         """
-        MediaPlayer.__init__(self, parent, u'phonon')
-        self.original_name = u'Phonon'
-        self.display_name = u'&Phonon'
+        super(PhononPlayer, self).__init__(parent, 'phonon')
+        self.original_name = 'Phonon'
+        self.display_name = '&Phonon'
         self.parent = parent
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()
         for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
-            mimetype = unicode(mimetype)
-            if mimetype.startswith(u'audio/'):
+            mimetype = str(mimetype)
+            if mimetype.startswith('audio/'):
                 self._addToList(self.audio_extensions_list, mimetype)
-            elif mimetype.startswith(u'video/'):
+            elif mimetype.startswith('video/'):
                 self._addToList(self.video_extensions_list, mimetype)
 
     def _addToList(self, mimetype_list, mimetype):
@@ -91,22 +91,22 @@ class PhononPlayer(MediaPlayer):
         Add mimetypes to the provided list
         """
         # Add all extensions which mimetypes provides us for supported types.
-        extensions = mimetypes.guess_all_extensions(unicode(mimetype))
+        extensions = mimetypes.guess_all_extensions(str(mimetype))
         for extension in extensions:
-            ext = u'*%s' % extension
+            ext = '*%s' % extension
             if ext not in mimetype_list:
                 mimetype_list.append(ext)
-        log.info(u'MediaPlugin: %s extensions: %s' % (mimetype, u' '.join(extensions)))
+        log.info('MediaPlugin: %s extensions: %s' % (mimetype, ' '.join(extensions)))
         # Add extensions for this mimetype from self.additional_extensions.
         # This hack clears mimetypes' and operating system's shortcomings
         # by providing possibly missing extensions.
-        if mimetype in self.additional_extensions.keys():
+        if mimetype in list(self.additional_extensions.keys()):
             for extension in self.additional_extensions[mimetype]:
-                ext = u'*%s' % extension
+                ext = '*%s' % extension
                 if ext not in mimetype_list:
                     mimetype_list.append(ext)
-            log.info(u'MediaPlugin: %s additional extensions: %s' %
-                (mimetype, u' '.join(self.additional_extensions[mimetype])))
+            log.info('MediaPlugin: %s additional extensions: %s' %
+                (mimetype, ' '.join(self.additional_extensions[mimetype])))
 
     def setup(self, display):
         """
@@ -133,7 +133,7 @@ class PhononPlayer(MediaPlayer):
         """
         Load a video into the display
         """
-        log.debug(u'load vid in Phonon Controller')
+        log.debug('load vid in Phonon Controller')
         controller = display.controller
         volume = controller.media_info.volume
         path = controller.media_info.file_info.absoluteFilePath()
@@ -254,7 +254,7 @@ class PhononPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        return u''
+        return ''
 
     def get_info(self):
         """
@@ -262,7 +262,7 @@ class PhononPlayer(MediaPlayer):
         """
         return(translate('Media.player', 'Phonon is a media player which '
             'interacts with the operating system to provide media capabilities.') +
-            u'<br/> <strong>' + translate('Media.player', 'Audio') +
-            u'</strong><br/>' + unicode(self.audio_extensions_list) +
-            u'<br/><strong>' + translate('Media.player', 'Video') +
-            u'</strong><br/>' + unicode(self.video_extensions_list) + u'<br/>')
+            '<br/> <strong>' + translate('Media.player', 'Audio') +
+            '</strong><br/>' + str(self.audio_extensions_list) +
+            '<br/><strong>' + translate('Media.player', 'Video') +
+            '</strong><br/>' + str(self.video_extensions_list) + '<br/>')

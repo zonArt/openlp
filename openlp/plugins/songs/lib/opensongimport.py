@@ -45,13 +45,14 @@ class OpenSongImport(SongImport):
     Import songs exported from OpenSong
 
     The format is described loosly on the `OpenSong File Format Specification
-    <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on
-    the OpenSong web site. However, it doesn't describe the <lyrics> section,
-    so here's an attempt:
+    <http://www.opensong.org/d/manual/song_file_format_specification>`_ page on the OpenSong web site. However, it
+    doesn't describe the <lyrics> section, so here's an attempt:
 
-    Verses can be expressed in one of 2 ways, either in complete verses, or by
-    line grouping, i.e. grouping all line 1's of a verse together, all line 2's
-    of a verse together, and so on.
+    If the first charachter of a line is a space, then the rest of that line is lyrics. If it is not a space the
+    following applies.
+
+    Verses can be expressed in one of 2 ways, either in complete verses, or by line grouping, i.e. grouping all line 1's
+    of a verse together, all line 2's of a verse together, and so on.
 
     An example of complete verses::
 
@@ -78,9 +79,8 @@ class OpenSongImport(SongImport):
         2etc...
         </lyrics>
 
-    Either or both forms can be used in one song. The number does not
-    necessarily appear at the start of the line. Additionally, the [v1] labels
-    can have either upper or lower case Vs.
+    Either or both forms can be used in one song. The number does not necessarily appear at the start of the line.
+    Additionally, the [v1] labels can have either upper or lower case Vs.
 
     Other labels can be used also:
 
@@ -92,18 +92,16 @@ class OpenSongImport(SongImport):
 
     All verses are imported and tagged appropriately.
 
-    Guitar chords can be provided "above" the lyrics (the line is preceeded by
-    a period "."), and one or more "_" can be used to signify long-drawn-out
-    words. Chords and "_" are removed by this importer. For example::
+    Guitar chords can be provided "above" the lyrics (the line is preceeded by a period "."), and one or more "_" can
+    be used to signify long-drawn-out words. Chords and "_" are removed by this importer. For example::
 
         . A7        Bm
         1 Some____ Words
 
-    The <presentation> tag is used to populate the OpenLP verse display order
-    field. The Author and Copyright tags are also imported to the appropriate
-    places.
-
+    The <presentation> tag is used to populate the OpenLP verse display order field. The Author and Copyright tags are
+    also imported to the appropriate places.
     """
+
     def __init__(self, manager, **kwargs):
         """
         Initialise the class.
@@ -128,72 +126,70 @@ class OpenSongImport(SongImport):
             tree = objectify.parse(file)
         except (Error, LxmlError):
             self.logError(file.name, SongStrings.XMLSyntaxError)
-            log.exception(u'Error parsing XML')
+            log.exception('Error parsing XML')
             return
         root = tree.getroot()
-        if root.tag != u'song':
-            self.logError(file.name, unicode(
+        if root.tag != 'song':
+            self.logError(file.name, str(
                 translate('SongsPlugin.OpenSongImport', ('Invalid OpenSong song file. Missing song tag.'))))
             return
         fields = dir(root)
         decode = {
-            u'copyright': self.addCopyright,
-            u'ccli': u'ccli_number',
-            u'author': self.parse_author,
-            u'title': u'title',
-            u'aka': u'alternate_title',
-            u'hymn_number': u'song_number'
+            'copyright': self.addCopyright,
+            'ccli': 'ccli_number',
+            'author': self.parse_author,
+            'title': 'title',
+            'aka': 'alternate_title',
+            'hymn_number': 'song_number'
         }
-        for attr, fn_or_string in decode.items():
+        for attr, fn_or_string in list(decode.items()):
             if attr in fields:
-                ustring = unicode(root.__getattr__(attr))
-                if isinstance(fn_or_string, basestring):
+                ustring = str(root.__getattr__(attr))
+                if isinstance(fn_or_string, str):
                     setattr(self, fn_or_string, ustring)
                 else:
                     fn_or_string(ustring)
-        if u'theme' in fields and unicode(root.theme) not in self.topics:
-            self.topics.append(unicode(root.theme))
-        if u'alttheme' in fields and unicode(root.alttheme) not in self.topics:
-            self.topics.append(unicode(root.alttheme))
+        if 'theme' in fields and str(root.theme) not in self.topics:
+            self.topics.append(str(root.theme))
+        if 'alttheme' in fields and str(root.alttheme) not in self.topics:
+            self.topics.append(str(root.alttheme))
         # data storage while importing
         verses = {}
         # keep track of verses appearance order
         our_verse_order = []
         # default verse
         verse_tag = VerseType.tags[VerseType.Verse]
-        verse_num = u'1'
+        verse_num = '1'
         # for the case where song has several sections with same marker
         inst = 1
-        if u'lyrics' in fields:
-            lyrics = unicode(root.lyrics)
+        if 'lyrics' in fields:
+            lyrics = str(root.lyrics)
         else:
-            lyrics = u''
-        for this_line in lyrics.split(u'\n'):
-            # remove comments
-            semicolon = this_line.find(u';')
-            if semicolon >= 0:
-                this_line = this_line[:semicolon]
-            this_line = this_line.strip()
+            lyrics = ''
+        for this_line in lyrics.split('\n'):
             if not this_line:
                 continue
+            # skip this line if it is a comment
+            if this_line.startswith(';'):
+                continue
             # skip guitar chords and page and column breaks
-            if this_line.startswith(u'.') or this_line.startswith(u'---') or this_line.startswith(u'-!!'):
+            if this_line.startswith('.') or this_line.startswith('---') or this_line.startswith('-!!'):
                 continue
             # verse/chorus/etc. marker
-            if this_line.startswith(u'['):
+            if this_line.startswith('['):
                 # drop the square brackets
-                right_bracket = this_line.find(u']')
+                right_bracket = this_line.find(']')
                 content = this_line[1:right_bracket].lower()
                 # have we got any digits? If so, verse number is everything from the digits to the end (openlp does not
                 # have concept of part verses, so just ignore any non integers on the end (including floats))
-                match = re.match(u'(\D*)(\d+)', content)
+                match = re.match('(\D*)(\d+)', content)
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
                 else:
                     # otherwise we assume number 1 and take the whole prefix as the verse tag
                     verse_tag = content
-                    verse_num = u'1'
+                    verse_num = '1'
                 verse_index = VerseType.from_loose_input(verse_tag) if verse_tag else 0
                 verse_tag = VerseType.tags[verse_index]
                 inst = 1
@@ -204,7 +200,6 @@ class OpenSongImport(SongImport):
             if this_line[0].isdigit():
                 verse_num = this_line[0]
                 this_line = this_line[1:].strip()
-                our_verse_order.append([verse_tag, verse_num, inst])
             verses.setdefault(verse_tag, {})
             verses[verse_tag].setdefault(verse_num, {})
             if inst not in verses[verse_tag][verse_num]:
@@ -212,32 +207,33 @@ class OpenSongImport(SongImport):
                 our_verse_order.append([verse_tag, verse_num, inst])
             # Tidy text and remove the ____s from extended words
             this_line = self.tidyText(this_line)
-            this_line = this_line.replace(u'_', u'')
-            this_line = this_line.replace(u'|', u'\n')
+            this_line = this_line.replace('_', '')
+            this_line = this_line.replace('|', '\n')
+            this_line = this_line.strip()
             verses[verse_tag][verse_num][inst].append(this_line)
         # done parsing
         # add verses in original order
         verse_joints = {}
         for (verse_tag, verse_num, inst) in our_verse_order:
-            lines = u'\n'.join(verses[verse_tag][verse_num][inst])
+            lines = '\n'.join(verses[verse_tag][verse_num][inst])
             length = 0
             while(length < len(verse_num) and verse_num[length].isnumeric()):
                 length += 1
-            verse_def = u'%s%s' % (verse_tag, verse_num[:length])
-            verse_joints[verse_def] = u'%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
+            verse_def = '%s%s' % (verse_tag, verse_num[:length])
+            verse_joints[verse_def] = '%s\n[---]\n%s' % (verse_joints[verse_def], lines) \
                 if verse_def in verse_joints else lines
-        for verse_def, lines in verse_joints.iteritems():
+        for verse_def, lines in verse_joints.items():
             self.addVerse(lines, verse_def)
         if not self.verses:
             self.addVerse('')
         # figure out the presentation order, if present
-        if u'presentation' in fields and root.presentation:
-            order = unicode(root.presentation)
+        if 'presentation' in fields and root.presentation:
+            order = str(root.presentation)
             # We make all the tags in the lyrics lower case, so match that here and then split into a list on the
             # whitespace.
             order = order.lower().split()
             for verse_def in order:
-                match = re.match(u'(\D*)(\d+.*)', verse_def)
+                match = re.match('(\D*)(\d+.*)', verse_def)
                 if match is not None:
                     verse_tag = match.group(1)
                     verse_num = match.group(2)
@@ -246,12 +242,12 @@ class OpenSongImport(SongImport):
                 else:
                     # Assume it's no.1 if there are no digits
                     verse_tag = verse_def
-                    verse_num = u'1'
-                verse_def = u'%s%s' % (verse_tag, verse_num)
+                    verse_num = '1'
+                verse_def = '%s%s' % (verse_tag, verse_num)
                 if verse_num in verses.get(verse_tag, {}):
                     self.verseOrderList.append(verse_def)
                 else:
-                    log.info(u'Got order %s but not in verse tags, dropping'
-                        u'this item from presentation order', verse_def)
+                    log.info('Got order %s but not in verse tags, dropping'
+                        'this item from presentation order', verse_def)
         if not self.finish():
             self.logError(file.name)

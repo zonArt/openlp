@@ -57,8 +57,8 @@ class MediaDockManager(object):
             An icon for this dock item
         """
         visible_title = media_item.plugin.get_string(StringContent.VisibleName)
-        log.info(u'Adding %s dock' % visible_title)
-        self.media_dock.addItem(media_item, icon, visible_title[u'title'])
+        log.info('Adding %s dock' % visible_title)
+        self.media_dock.addItem(media_item, icon, visible_title['title'])
 
     def insert_dock(self, media_item, icon, weight):
         """
@@ -67,14 +67,14 @@ class MediaDockManager(object):
         For now add at end of stack if not present
         """
         visible_title = media_item.plugin.get_string(StringContent.VisibleName)
-        log.debug(u'Inserting %s dock' % visible_title[u'title'])
+        log.debug('Inserting %s dock' % visible_title['title'])
         match = False
         for dock_index in range(self.media_dock.count()):
             if self.media_dock.widget(dock_index).settings_section == media_item.plugin.name:
                 match = True
                 break
         if not match:
-            self.media_dock.addItem(media_item, icon, visible_title[u'title'])
+            self.media_dock.addItem(media_item, icon, visible_title['title'])
 
     def remove_dock(self, media_item):
         """
@@ -84,7 +84,7 @@ class MediaDockManager(object):
             The item to add to the dock
         """
         visible_title = media_item.plugin.get_string(StringContent.VisibleName)
-        log.debug(u'remove %s dock' % visible_title[u'title'])
+        log.debug('remove %s dock' % visible_title['title'])
         for dock_index in range(self.media_dock.count()):
             if self.media_dock.widget(dock_index):
                 if self.media_dock.widget(dock_index).settings_section == media_item.plugin.name:

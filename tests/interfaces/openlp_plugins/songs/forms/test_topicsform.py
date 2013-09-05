@@ -21,7 +21,7 @@ class TestTopicsForm(TestCase):
         Registry.create()
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
-        Registry().register(u'main_window', self.main_window)
+        Registry().register('main_window', self.main_window)
         self.form = TopicsForm()
 
     def tearDown(self):
@@ -36,30 +36,30 @@ class TestTopicsForm(TestCase):
         """
         Test the TopicsForm defaults are correct
         """
-        self.assertEqual(self.form.name_edit.text(), u'', u'The first name edit should be empty')
+        self.assertEqual(self.form.name_edit.text(), '', 'The first name edit should be empty')
 
     def get_name_property_test(self):
         """
         Test that getting the name property on the TopicsForm works correctly
         """
         # GIVEN: A topic name to set
-        topic_name = u'Salvation'
+        topic_name = 'Salvation'
 
         # WHEN: The name_edit's text is set
         self.form.name_edit.setText(topic_name)
 
         # THEN: The name property should have the correct value
-        self.assertEqual(self.form.name, topic_name, u'The name property should be correct')
+        self.assertEqual(self.form.name, topic_name, 'The name property should be correct')
 
     def set_name_property_test(self):
         """
         Test that setting the name property on the TopicsForm works correctly
         """
         # GIVEN: A topic name to set
-        topic_name = u'James'
+        topic_name = 'James'
 
         # WHEN: The name property is set
         self.form.name = topic_name
 
         # THEN: The name_edit should have the correct value
-        self.assertEqual(self.form.name_edit.text(), topic_name, u'The topic name should be set correctly')
+        self.assertEqual(self.form.name_edit.text(), topic_name, 'The topic name should be set correctly')

@@ -35,7 +35,7 @@ import os
 from PyQt4 import QtGui
 
 from openlp.core.lib import PluginStatus, Registry, translate
-from plugindialog import Ui_PluginViewDialog
+from .plugindialog import Ui_PluginViewDialog
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(PluginForm, self).__init__(parent)
         self.activePlugin = None
         self.programaticChange = False
         self.setupUi(self)
@@ -80,13 +80,13 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             else:
                 # PluginStatus.Inactive
                 status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
-            item.setText(status_text % plugin.name_strings[u'singular'])
+            item.setText(status_text % plugin.name_strings['singular'])
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
             self.pluginListWidget.addItem(item)
             pluginListWidth = max(pluginListWidth, self.fontMetrics().width(
-                translate('OpenLP.PluginForm', '%s (Inactive)') % plugin.name_strings[u'singular']))
+                translate('OpenLP.PluginForm', '%s (Inactive)') % plugin.name_strings['singular']))
         self.pluginListWidget.setFixedWidth(pluginListWidth + self.pluginListWidget.iconSize().width() + 48)
 
     def _clearDetails(self):
@@ -94,15 +94,15 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         Clear the plugin details widgets
         """
         self.statusComboBox.setCurrentIndex(-1)
-        self.versionNumberLabel.setText(u'')
-        self.aboutTextBrowser.setHtml(u'')
+        self.versionNumberLabel.setText('')
+        self.aboutTextBrowser.setHtml('')
         self.statusComboBox.setEnabled(False)
 
     def _setDetails(self):
         """
         Set the details of the currently selected plugin
         """
-        log.debug(u'PluginStatus: %s', str(self.activePlugin.status))
+        log.debug('PluginStatus: %s', str(self.activePlugin.status))
         self.versionNumberLabel.setText(self.activePlugin.version)
         self.aboutTextBrowser.setHtml(self.activePlugin.about())
         self.programaticChange = True
@@ -120,11 +120,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         if self.pluginListWidget.currentItem() is None:
             self._clearDetails()
             return
-        plugin_name_singular = self.pluginListWidget.currentItem().text().split(u'(')[0][:-1]
+        plugin_name_singular = self.pluginListWidget.currentItem().text().split('(')[0][:-1]
         self.activePlugin = None
         for plugin in self.plugin_manager.plugins:
             if plugin.status != PluginStatus.Disabled:
-                if plugin.name_strings[u'singular'] == plugin_name_singular:
+                if plugin.name_strings['singular'] == plugin_name_singular:
                     self.activePlugin = plugin
                     break
         if self.activePlugin:
@@ -153,14 +153,14 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         elif self.activePlugin.status == PluginStatus.Disabled:
             status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
         self.pluginListWidget.currentItem().setText(
-            status_text % self.activePlugin.name_strings[u'singular'])
+            status_text % self.activePlugin.name_strings['singular'])
 
     def _get_plugin_manager(self):
         """
         Adds the plugin manager to the class dynamically
         """
-        if not hasattr(self, u'_plugin_manager'):
-            self._plugin_manager = Registry().get(u'plugin_manager')
+        if not hasattr(self, '_plugin_manager'):
+            self._plugin_manager = Registry().get('plugin_manager')
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)
@@ -170,11 +170,11 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         Adds the openlp to the class dynamically.
         Windows needs to access the application in a dynamic manner.
         """
-        if os.name == u'nt':
-            return Registry().get(u'application')
+        if os.name == 'nt':
+            return Registry().get('application')
         else:
-            if not hasattr(self, u'_application'):
-                self._application = Registry().get(u'application')
+            if not hasattr(self, '_application'):
+                self._application = Registry().get('application')
             return self._application
 
     application = property(_get_application)

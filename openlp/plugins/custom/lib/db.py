@@ -64,12 +64,12 @@ def init_schema(url):
     """
     session, metadata = init_db(url)
 
-    custom_slide_table = Table(u'custom_slide', metadata,
-        Column(u'id', types.Integer(), primary_key=True),
-        Column(u'title', types.Unicode(255), nullable=False),
-        Column(u'text', types.UnicodeText, nullable=False),
-        Column(u'credits', types.UnicodeText),
-        Column(u'theme_name', types.Unicode(128))
+    custom_slide_table = Table('custom_slide', metadata,
+        Column('id', types.Integer(), primary_key=True),
+        Column('title', types.Unicode(255), nullable=False),
+        Column('text', types.UnicodeText, nullable=False),
+        Column('credits', types.UnicodeText),
+        Column('theme_name', types.Unicode(128))
     )
 
     mapper(CustomSlide, custom_slide_table)
