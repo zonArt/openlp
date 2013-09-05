@@ -790,7 +790,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         self.auto_start_action.setVisible(False)
         if service_item['service_item'].is_capable(ItemCapabilities.CanEdit) and service_item['service_item'].edit_id:
             self.edit_action.setVisible(True)
-        if service_item[u'service_item'].is_capable(ItemCapabilities.CanEditTitle):
+        if service_item['service_item'].is_capable(ItemCapabilities.CanEditTitle):
             self.rename_action.setVisible(True)
         if service_item['service_item'].is_capable(ItemCapabilities.CanMaintain):
             self.maintain_action.setVisible(True)
@@ -1402,13 +1402,13 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         Opens a dialog to rename the service item.
         """
         item = self.find_service_item()[0]
-        if not self.service_items[item][u'service_item'].is_capable(ItemCapabilities.CanEditTitle):
+        if not self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanEditTitle):
             return
-        title = self.service_items[item][u'service_item'].title
+        title = self.service_items[item]['service_item'].title
         title, ok = QtGui.QInputDialog.getText(self, translate('OpenLP.ServiceManager', 'Rename item title'),
             translate('OpenLP.ServiceManager', 'Title:'), QtGui.QLineEdit.Normal, self.trUtf8(title))
         if ok:
-            self.service_items[item][u'service_item'].title = unicode(title)
+            self.service_items[item]['service_item'].title = unicode(title)
             self.repaint_service_list(item, -1)
             self.set_modified()
 
