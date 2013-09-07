@@ -54,45 +54,45 @@ class Ui_PrintServiceDialog(object):
         """
         Set up the UI
         """
-        print_service_dialog.setObjectName(u'print_service_dialog')
+        print_service_dialog.setObjectName('print_service_dialog')
         print_service_dialog.resize(664, 594)
         self.main_layout = QtGui.QVBoxLayout(print_service_dialog)
         self.main_layout.setSpacing(0)
         self.main_layout.setMargin(0)
-        self.main_layout.setObjectName(u'main_layout')
+        self.main_layout.setObjectName('main_layout')
         self.toolbar = QtGui.QToolBar(print_service_dialog)
         self.toolbar.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        self.print_button = self.toolbar.addAction(build_icon(u':/general/general_print.png'),
+        self.print_button = self.toolbar.addAction(build_icon(':/general/general_print.png'),
             translate('OpenLP.PrintServiceForm', 'Print'))
         self.options_button = QtGui.QToolButton(self.toolbar)
         self.options_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        self.options_button.setIcon(build_icon(u':/system/system_configure.png'))
+        self.options_button.setIcon(build_icon(':/system/system_configure.png'))
         self.options_button.setCheckable(True)
         self.toolbar.addWidget(self.options_button)
         self.toolbar.addSeparator()
-        self.plain_copy = self.toolbar.addAction(build_icon(u':/system/system_edit_copy.png'),
+        self.plain_copy = self.toolbar.addAction(build_icon(':/system/system_edit_copy.png'),
             translate('OpenLP.PrintServiceForm', 'Copy'))
-        self.html_copy = self.toolbar.addAction(build_icon(u':/system/system_edit_copy.png'),
+        self.html_copy = self.toolbar.addAction(build_icon(':/system/system_edit_copy.png'),
             translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
         self.toolbar.addSeparator()
         self.zoom_in_button = QtGui.QToolButton(self.toolbar)
-        self.zoom_in_button.setIcon(build_icon(u':/general/general_zoom_in.png'))
-        self.zoom_in_button.setObjectName(u'zoom_in_button')
+        self.zoom_in_button.setIcon(build_icon(':/general/general_zoom_in.png'))
+        self.zoom_in_button.setObjectName('zoom_in_button')
         self.zoom_in_button.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoom_in_button)
         self.zoom_out_button = QtGui.QToolButton(self.toolbar)
-        self.zoom_out_button.setIcon(build_icon(u':/general/general_zoom_out.png'))
-        self.zoom_out_button.setObjectName(u'zoom_out_button')
+        self.zoom_out_button.setIcon(build_icon(':/general/general_zoom_out.png'))
+        self.zoom_out_button.setObjectName('zoom_out_button')
         self.zoom_out_button.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoom_out_button)
         self.zoom_original_button = QtGui.QToolButton(self.toolbar)
-        self.zoom_original_button.setIcon(build_icon(u':/general/general_zoom_original.png'))
-        self.zoom_original_button.setObjectName(u'zoom_original_button')
+        self.zoom_original_button.setIcon(build_icon(':/general/general_zoom_original.png'))
+        self.zoom_original_button.setObjectName('zoom_original_button')
         self.zoom_original_button.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.addWidget(self.zoom_original_button)
         self.zoom_combo_box = QtGui.QComboBox(print_service_dialog)
-        self.zoom_combo_box.setObjectName(u'zoom_combo_box')
+        self.zoom_combo_box.setObjectName('zoom_combo_box')
         self.toolbar.addWidget(self.zoom_combo_box)
         self.main_layout.addWidget(self.toolbar)
         self.preview_widget = QtGui.QPrintPreviewWidget(print_service_dialog)
@@ -104,16 +104,16 @@ class Ui_PrintServiceDialog(object):
         self.options_layout = QtGui.QVBoxLayout(self.options_widget)
         self.options_layout.setContentsMargins(8, 8, 8, 8)
         self.title_label = QtGui.QLabel(self.options_widget)
-        self.title_label.setObjectName(u'title_label')
+        self.title_label.setObjectName('title_label')
         self.options_layout.addWidget(self.title_label)
         self.title_line_edit = QtGui.QLineEdit(self.options_widget)
-        self.title_line_edit.setObjectName(u'title_line_edit')
+        self.title_line_edit.setObjectName('title_line_edit')
         self.options_layout.addWidget(self.title_line_edit)
         self.footer_label = QtGui.QLabel(self.options_widget)
-        self.footer_label.setObjectName(u'footer_label')
+        self.footer_label.setObjectName('footer_label')
         self.options_layout.addWidget(self.footer_label)
         self.footer_text_edit = SpellTextEdit(self.options_widget, False)
-        self.footer_text_edit.setObjectName(u'footer_text_edit')
+        self.footer_text_edit.setObjectName('footer_text_edit')
         self.options_layout.addWidget(self.footer_text_edit)
         self.options_group_box = QtGui.QGroupBox()
         self.group_layout = QtGui.QVBoxLayout()
@@ -153,8 +153,8 @@ class Ui_PrintServiceDialog(object):
         self.zoom_combo_box.addItems([
             translate('OpenLP.PrintServiceDialog', 'Fit Page'),
             translate('OpenLP.PrintServiceDialog', 'Fit Width'),
-            u'100%',
-            u'75%',
-            u'50%',
-            u'25%'
+            '100%',
+            '75%',
+            '50%',
+            '25%'
         ])

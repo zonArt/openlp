@@ -55,7 +55,7 @@ class CustomXMLBuilder(object):
     """
     This class builds the XML used to describe songs.
     """
-    log.info(u'CustomXMLBuilder Loaded')
+    log.info('CustomXMLBuilder Loaded')
 
     def __init__(self):
         """
@@ -71,9 +71,9 @@ class CustomXMLBuilder(object):
         Create a new custom XML document.
         """
         # Create the <song> base element
-        self.song = self.custom_xml.createElement(u'song')
+        self.song = self.custom_xml.createElement('song')
         self.custom_xml.appendChild(self.song)
-        self.song.setAttribute(u'version', u'1.0')
+        self.song.setAttribute('version', '1.0')
 
     def add_lyrics_to_song(self):
         """
@@ -81,8 +81,8 @@ class CustomXMLBuilder(object):
         custom item.
         """
         # Create the main <lyrics> element
-        self.lyrics = self.custom_xml.createElement(u'lyrics')
-        self.lyrics.setAttribute(u'language', u'en')
+        self.lyrics = self.custom_xml.createElement('lyrics')
+        self.lyrics.setAttribute('language', 'en')
         self.song.appendChild(self.lyrics)
 
     def add_verse_to_lyrics(self, verse_type, number, content):
@@ -99,9 +99,9 @@ class CustomXMLBuilder(object):
         ``content``
             The actual text of the verse to be stored.
         """
-        verse = self.custom_xml.createElement(u'verse')
-        verse.setAttribute(u'type', verse_type)
-        verse.setAttribute(u'label', number)
+        verse = self.custom_xml.createElement('verse')
+        verse.setAttribute('type', verse_type)
+        verse.setAttribute('label', number)
         self.lyrics.appendChild(verse)
         # add data as a CDATA section to protect the XML from special chars
         cds = self.custom_xml.createCDATASection(content)
@@ -111,20 +111,20 @@ class CustomXMLBuilder(object):
         """
         Debugging aid to dump XML so that we can see what we have.
         """
-        return self.custom_xml.toprettyxml(indent=u'  ')
+        return self.custom_xml.toprettyxml(indent='  ')
 
     def extract_xml(self):
         """
         Extract our newly created XML custom.
         """
-        return self.custom_xml.toxml(u'utf-8')
+        return self.custom_xml.toxml('utf-8')
 
 
 class CustomXMLParser(object):
     """
     A class to read in and parse a custom's XML.
     """
-    log.info(u'CustomXMLParser Loaded')
+    log.info('CustomXMLParser Loaded')
 
     def __init__(self, xml):
         """
@@ -134,12 +134,12 @@ class CustomXMLParser(object):
             The XML of the custom to be parsed.
         """
         self.custom_xml = None
-        if xml[:5] == u'<?xml':
+        if xml[:5] == '<?xml':
             xml = xml[38:]
         try:
             self.custom_xml = objectify.fromstring(xml)
         except etree.XMLSyntaxError:
-            log.exception(u'Invalid xml %s', xml)
+            log.exception('Invalid xml %s', xml)
 
     def get_verses(self):
         """
@@ -149,10 +149,10 @@ class CustomXMLParser(object):
         xml_iter = self.custom_xml.getiterator()
         verse_list = []
         for element in xml_iter:
-            if element.tag == u'verse':
+            if element.tag == 'verse':
                 if element.text is None:
-                    element.text = u''
-                verse_list.append([element.attrib, unicode(element.text)])
+                    element.text = ''
+                verse_list.append([element.attrib, str(element.text)])
         return verse_list
 
     def _dump_xml(self):

@@ -35,18 +35,18 @@ from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
 
 HOTKEY_TO_VERSE_TYPE = {
-    u'1': u'v1',
-    u'2': u'v2',
-    u'3': u'v3',
-    u'4': u'v4',
-    u'5': u'v5',
-    u'6': u'v6',
-    u'7': u'v7',
-    u'8': u'v8',
-    u'9': u'v9',
-    u'C': u'c',
-    u'+': u'b',
-    u'Z': u'o'}
+    '1': 'v1',
+    '2': 'v2',
+    '3': 'v3',
+    '4': 'v4',
+    '5': 'v5',
+    '6': 'v6',
+    '7': 'v7',
+    '8': 'v8',
+    '9': 'v9',
+    'C': 'c',
+    '+': 'b',
+    'Z': 'o'}
 
 class SundayPlusImport(SongImport):
     """
@@ -60,7 +60,7 @@ class SundayPlusImport(SongImport):
         Initialise the class.
         """
         SongImport.__init__(self, manager, **kwargs)
-        self.encoding = u'us-ascii'
+        self.encoding = 'us-ascii'
 
     def doImport(self):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
@@ -86,7 +86,7 @@ class SundayPlusImport(SongImport):
 
     def parse(self, data, cell=False):
         if len(data) == 0 or data[0:1] != '[' or data[-1] != ']':
-            self.logError(u'File is malformed')
+            self.logError('File is malformed')
             return False
         i = 1
         verse_type = VerseType.tags[VerseType.Verse]
@@ -142,7 +142,7 @@ class SundayPlusImport(SongImport):
                     elif name == 'Hotkey':
                         # Hotkey always appears after MARKER_NAME, so it
                         # effectively overrides MARKER_NAME, if present.
-                        if len(value) and value in HOTKEY_TO_VERSE_TYPE.keys():
+                        if len(value) and value in list(HOTKEY_TO_VERSE_TYPE.keys()):
                             verse_type = HOTKEY_TO_VERSE_TYPE[value]
                     if name == 'rtf':
                         value = self.unescape(value)
@@ -155,15 +155,15 @@ class SundayPlusImport(SongImport):
                         # only Public Domain, we treat this as special data:
                         # we remove that line and add data to specific field.
                         processed_lines = []
-                        for i in xrange(len(lines)):
+                        for i in range(len(lines)):
                             line = lines[i].strip()
-                            if line[:3].lower() == u'ccl':
+                            if line[:3].lower() == 'ccl':
                                 m = re.search(r'[0-9]+', line)
                                 if m:
                                     self.ccliNumber = int(m.group(0))
                                     continue
-                            elif line.lower() == u'public domain':
-                                self.copyright = u'Public Domain'
+                            elif line.lower() == 'public domain':
+                                self.copyright = 'Public Domain'
                                 continue
                             processed_lines.append(line)
                         self.addVerse('\n'.join(processed_lines).strip(), verse_type)
@@ -175,17 +175,17 @@ class SundayPlusImport(SongImport):
 
     def titleFromFilename(self, filename):
         title = os.path.split(filename)[1]
-        if title.endswith(u'.ptf'):
+        if title.endswith('.ptf'):
             title = title[:-4]
         # For some strange reason all example files names ended with 1-7.
-        if title.endswith(u'1-7'):
+        if title.endswith('1-7'):
             title = title[:-3]
-        return title.replace(u'_', u' ')
+        return title.replace('_', ' ')
 
     def decode(self, blob):
         while True:
             try:
-                return unicode(blob, self.encoding)
+                return str(blob, self.encoding)
             except:
                 self.encoding = retrieve_windows_encoding()
 

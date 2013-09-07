@@ -43,7 +43,7 @@ Finally two conditions can qualify a song tuple to be a duplicate:
    This condition should hit if one of the two songs (or both) is small (smaller
    than the min_block_size), but most of the song is contained in the other song.
 """
-from __future__ import division
+
 import difflib
 
 

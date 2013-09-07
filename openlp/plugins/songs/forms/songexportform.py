@@ -48,7 +48,7 @@ class SongExportForm(OpenLPWizard):
     This is the Song Export Wizard, which allows easy exporting of Songs to the
     OpenLyrics format.
     """
-    log.info(u'SongExportForm loaded')
+    log.info('SongExportForm loaded')
 
     def __init__(self, parent, plugin):
         """
@@ -60,22 +60,22 @@ class SongExportForm(OpenLPWizard):
         ``plugin``
             The songs plugin.
         """
-        OpenLPWizard.__init__(self, parent, plugin, u'song_export_wizard', u':/wizards/wizard_exportsong.bmp')
+        super(SongExportForm, self).__init__(parent, plugin, 'song_export_wizard', ':/wizards/wizard_exportsong.bmp')
         self.stop_export_flag = False
-        Registry().register_function(u'openlp_stop_wizard', self.stop_export)
+        Registry().register_function('openlp_stop_wizard', self.stop_export)
 
     def stop_export(self):
         """
         Sets the flag for the exporter to stop the export.
         """
-        log.debug(u'Stopping songs export')
+        log.debug('Stopping songs export')
         self.stop_export_flag = True
 
     def setupUi(self, image):
         """
         Set up the song wizard UI.
         """
-        OpenLPWizard.setupUi(self, image)
+        super(SongExportForm, self).setupUi(image)
 
     def custom_signals(self):
         """
@@ -93,55 +93,55 @@ class SongExportForm(OpenLPWizard):
         """
         # The page with all available songs.
         self.availableSongsPage = QtGui.QWizardPage()
-        self.availableSongsPage.setObjectName(u'availableSongsPage')
+        self.availableSongsPage.setObjectName('availableSongsPage')
         self.availableSongsLayout = QtGui.QHBoxLayout(self.availableSongsPage)
-        self.availableSongsLayout.setObjectName(u'availableSongsLayout')
+        self.availableSongsLayout.setObjectName('availableSongsLayout')
         self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setObjectName(u'verticalLayout')
+        self.verticalLayout.setObjectName('verticalLayout')
         self.availableListWidget = QtGui.QListWidget(self.availableSongsPage)
-        self.availableListWidget.setObjectName(u'availableListWidget')
+        self.availableListWidget.setObjectName('availableListWidget')
         self.verticalLayout.addWidget(self.availableListWidget)
         self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
+        self.horizontalLayout.setObjectName('horizontalLayout')
         self.searchLabel = QtGui.QLabel(self.availableSongsPage)
-        self.searchLabel.setObjectName(u'searchLabel')
+        self.searchLabel.setObjectName('searchLabel')
         self.horizontalLayout.addWidget(self.searchLabel)
         self.searchLineEdit = QtGui.QLineEdit(self.availableSongsPage)
-        self.searchLineEdit.setObjectName(u'searchLineEdit')
+        self.searchLineEdit.setObjectName('searchLineEdit')
         self.horizontalLayout.addWidget(self.searchLineEdit)
         spacer_item = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacer_item)
         self.uncheckButton = QtGui.QPushButton(self.availableSongsPage)
-        self.uncheckButton.setObjectName(u'uncheckButton')
+        self.uncheckButton.setObjectName('uncheckButton')
         self.horizontalLayout.addWidget(self.uncheckButton)
         self.checkButton = QtGui.QPushButton(self.availableSongsPage)
-        self.checkButton.setObjectName(u'selectButton')
+        self.checkButton.setObjectName('selectButton')
         self.horizontalLayout.addWidget(self.checkButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.availableSongsLayout.addLayout(self.verticalLayout)
         self.addPage(self.availableSongsPage)
         # The page with the selected songs.
         self.exportSongPage = QtGui.QWizardPage()
-        self.exportSongPage.setObjectName(u'availableSongsPage')
+        self.exportSongPage.setObjectName('availableSongsPage')
         self.exportSongLayout = QtGui.QHBoxLayout(self.exportSongPage)
-        self.exportSongLayout.setObjectName(u'exportSongLayout')
+        self.exportSongLayout.setObjectName('exportSongLayout')
         self.gridLayout = QtGui.QGridLayout()
-        self.gridLayout.setObjectName(u'gridLayout')
+        self.gridLayout.setObjectName('gridLayout')
         self.selectedListWidget = QtGui.QListWidget(self.exportSongPage)
-        self.selectedListWidget.setObjectName(u'selectedListWidget')
+        self.selectedListWidget.setObjectName('selectedListWidget')
         self.gridLayout.addWidget(self.selectedListWidget, 1, 0, 1, 1)
         # FIXME: self.horizontalLayout is already defined above?!?!?
         self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName(u'horizontalLayout')
+        self.horizontalLayout.setObjectName('horizontalLayout')
         self.directoryLabel = QtGui.QLabel(self.exportSongPage)
-        self.directoryLabel.setObjectName(u'directoryLabel')
+        self.directoryLabel.setObjectName('directoryLabel')
         self.horizontalLayout.addWidget(self.directoryLabel)
         self.directoryLineEdit = QtGui.QLineEdit(self.exportSongPage)
-        self.directoryLineEdit.setObjectName(u'directoryLineEdit')
+        self.directoryLineEdit.setObjectName('directoryLineEdit')
         self.horizontalLayout.addWidget(self.directoryLineEdit)
         self.directoryButton = QtGui.QToolButton(self.exportSongPage)
-        self.directoryButton.setIcon(build_icon(u':/exports/export_load.png'))
-        self.directoryButton.setObjectName(u'directoryButton')
+        self.directoryButton.setIcon(build_icon(':/exports/export_load.png'))
+        self.directoryButton.setObjectName('directoryButton')
         self.horizontalLayout.addWidget(self.directoryButton)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
         self.exportSongLayout.addLayout(self.gridLayout)
@@ -159,7 +159,7 @@ class SongExportForm(OpenLPWizard):
         self.availableSongsPage.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Songs'))
         self.availableSongsPage.setSubTitle(translate('SongsPlugin.ExportWizardForm',
             'Check the songs you want to export.'))
-        self.searchLabel.setText(u'%s:' % UiStrings().Search)
+        self.searchLabel.setText('%s:' % UiStrings().Search)
         self.uncheckButton.setText(translate('SongsPlugin.ExportWizardForm', 'Uncheck All'))
         self.checkButton.setText(translate('SongsPlugin.ExportWizardForm', 'Check All'))
         self.exportSongPage.setTitle(translate('SongsPlugin.ExportWizardForm', 'Select Directory'))
@@ -227,7 +227,7 @@ class SongExportForm(OpenLPWizard):
             if song.temporary:
                 continue
             authors = create_separated_list([author.display_name for author in song.authors])
-            title = u'%s (%s)' % (unicode(song.title), authors)
+            title = '%s (%s)' % (str(song.title), authors)
             item = QtGui.QListWidgetItem(title)
             item.setData(QtCore.Qt.UserRole, song)
             item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
@@ -239,7 +239,7 @@ class SongExportForm(OpenLPWizard):
         """
         Perform pre export tasks.
         """
-        OpenLPWizard.pre_wizard(self)
+        super(SongExportForm, self).pre_wizard()
         self.progress_label.setText(translate('SongsPlugin.ExportWizardForm', 'Starting export...'))
         self.application.process_events()
 
@@ -259,7 +259,7 @@ class SongExportForm(OpenLPWizard):
         else:
             self.progress_label.setText(translate('SongsPlugin.SongExportForm', 'Your song export failed.'))
 
-    def _findListWidgetItems(self, listWidget, text=u''):
+    def _findListWidgetItems(self, listWidget, text=''):
         """
         Returns a list of *QListWidgetItem*s of the ``listWidget``. Note, that
         hidden items are included.
@@ -325,4 +325,4 @@ class SongExportForm(OpenLPWizard):
         the path to *directoryLineEdit*.
         """
         self.get_folder(translate('SongsPlugin.ExportWizardForm', 'Select Destination Folder'),
-            self.directoryLineEdit, u'last directory export')
+            self.directoryLineEdit, 'last directory export')

@@ -30,9 +30,8 @@
 The :mod:`osdinteraction` provides miscellaneous functions for interacting with
 OSD files.
 """
-
 import os
-import cPickle
+import json
 
 from tests.utils.constants import TEST_RESOURCES_PATH
 
@@ -44,6 +43,6 @@ def read_service_from_file(file_name):
     @return: The service contained in the file.
     """
     service_file = os.path.join(TEST_RESOURCES_PATH, file_name)
-    with open(service_file, u'r') as open_file:
-        service = cPickle.load(open_file)
+    with open(service_file, 'r') as open_file:
+        service = json.load(open_file)
     return service

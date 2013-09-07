@@ -45,11 +45,11 @@ mentioned above, like so::
     class AuthorsForm(QtGui.QDialog, Ui_AuthorsDialog):
 
         def __init__(self, parent=None):
-            QtGui.QDialog.__init__(self, parent)
+            super(AuthorsForm, self).__init__(parent)
             self.setupUi(self)
 
 This allows OpenLP to use ``self.object`` for all the GUI elements while keeping
 them separate from the functionality, so that it is easier to recreate the GUI
 from the .ui files later if necessary.
 """
-from editsongform import EditSongForm
+from .editsongform import EditSongForm

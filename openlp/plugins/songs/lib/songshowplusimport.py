@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songshowplusimport` module provides the functionality for importing 
+The :mod:`songshowplusimport` module provides the functionality for importing
 SongShow Plus songs into the OpenLP database.
 """
 import chardet
@@ -133,7 +133,7 @@ class SongShowPlusImport(SongImport):
                 else:
                     length_descriptor, = struct.unpack("B", song_data.read(1))
                 log.debug(length_descriptor_size)
-                data = song_data.read(length_descriptor)
+                data = song_data.read(length_descriptor).decode()
                 if block_key == TITLE:
                     self.title = self.decode(data)
                 elif block_key == AUTHOR:
@@ -188,7 +188,7 @@ class SongShowPlusImport(SongImport):
         else:
             # otherwise we assume number 1 and take the whole prefix as the verse tag
             verse_type = verse_name
-            verse_number = u'1'
+            verse_number = '1'
         verse_type = verse_type.lower()
         if verse_type == "verse":
             verse_tag = VerseType.tags[VerseType.Verse]
@@ -212,4 +212,4 @@ class SongShowPlusImport(SongImport):
         try:
             return unicode(data, chardet.detect(data)['encoding'])
         except:
-            return unicode(data, u'cp1252')
+            return unicode(data, 'cp1252')
