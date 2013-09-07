@@ -803,20 +803,20 @@ class BibleMediaItem(MediaManagerItem):
             verses.add(book, chapter, verse, version, copyright, permissions)
             verse_text = self.formatVerse(old_chapter, chapter, verse)
             if second_bible:
-                bible_text = '%s&nbsp;%s\n\n%s&nbsp;%s' % (verse_text, text, verse_text, second_text)
+                bible_text = '%s%s\n\n%s&nbsp;%s' % (verse_text, text, verse_text, second_text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = ''
             # If we are 'Verse Per Slide' then create a new slide.
             elif self.settings.layout_style == LayoutStyle.VersePerSlide:
-                bible_text = '%s&nbsp;%s' % (verse_text, text)
+                bible_text = '%s%s' % (verse_text, text)
                 raw_slides.append(bible_text.rstrip())
                 bible_text = ''
             # If we are 'Verse Per Line' then force a new line.
             elif self.settings.layout_style == LayoutStyle.VersePerLine:
-                bible_text = '%s%s&nbsp;%s\n' % (bible_text, verse_text, text)
+                bible_text = '%s%s%s\n' % (bible_text, verse_text, text)
             # We have to be 'Continuous'.
             else:
-                bible_text = '%s %s&nbsp;%s\n' % (bible_text, verse_text, text)
+                bible_text = '%s %s%s\n' % (bible_text, verse_text, text)
             bible_text = bible_text.strip(' ')
             if not old_item:
                 start_item = bitem
@@ -950,12 +950,12 @@ class BibleMediaItem(MediaManagerItem):
         else:
             verse_text = str(verse)
         if self.settings.display_style == DisplayStyle.Round:
-            return '{su}(%s){/su}' % verse_text
+            return '{su}(%s){/su}&nbsp;' % verse_text
         if self.settings.display_style == DisplayStyle.Curly:
-            return '{su}{%s}{/su}' % verse_text
+            return '{su}{%s}{/su}&nbsp;' % verse_text
         if self.settings.display_style == DisplayStyle.Square:
-            return '{su}[%s]{/su}' % verse_text
-        return '{su}%s{/su}' % verse_text
+            return '{su}[%s]{/su}&nbsp;' % verse_text
+        return '{su}%s{/su}&nbsp;' % verse_text
 
     def search(self, string, showError):
         """
