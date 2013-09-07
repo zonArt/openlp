@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -102,7 +102,7 @@ class CommandStack(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         if self.current_index == len(self.data):
             raise StopIteration
         else:
@@ -145,9 +145,9 @@ def print_quiet(text, linefeed=True):
     global quiet_mode
     if not quiet_mode:
         if linefeed:
-            print text
+            print (text)
         else:
-            print text,
+            print (text, end=' ')
 
 def print_verbose(text):
     """
