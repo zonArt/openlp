@@ -354,7 +354,6 @@ class TestEasyWorshipSongImport(TestCase):
             #       called.
             self.assertIsNone(importer.doImport(), 'doImport should return None when it has completed')
             for song_data in SONG_TEST_DATA:
-                print (mocked_title.mocked_calls())
                 title = song_data['title']
                 author_calls = song_data['authors']
                 song_copyright = song_data['copyright']
