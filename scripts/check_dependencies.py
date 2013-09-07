@@ -63,6 +63,7 @@ WIN32_MODULES = [
     'win32ui',
     'pywintypes',
     'pyodbc',
+    'icu',
 ]
 
 MODULES = [
@@ -85,7 +86,6 @@ MODULES = [
     'mako',
     'cherrypy',
     'uno',
-    'icu',
 ]
 
 
