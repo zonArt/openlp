@@ -160,7 +160,7 @@ class SongShowPlusImport(SongImport):
                 elif block_key == VERSE_ORDER:
                     verse_tag = self.to_openlp_verse_tag(data, True)
                     if verse_tag:
-                        if not isinstance(verse_tag, unicode):
+                        if not isinstance(verse_tag, str):
                             verse_tag = self.decode(verse_tag)
                         self.ssp_verse_order_list.append(verse_tag)
                 elif block_key == SONG_BOOK:
@@ -210,6 +210,6 @@ class SongShowPlusImport(SongImport):
 
     def decode(self, data):
         try:
-            return unicode(data, chardet.detect(data)['encoding'])
+            return str(data, chardet.detect(data)['encoding'])
         except:
-            return unicode(data, 'cp1252')
+            return str(data, 'cp1252')
