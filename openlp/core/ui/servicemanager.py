@@ -1004,7 +1004,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         """
         Makes a specific item in the service live.
         """
-        if index >= 0 and index < self.service_manager_list.topLevelItemCount:
+        if index >= 0 and index < self.service_manager_list.topLevelItemCount():
             item = self.service_manager_list.topLevelItem(index)
             self.service_manager_list.setCurrentItem(item)
             self.make_live()
