@@ -212,8 +212,4 @@ class SongShowPlusImport(SongImport):
         try:
             return unicode(data, chardet.detect(data)['encoding'])
         except:
-            while True:
-                try:
-                    return unicode(data, self.encoding)
-                except:
-                    self.encoding = retrieve_windows_encoding()
+            return unicode(data, u'cp1252')
