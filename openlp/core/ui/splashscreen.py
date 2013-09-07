@@ -41,16 +41,16 @@ class SplashScreen(QtGui.QSplashScreen):
         """
         Constructor
         """
-        QtGui.QSplashScreen.__init__(self)
+        super(SplashScreen, self).__init__()
         self.setupUi()
 
     def setupUi(self):
         """
         Set up the UI
         """
-        self.setObjectName(u'splashScreen')
+        self.setObjectName('splashScreen')
         self.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-        splash_image = QtGui.QPixmap(u':/graphics/openlp-splash-screen.png')
+        splash_image = QtGui.QPixmap(':/graphics/openlp-splash-screen.png')
         self.setPixmap(splash_image)
         self.setMask(splash_image.mask())
         self.resize(370, 370)

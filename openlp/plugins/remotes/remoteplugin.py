@@ -37,26 +37,26 @@ from openlp.plugins.remotes.lib import RemoteTab, HttpServer
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        u'remotes/twelve hour': True,
-        u'remotes/port': 4316,
-        u'remotes/https port': 4317,
-        u'remotes/https enabled': False,
-        u'remotes/user id': u'openlp',
-        u'remotes/password': u'password',
-        u'remotes/authentication enabled': False,
-        u'remotes/ip address': u'0.0.0.0'
+        'remotes/twelve hour': True,
+        'remotes/port': 4316,
+        'remotes/https port': 4317,
+        'remotes/https enabled': False,
+        'remotes/user id': 'openlp',
+        'remotes/password': 'password',
+        'remotes/authentication enabled': False,
+        'remotes/ip address': '0.0.0.0'
 }
 
 
 class RemotesPlugin(Plugin):
-    log.info(u'Remote Plugin loaded')
+    log.info('Remote Plugin loaded')
 
     def __init__(self):
         """
         remotes constructor
         """
-        Plugin.__init__(self, u'remotes', __default_settings__, settings_tab_class=RemoteTab)
-        self.icon_path = u':/plugins/plugin_remote.png'
+        super(RemotesPlugin, self).__init__('remotes', __default_settings__, settings_tab_class=RemoteTab)
+        self.icon_path = ':/plugins/plugin_remote.png'
         self.icon = build_icon(self.icon_path)
         self.weight = -1
         self.server = None
@@ -65,8 +65,8 @@ class RemotesPlugin(Plugin):
         """
         Initialise the remotes plugin, and start the http server
         """
-        log.debug(u'initialise')
-        Plugin.initialise(self)
+        log.debug('initialise')
+        super(RemotesPlugin, self).initialise()
         self.server = HttpServer()
         self.server.start_server()
 
@@ -74,8 +74,8 @@ class RemotesPlugin(Plugin):
         """
         Tidy up and close down the http server
         """
-        log.debug(u'finalise')
-        Plugin.finalise(self)
+        log.debug('finalise')
+        super(RemotesPlugin, self).finalise()
         if self.server:
             self.server.close()
             self.server = None
@@ -96,18 +96,18 @@ class RemotesPlugin(Plugin):
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
-            u'singular': translate('RemotePlugin', 'Remote', 'name singular'),
-            u'plural': translate('RemotePlugin', 'Remotes', 'name plural')
+            'singular': translate('RemotePlugin', 'Remote', 'name singular'),
+            'plural': translate('RemotePlugin', 'Remotes', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.text_strings[StringContent.VisibleName] = {
-            u'title': translate('RemotePlugin', 'Remote', 'container title')
+            'title': translate('RemotePlugin', 'Remote', 'container title')
         }
 
     def config_update(self):
         """
         Called when Config is changed to restart the server on new address or port
         """
-        log.debug(u'remote config changed')
+        log.debug('remote config changed')
         self.main_window.information_message(translate('RemotePlugin', 'Configuration Change'),
             translate('RemotePlugin', 'OpenLP will need to be restarted for the Remote changes to become active.'))

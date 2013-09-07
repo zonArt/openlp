@@ -6,7 +6,7 @@ import os
 from unittest import TestCase
 from tempfile import mkstemp
 from mock import MagicMock
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import cherrypy
 
 from BeautifulSoup import BeautifulSoup
@@ -16,14 +16,14 @@ from openlp.plugins.remotes.lib.httpserver import HttpServer
 from PyQt4 import QtGui
 
 __default_settings__ = {
-    u'remotes/twelve hour': True,
-    u'remotes/port': 4316,
-    u'remotes/https port': 4317,
-    u'remotes/https enabled': False,
-    u'remotes/user id': u'openlp',
-    u'remotes/password': u'password',
-    u'remotes/authentication enabled': False,
-    u'remotes/ip address': u'0.0.0.0'
+    'remotes/twelve hour': True,
+    'remotes/port': 4316,
+    'remotes/https port': 4317,
+    'remotes/https enabled': False,
+    'remotes/user id': 'openlp',
+    'remotes/password': 'password',
+    'remotes/authentication enabled': False,
+    'remotes/ip address': '0.0.0.0'
 }
 
 
@@ -35,7 +35,7 @@ class TestRouter(TestCase):
         """
         Create the UI
         """
-        fd, self.ini_file = mkstemp(u'.ini')
+        fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         Settings().extend_default_settings(__default_settings__)
@@ -62,42 +62,42 @@ class TestRouter(TestCase):
         Test the default server serves the correct initial page
         """
         # GIVEN: A default configuration
-        Settings().setValue(u'remotes/authentication enabled', False)
+        Settings().setValue('remotes/authentication enabled', False)
         self.start_server()
 
         # WHEN: called the route location
-        code, page = call_remote_server(u'http://localhost:4316')
+        code, page = call_remote_server('http://localhost:4316')
 
         # THEN: default title will be returned
-        self.assertEqual(BeautifulSoup(page).title.text, u'OpenLP 2.1 Remote',
-            u'The default menu should be returned')
+        self.assertEqual(BeautifulSoup(page).title.text, 'OpenLP 2.1 Remote',
+            'The default menu should be returned')
 
     def start_authenticating_server_test(self):
         """
         Test the default server serves the correctly with authentication
         """
         # GIVEN: A default authorised configuration
-        Settings().setValue(u'remotes/authentication enabled', True)
+        Settings().setValue('remotes/authentication enabled', True)
         self.start_server()
 
         # WHEN: called the route location with no user details
-        code, page = call_remote_server(u'http://localhost:4316')
+        code, page = call_remote_server('http://localhost:4316')
 
         # THEN: then server will ask for details
-        self.assertEqual(code, 401, u'The basic authorisation request should be returned')
+        self.assertEqual(code, 401, 'The basic authorisation request should be returned')
 
         # WHEN: called the route location with user details
-        code, page = call_remote_server(u'http://localhost:4316', u'openlp', u'password')
+        code, page = call_remote_server('http://localhost:4316', 'openlp', 'password')
 
         # THEN: default title will be returned
-        self.assertEqual(BeautifulSoup(page).title.text, u'OpenLP 2.1 Remote',
-                         u'The default menu should be returned')
+        self.assertEqual(BeautifulSoup(page).title.text, 'OpenLP 2.1 Remote',
+                         'The default menu should be returned')
 
         # WHEN: called the route location with incorrect user details
-        code, page = call_remote_server(u'http://localhost:4316', u'itwinkle', u'password')
+        code, page = call_remote_server('http://localhost:4316', 'itwinkle', 'password')
 
         # THEN: then server will ask for details
-        self.assertEqual(code, 401, u'The basic authorisation request should be returned')
+        self.assertEqual(code, 401, 'The basic authorisation request should be returned')
 
 
 def call_remote_server(url, username=None, password=None):
@@ -111,16 +111,16 @@ def call_remote_server(url, username=None, password=None):
         The password.
     """
     if username:
-        passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
         passman.add_password(None, url, username, password)
-        authhandler = urllib2.HTTPBasicAuthHandler(passman)
-        opener = urllib2.build_opener(authhandler)
-        urllib2.install_opener(opener)
+        authhandler = urllib.request.HTTPBasicAuthHandler(passman)
+        opener = urllib.request.build_opener(authhandler)
+        urllib.request.install_opener(opener)
     try:
-        page = urllib2.urlopen(url)
+        page = urllib.request.urlopen(url)
         return 0, page.read()
-    except urllib2.HTTPError, e:
-        return e.code, u''
+    except urllib.error.HTTPError as e:
+        return e.code, ''
 
 
 def process_http_request(url_path, *args):

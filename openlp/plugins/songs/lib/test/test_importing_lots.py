@@ -43,16 +43,16 @@ from test_opensongimport import wizard_stub
 # Uncomment below depending on what problem trying to make occur!
 
 def opensong_import_lots():
-    ziploc = u'/home/mjt/openlp/OpenSong_Data/'
+    ziploc = '/home/mjt/openlp/OpenSong_Data/'
     files = []
-    files = [os.path.join(ziploc, u'RaoulSongs', u'Songs', u'Jesus Freak')]
+    files = [os.path.join(ziploc, 'RaoulSongs', 'Songs', 'Jesus Freak')]
     # files.extend(glob(ziploc+u'Songs.zip'))
     # files.extend(glob(ziploc+u'RaoulSongs.zip'))
     # files.extend(glob(ziploc+u'SOF.zip'))
     # files.extend(glob(ziploc+u'spanish_songs_for_opensong.zip'))
     # files.extend(glob(ziploc+u'opensong_*.zip'))
-    errfile = codecs.open(u'import_lots_errors.txt', u'w', u'utf8')
-    manager = Manager(u'songs', init_schema)
+    errfile = codecs.open('import_lots_errors.txt', 'w', 'utf8')
+    manager = Manager('songs', init_schema)
     o = OpenSongImport(manager, filenames=files)
     o.import_wizard=wizard_stub()
     o.do_import()

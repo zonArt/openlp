@@ -52,16 +52,16 @@ def add_welcome_page(parent, image):
     """
     parent.welcome_page = QtGui.QWizardPage()
     parent.welcome_page.setPixmap(QtGui.QWizard.WatermarkPixmap, QtGui.QPixmap(image))
-    parent.welcome_page.setObjectName(u'welcome_page')
+    parent.welcome_page.setObjectName('welcome_page')
     parent.welcome_layout = QtGui.QVBoxLayout(parent.welcome_page)
-    parent.welcome_layout.setObjectName(u'WelcomeLayout')
+    parent.welcome_layout.setObjectName('WelcomeLayout')
     parent.title_label = QtGui.QLabel(parent.welcome_page)
-    parent.title_label.setObjectName(u'title_label')
+    parent.title_label.setObjectName('title_label')
     parent.welcome_layout.addWidget(parent.title_label)
     parent.welcome_layout.addSpacing(40)
     parent.information_label = QtGui.QLabel(parent.welcome_page)
     parent.information_label.setWordWrap(True)
-    parent.information_label.setObjectName(u'information_label')
+    parent.information_label.setObjectName('information_label')
     parent.welcome_layout.addWidget(parent.information_label)
     parent.welcome_layout.addStretch()
     parent.addPage(parent.welcome_page)
@@ -89,15 +89,15 @@ def create_button_box(dialog, name, standard_buttons, custom_buttons=None):
     if custom_buttons is None:
         custom_buttons = []
     buttons = QtGui.QDialogButtonBox.NoButton
-    if u'ok' in standard_buttons:
+    if 'ok' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Ok
-    if u'save' in standard_buttons:
+    if 'save' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Save
-    if u'cancel' in standard_buttons:
+    if 'cancel' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Cancel
-    if u'close' in standard_buttons:
+    if 'close' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.Close
-    if u'defaults' in standard_buttons:
+    if 'defaults' in standard_buttons:
         buttons |= QtGui.QDialogButtonBox.RestoreDefaults
     button_box = QtGui.QDialogButtonBox(dialog)
     button_box.setObjectName(name)
@@ -131,7 +131,7 @@ def critical_error_message_box(title=None, message=None, parent=None, question=F
     if question:
         return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
-    return Registry().get(u'main_window').error_message(title if title else UiStrings().Error, message)
+    return Registry().get('main_window').error_message(title if title else UiStrings().Error, message)
 
 
 def create_horizontal_adjusting_combo_box(parent, name):
@@ -177,37 +177,37 @@ def create_button(parent, name, **kwargs):
     ``enabled``
         False in case the button should be disabled.
     """
-    if u'role' in kwargs:
-        role = kwargs.pop(u'role')
-        if role == u'delete':
-            kwargs.setdefault(u'text', UiStrings().Delete)
-            kwargs.setdefault(u'tooltip', translate('OpenLP.Ui', 'Delete the selected item.'))
-        elif role == u'up':
-            kwargs.setdefault(u'icon', u':/services/service_up.png')
-            kwargs.setdefault(u'tooltip', translate('OpenLP.Ui', 'Move selection up one position.'))
-        elif role == u'down':
-            kwargs.setdefault(u'icon', u':/services/service_down.png')
-            kwargs.setdefault(u'tooltip', translate('OpenLP.Ui', 'Move selection down one position.'))
+    if 'role' in kwargs:
+        role = kwargs.pop('role')
+        if role == 'delete':
+            kwargs.setdefault('text', UiStrings().Delete)
+            kwargs.setdefault('tooltip', translate('OpenLP.Ui', 'Delete the selected item.'))
+        elif role == 'up':
+            kwargs.setdefault('icon', ':/services/service_up.png')
+            kwargs.setdefault('tooltip', translate('OpenLP.Ui', 'Move selection up one position.'))
+        elif role == 'down':
+            kwargs.setdefault('icon', ':/services/service_down.png')
+            kwargs.setdefault('tooltip', translate('OpenLP.Ui', 'Move selection down one position.'))
         else:
-            log.warn(u'The role "%s" is not defined in create_push_button().', role)
-    if kwargs.pop(u'class', u'') == u'toolbutton':
+            log.warn('The role "%s" is not defined in create_push_button().', role)
+    if kwargs.pop('class', '') == 'toolbutton':
         button = QtGui.QToolButton(parent)
     else:
         button = QtGui.QPushButton(parent)
     button.setObjectName(name)
-    if kwargs.get(u'text'):
-        button.setText(kwargs.pop(u'text'))
-    if kwargs.get(u'icon'):
-        button.setIcon(build_icon(kwargs.pop(u'icon')))
-    if kwargs.get(u'tooltip'):
-        button.setToolTip(kwargs.pop(u'tooltip'))
-    if not kwargs.pop(u'enabled', True):
+    if kwargs.get('text'):
+        button.setText(kwargs.pop('text'))
+    if kwargs.get('icon'):
+        button.setIcon(build_icon(kwargs.pop('icon')))
+    if kwargs.get('tooltip'):
+        button.setToolTip(kwargs.pop('tooltip'))
+    if not kwargs.pop('enabled', True):
         button.setEnabled(False)
-    if kwargs.get(u'click'):
-        button.clicked.connect(kwargs.pop(u'click'))
-    for key in kwargs.keys():
-        if key not in [u'text', u'icon', u'tooltip', u'click']:
-            log.warn(u'Parameter %s was not consumed in create_button().', key)
+    if kwargs.get('click'):
+        button.clicked.connect(kwargs.pop('click'))
+    for key in list(kwargs.keys()):
+        if key not in ['text', 'icon', 'tooltip', 'click']:
+            log.warn('Parameter %s was not consumed in create_button().', key)
     return button
 
 
@@ -265,45 +265,45 @@ def create_action(parent, name, **kwargs):
     """
     action = QtGui.QAction(parent)
     action.setObjectName(name)
-    if kwargs.get(u'text'):
-        action.setText(kwargs.pop(u'text'))
-    if kwargs.get(u'icon'):
-        action.setIcon(build_icon(kwargs.pop(u'icon')))
-    if kwargs.get(u'tooltip'):
-        action.setToolTip(kwargs.pop(u'tooltip'))
-    if kwargs.get(u'statustip'):
-        action.setStatusTip(kwargs.pop(u'statustip'))
-    if kwargs.get(u'checked') is not None:
+    if kwargs.get('text'):
+        action.setText(kwargs.pop('text'))
+    if kwargs.get('icon'):
+        action.setIcon(build_icon(kwargs.pop('icon')))
+    if kwargs.get('tooltip'):
+        action.setToolTip(kwargs.pop('tooltip'))
+    if kwargs.get('statustip'):
+        action.setStatusTip(kwargs.pop('statustip'))
+    if kwargs.get('checked') is not None:
         action.setCheckable(True)
-        action.setChecked(kwargs.pop(u'checked'))
-    if not kwargs.pop(u'enabled', True):
+        action.setChecked(kwargs.pop('checked'))
+    if not kwargs.pop('enabled', True):
         action.setEnabled(False)
-    if not kwargs.pop(u'visible', True):
+    if not kwargs.pop('visible', True):
         action.setVisible(False)
-    if kwargs.pop(u'separator', False):
+    if kwargs.pop('separator', False):
         action.setSeparator(True)
-    if u'data' in kwargs:
-        action.setData(kwargs.pop(u'data'))
-    if kwargs.pop(u'can_shortcuts', False):
+    if 'data' in kwargs:
+        action.setData(kwargs.pop('data'))
+    if kwargs.pop('can_shortcuts', False):
         action_list = ActionList.get_instance()
-        action_list.add_action(action, kwargs.pop(u'category', None))
-    if u'context' in kwargs:
-        action.setShortcutContext(kwargs.pop(u'context'))
-    if kwargs.get(u'triggers'):
-        action.triggered.connect(kwargs.pop(u'triggers'))
-    for key in kwargs.keys():
-        if key not in [u'text', u'icon', u'tooltip', u'statustip', u'checked', u'can_shortcuts',
-                u'category', u'triggers']:
-            log.warn(u'Parameter %s was not consumed in create_action().', key)
+        action_list.add_action(action, kwargs.pop('category', None))
+    if 'context' in kwargs:
+        action.setShortcutContext(kwargs.pop('context'))
+    if kwargs.get('triggers'):
+        action.triggered.connect(kwargs.pop('triggers'))
+    for key in list(kwargs.keys()):
+        if key not in ['text', 'icon', 'tooltip', 'statustip', 'checked', 'can_shortcuts',
+                'category', 'triggers']:
+            log.warn('Parameter %s was not consumed in create_action().', key)
     return action
 
 
-def create_widget_action(parent, name=u'', **kwargs):
+def create_widget_action(parent, name='', **kwargs):
     """
     Return a new QAction by calling ``create_action(parent, name, **kwargs)``. The shortcut context defaults to
     ``QtCore.Qt.WidgetShortcut`` and the action is added to the parents action list.
     """
-    kwargs.setdefault(u'context', QtCore.Qt.WidgetShortcut)
+    kwargs.setdefault('context', QtCore.Qt.WidgetShortcut)
     action = create_action(parent, name, **kwargs)
     parent.addAction(action)
     return action

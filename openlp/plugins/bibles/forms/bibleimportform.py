@@ -53,7 +53,7 @@ class WebDownload(object):
     BibleGateway = 1
     Bibleserver = 2
 
-    Names = [u'Crosswalk', u'BibleGateway', u'Bibleserver']
+    Names = ['Crosswalk', 'BibleGateway', 'Bibleserver']
 
 
 class BibleImportForm(OpenLPWizard):
@@ -61,7 +61,7 @@ class BibleImportForm(OpenLPWizard):
     This is the Bible Import Wizard, which allows easy importing of Bibles into OpenLP from other formats like OSIS,
     CSV and OpenSong.
     """
-    log.info(u'BibleImportForm loaded')
+    log.info('BibleImportForm loaded')
 
     def __init__(self, parent, manager, bible_plugin):
         """
@@ -78,13 +78,14 @@ class BibleImportForm(OpenLPWizard):
         """
         self.manager = manager
         self.web_bible_list = {}
-        OpenLPWizard.__init__(self, parent, bible_plugin, u'bibleImportWizard', u':/wizards/wizard_importbible.bmp')
+        super(BibleImportForm, self).__init__(
+            parent, bible_plugin, 'bibleImportWizard', ':/wizards/wizard_importbible.bmp')
 
     def setupUi(self, image):
         """
         Set up the UI for the bible wizard.
         """
-        OpenLPWizard.setupUi(self, image)
+        super(BibleImportForm, self).setupUi(image)
         self.formatComboBox.currentIndexChanged.connect(self.onCurrentIndexChanged)
 
     def onCurrentIndexChanged(self, index):
@@ -120,161 +121,161 @@ class BibleImportForm(OpenLPWizard):
         """
         # Select Page
         self.selectPage = QtGui.QWizardPage()
-        self.selectPage.setObjectName(u'SelectPage')
+        self.selectPage.setObjectName('SelectPage')
         self.selectPageLayout = QtGui.QVBoxLayout(self.selectPage)
-        self.selectPageLayout.setObjectName(u'SelectPageLayout')
+        self.selectPageLayout.setObjectName('SelectPageLayout')
         self.formatLayout = QtGui.QFormLayout()
-        self.formatLayout.setObjectName(u'FormatLayout')
+        self.formatLayout.setObjectName('FormatLayout')
         self.formatLabel = QtGui.QLabel(self.selectPage)
-        self.formatLabel.setObjectName(u'FormatLabel')
+        self.formatLabel.setObjectName('FormatLabel')
         self.formatComboBox = QtGui.QComboBox(self.selectPage)
-        self.formatComboBox.addItems([u'', u'', u'', u''])
-        self.formatComboBox.setObjectName(u'FormatComboBox')
+        self.formatComboBox.addItems(['', '', '', ''])
+        self.formatComboBox.setObjectName('FormatComboBox')
         self.formatLayout.addRow(self.formatLabel, self.formatComboBox)
         self.spacer = QtGui.QSpacerItem(10, 0, QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Minimum)
         self.formatLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
         self.selectPageLayout.addLayout(self.formatLayout)
         self.selectStack = QtGui.QStackedLayout()
-        self.selectStack.setObjectName(u'SelectStack')
+        self.selectStack.setObjectName('SelectStack')
         self.osisWidget = QtGui.QWidget(self.selectPage)
-        self.osisWidget.setObjectName(u'OsisWidget')
+        self.osisWidget.setObjectName('OsisWidget')
         self.osisLayout = QtGui.QFormLayout(self.osisWidget)
         self.osisLayout.setMargin(0)
-        self.osisLayout.setObjectName(u'OsisLayout')
+        self.osisLayout.setObjectName('OsisLayout')
         self.osisFileLabel = QtGui.QLabel(self.osisWidget)
-        self.osisFileLabel.setObjectName(u'OsisFileLabel')
+        self.osisFileLabel.setObjectName('OsisFileLabel')
         self.osisFileLayout = QtGui.QHBoxLayout()
-        self.osisFileLayout.setObjectName(u'OsisFileLayout')
+        self.osisFileLayout.setObjectName('OsisFileLayout')
         self.osisFileEdit = QtGui.QLineEdit(self.osisWidget)
-        self.osisFileEdit.setObjectName(u'OsisFileEdit')
+        self.osisFileEdit.setObjectName('OsisFileEdit')
         self.osisFileLayout.addWidget(self.osisFileEdit)
         self.osisBrowseButton = QtGui.QToolButton(self.osisWidget)
         self.osisBrowseButton.setIcon(self.open_icon)
-        self.osisBrowseButton.setObjectName(u'OsisBrowseButton')
+        self.osisBrowseButton.setObjectName('OsisBrowseButton')
         self.osisFileLayout.addWidget(self.osisBrowseButton)
         self.osisLayout.addRow(self.osisFileLabel, self.osisFileLayout)
         self.osisLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
         self.selectStack.addWidget(self.osisWidget)
         self.csvWidget = QtGui.QWidget(self.selectPage)
-        self.csvWidget.setObjectName(u'CsvWidget')
+        self.csvWidget.setObjectName('CsvWidget')
         self.csvLayout = QtGui.QFormLayout(self.csvWidget)
         self.csvLayout.setMargin(0)
-        self.csvLayout.setObjectName(u'CsvLayout')
+        self.csvLayout.setObjectName('CsvLayout')
         self.csvBooksLabel = QtGui.QLabel(self.csvWidget)
-        self.csvBooksLabel.setObjectName(u'CsvBooksLabel')
+        self.csvBooksLabel.setObjectName('CsvBooksLabel')
         self.csvBooksLayout = QtGui.QHBoxLayout()
-        self.csvBooksLayout.setObjectName(u'CsvBooksLayout')
+        self.csvBooksLayout.setObjectName('CsvBooksLayout')
         self.csvBooksEdit = QtGui.QLineEdit(self.csvWidget)
-        self.csvBooksEdit.setObjectName(u'CsvBooksEdit')
+        self.csvBooksEdit.setObjectName('CsvBooksEdit')
         self.csvBooksLayout.addWidget(self.csvBooksEdit)
         self.csvBooksButton = QtGui.QToolButton(self.csvWidget)
         self.csvBooksButton.setIcon(self.open_icon)
-        self.csvBooksButton.setObjectName(u'CsvBooksButton')
+        self.csvBooksButton.setObjectName('CsvBooksButton')
         self.csvBooksLayout.addWidget(self.csvBooksButton)
         self.csvLayout.addRow(self.csvBooksLabel, self.csvBooksLayout)
         self.csvVersesLabel = QtGui.QLabel(self.csvWidget)
-        self.csvVersesLabel.setObjectName(u'CsvVersesLabel')
+        self.csvVersesLabel.setObjectName('CsvVersesLabel')
         self.csvVersesLayout = QtGui.QHBoxLayout()
-        self.csvVersesLayout.setObjectName(u'CsvVersesLayout')
+        self.csvVersesLayout.setObjectName('CsvVersesLayout')
         self.csvVersesEdit = QtGui.QLineEdit(self.csvWidget)
-        self.csvVersesEdit.setObjectName(u'CsvVersesEdit')
+        self.csvVersesEdit.setObjectName('CsvVersesEdit')
         self.csvVersesLayout.addWidget(self.csvVersesEdit)
         self.csvVersesButton = QtGui.QToolButton(self.csvWidget)
         self.csvVersesButton.setIcon(self.open_icon)
-        self.csvVersesButton.setObjectName(u'CsvVersesButton')
+        self.csvVersesButton.setObjectName('CsvVersesButton')
         self.csvVersesLayout.addWidget(self.csvVersesButton)
         self.csvLayout.addRow(self.csvVersesLabel, self.csvVersesLayout)
         self.csvLayout.setItem(3, QtGui.QFormLayout.LabelRole, self.spacer)
         self.selectStack.addWidget(self.csvWidget)
         self.openSongWidget = QtGui.QWidget(self.selectPage)
-        self.openSongWidget.setObjectName(u'OpenSongWidget')
+        self.openSongWidget.setObjectName('OpenSongWidget')
         self.openSongLayout = QtGui.QFormLayout(self.openSongWidget)
         self.openSongLayout.setMargin(0)
-        self.openSongLayout.setObjectName(u'OpenSongLayout')
+        self.openSongLayout.setObjectName('OpenSongLayout')
         self.openSongFileLabel = QtGui.QLabel(self.openSongWidget)
-        self.openSongFileLabel.setObjectName(u'OpenSongFileLabel')
+        self.openSongFileLabel.setObjectName('OpenSongFileLabel')
         self.openSongFileLayout = QtGui.QHBoxLayout()
-        self.openSongFileLayout.setObjectName(u'OpenSongFileLayout')
+        self.openSongFileLayout.setObjectName('OpenSongFileLayout')
         self.openSongFileEdit = QtGui.QLineEdit(self.openSongWidget)
-        self.openSongFileEdit.setObjectName(u'OpenSongFileEdit')
+        self.openSongFileEdit.setObjectName('OpenSongFileEdit')
         self.openSongFileLayout.addWidget(self.openSongFileEdit)
         self.openSongBrowseButton = QtGui.QToolButton(self.openSongWidget)
         self.openSongBrowseButton.setIcon(self.open_icon)
-        self.openSongBrowseButton.setObjectName(u'OpenSongBrowseButton')
+        self.openSongBrowseButton.setObjectName('OpenSongBrowseButton')
         self.openSongFileLayout.addWidget(self.openSongBrowseButton)
         self.openSongLayout.addRow(self.openSongFileLabel, self.openSongFileLayout)
         self.openSongLayout.setItem(1, QtGui.QFormLayout.LabelRole, self.spacer)
         self.selectStack.addWidget(self.openSongWidget)
         self.webTabWidget = QtGui.QTabWidget(self.selectPage)
-        self.webTabWidget.setObjectName(u'WebTabWidget')
+        self.webTabWidget.setObjectName('WebTabWidget')
         self.webBibleTab = QtGui.QWidget()
-        self.webBibleTab.setObjectName(u'WebBibleTab')
+        self.webBibleTab.setObjectName('WebBibleTab')
         self.webBibleLayout = QtGui.QFormLayout(self.webBibleTab)
-        self.webBibleLayout.setObjectName(u'WebBibleLayout')
+        self.webBibleLayout.setObjectName('WebBibleLayout')
         self.webSourceLabel = QtGui.QLabel(self.webBibleTab)
-        self.webSourceLabel.setObjectName(u'WebSourceLabel')
+        self.webSourceLabel.setObjectName('WebSourceLabel')
         self.webBibleLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.webSourceLabel)
         self.webSourceComboBox = QtGui.QComboBox(self.webBibleTab)
-        self.webSourceComboBox.setObjectName(u'WebSourceComboBox')
-        self.webSourceComboBox.addItems([u'', u'', u''])
+        self.webSourceComboBox.setObjectName('WebSourceComboBox')
+        self.webSourceComboBox.addItems(['', '', ''])
         self.webBibleLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.webSourceComboBox)
         self.webTranslationLabel = QtGui.QLabel(self.webBibleTab)
-        self.webTranslationLabel.setObjectName(u'webTranslationLabel')
+        self.webTranslationLabel.setObjectName('webTranslationLabel')
         self.webBibleLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.webTranslationLabel)
         self.webTranslationComboBox = QtGui.QComboBox(self.webBibleTab)
         self.webTranslationComboBox.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
-        self.webTranslationComboBox.setObjectName(u'WebTranslationComboBox')
+        self.webTranslationComboBox.setObjectName('WebTranslationComboBox')
         self.webBibleLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.webTranslationComboBox)
-        self.webTabWidget.addTab(self.webBibleTab, u'')
+        self.webTabWidget.addTab(self.webBibleTab, '')
         self.webProxyTab = QtGui.QWidget()
-        self.webProxyTab.setObjectName(u'WebProxyTab')
+        self.webProxyTab.setObjectName('WebProxyTab')
         self.webProxyLayout = QtGui.QFormLayout(self.webProxyTab)
-        self.webProxyLayout.setObjectName(u'WebProxyLayout')
+        self.webProxyLayout.setObjectName('WebProxyLayout')
         self.webServerLabel = QtGui.QLabel(self.webProxyTab)
-        self.webServerLabel.setObjectName(u'WebServerLabel')
+        self.webServerLabel.setObjectName('WebServerLabel')
         self.webProxyLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.webServerLabel)
         self.webServerEdit = QtGui.QLineEdit(self.webProxyTab)
-        self.webServerEdit.setObjectName(u'WebServerEdit')
+        self.webServerEdit.setObjectName('WebServerEdit')
         self.webProxyLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.webServerEdit)
         self.webUserLabel = QtGui.QLabel(self.webProxyTab)
-        self.webUserLabel.setObjectName(u'WebUserLabel')
+        self.webUserLabel.setObjectName('WebUserLabel')
         self.webProxyLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.webUserLabel)
         self.webUserEdit = QtGui.QLineEdit(self.webProxyTab)
-        self.webUserEdit.setObjectName(u'WebUserEdit')
+        self.webUserEdit.setObjectName('WebUserEdit')
         self.webProxyLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.webUserEdit)
         self.webPasswordLabel = QtGui.QLabel(self.webProxyTab)
-        self.webPasswordLabel.setObjectName(u'WebPasswordLabel')
+        self.webPasswordLabel.setObjectName('WebPasswordLabel')
         self.webProxyLayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.webPasswordLabel)
         self.webPasswordEdit = QtGui.QLineEdit(self.webProxyTab)
-        self.webPasswordEdit.setObjectName(u'WebPasswordEdit')
+        self.webPasswordEdit.setObjectName('WebPasswordEdit')
         self.webProxyLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.webPasswordEdit)
-        self.webTabWidget.addTab(self.webProxyTab, u'')
+        self.webTabWidget.addTab(self.webProxyTab, '')
         self.selectStack.addWidget(self.webTabWidget)
         self.selectPageLayout.addLayout(self.selectStack)
         self.addPage(self.selectPage)
         # License Page
         self.licenseDetailsPage = QtGui.QWizardPage()
-        self.licenseDetailsPage.setObjectName(u'LicenseDetailsPage')
+        self.licenseDetailsPage.setObjectName('LicenseDetailsPage')
         self.licenseDetailsLayout = QtGui.QFormLayout(self.licenseDetailsPage)
-        self.licenseDetailsLayout.setObjectName(u'LicenseDetailsLayout')
+        self.licenseDetailsLayout.setObjectName('LicenseDetailsLayout')
         self.versionNameLabel = QtGui.QLabel(self.licenseDetailsPage)
-        self.versionNameLabel.setObjectName(u'VersionNameLabel')
+        self.versionNameLabel.setObjectName('VersionNameLabel')
         self.licenseDetailsLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.versionNameLabel)
         self.versionNameEdit = QtGui.QLineEdit(self.licenseDetailsPage)
-        self.versionNameEdit.setObjectName(u'VersionNameEdit')
+        self.versionNameEdit.setObjectName('VersionNameEdit')
         self.licenseDetailsLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.versionNameEdit)
         self.copyrightLabel = QtGui.QLabel(self.licenseDetailsPage)
-        self.copyrightLabel.setObjectName(u'CopyrightLabel')
+        self.copyrightLabel.setObjectName('CopyrightLabel')
         self.licenseDetailsLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.copyrightLabel)
         self.copyrightEdit = QtGui.QLineEdit(self.licenseDetailsPage)
-        self.copyrightEdit.setObjectName(u'CopyrightEdit')
+        self.copyrightEdit.setObjectName('CopyrightEdit')
         self.licenseDetailsLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.copyrightEdit)
         self.permissionsLabel = QtGui.QLabel(self.licenseDetailsPage)
-        self.permissionsLabel.setObjectName(u'PermissionsLabel')
+        self.permissionsLabel.setObjectName('PermissionsLabel')
         self.licenseDetailsLayout.setWidget(2, QtGui.QFormLayout.LabelRole,
             self.permissionsLabel)
         self.permissionsEdit = QtGui.QLineEdit(self.licenseDetailsPage)
-        self.permissionsEdit.setObjectName(u'PermissionsEdit')
+        self.permissionsEdit.setObjectName('PermissionsEdit')
         self.licenseDetailsLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.permissionsEdit)
         self.addPage(self.licenseDetailsPage)
 
@@ -329,7 +330,7 @@ class BibleImportForm(OpenLPWizard):
         self.progress_page.setSubTitle(translate('BiblesPlugin.ImportWizardForm',
             'Please wait while your Bible is imported.'))
         self.progress_label.setText(WizardStrings.Ready)
-        self.progress_bar.setFormat(u'%p%')
+        self.progress_bar.setFormat('%p%')
         # Align all QFormLayouts towards each other.
         labelWidth = max(self.formatLabel.minimumSizeHint().width(),
             self.osisFileLabel.minimumSizeHint().width(),
@@ -345,36 +346,36 @@ class BibleImportForm(OpenLPWizard):
         if self.currentPage() == self.welcome_page:
             return True
         elif self.currentPage() == self.selectPage:
-            if self.field(u'source_format') == BibleFormat.OSIS:
-                if not self.field(u'osis_location'):
+            if self.field('source_format') == BibleFormat.OSIS:
+                if not self.field('osis_location'):
                     critical_error_message_box(UiStrings().NFSs, WizardStrings.YouSpecifyFile % WizardStrings.OSIS)
                     self.osisFileEdit.setFocus()
                     return False
-            elif self.field(u'source_format') == BibleFormat.CSV:
-                if not self.field(u'csv_booksfile'):
+            elif self.field('source_format') == BibleFormat.CSV:
+                if not self.field('csv_booksfile'):
                     critical_error_message_box(UiStrings().NFSs, translate('BiblesPlugin.ImportWizardForm',
                         'You need to specify a file with books of the Bible to use in the import.'))
                     self.csvBooksEdit.setFocus()
                     return False
-                elif not self.field(u'csv_versefile'):
+                elif not self.field('csv_versefile'):
                     critical_error_message_box(UiStrings().NFSs,
                         translate('BiblesPlugin.ImportWizardForm',
                             'You need to specify a file of Bible verses to import.'))
                     self.csvVersesEdit.setFocus()
                     return False
-            elif self.field(u'source_format') == BibleFormat.OpenSong:
-                if not self.field(u'opensong_file'):
+            elif self.field('source_format') == BibleFormat.OpenSong:
+                if not self.field('opensong_file'):
                     critical_error_message_box(UiStrings().NFSs, WizardStrings.YouSpecifyFile % WizardStrings.OS)
                     self.openSongFileEdit.setFocus()
                     return False
-            elif self.field(u'source_format') == BibleFormat.WebDownload:
+            elif self.field('source_format') == BibleFormat.WebDownload:
                 self.versionNameEdit.setText(self.webTranslationComboBox.currentText())
                 return True
             return True
         elif self.currentPage() == self.licenseDetailsPage:
-            license_version = self.field(u'license_version')
-            license_copyright = self.field(u'license_copyright')
-            path = AppLocation.get_section_data_path(u'bibles')
+            license_version = self.field('license_version')
+            license_copyright = self.field('license_copyright')
+            path = AppLocation.get_section_data_path('bibles')
             if not license_version:
                 critical_error_message_box(UiStrings().EmptyField,
                     translate('BiblesPlugin.ImportWizardForm', 'You need to specify a version name for your Bible.'))
@@ -413,7 +414,7 @@ class BibleImportForm(OpenLPWizard):
             The index of the combo box.
         """
         self.webTranslationComboBox.clear()
-        bibles = self.web_bible_list[index].keys()
+        bibles = list(self.web_bible_list[index].keys())
         bibles.sort(key=get_locale_key)
         self.webTranslationComboBox.addItems(bibles)
 
@@ -421,45 +422,45 @@ class BibleImportForm(OpenLPWizard):
         """
         Show the file open dialog for the OSIS file.
         """
-        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit, u'last directory import')
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OSIS, self.osisFileEdit, 'last directory import')
 
     def onCsvBooksBrowseButtonClicked(self):
         """
         Show the file open dialog for the books CSV file.
         """
-        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, u'last directory import',
-            u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvBooksEdit, 'last directory import',
+            '%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onCsvVersesBrowseButtonClicked(self):
         """
         Show the file open dialog for the verses CSV file.
         """
-        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, u'last directory import',
-            u'%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.CSV, self.csvVersesEdit, 'last directory import',
+            '%s (*.csv)' % translate('BiblesPlugin.ImportWizardForm', 'CSV File'))
 
     def onOpenSongBrowseButtonClicked(self):
         """
         Show the file open dialog for the OpenSong file.
         """
-        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit, u'last directory import')
+        self.get_file_name(WizardStrings.OpenTypeFile % WizardStrings.OS, self.openSongFileEdit, 'last directory import')
 
     def register_fields(self):
         """
         Register the bible import wizard fields.
         """
-        self.selectPage.registerField(u'source_format', self.formatComboBox)
-        self.selectPage.registerField(u'osis_location', self.osisFileEdit)
-        self.selectPage.registerField(u'csv_booksfile', self.csvBooksEdit)
-        self.selectPage.registerField(u'csv_versefile', self.csvVersesEdit)
-        self.selectPage.registerField(u'opensong_file', self.openSongFileEdit)
-        self.selectPage.registerField(u'web_location', self.webSourceComboBox)
-        self.selectPage.registerField(u'web_biblename', self.webTranslationComboBox)
-        self.selectPage.registerField(u'proxy_server', self.webServerEdit)
-        self.selectPage.registerField(u'proxy_username', self.webUserEdit)
-        self.selectPage.registerField(u'proxy_password', self.webPasswordEdit)
-        self.licenseDetailsPage.registerField(u'license_version', self.versionNameEdit)
-        self.licenseDetailsPage.registerField(u'license_copyright', self.copyrightEdit)
-        self.licenseDetailsPage.registerField(u'license_permissions', self.permissionsEdit)
+        self.selectPage.registerField('source_format', self.formatComboBox)
+        self.selectPage.registerField('osis_location', self.osisFileEdit)
+        self.selectPage.registerField('csv_booksfile', self.csvBooksEdit)
+        self.selectPage.registerField('csv_versefile', self.csvVersesEdit)
+        self.selectPage.registerField('opensong_file', self.openSongFileEdit)
+        self.selectPage.registerField('web_location', self.webSourceComboBox)
+        self.selectPage.registerField('web_biblename', self.webTranslationComboBox)
+        self.selectPage.registerField('proxy_server', self.webServerEdit)
+        self.selectPage.registerField('proxy_username', self.webUserEdit)
+        self.selectPage.registerField('proxy_password', self.webPasswordEdit)
+        self.licenseDetailsPage.registerField('license_version', self.versionNameEdit)
+        self.licenseDetailsPage.registerField('license_copyright', self.copyrightEdit)
+        self.licenseDetailsPage.registerField('license_permissions', self.permissionsEdit)
 
     def setDefaults(self):
         """
@@ -470,19 +471,19 @@ class BibleImportForm(OpenLPWizard):
         self.restart()
         self.finish_button.setVisible(False)
         self.cancel_button.setVisible(True)
-        self.setField(u'source_format', 0)
-        self.setField(u'osis_location', '')
-        self.setField(u'csv_booksfile', '')
-        self.setField(u'csv_versefile', '')
-        self.setField(u'opensong_file', '')
-        self.setField(u'web_location', WebDownload.Crosswalk)
-        self.setField(u'web_biblename', self.webTranslationComboBox.currentIndex())
-        self.setField(u'proxy_server', settings.value(u'proxy address'))
-        self.setField(u'proxy_username', settings.value(u'proxy username'))
-        self.setField(u'proxy_password', settings.value(u'proxy password'))
-        self.setField(u'license_version', self.versionNameEdit.text())
-        self.setField(u'license_copyright', self.copyrightEdit.text())
-        self.setField(u'license_permissions', self.permissionsEdit.text())
+        self.setField('source_format', 0)
+        self.setField('osis_location', '')
+        self.setField('csv_booksfile', '')
+        self.setField('csv_versefile', '')
+        self.setField('opensong_file', '')
+        self.setField('web_location', WebDownload.Crosswalk)
+        self.setField('web_biblename', self.webTranslationComboBox.currentIndex())
+        self.setField('proxy_server', settings.value('proxy address'))
+        self.setField('proxy_username', settings.value('proxy username'))
+        self.setField('proxy_password', settings.value('proxy password'))
+        self.setField('license_version', self.versionNameEdit.text())
+        self.setField('license_copyright', self.copyrightEdit.text())
+        self.setField('license_permissions', self.permissionsEdit.text())
         self.onWebSourceComboBoxIndexChanged(WebDownload.Crosswalk)
         settings.endGroup()
 
@@ -507,16 +508,16 @@ class BibleImportForm(OpenLPWizard):
         self.web_bible_list[download_type] = {}
         bibles = BiblesResourcesDB.get_webbibles(WebDownload.Names[download_type])
         for bible in bibles:
-            version = bible[u'name']
-            name = bible[u'abbreviation']
+            version = bible['name']
+            name = bible['abbreviation']
             self.web_bible_list[download_type][version] = name.strip()
 
     def pre_wizard(self):
         """
         Prepare the UI for the import.
         """
-        OpenLPWizard.pre_wizard(self)
-        bible_type = self.field(u'source_format')
+        super(BibleImportForm, self).pre_wizard()
+        bible_type = self.field('source_format')
         if bible_type == BibleFormat.WebDownload:
             self.progress_label.setText(translate('BiblesPlugin.ImportWizardForm', 'Registering Bible...'))
         else:
@@ -527,43 +528,43 @@ class BibleImportForm(OpenLPWizard):
         """
         Perform the actual import.
         """
-        bible_type = self.field(u'source_format')
-        license_version = self.field(u'license_version')
-        license_copyright = self.field(u'license_copyright')
-        license_permissions = self.field(u'license_permissions')
+        bible_type = self.field('source_format')
+        license_version = self.field('license_version')
+        license_copyright = self.field('license_copyright')
+        license_permissions = self.field('license_permissions')
         importer = None
         if bible_type == BibleFormat.OSIS:
             # Import an OSIS bible.
             importer = self.manager.import_bible(BibleFormat.OSIS,
                 name=license_version,
-                filename=self.field(u'osis_location')
+                filename=self.field('osis_location')
             )
         elif bible_type == BibleFormat.CSV:
             # Import a CSV bible.
             importer = self.manager.import_bible(BibleFormat.CSV,
                 name=license_version,
-                booksfile=self.field(u'csv_booksfile'),
-                versefile=self.field(u'csv_versefile')
+                booksfile=self.field('csv_booksfile'),
+                versefile=self.field('csv_versefile')
             )
         elif bible_type == BibleFormat.OpenSong:
             # Import an OpenSong bible.
             importer = self.manager.import_bible(BibleFormat.OpenSong,
                 name=license_version,
-                filename=self.field(u'opensong_file')
+                filename=self.field('opensong_file')
             )
         elif bible_type == BibleFormat.WebDownload:
             # Import a bible from the web.
             self.progress_bar.setMaximum(1)
-            download_location = self.field(u'web_location')
+            download_location = self.field('web_location')
             bible_version = self.webTranslationComboBox.currentText()
             bible = self.web_bible_list[download_location][bible_version]
             importer = self.manager.import_bible(
                 BibleFormat.WebDownload, name=license_version,
                 download_source=WebDownload.Names[download_location],
                 download_name=bible,
-                proxy_server=self.field(u'proxy_server'),
-                proxy_username=self.field(u'proxy_username'),
-                proxy_password=self.field(u'proxy_password')
+                proxy_server=self.field('proxy_server'),
+                proxy_username=self.field('proxy_username'),
+                proxy_password=self.field('proxy_password')
             )
         if importer.do_import(license_version):
             self.manager.save_meta_data(license_version, license_version,

@@ -35,21 +35,21 @@ class TestSongShowPlusImport(TestCase):
         Test creating an instance of the SongShow Plus file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
             importer = SongShowPlusImport(mocked_manager)
 
             # THEN: The importer object should not be None
-            self.assertIsNotNone(importer, u'Import should not be none')
+            self.assertIsNotNone(importer, 'Import should not be none')
 
     def invalid_import_source_test(self):
         """
         Test SongShowPlusImport.doImport handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
@@ -57,20 +57,20 @@ class TestSongShowPlusImport(TestCase):
             importer.stop_import_flag = True
 
             # WHEN: Import source is not a list
-            for source in [u'not a list', 0]:
+            for source in ['not a list', 0]:
                 importer.import_source = source
 
                 # THEN: doImport should return none and the progress bar maximum should not be set.
-                self.assertIsNone(importer.doImport(), u'doImport should return None when import_source is not a list')
+                self.assertIsNone(importer.doImport(), 'doImport should return None when import_source is not a list')
                 self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
-                                  u'setMaxium on import_wizard.progress_bar should not have been called')
+                                  'setMaxium on import_wizard.progress_bar should not have been called')
 
     def valid_import_source_test(self):
         """
         Test SongShowPlusImport.doImport handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
@@ -78,12 +78,12 @@ class TestSongShowPlusImport(TestCase):
             importer.stop_import_flag = True
 
             # WHEN: Import source is a list
-            importer.import_source = [u'List', u'of', u'files']
+            importer.import_source = ['List', 'of', 'files']
 
             # THEN: doImport should return none and the progress bar setMaximum should be called with the length of
             #       import_source.
             self.assertIsNone(importer.doImport(),
-                u'doImport should return None when import_source is a list and stop_import_flag is True')
+                'doImport should return None when import_source is a list and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
     def to_openlp_verse_tag_test(self):
@@ -91,26 +91,26 @@ class TestSongShowPlusImport(TestCase):
         Test to_openlp_verse_tag method by simulating adding a verse
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
 
             # WHEN: Supplied with the following arguments replicating verses being added
-            test_values = [(u'Verse 1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse 2', VerseType.tags[VerseType.Verse] + u'2'),
-                (u'verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'chorus 1', VerseType.tags[VerseType.Chorus] + u'1'),
-                (u'bridge 1', VerseType.tags[VerseType.Bridge] + u'1'),
-                (u'pre-chorus 1', VerseType.tags[VerseType.PreChorus] + u'1'),
-                (u'different 1', VerseType.tags[VerseType.Other] + u'1'),
-                (u'random 1', VerseType.tags[VerseType.Other] + u'2')]
+            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
+                ('verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('chorus 1', VerseType.tags[VerseType.Chorus] + '1'),
+                ('bridge 1', VerseType.tags[VerseType.Bridge] + '1'),
+                ('pre-chorus 1', VerseType.tags[VerseType.PreChorus] + '1'),
+                ('different 1', VerseType.tags[VerseType.Other] + '1'),
+                ('random 1', VerseType.tags[VerseType.Other] + '2')]
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
                 self.assertEquals(importer.to_openlp_verse_tag(original_tag), openlp_tag,
-                    u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
+                    'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))
 
     def to_openlp_verse_tag_verse_order_test(self):
@@ -118,25 +118,25 @@ class TestSongShowPlusImport(TestCase):
         Test to_openlp_verse_tag method by simulating adding a verse to the verse order
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
 
             # WHEN: Supplied with the following arguments replicating a verse order being added
-            test_values = [(u'Verse 1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse 2', VerseType.tags[VerseType.Verse] + u'2'),
-                (u'verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'chorus 1', VerseType.tags[VerseType.Chorus] + u'1'),
-                (u'bridge 1', VerseType.tags[VerseType.Bridge] + u'1'),
-                (u'pre-chorus 1', VerseType.tags[VerseType.PreChorus] + u'1'),
-                (u'different 1', VerseType.tags[VerseType.Other] + u'1'),
-                (u'random 1', VerseType.tags[VerseType.Other] + u'2'),
-                (u'unused 2', None)]
+            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
+                ('verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('chorus 1', VerseType.tags[VerseType.Chorus] + '1'),
+                ('bridge 1', VerseType.tags[VerseType.Bridge] + '1'),
+                ('pre-chorus 1', VerseType.tags[VerseType.PreChorus] + '1'),
+                ('different 1', VerseType.tags[VerseType.Other] + '1'),
+                ('random 1', VerseType.tags[VerseType.Other] + '2'),
+                ('unused 2', None)]
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
                 self.assertEquals(importer.to_openlp_verse_tag(original_tag, ignore_unique=True), openlp_tag,
-                    u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
+                    'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))

@@ -37,13 +37,13 @@ import logging
 import os
 import re
 
-from oooimport import OooImport
+from .oooimport import OooImport
 
 
 log = logging.getLogger(__name__)
 
-if os.name == u'nt':
-    from oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
+if os.name == 'nt':
+    from .oooimport import PAGE_BEFORE, PAGE_AFTER, PAGE_BOTH
     RuntimeException = Exception
 else:
     try:
@@ -106,7 +106,7 @@ class SofImport(OooImport):
                 if paragraph.supportsService("com.sun.star.text.Paragraph"):
                     self.processParagraph(paragraph)
         except RuntimeException as exc:
-            log.exception(u'Error processing file: %s', exc)
+            log.exception('Error processing file: %s', exc)
         if not self.finish():
             self.logError(self.filepath)
 
@@ -121,26 +121,26 @@ class SofImport(OooImport):
         In later books, there may not be line breaks, so check for 3 or more
         newlines
         """
-        text = u''
+        text = ''
         textportions = paragraph.createEnumeration()
         while textportions.hasMoreElements():
             textportion = textportions.nextElement()
             if textportion.BreakType in (PAGE_BEFORE, PAGE_BOTH):
                 self.processParagraphText(text)
                 self.newSong()
-                text = u''
+                text = ''
             text += self.processTextPortion(textportion)
             if textportion.BreakType in (PAGE_AFTER, PAGE_BOTH):
                 self.processParagraphText(text)
                 self.newSong()
-                text = u''
+                text = ''
         self.processParagraphText(text)
 
     def processParagraphText(self, text):
         """
         Split the paragraph text into multiple lines and process
         """
-        for line in text.split(u'\n'):
+        for line in text.split('\n'):
             self.processParagraphLine(line)
         if self.blankLines > 2:
             self.newSong()
@@ -152,35 +152,35 @@ class SofImport(OooImport):
         Anything that is OK, append to the current verse
         """
         text = text.strip()
-        if text == u'':
+        if text == '':
             self.blankLines += 1
             if self.blankLines > 1:
                 return
-            if self.title != u'':
+            if self.title != '':
                 self.finishVerse()
             return
         self.blankLines = 0
         if self.skipToCloseBracket:
-            if text.endswith(u')'):
+            if text.endswith(')'):
                 self.skipToCloseBracket = False
             return
-        if text.startswith(u'CCL Licence'):
+        if text.startswith('CCL Licence'):
             self.italics = False
             return
-        if text == u'A Songs of Fellowship Worship Resource':
+        if text == 'A Songs of Fellowship Worship Resource':
             return
-        if text.startswith(u'(NB.') or text.startswith(u'(Regrettably') or text.startswith(u'(From'):
+        if text.startswith('(NB.') or text.startswith('(Regrettably') or text.startswith('(From'):
             self.skipToCloseBracket = True
             return
-        if text.startswith(u'Copyright'):
+        if text.startswith('Copyright'):
             self.addCopyright(text)
             return
-        if text == u'(Repeat)':
+        if text == '(Repeat)':
             self.finishVerse()
             self.repeatVerse()
             return
-        if self.title == u'':
-            if self.copyright == u'':
+        if self.title == '':
+            if self.copyright == '':
                 self.addSofAuthor(text)
             else:
                 self.addCopyright(text)
@@ -196,18 +196,18 @@ class SofImport(OooImport):
         """
         text = textportion.getString()
         text = self.tidyText(text)
-        if text.strip() == u'':
+        if text.strip() == '':
             return text
         if textportion.CharWeight == BOLD:
             boldtext = text.strip()
             if boldtext.isdigit() and self.songNumber == '':
                 self.addSongNumber(boldtext)
-                return u''
+                return ''
             text = self.uncapText(text)
-            if self.title == u'':
+            if self.title == '':
                 self.addTitle(text)
             return text
-        if text.strip().startswith(u'('):
+        if text.strip().startswith('('):
             return text
         self.italics = (textportion.CharPosture == ITALIC)
         return text
@@ -227,7 +227,7 @@ class SofImport(OooImport):
         self.skipToCloseBracket = False
         self.isChorus = False
         self.italics = False
-        self.currentVerse = u''
+        self.currentVerse = ''
 
     def addSongNumber(self, song_no):
         """
@@ -235,20 +235,20 @@ class SofImport(OooImport):
         number to work out which songbook we're in
         """
         self.songNumber = song_no
-        self.alternateTitle = song_no + u'.'
-        self.songBook_pub = u'Kingsway Publications'
+        self.alternateTitle = song_no + '.'
+        self.songBook_pub = 'Kingsway Publications'
         if int(song_no) <= 640:
-            self.songBook = u'Songs of Fellowship 1'
+            self.songBook = 'Songs of Fellowship 1'
         elif int(song_no) <= 1150:
-            self.songBook = u'Songs of Fellowship 2'
+            self.songBook = 'Songs of Fellowship 2'
         elif int(song_no) <= 1690:
-            self.songBook = u'Songs of Fellowship 3'
+            self.songBook = 'Songs of Fellowship 3'
         elif int(song_no) <= 2200:
-            self.songBook = u'Songs of Fellowship 4'
+            self.songBook = 'Songs of Fellowship 4'
         elif int(song_no) <= 2710:
-            self.songBook = u'Songs of Fellowship 5'
+            self.songBook = 'Songs of Fellowship 5'
         else:
-            self.songBook = u'Songs of Fellowship Other'
+            self.songBook = 'Songs of Fellowship Other'
 
     def addTitle(self, text):
         """
@@ -256,12 +256,12 @@ class SofImport(OooImport):
         we don't want in a title
         """
         title = text.strip()
-        if title.startswith(u'\''):
+        if title.startswith('\''):
             title = title[1:]
-        if title.endswith(u','):
+        if title.endswith(','):
             title = title[:-1]
         self.title = title
-        self.import_wizard.increment_progress_bar(u'Processing song ' + title, 0)
+        self.import_wizard.increment_progress_bar('Processing song ' + title, 0)
 
     def addSofAuthor(self, text):
         """
@@ -270,7 +270,7 @@ class SofImport(OooImport):
         However need to check for "Mr and Mrs Smith" and turn it to
         "Mr Smith" and "Mrs Smith".
         """
-        text = text.replace(u' and ', u' & ')
+        text = text.replace(' and ', ' & ')
         self.parse_author(text)
 
     def addVerseLine(self, text):
@@ -280,11 +280,11 @@ class SofImport(OooImport):
         a change of verse. Italics are a chorus
         """
         if self.italics != self.isChorus and ((len(self.verses) > 0) or
-            (self.currentVerse.count(u'\n') > 1)):
+            (self.currentVerse.count('\n') > 1)):
             self.finishVerse()
         if self.italics:
             self.isChorus = True
-        self.currentVerse += text + u'\n'
+        self.currentVerse += text + '\n'
 
     def finishVerse(self):
         """
@@ -292,39 +292,39 @@ class SofImport(OooImport):
         incorrectly. Here we try and split songs with missing line breaks into
         the correct number of verses.
         """
-        if self.currentVerse.strip() == u'':
+        if self.currentVerse.strip() == '':
             return
         if self.isChorus:
-            versetag = u'C'
+            versetag = 'C'
             splitat = None
         else:
-            versetag = u'V'
+            versetag = 'V'
             splitat = self.verseSplits(self.songNumber)
         if splitat:
             ln = 0
-            verse = u''
-            for line in self.currentVerse.split(u'\n'):
+            verse = ''
+            for line in self.currentVerse.split('\n'):
                 ln += 1
-                if line == u'' or ln > splitat:
+                if line == '' or ln > splitat:
                     self.addSofVerse(verse, versetag)
                     ln = 0
                     if line:
-                        verse = line + u'\n'
+                        verse = line + '\n'
                     else:
-                        verse = u''
+                        verse = ''
                 else:
-                    verse += line + u'\n'
+                    verse += line + '\n'
             if verse:
                 self.addSofVerse(verse, versetag)
         else:
             self.addSofVerse(self.currentVerse, versetag)
-        self.currentVerse = u''
+        self.currentVerse = ''
         self.isChorus = False
 
     def addSofVerse(self, lyrics, tag):
         self.addVerse(lyrics, tag)
-        if not self.isChorus and u'C1' in self.verseOrderListGenerated:
-            self.verseOrderListGenerated.append(u'C1')
+        if not self.isChorus and 'C1' in self.verseOrderListGenerated:
+            self.verseOrderListGenerated.append('C1')
             self.verseOrderListGenerated_useful = True
 
     def uncapText(self, text):
@@ -336,22 +336,22 @@ class SofImport(OooImport):
         There is a complicated word "One", which is sometimes lower and
         sometimes upper depending on context. Never mind, keep it lower.
         """
-        textarr = re.split(u'(\W+)', text)
+        textarr = re.split('(\W+)', text)
         textarr[0] = textarr[0].capitalize()
         for i in range(1, len(textarr)):
             # Do not translate these. Fixed strings in SOF song file
-            if textarr[i] in (u'JESUS', u'CHRIST', u'KING', u'ALMIGHTY',
-                u'REDEEMER', u'SHEPHERD', u'SON', u'GOD', u'LORD', u'FATHER',
-                u'HOLY', u'SPIRIT', u'LAMB', u'YOU', u'YOUR', u'I', u'I\'VE',
-                u'I\'M', u'I\'LL', u'SAVIOUR', u'O', u'YOU\'RE', u'HE', u'HIS',
-                u'HIM', u'ZION', u'EMMANUEL', u'MAJESTY', u'JESUS\'', u'JIREH',
-                u'JUDAH', u'LION', u'LORD\'S', u'ABRAHAM', u'GOD\'S',
-                u'FATHER\'S', u'ELIJAH' u'MARTHA', u'CHRISTMAS', u'ALPHA',
-                u'OMEGA'):
+            if textarr[i] in ('JESUS', 'CHRIST', 'KING', 'ALMIGHTY',
+                'REDEEMER', 'SHEPHERD', 'SON', 'GOD', 'LORD', 'FATHER',
+                'HOLY', 'SPIRIT', 'LAMB', 'YOU', 'YOUR', 'I', 'I\'VE',
+                'I\'M', 'I\'LL', 'SAVIOUR', 'O', 'YOU\'RE', 'HE', 'HIS',
+                'HIM', 'ZION', 'EMMANUEL', 'MAJESTY', 'JESUS\'', 'JIREH',
+                'JUDAH', 'LION', 'LORD\'S', 'ABRAHAM', 'GOD\'S',
+                'FATHER\'S', 'ELIJAH' 'MARTHA', 'CHRISTMAS', 'ALPHA',
+                'OMEGA'):
                 textarr[i] = textarr[i].capitalize()
             else:
                 textarr[i] = textarr[i].lower()
-        text = u''.join(textarr)
+        text = ''.join(textarr)
         return text
 
     def verseSplits(self, song_number):
