@@ -11,19 +11,19 @@ from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songshowplusimport import SongShowPlusImport
 
 TEST_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), u'..', u'..', u'..', u'resources', u'songshowplussongs'))
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources', 'songshowplussongs'))
 
 class TestSongShowPlusFileImport(SongImportTestHelper):
     def __init__(self, *args, **kwargs):
-        self.importer_class_name = u'SongShowPlusImport'
-        self.importer_module_name = u'songshowplusimport'
+        self.importer_class_name = 'SongShowPlusImport'
+        self.importer_module_name = 'songshowplusimport'
         SongImportTestHelper.__init__(self, *args, **kwargs)
 
     def test_song_import(self):
-        test_import = self.file_import(os.path.join(TEST_PATH, u'Amazing Grace.sbsong'),
-            self.load_external_result_data(os.path.join(TEST_PATH, u'Amazing Grace.json')))
-        test_import = self.file_import(os.path.join(TEST_PATH, u'Beautiful Garden Of Prayer.sbsong'),
-            self.load_external_result_data(os.path.join(TEST_PATH, u'Beautiful Garden Of Prayer.json')))
+        test_import = self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.sbsong'),
+            self.load_external_result_data(os.path.join(TEST_PATH, 'Amazing Grace.json')))
+        test_import = self.file_import(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.sbsong'),
+            self.load_external_result_data(os.path.join(TEST_PATH, 'Beautiful Garden Of Prayer.json')))
 
 
 class TestSongShowPlusImport(TestCase):
