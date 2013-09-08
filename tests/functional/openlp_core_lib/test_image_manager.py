@@ -3,8 +3,8 @@
 """
 
 import os
-from unittest import TestCase
 
+from unittest import TestCase
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Registry, ImageManager, ScreenList

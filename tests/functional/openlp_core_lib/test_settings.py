@@ -2,12 +2,12 @@
     Package to test the openlp.core.lib.settings package.
 """
 import os
-from unittest import TestCase
 from tempfile import mkstemp
 
-from openlp.core.lib import Settings
-
+from unittest import TestCase
 from PyQt4 import QtGui
+
+from openlp.core.lib import Settings
 
 
 class TestSettings(TestCase):

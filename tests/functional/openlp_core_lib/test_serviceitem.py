@@ -6,11 +6,12 @@
 import os
 import json
 import tempfile
+
 from unittest import TestCase
 from mock import MagicMock, patch
+from lxml import objectify, etree
 
 from openlp.core.lib import ItemCapabilities, ServiceItem, Registry
-from lxml import objectify, etree
 
 VERSE = 'The Lord said to {r}Noah{/r}: \n'\
         'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n'\
