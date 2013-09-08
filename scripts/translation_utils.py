@@ -145,9 +145,9 @@ def print_quiet(text, linefeed=True):
     global quiet_mode
     if not quiet_mode:
         if linefeed:
-            print (text)
+            print(text)
         else:
-            print (text, end=' ')
+            print(text, end=' ')
 
 def print_verbose(text):
     """
