@@ -212,8 +212,8 @@ class RemoteTab(SettingsTab):
         self.live_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.live_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
 
-    def get_ip_address(self, ip):
-        if ip == ZERO_URL:
+    def get_ip_address(self, ip_address):
+        if ip_address == ZERO_URL:
             interfaces = QtNetwork.QNetworkInterface.allInterfaces()
             for interface in interfaces:
                 if not interface.isValid():
@@ -224,7 +224,7 @@ class RemoteTab(SettingsTab):
                     ip = address.ip()
                     if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
                         return ip.toString()
-        return ip
+        return ip_address
 
     def load(self):
         """
