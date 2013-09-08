@@ -209,7 +209,7 @@ class RemoteTab(SettingsTab):
                 for address in interface.addressEntries():
                     ip = address.ip()
                     if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ip_address = ip
+                        ip_address = ip.toString()
                         break
         else:
             ip_address = self.address_edit.text()
