@@ -39,7 +39,7 @@ from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 from openlp.core.ui.formattingtagcontroller import FormattingTagController
 
 
-class EDITCOLUMN(object):
+class EditColumn(object):
     """
     Hides the magic numbers for the table columns
     """
@@ -165,13 +165,13 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
             item = self.tag_table_widget.item(pre_row, pre_col)
             text = item.text()
             errors = None
-            if pre_col is EDITCOLUMN.Description:
+            if pre_col is EditColumn.Description:
                 if not text:
                     errors = translate('OpenLP.FormattingTagForm', 'Description is missing')
-            elif pre_col is EDITCOLUMN.Tag:
+            elif pre_col is EditColumn.Tag:
                 if not text:
                     errors = translate('OpenLP.FormattingTagForm', 'Tag is missing')
-            elif pre_col is EDITCOLUMN.StartHtml:
+            elif pre_col is EditColumn.StartHtml:
                 # HTML edited
                 item = self.tag_table_widget.item(pre_row, 3)
                 end_html = item.text()
@@ -179,7 +179,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                 if tag:
                     self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
                 self.tag_table_widget.resizeRowsToContents()
-            elif pre_col is EDITCOLUMN.EndHtml:
+            elif pre_col is EditColumn.EndHtml:
                 # HTML edited
                 item = self.tag_table_widget.item(pre_row, 2)
                 start_html = item.text()
