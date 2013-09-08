@@ -56,32 +56,22 @@ class TestRemoteTab(TestCase):
         """
         Test the get_ip_address function with ZERO_URL
         """
-        # GIVEN: A mocked location
-        with patch('openlp.core.utils.applocation.Settings') as mocked_class, \
-            patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-            patch('openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists, \
-            patch('openlp.core.utils.applocation.os') as mocked_os:
-            # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
-            # WHEN: the default ip address is given
-            ip_address = self.form.get_ip_address(ZERO_URL)
-            # THEN: the default ip address will be returned
-            self.assertTrue(re.match('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip_address), 'The return value should be a valid ip address')
+        # WHEN: the default ip address is given
+        ip_address = self.form.get_ip_address(ZERO_URL)
+        # THEN: the default ip address will be returned
+        self.assertTrue(re.match('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip_address), 'The return value should be a valid ip address')
 
     def get_ip_address_with_ip_test(self):
         """
         Test the get_ip_address function with given ip address
         """
         # GIVEN: A mocked location
-        with patch('openlp.core.utils.applocation.Settings') as mocked_class, \
-            patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-            patch('openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists, \
-            patch('openlp.core.utils.applocation.os') as mocked_os:
-            # GIVEN: An ip address
-            given_ip = '192.168.1.1'
-            # WHEN: the default ip address is given
-            ip_address = self.form.get_ip_address(given_ip)
-            # THEN: the default ip address will be returned
-            self.assertEqual(ip_address, given_ip, 'The return value should be %s' % given_ip)
+        # GIVEN: An ip address
+        given_ip = '192.168.1.1'
+        # WHEN: the default ip address is given
+        ip_address = self.form.get_ip_address(given_ip)
+        # THEN: the default ip address will be returned
+        self.assertEqual(ip_address, given_ip, 'The return value should be %s' % given_ip)
 
     def set_basic_urls_test(self):
         """
