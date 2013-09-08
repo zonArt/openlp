@@ -46,7 +46,7 @@ log = logging.getLogger(__name__)
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile('[\'`’ʻ′]', re.UNICODE)
-PATTERN = re.compile(r"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", re.I)
+PATTERN = re.compile(r"(\\\*)?\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z*])|([{}])|[\r\n]+|([^\\{}\r\n]+)", re.I)
 # RTF control words which specify a "destination" to be ignored.
 DESTINATIONS = frozenset((
     'aftncn', 'aftnsep', 'aftnsepc', 'annotation', 'atnauthor',
@@ -57,8 +57,8 @@ DESTINATIONS = frozenset((
     'datafield', 'datastore', 'defchp', 'defpap', 'do', 'doccomm',
     'docvar', 'dptxbxtext', 'ebcend', 'ebcstart', 'factoidname',
     'falt', 'fchars', 'ffdeftext', 'ffentrymcr', 'ffexitmcr',
-    'ffformat', 'ffhelptext', 'ffl', 'ffname', 'ffstattext', 'field',
-    'file', 'filetbl', 'fldinst', 'fldrslt', 'fldtype', 'fname',
+    'ffformat', 'ffhelptext', 'ffl', 'ffname', 'ffstattext',
+    'file', 'filetbl', 'fldinst', 'fldtype', 'fname',
     'fontemb', 'fontfile', 'footer', 'footerf', 'footerl', 'footerr',
     'footnote', 'formfield', 'ftncn', 'ftnsep', 'ftnsepc', 'g',
     'generator', 'gridtbl', 'header', 'headerf', 'headerl',
@@ -106,6 +106,11 @@ DESTINATIONS = frozenset((
     'xmlclose', 'xmlname', 'xmlnstbl', 'xmlopen'))
 # Translation of some special characters.
 SPECIAL_CHARS = {
+    '\n': '\n',
+    '\r': '\n',
+    '~': '\u00A0',
+    '-': '\u00AD',
+    '_': '\u2011',
     'par': '\n',
     'sect': '\n\n',
     # Required page and column break.
@@ -132,16 +137,19 @@ SPECIAL_CHARS = {
     'zwj': '\u200D',
     'zwnj': '\u200C'}
 CHARSET_MAPPING = {
-    'fcharset0': 'cp1252',
-    'fcharset161': 'cp1253',
-    'fcharset162': 'cp1254',
-    'fcharset163': 'cp1258',
-    'fcharset177': 'cp1255',
-    'fcharset178': 'cp1256',
-    'fcharset186': 'cp1257',
-    'fcharset204': 'cp1251',
-    'fcharset222': 'cp874',
-    'fcharset238': 'cp1250'}
+    '0': 'cp1252',
+    '128': 'cp932',
+    '129': 'cp949',
+    '134': 'cp936',
+    '161': 'cp1253',
+    '162': 'cp1254',
+    '163': 'cp1258',
+    '177': 'cp1255',
+    '178': 'cp1256',
+    '186': 'cp1257',
+    '204': 'cp1251',
+    '222': 'cp874',
+    '238': 'cp1250'}
 
 
 class VerseType(object):
@@ -351,7 +359,7 @@ def retrieve_windows_encoding(recommendation=None):
             if recommendation == encodings[index][0]:
                 recommended_index = index
                 break
-    if recommended_index > 0:
+    if recommended_index > -1:
         choice = QtGui.QInputDialog.getItem(None,
             translate('SongsPlugin', 'Character Encoding'),
             translate('SongsPlugin', 'The codepage setting is responsible\n'
@@ -365,7 +373,7 @@ def retrieve_windows_encoding(recommendation=None):
                 [pair[1] for pair in encodings], 0, False)
     if not choice[1]:
         return None
-    return filter(lambda item: item[1] == choice[0], encodings)[0][0]
+    return next(filter(lambda item: item[1] == choice[0], encodings))[0]
 
 
 def clean_string(string):
@@ -521,43 +529,59 @@ def strip_rtf(text, default_encoding=None):
     curskip = 0
     # Output buffer.
     out = []
+    # Encoded buffer.
+    ebytes = bytearray()
     for match in PATTERN.finditer(text):
-        word, arg, hex, char, brace, tchar = match.groups()
+        iinu, word, arg, hex, char, brace, tchar = match.groups()
+        # \x (non-alpha character)
+        if char:
+            if char in '\\{}':
+                tchar = char
+            else:
+                word = char
+        # Flush encoded buffer to output buffer
+        if ebytes and not hex and not tchar:
+            failed = False
+            while True:
+                try:
+                    encoding, default_encoding = get_encoding(font, font_table, default_encoding, failed=failed)
+                    if not encoding:
+                        return None
+                    dbytes = ebytes.decode(encoding)
+                    # Code 5C is a peculiar case with Windows Codepage 932
+                    if encoding == 'cp932' and '\\' in dbytes:
+                        dbytes = dbytes.replace('\\', '\u00A5')
+                    out.append(dbytes)
+                    ebytes.clear()
+                except UnicodeDecodeError:
+                    failed = True
+                else:
+                    break
+        # {}
         if brace:
             curskip = 0
             if brace == '{':
                 # Push state
                 stack.append((ucskip, ignorable, font))
-            elif brace == '}':
+            elif brace == '}' and len(stack) > 0:
                 # Pop state
                 ucskip, ignorable, font = stack.pop()
-        # \x (not a letter)
-        elif char:
-            curskip = 0
-            if char == '~' and not ignorable:
-                out.append('\xA0')
-            elif char in '{}\\' and not ignorable:
-                out.append(char)
-            elif char == '-' and not ignorable:
-                out.append('\u00AD')
-            elif char == '_' and not ignorable:
-                out.append('\u2011')
-            elif char == '*':
-                ignorable = True
         # \command
         elif word:
             curskip = 0
             if word in DESTINATIONS:
                 ignorable = True
             elif word in SPECIAL_CHARS:
-                out.append(SPECIAL_CHARS[word])
+                if not ignorable:
+                    out.append(SPECIAL_CHARS[word])
             elif word == 'uc':
                 ucskip = int(arg)
-            elif word == ' ':
+            elif word == 'u':
                 c = int(arg)
                 if c < 0:
                     c += 0x10000
-                out.append(chr(c))
+                if not ignorable:
+                    out.append(chr(c))
                 curskip = ucskip
             elif word == 'fonttbl':
                 ignorable = True
@@ -565,31 +589,24 @@ def strip_rtf(text, default_encoding=None):
                 font = arg
             elif word == 'ansicpg':
                 font_table[font] = 'cp' + arg
-            elif word == 'fcharset' and font not in font_table and word + arg in CHARSET_MAPPING:
-                # \ansicpg overrides \fcharset, if present.
-                font_table[font] = CHARSET_MAPPING[word + arg]
+            elif word == 'fcharset' and font not in font_table and arg in CHARSET_MAPPING:
+                font_table[font] = CHARSET_MAPPING[arg]
+            elif word == 'fldrslt':
+                pass
+            # \* 'Ignore if not understood' marker
+            elif iinu:
+                ignorable = True
         # \'xx
         elif hex:
             if curskip > 0:
                 curskip -= 1
             elif not ignorable:
-                charcode = int(hex, 16)
-                failed = False
-                while True:
-                    try:
-                        encoding, default_encoding = get_encoding(font, font_table, default_encoding, failed=failed)
-                        if not encoding:
-                            return None
-                        out.append(chr(charcode).decode(encoding))
-                    except UnicodeDecodeError:
-                        failed = True
-                    else:
-                        break
+                ebytes.append(int(hex, 16))
         elif tchar:
             if curskip > 0:
                 curskip -= 1
             elif not ignorable:
-                out.append(tchar)
+                ebytes += tchar.encode()
     text = ''.join(out)
     return text, default_encoding
 
