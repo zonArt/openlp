@@ -227,7 +227,7 @@ class RemoteTab(SettingsTab):
                     continue
                 for address in interface.addressEntries():
                     ip = address.ip()
-                    if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
+                    if ip.protocol() == QtNetwork.QAbstractSocket.IPv4Protocol and ip != QtNetwork.QHostAddress.LocalHost:
                         return ip.toString()
         return ip_address
 
