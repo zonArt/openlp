@@ -717,7 +717,7 @@ def get_soup_for_bible_ref(reference_url, header=None, pre_parse_regex=None, pre
         return None
     page_source = page.read()
     if pre_parse_regex and pre_parse_substitute is not None:
-        page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source)
+        page_source = re.sub(pre_parse_regex, pre_parse_substitute, page_source.decode())
     soup = None
     try:
         soup = BeautifulSoup(page_source)

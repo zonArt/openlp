@@ -8,6 +8,8 @@ from mock import patch
 from openlp.core.utils import clean_filename, get_filesystem_encoding, _get_frozen_path, get_locale_key, \
     get_natural_key, split_filename
 
+import os
+
 
 class TestUtils(TestCase):
     """
@@ -120,6 +122,8 @@ class TestUtils(TestCase):
             # THEN: We get a properly sorted list
             test_passes = sorted(unsorted_list, key=get_locale_key) == ['Aushang', '\u00C4u\u00DFerung', 'Auszug']
             assert test_passes, 'Strings should be sorted properly'
+    if os.name != 'nt':
+        del get_locale_key_windows_test
 
     def get_locale_key_linux_test(self):
 
