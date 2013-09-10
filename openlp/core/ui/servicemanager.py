@@ -1408,7 +1408,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
         title, ok = QtGui.QInputDialog.getText(self, translate('OpenLP.ServiceManager', 'Rename item title'),
             translate('OpenLP.ServiceManager', 'Title:'), QtGui.QLineEdit.Normal, self.trUtf8(title))
         if ok:
-            self.service_items[item]['service_item'].title = unicode(title)
+            self.service_items[item]['service_item'].title = title
             self.repaint_service_list(item, -1)
             self.set_modified()
 
