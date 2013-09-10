@@ -3,6 +3,7 @@ This module contains tests for the lib submodule of the Remotes plugin.
 """
 import os
 import re
+
 from unittest import TestCase
 from tempfile import mkstemp
 from mock import patch
