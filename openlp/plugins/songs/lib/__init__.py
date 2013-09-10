@@ -46,6 +46,12 @@ log = logging.getLogger(__name__)
 
 WHITESPACE = re.compile(r'[\W_]+', re.UNICODE)
 APOSTROPHE = re.compile('[\'`’ʻ′]', re.UNICODE)
+# PATTERN will look for the next occurence of one of these symbols:
+#   \controlword - optionally preceded by \*, optionally followed by a number
+#   \'## - where ## is a pair of hex digits, representing a single character
+#   \# - where # is a single non-alpha character, representing a special symbol
+#   { or } - marking the beginning/end of a group
+#   a run of characters without any \ { } or end-of-line
 PATTERN = re.compile(r"(\\\*)?\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z*])|([{}])|[\r\n]+|([^\\{}\r\n]+)", re.I)
 # RTF control words which specify a "destination" to be ignored.
 DESTINATIONS = frozenset((
