@@ -107,6 +107,9 @@ class FormattingTagController(object):
     def _strip(self, tag):
         """
         Remove tag wrappers for editing.
+
+        `tag`
+            Tag to be stripped
         """
         tag = tag.replace('{', '')
         tag = tag.replace('}', '')

@@ -50,7 +50,10 @@ class FormattingTags(object):
     @staticmethod
     def save_html_tags(new_tags):
         """
-        Saves all formatting tags except protected ones.
+        Saves all formatting tags except protected ones
+
+        `new_tags`
+            The tags to be saved..
         """
         # Formatting Tags were also known as display tags.
         Settings().setValue('formattingTags/html_tags', json.dumps(new_tags) if new_tags else '')
