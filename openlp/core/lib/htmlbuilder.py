@@ -746,9 +746,9 @@ def build_lyrics_format_css(theme_data, width, height):
         theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
         left_margin, width, height)
     if theme_data.font_main_italics:
-        lyrics += ' font-style:italic; '
+        lyrics += 'font-style:italic; '
     if theme_data.font_main_bold:
-        lyrics += ' font-weight:bold; '
+        lyrics += 'font-weight:bold; '
     return lyrics
 
 

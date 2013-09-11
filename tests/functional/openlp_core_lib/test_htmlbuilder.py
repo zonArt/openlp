@@ -9,6 +9,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib.htmlbuilder import build_html, build_background_css, build_lyrics_css, build_lyrics_outline_css, \
     build_lyrics_format_css, build_footer_css
+from openlp.core.lib.theme import HorizontalType, VerticalType
 
 
 BUILD_HTML = """
@@ -180,8 +181,10 @@ LYRICS_CSS = """
 }
 """
 LYRICS_OUTLINE_CSS = ' -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF; '
-LYRICS_FORMAT_CSS = """
-"""
+LYRICS_FORMAT_CSS = ' word-wrap: break-word; text-align: justify; vertical-align: bottom; ' + \
+    'font-family: Arial; font-size: 40pt; color: #FFFFFF; line-height: 108%; margin: 0;padding: 0; ' + \
+    'padding-bottom: 0.5em; padding-left: 2px; width: 1580px; height: 810px; font-style:italic; font-weight:bold; '
+
 FOOTER_CSS = """
     left: 10px;
     bottom: 0px;
@@ -279,11 +282,28 @@ class Htmbuilder(TestCase):
         # THEN: The css should be equal.
         assert LYRICS_OUTLINE_CSS == css, 'The outline css should be equal.'
 
-    def build_lyrics_format_css_tes(self):
+    def build_lyrics_format_css_test(self):
         """
         Test the build_lyrics_format_css() function
         """
-        pass
+        # GIVEN: Mocked arguments.
+        theme_data = MagicMock()
+        theme_data.display_horizontal_align = HorizontalType.Justify
+        theme_data.display_vertical_align = VerticalType.Bottom
+        theme_data.font_main_name = 'Arial'
+        theme_data.font_main_size = 40
+        theme_data.font_main_color = '#FFFFFF'
+        theme_data.font_main_italics = True
+        theme_data.font_main_bold = True
+        theme_data.font_main_line_adjustment = 8
+        width = 1580
+        height = 810
+
+        # WHEN: Get the css.
+        css = build_lyrics_format_css(theme_data, width, height)
+
+        # THEN: They should be equal.
+        assert LYRICS_FORMAT_CSS == css, 'The lyrics format css should be equal.'
 
     def build_footer_css_test(self):
        """
