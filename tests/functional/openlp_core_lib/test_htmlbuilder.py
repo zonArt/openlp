@@ -163,9 +163,23 @@ plugin HTML
 """
 BACKGROUND_CSS = """
 """
-LYRICS_CSS = 'white-space:pre-wrap; word-wrap: break-word; text-align: left; vertical-align: top; ' + \
-    'font-family: Arial; font-size: 40pt; color: #FFFFFF; line-height: 100%; margin: 0;padding: 0; ' + \
-    'padding-bottom: 0; padding-left: 0px; width: 1260px; height: 921px; '
+LYRICS_CSS = """
+.lyricstable {
+    z-index: 5;
+    position: absolute;
+    display: table;
+    left: 10px; top: 20px;
+}
+.lyricscell {
+    display: table-cell;
+    word-wrap: break-word;
+    -webkit-transition: opacity 0.4s ease;
+    lyrics_format_css
+}
+.lyricsmain {
+     text-shadow: #000000 5px 5px;
+}
+"""
 LYRICS_OUTLINE_CSS = ' -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF; '
 LYRICS_FORMAT_CSS = """
 """
@@ -219,20 +233,26 @@ class Htmbuilder(TestCase):
         # THEN: The returned html should match.
         pass
 
-    def build_lyrics_css_tes(self):
+    def build_lyrics_css_test(self):
         """
         Test the build_lyrics_css() function
         """
-        with patch('openlp.core.lib.htmlbuilder.build_lyrics_format_css') as mocked_method:#
-            mocked_method.return_value = ''
+        # GIVEN: Mocked method and arguments.
+        with patch('openlp.core.lib.htmlbuilder.build_lyrics_format_css') as mocked_build_lyrics_format_css, \
+                patch('openlp.core.lib.htmlbuilder.build_lyrics_outline_css') as mocked_build_lyrics_outline_css:
+            mocked_build_lyrics_format_css.return_value = 'lyrics_format_css'
+            mocked_build_lyrics_outline_css.return_value = ''
             item = MagicMock()
-#            item.main =
-#            item.themedata.font_main_shadow =
-#            item.themedata.font_main_shadow_color =
-#            item.themedata.font_main_shadow_size =
-#            item.themedata.font_main_shadow =
+            item.main = QtCore.QRect(10, 20, 10, 20)
+            item.themedata.font_main_shadow = True
+            item.themedata.font_main_shadow_color = '#000000'
+            item.themedata.font_main_shadow_size = 5
 
-            assert LYRICS_CSS == build_lyrics_css(item), 'The lyrics css should be equal.'
+            # WHEN: Create the css.
+            css = build_lyrics_css(item)
+
+            # THEN: The css should be equal.
+            assert LYRICS_CSS == css, 'The lyrics css should be equal.'
 
     def build_lyrics_outline_css_test(self):
         """
@@ -273,5 +293,5 @@ class Htmbuilder(TestCase):
        css = build_footer_css(item, height)
 
        # THEN: THE css should be the same.
-       assert FOOTER_CSS == css,'The footer strings should be equal.'
+       assert FOOTER_CSS == css, 'The footer strings should be equal.'
 

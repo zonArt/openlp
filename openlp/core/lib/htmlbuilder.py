@@ -680,7 +680,7 @@ def build_lyrics_css(item):
 .lyricsmain {
     %s
 }
-    """
+"""
     theme_data = item.themedata
     lyricstable = ''
     lyrics = ''
