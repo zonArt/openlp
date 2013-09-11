@@ -28,6 +28,7 @@
 ###############################################################################
 
 from .remotetab import RemoteTab
-from .httpserver import HttpServer
+from .httprouter import HttpRouter
+from .httpserver import OpenLPServer
 
-__all__ = ['RemoteTab', 'HttpServer']
+__all__ = ['RemoteTab', 'OpenLPServer', 'HttpRouter']

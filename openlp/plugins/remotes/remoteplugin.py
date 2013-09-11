@@ -29,10 +29,8 @@
 
 import logging
 
-from PyQt4 import QtGui
-
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
-from openlp.plugins.remotes.lib import RemoteTab, HttpServer
+from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
 
 log = logging.getLogger(__name__)
 
@@ -67,8 +65,8 @@ class RemotesPlugin(Plugin):
         """
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
-        self.server = HttpServer()
-        self.server.start_server()
+        self.server = OpenLPServer()
+        #self.server.start_server()
 
     def finalise(self):
         """
@@ -77,7 +75,7 @@ class RemotesPlugin(Plugin):
         log.debug('finalise')
         super(RemotesPlugin, self).finalise()
         if self.server:
-            self.server.close()
+            self.server.stop_server()
             self.server = None
 
     def about(self):
