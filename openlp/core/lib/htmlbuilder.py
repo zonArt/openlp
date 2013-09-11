@@ -26,7 +26,372 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+This module is responsible for generating the HTML for :class:`~openlp.core.ui.maindisplay`. The ``build_html`` function
+is the function which has to be called from outside. The generated and returned HTML will look similar to this::
 
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <title>OpenLP Display</title>
+        <style>
+        *{
+            margin: 0;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+            -webkit-user-select: none;
+        }
+        body {
+            background-color: #000000;
+        }
+        .size {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+        }
+        #black {
+            z-index: 8;
+            background-color: black;
+            display: none;
+        }
+        #bgimage {
+            z-index: 1;
+        }
+        #image {
+            z-index: 2;
+        }
+
+        #videobackboard {
+            z-index:3;
+            background-color: #000000;
+        }
+        #video {
+            background-color: #000000;
+            z-index:4;
+        }
+
+        #flash {
+            z-index:5;
+        }
+
+            #alert {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 10;
+                width: 100%;
+                vertical-align: bottom;
+                font-family: DejaVu Sans;
+                font-size: 40pt;
+                color: #ffffff;
+                background-color: #660000;
+                word-wrap: break-word;
+            }
+
+        #footer {
+            position: absolute;
+            z-index: 6;
+
+            left: 10px;
+            bottom: 0px;
+            width: 1580px;
+            font-family: Nimbus Sans L;
+            font-size: 12pt;
+            color: #FFFFFF;
+            text-align: left;
+            white-space: nowrap;
+
+        }
+        /* lyric css */
+
+        .lyricstable {
+            z-index: 5;
+            position: absolute;
+            display: table;
+            left: 10px; top: 0px;
+        }
+        .lyricscell {
+            display: table-cell;
+            word-wrap: break-word;
+            -webkit-transition: opacity 0.4s ease;
+            white-space:pre-wrap; word-wrap: break-word; text-align: left; vertical-align: top; font-family: Nimbus Sans L; font-size: 40pt; color: #FFFFFF; line-height: 100%; margin: 0;padding: 0; padding-bottom: 0; padding-left: 4px; width: 1580px; height: 810px;
+        }
+        .lyricsmain {
+             -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF;  text-shadow: #000000 5px 5px;
+        }
+
+        sup {
+            font-size: 0.6em;
+            vertical-align: top;
+            position: relative;
+            top: -0.3em;
+        }
+        </style>
+        <script>
+            var timer = null;
+            var transition = false;
+
+            function show_video(state, path, volume, loop, variable_value){
+                // Sometimes  video.currentTime stops slightly short of video.duration and video.ended is intermittent!
+
+                var video = document.getElementById('video');
+                if(volume != null){
+                    video.volume = volume;
+                }
+                switch(state){
+                    case 'load':
+                        video.src = 'file:///' + path;
+                        if(loop == true) {
+                            video.loop = true;
+                        }
+                        video.load();
+                        break;
+                    case 'play':
+                        video.play();
+                        break;
+                    case 'pause':
+                        video.pause();
+                        break;
+                    case 'stop':
+                        show_video('pause');
+                        video.currentTime = 0;
+                        break;
+                    case 'close':
+                        show_video('stop');
+                        video.src = '';
+                        break;
+                    case 'length':
+                        return video.duration;
+                    case 'current_time':
+                        return video.currentTime;
+                    case 'seek':
+                        video.currentTime = variable_value;
+                        break;
+                    case 'isEnded':
+                        return video.ended;
+                    case 'setVisible':
+                        video.style.visibility = variable_value;
+                        break;
+                    case 'setBackBoard':
+                        var back = document.getElementById('videobackboard');
+                        back.style.visibility = variable_value;
+                        break;
+               }
+            }
+
+            function getFlashMovieObject(movieName)
+            {
+                if (window.document[movieName]){
+                    return window.document[movieName];
+                }
+                if (document.embeds && document.embeds[movieName]){
+                    return document.embeds[movieName];
+                }
+            }
+
+            function show_flash(state, path, volume, variable_value){
+                var text = document.getElementById('flash');
+                var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                var src = "src = 'file:///" + path + "'";
+                var view_parm = " wmode='opaque'" + " width='100%%'" + " height='100%%'";
+                var swf_parm = " name='OpenLPFlashMovie'" + " autostart='true' loop='false' play='true'" +
+                    " hidden='false' swliveconnect='true' allowscriptaccess='always'" + " volume='" + volume + "'";
+
+                switch(state){
+                    case 'load':
+                        text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
+                        flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                        flashMovie.Play();
+                        break;
+                    case 'play':
+                        flashMovie.Play();
+                        break;
+                    case 'pause':
+                        flashMovie.StopPlay();
+                        break;
+                    case 'stop':
+                        flashMovie.StopPlay();
+                        tempHtml = text.innerHTML;
+                        text.innerHTML = '';
+                        text.innerHTML = tempHtml;
+                        break;
+                    case 'close':
+                        flashMovie.StopPlay();
+                        text.innerHTML = '';
+                        break;
+                    case 'length':
+                        return flashMovie.TotalFrames();
+                    case 'current_time':
+                        return flashMovie.CurrentFrame();
+                    case 'seek':
+        //                flashMovie.GotoFrame(variable_value);
+                        break;
+                    case 'isEnded':
+                        //TODO check flash end
+                        return false;
+                    case 'setVisible':
+                        text.style.visibility = variable_value;
+                        break;
+                }
+            }
+
+            function show_alert(alerttext, position){
+                var text = document.getElementById('alert');
+                text.innerHTML = alerttext;
+                if(alerttext == '') {
+                    text.style.visibility = 'hidden';
+                    return 0;
+                }
+                if(position == ''){
+                    position = getComputedStyle(text, '').verticalAlign;
+                }
+                switch(position)
+                {
+                    case 'top':
+                        text.style.top = '0px';
+                        break;
+                    case 'middle':
+                        text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                            + 'px';
+                        break;
+                    case 'bottom':
+                        text.style.top = (window.innerHeight - text.clientHeight)
+                            + 'px';
+                        break;
+                }
+                text.style.visibility = 'visible';
+                return text.clientHeight;
+            }
+
+            function update_css(align, font, size, color, bgcolor){
+                var text = document.getElementById('alert');
+                text.style.fontSize = size + "pt";
+                text.style.fontFamily = font;
+                text.style.color = color;
+                text.style.backgroundColor = bgcolor;
+                switch(align)
+                {
+                    case 'top':
+                        text.style.top = '0px';
+                        break;
+                    case 'middle':
+                        text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                            + 'px';
+                        break;
+                    case 'bottom':
+                        text.style.top = (window.innerHeight - text.clientHeight)
+                            + 'px';
+                        break;
+                }
+            }
+
+
+            function show_image(src){
+                var img = document.getElementById('image');
+                img.src = src;
+                if(src == '')
+                    img.style.display = 'none';
+                else
+                    img.style.display = 'block';
+            }
+
+            function show_blank(state){
+                var black = 'none';
+                var lyrics = '';
+                switch(state){
+                    case 'theme':
+                        lyrics = 'hidden';
+                        break;
+                    case 'black':
+                        black = 'block';
+                        break;
+                    case 'desktop':
+                        break;
+                }
+                document.getElementById('black').style.display = black;
+                document.getElementById('lyricsmain').style.visibility = lyrics;
+                document.getElementById('image').style.visibility = lyrics;
+                document.getElementById('footer').style.visibility = lyrics;
+            }
+
+            function show_footer(footertext){
+                document.getElementById('footer').innerHTML = footertext;
+            }
+
+            function show_text(new_text){
+                var match = /-webkit-text-fill-color:[^;"]+/gi;
+                if(timer != null)
+                    clearTimeout(timer);
+                /*
+                QtWebkit bug with outlines and justify causing outline alignment
+                problems. (Bug 859950) Surround each word with a <span> to workaround,
+                but only in this scenario.
+                */
+                var txt = document.getElementById('lyricsmain');
+                if(window.getComputedStyle(txt).textAlign == 'justify'){
+                    if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
+                        new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
+                            function(match) {
+                                return '</span>' + match + '<span>';
+                            });
+                        new_text = '<span>' + new_text + '</span>';
+                    }
+                }
+                text_fade('lyricsmain', new_text);
+            }
+
+            function text_fade(id, new_text){
+                /*
+                Show the text.
+                */
+                var text = document.getElementById(id);
+                if(text == null) return;
+                if(!transition){
+                    text.innerHTML = new_text;
+                    return;
+                }
+                // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
+                text.style.opacity = '0.1';
+                // Fade new text in after the old text has finished fading out.
+                timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
+            }
+
+            function _show_text(text, new_text) {
+                /*
+                Helper function to show the new_text delayed.
+                */
+                text.innerHTML = new_text;
+                text.style.opacity = '1';
+                // Wait until the text is completely visible. We want to save the timer id, to be able to call
+                // clearTimeout(timer) when the text has changed before finishing fading.
+                timer = window.setTimeout(function(){timer = null;}, 400);
+            }
+
+            function show_text_completed(){
+                return (timer == null);
+            }
+        </script>
+        </head>
+        <body>
+        <img id="bgimage" class="size" style="display:none;" />
+        <img id="image" class="size" style="display:none;" />
+
+        <div id="videobackboard" class="size" style="visibility:hidden"></div>
+        <video id="video" class="size" style="visibility:hidden" autobuffer preload></video>
+
+        <div id="flash" class="size" style="visibility:hidden"></div>
+
+            <div id="alert" style="visibility:hidden"></div>
+
+        <div class="lyricstable"><div id="lyricsmain" style="opacity:1" class="lyricscell lyricsmain"></div></div>
+        <div id="footer" class="footer"></div>
+        <div id="black" class="size"></div>
+        </body>
+        </html>
+"""
 import logging
 
 from PyQt4 import QtWebKit
@@ -242,6 +607,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
         image_src,
         html_additions
     )
+    print(html)
     return html
 
 

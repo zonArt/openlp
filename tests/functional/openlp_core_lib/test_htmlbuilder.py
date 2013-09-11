@@ -3,11 +3,11 @@ Package to test the openlp.core.lib.htmlbuilder module.
 """
 
 from unittest import TestCase
-from mock import MagicMock
+from mock import MagicMock, patch
 
 from PyQt4 import QtCore
 
-from openlp.core.lib.htmlbuilder import build_footer_css, build_lyrics_outline_css
+from openlp.core.lib.htmlbuilder import build_footer_css, build_lyrics_outline_css, build_lyrics_css
 
 
 FOOTER_CSS = """
@@ -35,13 +35,16 @@ class Htmbuilder(TestCase):
     def build_lyrics_css_test(self):
         """
         """
-        item = MagicMock()
-        item.main =
-        item.themedata.font_main_shadow =
-        item.themedata.font_main_shadow_color =
-        item.themedata.font_main_shadow_size =
-        item.themedata.font_main_shadow =
-        assert LYRICS_CSS = build_lyrics_css(item), 'The lyrics css should be equal.'
+        with patch('openlp.core.lib.htmlbuilder.build_lyrics_format_css') as mocked_method:#
+            mocked_method.return_value = ''
+            item = MagicMock()
+            item.main =
+            item.themedata.font_main_shadow =
+            item.themedata.font_main_shadow_color =
+            item.themedata.font_main_shadow_size =
+            item.themedata.font_main_shadow =
+            print(build_lyrics_css(item))
+            assert LYRICS_CSS == build_lyrics_css(item), 'The lyrics css should be equal.'
 
     def build_lyrics_outline_css_test(self):
         """
