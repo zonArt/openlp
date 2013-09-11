@@ -607,7 +607,6 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
         image_src,
         html_additions
     )
-    print(html)
     return html
 
 
