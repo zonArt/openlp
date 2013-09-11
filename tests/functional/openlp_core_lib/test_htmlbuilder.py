@@ -12,7 +12,7 @@ from openlp.core.lib.htmlbuilder import build_html, build_background_css, build_
 from openlp.core.lib.theme import HorizontalType, VerticalType
 
 
-BUILD_HTML = """
+HTML = """
 <!DOCTYPE html>
 <html>
 <head>
@@ -225,7 +225,7 @@ class Htmbuilder(TestCase):
             html = build_html(item, screen, is_live, background, plugins=plugins)
 
             # THEN: The returned html should match.
-            assert html == BUILD_HTML
+            assert html == HTML
 
     def build_background_css_radial_test(self):
         """
