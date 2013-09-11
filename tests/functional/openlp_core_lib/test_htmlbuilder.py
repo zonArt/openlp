@@ -161,8 +161,7 @@ plugin HTML
 </body>
 </html>
 """
-BACKGROUND_CSS = """
-"""
+BACKGROUND_CSS_RADIAL = 'background: -webkit-gradient(radial, 5 50%, 100, 5 50%, 5, from(#000000), to(#FFFFFF)) fixed'
 LYRICS_CSS = """
 .lyricstable {
     z-index: 5;
@@ -226,12 +225,21 @@ class Htmbuilder(TestCase):
             # THEN: The returned html should match.
             assert html == BUILD_HTML
 
-    def build_background_css_tes(self):
+    def build_background_css_radial_test(self):
         """
-        Test the build_background_css() function
+        Test the build_background_css() function with a radial background
         """
-        # THEN: The returned html should match.
-        pass
+        # GIVEN: Mocked arguments.
+        item = MagicMock()
+        item.themedata.background_start_color = '#000000'
+        item.themedata.background_end_color = '#FFFFFF'
+        width = 10
+
+        # WHEN: Create the css.
+        css = build_background_css(item, width)
+
+        # THEN: The returned css should match.
+        assert BACKGROUND_CSS_RADIAL == css, 'The background css should be equal.'
 
     def build_lyrics_css_test(self):
         """
