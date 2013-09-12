@@ -49,40 +49,26 @@ from openlp.plugins.remotes.lib import HttpRouter
 from socketserver import BaseServer, ThreadingMixIn
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from hashlib import sha1
-
 log = logging.getLogger(__name__)
-
-
-def make_sha_hash(password):
-    """
-    Create an encrypted password for the given password.
-    """
-    log.debug("make_sha_hash")
-    return sha1(password.encode()).hexdigest()
-
-
-def fetch_password(username):
-    """
-    Fetch the password for a provided user.
-    """
-    log.debug("Fetch Password")
-    if username != Settings().value('remotes/user id'):
-        return None
-    return make_sha_hash(Settings().value('remotes/password'))
 
 
 class CustomHandler(BaseHTTPRequestHandler, HttpRouter):
     """
-    Main class to present webpages and authentication.
+    Stateless session handler to handle the HTTP request and process it.
+    This class handles just the overrides to the base methods and the logic to invoke the
+    methods within the HttpRouter class.
+    DO not try change the structure as this is as per the documentation.
     """
 
     def do_POST(self):
+        """
+        Present pages / data and invoke URL level user authentication.
+        """
         self.do_GET()
 
     def do_GET(self):
         """
-        Present frontpage with user authentication.
+        Present pages / data and invoke URL level user authentication.
         """
         if self.path == '/favicon.ico':
             return
@@ -141,7 +127,7 @@ class HttpThread(QtCore.QThread):
 class OpenLPServer():
     def __init__(self):
         """
-        Initialise the http server, and start the server.
+        Initialise the http server, and start the server of the correct type http / https
         """
         log.debug('Initialise httpserver')
         self.settings_section = 'remotes'
@@ -149,24 +135,34 @@ class OpenLPServer():
         self.http_thread.start()
 
     def start_server(self):
+        """
+        Start the correct server and save the handler
+        """
         address = Settings().value(self.settings_section + '/ip address')
         if Settings().value(self.settings_section + '/https enabled'):
             port = Settings().value(self.settings_section + '/https port')
             self.httpd = HTTPSServer((address, port), CustomHandler)
-            print('started ssl httpd...')
+            log.debug('Started ssl httpd...')
         else:
             port = Settings().value(self.settings_section + '/port')
             self.httpd = ThreadingHTTPServer((address, port), CustomHandler)
-            print('started non ssl httpd...')
+            log.debug('Started non ssl httpd...')
         self.httpd.serve_forever()
 
     def stop_server(self):
+        """
+        Stop the server
+        """
         self.httpd.socket.close()
         self.httpd = None
+        log.debug('Stopped the server.')
 
 
 class HTTPSServer(HTTPServer):
     def __init__(self, address, handler):
+        """
+        Initialise the secure handlers for the SSL server if required.s
+        """
         BaseServer.__init__(self, address, handler)
         local_data = AppLocation.get_directory(AppLocation.DataDir)
         self.socket = ssl.SSLSocket(

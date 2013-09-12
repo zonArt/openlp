@@ -112,15 +112,14 @@ the remotes.
 
             {"results": {"items": [{...}, {...}]}}
 """
-
+import base64
 import json
 import logging
 import os
 import re
 import urllib.request
-import urllib.parse
 import urllib.error
-import urllib.parse
+from urllib.parse import urlparse, parse_qs
 
 
 from mako.template import Template
@@ -129,43 +128,74 @@ from PyQt4 import QtCore
 from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte
 from openlp.core.utils import AppLocation, translate
 
-from hashlib import sha1
-
 log = logging.getLogger(__name__)
 
 
 class HttpRouter(object):
     """
     This code is called by the HttpServer upon a request and it processes it based on the routing table.
+    This code is stateless so need
     """
     def initialise(self):
         """
-        Initialise the router
+        Initialise the router stack and any other varables.
         """
+        authcode = "%s:%s" % (Settings().value('remotes/user id'), Settings().value('remotes/password'))
+        try:
+            self.auth = base64.b64encode(authcode)
+        except TypeError:
+            self.auth = base64.b64encode(authcode.encode()).decode()
         self.routes = [
-            ('^/$', self.serve_file),
-            ('^/(stage)$', self.serve_file),
-            ('^/(main)$', self.serve_file),
-            (r'^/files/(.*)$', self.serve_file),
-            (r'^/api/poll$', self.poll),
-            (r'^/stage/poll$', self.poll),
-            (r'^/main/poll$', self.main_poll),
-            (r'^/main/image$', self.main_image),
-            (r'^/api/controller/(live|preview)/(.*)$', self.controller),
-            (r'^/stage/controller/(live|preview)/(.*)$', self.controller),
-            (r'^/api/service/(.*)$', self.service),
-            (r'^/stage/service/(.*)$', self.service),
-            (r'^/api/display/(hide|show|blank|theme|desktop)$', self.display),
-            (r'^/api/alert$', self.alert),
-            (r'^/api/plugin/(search)$', self.plugin_info),
-            (r'^/api/(.*)/search$', self.search),
-            (r'^/api/(.*)/live$', self.go_live),
-            (r'^/api/(.*)/add$', self.add_to_service)
+            ('^/$', {'function': self.serve_file, 'secure': False}),
+            ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
+            ('^/(main)$', {'function': self.serve_file, 'secure': False}),
+            (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
+            (r'^/api/poll$', {'function': self.poll, 'secure': False}),
+            (r'^/stage/poll$', {'function': self.poll, 'secure': False}),
+            (r'^/main/poll$', {'function': self.poll, 'secure': False}),
+            (r'^/main/image$', {'function': self.main_poll, 'secure': False}),
+            (r'^/api/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': False}),
+            (r'^/stage/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': False}),
+            (r'^/api/service/(.*)$', {'function':self.service, 'secure': False}),
+            (r'^/stage/service/(.*)$', {'function': self.service, 'secure': False}),
+            (r'^/api/display/(hide|show|blank|theme|desktop)$', {'function': self.display, 'secure': True}),
+            (r'^/api/alert$', {'function': self.alert, 'secure': True}),
+            (r'^/api/plugin/(search)$', {'function': self.plugin_info, 'secure': False}),
+            (r'^/api/(.*)/search$', {'function': self.search, 'secure': False}),
+            (r'^/api/(.*)/live$', {'function': self.go_live, 'secure': True}),
+            (r'^/api/(.*)/add$', {'function': self.add_to_service, 'secure': True})
         ]
         self.translate()
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), 'remotes', 'html')
 
+    def call_function(self, function, *args):
+        response = function['function'](*args)
+        if response:
+            self.wfile.write(response)
+            return
+
     def process_http_request(self, url_path, *args):
+        """
+        Common function to process HTTP requests
+
+        ``url_path``
+            The requested URL.
+
+        ``*args``
+            Any passed data.
+        """
+        url_path_split = urlparse(url_path)
+        for route, func in self.routes:
+            match = re.match(route, url_path_split.path)
+            if match:
+                print('Route "%s" matched "%s"', route, url_path)
+                args = []
+                for param in match.groups():
+                    args.append(param)
+                return func, args
+        return None, None
+
+    def _process_http_request(self, url_path, *args):
         """
         Common function to process HTTP requests
 
@@ -189,7 +219,29 @@ class HttpRouter(object):
             return response
         else:
             log.debug('Path not found %s', url_path)
-            return self._http_not_found()
+            return self.do_not_found()
+
+    def do_http_success(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+
+    def do_http_error(self):
+        self.send_response(404)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+
+    def do_authorisation(self):
+        self.send_response(401)
+        self.send_header('WWW-Authenticate', 'Basic realm=\"Test\"')
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+
+    def do_notfound(self):
+        self.send_response(404)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        self.wfile.write(bytes('<html><body>Sorry, an error occurred </body></html>', 'UTF-8'))
 
     def _get_service_items(self):
         """
@@ -259,25 +311,27 @@ class HttpRouter(object):
             file_name = 'main.html'
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
-            return self._http_not_found()
+            return self.http_not_found()
         ext = os.path.splitext(file_name)[1]
         html = None
         if ext == '.html':
-            mimetype = 'text/html'
+            self.send_header('Content-type', 'text/html')
             variables = self.template_vars
             html = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
         elif ext == '.css':
-            mimetype = 'text/css'
+            self.send_header('Content-type', 'text/css')
         elif ext == '.js':
-            mimetype = 'application/x-javascript'
+            self.send_header('Content-type', 'application/x-javascript')
         elif ext == '.jpg':
-            mimetype = 'image/jpeg'
+            self.send_header('Content-type', 'image/jpeg')
         elif ext == '.gif':
-            mimetype = 'image/gif'
+            self.send_header('Content-type', 'image/gif')
+        elif ext == '.ico':
+            self.send_header('Content-type', 'image/ico')
         elif ext == '.png':
-            mimetype = 'image/png'
+            self.send_header('Content-type', 'image/png')
         else:
-            mimetype = 'text/plain'
+            self.send_header('Content-type', 'text/plain')
         file_handle = None
         try:
             if html:
