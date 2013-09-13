@@ -5,11 +5,13 @@
 This module contains tests for the WorshipCenter Pro song importer.
 """
 
-from unittest import TestCase
+from unittest import TestCase, skipIf
 from mock import patch, MagicMock
-import pyodbc
 
-from openlp.plugins.songs.lib.worshipcenterproimport import WorshipCenterProImport
+import os
+if os.name == 'nt':
+    import pyodbc
+    from openlp.plugins.songs.lib.worshipcenterproimport import WorshipCenterProImport
 
 class TestRecord(object):
     """
@@ -23,22 +25,23 @@ class TestRecord(object):
         self.Field = field
         self.Value = value
 
-class WorshipCenterProImportLogger(WorshipCenterProImport):
-    """
-    This class logs changes in the title instance variable
-    """
-    _title_assignment_list = []
+if os.name == 'nt':
+    class WorshipCenterProImportLogger(WorshipCenterProImport):
+        """
+        This class logs changes in the title instance variable
+        """
+        _title_assignment_list = []
 
-    def __init__(self, manager):
-        WorshipCenterProImport.__init__(self, manager)
+        def __init__(self, manager):
+            WorshipCenterProImport.__init__(self, manager)
 
-    @property
-    def title(self):
-        return self._title_assignment_list[-1]
+        @property
+        def title(self):
+            return self._title_assignment_list[-1]
 
-    @title.setter
-    def title(self, title):
-        self._title_assignment_list.append(title)
+        @title.setter
+        def title(self, title):
+            self._title_assignment_list.append(title)
 
 
 RECORDSET_TEST_DATA = [TestRecord(1, 'TITLE', 'Amazing Grace'),
@@ -98,6 +101,7 @@ SONG_TEST_DATA = [{'title': 'Amazing Grace',
                        ('There\'s a garden where\nJesus is waiting,\nAnd He bids you to come,\nmeet Him there;\n'
                         'Just to bow and\nreceive a new blessing\nIn the beautiful\ngarden of prayer.')]}]
 
+@skipIf(os.name != 'nt', 'WorshipCenter Pro import only supported on Windows')
 class TestWorshipCenterProSongImport(TestCase):
     """
     Test the functions in the :mod:`worshipcenterproimport` module.
