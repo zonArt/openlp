@@ -187,7 +187,7 @@ class TestLib(TestCase):
         """
         Test the get_text_file_string() method when a read error happens
         """
-        with patch('openlp.core.lib.os.path.isfile') as mocked_isfile, patch('builtins.open') as mocked_open:
+        with patch('openlp.core.lib.os.path.isfile') as mocked_isfile, patch('openlp.core.lib.open', create=True) as mocked_open:
             # GIVEN: A mocked-out open() which raises an exception and isfile returns True
             filename = 'testfile.txt'
             mocked_isfile.return_value = True
@@ -252,7 +252,7 @@ class TestLib(TestCase):
             # GIVEN: A set of mocked-out Qt classes
             mocked_byte_array = MagicMock()
             MockedQtCore.QByteArray.return_value = mocked_byte_array
-            mocked_byte_array.toBase64.return_value = 'base64mock'
+            mocked_byte_array.toBase64.return_value = QtCore.QByteArray('base64mock')
             mocked_buffer = MagicMock()
             MockedQtCore.QBuffer.return_value = mocked_buffer
             MockedQtCore.QIODevice.WriteOnly = 'writeonly'

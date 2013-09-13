@@ -9,7 +9,7 @@ from mock import MagicMock
 import urllib.request, urllib.error, urllib.parse
 import cherrypy
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from openlp.core.lib import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpServer

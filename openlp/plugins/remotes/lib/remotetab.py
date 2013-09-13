@@ -198,21 +198,7 @@ class RemoteTab(SettingsTab):
         """
         Update the display based on the data input on the screen
         """
-        ip_address = 'localhost'
-        if self.address_edit.text() == ZERO_URL:
-            interfaces = QtNetwork.QNetworkInterface.allInterfaces()
-            for interface in interfaces:
-                if not interface.isValid():
-                    continue
-                if not (interface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
-                    continue
-                for address in interface.addressEntries():
-                    ip = address.ip()
-                    if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ip_address = ip
-                        break
-        else:
-            ip_address = self.address_edit.text()
+        ip_address = self.get_ip_address(self.address_edit.text())
         http_url = 'http://%s:%s/' % (ip_address, self.port_spin_box.value())
         https_url = 'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
         self.remote_url.setText('<a href="%s">%s</a>' % (http_url, http_url))
@@ -225,6 +211,25 @@ class RemoteTab(SettingsTab):
         https_url_temp = https_url + 'live'
         self.live_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.live_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+
+    def get_ip_address(self, ip_address):
+        """
+        returns the IP address in dependency of the passed address
+        ip_address == 0.0.0.0: return the IP address of the first valid interface
+        else: return ip_address
+        """
+        if ip_address == ZERO_URL:
+            interfaces = QtNetwork.QNetworkInterface.allInterfaces()
+            for interface in interfaces:
+                if not interface.isValid():
+                    continue
+                if not (interface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
+                    continue
+                for address in interface.addressEntries():
+                    ip = address.ip()
+                    if ip.protocol() == QtNetwork.QAbstractSocket.IPv4Protocol and ip != QtNetwork.QHostAddress.LocalHost:
+                        return ip.toString()
+        return ip_address
 
     def load(self):
         """

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -49,7 +49,7 @@ except ImportError:
 IS_WIN = sys.platform.startswith('win')
 
 VERS = {
-    'Python': '2.6',
+    'Python': '3.0',
     'PyQt4': '4.6',
     'Qt4': '4.6',
     'sqlalchemy': '0.5',
@@ -63,6 +63,7 @@ WIN32_MODULES = [
     'win32ui',
     'pywintypes',
     'pyodbc',
+    'icu',
 ]
 
 MODULES = [
@@ -76,6 +77,7 @@ MODULES = [
     'PyQt4.QtWebKit',
     'PyQt4.phonon',
     'sqlalchemy',
+    'alembic',
     'sqlite3',
     'lxml',
     'chardet',
@@ -84,8 +86,6 @@ MODULES = [
     'mako',
     'cherrypy',
     'uno',
-    'icu',
-    'bs4',
 ]
 
 
