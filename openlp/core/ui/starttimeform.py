@@ -88,9 +88,9 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         """
         Split time up into hours minutes and seconds from secongs
         """
-        hours = seconds / 3600
+        hours = seconds // 3600
         seconds -= 3600 * hours
-        minutes = seconds / 60
+        minutes = seconds // 60
         seconds -= 60 * minutes
         return hours, minutes, seconds
 
