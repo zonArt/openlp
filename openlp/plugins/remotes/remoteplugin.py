@@ -28,6 +28,7 @@
 ###############################################################################
 
 import logging
+import time
 
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
 from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
@@ -66,7 +67,6 @@ class RemotesPlugin(Plugin):
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
         self.server = OpenLPServer()
-        #self.server.start_server()
 
     def finalise(self):
         """
@@ -107,5 +107,6 @@ class RemotesPlugin(Plugin):
         Called when Config is changed to restart the server on new address or port
         """
         log.debug('remote config changed')
-        self.main_window.information_message(translate('RemotePlugin', 'Configuration Change'),
-            translate('RemotePlugin', 'OpenLP will need to be restarted for the Remote changes to become active.'))
+        self.finalise()
+        time.sleep(0.5)
+        self.initialise()

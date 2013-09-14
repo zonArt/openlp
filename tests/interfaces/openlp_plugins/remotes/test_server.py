@@ -7,9 +7,8 @@ from unittest import TestCase
 from tempfile import mkstemp
 from mock import MagicMock
 import urllib.request, urllib.error, urllib.parse
-import cherrypy
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 from openlp.core.lib import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpServer
@@ -133,6 +132,5 @@ def process_http_request(url_path, *args):
     ``*args``
         Some args.
     """
-    cherrypy.response.status = 200
     return None
 
