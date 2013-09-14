@@ -64,34 +64,13 @@ class CustomHandler(BaseHTTPRequestHandler, HttpRouter):
         """
         Present pages / data and invoke URL level user authentication.
         """
-        self.do_GET()
+        self.do_post_processor()
 
     def do_GET(self):
         """
         Present pages / data and invoke URL level user authentication.
         """
-        if self.path == '/favicon.ico':
-            return
-        if not hasattr(self, 'auth'):
-            self.initialise()
-        function, args = self.process_http_request(self.path)
-        if not function:
-            self.do_http_error()
-            return
-        self.authorised = self.headers['Authorization'] is None
-        if function['secure'] and Settings().value(self.settings_section + '/authentication enabled'):
-            if self.headers['Authorization'] is None:
-                self.do_authorisation()
-                self.wfile.write(bytes('no auth header received', 'UTF-8'))
-            elif self.headers['Authorization'] == 'Basic %s' % self.auth:
-                self.do_http_success()
-                self.call_function(function, *args)
-            else:
-                self.do_authorisation()
-                self.wfile.write(bytes(self.headers['Authorization'], 'UTF-8'))
-                self.wfile.write(bytes(' not authenticated', 'UTF-8'))
-        else:
-            self.call_function(function, *args)
+        self.do_post_processor()
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
@@ -148,7 +127,7 @@ class OpenLPServer():
         """
         Stop the server
         """
-        self.httpd.socket.close()
+        self.http_thread.exit(0)
         self.httpd = None
         log.debug('Stopped the server.')
 

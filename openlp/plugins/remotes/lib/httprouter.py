@@ -134,11 +134,12 @@ log = logging.getLogger(__name__)
 class HttpRouter(object):
     """
     This code is called by the HttpServer upon a request and it processes it based on the routing table.
-    This code is stateless so need
+    This code is stateless and is created on each request.
+    Some variables may look incorrect but this extends BaseHTTPRequestHandler.
     """
     def initialise(self):
         """
-        Initialise the router stack and any other varables.
+        Initialise the router stack and any other variables.
         """
         authcode = "%s:%s" % (Settings().value('remotes/user id'), Settings().value('remotes/password'))
         try:
@@ -168,7 +169,43 @@ class HttpRouter(object):
         self.translate()
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), 'remotes', 'html')
 
+    def do_post_processor(self):
+        """
+        Handle the POST amd GET requests placed on the server.
+        """
+        if self.path == '/favicon.ico':
+            return
+        if not hasattr(self, 'auth'):
+            self.initialise()
+        function, args = self.process_http_request(self.path)
+        if not function:
+            self.do_http_error()
+            return
+        self.authorised = self.headers['Authorization'] is None
+        if function['secure'] and Settings().value(self.settings_section + '/authentication enabled'):
+            if self.headers['Authorization'] is None:
+                self.do_authorisation()
+                self.wfile.write(bytes('no auth header received', 'UTF-8'))
+            elif self.headers['Authorization'] == 'Basic %s' % self.auth:
+                self.do_http_success()
+                self.call_function(function, *args)
+            else:
+                self.do_authorisation()
+                self.wfile.write(bytes(self.headers['Authorization'], 'UTF-8'))
+                self.wfile.write(bytes(' not authenticated', 'UTF-8'))
+        else:
+            self.call_function(function, *args)
+
     def call_function(self, function, *args):
+        """
+        Invoke the route function passing the relevant values
+
+        ``function``
+            The function to be calledL.
+
+        ``*args``
+            Any passed data.
+        """
         response = function['function'](*args)
         if response:
             self.wfile.write(response)
@@ -200,22 +237,34 @@ class HttpRouter(object):
         return None, None
 
     def do_http_success(self):
+        """
+        Create a success http header.
+        """
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
     def do_http_error(self):
+        """
+        Create a error http header.
+        """
         self.send_response(404)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
     def do_authorisation(self):
+        """
+        Create a needs authorisation http header.
+        """
         self.send_response(401)
         self.send_header('WWW-Authenticate', 'Basic realm=\"Test\"')
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
     def do_not_found(self):
+        """
+        Create a not found http header.
+        """
         self.send_response(404)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
