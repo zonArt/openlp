@@ -37,7 +37,7 @@ import re
 import struct
 
 from openlp.core.ui.wizard import WizardStrings
-from openlp.plugins.songs.lib import VerseType
+from openlp.plugins.songs.lib import VerseType, retrieve_windows_encoding
 from openlp.plugins.songs.lib.songimport import SongImport
 
 TITLE = 1
@@ -133,16 +133,16 @@ class SongShowPlusImport(SongImport):
                 else:
                     length_descriptor, = struct.unpack("B", song_data.read(1))
                 log.debug(length_descriptor_size)
-                data = song_data.read(length_descriptor).decode()
+                data = song_data.read(length_descriptor)
                 if block_key == TITLE:
                     self.title = self.decode(data)
                 elif block_key == AUTHOR:
-                    authors = data.split(" / ")
+                    authors = self.decode(data).split(" / ")
                     for author in authors:
                         if author.find(",") !=-1:
                             authorParts = author.split(", ")
                             author = authorParts[1] + " " + authorParts[0]
-                        self.parse_author(self.decode(author))
+                        self.parse_author(author)
                 elif block_key == COPYRIGHT:
                     self.addCopyright(self.decode(data))
                 elif block_key == CCLI_NO:
@@ -158,7 +158,7 @@ class SongShowPlusImport(SongImport):
                 elif block_key == COMMENTS:
                     self.comments = self.decode(data)
                 elif block_key == VERSE_ORDER:
-                    verse_tag = self.to_openlp_verse_tag(data, True)
+                    verse_tag = self.to_openlp_verse_tag(self.decode(data), True)
                     if verse_tag:
                         if not isinstance(verse_tag, str):
                             verse_tag = self.decode(verse_tag)
@@ -212,4 +212,4 @@ class SongShowPlusImport(SongImport):
         try:
             return str(data, chardet.detect(data)['encoding'])
         except:
-            return str(data, 'cp1252')
+            return str(data, retrieve_windows_encoding())

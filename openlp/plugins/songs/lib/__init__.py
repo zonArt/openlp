@@ -365,7 +365,7 @@ def retrieve_windows_encoding(recommendation=None):
                 [pair[1] for pair in encodings], 0, False)
     if not choice[1]:
         return None
-    return filter(lambda item: item[1] == choice[0], encodings)[0][0]
+    return next(filter(lambda item: item[1] == choice[0], encodings))[0]
 
 
 def clean_string(string):
