@@ -154,7 +154,7 @@ class HttpRouter(object):
             (r'^/stage/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/image$', {'function': self.main_poll, 'secure': False}),
-            (r'^/api/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': False}),
+            (r'^/api/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': True}),
             (r'^/stage/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': False}),
             (r'^/api/service/(.*)$', {'function':self.service, 'secure': False}),
             (r'^/stage/service/(.*)$', {'function': self.service, 'secure': False}),
@@ -184,42 +184,20 @@ class HttpRouter(object):
         ``*args``
             Any passed data.
         """
+        self.request_data = None
         url_path_split = urlparse(url_path)
+        url_query = parse_qs(url_path_split.query)
+        if 'data' in url_query.keys():
+            self.request_data = url_query['data'][0]
         for route, func in self.routes:
             match = re.match(route, url_path_split.path)
-            if match:
-                print('Route "%s" matched "%s"', route, url_path)
-                args = []
-                for param in match.groups():
-                    args.append(param)
-                return func, args
-        return None, None
-
-    def _process_http_request(self, url_path, *args):
-        """
-        Common function to process HTTP requests
-
-        ``url_path``
-            The requested URL.
-
-        ``*args``
-            Any passed data.
-        """
-        response = None
-        for route, func in self.routes:
-            match = re.match(route, url_path)
             if match:
                 log.debug('Route "%s" matched "%s"', route, url_path)
                 args = []
                 for param in match.groups():
                     args.append(param)
-                response = func(*args)
-                break
-        if response:
-            return response
-        else:
-            log.debug('Path not found %s', url_path)
-            return self.do_not_found()
+                return func, args
+        return None, None
 
     def do_http_success(self):
         self.send_response(200)
@@ -469,6 +447,8 @@ class HttpRouter(object):
         event += '_item'
         if self.request_data:
             try:
+#                print(json.loads(self.request_data['data']))
+                print(json.loads(self.request_data))
                 data = json.loads(self.request_data)['request']['id']
             except KeyError:
                 return self._http_bad_request()

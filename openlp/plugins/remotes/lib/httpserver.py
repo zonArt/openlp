@@ -72,12 +72,13 @@ class CustomHandler(BaseHTTPRequestHandler, HttpRouter):
         """
         if self.path == '/favicon.ico':
             return
-        print(self.headers['content-type'])
-        if self.headers['content-type'] == 'application/json':
+        #print(self.headers['content-type'],self.headers['content-length'])
+        if self.headers['content-type'] == 'application/text':
             length = int(self.headers['content-length'])
             postvars = parse_qs(self.rfile.read(length), keep_blank_values=1)
             for var in postvars:
-                print(var.decode("utf-8"))
+                print(var)
+                #{"request": {"id": 1}}
         if not hasattr(self, 'auth'):
             self.initialise()
         function, args = self.process_http_request(self.path)
