@@ -53,7 +53,7 @@ class SongImportTestHelper(TestCase):
         A method to load and return an object containing the song data from an external file.
         """
         result_file = open(file_name, 'rb')
-        return json.loads(result_file.read())
+        return json.loads(result_file.read().decode())
 
     def file_import(self, source_file_name, result_data):
         """

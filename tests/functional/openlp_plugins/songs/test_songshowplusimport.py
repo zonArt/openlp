@@ -63,7 +63,7 @@ class TestSongShowPlusImport(TestCase):
                 # THEN: doImport should return none and the progress bar maximum should not be set.
                 self.assertIsNone(importer.doImport(), 'doImport should return None when import_source is not a list')
                 self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
-                                  'setMaxium on import_wizard.progress_bar should not have been called')
+                                  'setMaximum on import_wizard.progress_bar should not have been called')
 
     def valid_import_source_test(self):
         """
