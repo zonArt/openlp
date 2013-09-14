@@ -151,13 +151,12 @@ class HttpRouter(object):
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
-            (r'^/stage/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/image$', {'function': self.main_poll, 'secure': False}),
+            (r'^/api/controller/(live|preview)/text$', {'function': self.controller_text, 'secure': False}),
             (r'^/api/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': True}),
-            (r'^/stage/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': False}),
-            (r'^/api/service/(.*)$', {'function':self.service, 'secure': False}),
-            (r'^/stage/service/(.*)$', {'function': self.service, 'secure': False}),
+            (r'^/api/service/list$', {'function': self.service_list, 'secure': False}),
+            (r'^/api/service/(.*)$', {'function': self.service, 'secure': True}),
             (r'^/api/display/(hide|show|blank|theme|desktop)$', {'function': self.display, 'secure': True}),
             (r'^/api/alert$', {'function': self.alert, 'secure': True}),
             (r'^/api/plugin/(search)$', {'function': self.plugin_info, 'secure': False}),
@@ -165,6 +164,7 @@ class HttpRouter(object):
             (r'^/api/(.*)/live$', {'function': self.go_live, 'secure': True}),
             (r'^/api/(.*)/add$', {'function': self.add_to_service, 'secure': True})
         ]
+        self.settings_section = 'remotes'
         self.translate()
         self.html_dir = os.path.join(AppLocation.get_directory(AppLocation.PluginsDir), 'remotes', 'html')
 
@@ -215,7 +215,7 @@ class HttpRouter(object):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
-    def do_notfound(self):
+    def do_not_found(self):
         self.send_response(404)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
@@ -289,7 +289,7 @@ class HttpRouter(object):
             file_name = 'main.html'
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
-            return self.http_not_found()
+            return self.do_not_found()
         ext = os.path.splitext(file_name)[1]
         html = None
         if ext == '.html':
@@ -320,7 +320,7 @@ class HttpRouter(object):
                 content = file_handle.read()
         except IOError:
             log.exception('Failed to open %s' % path)
-            return self._http_not_found()
+            return self.do_not_found()
         finally:
             if file_handle:
                 file_handle.close()
@@ -337,7 +337,10 @@ class HttpRouter(object):
             'twelve': Settings().value('remotes/twelve hour'),
             'blank': self.live_controller.blank_screen.isChecked(),
             'theme': self.live_controller.theme_screen.isChecked(),
-            'display': self.live_controller.desktop_screen.isChecked()
+            'display': self.live_controller.desktop_screen.isChecked(),
+            'version': 2,
+            'isSecure': Settings().value(self.settings_section + '/authentication enabled'),
+            'isAuthorised': self.authorised
         }
         return json.dumps({'results': result}).encode()
 
@@ -379,13 +382,40 @@ class HttpRouter(object):
             try:
                 text = json.loads(self.request_data)['request']['text']
             except KeyError as ValueError:
-                return self._http_bad_request()
+                return self.do_http_error()
             text = urllib.parse.unquote(text)
             self.alerts_manager.emit(QtCore.SIGNAL('alerts_text'), [text])
             success = True
         else:
             success = False
         return json.dumps({'results': {'success': success}}).encode()
+
+    def controller_text(self, var):
+        """
+        Perform an action on the slide controller.
+        """
+        current_item = self.live_controller.service_item
+        data = []
+        if current_item:
+            for index, frame in enumerate(current_item.get_frames()):
+                item = {}
+                if current_item.is_text():
+                    if frame['verseTag']:
+                        item['tag'] = str(frame['verseTag'])
+                    else:
+                        item['tag'] = str(index + 1)
+                    item['text'] = str(frame['text'])
+                    item['html'] = str(frame['html'])
+                else:
+                    item['tag'] = str(index + 1)
+                    item['text'] = str(frame['title'])
+                    item['html'] = str(frame['title'])
+                item['selected'] = (self.live_controller.selected_row == index)
+                data.append(item)
+        json_data = {'results': {'slides': data}}
+        if current_item:
+            json_data['results']['item'] = self.live_controller.service_item.unique_identifier
+        return json.dumps(json_data).encode()
 
     def controller(self, display_type, action):
         """
@@ -398,41 +428,27 @@ class HttpRouter(object):
             The action to perform.
         """
         event = 'slidecontroller_%s_%s' % (display_type, action)
-        if action == 'text':
-            current_item = self.live_controller.service_item
-            data = []
-            if current_item:
-                for index, frame in enumerate(current_item.get_frames()):
-                    item = {}
-                    if current_item.is_text():
-                        if frame['verseTag']:
-                            item['tag'] = str(frame['verseTag'])
-                        else:
-                            item['tag'] = str(index + 1)
-                        item['text'] = str(frame['text'])
-                        item['html'] = str(frame['html'])
-                    else:
-                        item['tag'] = str(index + 1)
-                        item['text'] = str(frame['title'])
-                        item['html'] = str(frame['title'])
-                    item['selected'] = (self.live_controller.selected_row == index)
-                    data.append(item)
-            json_data = {'results': {'slides': data}}
-            if current_item:
-                json_data['results']['item'] = self.live_controller.service_item.unique_identifier
+        if self.request_data:
+            try:
+                data = json.loads(self.request_data)['request']['id']
+            except KeyError as ValueError:
+                return self.do_http_error()
+            log.info(data)
+            # This slot expects an int within a list.
+            self.live_controller.emit(QtCore.SIGNAL(event), [data])
         else:
-            if self.request_data:
-                try:
-                    data = json.loads(self.request_data)['request']['id']
-                except KeyError as ValueError:
-                    return self._http_bad_request()
-                log.info(data)
-                # This slot expects an int within a list.
-                self.live_controller.emit(QtCore.SIGNAL(event), [data])
-            else:
-                self.live_controller.emit(QtCore.SIGNAL(event))
-            json_data = {'results': {'success': True}}
+            self.live_controller.emit(QtCore.SIGNAL(event))
+        json_data = {'results': {'success': True}}
         return json.dumps(json_data).encode()
+
+    def service_list(self):
+        """
+        Handles requests for service items in the service manager
+
+        ``action``
+            The action to perform.
+        """
+        return json.dumps({'results': {'items': self._get_service_items()}}).encode()
 
     def service(self, action):
         """
@@ -441,17 +457,12 @@ class HttpRouter(object):
         ``action``
             The action to perform.
         """
-        event = 'servicemanager_%s' % action
-        if action == 'list':
-            return json.dumps({'results': {'items': self._get_service_items()}}).encode()
-        event += '_item'
+        event = 'servicemanager_%s_item' % action
         if self.request_data:
             try:
-#                print(json.loads(self.request_data['data']))
-                print(json.loads(self.request_data))
                 data = json.loads(self.request_data)['request']['id']
             except KeyError:
-                return self._http_bad_request()
+                return self.do_http_error()
             self.service_manager.emit(QtCore.SIGNAL(event), data)
         else:
             Registry().execute(event)
@@ -482,7 +493,7 @@ class HttpRouter(object):
         try:
             text = json.loads(self.request_data)['request']['text']
         except KeyError as ValueError:
-            return self._http_bad_request()
+            return self.do_http_error()
         text = urllib.parse.unquote(text)
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
@@ -498,11 +509,11 @@ class HttpRouter(object):
         try:
             id = json.loads(self.request_data)['request']['id']
         except KeyError as ValueError:
-            return self._http_bad_request()
+            return self.do_http_error()
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
             plugin.media_item.emit(QtCore.SIGNAL('%s_go_live' % plugin_name), [id, True])
-        return self._http_success()
+        return self.do_http_success()
 
     def add_to_service(self, plugin_name):
         """
@@ -511,12 +522,12 @@ class HttpRouter(object):
         try:
             id = json.loads(self.request_data)['request']['id']
         except KeyError as ValueError:
-            return self._http_bad_request()
+            return self.do_http_error()
         plugin = self.plugin_manager.get_plugin_by_name(plugin_name)
         if plugin.status == PluginStatus.Active and plugin.media_item:
             item_id = plugin.media_item.create_item_from_id(id)
             plugin.media_item.emit(QtCore.SIGNAL('%s_add_to_service' % plugin_name), [item_id, True])
-        self._http_success()
+        self.do_http_success()
 
     def _get_service_manager(self):
         """
@@ -557,4 +568,3 @@ class HttpRouter(object):
         return self._alerts_manager
 
     alerts_manager = property(_get_alerts_manager)
-

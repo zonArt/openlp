@@ -72,20 +72,14 @@ class CustomHandler(BaseHTTPRequestHandler, HttpRouter):
         """
         if self.path == '/favicon.ico':
             return
-        #print(self.headers['content-type'],self.headers['content-length'])
-        if self.headers['content-type'] == 'application/text':
-            length = int(self.headers['content-length'])
-            postvars = parse_qs(self.rfile.read(length), keep_blank_values=1)
-            for var in postvars:
-                print(var)
-                #{"request": {"id": 1}}
         if not hasattr(self, 'auth'):
             self.initialise()
         function, args = self.process_http_request(self.path)
         if not function:
             self.do_http_error()
             return
-        if function['secure']:
+        self.authorised = self.headers['Authorization'] is None
+        if function['secure'] and Settings().value(self.settings_section + '/authentication enabled'):
             if self.headers['Authorization'] is None:
                 self.do_authorisation()
                 self.wfile.write(bytes('no auth header received', 'UTF-8'))
