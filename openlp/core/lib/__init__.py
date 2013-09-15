@@ -370,8 +370,8 @@ def create_separated_list(stringlist):
             'Locale list separator: end') % (stringlist[-2], stringlist[-1])
         for index in reversed(list(range(1, len(stringlist) - 2))):
             merged = translate('OpenLP.core.lib', '%s, %s',
-                u'Locale list separator: middle') % (stringlist[index], merged)
-        return translate('OpenLP.core.lib', '%s, %s', u'Locale list separator: start') % (stringlist[0], merged)
+                'Locale list separator: middle') % (stringlist[index], merged)
+        return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (stringlist[0], merged)
 
 
 from .registry import Registry
