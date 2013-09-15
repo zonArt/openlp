@@ -118,7 +118,7 @@ class Ui_FormattingTagDialog(object):
         formatting_tag_dialog.setWindowTitle(translate('OpenLP.FormattingTagDialog', 'Configure Formatting Tags'))
         self.delete_button.setText(UiStrings().Delete)
         self.new_button.setText(UiStrings().New)
-        self.tag_table_widget_read_label.setText(translate('OpenLP.FormattingTagDialog', 'Static Formatting'))
+        self.tag_table_widget_read_label.setText(translate('OpenLP.FormattingTagDialog', 'Default Formatting'))
         self.tag_table_widget_read.horizontalHeaderItem(0).\
             setText(translate('OpenLP.FormattingTagDialog', 'Description'))
         self.tag_table_widget_read.horizontalHeaderItem(1).setText(translate('OpenLP.FormattingTagDialog', 'Tag'))

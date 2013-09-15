@@ -68,6 +68,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.button_box.rejected.connect(self.close)
         # Forces reloading of tags from openlp configuration.
         FormattingTags.load_tags()
+        self.is_deleting = False
 
     def exec_(self):
         """
@@ -105,6 +106,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         selected = self.tag_table_widget.currentRow()
         if selected != -1:
+            self.is_deleting = True
             self.tag_table_widget.removeRow(selected)
 
     def accept(self):
@@ -160,6 +162,9 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         This function processes all user edits in the table. It is called on each cell change.
         """
+        if self.is_deleting:
+            self.is_deleting = False
+            return
         # only process for editable rows
         if self.tag_table_widget.item(pre_row, 0):
             item = self.tag_table_widget.item(pre_row, pre_col)
