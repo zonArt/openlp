@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from presentationcontroller import PresentationController
-from messagelistener import MessageListener
-from mediaitem import PresentationMediaItem
-from presentationtab import PresentationTab
+from .presentationcontroller import PresentationController
+from .messagelistener import MessageListener
+from .mediaitem import PresentationMediaItem
+from .presentationtab import PresentationTab

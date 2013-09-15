@@ -35,22 +35,22 @@ from openlp.core.lib.ui import create_button_box
 
 class Ui_SongUsageDeleteDialog(object):
     def setupUi(self, song_usage_delete_dialog):
-        song_usage_delete_dialog.setObjectName(u'song_usage_delete_dialog')
+        song_usage_delete_dialog.setObjectName('song_usage_delete_dialog')
         song_usage_delete_dialog.resize(291, 243)
         self.vertical_layout = QtGui.QVBoxLayout(song_usage_delete_dialog)
         self.vertical_layout.setSpacing(8)
         self.vertical_layout.setContentsMargins(8, 8, 8, 8)
-        self.vertical_layout.setObjectName(u'vertical_layout')
+        self.vertical_layout.setObjectName('vertical_layout')
         self.delete_label = QtGui.QLabel(song_usage_delete_dialog)
-        self.delete_label.setObjectName(u'delete_label')
+        self.delete_label.setObjectName('delete_label')
         self.vertical_layout.addWidget(self.delete_label)
         self.delete_calendar = QtGui.QCalendarWidget(song_usage_delete_dialog)
         self.delete_calendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
         self.delete_calendar.setGridVisible(True)
         self.delete_calendar.setVerticalHeaderFormat(QtGui.QCalendarWidget.NoVerticalHeader)
-        self.delete_calendar.setObjectName(u'delete_calendar')
+        self.delete_calendar.setObjectName('delete_calendar')
         self.vertical_layout.addWidget(self.delete_calendar)
-        self.button_box = create_button_box(song_usage_delete_dialog, u'button_box', [u'cancel', u'ok'])
+        self.button_box = create_button_box(song_usage_delete_dialog, 'button_box', ['cancel', 'ok'])
         self.vertical_layout.addWidget(self.button_box)
         self.retranslateUi(song_usage_delete_dialog)
 

@@ -9,47 +9,47 @@ from mock import patch, MagicMock
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songshowplusimport import SongShowPlusImport
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), u'../../../resources/songshowplussongs'))
-SONG_TEST_DATA = {u'Amazing Grace.sbsong':
-        {u'title': u'Amazing Grace (Demonstration)',
-         u'authors': [u'John Newton', u'Edwin Excell', u'John P. Rees'],
-         u'copyright': u'Public Domain ',
-         u'ccli_number': 22025,
-         u'verses':
-             [(u'Amazing grace! How sweet the sound!\r\nThat saved a wretch like me!\r\n'
-               u'I once was lost, but now am found;\r\nWas blind, but now I see.', u'v1'),
-              (u'\'Twas grace that taught my heart to fear,\r\nAnd grace my fears relieved.\r\n'
-               u'How precious did that grace appear,\r\nThe hour I first believed.', u'v2'),
-              (u'The Lord has promised good to me,\r\nHis Word my hope secures.\r\n'
-               u'He will my shield and portion be\r\nAs long as life endures.', u'v3'),
-              (u'Thro\' many dangers, toils and snares\r\nI have already come.\r\n'
-               u'\'Tis grace that brought me safe thus far,\r\nAnd grace will lead me home.', u'v4'),
-              (u'When we\'ve been there ten thousand years,\r\nBright shining as the sun,\r\n'
-               u'We\'ve no less days to sing God\'s praise,\r\nThan when we first begun.', u'v5')],
-         u'topics': [u'Assurance', u'Grace', u'Praise', u'Salvation'],
-         u'comments': u'\n\n\n',
-         u'song_book_name': u'Demonstration Songs',
-         u'song_number': 0,
-         u'verse_order_list': []},
-    u'Beautiful Garden Of Prayer.sbsong':
-        {u'title': u'Beautiful Garden Of Prayer (Demonstration)',
-        u'authors': [u'Eleanor Allen Schroll', u'James H. Fillmore'],
-        u'copyright': u'Public Domain ',
-        u'ccli_number': 60252,
-        u'verses':
-           [(u'There\'s a garden where Jesus is waiting,\r\nThere\'s a place that is wondrously fair.\r\n'
-             u'For it glows with the light of His presence,\r\n\'Tis the beautiful garden of prayer.', u'v1'),
-            (u'There\'s a garden where Jesus is waiting,\r\nAnd I go with my burden and care.\r\n'
-             u'Just to learn from His lips, words of comfort,\r\nIn the beautiful garden of prayer.', u'v2'),
-            (u'There\'s a garden where Jesus is waiting,\r\nAnd He bids you to come meet Him there,\r\n'
-             u'Just to bow and receive a new blessing,\r\nIn the beautiful garden of prayer.', u'v3'),
-            (u'O the beautiful garden, the garden of prayer,\r\nO the beautiful garden of prayer.\r\n'
-             u'There my Savior awaits, and He opens the gates\r\nTo the beautiful garden of prayer.', u'c1')],
-        u'topics': [u'Devotion', u'Prayer'],
-        u'comments': u'',
-        u'song_book_name': u'',
-        u'song_number': 0,
-        u'verse_order_list': []}}
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../resources/songshowplussongs'))
+SONG_TEST_DATA = {'Amazing Grace.sbsong':
+        {'title': 'Amazing Grace (Demonstration)',
+         'authors': ['John Newton', 'Edwin Excell', 'John P. Rees'],
+         'copyright': 'Public Domain ',
+         'ccli_number': 22025,
+         'verses':
+             [('Amazing grace! How sweet the sound!\r\nThat saved a wretch like me!\r\n'
+               'I once was lost, but now am found;\r\nWas blind, but now I see.', 'v1'),
+              ('\'Twas grace that taught my heart to fear,\r\nAnd grace my fears relieved.\r\n'
+               'How precious did that grace appear,\r\nThe hour I first believed.', 'v2'),
+              ('The Lord has promised good to me,\r\nHis Word my hope secures.\r\n'
+               'He will my shield and portion be\r\nAs long as life endures.', 'v3'),
+              ('Thro\' many dangers, toils and snares\r\nI have already come.\r\n'
+               '\'Tis grace that brought me safe thus far,\r\nAnd grace will lead me home.', 'v4'),
+              ('When we\'ve been there ten thousand years,\r\nBright shining as the sun,\r\n'
+               'We\'ve no less days to sing God\'s praise,\r\nThan when we first begun.', 'v5')],
+         'topics': ['Assurance', 'Grace', 'Praise', 'Salvation'],
+         'comments': '\n\n\n',
+         'song_book_name': 'Demonstration Songs',
+         'song_number': 0,
+         'verse_order_list': []},
+    'Beautiful Garden Of Prayer.sbsong':
+        {'title': 'Beautiful Garden Of Prayer (Demonstration)',
+        'authors': ['Eleanor Allen Schroll', 'James H. Fillmore'],
+        'copyright': 'Public Domain ',
+        'ccli_number': 60252,
+        'verses':
+           [('There\'s a garden where Jesus is waiting,\r\nThere\'s a place that is wondrously fair.\r\n'
+             'For it glows with the light of His presence,\r\n\'Tis the beautiful garden of prayer.', 'v1'),
+            ('There\'s a garden where Jesus is waiting,\r\nAnd I go with my burden and care.\r\n'
+             'Just to learn from His lips, words of comfort,\r\nIn the beautiful garden of prayer.', 'v2'),
+            ('There\'s a garden where Jesus is waiting,\r\nAnd He bids you to come meet Him there,\r\n'
+             'Just to bow and receive a new blessing,\r\nIn the beautiful garden of prayer.', 'v3'),
+            ('O the beautiful garden, the garden of prayer,\r\nO the beautiful garden of prayer.\r\n'
+             'There my Savior awaits, and He opens the gates\r\nTo the beautiful garden of prayer.', 'c1')],
+        'topics': ['Devotion', 'Prayer'],
+        'comments': '',
+        'song_book_name': '',
+        'song_number': 0,
+        'verse_order_list': []}}
 
 
 class TestSongShowPlusImport(TestCase):
@@ -61,21 +61,21 @@ class TestSongShowPlusImport(TestCase):
         Test creating an instance of the SongShow Plus file importer
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
 
             # WHEN: An importer object is created
             importer = SongShowPlusImport(mocked_manager)
 
             # THEN: The importer object should not be None
-            self.assertIsNotNone(importer, u'Import should not be none')
+            self.assertIsNotNone(importer, 'Import should not be none')
 
     def invalid_import_source_test(self):
         """
         Test SongShowPlusImport.doImport handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
@@ -83,20 +83,20 @@ class TestSongShowPlusImport(TestCase):
             importer.stop_import_flag = True
 
             # WHEN: Import source is not a list
-            for source in [u'not a list', 0]:
+            for source in ['not a list', 0]:
                 importer.import_source = source
 
                 # THEN: doImport should return none and the progress bar maximum should not be set.
-                self.assertIsNone(importer.doImport(), u'doImport should return None when import_source is not a list')
+                self.assertIsNone(importer.doImport(), 'doImport should return None when import_source is not a list')
                 self.assertEquals(mocked_import_wizard.progress_bar.setMaximum.called, False,
-                                  u'setMaxium on import_wizard.progress_bar should not have been called')
+                                  'setMaxium on import_wizard.progress_bar should not have been called')
 
     def valid_import_source_test(self):
         """
         Test SongShowPlusImport.doImport handles different invalid import_source values
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             mocked_import_wizard = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
@@ -104,12 +104,12 @@ class TestSongShowPlusImport(TestCase):
             importer.stop_import_flag = True
 
             # WHEN: Import source is a list
-            importer.import_source = [u'List', u'of', u'files']
+            importer.import_source = ['List', 'of', 'files']
 
             # THEN: doImport should return none and the progress bar setMaximum should be called with the length of
             #       import_source.
             self.assertIsNone(importer.doImport(),
-                u'doImport should return None when import_source is a list and stop_import_flag is True')
+                'doImport should return None when import_source is a list and stop_import_flag is True')
             mocked_import_wizard.progress_bar.setMaximum.assert_called_with(len(importer.import_source))
 
     def to_openlp_verse_tag_test(self):
@@ -117,26 +117,26 @@ class TestSongShowPlusImport(TestCase):
         Test to_openlp_verse_tag method by simulating adding a verse
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
 
             # WHEN: Supplied with the following arguments replicating verses being added
-            test_values = [(u'Verse 1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse 2', VerseType.tags[VerseType.Verse] + u'2'),
-                (u'verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'chorus 1', VerseType.tags[VerseType.Chorus] + u'1'),
-                (u'bridge 1', VerseType.tags[VerseType.Bridge] + u'1'),
-                (u'pre-chorus 1', VerseType.tags[VerseType.PreChorus] + u'1'),
-                (u'different 1', VerseType.tags[VerseType.Other] + u'1'),
-                (u'random 1', VerseType.tags[VerseType.Other] + u'2')]
+            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
+                ('verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('chorus 1', VerseType.tags[VerseType.Chorus] + '1'),
+                ('bridge 1', VerseType.tags[VerseType.Bridge] + '1'),
+                ('pre-chorus 1', VerseType.tags[VerseType.PreChorus] + '1'),
+                ('different 1', VerseType.tags[VerseType.Other] + '1'),
+                ('random 1', VerseType.tags[VerseType.Other] + '2')]
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
                 self.assertEquals(importer.to_openlp_verse_tag(original_tag), openlp_tag,
-                    u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
+                    'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))
 
     def to_openlp_verse_tag_verse_order_test(self):
@@ -144,27 +144,27 @@ class TestSongShowPlusImport(TestCase):
         Test to_openlp_verse_tag method by simulating adding a verse to the verse order
         """
         # GIVEN: A mocked out SongImport class, and a mocked out "manager"
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             mocked_manager = MagicMock()
             importer = SongShowPlusImport(mocked_manager)
 
             # WHEN: Supplied with the following arguments replicating a verse order being added
-            test_values = [(u'Verse 1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse 2', VerseType.tags[VerseType.Verse] + u'2'),
-                (u'verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'Verse1', VerseType.tags[VerseType.Verse] + u'1'),
-                (u'chorus 1', VerseType.tags[VerseType.Chorus] + u'1'),
-                (u'bridge 1', VerseType.tags[VerseType.Bridge] + u'1'),
-                (u'pre-chorus 1', VerseType.tags[VerseType.PreChorus] + u'1'),
-                (u'different 1', VerseType.tags[VerseType.Other] + u'1'),
-                (u'random 1', VerseType.tags[VerseType.Other] + u'2'),
-                (u'unused 2', None)]
+            test_values = [('Verse 1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse 2', VerseType.tags[VerseType.Verse] + '2'),
+                ('verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse', VerseType.tags[VerseType.Verse] + '1'),
+                ('Verse1', VerseType.tags[VerseType.Verse] + '1'),
+                ('chorus 1', VerseType.tags[VerseType.Chorus] + '1'),
+                ('bridge 1', VerseType.tags[VerseType.Bridge] + '1'),
+                ('pre-chorus 1', VerseType.tags[VerseType.PreChorus] + '1'),
+                ('different 1', VerseType.tags[VerseType.Other] + '1'),
+                ('random 1', VerseType.tags[VerseType.Other] + '2'),
+                ('unused 2', None)]
 
             # THEN: The returned value should should correlate with the input arguments
             for original_tag, openlp_tag in test_values:
                 self.assertEquals(importer.to_openlp_verse_tag(original_tag, ignore_unique=True), openlp_tag,
-                    u'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
+                    'SongShowPlusImport.to_openlp_verse_tag should return "%s" when called with "%s"'
                     % (openlp_tag, original_tag))
 
     def file_import_test(self):
@@ -174,7 +174,7 @@ class TestSongShowPlusImport(TestCase):
 
         # GIVEN: Test files with a mocked out SongImport class, a mocked out "manager", a mocked out "import_wizard",
         #       and mocked out "author", "add_copyright", "add_verse", "finish" methods.
-        with patch(u'openlp.plugins.songs.lib.songshowplusimport.SongImport'):
+        with patch('openlp.plugins.songs.lib.songshowplusimport.SongImport'):
             for song_file in SONG_TEST_DATA:
                 mocked_manager = MagicMock()
                 mocked_import_wizard = MagicMock()
@@ -194,42 +194,42 @@ class TestSongShowPlusImport(TestCase):
 
                 # WHEN: Importing each file
                 importer.import_source = [os.path.join(TEST_PATH, song_file)]
-                title = SONG_TEST_DATA[song_file][u'title']
-                author_calls = SONG_TEST_DATA[song_file][u'authors']
-                song_copyright = SONG_TEST_DATA[song_file][u'copyright']
-                ccli_number = SONG_TEST_DATA[song_file][u'ccli_number']
-                add_verse_calls = SONG_TEST_DATA[song_file][u'verses']
-                topics = SONG_TEST_DATA[song_file][u'topics']
-                comments = SONG_TEST_DATA[song_file][u'comments']
-                song_book_name = SONG_TEST_DATA[song_file][u'song_book_name']
-                song_number = SONG_TEST_DATA[song_file][u'song_number']
-                verse_order_list = SONG_TEST_DATA[song_file][u'verse_order_list']
+                title = SONG_TEST_DATA[song_file]['title']
+                author_calls = SONG_TEST_DATA[song_file]['authors']
+                song_copyright = SONG_TEST_DATA[song_file]['copyright']
+                ccli_number = SONG_TEST_DATA[song_file]['ccli_number']
+                add_verse_calls = SONG_TEST_DATA[song_file]['verses']
+                topics = SONG_TEST_DATA[song_file]['topics']
+                comments = SONG_TEST_DATA[song_file]['comments']
+                song_book_name = SONG_TEST_DATA[song_file]['song_book_name']
+                song_number = SONG_TEST_DATA[song_file]['song_number']
+                verse_order_list = SONG_TEST_DATA[song_file]['verse_order_list']
 
                 # THEN: doImport should return none, the song data should be as expected, and finish should have been
                 #       called.
-                self.assertIsNone(importer.doImport(), u'doImport should return None when it has completed')
-                self.assertEquals(importer.title, title, u'title for %s should be "%s"' % (song_file, title))
+                self.assertIsNone(importer.doImport(), 'doImport should return None when it has completed')
+                self.assertEquals(importer.title, title, 'title for %s should be "%s"' % (song_file, title))
                 for author in author_calls:
                     mocked_parse_author.assert_any_call(author)
                 if song_copyright:
                     mocked_add_copyright.assert_called_with(song_copyright)
                 if ccli_number:
-                    self.assertEquals(importer.ccliNumber, ccli_number, u'ccliNumber for %s should be %s'
+                    self.assertEquals(importer.ccliNumber, ccli_number, 'ccliNumber for %s should be %s'
                         % (song_file, ccli_number))
                 for verse_text, verse_tag in add_verse_calls:
                     mocked_add_verse.assert_any_call(verse_text, verse_tag)
                 if topics:
-                    self.assertEquals(importer.topics, topics, u'topics for %s should be %s' % (song_file, topics))
+                    self.assertEquals(importer.topics, topics, 'topics for %s should be %s' % (song_file, topics))
                 if comments:
-                    self.assertEquals(importer.comments, comments, u'comments for %s should be "%s"'
+                    self.assertEquals(importer.comments, comments, 'comments for %s should be "%s"'
                         % (song_file, comments))
                 if song_book_name:
-                    self.assertEquals(importer.songBookName, song_book_name, u'songBookName for %s should be "%s"'
+                    self.assertEquals(importer.songBookName, song_book_name, 'songBookName for %s should be "%s"'
                         % (song_file, song_book_name))
                 if song_number:
-                    self.assertEquals(importer.songNumber, song_number, u'songNumber for %s should be %s'
+                    self.assertEquals(importer.songNumber, song_number, 'songNumber for %s should be %s'
                         % (song_file, song_number))
                 if verse_order_list:
-                    self.assertEquals(importer.verseOrderList, [], u'verseOrderList for %s should be %s'
+                    self.assertEquals(importer.verseOrderList, [], 'verseOrderList for %s should be %s'
                         % (song_file, verse_order_list))
                 mocked_finish.assert_called_with()

@@ -41,7 +41,6 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.lib import Plugin, StringContent, UiStrings, build_icon, translate
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action
-from openlp.core.utils import get_filesystem_encoding
 from openlp.core.utils.actions import ActionList
 from openlp.plugins.songs.lib import clean_song, upgrade
 from openlp.plugins.songs.lib.db import init_schema, Song
@@ -55,15 +54,15 @@ from openlp.plugins.songs.forms.duplicatesongremovalform import DuplicateSongRem
 
 log = logging.getLogger(__name__)
 __default_settings__ = {
-        u'songs/db type': u'sqlite',
-        u'songs/last search type': SongSearch.Entire,
-        u'songs/last import type': SongFormat.OpenLyrics,
-        u'songs/update service on edit': False,
-        u'songs/search as type': False,
-        u'songs/add song from service': True,
-        u'songs/display songbar': True,
-        u'songs/last directory import': u'',
-        u'songs/last directory export': u''
+        'songs/db type': 'sqlite',
+        'songs/last search type': SongSearch.Entire,
+        'songs/last import type': SongFormat.OpenLyrics,
+        'songs/update service on edit': False,
+        'songs/search as type': False,
+        'songs/add song from service': True,
+        'songs/display songbar': True,
+        'songs/last directory import': '',
+        'songs/last directory export': ''
     }
 
 
@@ -75,16 +74,16 @@ class SongsPlugin(Plugin):
     specified. Authors, topics and song books can be assigned to songs
     as well.
     """
-    log.info(u'Song Plugin loaded')
+    log.info('Song Plugin loaded')
 
     def __init__(self):
         """
         Create and set up the Songs plugin.
         """
-        Plugin.__init__(self, u'songs', __default_settings__, SongMediaItem, SongsTab)
-        self.manager = Manager(u'songs', init_schema, upgrade_mod=upgrade)
+        super(SongsPlugin, self).__init__('songs', __default_settings__, SongMediaItem, SongsTab)
+        self.manager = Manager('songs', init_schema, upgrade_mod=upgrade)
         self.weight = -10
-        self.icon_path = u':/plugins/plugin_songs.png'
+        self.icon_path = ':/plugins/plugin_songs.png'
         self.icon = build_icon(self.icon_path)
 
     def check_pre_conditions(self):
@@ -94,8 +93,8 @@ class SongsPlugin(Plugin):
         return self.manager.session is not None
 
     def initialise(self):
-        log.info(u'Songs Initialising')
-        Plugin.initialise(self)
+        log.info('Songs Initialising')
+        super(SongsPlugin, self).initialise()
         self.song_import_item.setVisible(True)
         self.song_export_item.setVisible(True)
         self.tools_reindex_item.setVisible(True)
@@ -116,7 +115,7 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.song_import_item = create_action(import_menu, u'songImportItem',
+        self.song_import_item = create_action(import_menu, 'songImportItem',
             text=translate('SongsPlugin', '&Song'),
             tooltip=translate('SongsPlugin', 'Import songs using the import wizard.'),
             triggers=self.on_song_import_item_clicked)
@@ -132,7 +131,7 @@ class SongsPlugin(Plugin):
             use it as their parent.
         """
         # Main song import menu item - will eventually be the only one
-        self.song_export_item = create_action(export_menu, u'songExportItem',
+        self.song_export_item = create_action(export_menu, 'songExportItem',
             text=translate('SongsPlugin', '&Song'),
             tooltip=translate('SongsPlugin', 'Exports songs using the export wizard.'),
             triggers=self.on_song_export_item_clicked)
@@ -147,14 +146,14 @@ class SongsPlugin(Plugin):
             The actual **Tools** menu item, so that your actions can
             use it as their parent.
         """
-        log.info(u'add tools menu')
-        self.tools_reindex_item = create_action(tools_menu, u'toolsReindexItem',
+        log.info('add tools menu')
+        self.tools_reindex_item = create_action(tools_menu, 'toolsReindexItem',
             text=translate('SongsPlugin', '&Re-index Songs'),
-            icon=u':/plugins/plugin_songs.png',
+            icon=':/plugins/plugin_songs.png',
             statustip=translate('SongsPlugin', 'Re-index the songs database to improve searching and ordering.'),
             visible=False, triggers=self.on_tools_reindex_item_triggered)
         tools_menu.addAction(self.tools_reindex_item)
-        self.tools_find_duplicates = create_action(tools_menu, u'toolsFindDuplicates',
+        self.tools_find_duplicates = create_action(tools_menu, 'toolsFindDuplicates',
             text=translate('SongsPlugin', 'Find &Duplicate Songs'),
             statustip=translate('SongsPlugin',
             'Find and remove duplicate songs in the song database.'),
@@ -224,7 +223,7 @@ class SongsPlugin(Plugin):
             self.manager.save_object(song)
 
     def importSongs(self, format, **kwargs):
-        class_ = SongFormat.get(format, u'class')
+        class_ = SongFormat.get(format, 'class')
         importer = class_(self.manager, **kwargs)
         importer.register(self.media_item.import_wizard)
         return importer
@@ -235,23 +234,23 @@ class SongsPlugin(Plugin):
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
-            u'singular': translate('SongsPlugin', 'Song', 'name singular'),
-            u'plural': translate('SongsPlugin', 'Songs', 'name plural')
+            'singular': translate('SongsPlugin', 'Song', 'name singular'),
+            'plural': translate('SongsPlugin', 'Songs', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.text_strings[StringContent.VisibleName] = {
-            u'title': translate('SongsPlugin', 'Songs', 'container title')
+            'title': translate('SongsPlugin', 'Songs', 'container title')
         }
         # Middle Header Bar
         tooltips = {
-            u'load': u'',
-            u'import': u'',
-            u'new': translate('SongsPlugin', 'Add a new song.'),
-            u'edit': translate('SongsPlugin', 'Edit the selected song.'),
-            u'delete': translate('SongsPlugin', 'Delete the selected song.'),
-            u'preview': translate('SongsPlugin', 'Preview the selected song.'),
-            u'live': translate('SongsPlugin', 'Send the selected song live.'),
-            u'service': translate('SongsPlugin', 'Add the selected song to the service.')
+            'load': '',
+            'import': '',
+            'new': translate('SongsPlugin', 'Add a new song.'),
+            'edit': translate('SongsPlugin', 'Edit the selected song.'),
+            'delete': translate('SongsPlugin', 'Delete the selected song.'),
+            'preview': translate('SongsPlugin', 'Preview the selected song.'),
+            'live': translate('SongsPlugin', 'Send the selected song live.'),
+            'service': translate('SongsPlugin', 'Add the selected song to the service.')
         }
         self.set_plugin_ui_text_strings(tooltips)
 
@@ -263,13 +262,13 @@ class SongsPlugin(Plugin):
         self.application.process_events()
         self.on_tools_reindex_item_triggered()
         self.application.process_events()
-        db_dir = unicode(os.path.join(unicode(gettempdir(), get_filesystem_encoding()), u'openlp'))
+        db_dir = os.path.join(gettempdir(), 'openlp')
         if not os.path.exists(db_dir):
             return
         song_dbs = []
         song_count = 0
         for sfile in os.listdir(db_dir):
-            if sfile.startswith(u'songs_') and sfile.endswith(u'.sqlite'):
+            if sfile.startswith('songs_') and sfile.endswith('.sqlite'):
                 self.application.process_events()
                 song_dbs.append(os.path.join(db_dir, sfile))
                 song_count += self._countSongs(os.path.join(db_dir, sfile))
@@ -296,7 +295,7 @@ class SongsPlugin(Plugin):
         """
         Time to tidy up on exit
         """
-        log.info(u'Songs Finalising')
+        log.info('Songs Finalising')
         self.new_service_created()
         # Clean up files and connections
         self.manager.finalise()
@@ -309,7 +308,7 @@ class SongsPlugin(Plugin):
         action_list.remove_action(self.song_export_item, UiStrings().Export)
         action_list.remove_action(self.tools_reindex_item, UiStrings().Tools)
         action_list.remove_action(self.tools_find_duplicates, UiStrings().Tools)
-        Plugin.finalise(self)
+        super(SongsPlugin, self).finalise()
 
     def new_service_created(self):
         """
@@ -325,7 +324,7 @@ class SongsPlugin(Plugin):
         """
         connection = sqlite3.connect(db_file)
         cursor = connection.cursor()
-        cursor.execute(u'SELECT COUNT(id) AS song_count FROM songs')
+        cursor.execute('SELECT COUNT(id) AS song_count FROM songs')
         song_count = cursor.fetchone()[0]
         connection.close()
         try:

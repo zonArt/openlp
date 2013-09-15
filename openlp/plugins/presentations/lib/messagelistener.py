@@ -42,7 +42,7 @@ class Controller(object):
     This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
     correct presentation handlers.
     """
-    log.info(u'Controller loaded')
+    log.info('Controller loaded')
 
     def __init__(self, live):
         """
@@ -51,14 +51,14 @@ class Controller(object):
         self.is_live = live
         self.doc = None
         self.hide_mode = None
-        log.info(u'%s controller loaded' % live)
+        log.info('%s controller loaded' % live)
 
     def add_handler(self, controller, file, hide_mode, slide_no):
         """
         Add a handler, which is an instance of a presentation and slidecontroller combination. If the slidecontroller
         has a display then load the presentation.
         """
-        log.debug(u'Live = %s, add_handler %s' % (self.is_live, file))
+        log.debug('Live = %s, add_handler %s' % (self.is_live, file))
         self.controller = controller
         if self.doc is not None:
             self.shutdown()
@@ -71,7 +71,7 @@ class Controller(object):
         self.hide_mode = hide_mode
         if self.is_live:
             if hide_mode == HideMode.Screen:
-                Registry().execute(u'live_display_hide', HideMode.Screen)
+                Registry().execute('live_display_hide', HideMode.Screen)
                 self.stop()
             elif hide_mode == HideMode.Theme:
                 self.blank(hide_mode)
@@ -79,7 +79,7 @@ class Controller(object):
                 self.blank(hide_mode)
             else:
                 self.doc.start_presentation()
-                Registry().execute(u'live_display_hide', HideMode.Screen)
+                Registry().execute('live_display_hide', HideMode.Screen)
                 self.doc.slidenumber = 1
                 if slide_no > 1:
                     self.slide(slide_no)
@@ -88,14 +88,14 @@ class Controller(object):
         """
         Active the presentation, and show it on the screen. Use the last slide number.
         """
-        log.debug(u'Live = %s, activate' % self.is_live)
+        log.debug('Live = %s, activate' % self.is_live)
         if not self.doc:
             return False
         if self.doc.is_active():
             return True
         if not self.doc.is_loaded():
             if not self.doc.load_presentation():
-                log.warn(u'Failed to activate %s' % self.doc.filepath)
+                log.warn('Failed to activate %s' % self.doc.filepath)
                 return False
         if self.is_live:
             self.doc.start_presentation()
@@ -106,14 +106,14 @@ class Controller(object):
         if self.doc.is_active():
             return True
         else:
-            log.warn(u'Failed to activate %s' % self.doc.filepath)
+            log.warn('Failed to activate %s' % self.doc.filepath)
             return False
 
     def slide(self, slide):
         """
         Go to a specific slide
         """
-        log.debug(u'Live = %s, slide' % self.is_live)
+        log.debug('Live = %s, slide' % self.is_live)
         if not self.doc:
             return
         if not self.is_live:
@@ -131,7 +131,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the first slide.
         """
-        log.debug(u'Live = %s, first' % self.is_live)
+        log.debug('Live = %s, first' % self.is_live)
         if not self.doc:
             return
         if not self.is_live:
@@ -149,7 +149,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the last slide.
         """
-        log.debug(u'Live = %s, last' % self.is_live)
+        log.debug('Live = %s, last' % self.is_live)
         if not self.doc:
             return
         if not self.is_live:
@@ -167,7 +167,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the next slide event.
         """
-        log.debug(u'Live = %s, next' % self.is_live)
+        log.debug('Live = %s, next' % self.is_live)
         if not self.doc:
             return
         if not self.is_live:
@@ -192,7 +192,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers the previous slide event.
         """
-        log.debug(u'Live = %s, previous' % self.is_live)
+        log.debug('Live = %s, previous' % self.is_live)
         if not self.doc:
             return
         if not self.is_live:
@@ -213,7 +213,7 @@ class Controller(object):
         """
         Based on the handler passed at startup triggers slide show to shut down.
         """
-        log.debug(u'Live = %s, shutdown' % self.is_live)
+        log.debug('Live = %s, shutdown' % self.is_live)
         if not self.doc:
             return
         self.doc.close_presentation()
@@ -223,7 +223,7 @@ class Controller(object):
         """
         Instruct the controller to blank the presentation.
         """
-        log.debug(u'Live = %s, blank' % self.is_live)
+        log.debug('Live = %s, blank' % self.is_live)
         self.hide_mode = hide_mode
         if not self.doc:
             return
@@ -234,7 +234,7 @@ class Controller(object):
                 return
             if not self.doc.is_active():
                 return
-            Registry().execute(u'live_display_hide', HideMode.Theme)
+            Registry().execute('live_display_hide', HideMode.Theme)
         elif hide_mode == HideMode.Blank:
             if not self.activate():
                 return
@@ -244,7 +244,7 @@ class Controller(object):
         """
         Instruct the controller to stop and hide the presentation.
         """
-        log.debug(u'Live = %s, stop' % self.is_live)
+        log.debug('Live = %s, stop' % self.is_live)
         self.hide_mode = HideMode.Screen
         if not self.doc:
             return
@@ -260,7 +260,7 @@ class Controller(object):
         """
         Instruct the controller to unblank the presentation.
         """
-        log.debug(u'Live = %s, unblank' % self.is_live)
+        log.debug('Live = %s, unblank' % self.is_live)
         self.hide_mode = None
         if not self.doc:
             return
@@ -271,7 +271,7 @@ class Controller(object):
         if self.doc.slidenumber and self.doc.slidenumber != self.doc.get_slide_number():
             self.doc.goto_slide(self.doc.slidenumber)
         self.doc.unblank_screen()
-        Registry().execute(u'live_display_hide', HideMode.Screen)
+        Registry().execute('live_display_hide', HideMode.Screen)
 
     def poll(self):
         if not self.doc:
@@ -284,7 +284,7 @@ class MessageListener(object):
     This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
     correct presentation handlers
     """
-    log.info(u'Message Listener loaded')
+    log.info('Message Listener loaded')
 
     def __init__(self, media_item):
         self.controllers = media_item.controllers
@@ -292,16 +292,16 @@ class MessageListener(object):
         self.preview_handler = Controller(False)
         self.live_handler = Controller(True)
         # messages are sent from core.ui.slidecontroller
-        Registry().register_function(u'presentations_start', self.startup)
-        Registry().register_function(u'presentations_stop', self.shutdown)
-        Registry().register_function(u'presentations_hide', self.hide)
-        Registry().register_function(u'presentations_first', self.first)
-        Registry().register_function(u'presentations_previous', self.previous)
-        Registry().register_function(u'presentations_next', self.next)
-        Registry().register_function(u'presentations_last', self.last)
-        Registry().register_function(u'presentations_slide', self.slide)
-        Registry().register_function(u'presentations_blank', self.blank)
-        Registry().register_function(u'presentations_unblank', self.unblank)
+        Registry().register_function('presentations_start', self.startup)
+        Registry().register_function('presentations_stop', self.shutdown)
+        Registry().register_function('presentations_hide', self.hide)
+        Registry().register_function('presentations_first', self.first)
+        Registry().register_function('presentations_previous', self.previous)
+        Registry().register_function('presentations_next', self.next)
+        Registry().register_function('presentations_last', self.last)
+        Registry().register_function('presentations_slide', self.slide)
+        Registry().register_function('presentations_blank', self.blank)
+        Registry().register_function('presentations_unblank', self.unblank)
         self.timer = QtCore.QTimer()
         self.timer.setInterval(500)
         self.timer.timeout.connect(self.timeout)
@@ -310,7 +310,7 @@ class MessageListener(object):
         """
         Start of new presentation. Save the handler as any new presentations start here
         """
-        log.debug(u'Startup called with message %s' % message)
+        log.debug('Startup called with message %s' % message)
         is_live = message[1]
         item = message[0]
         hide_mode = message[2]

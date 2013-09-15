@@ -36,7 +36,7 @@ from PyQt4 import QtGui
 from openlp.core.lib import PluginStatus, Registry, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
-from settingsdialog import Ui_SettingsDialog
+from .settingsdialog import Ui_SettingsDialog
 
 log = logging.getLogger(__name__)
 
@@ -49,9 +49,9 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Initialise the settings form
         """
-        Registry().register(u'settings_form', self)
-        Registry().register_function(u'bootstrap_post_set_up', self.post_set_up)
-        QtGui.QDialog.__init__(self, parent)
+        Registry().register('settings_form', self)
+        Registry().register_function('bootstrap_post_set_up', self.post_set_up)
+        super(SettingsForm, self).__init__(parent)
         self.processes = []
         self.setupUi(self)
 
@@ -80,7 +80,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Add a tab to the form at a specific location
         """
-        log.debug(u'Inserting %s tab' % tab.tab_title)
+        log.debug('Inserting %s tab' % tab.tab_title)
         # add the tab to get it to display in the correct part of the screen
         pos = self.stacked_layout.addWidget(tab)
         if is_active:
@@ -96,12 +96,12 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Process the form saving the settings
         """
-        log.debug(u'Processing settings exit')
+        log.debug('Processing settings exit')
         for tabIndex in range(self.stacked_layout.count()):
             self.stacked_layout.widget(tabIndex).save()
         # if the display of image background are changing we need to regenerate the image cache
-        if u'images_config_updated' in self.processes or u'config_screen_changed' in self.processes:
-            self.register_post_process(u'images_regenerate')
+        if 'images_config_updated' in self.processes or 'config_screen_changed' in self.processes:
+            self.register_post_process('images_regenerate')
         # Now lets process all the post save handlers
         while self.processes:
             Registry().execute(self.processes.pop(0))
@@ -157,8 +157,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)
@@ -167,8 +167,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Adds the plugin manager to the class dynamically
         """
-        if not hasattr(self, u'_service_manager'):
-            self._service_manager = Registry().get(u'service_manager')
+        if not hasattr(self, '_service_manager'):
+            self._service_manager = Registry().get('service_manager')
         return self._service_manager
 
     service_manager = property(_get_service_manager)
@@ -177,8 +177,8 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         """
         Adds the plugin manager to the class dynamically
         """
-        if not hasattr(self, u'_plugin_manager'):
-            self._plugin_manager = Registry().get(u'plugin_manager')
+        if not hasattr(self, '_plugin_manager'):
+            self._plugin_manager = Registry().get('plugin_manager')
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)

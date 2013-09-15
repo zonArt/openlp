@@ -76,18 +76,18 @@ class MediaManagerItem(QtGui.QWidget):
         that is performed automatically by OpenLP when necessary. If this method is not defined, a default will be used
         (treat the filename as an image).
     """
-    log.info(u'Media Item loaded')
+    log.info('Media Item loaded')
 
     def __init__(self, parent=None, plugin=None):
         """
         Constructor to create the media manager item.
         """
-        QtGui.QWidget.__init__(self)
+        super(MediaManagerItem, self).__init__()
         self.hide()
         self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
         self.plugin = plugin
         visible_title = self.plugin.get_string(StringContent.VisibleName)
-        self.title = unicode(visible_title[u'title'])
+        self.title = str(visible_title['title'])
         Registry().register(self.plugin.name, self)
         self.settings_section = self.plugin.name
         self.toolbar = None
@@ -103,8 +103,8 @@ class MediaManagerItem(QtGui.QWidget):
         self.retranslateUi()
         self.auto_select_id = -1
         # Need to use event as called across threads and UI is updated
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_go_live' % self.plugin.name), self.go_live_remote)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'%s_add_to_service' % self.plugin.name), self.add_to_service_remote)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('%s_go_live' % self.plugin.name), self.go_live_remote)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('%s_add_to_service' % self.plugin.name), self.add_to_service_remote)
 
     def required_icons(self):
         """
@@ -156,34 +156,34 @@ class MediaManagerItem(QtGui.QWidget):
         toolbar_actions = []
         ## Import Button ##
         if self.has_import_icon:
-            toolbar_actions.append([u'Import', StringContent.Import,
-                u':/general/general_import.png', self.on_import_click])
+            toolbar_actions.append(['Import', StringContent.Import,
+                ':/general/general_import.png', self.on_import_click])
         ## Load Button ##
         if self.has_file_icon:
-            toolbar_actions.append([u'Load', StringContent.Load, u':/general/general_open.png', self.on_file_click])
+            toolbar_actions.append(['Load', StringContent.Load, ':/general/general_open.png', self.on_file_click])
         ## New Button ##
         if self.has_new_icon:
-            toolbar_actions.append([u'New', StringContent.New, u':/general/general_new.png', self.on_new_click])
+            toolbar_actions.append(['New', StringContent.New, ':/general/general_new.png', self.on_new_click])
         ## Edit Button ##
         if self.has_edit_icon:
-            toolbar_actions.append([u'Edit', StringContent.Edit, u':/general/general_edit.png', self.on_edit_click])
+            toolbar_actions.append(['Edit', StringContent.Edit, ':/general/general_edit.png', self.on_edit_click])
         ## Delete Button ##
         if self.has_delete_icon:
-            toolbar_actions.append([u'Delete', StringContent.Delete,
-                u':/general/general_delete.png', self.on_delete_click])
+            toolbar_actions.append(['Delete', StringContent.Delete,
+                ':/general/general_delete.png', self.on_delete_click])
         ## Preview ##
-        toolbar_actions.append([u'Preview', StringContent.Preview,
-            u':/general/general_preview.png', self.on_preview_click])
+        toolbar_actions.append(['Preview', StringContent.Preview,
+            ':/general/general_preview.png', self.on_preview_click])
         ## Live Button ##
-        toolbar_actions.append([u'Live', StringContent.Live, u':/general/general_live.png', self.on_live_click])
+        toolbar_actions.append(['Live', StringContent.Live, ':/general/general_live.png', self.on_live_click])
         ## Add to service Button ##
-        toolbar_actions.append([u'Service', StringContent.Service, u':/general/general_add.png', self.on_add_click])
+        toolbar_actions.append(['Service', StringContent.Service, ':/general/general_add.png', self.on_add_click])
         for action in toolbar_actions:
             if action[0] == StringContent.Preview:
                 self.toolbar.addSeparator()
-            self.toolbar.add_toolbar_action(u'%s%sAction' % (self.plugin.name, action[0]),
-                text=self.plugin.get_string(action[1])[u'title'], icon=action[2],
-                tooltip=self.plugin.get_string(action[1])[u'tooltip'],
+            self.toolbar.add_toolbar_action('%s%sAction' % (self.plugin.name, action[0]),
+                text=self.plugin.get_string(action[1])['title'], icon=action[2],
+                tooltip=self.plugin.get_string(action[1])['tooltip'],
                 triggers=action[3])
 
     def add_list_view_to_toolbar(self):
@@ -195,47 +195,47 @@ class MediaManagerItem(QtGui.QWidget):
         self.list_view.setSpacing(1)
         self.list_view.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.list_view.setAlternatingRowColors(True)
-        self.list_view.setObjectName(u'%sListView' % self.plugin.name)
+        self.list_view.setObjectName('%sListView' % self.plugin.name)
         # Add to page_layout
         self.page_layout.addWidget(self.list_view)
         # define and add the context menu
         self.list_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if self.has_edit_icon:
             create_widget_action(self.list_view,
-                text=self.plugin.get_string(StringContent.Edit)[u'title'],
-                icon=u':/general/general_edit.png',
+                text=self.plugin.get_string(StringContent.Edit)['title'],
+                icon=':/general/general_edit.png',
                 triggers=self.on_edit_click)
             create_widget_action(self.list_view, separator=True)
         if self.has_delete_icon:
             create_widget_action(self.list_view,
-                u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
-                text=self.plugin.get_string(StringContent.Delete)[u'title'],
-                icon=u':/general/general_delete.png',
+                'listView%s%sItem' % (self.plugin.name.title(), StringContent.Delete.title()),
+                text=self.plugin.get_string(StringContent.Delete)['title'],
+                icon=':/general/general_delete.png',
                 can_shortcuts=True, triggers=self.on_delete_click)
             create_widget_action(self.list_view, separator=True)
         create_widget_action(self.list_view,
-            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
-            text=self.plugin.get_string(StringContent.Preview)[u'title'],
-            icon=u':/general/general_preview.png',
+            'listView%s%sItem' % (self.plugin.name.title(), StringContent.Preview.title()),
+            text=self.plugin.get_string(StringContent.Preview)['title'],
+            icon=':/general/general_preview.png',
             can_shortcuts=True,
             triggers=self.on_preview_click)
         create_widget_action(self.list_view,
-            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Live.title()),
-            text=self.plugin.get_string(StringContent.Live)[u'title'],
-            icon=u':/general/general_live.png',
+            'listView%s%sItem' % (self.plugin.name.title(), StringContent.Live.title()),
+            text=self.plugin.get_string(StringContent.Live)['title'],
+            icon=':/general/general_live.png',
             can_shortcuts=True,
             triggers=self.on_live_click)
         create_widget_action(self.list_view,
-            u'listView%s%sItem' % (self.plugin.name.title(), StringContent.Service.title()),
+            'listView%s%sItem' % (self.plugin.name.title(), StringContent.Service.title()),
             can_shortcuts=True,
-            text=self.plugin.get_string(StringContent.Service)[u'title'],
-            icon=u':/general/general_add.png',
+            text=self.plugin.get_string(StringContent.Service)['title'],
+            icon=':/general/general_add.png',
             triggers=self.on_add_click)
         if self.add_to_service_item:
             create_widget_action(self.list_view, separator=True)
             create_widget_action(self.list_view,
                 text=translate('OpenLP.MediaManagerItem', '&Add to selected Service Item'),
-                icon=u':/general/general_add.png',
+                icon=':/general/general_add.png',
                 triggers=self.on_add_edit_click)
         self.add_custom_context_actions()
         # Create the context menu and add all actions from the list_view.
@@ -250,23 +250,23 @@ class MediaManagerItem(QtGui.QWidget):
         Creates a search field with button and related signal handling.
         """
         self.search_widget = QtGui.QWidget(self)
-        self.search_widget.setObjectName(u'search_widget')
+        self.search_widget.setObjectName('search_widget')
         self.search_layout = QtGui.QVBoxLayout(self.search_widget)
-        self.search_layout.setObjectName(u'search_layout')
+        self.search_layout.setObjectName('search_layout')
         self.search_text_layout = QtGui.QFormLayout()
-        self.search_text_layout.setObjectName(u'search_text_layout')
+        self.search_text_layout.setObjectName('search_text_layout')
         self.search_text_label = QtGui.QLabel(self.search_widget)
-        self.search_text_label.setObjectName(u'search_text_label')
+        self.search_text_label.setObjectName('search_text_label')
         self.search_text_edit = SearchEdit(self.search_widget)
-        self.search_text_edit.setObjectName(u'search_text_edit')
+        self.search_text_edit.setObjectName('search_text_edit')
         self.search_text_label.setBuddy(self.search_text_edit)
         self.search_text_layout.addRow(self.search_text_label, self.search_text_edit)
         self.search_layout.addLayout(self.search_text_layout)
         self.search_button_layout = QtGui.QHBoxLayout()
-        self.search_button_layout.setObjectName(u'search_button_layout')
+        self.search_button_layout.setObjectName('search_button_layout')
         self.search_button_layout.addStretch()
         self.search_text_button = QtGui.QPushButton(self.search_widget)
-        self.search_text_button.setObjectName(u'search_text_button')
+        self.search_text_button.setObjectName('search_text_button')
         self.search_button_layout.addWidget(self.search_text_button)
         self.search_layout.addLayout(self.search_button_layout)
         self.page_layout.addWidget(self.search_widget)
@@ -306,8 +306,8 @@ class MediaManagerItem(QtGui.QWidget):
         Add a file to the list widget to make it available for showing
         """
         files = FileDialog.getOpenFileNames(self, self.on_new_prompt,
-            Settings().value(self.settings_section + u'/last directory'), self.on_new_file_masks)
-        log.info(u'New files(s) %s', files)
+            Settings().value(self.settings_section + '/last directory'), self.on_new_file_masks)
+        log.info('New files(s) %s', files)
         if files:
             self.application.set_busy_cursor()
             self.validate_and_load(files)
@@ -323,7 +323,7 @@ class MediaManagerItem(QtGui.QWidget):
         new_files = []
         error_shown = False
         for file_name in data['files']:
-            file_type = file_name.split(u'.')[-1]
+            file_type = file_name.split('.')[-1]
             if file_type.lower() not in self.on_new_file_masks:
                 if not error_shown:
                     critical_error_message_box(translate('OpenLP.MediaManagerItem', 'Invalid File Type'),
@@ -362,7 +362,7 @@ class MediaManagerItem(QtGui.QWidget):
         duplicates_found = False
         files_added = False
         for file_path in files:
-            filename = os.path.split(unicode(file_path))[1]
+            filename = os.path.split(str(file_path))[1]
             if filename in names:
                 duplicates_found = True
             else:
@@ -372,9 +372,9 @@ class MediaManagerItem(QtGui.QWidget):
             if target_group is None:
                 self.list_view.clear()
             self.load_list(full_list, target_group)
-            last_dir = os.path.split(unicode(files[0]))[0]
-            Settings().setValue(self.settings_section + u'/last directory', last_dir)
-            Settings().setValue(u'%s/%s files' % (self.settings_section, self.settings_section), self.get_file_list())
+            last_dir = os.path.split(str(files[0]))[0]
+            Settings().setValue(self.settings_section + '/last directory', last_dir)
+            Settings().setValue('%s/%s files' % (self.settings_section, self.settings_section), self.get_file_list())
         if duplicates_found:
             critical_error_message_box(UiStrings().Duplicate,
                 translate('OpenLP.MediaManagerItem', 'Duplicate files were found on import and were ignored.'))
@@ -396,7 +396,7 @@ class MediaManagerItem(QtGui.QWidget):
         Return the current list of files
         """
         file_list = []
-        for index in xrange(self.list_view.count()):
+        for index in range(self.list_view.count()):
             bitem = self.list_view.item(index)
             filename = bitem.data(QtCore.Qt.UserRole)
             file_list.append(filename)
@@ -406,7 +406,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Load a list. Needs to be implemented by the plugin.
         """
-        raise NotImplementedError(u'MediaManagerItem.loadList needs to be defined by the plugin')
+        raise NotImplementedError('MediaManagerItem.loadList needs to be defined by the plugin')
 
     def on_new_click(self):
         """
@@ -424,7 +424,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Delete an item. Needs to be implemented by the plugin.
         """
-        raise NotImplementedError(u'MediaManagerItem.on_delete_click needs to be defined by the plugin')
+        raise NotImplementedError('MediaManagerItem.on_delete_click needs to be defined by the plugin')
 
     def on_focus(self):
         """
@@ -438,13 +438,13 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Generate the slide data. Needs to be implemented by the plugin.
         """
-        raise NotImplementedError(u'MediaManagerItem.generate_slide_data needs to be defined by the plugin')
+        raise NotImplementedError('MediaManagerItem.generate_slide_data needs to be defined by the plugin')
 
     def on_double_clicked(self):
         """
         Allows the list click action to be determined dynamically
         """
-        if Settings().value(u'advanced/double click live'):
+        if Settings().value('advanced/double click live'):
             self.on_live_click()
         else:
             self.on_preview_click()
@@ -453,7 +453,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Allows the change of current item in the list to be actioned
         """
-        if Settings().value(u'advanced/single click preview') and self.quick_preview_allowed \
+        if Settings().value('advanced/single click preview') and self.quick_preview_allowed \
             and self.list_view.selectedIndexes() and self.auto_select_id == -1:
             self.on_preview_click(True)
 
@@ -465,7 +465,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items to preview.'))
         else:
-            log.debug(u'%s Preview requested', self.plugin.name)
+            log.debug('%s Preview requested', self.plugin.name)
             service_item = self.build_service_item()
             if service_item:
                 service_item.from_plugin = True
@@ -496,7 +496,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Make the currently selected item go live.
         """
-        log.debug(u'%s Live requested', self.plugin.name)
+        log.debug('%s Live requested', self.plugin.name)
         item = None
         if item_id:
             item = self.create_item_from_id(item_id)
@@ -527,7 +527,7 @@ class MediaManagerItem(QtGui.QWidget):
             # Is it possible to process multiple list items to generate
             # multiple service items?
             if self.single_service_item:
-                log.debug(u'%s Add requested', self.plugin.name)
+                log.debug('%s Add requested', self.plugin.name)
                 self.add_to_service(replace=self.remote_triggered)
             else:
                 items = self.list_view.selectedIndexes()
@@ -560,7 +560,7 @@ class MediaManagerItem(QtGui.QWidget):
             QtGui.QMessageBox.information(self, UiStrings().NISp,
                 translate('OpenLP.MediaManagerItem', 'You must select one or more items.'))
         else:
-            log.debug(u'%s Add requested', self.plugin.name)
+            log.debug('%s Add requested', self.plugin.name)
             service_item = self.service_manager.get_service_item()
             if not service_item:
                 QtGui.QMessageBox.information(self, UiStrings().NISs,
@@ -644,14 +644,14 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Performs a plugin specific search for items containing ``string``
         """
-        raise NotImplementedError(u'Plugin.search needs to be defined by the plugin')
+        raise NotImplementedError('Plugin.search needs to be defined by the plugin')
 
     def _get_main_window(self):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)
@@ -660,8 +660,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Adds the Renderer to the class dynamically
         """
-        if not hasattr(self, u'_renderer'):
-            self._renderer = Registry().get(u'renderer')
+        if not hasattr(self, '_renderer'):
+            self._renderer = Registry().get('renderer')
         return self._renderer
 
     renderer = property(_get_renderer)
@@ -670,8 +670,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Adds the live controller to the class dynamically
         """
-        if not hasattr(self, u'_live_controller'):
-            self._live_controller = Registry().get(u'live_controller')
+        if not hasattr(self, '_live_controller'):
+            self._live_controller = Registry().get('live_controller')
         return self._live_controller
 
     live_controller = property(_get_live_controller)
@@ -680,8 +680,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Adds the preview controller to the class dynamically
         """
-        if not hasattr(self, u'_preview_controller'):
-            self._preview_controller = Registry().get(u'preview_controller')
+        if not hasattr(self, '_preview_controller'):
+            self._preview_controller = Registry().get('preview_controller')
         return self._preview_controller
 
     preview_controller = property(_get_preview_controller)
@@ -690,8 +690,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Adds the plugin manager to the class dynamically
         """
-        if not hasattr(self, u'_plugin_manager'):
-            self._plugin_manager = Registry().get(u'plugin_manager')
+        if not hasattr(self, '_plugin_manager'):
+            self._plugin_manager = Registry().get('plugin_manager')
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)
@@ -700,8 +700,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Adds the media controller to the class dynamically
         """
-        if not hasattr(self, u'_media_controller'):
-            self._media_controller = Registry().get(u'media_controller')
+        if not hasattr(self, '_media_controller'):
+            self._media_controller = Registry().get('media_controller')
         return self._media_controller
 
     media_controller = property(_get_media_controller)
@@ -710,8 +710,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Adds the service manager to the class dynamically
         """
-        if not hasattr(self, u'_service_manager'):
-            self._service_manager = Registry().get(u'service_manager')
+        if not hasattr(self, '_service_manager'):
+            self._service_manager = Registry().get('service_manager')
         return self._service_manager
 
     service_manager = property(_get_service_manager)
@@ -720,8 +720,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Adds the theme manager to the class dynamically
         """
-        if not hasattr(self, u'_theme_manager'):
-            self._theme_manager = Registry().get(u'theme_manager')
+        if not hasattr(self, '_theme_manager'):
+            self._theme_manager = Registry().get('theme_manager')
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)
@@ -731,11 +731,11 @@ class MediaManagerItem(QtGui.QWidget):
         Adds the openlp to the class dynamically.
         Windows needs to access the application in a dynamic manner.
         """
-        if os.name == u'nt':
-            return Registry().get(u'application')
+        if os.name == 'nt':
+            return Registry().get('application')
         else:
-            if not hasattr(self, u'_application'):
-                self._application = Registry().get(u'application')
+            if not hasattr(self, '_application'):
+                self._application = Registry().get('application')
             return self._application
 
     application = property(_get_application)

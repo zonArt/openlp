@@ -33,7 +33,7 @@ from PyQt4 import QtGui
 
 from openlp.core.lib.ui import create_action
 from openlp.core.utils import LanguageManager
-from firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
+from .firsttimelanguagedialog import Ui_FirstTimeLanguageDialog
 
 
 class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
@@ -44,10 +44,10 @@ class FirstTimeLanguageForm(QtGui.QDialog, Ui_FirstTimeLanguageDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(FirstTimeLanguageForm, self).__init__(parent)
         self.setupUi(self)
         self.qmList = LanguageManager.get_qm_list()
-        self.language_combo_box.addItem(u'Autodetect')
+        self.language_combo_box.addItem('Autodetect')
         self.language_combo_box.addItems(sorted(self.qmList.keys()))
 
     def exec_(self):

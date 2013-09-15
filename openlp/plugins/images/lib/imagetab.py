@@ -37,25 +37,25 @@ class ImageTab(SettingsTab):
     ImageTab is the images settings tab in the settings dialog.
     """
     def __init__(self, parent, name, visible_title, icon_path):
-        SettingsTab.__init__(self, parent, name, visible_title, icon_path)
+        super(ImageTab, self).__init__(parent, name, visible_title, icon_path)
 
     def setupUi(self):
-        self.setObjectName(u'ImagesTab')
-        SettingsTab.setupUi(self)
+        self.setObjectName('ImagesTab')
+        super(ImageTab, self).setupUi()
         self.background_color_group_box = QtGui.QGroupBox(self.left_column)
-        self.background_color_group_box.setObjectName(u'background_color_group_box')
+        self.background_color_group_box.setObjectName('background_color_group_box')
         self.form_layout = QtGui.QFormLayout(self.background_color_group_box)
-        self.form_layout.setObjectName(u'form_layout')
+        self.form_layout.setObjectName('form_layout')
         self.color_layout = QtGui.QHBoxLayout()
         self.background_color_label = QtGui.QLabel(self.background_color_group_box)
-        self.background_color_label.setObjectName(u'background_color_label')
+        self.background_color_label.setObjectName('background_color_label')
         self.color_layout.addWidget(self.background_color_label)
         self.background_color_button = QtGui.QPushButton(self.background_color_group_box)
-        self.background_color_button.setObjectName(u'background_color_button')
+        self.background_color_button.setObjectName('background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.form_layout.addRow(self.color_layout)
         self.information_label = QtGui.QLabel(self.background_color_group_box)
-        self.information_label.setObjectName(u'information_label')
+        self.information_label.setObjectName('information_label')
         self.information_label.setWordWrap(True)
         self.form_layout.addRow(self.information_label)
         self.left_layout.addWidget(self.background_color_group_box)
@@ -75,20 +75,20 @@ class ImageTab(SettingsTab):
         new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.background_color), self)
         if new_color.isValid():
             self.background_color = new_color.name()
-            self.background_color_button.setStyleSheet(u'background-color: %s' % self.background_color)
+            self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
 
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.background_color = settings.value(u'background color')
+        self.background_color = settings.value('background color')
         self.initial_color = self.background_color
         settings.endGroup()
-        self.background_color_button.setStyleSheet(u'background-color: %s' % self.background_color)
+        self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
 
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        settings.setValue(u'background color', self.background_color)
+        settings.setValue('background color', self.background_color)
         settings.endGroup()
         if self.initial_color != self.background_color:
-            self.settings_form.register_post_process(u'images_config_updated')
+            self.settings_form.register_post_process('images_config_updated')
