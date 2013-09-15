@@ -32,7 +32,7 @@ Provide a work around for a bug in QFileDialog <https://bugs.launchpad.net/openl
 """
 import logging
 import os
-import urllib
+from urllib import parse
 
 from PyQt4 import QtGui
 
@@ -53,15 +53,14 @@ class FileDialog(QtGui.QFileDialog):
         files = QtGui.QFileDialog.getOpenFileNames(parent, *args, **kwargs)
         file_list = []
         for file in files:
-            file = unicode(file)
             if not os.path.exists(file):
-                log.info(u'File %s not found. Attempting to unquote.')
-                file = urllib.unquote(unicode(file))
+                log.info('File %s not found. Attempting to unquote.')
+                file = parse.unquote(file)
                 if not os.path.exists(file):
-                    log.error(u'File %s not found.' % file)
+                    log.error('File %s not found.' % file)
                     QtGui.QMessageBox.information(parent, UiStrings().FileNotFound,
                         UiStrings().FileNotFoundMessage % file)
                     continue
-                log.info(u'File %s found.')
+                log.info('File %s found.')
             file_list.append(file)
         return file_list
