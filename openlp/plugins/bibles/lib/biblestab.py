@@ -217,10 +217,7 @@ class BiblesTab(SettingsTab):
         """
         Event handler for the 'verse number visible' check box
         """
-        self.is_verse_number_visible = False
-        # We have a set value convert to True/False.
-        if check_state == QtCore.Qt.Checked:
-            self.is_verse_number_visible = True
+        self.is_verse_number_visible = (check_state == QtCore.Qt.Checked)
         self.check_is_verse_number_visible()
 
     def on_new_chapters_check_box_changed(self, check_state):
