@@ -17,7 +17,7 @@ class TestSongShowPlusFileImport(SongImportTestHelper):
     def __init__(self, *args, **kwargs):
         self.importer_class_name = 'SongShowPlusImport'
         self.importer_module_name = 'songshowplusimport'
-        SongImportTestHelper.__init__(self, *args, **kwargs)
+        super(TestSongShowPlusFileImport, self).__init__(*args, **kwargs)
 
     def test_song_import(self):
         test_import = self.file_import(os.path.join(TEST_PATH, 'Amazing Grace.sbsong'),

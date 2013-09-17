@@ -11,10 +11,10 @@ class SongImportTestHelper(TestCase):
     This class is designed to be a helper class to reduce repition when testing the import of song files.
     """
     def __init__(self, *args, **kwargs):
+        super(SongImportTestHelper, self).__init__(*args, **kwargs)
         self.importer_module = __import__(
             'openlp.plugins.songs.lib.%s' % self.importer_module_name, fromlist=[self.importer_class_name])
         self.importer_class = getattr(self.importer_module, self.importer_class_name)
-        TestCase.__init__(self, *args, **kwargs)
 
     def setUp(self):
         """
