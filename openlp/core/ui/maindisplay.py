@@ -167,10 +167,10 @@ class MainDisplay(Display):
         """
         if enabled:
             self.setAutoFillBackground(False)
-            self.setStyleSheet("QGraphicsView {background: transparent;}")
+            self.setStyleSheet("QGraphicsView {background: transparent; border: 0px;}")
         else:
             self.setAttribute(QtCore.Qt.WA_NoSystemBackground, False)
-            self.setStyleSheet("QGraphicsView {background: white;}")
+            self.setStyleSheet("QGraphicsView {}")
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground, enabled)
         self.repaint()
 
