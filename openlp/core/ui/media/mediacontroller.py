@@ -527,7 +527,8 @@ class MediaController(object):
         else:
             self.media_volume(controller, controller.media_info.volume)
         if status:
-            display.frame.evaluateJavaScript('show_blank("desktop");')
+            if not controller.media_info.is_background:
+                display.frame.evaluateJavaScript('show_blank("desktop");')
             self.current_media_players[controller.controller_type].set_visible(display, True)
             # Flash needs to be played and will not AutoPlay
             if controller.media_info.is_flash:
@@ -538,7 +539,7 @@ class MediaController(object):
                 controller.mediabar.actions['playbackPause'].setVisible(True)
             controller.mediabar.actions['playbackStop'].setVisible(True)
             if controller.is_live:
-                if controller.hide_menu.defaultAction().isChecked():
+                if controller.hide_menu.defaultAction().isChecked() and not controller.media_info.is_background:
                     controller.hide_menu.defaultAction().trigger()
         # Start Timer for ui updates
         if not self.timer.isActive():
