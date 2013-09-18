@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -49,7 +49,7 @@ except ImportError:
 IS_WIN = sys.platform.startswith('win')
 
 VERS = {
-    'Python': '2.6',
+    'Python': '3.0',
     'PyQt4': '4.6',
     'Qt4': '4.6',
     'sqlalchemy': '0.5',
@@ -63,6 +63,7 @@ WIN32_MODULES = [
     'win32ui',
     'pywintypes',
     'pyodbc',
+    'icu',
 ]
 
 MODULES = [
@@ -76,6 +77,7 @@ MODULES = [
     'PyQt4.QtWebKit',
     'PyQt4.phonon',
     'sqlalchemy',
+    'alembic',
     'sqlite3',
     'lxml',
     'chardet',
@@ -84,8 +86,6 @@ MODULES = [
     'mako',
     'cherrypy',
     'uno',
-    'icu',
-    'bs4',
 ]
 
 
@@ -164,9 +164,9 @@ def verify_pyqt():
     w('Qt4 image formats... ')
     try:
         from PyQt4 import QtGui
-        read_f = ', '.join([unicode(format).lower()
+        read_f = ', '.join([str(format).lower()
            for format in QtGui.QImageReader.supportedImageFormats()])
-        write_f = ', '.join([unicode(format).lower()
+        write_f = ', '.join([str(format).lower()
             for format in QtGui.QImageWriter.supportedImageFormats()])
         w(os.linesep)
         print('  read: %s' % read_f)
@@ -194,5 +194,5 @@ def main():
     verify_pyqt()
     verify_pyenchant()
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
     main()

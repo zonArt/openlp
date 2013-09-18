@@ -38,7 +38,7 @@ from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.foilpresenterimport import FoilPresenter
 
 TEST_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), u'..', u'..', u'..', u'/resources/foilpresentersongs'))
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', '/resources/foilpresentersongs'))
 
 
 class TestFoilPresenter(TestCase):
@@ -58,27 +58,27 @@ class TestFoilPresenter(TestCase):
     #   _process_topics
 
     def setUp(self):
-        self.child_patcher = patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._child')
-        self.clean_song_patcher = patch(u'openlp.plugins.songs.lib.foilpresenterimport.clean_song')
-        self.objectify_patcher = patch(u'openlp.plugins.songs.lib.foilpresenterimport.objectify')
+        self.child_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._child')
+        self.clean_song_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.clean_song')
+        self.objectify_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.objectify')
         self.process_authors_patcher = \
-            patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_authors')
+            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_authors')
         self.process_cclinumber_patcher = \
-            patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_cclinumber')
+            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_cclinumber')
         self.process_comments_patcher = \
-            patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_comments')
+            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_comments')
         self.process_lyrics_patcher = \
-            patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_lyrics')
+            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_lyrics')
         self.process_songbooks_patcher = \
-            patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_songbooks')
+            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_songbooks')
         self.process_titles_patcher = \
-            patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_titles')
+            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_titles')
         self.process_topics_patcher = \
-            patch(u'openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_topics')
-        self.re_patcher = patch(u'openlp.plugins.songs.lib.foilpresenterimport.re')
-        self.song_patcher = patch(u'openlp.plugins.songs.lib.foilpresenterimport.Song')
-        self.song_xml_patcher = patch(u'openlp.plugins.songs.lib.foilpresenterimport.SongXML')
-        self.translate_patcher = patch(u'openlp.plugins.songs.lib.foilpresenterimport.translate')
+            patch('openlp.plugins.songs.lib.foilpresenterimport.FoilPresenter._process_topics')
+        self.re_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.re')
+        self.song_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.Song')
+        self.song_xml_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.SongXML')
+        self.translate_patcher = patch('openlp.plugins.songs.lib.foilpresenterimport.translate')
 
         self.mocked_child = self.child_patcher.start()
         self.mocked_clean_song = self.clean_song_patcher.start()
@@ -94,8 +94,8 @@ class TestFoilPresenter(TestCase):
         self.mocked_song = self.song_patcher.start()
         self.mocked_song_xml = self.song_xml_patcher.start()
         self.mocked_translate = self.translate_patcher.start()
-        self.mocked_child.return_value = u'Element Text'
-        self.mocked_translate.return_value = u'Translated String'
+        self.mocked_child.return_value = 'Element Text'
+        self.mocked_translate.return_value = 'Translated String'
         self.mocked_manager = MagicMock()
         self.mocked_song_import = MagicMock()
 
@@ -127,7 +127,7 @@ class TestFoilPresenter(TestCase):
         foil_presenter_instance = FoilPresenter(mocked_manager, mocked_song_import)
 
         # THEN: The instance should not be None
-        self.assertIsNotNone(foil_presenter_instance, u'FoilPresenter instance should not be none')
+        self.assertIsNotNone(foil_presenter_instance, 'FoilPresenter instance should not be none')
 
     def no_xml_test(self):
         """
@@ -139,11 +139,11 @@ class TestFoilPresenter(TestCase):
         foil_presenter_instance = FoilPresenter(mocked_manager, mocked_song_import)
 
         # WHEN: xml_to_song is called without valid an argument
-        for arg in [None, False, 0, u'']:
+        for arg in [None, False, 0, '']:
             result = foil_presenter_instance.xml_to_song(arg)
 
             # Then: xml_to_song should return False
-            self.assertEqual(result, None, u'xml_to_song should return None when called with %s' % arg)
+            self.assertEqual(result, None, 'xml_to_song should return None when called with %s' % arg)
 
     def encoding_declaration_removal_test(self):
         """
@@ -154,10 +154,10 @@ class TestFoilPresenter(TestCase):
         foil_presenter_instance = FoilPresenter(self.mocked_manager, self.mocked_song_import)
 
         # WHEN: xml_to_song is called with a string with an xml encoding declaration
-        foil_presenter_instance.xml_to_song(u'<?xml version="1.0" encoding="UTF-8"?>\n<foilpresenterfolie>')
+        foil_presenter_instance.xml_to_song('<?xml version="1.0" encoding="UTF-8"?>\n<foilpresenterfolie>')
 
         # THEN: the xml encoding declaration should have been stripped
-        self.mocked_re.compile.sub.called_with(u'\n<foilpresenterfolie>')
+        self.mocked_re.compile.sub.called_with('\n<foilpresenterfolie>')
 
     def no_encoding_declaration_test(self):
         """
@@ -168,10 +168,10 @@ class TestFoilPresenter(TestCase):
         foil_presenter_instance = FoilPresenter(self.mocked_manager, self.mocked_song_import)
 
         # WHEN: xml_to_song is called with a string without an xml encoding declaration
-        foil_presenter_instance.xml_to_song(u'<foilpresenterfolie>')
+        foil_presenter_instance.xml_to_song('<foilpresenterfolie>')
 
         # THEN: the string shiuld have been left intact
-        self.mocked_re.compile.sub.called_with(u'<foilpresenterfolie>')
+        self.mocked_re.compile.sub.called_with('<foilpresenterfolie>')
 
     def process_lyrics_no_verses_test(self):
         """
@@ -191,5 +191,5 @@ class TestFoilPresenter(TestCase):
 
         # THEN: _process_lyrics should return None and the song_import logError method should have been called once
         self.assertIsNone(result)
-        self.mocked_song_import.logError.assert_called_once_with(u'Element Text', u'Translated String')
+        self.mocked_song_import.logError.assert_called_once_with('Element Text', 'Translated String')
         self.process_lyrics_patcher.start()

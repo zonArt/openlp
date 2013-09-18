@@ -58,7 +58,7 @@ class OpenSongBible(BibleDB):
         ``element``
             An objectify element to get the text from
         """
-        verse_text = u''
+        verse_text = ''
         if element.text:
             verse_text = element.text
         for sub_element in element.iterchildren():
@@ -71,35 +71,35 @@ class OpenSongBible(BibleDB):
         """
         Loads a Bible from file.
         """
-        log.debug(u'Starting OpenSong import from "%s"' % self.filename)
-        if not isinstance(self.filename, unicode):
-            self.filename = unicode(self.filename, u'utf8')
+        log.debug('Starting OpenSong import from "%s"' % self.filename)
+        if not isinstance(self.filename, str):
+            self.filename = str(self.filename, 'utf8')
         file = None
         success = True
         try:
             # NOTE: We don't need to do any of the normal encoding detection here, because lxml does it's own encoding
             # detection, and the two mechanisms together interfere with each other.
-            file = open(self.filename, u'r')
+            file = open(self.filename, 'r')
             opensong = objectify.parse(file)
             bible = opensong.getroot()
             language_id = self.get_language(bible_name)
             if not language_id:
-                log.exception(u'Importing books from "%s" failed' % self.filename)
+                log.exception('Importing books from "%s" failed' % self.filename)
                 return False
             for book in bible.b:
                 if self.stop_import_flag:
                     break
-                book_ref_id = self.get_book_ref_id_by_name(unicode(book.attrib[u'n']), len(bible.b), language_id)
+                book_ref_id = self.get_book_ref_id_by_name(str(book.attrib['n']), len(bible.b), language_id)
                 if not book_ref_id:
-                    log.exception(u'Importing books from "%s" failed' % self.filename)
+                    log.exception('Importing books from "%s" failed' % self.filename)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                db_book = self.create_book(unicode(book.attrib[u'n']), book_ref_id, book_details[u'testament_id'])
+                db_book = self.create_book(str(book.attrib['n']), book_ref_id, book_details['testament_id'])
                 chapter_number = 0
                 for chapter in book.c:
                     if self.stop_import_flag:
                         break
-                    number = chapter.attrib[u'n']
+                    number = chapter.attrib['n']
                     if number:
                         chapter_number = int(number.split()[-1])
                     else:
@@ -108,16 +108,16 @@ class OpenSongBible(BibleDB):
                     for verse in chapter.v:
                         if self.stop_import_flag:
                             break
-                        number = verse.attrib[u'n']
+                        number = verse.attrib['n']
                         if number:
                             try:
                                 number = int(number)
                             except ValueError:
-                                verse_parts = number.split(u'-')
+                                verse_parts = number.split('-')
                                 if len(verse_parts) > 1:
                                     number = int(verse_parts[0])
                             except TypeError:
-                                log.warn(u'Illegal verse number: %s', unicode(verse.attrib[u'n']))
+                                log.warn('Illegal verse number: %s', str(verse.attrib['n']))
                             verse_number = number
                         else:
                             verse_number += 1
@@ -133,7 +133,7 @@ class OpenSongBible(BibleDB):
             log.exception(inst)
             success = False
         except (IOError, AttributeError):
-            log.exception(u'Loading Bible from OpenSong file failed')
+            log.exception('Loading Bible from OpenSong file failed')
             success = False
         finally:
             if file:

@@ -11,9 +11,9 @@ from openlp.core.lib import Registry, ScreenList
 
 
 SCREEN = {
-    u'primary': False,
-    u'number': 1,
-    u'size': QtCore.QRect(0, 0, 1024, 768)
+    'primary': False,
+    'number': 1,
+    'size': QtCore.QRect(0, 0, 1024, 768)
 }
 
 
@@ -25,14 +25,14 @@ class TestScreenList(TestCase):
         """
         # Mocked out desktop object
         self.desktop = MagicMock()
-        self.desktop.primaryScreen.return_value = SCREEN[u'primary']
-        self.desktop.screenCount.return_value = SCREEN[u'number']
-        self.desktop.screenGeometry.return_value = SCREEN[u'size']
+        self.desktop.primaryScreen.return_value = SCREEN['primary']
+        self.desktop.screenCount.return_value = SCREEN['number']
+        self.desktop.screenGeometry.return_value = SCREEN['size']
 
         self.application = QtGui.QApplication.instance()
         Registry.create()
-        self.application.setOrganizationName(u'OpenLP-tests')
-        self.application.setOrganizationDomain(u'openlp.org')
+        self.application.setOrganizationName('OpenLP-tests')
+        self.application.setOrganizationDomain('openlp.org')
         self.screens = ScreenList.create(self.desktop)
 
     def tearDown(self):
@@ -50,10 +50,10 @@ class TestScreenList(TestCase):
         old_screen_count = len(self.screens.screen_list)
 
         # WHEN: We add a new screen
-        self.desktop.screenCount.return_value = SCREEN[u'number'] + 1
+        self.desktop.screenCount.return_value = SCREEN['number'] + 1
         self.screens.screen_count_changed(old_screen_count)
 
         # THEN: The screen should have been added and the screens should be identical
         new_screen_count = len(self.screens.screen_list)
-        assert old_screen_count + 1 == new_screen_count, u'The new_screens list should be bigger'
-        assert SCREEN == self.screens.screen_list.pop(), u'The 2nd screen should be identical to the first screen'
+        assert old_screen_count + 1 == new_screen_count, 'The new_screens list should be bigger'
+        assert SCREEN == self.screens.screen_list.pop(), 'The 2nd screen should be identical to the first screen'

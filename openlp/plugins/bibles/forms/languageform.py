@@ -48,21 +48,21 @@ class LanguageForm(QDialog, Ui_LanguageDialog):
     """
     Class to manage a dialog which ask the user for a language.
     """
-    log.info(u'LanguageForm loaded')
+    log.info('LanguageForm loaded')
 
     def __init__(self, parent=None):
         """
         Constructor
         """
-        QDialog.__init__(self, parent)
+        super(LanguageForm, self).__init__(parent)
         self.setupUi(self)
 
     def exec_(self, bible_name):
-        self.language_combo_box.addItem(u'')
+        self.language_combo_box.addItem('')
         if bible_name:
-            self.bible_label.setText(unicode(bible_name))
+            self.bible_label.setText(str(bible_name))
         items = BiblesResourcesDB.get_languages()
-        self.language_combo_box.addItems([item[u'name'] for item in items])
+        self.language_combo_box.addItems([item['name'] for item in items])
         return QDialog.exec_(self)
 
     def accept(self):
