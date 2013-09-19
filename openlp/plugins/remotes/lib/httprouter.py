@@ -175,6 +175,14 @@ class HttpRouter(object):
         """
         if self.path == '/favicon.ico':
             return
+        ###########
+        print(self.headers['content-type'])
+        if self.headers['content-type'] == 'application/json':
+            length = int(self.headers['content-length'])
+            postvars = parse_qs(self.rfile.read(length), keep_blank_values=1)
+            for var in postvars:
+                print(var.decode("utf-8"))
+        ##############
         if not hasattr(self, 'auth'):
             self.initialise()
         function, args = self.process_http_request(self.path)
@@ -348,13 +356,13 @@ class HttpRouter(object):
         elif ext == '.css':
             self.send_header('Content-type', 'text/css')
         elif ext == '.js':
-            self.send_header('Content-type', 'application/x-javascript')
+            self.send_header('Content-type', 'application/javascript')
         elif ext == '.jpg':
             self.send_header('Content-type', 'image/jpeg')
         elif ext == '.gif':
             self.send_header('Content-type', 'image/gif')
         elif ext == '.ico':
-            self.send_header('Content-type', 'image/ico')
+            self.send_header('Content-type', 'image/x-icon')
         elif ext == '.png':
             self.send_header('Content-type', 'image/png')
         else:
