@@ -5,13 +5,11 @@ import os
 from tempfile import mkstemp
 from unittest import TestCase
 
-from mock import patch, MagicMock
-
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Registry, ServiceItem, Settings
-
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
+from tests.functional import patch, MagicMock
 
 
 class TestMediaItem(TestCase):

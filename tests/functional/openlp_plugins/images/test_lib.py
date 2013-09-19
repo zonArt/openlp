@@ -1,16 +1,40 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 This module contains tests for the lib submodule of the Images plugin.
 """
-
 from unittest import TestCase
-
-from mock import MagicMock, patch
 
 from openlp.core.lib import Registry
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 from openlp.plugins.images.lib.mediaitem import ImageMediaItem
+from tests.functional import MagicMock, patch
 
 
 class TestImageMediaItem(TestCase):
@@ -36,7 +60,7 @@ class TestImageMediaItem(TestCase):
         """
         # GIVEN: An empty image_list
         image_list = []
-        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
+        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list'):
             self.media_item.manager = MagicMock()
 
             # WHEN: We run save_new_images_list with the empty list
@@ -50,8 +74,8 @@ class TestImageMediaItem(TestCase):
         """
         Test that the save_new_images_list() calls load_full_list() when reload_list is set to True
         """
-        # GIVEN: A list with 1 image
-        image_list = [ 'test_image.jpg' ]
+        # GIVEN: A list with 1 image and a mocked out manager
+        image_list = ['test_image.jpg']
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
             ImageFilenames.filename = ''
             self.media_item.manager = MagicMock()
@@ -69,8 +93,8 @@ class TestImageMediaItem(TestCase):
         """
         Test that the save_new_images_list() doesn't call load_full_list() when reload_list is set to False
         """
-        # GIVEN: A list with 1 image
-        image_list = [ 'test_image.jpg' ]
+        # GIVEN: A list with 1 image and a mocked out manager
+        image_list = ['test_image.jpg']
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
             self.media_item.manager = MagicMock()
 
@@ -126,31 +150,6 @@ class TestImageMediaItem(TestCase):
         self.media_item.reset_action.setVisible.assert_called_with(False)
         self.media_item.live_controller.display.reset_image.assert_called_with()
 
-    def _recursively_delete_group_side_effect(*args, **kwargs):
-        """
-        Side effect method that creates custom retun values for the recursively_delete_group method
-        """
-        if args[1] == ImageFilenames and args[2]:
-            # Create some fake objects that should be removed
-            returned_object1 = ImageFilenames()
-            returned_object1.id = 1
-            returned_object1.filename = '/tmp/test_file_1.jpg'
-            returned_object2 = ImageFilenames()
-            returned_object2.id = 2
-            returned_object2.filename = '/tmp/test_file_2.jpg'
-            returned_object3 = ImageFilenames()
-            returned_object3.id = 3
-            returned_object3.filename = '/tmp/test_file_3.jpg'
-            return [returned_object1, returned_object2, returned_object3]
-        if args[1] == ImageGroups and args[2]:
-            # Change the parent_id that is matched so we don't get into an endless loop
-            ImageGroups.parent_id = 0
-            # Create a fake group that will be used in the next run
-            returned_object1 = ImageGroups()
-            returned_object1.id = 1
-            return [returned_object1]
-        return []
-
     def recursively_delete_group_test(self):
         """
         Test that recursively_delete_group() works
@@ -176,3 +175,28 @@ class TestImageMediaItem(TestCase):
             # CLEANUP: Remove added attribute from ImageFilenames and ImageGroups
             delattr(ImageFilenames, 'group_id')
             delattr(ImageGroups, 'parent_id')
+
+    def _recursively_delete_group_side_effect(*args, **kwargs):
+        """
+        Side effect method that creates custom return values for the recursively_delete_group method
+        """
+        if args[1] == ImageFilenames and args[2]:
+            # Create some fake objects that should be removed
+            returned_object1 = ImageFilenames()
+            returned_object1.id = 1
+            returned_object1.filename = '/tmp/test_file_1.jpg'
+            returned_object2 = ImageFilenames()
+            returned_object2.id = 2
+            returned_object2.filename = '/tmp/test_file_2.jpg'
+            returned_object3 = ImageFilenames()
+            returned_object3.id = 3
+            returned_object3.filename = '/tmp/test_file_3.jpg'
+            return [returned_object1, returned_object2, returned_object3]
+        if args[1] == ImageGroups and args[2]:
+            # Change the parent_id that is matched so we don't get into an endless loop
+            ImageGroups.parent_id = 0
+            # Create a fake group that will be used in the next run
+            returned_object1 = ImageGroups()
+            returned_object1.id = 1
+            return [returned_object1]
+        return []
