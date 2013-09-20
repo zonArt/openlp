@@ -13,7 +13,7 @@ from PyQt4 import QtGui
 if sys.version_info[1] >= 3:
     from unittest.mock import patch, MagicMock
 else:
-    from mock import patch, MagicMockv
+    from mock import patch, MagicMock
 
 # Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" a  QApplication.
 application = QtGui.QApplication([])
