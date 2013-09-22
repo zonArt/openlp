@@ -45,6 +45,6 @@ class TestUiStrings(TestCase):
         second_instance = UiStrings()
 
         # THEN: Check if the instances are the same.
-        assert first_instance is second_instance, "They should be the same instance!"
+        self.assertIs(first_instance, second_instance, 'Two UiStrings objects should be the same instance')
 
 

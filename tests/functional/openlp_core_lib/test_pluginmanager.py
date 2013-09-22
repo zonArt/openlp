@@ -69,8 +69,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_media_manager()
 
         # THEN: The create_media_manager_item() method should have been called
-        assert mocked_plugin.create_media_manager_item.call_count == 0, \
-            'The create_media_manager_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.create_media_manager_item.call_count,
+                         'The create_media_manager_item() method should not have been called.')
 
     def hook_media_manager_with_active_plugin_test(self):
         """
@@ -102,8 +102,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The hook_settings_tabs() method should have been called
-        assert mocked_plugin.create_media_manager_item.call_count == 0, \
-            'The create_media_manager_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.create_media_manager_item.call_count,
+                         'The create_media_manager_item() method should not have been called.')
 
     def hook_settings_tabs_with_disabled_plugin_and_mocked_form_test(self):
         """
@@ -122,10 +122,10 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The create_settings_tab() method should not have been called, but the plugins lists should be the same
-        assert mocked_plugin.create_settings_tab.call_count == 0, \
-            'The create_media_manager_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.create_settings_tab.call_count,
+                         'The create_media_manager_item() method should not have been called.')
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
-            'The plugins on the settings form should be the same as the plugins in the plugin manager')
+                         'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_mocked_form_test(self):
         """
@@ -144,10 +144,10 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The create_media_manager_item() method should have been called with the mocked settings form
-        assert mocked_plugin.create_settings_tab.call_count == 1, \
-            'The create_media_manager_item() method should have been called once.'
-        self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
-             'The plugins on the settings form should be the same as the plugins in the plugin manager')
+        self.assertEqual(1, mocked_plugin.create_settings_tab.call_count,
+                         'The create_media_manager_item() method should have been called once.')
+        self.assertEqual(plugin_manager.plugins, mocked_settings_form.plugin_manager.plugins,
+                         'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_no_form_test(self):
         """
@@ -179,8 +179,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_import_menu()
 
         # THEN: The create_media_manager_item() method should have been called
-        assert mocked_plugin.add_import_menu_item.call_count == 0, \
-            'The add_import_menu_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.add_import_menu_item.call_count,
+                         'The add_import_menu_item() method should not have been called.')
 
     def hook_import_menu_with_active_plugin_test(self):
         """
@@ -212,8 +212,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_export_menu()
 
         # THEN: The add_export_menu_Item() method should not have been called
-        assert mocked_plugin.add_export_menu_Item.call_count == 0, \
-            'The add_export_menu_Item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.add_export_menu_Item.call_count,
+                         'The add_export_menu_Item() method should not have been called.')
 
     def hook_export_menu_with_active_plugin_test(self):
         """
@@ -246,8 +246,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_upgrade_plugin_settings(settings)
 
         # THEN: The upgrade_settings() method should not have been called
-        assert mocked_plugin.upgrade_settings.call_count == 0, \
-            'The upgrade_settings() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.upgrade_settings.call_count,
+                         'The upgrade_settings() method should not have been called.')
 
     def hook_upgrade_plugin_settings_with_active_plugin_test(self):
         """
