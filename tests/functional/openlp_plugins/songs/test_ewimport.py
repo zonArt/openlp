@@ -74,18 +74,18 @@ TEST_FIELD_DESCS = [TestFieldDesc('Title', FieldType.String, 50),
     TestFieldDesc('Default Background', FieldType.Logical, 1), TestFieldDesc('Words', FieldType.Memo, 250),
     TestFieldDesc('Words', FieldType.Memo, 250), TestFieldDesc('BK Bitmap', FieldType.Blob, 10),
     TestFieldDesc('Last Modified', FieldType.Timestamp, 10)]
-TEST_FIELDS = ['A Heart Like Thine\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0', 32868, 2147483750,
-    129, '{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
-    '{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;'
-    '\\red255\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g��\7\0f\r\0\0\1\0',
-    '{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
-    '{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;\\red255'
-    '\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g>�\6\0�\6\0\0\1\0', '\0\0\0\0\0\0\0\0\0\0', 0]
+TEST_FIELDS = [b'A Heart Like Thine\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0', 32868, 2147483750,
+    129, b'{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
+    b'{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;'
+    b'\\red255\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g\xBF\xBD\7\0f\r\0\0\1\0',
+    b'{\\rtf1\\ansi\\deff0\\deftab254{\\fonttbl{\\f0\\fnil\\fcharset0 Arial;}{\\f1\\fnil\\fcharset0 Verdana;}}'
+    b'{\\colortbl\\red0\\green0\\blue0;\\red255\\green0\\blue0;\\red0\\green128\\blue0;\\red0\\green0\\blue255;\\red255'
+    b'\\green255\\blue0;\\red255\\green0\\blue255;\\red128\\g\6\0\xEF\xBF\xBD\6\0\0\1\0', b'\0\0\0\0\0\0\0\0\0\0', 0]
 GET_MEMO_FIELD_TEST_RESULTS = [
-    (4, '\2', {'return': '\2','read': (1, 3430), 'seek': (507136, (8, os.SEEK_CUR))}),
-    (4, '\3', {'return': '', 'read': (1, ), 'seek': (507136, )}),
-    (5, '\3', {'return': '\3', 'read': (1, 1725), 'seek': (3220111360, (41, os.SEEK_CUR), 3220111408)}),
-    (5, '\4', {'return': '', 'read': (), 'seek': ()})]
+    (4, b'\2', {'return': b'\2','read': (1, 3430), 'seek': (507136, (8, os.SEEK_CUR))}),
+    (4, b'\3', {'return': b'', 'read': (1, ), 'seek': (507136, )}),
+    (5, b'\3', {'return': b'\3', 'read': (1, 1725), 'seek': (3220111360, (41, os.SEEK_CUR), 3220111408)}),
+    (5, b'\4', {'return': b'', 'read': (), 'seek': ()})]
 
 class TestEasyWorshipSongImport(TestCase):
     """
@@ -189,7 +189,7 @@ class TestEasyWorshipSongImport(TestCase):
             importer.encoding = TEST_DATA_ENCODING
             importer.fields = TEST_FIELDS
             importer.fieldDescs = TEST_FIELD_DESCS
-            field_results = [(0, 'A Heart Like Thine'), (1, 100), (2, 102), (3, True), (6, None), (7, None)]
+            field_results = [(0, b'A Heart Like Thine'), (1, 100), (2, 102), (3, True), (6, None), (7, None)]
 
             # WHEN: Called with test data
             for field_index, result in field_results:
@@ -276,7 +276,7 @@ class TestEasyWorshipSongImport(TestCase):
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
             patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
-            patch('__builtin__.open') as mocked_open, \
+            patch('builtins.open') as mocked_open, \
             patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager)
@@ -303,7 +303,7 @@ class TestEasyWorshipSongImport(TestCase):
         # GIVEN: A mocked out SongImport class, a mocked out "manager"
         with patch('openlp.plugins.songs.lib.ewimport.SongImport'), \
             patch('openlp.plugins.songs.lib.ewimport.os.path') as mocked_os_path, \
-            patch('__builtin__.open'), patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct, \
+            patch('builtins.open'), patch('openlp.plugins.songs.lib.ewimport.struct') as mocked_struct, \
             patch('openlp.plugins.songs.lib.ewimport.retrieve_windows_encoding') as mocked_retrieve_windows_encoding:
             mocked_manager = MagicMock()
             importer = EasyWorshipSongImport(mocked_manager)
@@ -354,7 +354,6 @@ class TestEasyWorshipSongImport(TestCase):
             #       called.
             self.assertIsNone(importer.doImport(), 'doImport should return None when it has completed')
             for song_data in SONG_TEST_DATA:
-                print mocked_title.mocked_calls()
                 title = song_data['title']
                 author_calls = song_data['authors']
                 song_copyright = song_data['copyright']

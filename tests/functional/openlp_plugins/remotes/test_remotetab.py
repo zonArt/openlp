@@ -2,6 +2,7 @@
 This module contains tests for the lib submodule of the Remotes plugin.
 """
 import os
+import re
 
 from unittest import TestCase
 from tempfile import mkstemp
@@ -51,6 +52,27 @@ class TestRemoteTab(TestCase):
         del self.parent
         del self.form
         os.unlink(self.ini_file)
+
+    def get_ip_address_default_test(self):
+        """
+        Test the get_ip_address function with ZERO_URL
+        """
+        # WHEN: the default ip address is given
+        ip_address = self.form.get_ip_address(ZERO_URL)
+        # THEN: the default ip address will be returned
+        self.assertTrue(re.match('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip_address), 'The return value should be a valid ip address')
+
+    def get_ip_address_with_ip_test(self):
+        """
+        Test the get_ip_address function with given ip address
+        """
+        # GIVEN: A mocked location
+        # GIVEN: An ip address
+        given_ip = '192.168.1.1'
+        # WHEN: the default ip address is given
+        ip_address = self.form.get_ip_address(given_ip)
+        # THEN: the default ip address will be returned
+        self.assertEqual(ip_address, given_ip, 'The return value should be %s' % given_ip)
 
     def set_basic_urls_test(self):
         """
