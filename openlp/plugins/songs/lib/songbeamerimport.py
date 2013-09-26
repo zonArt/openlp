@@ -33,6 +33,7 @@ import chardet
 import codecs
 import logging
 import os
+import io
 import re
 
 from openlp.plugins.songs.lib import VerseType
@@ -105,7 +106,7 @@ class SongBeamerImport(SongImport):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         if not isinstance(self.import_source, list):
             return
-        for file in self.import_source:
+        for _file in self.import_source:
             # TODO: check that it is a valid SongBeamer file
             if self.stop_import_flag:
                 return
@@ -113,12 +114,9 @@ class SongBeamerImport(SongImport):
             self.currentVerse = ''
             self.currentVerseType = VerseType.tags[VerseType.Verse]
             read_verses = False
-            file_name = os.path.split(file)[1]
-            if os.path.isfile(file):
-                detect_file = open(file, 'r')
-                details = chardet.detect(detect_file.read())
-                detect_file.close()
-                infile = codecs.open(file, 'r', details['encoding'])
+            file_name = os.path.split(_file)[1]
+            if os.path.isfile(_file):
+                infile = io.open(_file, 'r', encoding="Latin-1")
                 song_data = infile.readlines()
                 infile.close()
             else:
@@ -149,7 +147,7 @@ class SongBeamerImport(SongImport):
                 self.replaceHtmlTags()
                 self.addVerse(self.currentVerse, self.currentVerseType)
             if not self.finish():
-                self.logError(file)
+                self.logError(_file)
 
     def replaceHtmlTags(self):
         """
