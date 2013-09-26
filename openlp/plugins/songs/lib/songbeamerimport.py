@@ -29,9 +29,10 @@
 """
 The :mod:`songbeamerimport` module provides the functionality for importing SongBeamer songs into the OpenLP database.
 """
+import chardet
+import codecs
 import logging
 import os
-import io
 import re
 
 from openlp.plugins.songs.lib import VerseType
@@ -114,7 +115,11 @@ class SongBeamerImport(SongImport):
             read_verses = False
             file_name = os.path.split(_file)[1]
             if os.path.isfile(_file):
-                infile = io.open(_file, 'r', encoding="Latin-1")
+                # First open in binary mode to detect the encoding
+                detect_file = open(_file, 'rb')
+                details = chardet.detect(detect_file.read())
+                detect_file.close()
+                infile = codecs.open(_file, 'r', details['encoding'])
                 song_data = infile.readlines()
                 infile.close()
             else:
