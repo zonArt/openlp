@@ -29,8 +29,6 @@
 """
 The :mod:`songbeamerimport` module provides the functionality for importing SongBeamer songs into the OpenLP database.
 """
-import chardet
-import codecs
 import logging
 import os
 import io
