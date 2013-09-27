@@ -152,8 +152,8 @@ class HttpRouter(object):
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
-            (r'^/main/poll$', {'function': self.poll, 'secure': False}),
-            (r'^/main/image$', {'function': self.main_poll, 'secure': False}),
+            (r'^/main/poll$', {'function': self.main_poll, 'secure': False}),
+            (r'^/main/image$', {'function': self.main_image, 'secure': False}),
             (r'^/api/controller/(live|preview)/text$', {'function': self.controller_text, 'secure': False}),
             (r'^/api/controller/(live|preview)/(.*)$', {'function': self.controller, 'secure': True}),
             (r'^/api/service/list$', {'function': self.service_list, 'secure': False}),
@@ -175,14 +175,6 @@ class HttpRouter(object):
         """
         if self.path == '/favicon.ico':
             return
-        ###########
-        print(self.headers['content-type'])
-        if self.headers['content-type'] == 'application/json':
-            length = int(self.headers['content-length'])
-            postvars = parse_qs(self.rfile.read(length), keep_blank_values=1)
-            for var in postvars:
-                print(var.decode("utf-8"))
-        ##############
         if not hasattr(self, 'auth'):
             self.initialise()
         function, args = self.process_http_request(self.path)
@@ -399,6 +391,7 @@ class HttpRouter(object):
             'isSecure': Settings().value(self.settings_section + '/authentication enabled'),
             'isAuthorised': self.authorised
         }
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': result}).encode()
 
     def main_poll(self):
@@ -408,6 +401,7 @@ class HttpRouter(object):
         result = {
             'slide_count': self.live_controller.slide_count
         }
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': result}).encode()
 
     def main_image(self):
@@ -417,6 +411,7 @@ class HttpRouter(object):
         result = {
             'slide_image': 'data:image/png;base64,' + str(image_to_byte(self.live_controller.slide_image))
         }
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': result}).encode()
 
     def display(self, action):
@@ -428,6 +423,7 @@ class HttpRouter(object):
             This is the action, either ``hide`` or ``show``.
         """
         self.live_controller.emit(QtCore.SIGNAL('slidecontroller_toggle_display'), action)
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': {'success': True}}).encode()
 
     def alert(self):
@@ -445,6 +441,7 @@ class HttpRouter(object):
             success = True
         else:
             success = False
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': {'success': success}}).encode()
 
     def controller_text(self, var):
@@ -472,6 +469,7 @@ class HttpRouter(object):
         json_data = {'results': {'slides': data}}
         if current_item:
             json_data['results']['item'] = self.live_controller.service_item.unique_identifier
+        self.send_header('Content-type', 'application/json')
         return json.dumps(json_data).encode()
 
     def controller(self, display_type, action):
@@ -496,6 +494,7 @@ class HttpRouter(object):
         else:
             self.live_controller.emit(QtCore.SIGNAL(event))
         json_data = {'results': {'success': True}}
+        self.send_header('Content-type', 'application/json')
         return json.dumps(json_data).encode()
 
     def service_list(self):
@@ -505,6 +504,7 @@ class HttpRouter(object):
         ``action``
             The action to perform.
         """
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': {'items': self._get_service_items()}}).encode()
 
     def service(self, action):
@@ -523,6 +523,7 @@ class HttpRouter(object):
             self.service_manager.emit(QtCore.SIGNAL(event), data)
         else:
             Registry().execute(event)
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': {'success': True}}).encode()
 
     def plugin_info(self, action):
@@ -538,6 +539,7 @@ class HttpRouter(object):
             for plugin in self.plugin_manager.plugins:
                 if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
                     searches.append([plugin.name, str(plugin.text_strings[StringContent.Name]['plural'])])
+            self.send_header('Content-type', 'application/json')
             return json.dumps({'results': {'items': searches}}).encode()
 
     def search(self, plugin_name):
@@ -557,6 +559,7 @@ class HttpRouter(object):
             results = plugin.media_item.search(text, False)
         else:
             results = []
+        self.send_header('Content-type', 'application/json')
         return json.dumps({'results': {'items': results}}).encode()
 
     def go_live(self, plugin_name):
