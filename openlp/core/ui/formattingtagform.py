@@ -69,6 +69,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         # Forces reloading of tags from openlp configuration.
         FormattingTags.load_tags()
         self.is_deleting = False
+        self.reloading = False
 
     def exec_(self):
         """
@@ -132,6 +133,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         Reset List for loading.
         """
+        self.reloading = True
         self.tag_table_widget_read.clearContents()
         self.tag_table_widget_read.setRowCount(0)
         self.tag_table_widget.clearContents()
@@ -157,6 +159,7 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
                 self.tag_table_widget.resizeRowsToContents()
                 # Permanent (persistent) tags do not have this key
                 html[u'temporary'] = False
+        self.reloading = False
 
     def on_current_cell_changed(self, cur_row, cur_col, pre_row, pre_col):
         """
@@ -164,6 +167,8 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         """
         if self.is_deleting:
             self.is_deleting = False
+            return
+        if self.reloading:
             return
         # only process for editable rows
         if self.tag_table_widget.item(pre_row, 0):
