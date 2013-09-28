@@ -244,6 +244,14 @@ class HttpRouter(object):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 
+    def do_json_header(self):
+        """
+        Create a header for JSON messages
+        """
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+
     def do_http_error(self):
         """
         Create a error http header.
@@ -391,7 +399,7 @@ class HttpRouter(object):
             'isSecure': Settings().value(self.settings_section + '/authentication enabled'),
             'isAuthorised': self.authorised
         }
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': result}).encode()
 
     def main_poll(self):
@@ -401,7 +409,7 @@ class HttpRouter(object):
         result = {
             'slide_count': self.live_controller.slide_count
         }
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': result}).encode()
 
     def main_image(self):
@@ -411,7 +419,7 @@ class HttpRouter(object):
         result = {
             'slide_image': 'data:image/png;base64,' + str(image_to_byte(self.live_controller.slide_image))
         }
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': result}).encode()
 
     def display(self, action):
@@ -423,7 +431,7 @@ class HttpRouter(object):
             This is the action, either ``hide`` or ``show``.
         """
         self.live_controller.emit(QtCore.SIGNAL('slidecontroller_toggle_display'), action)
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': {'success': True}}).encode()
 
     def alert(self):
@@ -441,7 +449,7 @@ class HttpRouter(object):
             success = True
         else:
             success = False
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': {'success': success}}).encode()
 
     def controller_text(self, var):
@@ -469,7 +477,7 @@ class HttpRouter(object):
         json_data = {'results': {'slides': data}}
         if current_item:
             json_data['results']['item'] = self.live_controller.service_item.unique_identifier
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps(json_data).encode()
 
     def controller(self, display_type, action):
@@ -494,7 +502,7 @@ class HttpRouter(object):
         else:
             self.live_controller.emit(QtCore.SIGNAL(event))
         json_data = {'results': {'success': True}}
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps(json_data).encode()
 
     def service_list(self):
@@ -504,7 +512,7 @@ class HttpRouter(object):
         ``action``
             The action to perform.
         """
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': {'items': self._get_service_items()}}).encode()
 
     def service(self, action):
@@ -523,7 +531,7 @@ class HttpRouter(object):
             self.service_manager.emit(QtCore.SIGNAL(event), data)
         else:
             Registry().execute(event)
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': {'success': True}}).encode()
 
     def plugin_info(self, action):
@@ -539,7 +547,7 @@ class HttpRouter(object):
             for plugin in self.plugin_manager.plugins:
                 if plugin.status == PluginStatus.Active and plugin.media_item and plugin.media_item.has_search:
                     searches.append([plugin.name, str(plugin.text_strings[StringContent.Name]['plural'])])
-            self.send_header('Content-type', 'application/json')
+            self.do_json_header()
             return json.dumps({'results': {'items': searches}}).encode()
 
     def search(self, plugin_name):
@@ -559,7 +567,7 @@ class HttpRouter(object):
             results = plugin.media_item.search(text, False)
         else:
             results = []
-        self.send_header('Content-type', 'application/json')
+        self.do_json_header()
         return json.dumps({'results': {'items': results}}).encode()
 
     def go_live(self, plugin_name):
