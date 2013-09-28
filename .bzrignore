@@ -27,3 +27,4 @@ openlp.pro
 tests.kdev4
 *.nja
 *.orig
+__pycache__

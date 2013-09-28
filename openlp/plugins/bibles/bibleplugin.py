@@ -48,6 +48,7 @@ __default_settings__ = {
     'bibles/verse layout style': LayoutStyle.VersePerSlide,
     'bibles/book name language': LanguageSelection.Bible,
     'bibles/display brackets': DisplayStyle.NoBrackets,
+    'bibles/is verse number visible': True,
     'bibles/display new chapter': False,
     'bibles/second bibles': True,
     'bibles/advanced bible': '',
