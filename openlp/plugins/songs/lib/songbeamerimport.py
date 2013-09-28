@@ -105,7 +105,7 @@ class SongBeamerImport(SongImport):
         self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         if not isinstance(self.import_source, list):
             return
-        for _file in self.import_source:
+        for import_file in self.import_source:
             # TODO: check that it is a valid SongBeamer file
             if self.stop_import_flag:
                 return
@@ -113,13 +113,13 @@ class SongBeamerImport(SongImport):
             self.currentVerse = ''
             self.currentVerseType = VerseType.tags[VerseType.Verse]
             read_verses = False
-            file_name = os.path.split(_file)[1]
-            if os.path.isfile(_file):
+            file_name = os.path.split(import_file)[1]
+            if os.path.isfile(import_file):
                 # First open in binary mode to detect the encoding
-                detect_file = open(_file, 'rb')
+                detect_file = open(import_file, 'rb')
                 details = chardet.detect(detect_file.read())
                 detect_file.close()
-                infile = codecs.open(_file, 'r', details['encoding'])
+                infile = codecs.open(import_file, 'r', details['encoding'])
                 song_data = infile.readlines()
                 infile.close()
             else:
@@ -150,7 +150,7 @@ class SongBeamerImport(SongImport):
                 self.replaceHtmlTags()
                 self.addVerse(self.currentVerse, self.currentVerseType)
             if not self.finish():
-                self.logError(_file)
+                self.logError(import_file)
 
     def replaceHtmlTags(self):
         """
