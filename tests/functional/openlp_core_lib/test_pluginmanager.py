@@ -280,8 +280,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_tools_menu()
 
         # THEN: The add_tools_menu_item() method should have been called
-        assert mocked_plugin.add_tools_menu_item.call_count == 0, \
-            'The add_tools_menu_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.add_tools_menu_item.call_count,
+                         'The add_tools_menu_item() method should not have been called.')
 
     def hook_tools_menu_with_active_plugin_test(self):
         """
@@ -315,7 +315,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The is_active() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.initialise.call_count == 0, 'The initialise() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.initialise.call_count, 'The initialise() method should not have been called.')
 
     def initialise_plugins_with_active_plugin_test(self):
         """
@@ -351,7 +351,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The is_active() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.finalise.call_count == 0, 'The finalise() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.finalise.call_count, 'The finalise() method should not have been called.')
 
     def finalise_plugins_with_active_plugin_test(self):
         """
@@ -419,8 +419,8 @@ class TestPluginManager(TestCase):
 
         # THEN: The isActive() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.new_service_created.call_count == 0,\
-            'The new_service_created() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.new_service_created.call_count,
+                         'The new_service_created() method should not have been called.')
 
     def new_service_created_with_active_plugin_test(self):
         """
