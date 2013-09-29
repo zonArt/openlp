@@ -76,12 +76,6 @@ try:
 except ImportError:
     ICU_VERSION = '-'
 try:
-    import cherrypy
-    CHERRYPY_VERSION = cherrypy.__version__
-except ImportError:
-    CHERRYPY_VERSION = '-'
-
-try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
     WEBKIT_VERSION = '-'
@@ -140,7 +134,6 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Chardet: %s\n' % CHARDET_VERSION + \
             'PyEnchant: %s\n' % ENCHANT_VERSION + \
             'Mako: %s\n' % MAKO_VERSION + \
-            'CherryPy: %s\n' % CHERRYPY_VERSION + \
             'pyICU: %s\n' % ICU_VERSION + \
             'pyUNO bridge: %s\n' % self._pyuno_import() + \
             'VLC: %s\n' % VLC_VERSION
