@@ -81,7 +81,7 @@ class TestServiceItem(TestCase):
         service_item.add_icon = MagicMock()
 
         # WHEN: We add a custom from a saved service
-        line = convert_file_service_item('serviceitem_custom_1.osj')
+        line = convert_file_service_item(TEST_PATH, 'serviceitem_custom_1.osj')
         service_item.set_from_service(line)
 
         # THEN: We should get back a valid service item

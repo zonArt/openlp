@@ -70,7 +70,7 @@ class TestLib(TestCase):
         false_result = str_to_bool(false_boolean)
 
         # THEN: We should get back a True bool
-        self.assertIsinstance(false_result, bool, 'The result should be a boolean')
+        self.assertIsInstance(false_result, bool, 'The result should be a boolean')
         self.assertFalse(false_result, 'The result should be True')
 
     def str_to_bool_with_integer_test(self):
