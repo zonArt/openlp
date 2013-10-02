@@ -23,9 +23,9 @@ class TestMediaItem(TestCase):
         Registry.create()
         Registry().register('service_list', MagicMock())
         Registry().register('main_window', MagicMock())
-        with patch('openlp.core.lib.mediamanageritem.MediaManagerItem.__init__'), \
+        with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
-            self.media_item = SongMediaItem(MagicMock(), MagicMock())
+            self.media_item = SongMediaItem(None, MagicMock())
 
         fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)

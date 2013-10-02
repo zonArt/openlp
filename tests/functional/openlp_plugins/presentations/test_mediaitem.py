@@ -49,11 +49,9 @@ class TestMediaItem(TestCase):
         Registry.create()
         Registry().register('service_manager', MagicMock())
         Registry().register('main_window', MagicMock())
-
-        with patch('openlp.plugins.presentations.lib.mediaitem.PresentationMediaItem.__init__') as mocked_init:
-            mocked_init.return_value = None
-            self.media_item = PresentationMediaItem(MagicMock(), MagicMock, MagicMock(), MagicMock())
-
+        with patch('openlp.plugins.presentations.lib.mediaitem.MediaManagerItem._setup'), \
+                patch('openlp.plugins.presentations.lib.mediaitem.PresentationMediaItem.setup_item'):
+            self.media_item = PresentationMediaItem(None, MagicMock, MagicMock())
         self.application = QtGui.QApplication.instance()
 
     def tearDown(self):
@@ -89,6 +87,8 @@ class TestMediaItem(TestCase):
             mocked_translate.side_effect = lambda module, string_to_translate: string_to_translate
             self.media_item.build_file_mask_string()
 
-        # THEN: The file mask should be generated.
-        assert self.media_item.on_new_file_masks == 'Presentations (*.odp *.ppt )', \
-            'The file mask should contain the odp and ppt extensions'
+        # THEN: The file mask should be generated correctly
+        self.assertIn('*.odp', self.media_item.on_new_file_masks,
+            'The file mask should contain the odp extension')
+        self.assertIn('*.ppt', self.media_item.on_new_file_masks,
+            'The file mask should contain the ppt extension')

@@ -95,9 +95,9 @@ class TestServiceItem(TestCase):
         # THEN: The frames should also be valid
         self.assertEqual('Test Custom', service_item.get_display_title(), 'The title should be "Test Custom"')
         self.assertEqual(VERSE[:-1], service_item.get_frames()[0]['text'],
-                         'The returned text matches the input, except the last line feed')
+            'The returned text matches the input, except the last line feed')
         self.assertEqual(VERSE.split('\n', 1)[0], service_item.get_rendered_frame(1),
-                         'The first line has been returned')
+            'The first line has been returned')
         self.assertEqual('Slide 1', service_item.get_frame_title(0), '"Slide 1" has been returned as the title')
         self.assertEqual('Slide 2', service_item.get_frame_title(1), '"Slide 2" has been returned as the title')
         self.assertEqual('', service_item.get_frame_title(2), 'Blank has been returned as the title of slide 3')

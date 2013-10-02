@@ -64,6 +64,11 @@ class BibleMediaItem(MediaManagerItem):
         self.lock_icon = build_icon(':/bibles/bibles_search_lock.png')
         self.unlock_icon = build_icon(':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
         self.quick_preview_allowed = True

@@ -48,11 +48,10 @@ class TestImageMediaItem(TestCase):
         Registry().register('service_list', MagicMock())
         Registry().register('main_window', self.mocked_main_window)
         Registry().register('live_controller', MagicMock())
-        mocked_parent = MagicMock()
         mocked_plugin = MagicMock()
-        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.__init__') as mocked_init:
-            mocked_init.return_value = None
-            self.media_item = ImageMediaItem(mocked_parent, mocked_plugin)
+        with patch('openlp.plugins.images.lib.mediaitem.MediaManagerItem._setup'), \
+                patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.setup_item'):
+            self.media_item = ImageMediaItem(None, mocked_plugin)
 
     def save_new_images_list_empty_list_test(self):
         """
@@ -160,7 +159,7 @@ class TestImageMediaItem(TestCase):
             ImageGroups.parent_id = 1
             self.media_item.manager = MagicMock()
             self.media_item.manager.get_all_objects.side_effect = self._recursively_delete_group_side_effect
-            self.media_item.servicePath = ""
+            self.media_item.service_path = ""
             test_group = ImageGroups()
             test_group.id = 1
 
