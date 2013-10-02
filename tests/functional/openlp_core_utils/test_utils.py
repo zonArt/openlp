@@ -134,7 +134,7 @@ class TestUtils(TestCase):
 
             # THEN: A tuple should be returned.
             self.assertEqual(wanted_result, result,
-                             'A two-entry tuple with the directory and file name (empty) should have been returned.')
+                'A two-entry tuple with the directory and file name (empty) should have been returned.')
 
     def clean_filename_test(self):
         """
@@ -167,7 +167,7 @@ class TestUtils(TestCase):
 
             # THEN: We get a properly sorted list
             self.assertEqual(['Aushang', '\u00C4u\u00DFerung', 'Auszug'], sorted_list,
-                             'Strings should be sorted properly')
+                'Strings should be sorted properly')
 
     def get_locale_key_linux_test(self):
         """
@@ -180,12 +180,13 @@ class TestUtils(TestCase):
             mocked_get_language.return_value = 'de'
             mocked_os.name = 'linux'
             unsorted_list = ['Auszug', 'Aushang', '\u00C4u\u00DFerung']
+
             # WHEN: We sort the list and use get_locale_key() to generate the sorting keys
             sorted_list = sorted(unsorted_list, key=get_locale_key)
 
             # THEN: We get a properly sorted list
             self.assertEqual(['Aushang', '\u00C4u\u00DFerung', 'Auszug'], sorted_list,
-                             'Strings should be sorted properly')
+                'Strings should be sorted properly')
 
     def get_natural_key_test(self):
         """
