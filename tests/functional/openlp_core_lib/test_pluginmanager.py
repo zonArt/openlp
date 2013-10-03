@@ -420,7 +420,7 @@ class TestPluginManager(TestCase):
         # THEN: The isActive() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
         self.assertEqual(0, mocked_plugin.new_service_created.call_count,
-            'The new_service_created() method should not have been called.')
+                         'The new_service_created() method should not have been called.')
 
     def new_service_created_with_active_plugin_test(self):
         """
