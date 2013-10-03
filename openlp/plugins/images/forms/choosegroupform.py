@@ -40,7 +40,7 @@ class ChooseGroupForm(QtGui.QDialog, Ui_ChooseGroupDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(ChooseGroupForm, self).__init__(parent)
         self.setupUi(self)
 
     def exec_(self, selected_group=None):

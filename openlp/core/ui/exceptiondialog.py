@@ -44,44 +44,44 @@ class Ui_ExceptionDialog(object):
         """
         Set up the UI.
         """
-        exception_dialog.setObjectName(u'exception_dialog')
+        exception_dialog.setObjectName('exception_dialog')
         self.exception_layout = QtGui.QVBoxLayout(exception_dialog)
-        self.exception_layout.setObjectName(u'exception_layout')
+        self.exception_layout.setObjectName('exception_layout')
         self.message_layout = QtGui.QHBoxLayout()
-        self.message_layout.setObjectName(u'messageLayout')
+        self.message_layout.setObjectName('messageLayout')
         self.message_layout.addSpacing(12)
         self.bug_label = QtGui.QLabel(exception_dialog)
-        self.bug_label.setPixmap(QtGui.QPixmap(u':/graphics/exception.png'))
+        self.bug_label.setPixmap(QtGui.QPixmap(':/graphics/exception.png'))
         self.bug_label.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        self.bug_label.setObjectName(u'bug_label')
+        self.bug_label.setObjectName('bug_label')
         self.message_layout.addWidget(self.bug_label)
         self.message_layout.addSpacing(12)
         self.message_label = QtGui.QLabel(exception_dialog)
         self.message_label.setWordWrap(True)
-        self.message_label.setObjectName(u'message_label')
+        self.message_label.setObjectName('message_label')
         self.message_layout.addWidget(self.message_label)
         self.exception_layout.addLayout(self.message_layout)
         self.description_explanation = QtGui.QLabel(exception_dialog)
-        self.description_explanation.setObjectName(u'description_explanation')
+        self.description_explanation.setObjectName('description_explanation')
         self.exception_layout.addWidget(self.description_explanation)
         self.description_text_edit = QtGui.QPlainTextEdit(exception_dialog)
-        self.description_text_edit.setObjectName(u'description_text_edit')
+        self.description_text_edit.setObjectName('description_text_edit')
         self.exception_layout.addWidget(self.description_text_edit)
         self.description_word_count = QtGui.QLabel(exception_dialog)
-        self.description_word_count.setObjectName(u'description_word_count')
+        self.description_word_count.setObjectName('description_word_count')
         self.exception_layout.addWidget(self.description_word_count)
         self.exception_text_edit = QtGui.QPlainTextEdit(exception_dialog)
         self.exception_text_edit.setReadOnly(True)
-        self.exception_text_edit.setObjectName(u'exception_text_edit')
+        self.exception_text_edit.setObjectName('exception_text_edit')
         self.exception_layout.addWidget(self.exception_text_edit)
-        self.send_report_button = create_button(exception_dialog, u'send_report_button',
-            icon=u':/general/general_email.png', click=self.on_send_report_button_clicked)
-        self.save_report_button = create_button(exception_dialog, u'save_report_button',
-            icon=u':/general/general_save.png', click=self.on_save_report_button_clicked)
-        self.attach_tile_button = create_button(exception_dialog, u'attach_tile_button',
-            icon=u':/general/general_open.png', click=self.on_attach_file_button_clicked)
-        self.button_box = create_button_box(exception_dialog, u'button_box',
-            [u'close'], [self.send_report_button, self.save_report_button, self.attach_tile_button])
+        self.send_report_button = create_button(exception_dialog, 'send_report_button',
+            icon=':/general/general_email.png', click=self.on_send_report_button_clicked)
+        self.save_report_button = create_button(exception_dialog, 'save_report_button',
+            icon=':/general/general_save.png', click=self.on_save_report_button_clicked)
+        self.attach_tile_button = create_button(exception_dialog, 'attach_tile_button',
+            icon=':/general/general_open.png', click=self.on_attach_file_button_clicked)
+        self.button_box = create_button_box(exception_dialog, 'button_box',
+            ['close'], [self.send_report_button, self.save_report_button, self.attach_tile_button])
         self.exception_layout.addWidget(self.button_box)
 
         self.retranslateUi(exception_dialog)

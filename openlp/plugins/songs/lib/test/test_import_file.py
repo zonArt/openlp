@@ -39,7 +39,7 @@ logging.basicConfig(filename=LOG_FILENAME,level=logging.INFO)
 from test_opensongimport import wizard_stub
 
 def test(filenames):
-    manager = Manager(u'songs', init_schema)
+    manager = Manager('songs', init_schema)
     o = OpenSongImport(manager, filenames=filenames)
     o.import_wizard = wizard_stub()
     o.commit = False

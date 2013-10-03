@@ -38,7 +38,7 @@ import re
 from openlp.core.lib import translate
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib import retrieve_windows_encoding, strip_rtf
-from songimport import SongImport
+from .songimport import SongImport
 
 RTF_STRIPPING_REGEX = re.compile(r'\{\\tx[^}]*\}')
 # regex: at least two newlines, can have spaces between them
@@ -92,29 +92,29 @@ class EasyWorshipSongImport(SongImport):
             self.memoFile.close()
             return
         # Take a stab at how text is encoded
-        self.encoding = u'cp1252'
+        self.encoding = 'cp1252'
         db_file.seek(106)
         code_page, = struct.unpack('<h', db_file.read(2))
         if code_page == 852:
-            self.encoding = u'cp1250'
+            self.encoding = 'cp1250'
         # The following codepage to actual encoding mappings have not been
         # observed, but merely guessed. Actual example files are needed.
         elif code_page == 737:
-            self.encoding = u'cp1253'
+            self.encoding = 'cp1253'
         elif code_page == 775:
-            self.encoding = u'cp1257'
+            self.encoding = 'cp1257'
         elif code_page == 855:
-            self.encoding = u'cp1251'
+            self.encoding = 'cp1251'
         elif code_page == 857:
-            self.encoding = u'cp1254'
+            self.encoding = 'cp1254'
         elif code_page == 866:
-            self.encoding = u'cp1251'
+            self.encoding = 'cp1251'
         elif code_page == 869:
-            self.encoding = u'cp1253'
+            self.encoding = 'cp1253'
         elif code_page == 862:
-            self.encoding = u'cp1255'
+            self.encoding = 'cp1255'
         elif code_page == 874:
-            self.encoding = u'cp874'
+            self.encoding = 'cp874'
         self.encoding = retrieve_windows_encoding(self.encoding)
         if not self.encoding:
             return
@@ -122,7 +122,7 @@ class EasyWorshipSongImport(SongImport):
         db_file.seek(120)
         field_info = db_file.read(num_fields * 2)
         db_file.seek(4 + (num_fields * 4) + 261, os.SEEK_CUR)
-        field_names = db_file.read(header_size - db_file.tell()).split('\0', num_fields)
+        field_names = db_file.read(header_size - db_file.tell()).split(b'\0', num_fields)
         field_names.pop()
         field_descs = []
         for i, field_name in enumerate(field_names):
@@ -132,12 +132,12 @@ class EasyWorshipSongImport(SongImport):
         # Pick out the field description indexes we will need
         try:
             success = True
-            fi_title = self.findField(u'Title')
-            fi_author = self.findField(u'Author')
-            fi_copy = self.findField(u'Copyright')
-            fi_admin = self.findField(u'Administrator')
-            fi_words = self.findField(u'Words')
-            fi_ccli = self.findField(u'Song Number')
+            fi_title = self.findField(b'Title')
+            fi_author = self.findField(b'Author')
+            fi_copy = self.findField(b'Copyright')
+            fi_admin = self.findField(b'Administrator')
+            fi_words = self.findField(b'Words')
+            fi_ccli = self.findField(b'Song Number')
         except IndexError:
             # This is the wrong table
             success = False
@@ -150,7 +150,7 @@ class EasyWorshipSongImport(SongImport):
             cur_block_pos = header_size + ((cur_block - 1) * 1024 * block_size)
             db_file.seek(cur_block_pos)
             cur_block, rec_count = struct.unpack('<h2xh', db_file.read(6))
-            rec_count = (rec_count + record_size) / record_size
+            rec_count = (rec_count + record_size) // record_size
             block_list.append((cur_block_pos, rec_count))
             total_count += rec_count
         self.import_wizard.progress_bar.setMaximum(total_count)
@@ -164,7 +164,7 @@ class EasyWorshipSongImport(SongImport):
                 raw_record = db_file.read(record_size)
                 self.fields = self.recordStruct.unpack(raw_record)
                 self.setDefaults()
-                self.title = self.getField(fi_title)
+                self.title = self.getField(fi_title).decode()
                 # Get remaining fields.
                 copy = self.getField(fi_copy)
                 admin = self.getField(fi_admin)
@@ -173,25 +173,26 @@ class EasyWorshipSongImport(SongImport):
                 words = self.getField(fi_words)
                 # Set the SongImport object members.
                 if copy:
-                    self.copyright = copy
+                    self.copyright = copy.decode()
                 if admin:
                     if copy:
-                        self.copyright += u', '
-                    self.copyright += translate('SongsPlugin.EasyWorshipSongImport', 'Administered by %s') % admin
+                        self.copyright += ', '
+                    self.copyright += translate('SongsPlugin.EasyWorshipSongImport',
+                                                'Administered by %s') % admin.decode()
                 if ccli:
-                    self.ccliNumber = ccli
+                    self.ccliNumber = ccli.decode()
                 if authors:
                     # Split up the authors
-                    author_list = authors.split(u'/')
+                    author_list = authors.split(b'/')
                     if len(author_list) < 2:
-                        author_list = authors.split(u';')
+                        author_list = authors.split(b';')
                     if len(author_list) < 2:
-                        author_list = authors.split(u',')
+                        author_list = authors.split(b',')
                     for author_name in author_list:
-                        self.addAuthor(author_name.strip())
+                        self.addAuthor(author_name.decode().strip())
                 if words:
                     # Format the lyrics
-                    result = strip_rtf(words, self.encoding)
+                    result = strip_rtf(words.decode(), self.encoding)
                     if result is None:
                         return
                     words, self.encoding = result
@@ -200,16 +201,16 @@ class EasyWorshipSongImport(SongImport):
                         verse = verse.strip()
                         if not verse:
                             continue
-                        verse_split = verse.split(u'\n', 1)
+                        verse_split = verse.split('\n', 1)
                         first_line_is_tag = False
                         # EW tags: verse, chorus, pre-chorus, bridge, tag,
                         # intro, ending, slide
-                        for tag in VerseType.tags + [u'tag', u'slide']:
+                        for tag in VerseType.tags + ['tag', 'slide']:
                             tag = tag.lower()
                             ew_tag = verse_split[0].strip().lower()
                             if ew_tag.startswith(tag):
                                 verse_type = tag[0]
-                                if tag == u'tag' or tag == u'slide':
+                                if tag == 'tag' or tag == 'slide':
                                     verse_type = VerseType.tags[VerseType.Other]
                                 first_line_is_tag = True
                                 number_found = False
@@ -222,13 +223,13 @@ class EasyWorshipSongImport(SongImport):
                                         number_found = True
                                     match = NOTE_REGEX.search(ew_tag)
                                     if match:
-                                        self.comments += ew_tag + u'\n'
+                                        self.comments += ew_tag + '\n'
                                 if not number_found:
-                                    verse_type += u'1'
+                                    verse_type += '1'
                                 break
                         self.addVerse(verse_split[-1].strip() if first_line_is_tag else verse, verse_type)
                 if len(self.comments) > 5:
-                    self.comments += unicode(translate('SongsPlugin.EasyWorshipSongImport',
+                    self.comments += str(translate('SongsPlugin.EasyWorshipSongImport',
                         '\n[above are Song Tags with notes imported from EasyWorship]'))
                 if self.stop_import_flag:
                     break
@@ -267,14 +268,14 @@ class EasyWorshipSongImport(SongImport):
         field = self.fields[field_desc_index]
         field_desc = self.fieldDescs[field_desc_index]
         # Return None in case of 'blank' entries
-        if isinstance(field, str):
-            if not field.rstrip('\0'):
+        if isinstance(field, bytes):
+            if not field.rstrip(b'\0'):
                 return None
         elif field == 0:
             return None
         # Format the field depending on the field type
         if field_desc.field_type == FieldType.String:
-            return field.rstrip('\0').decode(self.encoding)
+            return field.rstrip(b'\0')
         elif field_desc.field_type == FieldType.Int16:
             return field ^ 0x8000
         elif field_desc.field_type == FieldType.Int32:
@@ -291,12 +292,12 @@ class EasyWorshipSongImport(SongImport):
                 self.memoFile.seek(8, os.SEEK_CUR)
             elif memo_block_type == 3:
                 if sub_block > 63:
-                    return u''
+                    return b''
                 self.memoFile.seek(11 + (5 * sub_block), os.SEEK_CUR)
                 sub_block_start, = struct.unpack('B', self.memoFile.read(1))
                 self.memoFile.seek(block_start + (sub_block_start * 16))
             else:
-                return u''
+                return b''
             return self.memoFile.read(blob_size)
         else:
             return 0

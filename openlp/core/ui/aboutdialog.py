@@ -42,46 +42,46 @@ class Ui_AboutDialog(object):
         """
         Set up the UI for the dialog.
         """
-        about_dialog.setObjectName(u'about_dialog')
-        about_dialog.setWindowIcon(build_icon(u':/icon/openlp-logo-16x16.png'))
+        about_dialog.setObjectName('about_dialog')
+        about_dialog.setWindowIcon(build_icon(':/icon/openlp-logo-16x16.png'))
         self.about_dialog_layout = QtGui.QVBoxLayout(about_dialog)
-        self.about_dialog_layout.setObjectName(u'about_dialog_layout')
+        self.about_dialog_layout.setObjectName('about_dialog_layout')
         self.logo_label = QtGui.QLabel(about_dialog)
-        self.logo_label.setPixmap(QtGui.QPixmap(u':/graphics/openlp-about-logo.png'))
-        self.logo_label.setObjectName(u'logo_label')
+        self.logo_label.setPixmap(QtGui.QPixmap(':/graphics/openlp-about-logo.png'))
+        self.logo_label.setObjectName('logo_label')
         self.about_dialog_layout.addWidget(self.logo_label)
         self.about_notebook = QtGui.QTabWidget(about_dialog)
-        self.about_notebook.setObjectName(u'about_notebook')
+        self.about_notebook.setObjectName('about_notebook')
         self.about_tab = QtGui.QWidget()
-        self.about_tab.setObjectName(u'about_tab')
+        self.about_tab.setObjectName('about_tab')
         self.about_tab_layout = QtGui.QVBoxLayout(self.about_tab)
-        self.about_tab_layout.setObjectName(u'about_tab_layout')
+        self.about_tab_layout.setObjectName('about_tab_layout')
         self.about_text_edit = QtGui.QPlainTextEdit(self.about_tab)
         self.about_text_edit.setReadOnly(True)
-        self.about_text_edit.setObjectName(u'about_text_edit')
+        self.about_text_edit.setObjectName('about_text_edit')
         self.about_tab_layout.addWidget(self.about_text_edit)
-        self.about_notebook.addTab(self.about_tab, u'')
+        self.about_notebook.addTab(self.about_tab, '')
         self.credits_tab = QtGui.QWidget()
-        self.credits_tab.setObjectName(u'credits_tab')
+        self.credits_tab.setObjectName('credits_tab')
         self.credits_tab_layout = QtGui.QVBoxLayout(self.credits_tab)
-        self.credits_tab_layout.setObjectName(u'credits_tab_layout')
+        self.credits_tab_layout.setObjectName('credits_tab_layout')
         self.credits_text_edit = QtGui.QPlainTextEdit(self.credits_tab)
         self.credits_text_edit.setReadOnly(True)
-        self.credits_text_edit.setObjectName(u'credits_text_edit')
+        self.credits_text_edit.setObjectName('credits_text_edit')
         self.credits_tab_layout.addWidget(self.credits_text_edit)
-        self.about_notebook.addTab(self.credits_tab, u'')
+        self.about_notebook.addTab(self.credits_tab, '')
         self.license_tab = QtGui.QWidget()
-        self.license_tab.setObjectName(u'license_tab')
+        self.license_tab.setObjectName('license_tab')
         self.license_tab_layout = QtGui.QVBoxLayout(self.license_tab)
-        self.license_tab_layout.setObjectName(u'license_tab_layout')
+        self.license_tab_layout.setObjectName('license_tab_layout')
         self.license_text_edit = QtGui.QPlainTextEdit(self.license_tab)
         self.license_text_edit.setReadOnly(True)
-        self.license_text_edit.setObjectName(u'license_text_edit')
+        self.license_text_edit.setObjectName('license_text_edit')
         self.license_tab_layout.addWidget(self.license_text_edit)
-        self.about_notebook.addTab(self.license_tab, u'')
+        self.about_notebook.addTab(self.license_tab, '')
         self.about_dialog_layout.addWidget(self.about_notebook)
-        self.volunteer_button = create_button(None, u'volunteer_button', icon=u':/system/system_volunteer.png')
-        self.button_box = create_button_box(about_dialog, u'button_box', [u'close'], [self.volunteer_button])
+        self.volunteer_button = create_button(None, 'volunteer_button', icon=':/system/system_volunteer.png')
+        self.button_box = create_button_box(about_dialog, 'button_box', ['close'], [self.volunteer_button])
         self.about_dialog_layout.addWidget(self.button_box)
         self.retranslateUi(about_dialog)
         self.about_notebook.setCurrentIndex(0)
@@ -90,7 +90,7 @@ class Ui_AboutDialog(object):
         """
         Dynamically translate the UI.
         """
-        about_dialog.setWindowTitle(u'%s OpenLP' % UiStrings().About)
+        about_dialog.setWindowTitle('%s OpenLP' % UiStrings().About)
         self.about_text_edit.setPlainText(translate('OpenLP.AboutForm',
             'OpenLP <version><revision> - Open Source Lyrics '
             'Projection\n'
@@ -108,63 +108,63 @@ class Ui_AboutDialog(object):
             'consider volunteering by using the button below.'
         ))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.about_tab), UiStrings().About)
-        lead = u'Raoul "superfly" Snyman'
-        developers = [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin',
-            u'Michael "cocooncrash" Gorven',
-            u'Andreas "googol" Preikschat', u'Raoul "superfly" Snyman',
-            u'Martin "mijiti" Thompson', u'Jon "Meths" Tibble']
-        contributors = [u'Gerald "jerryb" Britton',
-            u'Samuel "MrGamgee" Findlay', u'Scott "sguerrieri" Guerrieri',
-            u'Matthias "matthub" Hub', u'Meinert "m2j" Jordan',
-            u'Armin "orangeshirt" K\xf6hler', u'Erik "luen" Lundin',
-            u'Edwin "edwinlunando" Lunando', u'Brian "brianmeyer" Meyer',
-            u'Joshua "milleja46" Miller', u'Stevan "ElderP" Pettit',
-            u'Mattias "mahfiaz" P\xf5ldaru', u'Christian "crichter" Richter',
-            u'Philip "Phill" Ridout', u'Simon "samscudder" Scudder',
-            u'Jeffrey "whydoubt" Smith', u'Maikel Stuivenberg',
-            u'Dave "Dave42W" Warnock', u'Frode "frodus" Woldsund',
-            u'Martin "matysek" Zibricky', u'Patrick "mohij" Zimmermann']
-        testers = [u'Philip "Phill" Ridout', u'Wesley "wrst" Stout',
-            u'John "jseagull1" Cegalis (lead)']
+        lead = 'Raoul "superfly" Snyman'
+        developers = ['Tim "TRB143" Bentley', 'Jonathan "gushie" Corwin',
+            'Michael "cocooncrash" Gorven',
+            'Andreas "googol" Preikschat', 'Raoul "superfly" Snyman',
+            'Martin "mijiti" Thompson', 'Jon "Meths" Tibble']
+        contributors = ['Gerald "jerryb" Britton',
+            'Samuel "MrGamgee" Findlay', 'Scott "sguerrieri" Guerrieri',
+            'Matthias "matthub" Hub', 'Meinert "m2j" Jordan',
+            'Armin "orangeshirt" K\xf6hler', 'Erik "luen" Lundin',
+            'Edwin "edwinlunando" Lunando', 'Brian "brianmeyer" Meyer',
+            'Joshua "milleja46" Miller', 'Stevan "ElderP" Pettit',
+            'Mattias "mahfiaz" P\xf5ldaru', 'Christian "crichter" Richter',
+            'Philip "Phill" Ridout', 'Simon "samscudder" Scudder',
+            'Jeffrey "whydoubt" Smith', 'Maikel Stuivenberg',
+            'Dave "Dave42W" Warnock', 'Frode "frodus" Woldsund',
+            'Martin "matysek" Zibricky', 'Patrick "mohij" Zimmermann']
+        testers = ['Philip "Phill" Ridout', 'Wesley "wrst" Stout',
+            'John "jseagull1" Cegalis (lead)']
         packagers = ['Thomas "tabthorpe" Abthorpe (FreeBSD)',
-            u'Tim "TRB143" Bentley (Fedora and Android)',
-            u'Matthias "matthub" Hub (Mac OS X)',
-            u'Joseph "jdmulloy" Mulloy (openSUSE)',
-            u'Stevan "ElderP" Pettit (Windows)',
-            u'Raoul "superfly" Snyman (Debian, Ubuntu)',
-            u'Garrett "floft" Wilson (Arch Linux)']
+            'Tim "TRB143" Bentley (Fedora and Android)',
+            'Matthias "matthub" Hub (Mac OS X)',
+            'Joseph "jdmulloy" Mulloy (openSUSE)',
+            'Stevan "ElderP" Pettit (Windows)',
+            'Raoul "superfly" Snyman (Debian, Ubuntu)',
+            'Garrett "floft" Wilson (Arch Linux)']
         translators = {
-            u'af': [u'Johan "nuvolari" Mynhardt'],
-            u'cs': [u'Martin "matysek" Zibricky'],
-            u'da': [u'Henrik "Hsonesson" Sonesson'],
-            u'de': [u'Patrick "madmuffin" Br\xfcckner',
-                u'Meinert "m2j" Jordan', u'Andreas "googol" Preikschat',
-                u'Christian "crichter" Richter'],
-            u'en_GB': [u'Tim "TRB143" Bentley', u'Jonathan "gushie" Corwin'],
-            u'en_ZA': [u'Raoul "superfly" Snyman',
-                       u'Johan "nuvolari" Mynhardt'],
-            u'el': [u'Alexander Siozos'],
-            u'es': [u'Josu\xe9 Z\xfa\xf1iga', u'Christian Gonzalez'],
-            u'et': [u'Mattias "mahfiaz" P\xf5ldaru'],
-            u'fi': [u'Jori "joribu" Brander', u'Tobbe "tobbeb" Bildo'],
-            u'fr': [u'Stephan\xe9 "stbrunner" Brunner', u'Jeremie "jnau05"',
-                    u'Carl "carl.fischer" Fischer'],
-            u'hu': [u'Gyuris Gell\xe9rt'],
-            u'id': [u'Mico "bangmico" Siahaan', u' ign_christian'],
-            u'ja': [u'Kunio "Kunio" Nakamaru', u'Chris Haris'],
-            u'nb': [u'Atle "pendlaren" Weibell', u'Frode "frodus" Woldsund'],
-            u'nl': [u'Arjen "typovar" van Voorst'],
-            u'pt_BR': [u'David Mederiros', u'Rafael "rafaellerm" Lerm',
-                       u'Eduardo Levi Chaves',
-                       u'Gustavo Bim', u'Rog\xeanio Bel\xe9m', u'Samuel'
-                u'Simon "samscudder" Scudder', u'Van Der Fran'],
-            u'ru': [u'Sergey "ratz" Ratz'],
-            u'sv': [u'Erik "luen" Lundin'],
-            u'ta_LK': [u'"Prasad"'],
-            u'zh_CN': [u' "executor" ']
+            'af': ['Johan "nuvolari" Mynhardt'],
+            'cs': ['Martin "matysek" Zibricky'],
+            'da': ['Henrik "Hsonesson" Sonesson'],
+            'de': ['Patrick "madmuffin" Br\xfcckner',
+                'Meinert "m2j" Jordan', 'Andreas "googol" Preikschat',
+                'Christian "crichter" Richter'],
+            'en_GB': ['Tim "TRB143" Bentley', 'Jonathan "gushie" Corwin'],
+            'en_ZA': ['Raoul "superfly" Snyman',
+                       'Johan "nuvolari" Mynhardt'],
+            'el': ['Alexander Siozos'],
+            'es': ['Josu\xe9 Z\xfa\xf1iga', 'Christian Gonzalez'],
+            'et': ['Mattias "mahfiaz" P\xf5ldaru'],
+            'fi': ['Jori "joribu" Brander', 'Tobbe "tobbeb" Bildo'],
+            'fr': ['Stephan\xe9 "stbrunner" Brunner', 'Jeremie "jnau05"',
+                    'Carl "carl.fischer" Fischer'],
+            'hu': ['Gyuris Gell\xe9rt'],
+            'id': ['Mico "bangmico" Siahaan', ' ign_christian'],
+            'ja': ['Kunio "Kunio" Nakamaru', 'Chris Haris'],
+            'nb': ['Atle "pendlaren" Weibell', 'Frode "frodus" Woldsund'],
+            'nl': ['Arjen "typovar" van Voorst'],
+            'pt_BR': ['David Mederiros', 'Rafael "rafaellerm" Lerm',
+                       'Eduardo Levi Chaves',
+                       'Gustavo Bim', 'Rog\xeanio Bel\xe9m', 'Samuel'
+                'Simon "samscudder" Scudder', 'Van Der Fran'],
+            'ru': ['Sergey "ratz" Ratz'],
+            'sv': ['Erik "luen" Lundin'],
+            'ta_LK': ['"Prasad"'],
+            'zh_CN': [' "executor" ']
         }
-        documentors = [u'Wesley "wrst" Stout',
-            u'John "jseagull1" Cegalis (lead)']
+        documentors = ['Wesley "wrst" Stout',
+            'John "jseagull1" Cegalis (lead)']
         self.credits_text_edit.setPlainText(translate('OpenLP.AboutForm',
             'Project Lead\n'
             '    %s\n'
@@ -244,43 +244,43 @@ class Ui_AboutDialog(object):
             '    God our Father, for sending His Son to die\n'
             '    on the cross, setting us free from sin. We\n'
             '    bring this software to you for free because\n'
-            '    He has set us free.') % (lead, u'\n    '.join(developers),
-            u'\n    '.join(contributors), u'\n    '.join(testers),
-            u'\n    '.join(packagers), u'\n        '.join(translators[u'af']),
-            u'\n        '.join(translators[u'cs']),
-            u'\n        '.join(translators[u'da']),
-            u'\n        '.join(translators[u'de']),
-            u'\n        '.join(translators[u'el']),
-            u'\n        '.join(translators[u'en_GB']),
-            u'\n        '.join(translators[u'en_ZA']),
-            u'\n        '.join(translators[u'es']),
-            u'\n        '.join(translators[u'et']),
-            u'\n        '.join(translators[u'fi']),
-            u'\n        '.join(translators[u'fr']),
-            u'\n        '.join(translators[u'hu']),
-            u'\n        '.join(translators[u'id']),
-            u'\n        '.join(translators[u'ja']),
-            u'\n        '.join(translators[u'nb']),
-            u'\n        '.join(translators[u'nl']),
-            u'\n        '.join(translators[u'pt_BR']),
-            u'\n        '.join(translators[u'ru']),
-            u'\n        '.join(translators[u'sv']),
-            u'\n        '.join(translators[u'ta_LK']),
-            u'\n        '.join(translators[u'zh_CN']),
-            u'\n    '.join(documentors)))
+            '    He has set us free.') % (lead, '\n    '.join(developers),
+            '\n    '.join(contributors), '\n    '.join(testers),
+            '\n    '.join(packagers), '\n        '.join(translators['af']),
+            '\n        '.join(translators['cs']),
+            '\n        '.join(translators['da']),
+            '\n        '.join(translators['de']),
+            '\n        '.join(translators['el']),
+            '\n        '.join(translators['en_GB']),
+            '\n        '.join(translators['en_ZA']),
+            '\n        '.join(translators['es']),
+            '\n        '.join(translators['et']),
+            '\n        '.join(translators['fi']),
+            '\n        '.join(translators['fr']),
+            '\n        '.join(translators['hu']),
+            '\n        '.join(translators['id']),
+            '\n        '.join(translators['ja']),
+            '\n        '.join(translators['nb']),
+            '\n        '.join(translators['nl']),
+            '\n        '.join(translators['pt_BR']),
+            '\n        '.join(translators['ru']),
+            '\n        '.join(translators['sv']),
+            '\n        '.join(translators['ta_LK']),
+            '\n        '.join(translators['zh_CN']),
+            '\n    '.join(documentors)))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.credits_tab),
             translate('OpenLP.AboutForm', 'Credits'))
         copyright_note = translate('OpenLP.AboutForm',
             'Copyright \xa9 2004-2013 %s\n'
-            'Portions copyright \xa9 2004-2013 %s') % (u'Raoul Snyman',
-            u'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
-            u'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
-            u'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
-            u'Brian T. Meyer, Stevan Pettit, Andreas Preikschat, '
-            u'Mattias P\xf5ldaru, Christian Richter, '
-            u'Philip Ridout, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
-            u'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund, '
-            u'Martin Zibricky, Patrick Zimmermann')
+            'Portions copyright \xa9 2004-2013 %s') % ('Raoul Snyman',
+            'Tim Bentley, Gerald Britton, Jonathan Corwin, Samuel Findlay, '
+            'Michael Gorven, Scott Guerrieri, Matthias Hub, Meinert Jordan, '
+            'Armin K\xf6hler, Erik Lundin, Edwin Lunando, Joshua Miller, '
+            'Brian T. Meyer, Stevan Pettit, Andreas Preikschat, '
+            'Mattias P\xf5ldaru, Christian Richter, '
+            'Philip Ridout, Simon Scudder, Jeffrey Smith, Maikel Stuivenberg, '
+            'Martin Thompson, Jon Tibble, Dave Warnock, Frode Woldsund, '
+            'Martin Zibricky, Patrick Zimmermann')
         licence = translate('OpenLP.AboutForm',
             'This program is free software; you can redistribute it and/or '
             'modify it under the terms of the GNU General Public License as '
@@ -662,7 +662,7 @@ class Ui_AboutDialog(object):
             'linking proprietary applications with the library. If this is '
             'what you want to do, use the GNU Lesser General Public License '
             'instead of this License.')
-        self.license_text_edit.setPlainText(u'%s\n\n%s\n\n%s\n\n\n%s' % (copyright_note, licence, disclaimer, gpl_text))
+        self.license_text_edit.setPlainText('%s\n\n%s\n\n%s\n\n\n%s' % (copyright_note, licence, disclaimer, gpl_text))
         self.about_notebook.setTabText(self.about_notebook.indexOf(self.license_tab),
             translate('OpenLP.AboutForm', 'License'))
         self.volunteer_button.setText(translate('OpenLP.AboutForm', 'Volunteer'))

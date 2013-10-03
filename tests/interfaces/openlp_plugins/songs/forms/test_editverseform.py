@@ -21,7 +21,7 @@ class TestEditVerseForm(TestCase):
         Registry.create()
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
-        Registry().register(u'main_window', self.main_window)
+        Registry().register('main_window', self.main_window)
         self.form = EditVerseForm()
 
     def tearDown(self):
@@ -39,7 +39,7 @@ class TestEditVerseForm(TestCase):
         # GIVEN: An EditVerseForm instance
         # WHEN: The form is shown
         # THEN: The default value is correct
-        self.assertEqual(self.form.verse_text_edit.toPlainText(), u'', u'The verse edit box is empty.')
+        self.assertEqual(self.form.verse_text_edit.toPlainText(), '', 'The verse edit box is empty.')
 
     def type_verse_text_tests(self):
         """
@@ -53,7 +53,7 @@ class TestEditVerseForm(TestCase):
 
         # THEN: The verse text edit should have the verse text in it
         self.assertEqual(text, self.form.verse_text_edit.toPlainText(),
-                         u'The verse text edit should have the typed out verse')
+                         'The verse text edit should have the typed out verse')
 
     def insert_verse_test(self):
         """
@@ -64,8 +64,8 @@ class TestEditVerseForm(TestCase):
         QtTest.QTest.mouseClick(self.form.insert_button, QtCore.Qt.LeftButton)
 
         # THEN: The verse text edit should have a Verse:1 in it
-        self.assertIn(u'---[Verse:1]---', self.form.verse_text_edit.toPlainText(),
-                      u'The verse text edit should have a verse marker')
+        self.assertIn('---[Verse:1]---', self.form.verse_text_edit.toPlainText(),
+                      'The verse text edit should have a verse marker')
 
     def insert_verse_2_test(self):
         """
@@ -77,8 +77,8 @@ class TestEditVerseForm(TestCase):
         QtTest.QTest.mouseClick(self.form.insert_button, QtCore.Qt.LeftButton)
 
         # THEN: The verse text edit should have a Verse:1 in it
-        self.assertIn(u'---[Verse:2]---', self.form.verse_text_edit.toPlainText(),
-                      u'The verse text edit should have a "Verse 2" marker')
+        self.assertIn('---[Verse:2]---', self.form.verse_text_edit.toPlainText(),
+                      'The verse text edit should have a "Verse 2" marker')
 
     def insert_chorus_test(self):
         """
@@ -90,6 +90,6 @@ class TestEditVerseForm(TestCase):
         QtTest.QTest.mouseClick(self.form.insert_button, QtCore.Qt.LeftButton)
 
         # THEN: The verse text edit should have a Chorus:1 in it
-        self.assertIn(u'---[Chorus:1]---', self.form.verse_text_edit.toPlainText(),
-                      u'The verse text edit should have a "Chorus 1" marker')
+        self.assertIn('---[Chorus:1]---', self.form.verse_text_edit.toPlainText(),
+                      'The verse text edit should have a "Chorus 1" marker')
 

@@ -30,7 +30,7 @@
 The :mod:`listpreviewwidget` is a widget that lists the slides in the slide controller.
 It is based on a QTableWidget but represents its contents in list form.
 """
-from __future__ import division
+
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import ImageSource, Registry, ServiceItem
@@ -103,15 +103,15 @@ class ListPreviewWidget(QtGui.QTableWidget):
             item = QtGui.QTableWidgetItem()
             slide_height = 0
             if self.service_item.is_text():
-                if frame[u'verseTag']:
+                if frame['verseTag']:
                     # These tags are already translated.
-                    verse_def = frame[u'verseTag']
-                    verse_def = u'%s%s' % (verse_def[0], verse_def[1:])
-                    two_line_def = u'%s\n%s' % (verse_def[0], verse_def[1:])
+                    verse_def = frame['verseTag']
+                    verse_def = '%s%s' % (verse_def[0], verse_def[1:])
+                    two_line_def = '%s\n%s' % (verse_def[0], verse_def[1:])
                     row = two_line_def
                 else:
                     row += 1
-                item.setText(frame[u'text'])
+                item.setText(frame['text'])
             else:
                 label = QtGui.QLabel()
                 label.setMargin(4)
@@ -120,14 +120,14 @@ class ListPreviewWidget(QtGui.QTableWidget):
                 else:
                     label.setScaledContents(True)
                 if self.service_item.is_command():
-                    label.setPixmap(QtGui.QPixmap(frame[u'image']))
+                    label.setPixmap(QtGui.QPixmap(frame['image']))
                 else:
-                    image = self.image_manager.get_image(frame[u'path'], ImageSource.ImagePlugin)
+                    image = self.image_manager.get_image(frame['path'], ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
                 self.setCellWidget(framenumber, 0, label)
                 slide_height = width // self.screen_ratio
                 row += 1
-            text.append(unicode(row))
+            text.append(str(row))
             self.setItem(framenumber, 0, item)
             if slide_height:
                 self.setRowHeight(framenumber, slide_height)
@@ -165,8 +165,8 @@ class ListPreviewWidget(QtGui.QTableWidget):
         """
         Adds the image manager to the class dynamically.
         """
-        if not hasattr(self, u'_image_manager'):
-            self._image_manager = Registry().get(u'image_manager')
+        if not hasattr(self, '_image_manager'):
+            self._image_manager = Registry().get('image_manager')
         return self._image_manager
 
     image_manager = property(_get_image_manager)

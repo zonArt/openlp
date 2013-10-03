@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -48,8 +48,9 @@ except ImportError:
 
 IS_WIN = sys.platform.startswith('win')
 
+
 VERS = {
-    'Python': '2.6',
+    'Python': '3.0',
     'PyQt4': '4.6',
     'Qt4': '4.6',
     'sqlalchemy': '0.5',
@@ -63,6 +64,7 @@ WIN32_MODULES = [
     'win32ui',
     'pywintypes',
     'pyodbc',
+    'icu',
 ]
 
 MODULES = [
@@ -76,16 +78,14 @@ MODULES = [
     'PyQt4.QtWebKit',
     'PyQt4.phonon',
     'sqlalchemy',
+    'alembic',
     'sqlite3',
     'lxml',
     'chardet',
     'enchant',
     'bs4',
     'mako',
-    'cherrypy',
     'uno',
-    'icu',
-    'bs4',
 ]
 
 
@@ -97,6 +97,7 @@ OPTIONAL_MODULES = [
 ]
 
 w = sys.stdout.write
+
 
 def check_vers(version, required, text):
     if not isinstance(version, str):
@@ -111,12 +112,15 @@ def check_vers(version, required, text):
         w('FAIL' + os.linesep)
         return False
 
+
 def print_vers_fail(required, text):
     print('  %s >= %s ...    FAIL' % (text, required))
+
 
 def verify_python():
     if not check_vers(list(sys.version_info), VERS['Python'], text='Python'):
         exit(1)
+
 
 def verify_versions():
     print('Verifying version of modules...')
@@ -138,6 +142,7 @@ def verify_versions():
     except ImportError:
         print_vers_fail(VERS['enchant'], 'enchant')
 
+
 def check_module(mod, text='', indent='  '):
     space = (30 - len(mod) - len(text)) * ' '
     w(indent + '%s%s...  ' % (mod, text) + space)
@@ -147,6 +152,7 @@ def check_module(mod, text='', indent='  '):
     except ImportError:
         w('FAIL')
     w(os.linesep)
+
 
 def verify_pyenchant():
     w('Enchant (spell checker)... ')
@@ -160,13 +166,14 @@ def verify_pyenchant():
     except ImportError:
         w('FAIL' + os.linesep)
 
+
 def verify_pyqt():
     w('Qt4 image formats... ')
     try:
         from PyQt4 import QtGui
-        read_f = ', '.join([unicode(format).lower()
+        read_f = ', '.join([str(format).lower()
            for format in QtGui.QImageReader.supportedImageFormats()])
-        write_f = ', '.join([unicode(format).lower()
+        write_f = ', '.join([str(format).lower()
             for format in QtGui.QImageWriter.supportedImageFormats()])
         w(os.linesep)
         print('  read: %s' % read_f)
@@ -174,25 +181,22 @@ def verify_pyqt():
     except ImportError:
         w('FAIL' + os.linesep)
 
+
 def main():
     verify_python()
-
     print('Checking for modules...')
     for m in MODULES:
         check_module(m)
-
     print('Checking for optional modules...')
     for m in OPTIONAL_MODULES:
         check_module(m[0], text=m[1])
-
     if IS_WIN:
         print('Checking for Windows specific modules...')
         for m in WIN32_MODULES:
             check_module(m)
-
     verify_versions()
     verify_pyqt()
     verify_pyenchant()
 
-if __name__ == u'__main__':
+if __name__ == '__main__':
     main()

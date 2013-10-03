@@ -23,20 +23,20 @@ class TestPluginManager(TestCase):
         """
         Some pre-test setup required.
         """
-        fd, self.ini_file = mkstemp(u'.ini')
-        self.temp_dir = mkdtemp(u'openlp')
+        fd, self.ini_file = mkstemp('.ini')
+        self.temp_dir = mkdtemp('openlp')
         Settings().set_filename(self.ini_file)
-        Settings().setValue(u'advanced/data path', self.temp_dir)
+        Settings().setValue('advanced/data path', self.temp_dir)
         Registry.create()
-        Registry().register(u'service_list', MagicMock())
+        Registry().register('service_list', MagicMock())
         self.app = QtGui.QApplication([])
         self.main_window = QtGui.QMainWindow()
-        Registry().register(u'main_window', self.main_window)
+        Registry().register('main_window', self.main_window)
 
     def tearDown(self):
         del self.app
         del self.main_window
-        Settings().remove(u'advanced/data path')
+        Settings().remove('advanced/data path')
         shutil.rmtree(self.temp_dir)
         os.unlink(self.ini_file)
 
@@ -49,18 +49,18 @@ class TestPluginManager(TestCase):
 
         # WHEN: We mock out sys.platform to make it return "darwin" and then find the plugins
         old_platform = sys.platform
-        sys.platform = u'darwin'
+        sys.platform = 'darwin'
         plugin_manager.find_plugins()
         sys.platform = old_platform
 
         # THEN: We should find the "Songs", "Bibles", etc in the plugins list
         plugin_names = [plugin.name for plugin in plugin_manager.plugins]
-        assert u'songs' in plugin_names, u'There should be a "songs" plugin.'
-        assert u'bibles' in plugin_names, u'There should be a "bibles" plugin.'
-        assert u'presentations' not in plugin_names, u'There should NOT be a "presentations" plugin.'
-        assert u'images' in plugin_names, u'There should be a "images" plugin.'
-        assert u'media' in plugin_names, u'There should be a "media" plugin.'
-        assert u'custom' in plugin_names, u'There should be a "custom" plugin.'
-        assert u'songusage' in plugin_names, u'There should be a "songusage" plugin.'
-        assert u'alerts' in plugin_names, u'There should be a "alerts" plugin.'
-        assert u'remotes' in plugin_names, u'There should be a "remotes" plugin.'
+        assert 'songs' in plugin_names, 'There should be a "songs" plugin.'
+        assert 'bibles' in plugin_names, 'There should be a "bibles" plugin.'
+        assert 'presentations' not in plugin_names, 'There should NOT be a "presentations" plugin.'
+        assert 'images' in plugin_names, 'There should be a "images" plugin.'
+        assert 'media' in plugin_names, 'There should be a "media" plugin.'
+        assert 'custom' in plugin_names, 'There should be a "custom" plugin.'
+        assert 'songusage' in plugin_names, 'There should be a "songusage" plugin.'
+        assert 'alerts' in plugin_names, 'There should be a "alerts" plugin.'
+        assert 'remotes' in plugin_names, 'There should be a "remotes" plugin.'

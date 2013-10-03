@@ -39,7 +39,7 @@ from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm
 from openlp.core.utils import get_images_filter, is_not_image_file
-from themewizard import Ui_ThemeWizard
+from .themewizard import Ui_ThemeWizard
 
 log = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
     This is the Theme Import Wizard, which allows easy creation and editing of
     OpenLP themes.
     """
-    log.info(u'ThemeWizardForm loaded')
+    log.info('ThemeWizardForm loaded')
 
     def __init__(self, parent):
         """
@@ -58,11 +58,11 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         ``parent``
             The QWidget-derived parent of the wizard.
         """
-        QtGui.QWizard.__init__(self, parent)
+        super(ThemeForm, self).__init__(parent)
         self.setupUi(self)
         self.registerFields()
         self.updateThemeAllowed = True
-        self.temp_background_filename = u''
+        self.temp_background_filename = ''
         self.themeLayoutForm = ThemeLayoutForm(self)
         self.backgroundComboBox.currentIndexChanged.connect(self.onBackgroundComboBoxCurrentIndexChanged)
         self.gradientComboBox.currentIndexChanged.connect(self.onGradientComboBoxCurrentIndexChanged)
@@ -82,7 +82,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         self.mainPositionCheckBox.stateChanged.connect(self.onMainPositionCheckBoxStateChanged)
         self.footerPositionCheckBox.stateChanged.connect(self.onFooterPositionCheckBoxStateChanged)
         self.currentIdChanged.connect(self.onCurrentIdChanged)
-        Registry().register_function(u'theme_line_count', self.updateLinesText)
+        Registry().register_function('theme_line_count', self.updateLinesText)
         self.mainSizeSpinBox.valueChanged.connect(self.calculateLines)
         self.lineSpacingSpinBox.valueChanged.connect(self.calculateLines)
         self.outlineSizeSpinBox.valueChanged.connect(self.calculateLines)
@@ -107,36 +107,36 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Map field names to screen names,
         """
-        self.backgroundPage.registerField(u'background_type', self.backgroundComboBox)
-        self.backgroundPage.registerField(u'color', self.colorButton)
-        self.backgroundPage.registerField(u'grandient_start', self.gradientStartButton)
-        self.backgroundPage.registerField(u'grandient_end', self.gradientEndButton)
-        self.backgroundPage.registerField(u'background_image', self.imageFileEdit)
-        self.backgroundPage.registerField(u'gradient', self.gradientComboBox)
-        self.mainAreaPage.registerField(u'mainColorButton', self.mainColorButton)
-        self.mainAreaPage.registerField(u'mainSizeSpinBox', self.mainSizeSpinBox)
-        self.mainAreaPage.registerField(u'lineSpacingSpinBox', self.lineSpacingSpinBox)
-        self.mainAreaPage.registerField(u'outlineCheckBox', self.outlineCheckBox)
-        self.mainAreaPage.registerField(u'outlineColorButton', self.outlineColorButton)
-        self.mainAreaPage.registerField(u'outlineSizeSpinBox', self.outlineSizeSpinBox)
-        self.mainAreaPage.registerField(u'shadowCheckBox', self.shadowCheckBox)
-        self.mainAreaPage.registerField(u'mainBoldCheckBox', self.mainBoldCheckBox)
-        self.mainAreaPage.registerField(u'mainItalicsCheckBox', self.mainItalicsCheckBox)
-        self.mainAreaPage.registerField(u'shadowColorButton', self.shadowColorButton)
-        self.mainAreaPage.registerField(u'shadowSizeSpinBox', self.shadowSizeSpinBox)
-        self.mainAreaPage.registerField(u'footerSizeSpinBox', self.footerSizeSpinBox)
-        self.areaPositionPage.registerField(u'mainPositionX', self.mainXSpinBox)
-        self.areaPositionPage.registerField(u'mainPositionY', self.mainYSpinBox)
-        self.areaPositionPage.registerField(u'mainPositionWidth', self.mainWidthSpinBox)
-        self.areaPositionPage.registerField(u'mainPositionHeight', self.mainHeightSpinBox)
-        self.areaPositionPage.registerField(u'footerPositionX', self.footerXSpinBox)
-        self.areaPositionPage.registerField(u'footerPositionY', self.footerYSpinBox)
-        self.areaPositionPage.registerField(u'footerPositionWidth', self.footerWidthSpinBox)
-        self.areaPositionPage.registerField(u'footerPositionHeight', self.footerHeightSpinBox)
-        self.backgroundPage.registerField(u'horizontal', self.horizontalComboBox)
-        self.backgroundPage.registerField(u'vertical', self.verticalComboBox)
-        self.backgroundPage.registerField(u'slideTransition', self.transitionsCheckBox)
-        self.backgroundPage.registerField(u'name', self.themeNameEdit)
+        self.backgroundPage.registerField('background_type', self.backgroundComboBox)
+        self.backgroundPage.registerField('color', self.colorButton)
+        self.backgroundPage.registerField('grandient_start', self.gradientStartButton)
+        self.backgroundPage.registerField('grandient_end', self.gradientEndButton)
+        self.backgroundPage.registerField('background_image', self.imageFileEdit)
+        self.backgroundPage.registerField('gradient', self.gradientComboBox)
+        self.mainAreaPage.registerField('mainColorButton', self.mainColorButton)
+        self.mainAreaPage.registerField('mainSizeSpinBox', self.mainSizeSpinBox)
+        self.mainAreaPage.registerField('lineSpacingSpinBox', self.lineSpacingSpinBox)
+        self.mainAreaPage.registerField('outlineCheckBox', self.outlineCheckBox)
+        self.mainAreaPage.registerField('outlineColorButton', self.outlineColorButton)
+        self.mainAreaPage.registerField('outlineSizeSpinBox', self.outlineSizeSpinBox)
+        self.mainAreaPage.registerField('shadowCheckBox', self.shadowCheckBox)
+        self.mainAreaPage.registerField('mainBoldCheckBox', self.mainBoldCheckBox)
+        self.mainAreaPage.registerField('mainItalicsCheckBox', self.mainItalicsCheckBox)
+        self.mainAreaPage.registerField('shadowColorButton', self.shadowColorButton)
+        self.mainAreaPage.registerField('shadowSizeSpinBox', self.shadowSizeSpinBox)
+        self.mainAreaPage.registerField('footerSizeSpinBox', self.footerSizeSpinBox)
+        self.areaPositionPage.registerField('mainPositionX', self.mainXSpinBox)
+        self.areaPositionPage.registerField('mainPositionY', self.mainYSpinBox)
+        self.areaPositionPage.registerField('mainPositionWidth', self.mainWidthSpinBox)
+        self.areaPositionPage.registerField('mainPositionHeight', self.mainHeightSpinBox)
+        self.areaPositionPage.registerField('footerPositionX', self.footerXSpinBox)
+        self.areaPositionPage.registerField('footerPositionY', self.footerYSpinBox)
+        self.areaPositionPage.registerField('footerPositionWidth', self.footerWidthSpinBox)
+        self.areaPositionPage.registerField('footerPositionHeight', self.footerHeightSpinBox)
+        self.backgroundPage.registerField('horizontal', self.horizontalComboBox)
+        self.backgroundPage.registerField('vertical', self.verticalComboBox)
+        self.backgroundPage.registerField('slideTransition', self.transitionsCheckBox)
+        self.backgroundPage.registerField('name', self.themeNameEdit)
 
     def calculateLines(self):
         """
@@ -260,8 +260,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Run the wizard.
         """
-        log.debug(u'Editing theme %s' % self.theme.theme_name)
-        self.temp_background_filename = u''
+        log.debug('Editing theme %s' % self.theme.theme_name)
+        self.temp_background_filename = ''
         self.updateThemeAllowed = False
         self.setDefaults()
         self.updateThemeAllowed = True
@@ -279,7 +279,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Set up the pages for Initial run through dialog
         """
-        log.debug(u'initializePage %s' % page_id)
+        log.debug('initializePage %s' % page_id)
         wizardPage = self.page(page_id)
         if wizardPage == self.backgroundPage:
             self.setBackgroundPageValues()
@@ -298,53 +298,53 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         if self.theme.background_type == \
             BackgroundType.to_string(BackgroundType.Solid):
-            self.colorButton.setStyleSheet(u'background-color: %s' % self.theme.background_color)
-            self.setField(u'background_type', 0)
+            self.colorButton.setStyleSheet('background-color: %s' % self.theme.background_color)
+            self.setField('background_type', 0)
         elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Gradient):
-            self.gradientStartButton.setStyleSheet(u'background-color: %s' % self.theme.background_start_color)
-            self.gradientEndButton.setStyleSheet(u'background-color: %s' % self.theme.background_end_color)
-            self.setField(u'background_type', 1)
+            self.gradientStartButton.setStyleSheet('background-color: %s' % self.theme.background_start_color)
+            self.gradientEndButton.setStyleSheet('background-color: %s' % self.theme.background_end_color)
+            self.setField('background_type', 1)
         elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Image):
-            self.imageColorButton.setStyleSheet(u'background-color: %s' % self.theme.background_border_color)
+            self.imageColorButton.setStyleSheet('background-color: %s' % self.theme.background_border_color)
             self.imageFileEdit.setText(self.theme.background_filename)
-            self.setField(u'background_type', 2)
+            self.setField('background_type', 2)
         elif self.theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
-            self.setField(u'background_type', 3)
+            self.setField('background_type', 3)
         if self.theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Horizontal):
-            self.setField(u'gradient', 0)
+            self.setField('gradient', 0)
         elif self.theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Vertical):
-            self.setField(u'gradient', 1)
+            self.setField('gradient', 1)
         elif self.theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.Circular):
-            self.setField(u'gradient', 2)
+            self.setField('gradient', 2)
         elif self.theme.background_direction == BackgroundGradientType.to_string(BackgroundGradientType.LeftTop):
-            self.setField(u'gradient', 3)
+            self.setField('gradient', 3)
         else:
-            self.setField(u'gradient', 4)
+            self.setField('gradient', 4)
 
     def setMainAreaPageValues(self):
         """
         Handle the display and state of the Main Area page.
         """
         self.mainFontComboBox.setCurrentFont(QtGui.QFont(self.theme.font_main_name))
-        self.mainColorButton.setStyleSheet(u'background-color: %s' % self.theme.font_main_color)
-        self.setField(u'mainSizeSpinBox', self.theme.font_main_size)
-        self.setField(u'lineSpacingSpinBox', self.theme.font_main_line_adjustment)
-        self.setField(u'outlineCheckBox', self.theme.font_main_outline)
-        self.outlineColorButton.setStyleSheet(u'background-color: %s' % self.theme.font_main_outline_color)
-        self.setField(u'outlineSizeSpinBox', self.theme.font_main_outline_size)
-        self.setField(u'shadowCheckBox', self.theme.font_main_shadow)
-        self.shadowColorButton.setStyleSheet(u'background-color: %s' % self.theme.font_main_shadow_color)
-        self.setField(u'shadowSizeSpinBox', self.theme.font_main_shadow_size)
-        self.setField(u'mainBoldCheckBox', self.theme.font_main_bold)
-        self.setField(u'mainItalicsCheckBox', self.theme.font_main_italics)
+        self.mainColorButton.setStyleSheet('background-color: %s' % self.theme.font_main_color)
+        self.setField('mainSizeSpinBox', self.theme.font_main_size)
+        self.setField('lineSpacingSpinBox', self.theme.font_main_line_adjustment)
+        self.setField('outlineCheckBox', self.theme.font_main_outline)
+        self.outlineColorButton.setStyleSheet('background-color: %s' % self.theme.font_main_outline_color)
+        self.setField('outlineSizeSpinBox', self.theme.font_main_outline_size)
+        self.setField('shadowCheckBox', self.theme.font_main_shadow)
+        self.shadowColorButton.setStyleSheet('background-color: %s' % self.theme.font_main_shadow_color)
+        self.setField('shadowSizeSpinBox', self.theme.font_main_shadow_size)
+        self.setField('mainBoldCheckBox', self.theme.font_main_bold)
+        self.setField('mainItalicsCheckBox', self.theme.font_main_italics)
 
     def setFooterAreaPageValues(self):
         """
         Handle the display and state of the Footer Area page.
         """
         self.footerFontComboBox.setCurrentFont(QtGui.QFont(self.theme.font_footer_name))
-        self.footerColorButton.setStyleSheet(u'background-color: %s' % self.theme.font_footer_color)
-        self.setField(u'footerSizeSpinBox', self.theme.font_footer_size)
+        self.footerColorButton.setStyleSheet('background-color: %s' % self.theme.font_footer_color)
+        self.setField('footerSizeSpinBox', self.theme.font_footer_size)
 
     def setPositionPageValues(self):
         """
@@ -352,30 +352,30 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         # Main Area
         self.mainPositionCheckBox.setChecked(not self.theme.font_main_override)
-        self.setField(u'mainPositionX', self.theme.font_main_x)
-        self.setField(u'mainPositionY', self.theme.font_main_y)
-        self.setField(u'mainPositionHeight', self.theme.font_main_height)
-        self.setField(u'mainPositionWidth', self.theme.font_main_width)
+        self.setField('mainPositionX', self.theme.font_main_x)
+        self.setField('mainPositionY', self.theme.font_main_y)
+        self.setField('mainPositionHeight', self.theme.font_main_height)
+        self.setField('mainPositionWidth', self.theme.font_main_width)
         # Footer
         self.footerPositionCheckBox.setChecked(not self.theme.font_footer_override)
-        self.setField(u'footerPositionX', self.theme.font_footer_x)
-        self.setField(u'footerPositionY', self.theme.font_footer_y)
-        self.setField(u'footerPositionHeight', self.theme.font_footer_height)
-        self.setField(u'footerPositionWidth', self.theme.font_footer_width)
+        self.setField('footerPositionX', self.theme.font_footer_x)
+        self.setField('footerPositionY', self.theme.font_footer_y)
+        self.setField('footerPositionHeight', self.theme.font_footer_height)
+        self.setField('footerPositionWidth', self.theme.font_footer_width)
 
     def setAlignmentPageValues(self):
         """
         Handle the display and state of the Alignments page.
         """
-        self.setField(u'horizontal', self.theme.display_horizontal_align)
-        self.setField(u'vertical', self.theme.display_vertical_align)
-        self.setField(u'slideTransition', self.theme.display_slide_transition)
+        self.setField('horizontal', self.theme.display_horizontal_align)
+        self.setField('vertical', self.theme.display_vertical_align)
+        self.setField('slideTransition', self.theme.display_slide_transition)
 
     def setPreviewPageValues(self):
         """
         Handle the display and state of the Preview page.
         """
-        self.setField(u'name', self.theme.theme_name)
+        self.setField('name', self.theme.theme_name)
 
     def onBackgroundComboBoxCurrentIndexChanged(self, index):
         """
@@ -385,13 +385,13 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         if self.updateThemeAllowed:
             self.theme.background_type = BackgroundType.to_string(index)
             if self.theme.background_type != BackgroundType.to_string(BackgroundType.Image) and \
-                    self.temp_background_filename == u'':
+                    self.temp_background_filename == '':
                 self.temp_background_filename = self.theme.background_filename
-                self.theme.background_filename = u''
+                self.theme.background_filename = ''
             if self.theme.background_type == BackgroundType.to_string(BackgroundType.Image) and \
-                    self.temp_background_filename != u'':
+                    self.temp_background_filename != '':
                 self.theme.background_filename = self.temp_background_filename
-                self.temp_background_filename = u''
+                self.temp_background_filename = ''
             self.setBackgroundPageValues()
 
     def onGradientComboBoxCurrentIndexChanged(self, index):
@@ -435,18 +435,18 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Background Image button pushed.
         """
         images_filter = get_images_filter()
-        images_filter = u'%s;;%s (*.*) (*)' % (images_filter, UiStrings().AllFiles)
+        images_filter = '%s;;%s (*.*) (*)' % (images_filter, UiStrings().AllFiles)
         filename = QtGui.QFileDialog.getOpenFileName(self,
-            translate('OpenLP.ThemeWizard', 'Select Image'), u'', images_filter)
+            translate('OpenLP.ThemeWizard', 'Select Image'), '', images_filter)
         if filename:
-            self.theme.background_filename = unicode(filename)
+            self.theme.background_filename = str(filename)
         self.setBackgroundPageValues()
 
     def onImageFileEditEditingFinished(self):
         """
         Background image path edited
         """
-        self.theme.background_filename = unicode(self.imageFileEdit.text())
+        self.theme.background_filename = str(self.imageFileEdit.text())
 
     def onMainColorButtonClicked(self):
         """
@@ -483,44 +483,44 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         if not self.updateThemeAllowed:
             return
-        log.debug(u'updateTheme')
+        log.debug('updateTheme')
         # main page
         self.theme.font_main_name = self.mainFontComboBox.currentFont().family()
-        self.theme.font_main_size = self.field(u'mainSizeSpinBox')
-        self.theme.font_main_line_adjustment = self.field(u'lineSpacingSpinBox')
-        self.theme.font_main_outline_size = self.field(u'outlineSizeSpinBox')
-        self.theme.font_main_shadow_size = self.field(u'shadowSizeSpinBox')
-        self.theme.font_main_bold = self.field(u'mainBoldCheckBox')
-        self.theme.font_main_italics = self.field(u'mainItalicsCheckBox')
+        self.theme.font_main_size = self.field('mainSizeSpinBox')
+        self.theme.font_main_line_adjustment = self.field('lineSpacingSpinBox')
+        self.theme.font_main_outline_size = self.field('outlineSizeSpinBox')
+        self.theme.font_main_shadow_size = self.field('shadowSizeSpinBox')
+        self.theme.font_main_bold = self.field('mainBoldCheckBox')
+        self.theme.font_main_italics = self.field('mainItalicsCheckBox')
         # footer page
         self.theme.font_footer_name = self.footerFontComboBox.currentFont().family()
-        self.theme.font_footer_size = self.field(u'footerSizeSpinBox')
+        self.theme.font_footer_size = self.field('footerSizeSpinBox')
         # position page
-        self.theme.font_main_x = self.field(u'mainPositionX')
-        self.theme.font_main_y = self.field(u'mainPositionY')
-        self.theme.font_main_height = self.field(u'mainPositionHeight')
-        self.theme.font_main_width = self.field(u'mainPositionWidth')
-        self.theme.font_footer_x = self.field(u'footerPositionX')
-        self.theme.font_footer_y = self.field(u'footerPositionY')
-        self.theme.font_footer_height = self.field(u'footerPositionHeight')
-        self.theme.font_footer_width = self.field(u'footerPositionWidth')
+        self.theme.font_main_x = self.field('mainPositionX')
+        self.theme.font_main_y = self.field('mainPositionY')
+        self.theme.font_main_height = self.field('mainPositionHeight')
+        self.theme.font_main_width = self.field('mainPositionWidth')
+        self.theme.font_footer_x = self.field('footerPositionX')
+        self.theme.font_footer_y = self.field('footerPositionY')
+        self.theme.font_footer_height = self.field('footerPositionHeight')
+        self.theme.font_footer_width = self.field('footerPositionWidth')
         # position page
         self.theme.display_horizontal_align = self.horizontalComboBox.currentIndex()
         self.theme.display_vertical_align = self.verticalComboBox.currentIndex()
-        self.theme.display_slide_transition = self.field(u'slideTransition')
+        self.theme.display_slide_transition = self.field('slideTransition')
 
     def accept(self):
         """
         Lets save the theme as Finish has been triggered
         """
         # Save the theme name
-        self.theme.theme_name = self.field(u'name')
+        self.theme.theme_name = self.field('name')
         if not self.theme.theme_name:
             critical_error_message_box(
                 translate('OpenLP.ThemeWizard', 'Theme Name Missing'),
                 translate('OpenLP.ThemeWizard', 'There is no name for this theme. Please enter one.'))
             return
-        if self.theme.theme_name == u'-1' or self.theme.theme_name == u'None':
+        if self.theme.theme_name == '-1' or self.theme.theme_name == 'None':
             critical_error_message_box(
                 translate('OpenLP.ThemeWizard', 'Theme Name Invalid'),
                 translate('OpenLP.ThemeWizard', 'Invalid theme name. Please enter one.'))
@@ -528,7 +528,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         saveFrom = None
         saveTo = None
         if self.theme.background_type == BackgroundType.to_string(BackgroundType.Image):
-            filename = os.path.split(unicode(self.theme.background_filename))[1]
+            filename = os.path.split(str(self.theme.background_filename))[1]
             saveTo = os.path.join(self.path, self.theme.theme_name, filename)
             saveFrom = self.theme.background_filename
         if not self.edit_mode and not self.theme_manager.check_if_theme_exists(self.theme.theme_name):
@@ -549,8 +549,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Adds the Renderer to the class dynamically
         """
-        if not hasattr(self, u'_renderer'):
-            self._renderer = Registry().get(u'renderer')
+        if not hasattr(self, '_renderer'):
+            self._renderer = Registry().get('renderer')
         return self._renderer
 
     renderer = property(_get_renderer)
@@ -559,8 +559,8 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Adds the theme manager to the class dynamically
         """
-        if not hasattr(self, u'_theme_manager'):
-            self._theme_manager = Registry().get(u'theme_manager')
+        if not hasattr(self, '_theme_manager'):
+            self._theme_manager = Registry().get('theme_manager')
         return self._theme_manager
 
     theme_manager = property(_get_theme_manager)

@@ -44,5 +44,5 @@ def upgrade_1(session, metadata):
     This upgrade adds two new fields to the songusage database
     """
     op = get_upgrade_op(session)
-    op.add_column(u'songusage_data', Column(u'plugin_name', types.Unicode(20), server_default=u''))
-    op.add_column(u'songusage_data', Column(u'source', types.Unicode(10), server_default=u''))
+    op.add_column('songusage_data', Column('plugin_name', types.Unicode(20), server_default=''))
+    op.add_column('songusage_data', Column('source', types.Unicode(10), server_default=''))

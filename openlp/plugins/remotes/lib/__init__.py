@@ -27,7 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from remotetab import RemoteTab
-from httpserver import HttpServer
+from .remotetab import RemoteTab
+from .httprouter import HttpRouter
+from .httpserver import OpenLPServer
 
-__all__ = [u'RemoteTab', u'HttpServer']
+__all__ = ['RemoteTab', 'OpenLPServer', 'HttpRouter']
