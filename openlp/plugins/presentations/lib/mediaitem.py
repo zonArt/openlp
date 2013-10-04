@@ -52,14 +52,26 @@ class PresentationMediaItem(MediaManagerItem):
     """
     log.info('Presentations Media Item loaded')
 
-    def __init__(self, parent, plugin, icon, controllers):
+    def __init__(self, parent, plugin, controllers):
         """
         Constructor. Setup defaults
         """
-        self.controllers = controllers
         self.icon_path = 'presentations/presentation'
-        self.Automatic = ''
+        self.controllers = controllers
         super(PresentationMediaItem, self).__init__(parent, plugin)
+
+    def retranslateUi(self):
+        """
+        The name of the plugin media displayed in UI
+        """
+        self.on_new_prompt = translate('PresentationPlugin.MediaItem', 'Select Presentation(s)')
+        self.automatic = translate('PresentationPlugin.MediaItem', 'Automatic')
+        self.display_type_label.setText(translate('PresentationPlugin.MediaItem', 'Present using:'))
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         self.message_listener = MessageListener(self)
         self.has_search = True
         self.single_service_item = False
@@ -67,14 +79,6 @@ class PresentationMediaItem(MediaManagerItem):
         Registry().register_function('mediaitem_suffixes', self.build_file_mask_string)
         # Allow DnD from the desktop
         self.list_view.activateDnD()
-
-    def retranslateUi(self):
-        """
-        The name of the plugin media displayed in UI
-        """
-        self.on_new_prompt = translate('PresentationPlugin.MediaItem', 'Select Presentation(s)')
-        self.Automatic = translate('PresentationPlugin.MediaItem', 'Automatic')
-        self.display_type_label.setText(translate('PresentationPlugin.MediaItem', 'Present using:'))
 
     def build_file_mask_string(self):
         """
@@ -137,7 +141,7 @@ class PresentationMediaItem(MediaManagerItem):
             if self.controllers[item].enabled():
                 self.display_type_combo_box.addItem(item)
         if self.display_type_combo_box.count() > 1:
-            self.display_type_combo_box.insertItem(0, self.Automatic)
+            self.display_type_combo_box.insertItem(0, self.automatic)
             self.display_type_combo_box.setCurrentIndex(0)
         if Settings().value(self.settings_section + '/override app') == QtCore.Qt.Checked:
             self.presentation_widget.show()
@@ -253,7 +257,7 @@ class PresentationMediaItem(MediaManagerItem):
             (path, name) = os.path.split(filename)
             service_item.title = name
             if os.path.exists(filename):
-                if service_item.processor == self.Automatic:
+                if service_item.processor == self.automatic:
                     service_item.processor = self.findControllerByType(filename)
                     if not service_item.processor:
                         return False
