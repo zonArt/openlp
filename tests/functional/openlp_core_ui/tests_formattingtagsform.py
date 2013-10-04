@@ -19,9 +19,9 @@ from openlp.core.ui.formattingtagform import FormattingTagForm
 class TestFormattingTagForm(TestCase):
 
     def setUp(self):
-        self.init_patcher = patch(u'openlp.core.ui.formattingtagform.FormattingTagForm.__init__')
-        self.qdialog_patcher = patch(u'openlp.core.ui.formattingtagform.QtGui.QDialog')
-        self.ui_formatting_tag_dialog_patcher = patch(u'openlp.core.ui.formattingtagform.Ui_FormattingTagDialog')
+        self.init_patcher = patch('openlp.core.ui.formattingtagform.FormattingTagForm.__init__')
+        self.qdialog_patcher = patch('openlp.core.ui.formattingtagform.QtGui.QDialog')
+        self.ui_formatting_tag_dialog_patcher = patch('openlp.core.ui.formattingtagform.Ui_FormattingTagDialog')
         self.mocked_init = self.init_patcher.start()
         self.mocked_qdialog = self.qdialog_patcher.start()
         self.mocked_ui_formatting_tag_dialog = self.ui_formatting_tag_dialog_patcher.start()

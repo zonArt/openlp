@@ -141,24 +141,24 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagCont
         self.new_button.setEnabled(True)
         self.delete_button.setEnabled(False)
         for linenumber, html in enumerate(FormattingTags.get_html_tags()):
-            if html[u'protected']:
+            if html['protected']:
                 line = self.tag_table_widget_read.rowCount()
                 self.tag_table_widget_read.setRowCount(line + 1)
-                self.tag_table_widget_read.setItem(line, 0, QtGui.QTableWidgetItem(html[u'desc']))
-                self.tag_table_widget_read.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
-                self.tag_table_widget_read.setItem(line, 2, QtGui.QTableWidgetItem(html[u'start html']))
-                self.tag_table_widget_read.setItem(line, 3, QtGui.QTableWidgetItem(html[u'end html']))
+                self.tag_table_widget_read.setItem(line, 0, QtGui.QTableWidgetItem(html['desc']))
+                self.tag_table_widget_read.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html['start tag'])))
+                self.tag_table_widget_read.setItem(line, 2, QtGui.QTableWidgetItem(html['start html']))
+                self.tag_table_widget_read.setItem(line, 3, QtGui.QTableWidgetItem(html['end html']))
                 self.tag_table_widget_read.resizeRowsToContents()
             else:
                 line = self.tag_table_widget.rowCount()
                 self.tag_table_widget.setRowCount(line + 1)
-                self.tag_table_widget.setItem(line, 0, QtGui.QTableWidgetItem(html[u'desc']))
-                self.tag_table_widget.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
-                self.tag_table_widget.setItem(line, 2, QtGui.QTableWidgetItem(html[u'start html']))
-                self.tag_table_widget.setItem(line, 3, QtGui.QTableWidgetItem(html[u'end html']))
+                self.tag_table_widget.setItem(line, 0, QtGui.QTableWidgetItem(html['desc']))
+                self.tag_table_widget.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html['start tag'])))
+                self.tag_table_widget.setItem(line, 2, QtGui.QTableWidgetItem(html['start html']))
+                self.tag_table_widget.setItem(line, 3, QtGui.QTableWidgetItem(html['end html']))
                 self.tag_table_widget.resizeRowsToContents()
                 # Permanent (persistent) tags do not have this key
-                html[u'temporary'] = False
+                html['temporary'] = False
         self.reloading = False
 
     def on_current_cell_changed(self, cur_row, cur_col, pre_row, pre_col):

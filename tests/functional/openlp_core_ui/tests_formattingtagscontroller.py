@@ -16,13 +16,13 @@ class TestFormattingTagController(TestCase):
         Test that the _strip strips the correct chars
         """
         # GIVEN: An instance of the Formatting Tag Form and a string containing a tag
-        tag = u'{tag}'
+        tag = '{tag}'
 
         # WHEN: Calling _strip
         result = self.services._strip(tag)
 
         # THEN: The tag should be returned with the wrappers removed.
-        self.assertEqual(result, u'tag', u'FormattingTagForm._strip should return u\'tag\' when called with u\'{tag}\'')
+        self.assertEqual(result, 'tag', 'FormattingTagForm._strip should return u\'tag\' when called with u\'{tag}\'')
 
     def test_end_tag_changed_processes_correctly(self):
         """

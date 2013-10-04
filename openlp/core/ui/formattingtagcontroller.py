@@ -77,14 +77,14 @@ class FormattingTagController(object):
 
         """
         for linenumber, html1 in enumerate(self.protected_tags):
-            if self._strip(html1[u'start tag']) == tag:
+            if self._strip(html1['start tag']) == tag:
                 return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
-            if self._strip(html1[u'desc']) == desc:
+            if self._strip(html1['desc']) == desc:
                 return translate('OpenLP.FormattingTagForm', 'Description %s already defined.') % tag
         for linenumber, html1 in enumerate(self.custom_tags):
-            if self._strip(html1[u'start tag']) == tag:
+            if self._strip(html1['start tag']) == tag:
                 return translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag
-            if self._strip(html1[u'desc']) == desc:
+            if self._strip(html1['desc']) == desc:
                 return translate('OpenLP.FormattingTagForm', 'Description %s already defined.') % tag
         tag = {
             'desc': desc,
@@ -136,7 +136,7 @@ class FormattingTagController(object):
                     elif not match.group('empty'):
                         end_tags.append(tag)
                 match = self.html_tag_regex.search(start_html, match.end())
-            return u''.join(map(lambda tag: '</%s>' % tag, reversed(end_tags)))
+            return ''.join(map(lambda tag: '</%s>' % tag, reversed(end_tags)))
 
     def start_tag_changed(self, start_html, end_html):
         """
