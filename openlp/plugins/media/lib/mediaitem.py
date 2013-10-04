@@ -61,10 +61,15 @@ class MediaMediaItem(MediaManagerItem):
         self.background = False
         self.automatic = ''
         super(MediaMediaItem, self).__init__(parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         self.single_service_item = False
         self.has_search = True
         self.media_object = None
-        self.display_controller = DisplayController(parent)
+        self.display_controller = DisplayController(self.parent())
         self.display_controller.controller_layout = QtGui.QVBoxLayout()
         self.media_controller.register_controller(self.display_controller)
         self.media_controller.set_controls_visible(self.display_controller, False)
