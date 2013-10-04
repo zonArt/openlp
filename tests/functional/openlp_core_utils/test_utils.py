@@ -152,7 +152,7 @@ class TestUtils(TestCase):
 
     def get_locale_key_windows_test(self):
         """
-        Test the get_locale_key(string) function
+        Test the get_locale_key(string) function on Windows
         """
         with patch('openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language,  \
                 patch('openlp.core.utils.os') as mocked_os:
@@ -171,7 +171,7 @@ class TestUtils(TestCase):
 
     def get_locale_key_linux_test(self):
         """
-        Test the get_locale_key(string) function
+        Test the get_locale_key(string) function on Linux
         """
         with patch('openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language,  \
                 patch('openlp.core.utils.os.name') as mocked_os:
