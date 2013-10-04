@@ -28,11 +28,10 @@
 ###############################################################################
 
 import logging
-
-from PyQt4 import QtGui
+import time
 
 from openlp.core.lib import Plugin, StringContent, translate, build_icon
-from openlp.plugins.remotes.lib import RemoteTab, HttpServer
+from openlp.plugins.remotes.lib import RemoteTab, OpenLPServer
 
 log = logging.getLogger(__name__)
 
@@ -67,8 +66,7 @@ class RemotesPlugin(Plugin):
         """
         log.debug('initialise')
         super(RemotesPlugin, self).initialise()
-        self.server = HttpServer()
-        self.server.start_server()
+        self.server = OpenLPServer()
 
     def finalise(self):
         """
@@ -77,7 +75,7 @@ class RemotesPlugin(Plugin):
         log.debug('finalise')
         super(RemotesPlugin, self).finalise()
         if self.server:
-            self.server.close()
+            self.server.stop_server()
             self.server = None
 
     def about(self):
@@ -109,5 +107,6 @@ class RemotesPlugin(Plugin):
         Called when Config is changed to restart the server on new address or port
         """
         log.debug('remote config changed')
-        self.main_window.information_message(translate('RemotePlugin', 'Configuration Change'),
-            translate('RemotePlugin', 'OpenLP will need to be restarted for the Remote changes to become active.'))
+        self.finalise()
+        time.sleep(0.5)
+        self.initialise()
