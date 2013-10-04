@@ -31,7 +31,9 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import Settings, SettingsTab, UiStrings, translate, build_icon
 from openlp.core.lib.ui import critical_error_message_box
-from pdfcontroller import check_binary
+from .pdfcontroller import PdfController
+#from openlp.plugins.presentations.lib.pdfcontroller import PdfController
+#from pdfcontroller import check_binary
 
 class PresentationTab(SettingsTab):
     """
@@ -75,22 +77,22 @@ class PresentationTab(SettingsTab):
 
         # Pdf options
         self.pdf_group_box = QtGui.QGroupBox(self.left_column)
-        self.pdf_group_box.setObjectName(u'pdf_group_box')
+        self.pdf_group_box.setObjectName('pdf_group_box')
         self.pdf_layout = QtGui.QFormLayout(self.pdf_group_box)
-        self.pdf_layout.setObjectName(u'pdf_layout')
+        self.pdf_layout.setObjectName('pdf_layout')
         self.pdf_program_check_box = QtGui.QCheckBox(self.pdf_group_box)
-        self.pdf_program_check_box.setObjectName(u'pdf_program_check_box')
+        self.pdf_program_check_box.setObjectName('pdf_program_check_box')
         self.pdf_layout.addWidget(self.pdf_program_check_box)
         self.pdf_program_path_layout = QtGui.QHBoxLayout()
-        self.pdf_program_path_layout.setObjectName(u'pdf_program_path_layout')
+        self.pdf_program_path_layout.setObjectName('pdf_program_path_layout')
         self.pdf_program_path = QtGui.QLineEdit(self.pdf_group_box)
-        self.pdf_program_path.setObjectName(u'pdf_program_path')
+        self.pdf_program_path.setObjectName('pdf_program_path')
         self.pdf_program_path.setReadOnly(True)
         self.pdf_program_path.setPalette(self.get_grey_text_palette(True))
         self.pdf_program_path_layout.addWidget(self.pdf_program_path)
         self.pdf_program_browse_button = QtGui.QToolButton(self.pdf_group_box)
-        self.pdf_program_browse_button.setObjectName(u'pdf_program_browse_button')
-        self.pdf_program_browse_button.setIcon(build_icon(u':/general/general_open.png'))
+        self.pdf_program_browse_button.setObjectName('pdf_program_browse_button')
+        self.pdf_program_browse_button.setIcon(build_icon(':/general/general_open.png'))
         self.pdf_program_browse_button.setEnabled(False)
         self.pdf_program_path_layout.addWidget(self.pdf_program_browse_button)
         self.pdf_layout.addRow(self.pdf_program_path_layout)
@@ -173,26 +175,19 @@ class PresentationTab(SettingsTab):
         pdf_program = self.pdf_program_path.text()
         enable_given_pdf_program = self.pdf_program_check_box.checkState()
         # If the given program is blank disable using the program
-        if pdf_program == u'':
+        if pdf_program == '':
             enable_given_pdf_program = 0
-        if pdf_program != Settings().value(self.settings_section + u'/given_pdf_program'):
-            Settings().setValue(self.settings_section + u'/given_pdf_program',  pdf_program)
+        if pdf_program != Settings().value(self.settings_section + '/given_pdf_program'):
+            Settings().setValue(self.settings_section + '/given_pdf_program',  pdf_program)
             changed = True
-        if enable_given_pdf_program != Settings().value(self.settings_section + u'/enable_given_pdf_program'):
-            Settings().setValue(self.settings_section + u'/enable_given_pdf_program',  enable_given_pdf_program)
+        if enable_given_pdf_program != Settings().value(self.settings_section + '/enable_given_pdf_program'):
+            Settings().setValue(self.settings_section + '/enable_given_pdf_program',  enable_given_pdf_program)
             changed = True
         
         if changed:
-<<<<<<< TREE
-            self.settings_form.register_post_process(u'mediaitem_suffix_reset')
-            self.settings_form.register_post_process(u'mediaitem_presentation_rebuild')
-            self.settings_form.register_post_process(u'mediaitem_suffixes')
-                
-=======
             self.settings_form.register_post_process('mediaitem_suffix_reset')
             self.settings_form.register_post_process('mediaitem_presentation_rebuild')
             self.settings_form.register_post_process('mediaitem_suffixes')
->>>>>>> MERGE-SOURCE
 
     def tab_visible(self):
         """
@@ -210,8 +205,8 @@ class PresentationTab(SettingsTab):
         After selecting/typing in a program it is validated that it is a actually ghostscript or mudraw
         """
         type = None 
-        if self.pdf_program_path.text() != u'':
-            type = check_binary(self.pdf_program_path.text())
+        if self.pdf_program_path.text() != '':
+            type = PdfController.check_binary(self.pdf_program_path.text())
             if not type:
                 critical_error_message_box(UiStrings().Error, 
                         translate('PresentationPlugin.PresentationTab', 'The program is not ghostscript or mudraw which is required.'))

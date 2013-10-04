@@ -250,7 +250,7 @@ class PresentationMediaItem(MediaManagerItem):
         if not self.display_type_combo_box.currentText():
             return False
         
-        if context == ServiceItemContext.Live and (file_type == u'pdf' or file_type == u'xps'):
+        if context == ServiceItemContext.Live and (file_type == 'pdf' or file_type == 'xps'):
             service_item.add_capability(ItemCapabilities.CanMaintain)
             service_item.add_capability(ItemCapabilities.CanPreview)
             service_item.add_capability(ItemCapabilities.CanLoop)
@@ -270,15 +270,15 @@ class PresentationMediaItem(MediaManagerItem):
                     controller = self.controllers[processor]
                     service_item.processor = None
                     doc = controller.add_document(filename)
-                    if doc.get_thumbnail_path(1, True) is None or not os.path.isfile(os.path.join(doc.get_temp_folder(), u'mainslide001.png')):
+                    if doc.get_thumbnail_path(1, True) is None or not os.path.isfile(os.path.join(doc.get_temp_folder(), 'mainslide001.png')):
                         doc.load_presentation()
                     i = 1
-                    imagefile = u'mainslide%03d.png' % i
+                    imagefile = 'mainslide%03d.png' % i
                     img = os.path.join(doc.get_temp_folder(), imagefile)
                     while os.path.isfile(img):
                         service_item.add_from_image(img, name)
                         i += 1
-                        imagefile = u'mainslide%03d.png' % i
+                        imagefile = 'mainslide%03d.png' % i
                         img = os.path.join(doc.get_temp_folder(), imagefile)
                     doc.close_presentation()
                     return True
