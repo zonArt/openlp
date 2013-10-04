@@ -129,7 +129,6 @@ SONG_TEST_DATA = [{'title': 'Amazing Grace',
                        ('There\'s a garden where\nJesus is waiting,\nAnd He bids you to come,\nmeet Him there;\n'
                         'Just to bow and\nreceive a new blessing\nIn the beautiful\ngarden of prayer.')]}]
 
-@skipIf(os.name != 'nt', 'WorshipCenter Pro import only supported on Windows')
 class TestWorshipCenterProSongImport(TestCase):
     """
     Test the functions in the :mod:`worshipcenterproimport` module.
