@@ -7,11 +7,11 @@ import shutil
 from tempfile import mkstemp, mkdtemp
 from unittest import TestCase
 
-from mock import MagicMock
 from PyQt4 import QtGui
 
 from openlp.core.lib.pluginmanager import PluginManager
 from openlp.core.lib import Registry, Settings
+from tests.interfaces import MagicMock
 
 
 class TestPluginManager(TestCase):
