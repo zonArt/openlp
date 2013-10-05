@@ -150,35 +150,14 @@ class TestUtils(TestCase):
         # THEN: The file name should be cleaned.
         self.assertEqual(wanted_name, result, 'The file name should not contain any special characters.')
 
-    def get_locale_key_windows_test(self):
+    def get_locale_key_test(self):
         """
         Test the get_locale_key(string) function
         """
-        with patch('openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language,  \
-                patch('openlp.core.utils.os') as mocked_os:
+        with patch('openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language:
             # GIVEN: The language is German
             # 0x00C3 (A with diaresis) should be sorted as "A". 0x00DF (sharp s) should be sorted as "ss".
             mocked_get_language.return_value = 'de'
-            mocked_os.name = 'nt'
-            unsorted_list = ['Auszug', 'Aushang', '\u00C4u\u00DFerung']
-
-            # WHEN: We sort the list and use get_locale_key() to generate the sorting keys
-            sorted_list = sorted(unsorted_list, key=get_locale_key)
-
-            # THEN: We get a properly sorted list
-            self.assertEqual(['Aushang', '\u00C4u\u00DFerung', 'Auszug'], sorted_list,
-                'Strings should be sorted properly')
-
-    def get_locale_key_linux_test(self):
-        """
-        Test the get_locale_key(string) function
-        """
-        with patch('openlp.core.utils.languagemanager.LanguageManager.get_language') as mocked_get_language,  \
-                patch('openlp.core.utils.os.name') as mocked_os:
-            # GIVEN: The language is German
-            # 0x00C3 (A with diaresis) should be sorted as "A". 0x00DF (sharp s) should be sorted as "ss".
-            mocked_get_language.return_value = 'de'
-            mocked_os.name = 'linux'
             unsorted_list = ['Auszug', 'Aushang', '\u00C4u\u00DFerung']
 
             # WHEN: We sort the list and use get_locale_key() to generate the sorting keys
