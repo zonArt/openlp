@@ -692,7 +692,6 @@ class EditSongForm(QtGui.QDialog, Ui_EditSongDialog):
             self.verse_edit_button.setEnabled(False)
             self.verse_delete_button.setEnabled(False)
 
-
     def on_verse_order_text_changed(self, text):
         """
         Checks if the verse order is complete or missing. Shows a error message according to the state of the verse
