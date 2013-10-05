@@ -32,6 +32,7 @@ song files from third party applications.
 """
 import json
 from unittest import TestCase
+
 from tests.functional import patch, MagicMock
 
 class SongImportTestHelper(TestCase):
