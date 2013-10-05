@@ -207,8 +207,8 @@ class RemoteTab(SettingsTab):
         https_url_temp = https_url + 'stage'
         self.stage_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.stage_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
-        http_url_temp = http_url + 'live'
-        https_url_temp = https_url + 'live'
+        http_url_temp = http_url + 'main'
+        https_url_temp = https_url + 'main'
         self.live_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.live_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
 

@@ -1,12 +1,39 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 Package to test the openlp.core.lib.pluginmanager package.
 """
 from unittest import TestCase
 
-from mock import MagicMock
-
 from openlp.core.lib.pluginmanager import PluginManager
 from openlp.core.lib import Settings, Registry, PluginStatus
+from tests.functional import MagicMock
 
 
 class TestPluginManager(TestCase):
@@ -42,8 +69,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_media_manager()
 
         # THEN: The create_media_manager_item() method should have been called
-        assert mocked_plugin.create_media_manager_item.call_count == 0, \
-            'The create_media_manager_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.create_media_manager_item.call_count,
+            'The create_media_manager_item() method should not have been called.')
 
     def hook_media_manager_with_active_plugin_test(self):
         """
@@ -75,8 +102,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The hook_settings_tabs() method should have been called
-        assert mocked_plugin.create_media_manager_item.call_count == 0, \
-            'The create_media_manager_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.create_media_manager_item.call_count,
+            'The create_media_manager_item() method should not have been called.')
 
     def hook_settings_tabs_with_disabled_plugin_and_mocked_form_test(self):
         """
@@ -95,8 +122,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The create_settings_tab() method should not have been called, but the plugins lists should be the same
-        assert mocked_plugin.create_settings_tab.call_count == 0, \
-            'The create_media_manager_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.create_settings_tab.call_count,
+            'The create_media_manager_item() method should not have been called.')
         self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
             'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
@@ -117,10 +144,10 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_settings_tabs()
 
         # THEN: The create_media_manager_item() method should have been called with the mocked settings form
-        assert mocked_plugin.create_settings_tab.call_count == 1, \
-            'The create_media_manager_item() method should have been called once.'
-        self.assertEqual(mocked_settings_form.plugin_manager.plugins, plugin_manager.plugins,
-             'The plugins on the settings form should be the same as the plugins in the plugin manager')
+        self.assertEqual(1, mocked_plugin.create_settings_tab.call_count,
+            'The create_media_manager_item() method should have been called once.')
+        self.assertEqual(plugin_manager.plugins, mocked_settings_form.plugin_manager.plugins,
+            'The plugins on the settings form should be the same as the plugins in the plugin manager')
 
     def hook_settings_tabs_with_active_plugin_and_no_form_test(self):
         """
@@ -152,8 +179,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_import_menu()
 
         # THEN: The create_media_manager_item() method should have been called
-        assert mocked_plugin.add_import_menu_item.call_count == 0, \
-            'The add_import_menu_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.add_import_menu_item.call_count,
+            'The add_import_menu_item() method should not have been called.')
 
     def hook_import_menu_with_active_plugin_test(self):
         """
@@ -185,8 +212,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_export_menu()
 
         # THEN: The add_export_menu_Item() method should not have been called
-        assert mocked_plugin.add_export_menu_Item.call_count == 0, \
-            'The add_export_menu_Item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.add_export_menu_Item.call_count,
+            'The add_export_menu_Item() method should not have been called.')
 
     def hook_export_menu_with_active_plugin_test(self):
         """
@@ -219,8 +246,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_upgrade_plugin_settings(settings)
 
         # THEN: The upgrade_settings() method should not have been called
-        assert mocked_plugin.upgrade_settings.call_count == 0, \
-            'The upgrade_settings() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.upgrade_settings.call_count,
+            'The upgrade_settings() method should not have been called.')
 
     def hook_upgrade_plugin_settings_with_active_plugin_test(self):
         """
@@ -253,8 +280,8 @@ class TestPluginManager(TestCase):
         plugin_manager.hook_tools_menu()
 
         # THEN: The add_tools_menu_item() method should have been called
-        assert mocked_plugin.add_tools_menu_item.call_count == 0, \
-            'The add_tools_menu_item() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.add_tools_menu_item.call_count,
+            'The add_tools_menu_item() method should not have been called.')
 
     def hook_tools_menu_with_active_plugin_test(self):
         """
@@ -288,7 +315,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The is_active() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.initialise.call_count == 0, 'The initialise() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.initialise.call_count, 'The initialise() method should not have been called.')
 
     def initialise_plugins_with_active_plugin_test(self):
         """
@@ -324,7 +351,7 @@ class TestPluginManager(TestCase):
 
         # THEN: The is_active() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.finalise.call_count == 0, 'The finalise() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.finalise.call_count, 'The finalise() method should not have been called.')
 
     def finalise_plugins_with_active_plugin_test(self):
         """
@@ -392,8 +419,8 @@ class TestPluginManager(TestCase):
 
         # THEN: The isActive() method should have been called, and initialise() method should NOT have been called
         mocked_plugin.is_active.assert_called_with()
-        assert mocked_plugin.new_service_created.call_count == 0,\
-            'The new_service_created() method should not have been called.'
+        self.assertEqual(0, mocked_plugin.new_service_created.call_count,
+                         'The new_service_created() method should not have been called.')
 
     def new_service_created_with_active_plugin_test(self):
         """
