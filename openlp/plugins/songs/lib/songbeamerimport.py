@@ -102,9 +102,9 @@ class SongBeamerImport(SongImport):
         """
         Receive a single file or a list of files to import.
         """
-        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         if not isinstance(self.import_source, list):
             return
+        self.import_wizard.progress_bar.setMaximum(len(self.import_source))
         for import_file in self.import_source:
             # TODO: check that it is a valid SongBeamer file
             if self.stop_import_flag:
