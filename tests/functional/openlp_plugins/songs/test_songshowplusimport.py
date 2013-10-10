@@ -33,7 +33,7 @@ This module contains tests for the SongShow Plus song importer.
 import os
 from unittest import TestCase
 
-from tests.functional.openlp_plugins.songs.songfileimporthelper import SongImportTestHelper
+from tests.helpers.songfileimport import SongImportTestHelper
 from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.songshowplusimport import SongShowPlusImport
 from tests.functional import patch, MagicMock
