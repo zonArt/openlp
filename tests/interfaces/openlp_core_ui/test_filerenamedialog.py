@@ -3,10 +3,11 @@
 """
 from unittest import TestCase
 
-from mock import MagicMock, patch
+from PyQt4 import QtGui, QtTest
+
 from openlp.core.lib import Registry
 from openlp.core.ui import filerenameform
-from PyQt4 import QtGui, QtTest
+from tests.interfaces import MagicMock, patch
 
 
 class TestStartFileRenameForm(TestCase):
