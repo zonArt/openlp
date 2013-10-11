@@ -35,8 +35,6 @@ from tempfile import mkstemp
 from unittest import TestCase
 from PyQt4 import QtGui
 
-from PyQt4 import QtGui
-
 from openlp.core.lib import Settings
 
 
