@@ -1,3 +1,31 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 Package to test the openlp.core.lib package.
 """
@@ -6,22 +34,20 @@ import os
 from unittest import TestCase
 from datetime import datetime, timedelta
 
-from mock import MagicMock, patch
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import str_to_bool, create_thumb, translate, check_directory_exists, get_text_file_string, \
     build_icon, image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
-
+from tests.functional import MagicMock, patch
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
 
 
-
 class TestLib(TestCase):
 
-    def str_to_bool_with_bool_test(self):
+    def str_to_bool_with_bool_true_test(self):
         """
-        Test the str_to_bool function with boolean input
+        Test the str_to_bool function with boolean input of True
         """
         # GIVEN: A boolean value set to true
         true_boolean = True
@@ -30,9 +56,13 @@ class TestLib(TestCase):
         true_result = str_to_bool(true_boolean)
 
         # THEN: We should get back a True bool
-        assert isinstance(true_result, bool), 'The result should be a boolean'
-        assert true_result is True, 'The result should be True'
+        self.assertIsInstance(true_result, bool, 'The result should be a boolean')
+        self.assertTrue(true_result, 'The result should be True')
 
+    def str_to_bool_with_bool_false_test(self):
+        """
+        Test the str_to_bool function with boolean input of False
+        """
         # GIVEN: A boolean value set to false
         false_boolean = False
 
@@ -40,12 +70,12 @@ class TestLib(TestCase):
         false_result = str_to_bool(false_boolean)
 
         # THEN: We should get back a True bool
-        assert isinstance(false_result, bool), 'The result should be a boolean'
-        assert false_result is False, 'The result should be True'
+        self.assertIsInstance(false_result, bool, 'The result should be a boolean')
+        self.assertFalse(false_result, 'The result should be True')
 
-    def str_to_bool_with_invalid_test(self):
+    def str_to_bool_with_integer_test(self):
         """
-        Test the str_to_bool function with a set of invalid inputs
+        Test the str_to_bool function with an integer input
         """
         # GIVEN: An integer value
         int_string = 1
@@ -54,8 +84,12 @@ class TestLib(TestCase):
         int_result = str_to_bool(int_string)
 
         # THEN: we should get back a false
-        assert int_result is False, 'The result should be False'
+        self.assertFalse(int_result, 'The result should be False')
 
+    def str_to_bool_with_invalid_string_test(self):
+        """
+        Test the str_to_bool function with an invalid string
+        """
         # GIVEN: An string value with completely invalid input
         invalid_string = 'my feet are wet'
 
@@ -63,11 +97,11 @@ class TestLib(TestCase):
         str_result = str_to_bool(invalid_string)
 
         # THEN: we should get back a false
-        assert str_result is False, 'The result should be False'
+        self.assertFalse(str_result, 'The result should be False')
 
-    def str_to_bool_with_false_values_test(self):
+    def str_to_bool_with_string_false_test(self):
         """
-        Test the str_to_bool function with a set of false inputs
+        Test the str_to_bool function with a string saying "false"
         """
         # GIVEN: A string set to "false"
         false_string = 'false'
@@ -76,8 +110,12 @@ class TestLib(TestCase):
         false_result = str_to_bool(false_string)
 
         # THEN: we should get back a false
-        assert false_result is False, 'The result should be False'
+        self.assertFalse(false_result, 'The result should be False')
 
+    def str_to_bool_with_string_no_test(self):
+        """
+        Test the str_to_bool function with a string saying "NO"
+        """
         # GIVEN: An string set to "NO"
         no_string = 'NO'
 
@@ -85,11 +123,11 @@ class TestLib(TestCase):
         str_result = str_to_bool(no_string)
 
         # THEN: we should get back a false
-        assert str_result is False, 'The result should be False'
+        self.assertFalse(str_result, 'The result should be False')
 
-    def str_to_bool_with_true_values_test(self):
+    def str_to_bool_with_true_string_value_test(self):
         """
-        Test the str_to_bool function with a set of true inputs
+        Test the str_to_bool function with a string set to "True"
         """
         # GIVEN: A string set to "True"
         true_string = 'True'
@@ -98,8 +136,12 @@ class TestLib(TestCase):
         true_result = str_to_bool(true_string)
 
         # THEN: we should get back a true
-        assert true_result is True, 'The result should be True'
+        self.assertTrue(true_result, 'The result should be True')
 
+    def str_to_bool_with_yes_string_value_test(self):
+        """
+        Test the str_to_bool function with a string set to "yes"
+        """
         # GIVEN: An string set to "yes"
         yes_string = 'yes'
 
@@ -107,7 +149,7 @@ class TestLib(TestCase):
         str_result = str_to_bool(yes_string)
 
         # THEN: we should get back a true
-        assert str_result is True, 'The result should be True'
+        self.assertTrue(str_result, 'The result should be True')
 
     def translate_test(self):
         """
@@ -126,7 +168,7 @@ class TestLib(TestCase):
 
         # THEN: the translated string should be returned, and the mocked function should have been called
         mocked_translate.assert_called_with(context, text, comment, encoding, n)
-        assert result == 'Translated string', 'The translated string should have been returned'
+        self.assertEqual('Translated string', result, 'The translated string should have been returned')
 
     def check_directory_exists_test(self):
         """
@@ -143,7 +185,7 @@ class TestLib(TestCase):
 
             # THEN: Only os.path.exists should have been called
             mocked_exists.assert_called_with(directory_to_check)
-            assert not mocked_makedirs.called, 'os.makedirs should not have been called'
+            self.assertIsNot(mocked_makedirs.called, 'os.makedirs should not have been called')
 
             # WHEN: os.path.exists returns False and we check the directory exists
             mocked_exists.return_value = False
@@ -181,13 +223,14 @@ class TestLib(TestCase):
 
             # THEN: The result should be False
             mocked_isfile.assert_called_with(filename)
-            assert result is False, 'False should be returned if no file exists'
+            self.assertFalse(result, 'False should be returned if no file exists')
 
     def get_text_file_string_read_error_test(self):
         """
         Test the get_text_file_string() method when a read error happens
         """
-        with patch('openlp.core.lib.os.path.isfile') as mocked_isfile, patch('builtins.open') as mocked_open:
+        with patch('openlp.core.lib.os.path.isfile') as mocked_isfile, \
+                patch('openlp.core.lib.open', create=True) as mocked_open:
             # GIVEN: A mocked-out open() which raises an exception and isfile returns True
             filename = 'testfile.txt'
             mocked_isfile.return_value = True
@@ -199,13 +242,13 @@ class TestLib(TestCase):
             # THEN: None should be returned
             mocked_isfile.assert_called_with(filename)
             mocked_open.assert_called_with(filename, 'r')
-            assert result is None, 'None should be returned if the file cannot be opened'
+            self.assertIsNone(result, 'None should be returned if the file cannot be opened')
 
     def get_text_file_string_decode_error_test(self):
         """
         Test the get_text_file_string() method when the contents cannot be decoded
         """
-        assert True, 'Impossible to test due to conflicts when mocking out the "open" function'
+        self.skipTest('Impossible to test due to conflicts when mocking out the "open" function')
 
     def build_icon_with_qicon_test(self):
         """
@@ -220,7 +263,7 @@ class TestLib(TestCase):
             result = build_icon(mocked_icon)
 
             # THEN: The result should be our mocked QIcon
-            assert result is mocked_icon, 'The result should be the mocked QIcon'
+            self.assertIs(mocked_icon, result, 'The result should be the mocked QIcon')
 
     def build_icon_with_resource_test(self):
         """
@@ -242,7 +285,7 @@ class TestLib(TestCase):
             MockedQPixmap.assert_called_with(resource_uri)
             # There really should be more assert statements here but due to type checking and things they all break. The
             # best we can do is to assert that we get back a MagicMock object.
-            assert isinstance(result, MagicMock), 'The result should be a MagicMock, because we mocked it out'
+            self.assertIsInstance(result, MagicMock, 'The result should be a MagicMock, because we mocked it out')
 
     def image_to_byte_test(self):
         """
@@ -252,7 +295,7 @@ class TestLib(TestCase):
             # GIVEN: A set of mocked-out Qt classes
             mocked_byte_array = MagicMock()
             MockedQtCore.QByteArray.return_value = mocked_byte_array
-            mocked_byte_array.toBase64.return_value = 'base64mock'
+            mocked_byte_array.toBase64.return_value = QtCore.QByteArray('base64mock')
             mocked_buffer = MagicMock()
             MockedQtCore.QBuffer.return_value = mocked_buffer
             MockedQtCore.QIODevice.WriteOnly = 'writeonly'
@@ -267,7 +310,8 @@ class TestLib(TestCase):
             mocked_buffer.open.assert_called_with('writeonly')
             mocked_image.save.assert_called_with(mocked_buffer, "PNG")
             mocked_byte_array.toBase64.assert_called_with()
-            assert result == 'base64mock', 'The result should be the return value of the mocked out base64 method'
+            self.assertEqual('base64mock', result,
+                'The result should be the return value of the mocked out base64 method')
 
     def create_thumb_with_size_test(self):
         """
@@ -286,16 +330,16 @@ class TestLib(TestCase):
             pass
 
         # Only continue when the thumb does not exist.
-        assert not os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists.'
+        self.assertFalse(os.path.exists(thumb_path), 'Test was not run, because the thumb already exists.')
 
         # WHEN: Create the thumb.
         icon = create_thumb(image_path, thumb_path, size=thumb_size)
 
         # THEN: Check if the thumb was created.
-        assert os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists.'
-        assert isinstance(icon, QtGui.QIcon), 'The icon should be a QIcon.'
-        assert not icon.isNull(), 'The icon should not be null.'
-        assert QtGui.QImageReader(thumb_path).size() == thumb_size, 'The thumb should have the given size.'
+        self.assertTrue(os.path.exists(thumb_path), 'Test was not ran, because the thumb already exists')
+        self.assertIsInstance(icon, QtGui.QIcon, 'The icon should be a QIcon')
+        self.assertFalse(icon.isNull(), 'The icon should not be null')
+        self.assertEqual(thumb_size, QtGui.QImageReader(thumb_path).size(), 'The thumb should have the given size')
 
         # Remove the thumb so that the test actually tests if the thumb will be created.
         try:
@@ -318,7 +362,7 @@ class TestLib(TestCase):
 
         # THEN: The selectedIndexes function should have been called and the result should be true
         mocked_list_widget.selectedIndexes.assert_called_with()
-        assert result, 'The result should be True'
+        self.assertTrue(result, 'The result should be True')
 
     def check_item_selected_false_test(self):
         """
@@ -326,7 +370,7 @@ class TestLib(TestCase):
         """
         # GIVEN: A mocked out QtGui module and a list widget with selected indexes
         with patch('openlp.core.lib.QtGui') as MockedQtGui, \
-             patch('openlp.core.lib.translate') as mocked_translate:
+                patch('openlp.core.lib.translate') as mocked_translate:
             mocked_translate.return_value = 'mocked translate'
             mocked_list_widget = MagicMock()
             mocked_list_widget.selectedIndexes.return_value = False
@@ -339,7 +383,7 @@ class TestLib(TestCase):
             # THEN: The selectedIndexes function should have been called and the result should be true
             mocked_list_widget.selectedIndexes.assert_called_with()
             MockedQtGui.QMessageBox.information.assert_called_with('parent', 'mocked translate', 'message')
-            assert not result, 'The result should be False'
+            self.assertFalse(result, 'The result should be False')
 
     def clean_tags_test(self):
         """
@@ -361,7 +405,7 @@ class TestLib(TestCase):
             result_string = clean_tags(string_to_pass)
 
             # THEN: The strings should be identical.
-            assert result_string == wanted_string, 'The strings should be identical.'
+            self.assertEqual(wanted_string, result_string, 'The strings should be identical')
 
     def expand_tags_test(self):
         """
@@ -400,7 +444,7 @@ class TestLib(TestCase):
             result_string = expand_tags(string_to_pass)
 
             # THEN: The strings should be identical.
-            assert result_string == wanted_string, 'The strings should be identical.'
+            self.assertEqual(wanted_string, result_string, 'The strings should be identical.')
 
     def validate_thumb_file_does_not_exist_test(self):
         """

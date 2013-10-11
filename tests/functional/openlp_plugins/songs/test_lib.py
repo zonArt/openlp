@@ -1,13 +1,39 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 This module contains tests for the lib submodule of the Songs plugin.
 """
-
 from unittest import TestCase
 
-from mock import patch, MagicMock
-
-from openlp.plugins.songs.lib import VerseType, clean_string, clean_title
+from openlp.plugins.songs.lib import VerseType, clean_string, clean_title, strip_rtf
 from openlp.plugins.songs.lib.songcompare import songs_probably_equal, _remove_typos, _op_length
+from tests.functional import patch, MagicMock
 
 
 class TestLib(TestCase):
@@ -68,10 +94,10 @@ class TestLib(TestCase):
         # GIVEN: Two equal songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.full_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
         assert result == True, 'The result should be True'
 
@@ -82,10 +108,10 @@ class TestLib(TestCase):
         # GIVEN: A song and a short version of the same song.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.short_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
         assert result == True, 'The result should be True'
 
@@ -96,10 +122,10 @@ class TestLib(TestCase):
         # GIVEN: A song and the same song with lots of errors.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.error_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
         assert result == True, 'The result should be True'
 
@@ -110,10 +136,10 @@ class TestLib(TestCase):
         # GIVEN: Two different songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.different_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be False.
         assert result == False, 'The result should be False'
 
@@ -214,6 +240,38 @@ class TestLib(TestCase):
 
         # THEN: The maximum length should be returned.
         assert result == 10, 'The length should be 10.'
+
+    def strip_rtf_charsets_test(self):
+        """
+        Test that the strip_rtf() method properly decodes the supported charsets.
+        """
+        test_charset_table = [
+            ('0', 'weor\\\'F0-myndum \\\'FEah\\par ', 'weorð-myndum þah\n'),
+            ('128', '\\\'83C\\\'83G\\\'83X\\\'A5\\\'83L\\\'83\\\'8A\\\'83X\\\'83g\\\'A1 '
+                    '\\\\ \\\'95\\\\ \\\'8E\\} \\\'8E\\{ \\\'A1\\par ', 'イエス･キリスト｡ ¥ 表 枝 施 ｡\n'),
+            ('129', '\\\'BF\\\'B9\\\'BC\\\'F6 \\\'B1\\\'D7\\\'B8\\\'AE\\\'BD\\\'BA\\\'B5\\\'B5\\par ', '예수 그리스도\n'),
+            ('134', '\\\'D2\\\'AE\\\'F6\\\'D5\\\'BB\\\'F9\\\'B6\\\'BD\\\'CA\\\'C7\\\'D6\\\'F7\\par ', '耶稣基督是主\n'),
+            ('161', '\\\'D7\\\'F1\\\'E9\\\'F3\\\'F4\\\'FC\\\'F2\\par ', 'Χριστός\n'),
+            ('162', 'Hazreti \\\'DDsa\\par ', 'Hazreti İsa\n'),
+            ('163', 'ph\\\'FD\\\'F5ng\\par ', 'phương\n'),
+            ('177', '\\\'E1\\\'F8\\\'E0\\\'F9\\\'E9\\\'FA\\par ', 'בראשית\n'),
+            ('178', '\\\'ED\\\'D3\\\'E6\\\'DA \\\'C7\\\'E1\\\'E3\\\'D3\\\'ED\\\'CD\\par ', 'يسوع المسيح\n'),
+            ('186', 'J\\\'EBzus Kristus yra Vie\\\'F0pats\\par ', 'Jėzus Kristus yra Viešpats\n'),
+            ('204', '\\\'D0\\\'EE\\\'F1\\\'F1\\\'E8\\\'FF\\par ', 'Россия\n'),
+            ('222', '\\\'A4\\\'C3\\\'D4\\\'CA\\\'B5\\\'EC\\par ', 'คริสต์\n'),
+            ('238', 'Z\\\'E1v\\\'ECre\\\'E8n\\\'E1 zkou\\\'9Aka\\par ', 'Závěrečná zkouška\n')
+        ]
+
+        # GIVEN: For each character set and input
+        for charset, input, exp_result in test_charset_table:
+
+            # WHEN: We call strip_rtf on the input RTF
+            result, result_enc = strip_rtf(
+               '{\\rtf1 \\ansi \\ansicpg1252 {\\fonttbl \\f0 \\fswiss \\fcharset%s Helvetica;}' \
+               '{\\colortbl ;\\red0 \\green0 \\blue0 ;}\\pard \\f0 %s}' % (charset, input))
+
+            # THEN: The stripped text matches thed expected result
+            assert result == exp_result, 'The result should be %s' % exp_result
 
 
 class TestVerseType(TestCase):

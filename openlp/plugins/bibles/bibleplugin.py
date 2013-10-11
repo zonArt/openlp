@@ -48,6 +48,7 @@ __default_settings__ = {
     'bibles/verse layout style': LayoutStyle.VersePerSlide,
     'bibles/book name language': LanguageSelection.Bible,
     'bibles/display brackets': DisplayStyle.NoBrackets,
+    'bibles/is verse number visible': True,
     'bibles/display new chapter': False,
     'bibles/second bibles': True,
     'bibles/advanced bible': '',
@@ -66,6 +67,9 @@ __default_settings__ = {
 
 
 class BiblePlugin(Plugin):
+    """
+    The Bible plugin provides a plugin for managing and displaying Bibles.
+    """
     log.info('Bible Plugin loaded')
 
     def __init__(self):
@@ -73,13 +77,14 @@ class BiblePlugin(Plugin):
         self.weight = -9
         self.icon_path = ':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)
-        self.manager = None
+        self.manager = BibleManager(self)
 
     def initialise(self):
+        """
+        Initialise the Bible plugin.
+        """
         log.info('bibles Initialising')
-        if self.manager is None:
-            self.manager = BibleManager(self)
-        Plugin.initialise(self)
+        super(BiblePlugin, self).initialise()
         self.import_bible_item.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.import_bible_item, UiStrings().Import)
@@ -106,7 +111,7 @@ class BiblePlugin(Plugin):
         """
         Perform tasks on application startup
         """
-        Plugin.app_startup(self)
+        super(BiblePlugin, self).app_startup()
         if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),

@@ -72,6 +72,11 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = 'songs/song'
         super(SongMediaItem, self).__init__(parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         self.single_service_item = False
         # Holds information about whether the edit is remotely triggered and which Song is required.
         self.remote_song = -1

@@ -32,9 +32,8 @@ This module contains tests for the SongShow Plus song importer.
 
 import os
 from unittest import TestCase
-from mock import patch, MagicMock
+from tests.functional import patch, MagicMock
 
-from openlp.plugins.songs.lib import VerseType
 from openlp.plugins.songs.lib.foilpresenterimport import FoilPresenter
 
 TEST_PATH = os.path.abspath(

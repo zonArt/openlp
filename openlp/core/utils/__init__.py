@@ -256,7 +256,7 @@ def is_not_image_file(file_name):
     if not file_name:
         return True
     else:
-        formats = [str(fmt).lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
+        formats = [bytes(fmt).decode().lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
         file_part, file_extension = os.path.splitext(str(file_name))
         if file_extension[1:].lower() in formats and os.path.exists(file_name):
             return False

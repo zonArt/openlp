@@ -58,6 +58,11 @@ class CustomMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = 'custom/custom'
         super(CustomMediaItem, self).__init__(parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.single_service_item = False
         self.quick_preview_allowed = True
@@ -65,7 +70,7 @@ class CustomMediaItem(MediaManagerItem):
         # Holds information about whether the edit is remotely triggered and
         # which Custom is required.
         self.remote_custom = -1
-        self.manager = plugin.manager
+        self.manager = self.plugin.manager
 
     def add_end_header_bar(self):
         self.toolbar.addSeparator()
