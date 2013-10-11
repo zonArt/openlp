@@ -62,6 +62,7 @@ class TestServiceManager(TestCase):
             q_point = None
             # Mocked actions.
             self.service_manager.edit_action.setVisible = Mock()
+            self.service_manager.rename_action.setVisible = Mock()
             self.service_manager.create_custom_action.setVisible = Mock()
             self.service_manager.maintain_action.setVisible = Mock()
             self.service_manager.notes_action.setVisible = Mock()
@@ -73,6 +74,8 @@ class TestServiceManager(TestCase):
 
             # THEN: The following actions should be not visible.
             self.service_manager.edit_action.setVisible.assert_called_once_with(False), \
+                'The action should be set invisible.'
+            self.service_manager.rename_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
             self.service_manager.create_custom_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
