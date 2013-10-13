@@ -40,7 +40,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.common.applocation import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import Settings
 
 from openlp.plugins.remotes.lib import HttpRouter

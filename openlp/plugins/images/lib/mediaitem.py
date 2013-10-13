@@ -32,7 +32,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common.applocation import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, ServiceItemContext, Settings, \
     StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, check_item_selected, \
     create_thumb, translate, validate_thumb

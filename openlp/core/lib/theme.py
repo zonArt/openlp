@@ -42,52 +42,6 @@ from openlp.core.lib import str_to_bool, ScreenList, get_text_file_string
 
 log = logging.getLogger(__name__)
 
-BLANK_THEME_XML = \
-'''<?xml version="1.0" encoding="utf-8"?>
- <theme version="1.0">
-   <name> </name>
-   <background type="image">
-      <filename></filename>
-      <borderColor>#000000</borderColor>
-   </background>
-   <background type="gradient">
-      <startColor>#000000</startColor>
-      <endColor>#000000</endColor>
-      <direction>vertical</direction>
-   </background>
-   <background type="solid">
-      <color>#000000</color>
-   </background>
-   <font type="main">
-      <name>Arial</name>
-      <color>#FFFFFF</color>
-      <size>40</size>
-      <bold>False</bold>
-      <italics>False</italics>
-      <line_adjustment>0</line_adjustment>
-      <shadow shadowColor="#000000" shadowSize="5">True</shadow>
-      <outline outlineColor="#000000" outlineSize="2">False</outline>
-      <location override="False" x="10" y="10" width="1004" height="690"/>
-   </font>
-   <font type="footer">
-      <name>Arial</name>
-      <color>#FFFFFF</color>
-      <size>12</size>
-      <bold>False</bold>
-      <italics>False</italics>
-      <line_adjustment>0</line_adjustment>
-      <shadow shadowColor="#000000" shadowSize="5">True</shadow>
-      <outline outlineColor="#000000" outlineSize="2">False</outline>
-      <location override="False" x="10" y="690" width="1004" height="78"/>
-   </font>
-   <display>
-      <horizontalAlign>0</horizontalAlign>
-      <verticalAlign>0</verticalAlign>
-      <slideTransition>False</slideTransition>
-   </display>
- </theme>
-'''
-
 
 class ThemeLevel(object):
     """
@@ -204,8 +158,6 @@ class VerticalType(object):
 
 BOOLEAN_LIST = ['bold', 'italics', 'override', 'outline', 'shadow', 'slide_transition']
 
-BOOLEAN_LIST2 = ['True', 'False']
-
 INTEGER_LIST = ['size', 'line_adjustment', 'x', 'height', 'y', 'width', 'shadow_size', 'outline_size',
     'horizontal_align', 'vertical_align', 'wrap_style']
 
@@ -221,7 +173,7 @@ class ThemeXML(object):
         """
         Initialise the theme object.
         """
-        # Create the minidom document
+        # basic theme object with defaults
         json_dir = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'core', 'lib', 'json')
         json_file = os.path.join(json_dir, 'theme.json')
         jsn = get_text_file_string(json_file)

@@ -36,7 +36,7 @@ from tempfile import gettempdir
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common.applocation import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import Registry, Settings, UiStrings, translate, check_directory_exists
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings

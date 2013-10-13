@@ -34,7 +34,7 @@ import os
 
 from PyQt4 import QtCore
 
-from openlp.core.common.applocation import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import Registry, translate, check_directory_exists
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song, VerseType

@@ -35,7 +35,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.common.applocation import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import Plugin, StringContent, build_icon, translate
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 

@@ -38,7 +38,7 @@ import re
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common.applocation import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import ImageSource, OpenLPToolbar, Registry, Settings, UiStrings, get_text_file_string, \
     build_icon, translate, check_item_selected, check_directory_exists, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType

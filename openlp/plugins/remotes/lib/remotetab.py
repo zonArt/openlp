@@ -31,7 +31,7 @@ import os.path
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.common.applocation import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.lib import Settings, SettingsTab, translate
 
 ZERO_URL = '0.0.0.0'
