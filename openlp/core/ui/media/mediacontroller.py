@@ -39,7 +39,7 @@ from openlp.core.lib import OpenLPToolbar, Settings, Registry, UiStrings, transl
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
 from openlp.core.ui.media.mediaplayer import MediaPlayer
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation
 from openlp.core.ui import DisplayControllerType
 
 log = logging.getLogger(__name__)

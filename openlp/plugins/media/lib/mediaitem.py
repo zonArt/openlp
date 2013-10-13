@@ -32,12 +32,13 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.common.applocation import AppLocation
 from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, Registry, ServiceItem, ServiceItemContext, \
     Settings, UiStrings, build_icon, check_item_selected, check_directory_exists, translate
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
-from openlp.core.utils import AppLocation, get_locale_key
+from openlp.core.utils import get_locale_key
 
 
 log = logging.getLogger(__name__)

@@ -27,10 +27,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.core.theme` module contains all the themeing functions used by
-OpenLP when displaying a song or a scripture.
+The Theme Controller helps manages adding, deleteing and modifying of themes.
 """
 
-from openlp.core.theme.theme import Theme
 
-__all__ = ['Theme']
+class ThemeManagerHelper(object):
+    """
+    Manages the non ui theme functions.
+    """
+    pass

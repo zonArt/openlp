@@ -27,15 +27,11 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`openlp.core.utils.applocation` module provides an utility for OpenLP receiving the data path etc.
+The :mod:`openlp.core.common.applocation` module provides an utility for OpenLP receiving the data path etc.
 """
 import logging
 import os
 import sys
-
-from openlp.core.lib import Settings
-from openlp.core.utils import _get_frozen_path
-
 
 if sys.platform != 'win32' and sys.platform != 'darwin':
     try:
@@ -45,7 +41,7 @@ if sys.platform != 'win32' and sys.platform != 'darwin':
         XDG_BASE_AVAILABLE = False
 
 import openlp
-from openlp.core.lib import check_directory_exists
+from openlp.core.common import check_directory_exists
 
 
 log = logging.getLogger(__name__)
@@ -74,15 +70,15 @@ class AppLocation(object):
             The directory type you want, for instance the data directory. Default *AppLocation.AppDir*
         """
         if dir_type == AppLocation.AppDir:
-            return _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
+            return get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.PluginsDir:
             app_path = os.path.abspath(os.path.split(sys.argv[0])[0])
-            return _get_frozen_path(os.path.join(app_path, 'plugins'),
+            return get_frozen_path(os.path.join(app_path, 'plugins'),
                 os.path.join(os.path.split(openlp.__file__)[0], 'plugins'))
         elif dir_type == AppLocation.VersionDir:
-            return _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
+            return get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), os.path.split(openlp.__file__)[0])
         elif dir_type == AppLocation.LanguageDir:
-            app_path = _get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), _get_os_dir_path(dir_type))
+            app_path = get_frozen_path(os.path.abspath(os.path.split(sys.argv[0])[0]), _get_os_dir_path(dir_type))
             return os.path.join(app_path, 'i18n')
         elif dir_type == AppLocation.DataDir and AppLocation.BaseDir:
             return os.path.join(AppLocation.BaseDir, 'data')
@@ -95,6 +91,7 @@ class AppLocation(object):
         Return the path OpenLP stores all its data under.
         """
         # Check if we have a different data location.
+        from openlp.core.lib import Settings
         if Settings().contains('advanced/data path'):
             path = Settings().value('advanced/data path')
         else:
@@ -137,6 +134,15 @@ class AppLocation(object):
         path = os.path.join(data_path, section)
         check_directory_exists(path)
         return path
+
+
+def get_frozen_path(frozen_option, non_frozen_option):
+    """
+    Return a path based on the system status.
+    """
+    if hasattr(sys, 'frozen') and sys.frozen == 1:
+        return frozen_option
+    return non_frozen_option
 
 
 def _get_os_dir_path(dir_type):

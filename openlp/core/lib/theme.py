@@ -32,11 +32,13 @@ Provide the theme XML and handling functions for OpenLP v2 themes.
 import os
 import re
 import logging
+import json
 
 from xml.dom.minidom import Document
 from lxml import etree, objectify
+from openlp.core.common import AppLocation
 
-from openlp.core.lib import str_to_bool, ScreenList
+from openlp.core.lib import str_to_bool, ScreenList, get_text_file_string
 
 log = logging.getLogger(__name__)
 
@@ -202,6 +204,8 @@ class VerticalType(object):
 
 BOOLEAN_LIST = ['bold', 'italics', 'override', 'outline', 'shadow', 'slide_transition']
 
+BOOLEAN_LIST2 = ['True', 'False']
+
 INTEGER_LIST = ['size', 'line_adjustment', 'x', 'height', 'y', 'width', 'shadow_size', 'outline_size',
     'horizontal_align', 'vertical_align', 'wrap_style']
 
@@ -218,8 +222,12 @@ class ThemeXML(object):
         Initialise the theme object.
         """
         # Create the minidom document
-        self.theme_xml = Document()
-        self.parse_xml(BLANK_THEME_XML)
+        json_dir = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'core', 'lib', 'json')
+        json_file = os.path.join(json_dir, 'theme.json')
+        jsn = get_text_file_string(json_file)
+        jsn = json.loads(jsn)
+        for key, value in jsn.items():
+            setattr(self, key, value)
 
     def extend_image_filename(self, path):
         """
@@ -559,6 +567,7 @@ class ThemeXML(object):
         """
         Create the attributes with the correct data types and name format
         """
+        #print(master, element, value)
         reject, master, element, value = self._translate_tags(master, element, value)
         if reject:
             return

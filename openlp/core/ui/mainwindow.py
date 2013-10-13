@@ -46,8 +46,10 @@ from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageMana
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
+
+from openlp.core.common.applocation import AppLocation
 from openlp.core.ui.media import MediaController
-from openlp.core.utils import AppLocation, LanguageManager, add_actions, get_application_version
+from openlp.core.utils import LanguageManager, add_actions, get_application_version
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 

@@ -35,9 +35,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.common.applocation import AppLocation
 from openlp.core.lib import Registry, translate
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib import delete_song
 from openlp.plugins.songs.lib.db import Song, MediaFile
 from openlp.plugins.songs.forms.songreviewwidget import SongReviewWidget

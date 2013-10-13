@@ -43,6 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.common import AppLocation
 from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -50,7 +51,7 @@ from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen
-from openlp.core.utils import AppLocation, LanguageManager, VersionThread, get_application_version
+from openlp.core.utils import LanguageManager, VersionThread, get_application_version
 
 
 __all__ = ['OpenLP', 'main']

@@ -32,7 +32,7 @@ Functional tests to test the AppLocation class and related methods.
 import copy
 from unittest import TestCase
 
-from openlp.core.utils import AppLocation
+from openlp.core.common.applocation import AppLocation
 from tests.functional import patch
 
 FILE_LIST = ['file1', 'file2', 'file3.txt', 'file4.txt', 'file5.mp3', 'file6.mp3']
