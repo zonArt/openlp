@@ -33,6 +33,9 @@ import logging
 import os
 import sys
 
+from openlp.core.common import Settings
+
+
 if sys.platform != 'win32' and sys.platform != 'darwin':
     try:
         from xdg import BaseDirectory
@@ -91,7 +94,6 @@ class AppLocation(object):
         Return the path OpenLP stores all its data under.
         """
         # Check if we have a different data location.
-        from openlp.core.lib import Settings
         if Settings().contains('advanced/data path'):
             path = Settings().value('advanced/data path')
         else:

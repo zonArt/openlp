@@ -33,8 +33,8 @@ import os
 from PyQt4 import QtGui
 from sqlalchemy.sql import and_
 
-from openlp.core.common import check_directory_exists
-from openlp.core.lib import Registry, Settings, translate
+from openlp.core.common import Settings, check_directory_exists, translate
+from openlp.core.lib import Registry
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from .songusagedetaildialog import Ui_SongUsageDetailDialog
 

@@ -36,7 +36,7 @@ from tempfile import mkstemp
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Settings
+from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.remotetab import RemoteTab
 from tests.functional import patch
 
@@ -105,7 +105,7 @@ class TestRemoteTab(TestCase):
         Test the set_urls function with standard defaults
         """
         # GIVEN: A mocked location
-        with patch('openlp.core.lib.Settings') as mocked_class, \
+        with patch('openlp.core.common.Settings') as mocked_class, \
                 patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
                 patch('openlp.core.common.check_directory_exists') as mocked_check_directory_exists, \
                 patch('openlp.core.common.applocation.os') as mocked_os:
@@ -133,7 +133,7 @@ class TestRemoteTab(TestCase):
         Test the set_urls function with certificate available
         """
         # GIVEN: A mocked location
-        with patch('openlp.core.lib.Settings') as mocked_class, \
+        with patch('openlp.core.common.Settings') as mocked_class, \
                 patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
                 patch('openlp.core.common.check_directory_exists') as mocked_check_directory_exists, \
                 patch('openlp.core.common.applocation.os') as mocked_os:

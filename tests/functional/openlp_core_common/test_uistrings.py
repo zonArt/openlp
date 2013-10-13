@@ -31,7 +31,7 @@ Package to test the openlp.core.lib.uistrings package.
 """
 from unittest import TestCase
 
-from openlp.core.lib import UiStrings
+from openlp.core.common import UiStrings
 
 
 class TestUiStrings(TestCase):

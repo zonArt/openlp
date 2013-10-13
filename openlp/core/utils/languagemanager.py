@@ -35,8 +35,8 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation
-from openlp.core.lib import Settings, translate
+from openlp.core.common import AppLocation, Settings
+from openlp.core.lib import translate
 
 log = logging.getLogger(__name__)
 

@@ -30,8 +30,8 @@
 import logging
 import os
 
-from openlp.core.common import AppLocation
-from openlp.core.lib import Registry, Settings, translate
+from openlp.core.common import AppLocation, Settings
+from openlp.core.lib import Registry, translate
 from openlp.core.utils import delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta

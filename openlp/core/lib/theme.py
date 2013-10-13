@@ -43,15 +43,6 @@ from openlp.core.lib import str_to_bool, ScreenList, get_text_file_string
 log = logging.getLogger(__name__)
 
 
-class ThemeLevel(object):
-    """
-    Provides an enumeration for the level a theme applies to
-    """
-    Global = 1
-    Service = 2
-    Song = 3
-
-
 class BackgroundType(object):
     """
     Type enumeration for backgrounds.

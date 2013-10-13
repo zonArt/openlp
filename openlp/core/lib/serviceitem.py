@@ -39,7 +39,8 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import ImageSource, Settings, Registry, build_icon, clean_tags, expand_tags, translate
+from openlp.core.common import Settings
+from openlp.core.lib import ImageSource, Registry, build_icon, clean_tags, expand_tags, translate
 
 log = logging.getLogger(__name__)
 

@@ -34,8 +34,7 @@ import os
 
 from PyQt4 import QtGui
 
-from openlp.core.common import AppLocation
-from openlp.core.lib import Settings, UiStrings, translate
+from openlp.core.common import AppLocation, Settings, UiStrings, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings

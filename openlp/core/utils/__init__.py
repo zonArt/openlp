@@ -43,8 +43,8 @@ import urllib.parse
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.common import AppLocation
-from openlp.core.lib import Registry, Settings
+from openlp.core.common import AppLocation, Settings
+from openlp.core.lib import Registry
 
 
 if sys.platform != 'win32' and sys.platform != 'darwin':

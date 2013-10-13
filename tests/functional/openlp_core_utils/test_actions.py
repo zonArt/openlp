@@ -35,7 +35,7 @@ from unittest import TestCase
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import Settings
+from openlp.core.common import Settings
 from openlp.core.utils import ActionList
 
 

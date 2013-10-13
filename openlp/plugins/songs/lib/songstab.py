@@ -29,7 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings, SettingsTab, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import SettingsTab
 
 
 class SongsTab(SettingsTab):

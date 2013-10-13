@@ -35,7 +35,7 @@ from tempfile import mkstemp
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Settings
+from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
 from tests.functional import MagicMock
 

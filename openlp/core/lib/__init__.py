@@ -37,6 +37,8 @@ import os
 
 from PyQt4 import QtCore, QtGui, Qt
 
+from openlp.core.common import translate
+
 log = logging.getLogger(__name__)
 
 
@@ -72,16 +74,6 @@ class MediaType(object):
     Video = 2
 
 
-class SlideLimits(object):
-    """
-    Provides an enumeration for behaviour of OpenLP at the end limits of each service item when pressing the up/down
-    arrow keys
-    """
-    End = 1
-    Wrap = 2
-    Next = 3
-
-
 class ServiceItemAction(object):
     """
     Provides an enumeration for the required action moving between service items by left/right arrow keys
@@ -89,24 +81,6 @@ class ServiceItemAction(object):
     Previous = 1
     PreviousLastSlide = 2
     Next = 3
-
-
-def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
-              qt_translate=QtCore.QCoreApplication.translate):
-    """
-    A special shortcut method to wrap around the Qt4 translation functions. This abstracts the translation procedure so
-    that we can change it if at a later date if necessary, without having to redo the whole of OpenLP.
-
-    ``context``
-        The translation context, used to give each string a context or a namespace.
-
-    ``text``
-        The text to put into the translation tables for translation.
-
-    ``comment``
-        An identifying string for when the same text is used in different roles within the same context.
-    """
-    return qt_translate(context, text, comment, encoding, n)
 
 
 def get_text_file_string(text_file):
@@ -326,6 +300,7 @@ def expand_tags(text):
         text = text.replace(tag['end tag'], tag['end html'])
     return text
 
+
 def create_separated_list(string_list):
     """
     Returns a string that represents a join of a list of strings with a localized separator. This function corresponds
@@ -355,9 +330,7 @@ def create_separated_list(string_list):
 
 
 from .registry import Registry
-from .uistrings import UiStrings
 from .screen import ScreenList
-from .settings import Settings
 from .listwidgetwithdnd import ListWidgetWithDnD
 from .treewidgetwithdnd import TreeWidgetWithDnD
 from .formattingtags import FormattingTags

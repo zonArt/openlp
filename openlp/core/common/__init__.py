@@ -34,6 +34,8 @@ import os
 import logging
 import sys
 
+from PyQt4 import QtCore
+
 log = logging.getLogger(__name__)
 
 
@@ -64,4 +66,44 @@ def get_frozen_path(frozen_option, non_frozen_option):
         return frozen_option
     return non_frozen_option
 
+
+class ThemeLevel(object):
+    """
+    Provides an enumeration for the level a theme applies to
+    """
+    Global = 1
+    Service = 2
+    Song = 3
+
+
+def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
+              qt_translate=QtCore.QCoreApplication.translate):
+    """
+    A special shortcut method to wrap around the Qt4 translation functions. This abstracts the translation procedure so
+    that we can change it if at a later date if necessary, without having to redo the whole of OpenLP.
+
+    ``context``
+        The translation context, used to give each string a context or a namespace.
+
+    ``text``
+        The text to put into the translation tables for translation.
+
+    ``comment``
+        An identifying string for when the same text is used in different roles within the same context.
+    """
+    return qt_translate(context, text, comment, encoding, n)
+
+
+class SlideLimits(object):
+    """
+    Provides an enumeration for behaviour of OpenLP at the end limits of each service item when pressing the up/down
+    arrow keys
+    """
+    End = 1
+    Wrap = 2
+    Next = 3
+
+from .uistrings import UiStrings
+from .settings import Settings
 from .applocation import AppLocation
+
