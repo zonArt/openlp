@@ -36,7 +36,8 @@ from datetime import datetime, timedelta
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import str_to_bool, create_thumb, translate, check_directory_exists, get_text_file_string, \
+from openlp.core.common import check_directory_exists
+from openlp.core.lib import str_to_bool, create_thumb, translate, get_text_file_string, \
     build_icon, image_to_byte, check_item_selected, validate_thumb, create_separated_list, clean_tags, expand_tags
 from tests.functional import MagicMock, patch
 

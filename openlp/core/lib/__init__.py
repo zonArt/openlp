@@ -326,52 +326,32 @@ def expand_tags(text):
         text = text.replace(tag['end tag'], tag['end html'])
     return text
 
-
-def check_directory_exists(directory, do_not_log=False):
-    """
-    Check a theme directory exists and if not create it
-
-    ``directory``
-        The directory to make sure exists
-
-    ``do_not_log``
-        To not log anything. This is need for the start up, when the log isn't ready.
-    """
-    if not do_not_log:
-        log.debug('check_directory_exists %s' % directory)
-    try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-    except IOError:
-        pass
-
-
-def create_separated_list(stringlist):
+def create_separated_list(string_list):
     """
     Returns a string that represents a join of a list of strings with a localized separator. This function corresponds
     to QLocale::createSeparatedList which was introduced in Qt 4.8 and implements the algorithm from
     http://www.unicode.org/reports/tr35/#ListPatterns
 
-    ``stringlist``
+    ``string_list``
         List of unicode strings
     """
     if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion('4.9') and \
             LooseVersion(Qt.qVersion()) >= LooseVersion('4.8'):
-        return QtCore.QLocale().createSeparatedList(stringlist)
-    if not stringlist:
+        return QtCore.QLocale().createSeparatedList(string_list)
+    if not string_list:
         return ''
-    elif len(stringlist) == 1:
-        return stringlist[0]
-    elif len(stringlist) == 2:
+    elif len(string_list) == 1:
+        return string_list[0]
+    elif len(string_list) == 2:
         return translate('OpenLP.core.lib', '%s and %s',
-            'Locale list separator: 2 items') % (stringlist[0], stringlist[1])
+            'Locale list separator: 2 items') % (string_list[0], string_list[1])
     else:
         merged = translate('OpenLP.core.lib', '%s, and %s',
-            'Locale list separator: end') % (stringlist[-2], stringlist[-1])
-        for index in reversed(list(range(1, len(stringlist) - 2))):
+            'Locale list separator: end') % (string_list[-2], string_list[-1])
+        for index in reversed(list(range(1, len(string_list) - 2))):
             merged = translate('OpenLP.core.lib', '%s, %s',
-                'Locale list separator: middle') % (stringlist[index], merged)
-        return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (stringlist[0], merged)
+                'Locale list separator: middle') % (string_list[index], merged)
+        return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (string_list[0], merged)
 
 
 from .registry import Registry

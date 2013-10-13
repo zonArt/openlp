@@ -107,7 +107,7 @@ class TestRemoteTab(TestCase):
         # GIVEN: A mocked location
         with patch('openlp.core.lib.Settings') as mocked_class, \
                 patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-                patch('openlp.core.common.applocation.check_directory_exists') as mocked_check_directory_exists, \
+                patch('openlp.core.common.check_directory_exists') as mocked_check_directory_exists, \
                 patch('openlp.core.common.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value
@@ -135,7 +135,7 @@ class TestRemoteTab(TestCase):
         # GIVEN: A mocked location
         with patch('openlp.core.lib.Settings') as mocked_class, \
                 patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-                patch('openlp.core.common.applocation.check_directory_exists') as mocked_check_directory_exists, \
+                patch('openlp.core.common.check_directory_exists') as mocked_check_directory_exists, \
                 patch('openlp.core.common.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value

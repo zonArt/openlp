@@ -43,8 +43,8 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation
-from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists
+from openlp.core.common import AppLocation, check_directory_exists
+from openlp.core.lib import Settings, ScreenList, UiStrings, Registry
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
