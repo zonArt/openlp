@@ -27,41 +27,39 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`common` module contains most of the components and libraries that make
-OpenLP work.
+Package to test the openlp.core.lib.theme package.
 """
-import os
-import logging
-import sys
+from tests.functional import MagicMock, patch
+from unittest import TestCase
 
-log = logging.getLogger(__name__)
+from openlp.core.lib.theme import ThemeXML
 
 
-def check_directory_exists(directory, do_not_log=False):
+class TestTheme(TestCase):
     """
-    Check a theme directory exists and if not create it
-
-    ``directory``
-        The directory to make sure exists
-
-    ``do_not_log``
-        To not log anything. This is need for the start up, when the log isn't ready.
+    Test the functions in the Theme module
     """
-    if not do_not_log:
-        log.debug('check_directory_exists %s' % directory)
-    try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-    except IOError:
+    def setUp(self):
+        """
+        Create the UI
+        """
         pass
 
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        pass
 
-def get_frozen_path(frozen_option, non_frozen_option):
-    """
-    Return a path based on the system status.
-    """
-    if hasattr(sys, 'frozen') and sys.frozen == 1:
-        return frozen_option
-    return non_frozen_option
+    def test_new_theme(self):
+        """
+        Test the theme creation - basic test
+        """
+        # GIVEN: A new theme
 
-from .applocation import AppLocation
+        # WHEN: A theme is created
+        default_theme = ThemeXML()
+
+        # THEN: We should get some default behaviours
+        self.assertTrue(default_theme.background_border_color == '#000000', 'The theme should have a black border')
+        self.assertTrue(default_theme.background_type == 'solid', 'There theme should have a solid backgrounds')

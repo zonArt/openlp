@@ -32,7 +32,7 @@ Functional tests to test the AppLocation class and related methods.
 import copy
 from unittest import TestCase
 
-from openlp.core.common import AppLocation
+from openlp.core.common import AppLocation, get_frozen_path
 from tests.functional import patch
 
 FILE_LIST = ['file1', 'file2', 'file3.txt', 'file4.txt', 'file5.mp3', 'file6.mp3']
@@ -46,10 +46,10 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_data_path() method
         """
-        with patch('openlp.core.utils.applocation.Settings') as mocked_class, \
-                patch('openlp.core.utils.AppLocation.get_directory') as mocked_get_directory, \
-                patch('openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists, \
-                patch('openlp.core.utils.applocation.os') as mocked_os:
+        with patch('openlp.core.lib.Settings') as mocked_class, \
+                patch('openlp.core.common.AppLocation.get_directory') as mocked_get_directory, \
+                patch('openlp.core.common.applocation.check_directory_exists') as mocked_check_directory_exists, \
+                patch('openlp.core.common.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = False
@@ -70,8 +70,8 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_data_path() method when a custom location is set in the settings
         """
-        with patch('openlp.core.utils.applocation.Settings') as mocked_class,\
-                patch('openlp.core.utils.applocation.os') as mocked_os:
+        with patch('openlp.core.lib.Settings') as mocked_class,\
+                patch('openlp.core.common.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class which returns a custom data location
             mocked_settings = mocked_class.return_value
             mocked_settings.contains.return_value = True
@@ -90,8 +90,8 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_files() method with no parameters passed.
         """
-        with patch('openlp.core.utils.AppLocation.get_data_path') as mocked_get_data_path, \
-                patch('openlp.core.utils.applocation.os.listdir') as mocked_listdir:
+        with patch('openlp.core.common.AppLocation.get_data_path') as mocked_get_data_path, \
+                patch('openlp.core.common.applocation.os.listdir') as mocked_listdir:
             # GIVEN: Our mocked modules/methods.
             mocked_get_data_path.return_value = 'test/dir'
             mocked_listdir.return_value = copy.deepcopy(FILE_LIST)
@@ -106,8 +106,8 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_files() method with all parameters passed.
         """
-        with patch('openlp.core.utils.AppLocation.get_data_path') as mocked_get_data_path, \
-                patch('openlp.core.utils.applocation.os.listdir') as mocked_listdir:
+        with patch('openlp.core.common.AppLocation.get_data_path') as mocked_get_data_path, \
+                patch('openlp.core.common.applocation.os.listdir') as mocked_listdir:
             # GIVEN: Our mocked modules/methods.
             mocked_get_data_path.return_value = 'test/dir'
             mocked_listdir.return_value = copy.deepcopy(FILE_LIST)
@@ -125,8 +125,8 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_section_data_path() method
         """
-        with patch('openlp.core.utils.AppLocation.get_data_path') as mocked_get_data_path, \
-                patch('openlp.core.utils.applocation.check_directory_exists') as mocked_check_directory_exists:
+        with patch('openlp.core.common.AppLocation.get_data_path') as mocked_get_data_path, \
+                patch('openlp.core.common.applocation.check_directory_exists') as mocked_check_directory_exists:
             # GIVEN: A mocked out AppLocation.get_data_path()
             mocked_get_data_path.return_value = 'test/dir'
             mocked_check_directory_exists.return_value = True
@@ -143,7 +143,7 @@ class TestAppLocation(TestCase):
         Test the AppLocation.get_directory() method for AppLocation.AppDir
         """
         # GIVEN: A mocked out _get_frozen_path function
-        with patch('openlp.core.utils.applocation._get_frozen_path') as mocked_get_frozen_path:
+        with patch('openlp.core.common.applocation.get_frozen_path') as mocked_get_frozen_path:
             mocked_get_frozen_path.return_value = 'app/dir'
 
             # WHEN: We call AppLocation.get_directory
@@ -157,10 +157,10 @@ class TestAppLocation(TestCase):
         Test the AppLocation.get_directory() method for AppLocation.PluginsDir
         """
         # GIVEN: _get_frozen_path, abspath, split and sys are mocked out
-        with patch('openlp.core.utils.applocation._get_frozen_path') as mocked_get_frozen_path, \
-                patch('openlp.core.utils.applocation.os.path.abspath') as mocked_abspath, \
-                patch('openlp.core.utils.applocation.os.path.split') as mocked_split, \
-                patch('openlp.core.utils.applocation.sys') as mocked_sys:
+        with patch('openlp.core.common.applocation.get_frozen_path') as mocked_get_frozen_path, \
+                patch('openlp.core.common.applocation.os.path.abspath') as mocked_abspath, \
+                patch('openlp.core.common.applocation.os.path.split') as mocked_split, \
+                patch('openlp.core.common.applocation.sys') as mocked_sys:
             mocked_abspath.return_value = 'plugins/dir'
             mocked_split.return_value = ['openlp']
             mocked_get_frozen_path.return_value = 'plugins/dir'
@@ -172,3 +172,31 @@ class TestAppLocation(TestCase):
 
             # THEN: The correct directory should be returned
             self.assertEqual('plugins/dir', directory, 'Directory should be "plugins/dir"')
+
+    def get_frozen_path_in_unfrozen_app_test(self):
+        """
+        Test the _get_frozen_path() function when the application is not frozen (compiled by PyInstaller)
+        """
+        with patch('openlp.core.utils.sys') as mocked_sys:
+            # GIVEN: The sys module "without" a "frozen" attribute
+            mocked_sys.frozen = None
+
+            # WHEN: We call _get_frozen_path() with two parameters
+            frozen_path = get_frozen_path('frozen', 'not frozen')
+
+            # THEN: The non-frozen parameter is returned
+            self.assertEqual('not frozen', frozen_path, '_get_frozen_path should return "not frozen"')
+
+    def get_frozen_path_in_frozen_app_test(self):
+        """
+        Test the get_frozen_path() function when the application is frozen (compiled by PyInstaller)
+        """
+        with patch('openlp.core.common.sys') as mocked_sys:
+            # GIVEN: The sys module *with* a "frozen" attribute
+            mocked_sys.frozen = 1
+
+            # WHEN: We call _get_frozen_path() with two parameters
+            frozen_path = get_frozen_path('frozen', 'not frozen')
+
+            # THEN: The frozen parameter is returned
+            self.assertEqual('frozen', frozen_path, 'Should return "frozen"')

@@ -41,7 +41,7 @@ if sys.platform != 'win32' and sys.platform != 'darwin':
         XDG_BASE_AVAILABLE = False
 
 import openlp
-from openlp.core.common import check_directory_exists
+from openlp.core.common import check_directory_exists, get_frozen_path
 
 
 log = logging.getLogger(__name__)
@@ -136,15 +136,6 @@ class AppLocation(object):
         return path
 
 
-def get_frozen_path(frozen_option, non_frozen_option):
-    """
-    Return a path based on the system status.
-    """
-    if hasattr(sys, 'frozen') and sys.frozen == 1:
-        return frozen_option
-    return non_frozen_option
-
-
 def _get_os_dir_path(dir_type):
     """
     Return a path based on which OS and environment we are running in.
@@ -177,4 +168,3 @@ def _get_os_dir_path(dir_type):
         if dir_type == AppLocation.DataDir:
             return os.path.join(str(os.getenv('HOME')), '.openlp', 'data')
         return os.path.join(str(os.getenv('HOME')), '.openlp')
-
