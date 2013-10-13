@@ -38,8 +38,8 @@ from sqlalchemy import Column, ForeignKey, Table, or_, types, func
 from sqlalchemy.orm import class_mapper, mapper, relation
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.common import AppLocation
-from openlp.core.lib import Registry, translate
+from openlp.core.common import AppLocation, translate
+from openlp.core.lib import Registry
 from openlp.core.lib.db import BaseModel, init_db, Manager
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import clean_filename

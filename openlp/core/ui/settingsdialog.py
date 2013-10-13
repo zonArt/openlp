@@ -31,7 +31,8 @@ The UI widgets of the settings dialog.
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import translate, build_icon
+from openlp.core.common import translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box
 
 

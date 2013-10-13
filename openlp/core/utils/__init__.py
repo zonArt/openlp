@@ -54,7 +54,7 @@ if sys.platform != 'win32' and sys.platform != 'darwin':
     except ImportError:
         XDG_BASE_AVAILABLE = False
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}

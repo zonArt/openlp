@@ -510,7 +510,6 @@ class ThemeXML(object):
         """
         Create the attributes with the correct data types and name format
         """
-        #print(master, element, value)
         reject, master, element, value = self._translate_tags(master, element, value)
         if reject:
             return
