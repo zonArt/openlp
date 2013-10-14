@@ -95,16 +95,16 @@ class SongImportTestHelper(TestCase):
 
         # WHEN: Importing the source file
         importer.import_source = [source_file_name]
-        add_verse_calls = self.get_data(result_data, 'verses')
-        author_calls = self.get_data(result_data, 'authors')
-        ccli_number = self.get_data(result_data, 'ccli_number')
-        comments = self.get_data(result_data, 'comments')
-        song_book_name = self.get_data(result_data, 'song_book_name')
-        song_copyright = self.get_data(result_data, 'copyright')
-        song_number = self.get_data(result_data, 'song_number')
-        title = self.get_data(result_data, 'title')
-        topics = self.get_data(result_data, 'topics')
-        verse_order_list = self.get_data(result_data, 'verse_order_list')
+        add_verse_calls = self._get_data(result_data, 'verses')
+        author_calls = self._get_data(result_data, 'authors')
+        ccli_number = self._get_data(result_data, 'ccli_number')
+        comments = self._get_data(result_data, 'comments')
+        song_book_name = self._get_data(result_data, 'song_book_name')
+        song_copyright = self._get_data(result_data, 'copyright')
+        song_number = self._get_data(result_data, 'song_number')
+        title = self._get_data(result_data, 'title')
+        topics = self._get_data(result_data, 'topics')
+        verse_order_list = self._get_data(result_data, 'verse_order_list')
 
         # THEN: doImport should return none, the song data should be as expected, and finish should have been
         #       called.
@@ -135,7 +135,7 @@ class SongImportTestHelper(TestCase):
                 % (source_file_name, verse_order_list))
         self.mocked_finish.assert_called_with()
 
-    def get_data(self, data, key):
+    def _get_data(self, data, key):
         if key in data:
             return data[key]
         return ''
