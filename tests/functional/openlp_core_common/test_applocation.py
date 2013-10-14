@@ -46,7 +46,7 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_data_path() method
         """
-        with patch('openlp.core.common.Settings') as mocked_class, \
+        with patch('openlp.core.common.applocation.Settings') as mocked_class, \
                 patch('openlp.core.common.AppLocation.get_directory') as mocked_get_directory, \
                 patch('openlp.core.common.applocation.check_directory_exists') as mocked_check_directory_exists, \
                 patch('openlp.core.common.applocation.os') as mocked_os:
@@ -71,7 +71,7 @@ class TestAppLocation(TestCase):
         """
         Test the AppLocation.get_data_path() method when a custom location is set in the settings
         """
-        with patch('openlp.core.common.Settings') as mocked_class,\
+        with patch('openlp.core.common.applocation.Settings') as mocked_class,\
                 patch('openlp.core.common.applocation.os') as mocked_os:
             # GIVEN: A mocked out Settings class which returns a custom data location
             mocked_settings = mocked_class.return_value
