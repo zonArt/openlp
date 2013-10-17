@@ -328,7 +328,8 @@ class PowerpointDocument(PresentationDocument):
         num = 0
         for slide in self.presentation.Slides:
             try:
-                titles.append(slide.Shapes.Title.TextFrame.TextRange.Text + '\n')
+                text = slide.Shapes.Title.TextFrame.TextRange.Text
+                titles.append(text.replace('\n',' ').replace('\x0b',' ') + '\n')
                 num += 1
                 notes = _get_text_from_shapes(slide.NotesPage.Shapes)
                 if len(notes) > 0:
@@ -345,9 +346,7 @@ class PowerpointDocument(PresentationDocument):
 
     def get_titles_and_notes(self):
         """
-        Reads the titles from the titles file and 
-        the notes files and returns the contents
-        in a two lists
+        let the super class handle it
         """
         return super().get_titles_and_notes()
 

@@ -459,3 +459,11 @@ class PresentationController(object):
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)
+
+class TextType(object):
+    """
+    Type Enumeration for Types of Text to request
+    """
+    Title = 0
+    SlideText = 1
+    Notes = 2

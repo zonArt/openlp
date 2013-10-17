@@ -204,6 +204,10 @@ class PptviewDocument(PresentationDocument):
                                     text += '\n' 
                                 text += node.text
                         print( 'slide file: ' + zip_info.filename + ' ' + text )
+                        
+                        # let's remove the nl from the titles and just add one at the end
+                        if nodeType == 'ctrTitle':
+                            text = text.replace('\n',' ').replace('\x0b', ' ') + '\n'
                         listToAdd[index] = text
 
                 print( titles )
@@ -318,8 +322,6 @@ class PptviewDocument(PresentationDocument):
 
     def get_titles_and_notes(self):
         """
-        Reads the titles from the titles file and 
-        the notes files and returns the contents
-        in a two lists
+        let the super class handle it
         """
         return super().get_titles_and_notes()

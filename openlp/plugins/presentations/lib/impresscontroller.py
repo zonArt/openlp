@@ -60,7 +60,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import ScreenList
 from openlp.core.utils import delete_file, get_uno_command, get_uno_instance
-from .presentationcontroller import PresentationController, PresentationDocument
+from .presentationcontroller import PresentationController, PresentationDocument, TextType
 
 
 log = logging.getLogger(__name__)
@@ -252,6 +252,7 @@ class ImpressDocument(PresentationDocument):
         self.presentation.Display = ScreenList().current['number'] + 1
         self.control = None
         self.create_thumbnails()
+        self.create_titles_and_notes()
         return True
 
     def create_thumbnails(self):
@@ -447,9 +448,9 @@ class ImpressDocument(PresentationDocument):
         ``slide_no``
             The slide the notes are required for, starting at 1
         """
-        return self.__get_text_from_page(slide_no, True)
+        return self.__get_text_from_page(slide_no, TextType.Notes)
 
-    def __get_text_from_page(self, slide_no, notes=False):
+    def __get_text_from_page(self, slide_no, text_type=TextType.SlideText):
         """
         Return any text extracted from the presentation page.
 
@@ -459,17 +460,40 @@ class ImpressDocument(PresentationDocument):
         text = ''
         pages = self.document.getDrawPages()
         page = pages.getByIndex(slide_no - 1)
-        if notes:
+        if text_type==TextType.Notes:
             page = page.getNotesPage()
         for index in range(page.getCount()):
             shape = page.getByIndex(index)
+            shapeType = shape.getShapetype()
             if shape.supportsService("com.sun.star.drawing.Text"):
-                text += shape.getString() + '\n'
+                if text_type!=TextType.Title or shapeType == "com.sun.star.presentation.TitleTextShape":
+                    text += shape.getString() + '\n'
         return text
+
+    def create_titles_and_notes(self):
+        """
+        Writes the list of titles (one per slide) 
+        to 'titles.txt' 
+        and the notes to 'slideNotes[x].txt'
+        in the thumbnails directory
+        """
+        titles = []
+        pages = self.document.getDrawPages()
+        for slideIndex in range(pages.getCount()):
+            titles.append( self.__get_text_from_page(slideIndex,TextType.Title).replace('\n',' ') + '\n')
+            notes = self.__get_text_from_page(slideIndex,TextType.Notes)
+            if len(notes) > 0:
+                notesfile = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % (num))
+                with open(notesfile, mode='w') as fn:
+                    fn.write(notes)
+
+        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+        with open(titlesfile, mode='w') as fo:
+            fo.writelines(titles)
+        return
 
     def get_titles_and_notes(self):
         """
-        Returns a list of titles and a list of notes for the current presentation
+        let the super class handle it
         """
-        # FIXME: somebody with impress expertise
-        return [],[]
+        return super().get_titles_and_notes()
