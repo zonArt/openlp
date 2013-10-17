@@ -132,6 +132,7 @@ class PowerpointDocument(PresentationDocument):
             return False
         self.presentation = self.controller.process.Presentations(self.controller.process.Presentations.Count)
         self.create_thumbnails()
+        self.create_titles_and_notes()
         return True
 
     def create_thumbnails(self):
@@ -316,6 +317,39 @@ class PowerpointDocument(PresentationDocument):
         """
         return _get_text_from_shapes(self.presentation.Slides(slide_no).NotesPage.Shapes)
 
+    def create_titles_and_notes(self):
+        """
+        Writes the list of titles (one per slide) 
+        to 'titles.txt' 
+        and the notes to 'slideNotes[x].txt'
+        in the thumbnails directory
+        """
+        titles = []
+        num = 0
+        for slide in self.presentation.Slides:
+            try:
+                titles.append(slide.Shapes.Title.TextFrame.TextRange.Text + '\n')
+                num += 1
+                notes = _get_text_from_shapes(slide.NotesPage.Shapes)
+                if len(notes) > 0:
+                    notesfile = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % (num))
+                    with open(notesfile, mode='w') as fn:
+                        fn.write(notes)
+            except Exception as e:
+                log.exception(e)
+                titles.append('\n')
+        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+        with open(titlesfile, mode='w') as fo:
+            fo.writelines(titles)
+        return
+
+    def get_titles_and_notes(self):
+        """
+        Reads the titles from the titles file and 
+        the notes files and returns the contents
+        in a two lists
+        """
+        return super().get_titles_and_notes()
 
 def _get_text_from_shapes(shapes):
     """
@@ -325,8 +359,8 @@ def _get_text_from_shapes(shapes):
         A set of shapes to search for text.
     """
     text = ''
-    for index in range(shapes.Count):
-        shape = shapes(index + 1)
-        if shape.HasTextFrame:
+    for shape in shapes:
+        if shape.PlaceholderFormat.Type == 2 and shape.HasTextFrame and shape.TextFrame.HasText:
             text += shape.TextFrame.TextRange.Text + '\n'
     return text
+

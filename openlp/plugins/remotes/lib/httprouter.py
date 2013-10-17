@@ -470,7 +470,10 @@ class HttpRouter(object):
                     item['html'] = str(frame['html'])
                 else:
                     item['tag'] = str(index + 1)
-                    item['text'] = str(frame['title'])
+                    if current_item.name == 'presentations':
+                        item['text'] = str(frame['displaytitle']) + '\n' + str(frame['notes'])
+                    else:
+                        item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
                 data.append(item)

@@ -289,6 +289,30 @@ class PresentationDocument(object):
         """
         return ''
 
+    def get_titles_and_notes(self):
+        """
+        Reads the titles from the titles file and 
+        the notes files and returns the contents
+        in a two lists
+        """
+        titles = []
+        notes = []
+        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+        with open(titlesfile) as fi:
+            titles = fi.readlines()
+        for index in range(len(titles)):
+            notesfile = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % (index + 1))
+            note = ''
+            try:
+                if os.path.exists(notesfile):
+                    with open(notesfile) as fn:
+                        note = fn.read()
+            except:
+                note = ''
+            notes.append(note)
+        return titles, notes
+
+
 
 class PresentationController(object):
     """

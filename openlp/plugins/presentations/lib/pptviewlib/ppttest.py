@@ -28,6 +28,9 @@
 ###############################################################################
 
 import sys
+import zipfile
+import re
+from xml.etree import ElementTree
 from PyQt4 import QtGui, QtCore
 from ctypes import *
 from ctypes.wintypes import RECT
@@ -174,6 +177,50 @@ class PPTViewer(QtGui.QWidget):
             int(self.widthEdit.text()), int(self.heightEdit.text()))
         filename = str(self.pptEdit.text().replace('/', '\\'))
         folder = str(self.folderEdit.text().replace('/', '\\'))
+
+        if zipfile.is_zipfile(filename):
+            namespaces = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main", 
+                            "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+            with zipfile.ZipFile(filename) as zip_file:
+                with zip_file.open('ppt/presentation.xml') as pres:
+                    tree = ElementTree.parse(pres)
+                nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", namespaces=namespaces)
+                print ("slide count: " + str(len(nodes)))
+                titles = [None for i in range(len(nodes))]
+                notes = [None for i in range(len(nodes))]
+
+                for zip_info in zip_file.infolist():
+                    nodeType = ''
+                    index = -1
+                    listToAdd = None
+                    match = re.search("slides/slide(.+)\.xml", zip_info.filename)
+                    if match:
+                        index = int(match.group(1))-1
+                        nodeType = 'ctrTitle'
+                        listToAdd = titles
+                    match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
+                    if match:
+                        index = int(match.group(1))-1
+                        nodeType = 'body'
+                        listToAdd = notes
+
+                    if len(nodeType)>0:
+                        with zip_file.open(zip_info) as zipped_file:
+                            tree = ElementTree.parse(zipped_file)
+                        text = ''
+
+                        nodes = tree.getroot().findall(".//p:ph[@type='" + nodeType + "']../../..//p:txBody//a:t", namespaces=namespaces)
+                        if nodes and len(nodes)>0:
+                            for node in nodes: 
+                                if len(text) > 0:
+                                    text += '\n'
+                                text += node.text 
+                        print( 'slide file: ' + zip_info.filename + ' ' + text )
+                        listToAdd[index] = text
+
+                print( titles )
+                print( notes )
+
         print(filename, folder)
         self.pptid = self.pptdll.OpenPPT(filename, None, rect, folder)
         print('id: ' + str(self.pptid))

@@ -466,3 +466,10 @@ class ImpressDocument(PresentationDocument):
             if shape.supportsService("com.sun.star.drawing.Text"):
                 text += shape.getString() + '\n'
         return text
+
+    def get_titles_and_notes(self):
+        """
+        Returns a list of titles and a list of notes for the current presentation
+        """
+        # FIXME: somebody with impress expertise
+        return [],[]

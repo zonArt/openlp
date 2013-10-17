@@ -29,6 +29,7 @@
 
 import os
 import logging
+import zipfile
 
 if os.name == 'nt':
     from ctypes import cdll
@@ -146,6 +147,80 @@ class PptviewDocument(PresentationDocument):
             path = '%s\\slide%s.bmp' % (self.get_temp_folder(), str(idx + 1))
             self.convert_thumbnail(path, idx + 1)
 
+    def create_titles_and_notes(self):
+        """
+        Extracts the titles and notes from the zipped file
+        and writes the list of titles (one per slide) 
+        to 'titles.txt' 
+        and the notes to 'slideNotes[x].txt'
+        in the thumbnails directory
+        """
+        # let's make sure we have a valid zipped presentation
+        if zipfile.is_zipfile(filename):
+            namespaces = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main", 
+                            "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+
+            # open the file
+            with zipfile.ZipFile(filename) as zip_file:
+
+                # find the presentation.xml to get the slide count
+                with zip_file.open('ppt/presentation.xml') as pres:
+                    tree = ElementTree.parse(pres)
+                nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", namespaces=namespaces)
+                print ("slide count: " + str(len(nodes)))
+
+                # initialize the lists
+                titles = ['' for i in range(len(nodes))]
+                notes = ['' for i in range(len(nodes))]
+
+                # loop thru the file list to find slides and notes
+                for zip_info in zip_file.infolist():
+                    nodeType = ''
+                    index = -1
+                    listToAdd = None
+
+                    match = re.search("slides/slide(.+)\.xml", zip_info.filename)
+                    if match:
+                        index = int(match.group(1))-1
+                        nodeType = 'ctrTitle'
+                        listToAdd = titles
+
+                    match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
+                    if match:
+                        index = int(match.group(1))-1
+                        nodeType = 'body'
+                        listToAdd = notes
+
+                    # if it is one of our files, index shouldn't be -1
+                    if index >= 0:
+                        with zip_file.open(zip_info) as zipped_file:
+                            tree = ElementTree.parse(zipped_file)
+
+                        text = ''
+                        nodes = tree.getroot().findall(".//p:ph[@type='" + nodeType + "']../../..//p:txBody//a:t", namespaces=namespaces)
+                        if nodes and len(nodes)>0:
+                            for node in nodes:
+                                if len(text) > 0:
+                                    text += '\n' 
+                                text += node.text
+                        print( 'slide file: ' + zip_info.filename + ' ' + text )
+                        listToAdd[index] = text
+
+                print( titles )
+                print( notes )
+
+        # now let's write the files
+        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+        with open(titlesfile, mode='w') as fo:
+            fo.writelines(titles)
+        for num in range(len(notes)):
+            notesfile = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % (num+1))
+            with open(notesfile, mode='w') as fn:
+                fn.write(notes)
+        return
+
+
+
     def close_presentation(self):
         """
         Close presentation and clean up objects. Triggered by new object being added to SlideController or OpenLP being
@@ -240,3 +315,11 @@ class PptviewDocument(PresentationDocument):
         Triggers the previous slide on the running presentation.
         """
         self.controller.process.PrevStep(self.ppt_id)
+
+    def get_titles_and_notes(self):
+        """
+        Reads the titles from the titles file and 
+        the notes files and returns the contents
+        in a two lists
+        """
+        return super().get_titles_and_notes()

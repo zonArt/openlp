@@ -320,6 +320,26 @@ class ServiceItem(object):
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path})
         self._new_item()
 
+    def add_from_presentation(self, path, file_name, image, displaytitle, notes):
+        """
+        Add a slide from a presentation.
+
+        ``path``
+            The path of the presentation
+
+        ``file_name``
+            The filename of the presentation
+
+        ``image``
+            Full path (including file name) to the thumbnail
+
+        ``displaytitle``
+            The title to display on the list and remote
+        """
+        self.service_item_type = ServiceItemType.Command
+        self._raw_frames.append({'title': file_name, 'image': image, 'path': path, 'displaytitle': displaytitle, 'notes': notes})
+        self._new_item()
+
     def get_service_repr(self, lite_save):
         """
         This method returns some text which can be saved into the service
@@ -362,7 +382,11 @@ class ServiceItem(object):
                 service_data = [slide['title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path']})
+                #if len(slide['displaytitle'])>0:
+                service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path'], 
+                                        'displaytitle': slide['displaytitle'], 'notes': slide['notes']})
+                #else:
+                #    service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path']})
         return {'header': service_header, 'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -434,7 +458,10 @@ class ServiceItem(object):
                     self.title = text_image['title']
                 if path:
                     self.has_original_files = False
-                    self.add_from_command(path, text_image['title'], text_image['image'])
+                    if serviceitem['serviceitem']['header']['plugin']=='presentations':
+                        self.add_from_presentation(path, text_image['title'], text_image['image'], text_image['displaytitle'], text_image['notes'])
+                    else:
+                        self.add_from_command(path, text_image['title'], text_image['image'])
                 else:
                     self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
         self._new_item()

@@ -263,13 +263,20 @@ class PresentationMediaItem(MediaManagerItem):
                         return False
                 controller = self.controllers[service_item.processor]
                 doc = controller.add_document(filename)
+                titles, notes = doc.get_titles_and_notes()
                 if doc.get_thumbnail_path(1, True) is None:
                     doc.load_presentation()
                 i = 1
                 img = doc.get_thumbnail_path(i, True)
                 if img:
                     while img:
-                        service_item.add_from_command(path, name, img)
+                        title = name
+                        if i <= len(titles):
+                            title = titles[i-1] 
+                        note = ''
+                        if i <= len(notes):
+                            note = notes[i-1]
+                        service_item.add_from_presentation(path, name, img, title, note)
                         i += 1
                         img = doc.get_thumbnail_path(i, True)
                     doc.close_presentation()
