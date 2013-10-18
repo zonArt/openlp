@@ -63,3 +63,9 @@ class TestTheme(TestCase):
         # THEN: We should get some default behaviours
         self.assertTrue(default_theme.background_border_color == '#000000', 'The theme should have a black border')
         self.assertTrue(default_theme.background_type == 'solid', 'There theme should have a solid backgrounds')
+        self.assertTrue(default_theme.background_type == 'solid', 'There theme should have a solid backgrounds')
+        self.assertTrue(default_theme.display_vertical_align == 0,
+            'There theme should have display_vertical_align of 0')
+        self.assertTrue(default_theme.font_footer_name == "Arial",
+            'There theme should has font_footer_name of Arial')
+        self.assertTrue(default_theme.font_main_bold is False, 'There theme should has font_main_bold of false')

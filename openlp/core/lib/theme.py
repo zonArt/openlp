@@ -169,8 +169,27 @@ class ThemeXML(object):
         json_file = os.path.join(json_dir, 'theme.json')
         jsn = get_text_file_string(json_file)
         jsn = json.loads(jsn)
-        for key, value in jsn.items():
-            setattr(self, key, value)
+        self.expand_json(jsn)
+
+    def expand_json(self, var, prev=None):
+        """
+        Expand the json objects and make into variables.
+
+        ``var``
+            The array list to be processed.
+
+        ``prev``
+            The preceding string to add to the key to make the variable.
+        """
+        for key, value in var.items():
+            if prev:
+                key = prev + "_" + key
+            else:
+                key = key
+            if isinstance(value, dict):
+                self.expand_json(value, key)
+            else:
+                setattr(self, key, value)
 
     def extend_image_filename(self, path):
         """
