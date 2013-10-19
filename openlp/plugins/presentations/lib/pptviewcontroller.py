@@ -30,6 +30,8 @@
 import os
 import logging
 import zipfile
+import re
+from xml.etree import ElementTree
 
 if os.name == 'nt':
     from ctypes import cdll
@@ -155,79 +157,64 @@ class PptviewDocument(PresentationDocument):
         and the notes to 'slideNotes[x].txt'
         in the thumbnails directory
         """
+        filename = os.path.normpath(self.filepath)
         # let's make sure we have a valid zipped presentation
         if zipfile.is_zipfile(filename):
-            namespaces = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main", 
-                            "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
-
+            namespaces = {"p": 
+                "http://schemas.openxmlformats.org/presentationml/2006/main", 
+                "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
             # open the file
             with zipfile.ZipFile(filename) as zip_file:
-
                 # find the presentation.xml to get the slide count
                 with zip_file.open('ppt/presentation.xml') as pres:
                     tree = ElementTree.parse(pres)
-                nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", namespaces=namespaces)
+                nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", 
+                    namespaces=namespaces)
                 print ("slide count: " + str(len(nodes)))
-
                 # initialize the lists
                 titles = ['' for i in range(len(nodes))]
                 notes = ['' for i in range(len(nodes))]
-
                 # loop thru the file list to find slides and notes
                 for zip_info in zip_file.infolist():
                     nodeType = ''
                     index = -1
                     listToAdd = None
-
                     # check if it is a slide
                     match = re.search("slides/slide(.+)\.xml", zip_info.filename)
                     if match:
                         index = int(match.group(1))-1
                         nodeType = 'ctrTitle'
                         listToAdd = titles
-
                     # or a note
-                    match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
+                    match = re.search("notesSlides/notesSlide(.+)\.xml", 
+                        zip_info.filename)
                     if match:
                         index = int(match.group(1))-1
                         nodeType = 'body'
                         listToAdd = notes
-
                     # if it is one of our files, index shouldn't be -1
                     if index >= 0:
                         with zip_file.open(zip_info) as zipped_file:
                             tree = ElementTree.parse(zipped_file)
-
                         text = ''
-                        nodes = tree.getroot().findall(".//p:ph[@type='" + nodeType + "']../../..//p:txBody//a:t", 
-                                                       namespaces=namespaces)
+                        nodes = tree.getroot().findall(".//p:ph[@type='" + 
+                            nodeType + "']../../..//p:txBody//a:t", 
+                            namespaces=namespaces)
                         # if we found any content
                         if nodes and len(nodes)>0:
                             for node in nodes:
                                 if len(text) > 0:
                                     text += '\n' 
                                 text += node.text
-                        print( 'slide file: ' + zip_info.filename + ' ' + text )
-                        
-                        # let's remove the \n from the titles and just add one at the end
+                        # Let's remove the \n from the titles and 
+                        # just add one at the end
                         if nodeType == 'ctrTitle':
-                            text = text.replace('\n',' ').replace('\x0b', ' ') + '\n'
+                            text = text.replace('\n',' '). \
+                                replace('\x0b', ' ') + '\n'
                         listToAdd[index] = text
-
-                print( titles )
-                print( notes )
-
         # now let's write the files
-        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-        with open(titlesfile, mode='w') as fo:
-            fo.writelines(titles)
-        for num in range(len(notes)):
-            notesfile = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % (num+1))
-            with open(notesfile, mode='w') as fn:
-                fn.write(notes)
+        self.save_titles_and_notes(titles,notes)
         return
-
-
 
     def close_presentation(self):
         """

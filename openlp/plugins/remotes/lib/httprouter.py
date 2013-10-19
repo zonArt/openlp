@@ -351,7 +351,8 @@ class HttpRouter(object):
         html = None
         if self.send_appropriate_header(file_name) == '.html':
             variables = self.template_vars
-            html = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
+            html = Template(filename=path, input_encoding='utf-8', 
+                output_encoding='utf-8').render(**variables)
         file_handle = None
         try:
             if html:
@@ -369,6 +370,11 @@ class HttpRouter(object):
         return content
 
     def send_appropriate_header(self, file_name):
+        """
+        Examines the extension of the file and determines
+        what header to send back
+        Returns the extension found
+        """
         ext = os.path.splitext(file_name)[1]
         if ext == '.html':
             self.send_header('Content-type', 'text/html')
@@ -394,8 +400,9 @@ class HttpRouter(object):
         """
         log.debug('serve thumbnail %s/thumbnails/%s' % (controller_name, file_name))
         content = ''
-        full_path = os.path.join(AppLocation.get_section_data_path(controller_name), 
-                                'thumbnails/' + file_name.replace('/','\\') )
+        full_path = os.path.normpath(os.path.join(
+            AppLocation.get_section_data_path(controller_name), 
+            'thumbnails/' + file_name))
         full_path = urllib.parse.unquote(full_path)
         
         if os.path.exists(full_path):
@@ -498,9 +505,11 @@ class HttpRouter(object):
                     if current_item.is_capable(ItemCapabilities.HasNotes):
                         item['notes'] = str(frame['notes'])
                     if current_item.is_capable(ItemCapabilities.HasThumbnails):
-                        # if the file is under our app directory tree send the portion after the match
-                        if frame['image'][0:len(AppLocation.get_data_path())] == AppLocation.get_data_path():
-                            item['img'] = frame['image'][len(AppLocation.get_data_path()):]
+                        # If the file is under our app directory tree send the 
+                        # portion after the match
+                        dataPath = AppLocation.get_data_path()
+                        if frame['image'][0:len(dataPath)] == dataPath:
+                            item['img'] = frame['image'][len(dataPath):]
                         #'data:image/png;base64,' + str(image_to_byte(resize_image(frame['image'],80,80)))
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])

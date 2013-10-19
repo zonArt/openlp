@@ -325,23 +325,21 @@ class PowerpointDocument(PresentationDocument):
         in the thumbnails directory
         """
         titles = []
+        notes = []
         num = 0
         for slide in self.presentation.Slides:
             try:
                 text = slide.Shapes.Title.TextFrame.TextRange.Text
-                titles.append(text.replace('\n',' ').replace('\x0b',' ') + '\n')
-                num += 1
-                notes = _get_text_from_shapes(slide.NotesPage.Shapes)
-                if len(notes) > 0:
-                    notesfile = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % (num))
-                    with open(notesfile, mode='w') as fn:
-                        fn.write(notes)
             except Exception as e:
                 log.exception(e)
-                titles.append('\n')
-        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-        with open(titlesfile, mode='w') as fo:
-            fo.writelines(titles)
+                text = ''
+            titles.append(text.replace('\n',' ').replace('\x0b',' ') + '\n')
+            num += 1
+            note = _get_text_from_shapes(slide.NotesPage.Shapes)
+            if len(note) == 0:
+                note = ' '
+            notes.append(note)
+            self.save_titles_and_notes(titles,notes)
         return
 
 def _get_text_from_shapes(shapes):
@@ -353,7 +351,8 @@ def _get_text_from_shapes(shapes):
     """
     text = ''
     for shape in shapes:
-        if shape.PlaceholderFormat.Type == 2 and shape.HasTextFrame and shape.TextFrame.HasText:
+        if shape.PlaceholderFormat.Type == 2 and \
+            shape.HasTextFrame and shape.TextFrame.HasText:
             text += shape.TextFrame.TextRange.Text + '\n'
     return text
 

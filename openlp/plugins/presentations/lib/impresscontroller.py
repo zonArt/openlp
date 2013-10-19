@@ -464,10 +464,11 @@ class ImpressDocument(PresentationDocument):
             page = page.getNotesPage()
         for index in range(page.getCount()):
             shape = page.getByIndex(index)
-            shapeType = shape.getShapetype()
+            shapeType = shape.getShapeType()
             if shape.supportsService("com.sun.star.drawing.Text"):
                 # if they requested title, make sure it is the title
-                if text_type!=TextType.Title or shapeType == "com.sun.star.presentation.TitleTextShape":
+                if text_type!=TextType.Title or \
+                    shapeType == "com.sun.star.presentation.TitleTextShape":
                     text += shape.getString() + '\n'
         return text
 
@@ -479,17 +480,16 @@ class ImpressDocument(PresentationDocument):
         in the thumbnails directory
         """
         titles = []
+        notes = []
         pages = self.document.getDrawPages()
         for slideIndex in range(pages.getCount()):
-            titles.append( self.__get_text_from_page(slideIndex,TextType.Title).replace('\n',' ') + '\n')
-            notes = self.__get_text_from_page(slideIndex,TextType.Notes)
-            if len(notes) > 0:
-                notesfile = os.path.join(self.get_thumbnail_folder(), 'slideNotes%d.txt' % (num))
-                with open(notesfile, mode='w') as fn:
-                    fn.write(notes)
-
-        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-        with open(titlesfile, mode='w') as fo:
-            fo.writelines(titles)
+            titles.append( 
+                self.__get_text_from_page(slideIndex+1,TextType.Title).
+                replace('\n',' ') + '\n')
+            note = self.__get_text_from_page(slideIndex+1,TextType.Notes)
+            if len(note) == 0:
+                note = ' '
+            notes.append(note)
+        self.save_titles_and_notes(titles,notes)
         return
 
