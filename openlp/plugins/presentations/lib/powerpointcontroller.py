@@ -344,12 +344,6 @@ class PowerpointDocument(PresentationDocument):
             fo.writelines(titles)
         return
 
-    def get_titles_and_notes(self):
-        """
-        let the super class handle it
-        """
-        return super().get_titles_and_notes()
-
 def _get_text_from_shapes(shapes):
     """
     Returns any text extracted from the shapes on a presentation slide.

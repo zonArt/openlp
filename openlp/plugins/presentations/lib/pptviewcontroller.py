@@ -179,12 +179,14 @@ class PptviewDocument(PresentationDocument):
                     index = -1
                     listToAdd = None
 
+                    # check if it is a slide
                     match = re.search("slides/slide(.+)\.xml", zip_info.filename)
                     if match:
                         index = int(match.group(1))-1
                         nodeType = 'ctrTitle'
                         listToAdd = titles
 
+                    # or a note
                     match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
                     if match:
                         index = int(match.group(1))-1
@@ -197,7 +199,9 @@ class PptviewDocument(PresentationDocument):
                             tree = ElementTree.parse(zipped_file)
 
                         text = ''
-                        nodes = tree.getroot().findall(".//p:ph[@type='" + nodeType + "']../../..//p:txBody//a:t", namespaces=namespaces)
+                        nodes = tree.getroot().findall(".//p:ph[@type='" + nodeType + "']../../..//p:txBody//a:t", 
+                                                       namespaces=namespaces)
+                        # if we found any content
                         if nodes and len(nodes)>0:
                             for node in nodes:
                                 if len(text) > 0:
@@ -205,7 +209,7 @@ class PptviewDocument(PresentationDocument):
                                 text += node.text
                         print( 'slide file: ' + zip_info.filename + ' ' + text )
                         
-                        # let's remove the nl from the titles and just add one at the end
+                        # let's remove the \n from the titles and just add one at the end
                         if nodeType == 'ctrTitle':
                             text = text.replace('\n',' ').replace('\x0b', ' ') + '\n'
                         listToAdd[index] = text
@@ -319,9 +323,3 @@ class PptviewDocument(PresentationDocument):
         Triggers the previous slide on the running presentation.
         """
         self.controller.process.PrevStep(self.ppt_id)
-
-    def get_titles_and_notes(self):
-        """
-        let the super class handle it
-        """
-        return super().get_titles_and_notes()

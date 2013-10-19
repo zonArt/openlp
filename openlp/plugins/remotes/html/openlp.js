@@ -87,13 +87,21 @@ window.OpenLP = {
         var ul = $("#slide-controller > div[data-role=content] > ul[data-role=listview]");
         ul.html("");
         for (idx in data.results.slides) {
-          var text = data.results.slides[idx]["tag"];
+          var slide = data.results.slides[idx];
+          var text = slide["tag"];
           if (text != "") text = text + ": ";
-          text = text + data.results.slides[idx]["text"];
+          if (slide["title"])
+            text += slide["title"]
+          else
+            text += slide["text"];
+          if (slide["notes"])
+            text += ("<div style='font-size:smaller;font-weight:normal'>" + slide["notes"] + "</div>");
           text = text.replace(/\n/g, '<br />');
+          if (slide["img"])
+            text += "<img src='" + slide["img"] + "'>";
           var li = $("<li data-icon=\"false\">").append(
             $("<a href=\"#\">").attr("value", parseInt(idx, 10)).html(text));
-          if (data.results.slides[idx]["selected"]) {
+          if (slide["selected"]) {
             li.attr("data-theme", "e");
           }
           li.children("a").click(OpenLP.setSlide);

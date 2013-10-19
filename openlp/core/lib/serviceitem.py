@@ -107,6 +107,16 @@ class ItemCapabilities(object):
     ``CanAutoStartForLive``
             The capability to ignore the do not play if display blank flag.
 
+    ``HasDisplayTitle``
+            The item contains 'displaytitle' on every frame which should be
+            preferred over 'title' when displaying the item
+
+    ``HasNotes``
+            The item contains 'notes'
+
+    ``HasThumbnails``
+            The item has related thumbnails available
+
     """
     CanPreview = 1
     CanEdit = 2
@@ -124,6 +134,9 @@ class ItemCapabilities(object):
     CanWordSplit = 14
     HasBackgroundAudio = 15
     CanAutoStartForLive = 16
+    HasDisplayTitle = 17
+    HasNotes = 18
+    HasThumbnails = 19
 
 
 class ServiceItem(object):
@@ -303,7 +316,7 @@ class ServiceItem(object):
         self._raw_frames.append({'title': title, 'raw_slide': raw_slide, 'verseTag': verse_tag})
         self._new_item()
 
-    def add_from_command(self, path, file_name, image):
+    def add_from_command(self, path, file_name, image, displaytitle=None, notes=None):
         """
         Add a slide from a command.
 
@@ -317,27 +330,8 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
-        self._raw_frames.append({'title': file_name, 'image': image, 'path': path})
-        self._new_item()
-
-    def add_from_presentation(self, path, file_name, image, displaytitle, notes):
-        """
-        Add a slide from a presentation.
-
-        ``path``
-            The path of the presentation
-
-        ``file_name``
-            The filename of the presentation
-
-        ``image``
-            Full path (including file name) to the thumbnail
-
-        ``displaytitle``
-            The title to display on the list and remote
-        """
-        self.service_item_type = ServiceItemType.Command
-        self._raw_frames.append({'title': file_name, 'image': image, 'path': path, 'displaytitle': displaytitle, 'notes': notes})
+        self._raw_frames.append({'title': file_name, 'image': image, 'path': path, 
+                                 'displaytitle': displaytitle, 'notes': notes})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -382,11 +376,8 @@ class ServiceItem(object):
                 service_data = [slide['title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                #if len(slide['displaytitle'])>0:
                 service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path'], 
                                         'displaytitle': slide['displaytitle'], 'notes': slide['notes']})
-                #else:
-                #    service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path']})
         return {'header': service_header, 'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -458,10 +449,8 @@ class ServiceItem(object):
                     self.title = text_image['title']
                 if path:
                     self.has_original_files = False
-                    if serviceitem['serviceitem']['header']['plugin']=='presentations':
-                        self.add_from_presentation(path, text_image['title'], text_image['image'], text_image['displaytitle'], text_image['notes'])
-                    else:
-                        self.add_from_command(path, text_image['title'], text_image['image'])
+                    self.add_from_command(path, text_image['title'], text_image['image'], 
+                                          text_image['displaytitle'], text_image['notes'])
                 else:
                     self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
         self._new_item()

@@ -125,7 +125,7 @@ from urllib.parse import urlparse, parse_qs
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte
+from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte, resize_image, ItemCapabilities
 from openlp.core.utils import AppLocation, translate
 
 log = logging.getLogger(__name__)
@@ -151,6 +151,7 @@ class HttpRouter(object):
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
+            (r'^/(.*)/thumbnails/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.main_poll, 'secure': False}),
             (r'^/main/image$', {'function': self.main_image, 'secure': False}),
@@ -347,26 +348,10 @@ class HttpRouter(object):
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
             return self.do_not_found()
-        ext = os.path.splitext(file_name)[1]
         html = None
-        if ext == '.html':
-            self.send_header('Content-type', 'text/html')
+        if self.send_appropriate_header(file_name) == '.html':
             variables = self.template_vars
             html = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
-        elif ext == '.css':
-            self.send_header('Content-type', 'text/css')
-        elif ext == '.js':
-            self.send_header('Content-type', 'application/javascript')
-        elif ext == '.jpg':
-            self.send_header('Content-type', 'image/jpeg')
-        elif ext == '.gif':
-            self.send_header('Content-type', 'image/gif')
-        elif ext == '.ico':
-            self.send_header('Content-type', 'image/x-icon')
-        elif ext == '.png':
-            self.send_header('Content-type', 'image/png')
-        else:
-            self.send_header('Content-type', 'text/plain')
         file_handle = None
         try:
             if html:
@@ -381,6 +366,44 @@ class HttpRouter(object):
         finally:
             if file_handle:
                 file_handle.close()
+        return content
+
+    def send_appropriate_header(self, file_name):
+        ext = os.path.splitext(file_name)[1]
+        if ext == '.html':
+            self.send_header('Content-type', 'text/html')
+        elif ext == '.css':
+            self.send_header('Content-type', 'text/css')
+        elif ext == '.js':
+            self.send_header('Content-type', 'application/javascript')
+        elif ext == '.jpg':
+            self.send_header('Content-type', 'image/jpeg')
+        elif ext == '.gif':
+            self.send_header('Content-type', 'image/gif')
+        elif ext == '.ico':
+            self.send_header('Content-type', 'image/x-icon')
+        elif ext == '.png':
+            self.send_header('Content-type', 'image/png')
+        else:
+            self.send_header('Content-type', 'text/plain')
+        return ext
+
+    def serve_thumbnail(self, controller_name=None, file_name=None):
+        """
+        Serve an image file. If not found return 404.
+        """
+        log.debug('serve thumbnail %s/thumbnails/%s' % (controller_name, file_name))
+        content = ''
+        full_path = os.path.join(AppLocation.get_section_data_path(controller_name), 
+                                'thumbnails/' + file_name.replace('/','\\') )
+        full_path = urllib.parse.unquote(full_path)
+        
+        if os.path.exists(full_path):
+            self.send_appropriate_header(full_path)
+            file_handle = open(full_path, 'rb')
+            content = file_handle.read()
+        else:
+            content = self.do_not_found()
         return content
 
     def poll(self):
@@ -470,12 +493,20 @@ class HttpRouter(object):
                     item['html'] = str(frame['html'])
                 else:
                     item['tag'] = str(index + 1)
-                    if current_item.name == 'presentations':
-                        item['text'] = str(frame['displaytitle']) + '\n' + str(frame['notes'])
-                    else:
-                        item['text'] = str(frame['title'])
+                    if current_item.is_capable(ItemCapabilities.HasDisplayTitle):
+                        item['title'] = str(frame['displaytitle'])
+                    if current_item.is_capable(ItemCapabilities.HasNotes):
+                        item['notes'] = str(frame['notes'])
+                    if current_item.is_capable(ItemCapabilities.HasThumbnails):
+                        # if the file is under our app directory tree send the portion after the match
+                        if frame['image'][0:len(AppLocation.get_data_path())] == AppLocation.get_data_path():
+                            item['img'] = frame['image'][len(AppLocation.get_data_path()):]
+                        #'data:image/png;base64,' + str(image_to_byte(resize_image(frame['image'],80,80)))
+                    item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
+                if current_item.notes:
+                    item['notes'] = item.get('notes','') + '\n' + current_item.notes
                 data.append(item)
         json_data = {'results': {'slides': data}}
         if current_item:

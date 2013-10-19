@@ -466,6 +466,7 @@ class ImpressDocument(PresentationDocument):
             shape = page.getByIndex(index)
             shapeType = shape.getShapetype()
             if shape.supportsService("com.sun.star.drawing.Text"):
+                # if they requested title, make sure it is the title
                 if text_type!=TextType.Title or shapeType == "com.sun.star.presentation.TitleTextShape":
                     text += shape.getString() + '\n'
         return text
@@ -492,8 +493,3 @@ class ImpressDocument(PresentationDocument):
             fo.writelines(titles)
         return
 
-    def get_titles_and_notes(self):
-        """
-        let the super class handle it
-        """
-        return super().get_titles_and_notes()

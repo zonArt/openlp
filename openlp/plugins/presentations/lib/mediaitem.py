@@ -250,6 +250,7 @@ class PresentationMediaItem(MediaManagerItem):
                 return False
         service_item.processor = self.display_type_combo_box.currentText()
         service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
+        service_item.add_capability(ItemCapabilities.HasThumbnails)
         if not self.display_type_combo_box.currentText():
             return False
         for bitem in items:
@@ -264,6 +265,10 @@ class PresentationMediaItem(MediaManagerItem):
                 controller = self.controllers[service_item.processor]
                 doc = controller.add_document(filename)
                 titles, notes = doc.get_titles_and_notes()
+                if len(titles) > 0:
+                    service_item.add_capability(ItemCapabilities.HasDisplayTitle)
+                if len(notes) > 0:
+                    service_item.add_capability(ItemCapabilities.HasNotes)
                 if doc.get_thumbnail_path(1, True) is None:
                     doc.load_presentation()
                 i = 1
@@ -276,7 +281,7 @@ class PresentationMediaItem(MediaManagerItem):
                         note = ''
                         if i <= len(notes):
                             note = notes[i-1]
-                        service_item.add_from_presentation(path, name, img, title, note)
+                        service_item.add_from_command(path, name, img, title, note)
                         i += 1
                         img = doc.get_thumbnail_path(i, True)
                     doc.close_presentation()

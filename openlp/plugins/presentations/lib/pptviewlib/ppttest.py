@@ -209,7 +209,8 @@ class PPTViewer(QtGui.QWidget):
                             tree = ElementTree.parse(zipped_file)
                         text = ''
 
-                        nodes = tree.getroot().findall(".//p:ph[@type='" + nodeType + "']../../..//p:txBody//a:t", namespaces=namespaces)
+                        nodes = tree.getroot().findall(".//p:ph[@type='" + nodeType + "']../../..//p:txBody//a:t", 
+                                                       namespaces=namespaces)
                         if nodes and len(nodes)>0:
                             for node in nodes: 
                                 if len(text) > 0:
