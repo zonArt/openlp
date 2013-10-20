@@ -249,7 +249,10 @@ class ImpressDocument(PresentationDocument):
             window = self.document.getCurrentController().getFrame().getContainerWindow()
             window.setVisible(False)
         self.presentation = self.document.getPresentation()
-        self.presentation.Display = ScreenList().current['number'] + 1
+        try:
+            self.presentation.Display = ScreenList().current['number'] + 1
+        except:
+            log.debug('Unable to load the current display')
         self.control = None
         self.create_thumbnails()
         self.create_titles_and_notes()
