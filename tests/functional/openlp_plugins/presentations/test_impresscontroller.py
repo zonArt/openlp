@@ -46,8 +46,6 @@ class TestLibModule(TestCase):
         self.doc = ImpressDocument(self.ppc,self.file_name)
         self.doc.presentation_deleted()
 
-    #add _test to the function
-    # I don't haver Impress to verify
     def verify_installation_test(self):
         """
         Test the installation of ImpressViewer
@@ -58,8 +56,6 @@ class TestLibModule(TestCase):
         # THEN: We should get back a True bool
         assert isInstalled is True, 'The result should be True'
 
-    # add _test to the following if necessary
-    # I don't have Impress to verify
     def verify_loading_document_test(self):
         """
         Test loading a document
