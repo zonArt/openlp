@@ -230,7 +230,7 @@ def set_up_logging(log_path):
     """
     check_directory_exists(log_path, True)
     filename = os.path.join(log_path, 'openlp.log')
-    logfile = logging.FileHandler(filename, 'w')
+    logfile = logging.FileHandler(filename, 'w', encoding="UTF-8")
     logfile.setFormatter(logging.Formatter('%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
