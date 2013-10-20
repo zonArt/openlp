@@ -27,8 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import os
 import logging
+import os
 
 if os.name == 'nt':
     from ctypes import cdll
@@ -123,10 +123,14 @@ class PptviewDocument(PresentationDocument):
         log.debug('LoadPresentation')
         size = ScreenList().current['size']
         rect = RECT(size.x(), size.y(), size.right(), size.bottom())
-        filepath = str(self.filepath.replace('/', '\\'))
+        file_path = os.path.normpath(self.filepath)
+        preview_path = os.path.join(self.get_temp_folder(), 'slide')
+        # Ensure that the paths are null terminated
+        file_path = file_path.encode('utf-16-le') + b'\0'
+        preview_path = preview_path.encode('utf-16-le') + b'\0'
         if not os.path.isdir(self.get_temp_folder()):
             os.makedirs(self.get_temp_folder())
-        self.ppt_id = self.controller.process.OpenPPT(filepath, None, rect, str(self.get_temp_folder()) + '\\slide')
+        self.ppt_id = self.controller.process.OpenPPT(file_path, None, rect, preview_path)
         if self.ppt_id >= 0:
             self.create_thumbnails()
             self.stop_presentation()
