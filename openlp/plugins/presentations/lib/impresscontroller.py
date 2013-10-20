@@ -252,7 +252,7 @@ class ImpressDocument(PresentationDocument):
         try:
             self.presentation.Display = ScreenList().current['number'] + 1
         except:
-            log.debug('Unable to load the current display')
+            self.presentation.Display = 1
         self.control = None
         self.create_thumbnails()
         self.create_titles_and_notes()
@@ -495,4 +495,3 @@ class ImpressDocument(PresentationDocument):
             notes.append(note)
         self.save_titles_and_notes(titles,notes)
         return
-
