@@ -61,18 +61,18 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ulReasonForCall,
     switch(ulReasonForCall)
     {
         case DLL_PROCESS_ATTACH:
-            DEBUG("PROCESS_ATTACH\n");
+            DEBUG(L"PROCESS_ATTACH\n");
             break;
         case DLL_THREAD_ATTACH:
-            //DEBUG("THREAD_ATTACH\n");
+            //DEBUG(L"THREAD_ATTACH\n");
             break;
         case DLL_THREAD_DETACH:
-            //DEBUG("THREAD_DETACH\n");
+            //DEBUG(L"THREAD_DETACH\n");
             break;
         case DLL_PROCESS_DETACH:
             // Clean up... hopefully there is only the one process attached?
             // We'll find out soon enough during tests!
-            DEBUG("PROCESS_DETACH\n");
+            DEBUG(L"PROCESS_DETACH\n");
             for (int i = 0; i < MAX_PPTS; i++)
                 ClosePPT(i);
             break;
@@ -84,18 +84,18 @@ DllExport void SetDebug(BOOL onOff)
 {
     printf("SetDebug\n");
     debug = onOff;
-    DEBUG("enabled\n");
+    DEBUG(L"enabled\n");
 }
 
 DllExport BOOL CheckInstalled()
 {
-    char cmdLine[MAX_PATH * 2];
+    wchar_t cmdLine[MAX_PATH * 2];
 
-    DEBUG("CheckInstalled\n");
+    DEBUG(L"CheckInstalled\n");
     BOOL found = GetPPTViewerPath(cmdLine, sizeof(cmdLine));
     if(found)
     {
-        DEBUG("Exe: %s\n", cmdLine);
+        DEBUG(L"Exe: %s\n", cmdLine);
     }
     return found;
 }
@@ -106,20 +106,20 @@ DllExport BOOL CheckInstalled()
 // "<n>.bmp" will be appended to complete the path. E.g. "c:\temp\slide" would
 // create "c:\temp\slide1.bmp" slide2.bmp, slide3.bmp etc.
 // It will also create a *info.txt containing information about the ppt
-DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
-    char *previewPath)
+DllExport int OpenPPT(wchar_t *filename, HWND hParentWnd, RECT rect,
+    wchar_t *previewPath)
 {
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
-    char cmdLine[MAX_PATH * 2];
+    wchar_t cmdLine[MAX_PATH * 2];
     int id;
 
-    DEBUG("OpenPPT start: %s; %s\n", filename, previewPath);
-    DEBUG("OpenPPT start: %u; %i, %i, %i, %i\n", hParentWnd, rect.top,
+    DEBUG(L"OpenPPT start: %s; %s\n", filename, previewPath);
+    DEBUG(L"OpenPPT start: %u; %i, %i, %i, %i\n", hParentWnd, rect.top,
         rect.left, rect.bottom, rect.right);
     if (GetPPTViewerPath(cmdLine, sizeof(cmdLine)) == FALSE)
     {
-        DEBUG("OpenPPT: GetPPTViewerPath failed\n");
+        DEBUG(L"OpenPPT: GetPPTViewerPath failed\n");
         return -1;
     }
     id = -1;
@@ -133,12 +133,12 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     }
     if (id < 0)
     {
-        DEBUG("OpenPPT: Too many PPTs\n");
+        DEBUG(L"OpenPPT: Too many PPTs\n");
         return -1;
     }
     memset(&pptView[id], 0, sizeof(PPTVIEW));
-    strcpy_s(pptView[id].filename, MAX_PATH, filename);
-    strcpy_s(pptView[id].previewPath, MAX_PATH, previewPath);
+    wcscpy_s(pptView[id].filename, MAX_PATH, filename);
+    wcscpy_s(pptView[id].previewPath, MAX_PATH, previewPath);
     pptView[id].state = PPT_CLOSED;
     pptView[id].slideCount = 0;
     pptView[id].currentSlide = 0;
@@ -169,9 +169,9 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
         pptView[id].rect.bottom = rect.bottom;
         pptView[id].rect.right = rect.right;
     }
-    strcat_s(cmdLine, MAX_PATH * 2, " /F /S \"");
-    strcat_s(cmdLine, MAX_PATH * 2, filename);
-    strcat_s(cmdLine, MAX_PATH * 2, "\"");
+    wcscat_s(cmdLine, MAX_PATH * 2, L" /F /S \"");
+    wcscat_s(cmdLine, MAX_PATH * 2, filename);
+    wcscat_s(cmdLine, MAX_PATH * 2, L"\"");
     memset(&si, 0, sizeof(si));
     memset(&pi, 0, sizeof(pi));
     BOOL gotInfo = GetPPTInfo(id);
@@ -190,7 +190,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     globalHook = SetWindowsHookEx(WH_CBT, CbtProc, hInstance, NULL);
     if (globalHook == 0)
     {
-        DEBUG("OpenPPT: SetWindowsHookEx failed\n");
+        DEBUG(L"OpenPPT: SetWindowsHookEx failed\n");
         ClosePPT(id);
         return -1;
     }
@@ -198,7 +198,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
     Sleep(10);
     if (!CreateProcess(NULL, cmdLine, NULL, NULL, FALSE, 0, 0, NULL, &si, &pi))
     {
-        DEBUG("OpenPPT: CreateProcess failed: %s\n", cmdLine);
+        DEBUG(L"OpenPPT: CreateProcess failed: %s\n", cmdLine);
         ClosePPT(id);
         return -1;
     }
@@ -210,13 +210,13 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
         Sleep(10);
     if (gotInfo)
     {
-        DEBUG("OpenPPT: Info loaded, no refresh\n");
+        DEBUG(L"OpenPPT: Info loaded, no refresh\n");
         pptView[id].state = PPT_LOADED;
         Resume(id);
     }
     else
     {
-        DEBUG("OpenPPT: Get info\n");
+        DEBUG(L"OpenPPT: Get info\n");
         pptView[id].steps = 0;
         int steps = 0;
         while (pptView[id].state == PPT_OPENED)
@@ -224,18 +224,18 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
             if (steps <= pptView[id].steps)
             {
                 Sleep(20);
-                DEBUG("OpenPPT: Step %d/%d\n", steps, pptView[id].steps);
+                DEBUG(L"OpenPPT: Step %d/%d\n", steps, pptView[id].steps);
                 steps++;
                 NextStep(id);
             }
             Sleep(10);
         }
-        DEBUG("OpenPPT: Slides %d, Steps %d, first slide steps %d\n",
+        DEBUG(L"OpenPPT: Slides %d, Steps %d, first slide steps %d\n",
             pptView[id].slideCount, pptView[id].steps,
             pptView[id].firstSlideSteps);
         for(int i = 1; i <= pptView[id].slideCount; i++)
         {
-            DEBUG("OpenPPT: Slide %d = %d\n", i, pptView[id].slideNos[i]);
+            DEBUG(L"OpenPPT: Slide %d = %d\n", i, pptView[id].slideNos[i]);
         }
         SavePPTInfo(id);
         if (pptView[id].state == PPT_CLOSING
@@ -257,7 +257,7 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
         }
         pptView[id].msgHook = NULL;
     }
-    DEBUG("OpenPPT: Exit: id=%i\n", id);
+    DEBUG(L"OpenPPT: Exit: id=%i\n", id);
     return id;
 }
 // Load information about the ppt from an info.txt file.
@@ -270,75 +270,75 @@ DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
 BOOL GetPPTInfo(int id)
 {
     struct _stat fileStats;
-    char info[MAX_PATH];
+    wchar_t info[MAX_PATH];
     FILE* pFile;
-    char buf[100];
+    wchar_t buf[100];
 
-    DEBUG("GetPPTInfo: start\n");
-    if (_stat(pptView[id].filename, &fileStats) != 0)
+    DEBUG(L"GetPPTInfo: start\n");
+    if (_wstat(pptView[id].filename, &fileStats) != 0)
     {
         return FALSE;
     }
-    sprintf_s(info, MAX_PATH, "%sinfo.txt", pptView[id].previewPath);
-    int err = fopen_s(&pFile, info, "r");
+    swprintf_s(info, MAX_PATH, L"%sinfo.txt", pptView[id].previewPath);
+    int err = _wfopen_s(&pFile, info, L"r");
     if (err != 0)
     {
-        DEBUG("GetPPTInfo: file open failed - %d\n", err);
+        DEBUG(L"GetPPTInfo: file open failed - %d\n", err);
         return FALSE;
     }
-    fgets(buf, 100, pFile); // version == 1
-    fgets(buf, 100, pFile);
-    if (fileStats.st_mtime != atoi(buf))
+    fgetws(buf, 100, pFile); // version == 1
+    fgetws(buf, 100, pFile);
+    if (fileStats.st_mtime != _wtoi(buf))
     {
-        DEBUG("GetPPTInfo: date changed\n");
+        DEBUG(L"GetPPTInfo: date changed\n");
         fclose (pFile);
         return FALSE;
     }
-    fgets(buf, 100, pFile);
-    if (fileStats.st_size != atoi(buf))
+    fgetws(buf, 100, pFile);
+    if (fileStats.st_size != _wtoi(buf))
     {
-        DEBUG("GetPPTInfo: size changed\n");
+        DEBUG(L"GetPPTInfo: size changed\n");
         fclose (pFile);
         return FALSE;
     }
-    fgets(buf, 100, pFile); // slidecount
-    int slideCount = atoi(buf);
-    fgets(buf, 100, pFile); // first slide steps
-    int firstSlideSteps = atoi(buf);
+    fgetws(buf, 100, pFile); // slidecount
+    int slideCount = _wtoi(buf);
+    fgetws(buf, 100, pFile); // first slide steps
+    int firstSlideSteps = _wtoi(buf);
     // check all the preview images still exist
     for (int i = 1; i <= slideCount; i++)
     {
-        sprintf_s(info, MAX_PATH, "%s%i.bmp", pptView[id].previewPath, i);
+        swprintf_s(info, MAX_PATH, L"%s%i.bmp", pptView[id].previewPath, i);
         if (GetFileAttributes(info) == INVALID_FILE_ATTRIBUTES)
         {
-            DEBUG("GetPPTInfo: bmp not found\n");
+            DEBUG(L"GetPPTInfo: bmp not found\n");
             return FALSE;
         }
     }
     fclose(pFile);
     pptView[id].slideCount = slideCount;
     pptView[id].firstSlideSteps = firstSlideSteps;
-    DEBUG("GetPPTInfo: exit ok\n");
+    DEBUG(L"GetPPTInfo: exit ok\n");
     return TRUE;
 }
 
 BOOL SavePPTInfo(int id)
 {
     struct _stat fileStats;
-    char info[MAX_PATH];
+    wchar_t info[MAX_PATH];
     FILE* pFile;
 
-    DEBUG("SavePPTInfo: start\n");
-    if (_stat(pptView[id].filename, &fileStats) != 0)
+    DEBUG(L"SavePPTInfo: start\n");
+    if (_wstat(pptView[id].filename, &fileStats) != 0)
     {
-        DEBUG("SavePPTInfo: stat of %s failed\n", pptView[id].filename);
+        DEBUG(L"SavePPTInfo: stat of %s failed\n", pptView[id].filename);
         return FALSE;
     }
-    sprintf_s(info, MAX_PATH, "%sinfo.txt", pptView[id].previewPath);
-    int err = fopen_s(&pFile, info, "w");
+    swprintf_s(info, MAX_PATH, L"%sinfo.txt", pptView[id].previewPath);
+    int err = _wfopen_s(&pFile, info, L"w");
     if (err != 0)
     {
-        DEBUG("SavePPTInfo: fopen of %s failed%i\n", info, err);
+        DEBUG(L"SavePPTInfo: fopen of %s failed%i\n", info, err);
         return FALSE;
     }
     fprintf(pFile, "1\n");
@@ -347,21 +347,21 @@ BOOL SavePPTInfo(int id)
     fprintf(pFile, "%u\n", pptView[id].slideCount);
     fprintf(pFile, "%u\n", pptView[id].firstSlideSteps);
     fclose(pFile);
-    DEBUG("SavePPTInfo: exit ok\n");
+    DEBUG(L"SavePPTInfo: exit ok\n");
     return TRUE;
 }
 
 // Get the path of the PowerPoint viewer from the registry
-BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
+BOOL GetPPTViewerPath(wchar_t *pptViewerPath, int stringSize)
 {
-    char cwd[MAX_PATH];
+    wchar_t cwd[MAX_PATH];
 
-    DEBUG("GetPPTViewerPath: start\n");
+    DEBUG(L"GetPPTViewerPath: start\n");
     if(GetPPTViewerPathFromReg(pptViewerPath, stringSize))
     {
-        if(_access(pptViewerPath, 0) != -1)
+        if(_waccess(pptViewerPath, 0) != -1)
         {
-            DEBUG("GetPPTViewerPath: exit registry\n");
+            DEBUG(L"GetPPTViewerPath: exit registry\n");
             return TRUE;
         }
     }
@@ -370,37 +370,37 @@ BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize)
     // upset those who like to put things somewhere else
 
     // Viewer 2007 in 64bit Windows:
-    if(_access("C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+    if(_waccess(L"C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
         0) != -1)
     {
-        strcpy_s(
-            "C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+        wcscpy_s(
+            L"C:\\Program Files (x86)\\Microsoft Office\\Office12\\PPTVIEW.EXE",
             stringSize, pptViewerPath);
-        DEBUG("GetPPTViewerPath: exit 64bit 2007\n");
+        DEBUG(L"GetPPTViewerPath: exit 64bit 2007\n");
         return TRUE;
     }
     // Viewer 2007 in 32bit Windows:
-    if(_access("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE", 0)
+    if(_waccess(L"C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE", 0)
         != -1)
     {
-        strcpy_s("C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE",
+        wcscpy_s(L"C:\\Program Files\\Microsoft Office\\Office12\\PPTVIEW.EXE",
             stringSize, pptViewerPath);
-        DEBUG("GetPPTViewerPath: exit 32bit 2007\n");
+        DEBUG(L"GetPPTViewerPath: exit 32bit 2007\n");
         return TRUE;
     }
     // Give them the opportunity to place it in the same folder as the app
-    _getcwd(cwd, MAX_PATH);
-    strcat_s(cwd, MAX_PATH, "\\PPTVIEW.EXE");
-    if(_access(cwd, 0) != -1)
+    _wgetcwd(cwd, MAX_PATH);
+    wcscat_s(cwd, MAX_PATH, L"\\PPTVIEW.EXE");
+    if(_waccess(cwd, 0) != -1)
     {
-        strcpy_s(pptViewerPath, stringSize, cwd);
-        DEBUG("GetPPTViewerPath: exit local\n");
+        wcscpy_s(pptViewerPath, stringSize, cwd);
+        DEBUG(L"GetPPTViewerPath: exit local\n");
         return TRUE;
     }
-    DEBUG("GetPPTViewerPath: exit fail\n");
+    DEBUG(L"GetPPTViewerPath: exit fail\n");
     return FALSE;
 }
-BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize)
+BOOL GetPPTViewerPathFromReg(wchar_t *pptViewerPath, int stringSize)
 {
     HKEY hKey;
     DWORD dwType, dwSize;
@@ -411,17 +411,17 @@ BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize)
     // PPT Viewer 2003 (recent versions)
     // PPT Viewer 2003 (older versions) 
     // PPT Viewer 97
-    if ((RegOpenKeyEx(HKEY_CLASSES_ROOT,
-        "PowerPointViewer.Show.12\\shell\\Show\\command", 0, KEY_READ, &hKey)
+    if ((RegOpenKeyExW(HKEY_CLASSES_ROOT,
+        L"PowerPointViewer.Show.12\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
-        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
-        "PowerPointViewer.Show.11\\shell\\Show\\command", 0, KEY_READ, &hKey)
+        && (RegOpenKeyExW(HKEY_CLASSES_ROOT,
+        L"PowerPointViewer.Show.11\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
-        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
-        "Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hKey)
+        && (RegOpenKeyExW(HKEY_CLASSES_ROOT,
+        L"Applications\\PPTVIEW.EXE\\shell\\open\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS)
-        && (RegOpenKeyEx(HKEY_CLASSES_ROOT,
-        "Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hKey)
+        && (RegOpenKeyExW(HKEY_CLASSES_ROOT,
+        L"Applications\\PPTVIEW.EXE\\shell\\Show\\command", 0, KEY_READ, &hKey)
         != ERROR_SUCCESS))
     {
         return FALSE;
@@ -436,14 +436,14 @@ BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize)
         return FALSE;
     }
     // remove "%1" from end of key value
-    pptViewerPath[strlen(pptViewerPath) - 4] = '\0';
+    pptViewerPath[wcslen(pptViewerPath) - 4] = '\0';
     return TRUE;
 }
 
 // Unhook the Windows hook
 void Unhook(int id)
 {
-    DEBUG("Unhook: start %d\n", id);
+    DEBUG(L"Unhook: start %d\n", id);
     if (pptView[id].hook != NULL)
     {
         UnhookWindowsHookEx(pptView[id].hook);
@@ -454,13 +454,13 @@ void Unhook(int id)
     }
     pptView[id].hook = NULL;
     pptView[id].msgHook = NULL;
-    DEBUG("Unhook: exit ok\n");
+    DEBUG(L"Unhook: exit ok\n");
 }
 
 // Close the PowerPoint viewer, release resources
 DllExport void ClosePPT(int id)
 {
-    DEBUG("ClosePPT: start%d\n", id);
+    DEBUG(L"ClosePPT: start%d\n", id);
     pptView[id].state = PPT_CLOSED;
     Unhook(id);
     if (pptView[id].hWnd == 0)
@@ -474,13 +474,13 @@ DllExport void ClosePPT(int id)
     CloseHandle(pptView[id].hThread);
     CloseHandle(pptView[id].hProcess);
     memset(&pptView[id], 0, sizeof(PPTVIEW));
-    DEBUG("ClosePPT: exit ok\n");
+    DEBUG(L"ClosePPT: exit ok\n");
     return;
 }
 // Moves the show back onto the display
 DllExport void Resume(int id)
 {
-    DEBUG("Resume: %d\n", id);
+    DEBUG(L"Resume: %d\n", id);
     MoveWindow(pptView[id].hWnd, pptView[id].rect.left,
         pptView[id].rect.top,
         pptView[id].rect.right - pptView[id].rect.left,
@@ -490,7 +490,7 @@ DllExport void Resume(int id)
 // Moves the show off the screen so it can't be seen
 DllExport void Stop(int id)
 {
-    DEBUG("Stop:%d\n", id);
+    DEBUG(L"Stop:%d\n", id);
     MoveWindow(pptView[id].hWnd, -32000, -32000,
         pptView[id].rect.right - pptView[id].rect.left,
         pptView[id].rect.bottom - pptView[id].rect.top, TRUE);
@@ -499,7 +499,7 @@ DllExport void Stop(int id)
 // Return the total number of slides
 DllExport int GetSlideCount(int id)
 {
-    DEBUG("GetSlideCount:%d\n", id);
+    DEBUG(L"GetSlideCount:%d\n", id);
     if (pptView[id].state == 0)
     {
         return -1;
@@ -513,7 +513,7 @@ DllExport int GetSlideCount(int id)
 // Return the number of the slide currently viewing
 DllExport int GetCurrentSlide(int id)
 {
-    DEBUG("GetCurrentSlide:%d\n", id);
+    DEBUG(L"GetCurrentSlide:%d\n", id);
     if (pptView[id].state == 0)
     {
         return -1;
@@ -527,7 +527,7 @@ DllExport int GetCurrentSlide(int id)
 // Take a step forwards through the show
 DllExport void NextStep(int id)
 {
-    DEBUG("NextStep:%d (%d)\n", id, pptView[id].currentSlide);
+    DEBUG(L"NextStep:%d (%d)\n", id, pptView[id].currentSlide);
     if (pptView[id].currentSlide > pptView[id].slideCount) return;
     if (pptView[id].currentSlide < pptView[id].slideCount)
     {
@@ -540,7 +540,7 @@ DllExport void NextStep(int id)
 // Take a step backwards through the show
 DllExport void PrevStep(int id)
 {
-    DEBUG("PrevStep:%d (%d)\n", id, pptView[id].currentSlide);
+    DEBUG(L"PrevStep:%d (%d)\n", id, pptView[id].currentSlide);
     if (pptView[id].currentSlide > 1)
     {
         pptView[id].guess = pptView[id].currentSlide - 1;
@@ -556,7 +556,7 @@ DllExport void Blank(int id)
     // So send random unmapped letter first (say 'A'), then we can
     // better guarantee B will blank instead of trying to guess
     // whether it was already blank or not.
-    DEBUG("Blank:%d\n", id);
+    DEBUG(L"Blank:%d\n", id);
     HWND h1 = GetForegroundWindow();
     HWND h2 = GetFocus();
     SetForegroundWindow(pptView[id].hWnd);
@@ -573,7 +573,7 @@ DllExport void Blank(int id)
 // Unblank the show
 DllExport void Unblank(int id)
 {
-    DEBUG("Unblank:%d\n", id);
+    DEBUG(L"Unblank:%d\n", id);
     // Pressing any key resumes.
     // For some reason SendMessage works for unblanking, but not blanking.
     SendMessage(pptView[id].hWnd2, WM_CHAR, 'A', 0);
@@ -582,7 +582,7 @@ DllExport void Unblank(int id)
 // Go directly to a slide
 DllExport void GotoSlide(int id, int slideNo)
 {
-    DEBUG("GotoSlide %i %i:\n", id, slideNo);
+    DEBUG(L"GotoSlide %i %i:\n", id, slideNo);
     // Did try WM_KEYDOWN/WM_CHAR/WM_KEYUP with SendMessage but didn't work
     // perhaps I was sending to the wrong window? No idea.
     // Anyway fall back to keybd_event, which is OK as long we makesure
@@ -619,7 +619,7 @@ DllExport void RestartShow(int id)
     // Only way I've found to get around this is to step backwards all the way
     // through. Lets move the window out of the way first so the audience
     // doesn't see this.
-    DEBUG("RestartShow:%d\n", id);
+    DEBUG(L"RestartShow:%d\n", id);
     Stop(id);
     GotoSlide(id, pptView[id].slideCount);
     for (int i=0; i <= pptView[id].steps - pptView[id].lastSlideSteps; i++)
@@ -644,12 +644,12 @@ LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam)
     HHOOK hook = globalHook;
     if (nCode == HCBT_CREATEWND)
     {
-        char csClassName[16];
+        wchar_t csClassName[32];
         HWND hCurrWnd = (HWND)wParam;
         DWORD retProcId = NULL;
         GetClassName(hCurrWnd, csClassName, sizeof(csClassName));
-        if ((strcmp(csClassName, "paneClassDC") == 0)
-          ||(strcmp(csClassName, "screenClass") == 0))
+        if ((wcscmp(csClassName, L"paneClassDC") == 0)
+          ||(wcscmp(csClassName, L"screenClass") == 0))
         {
             int id = -1;
             DWORD windowThread = GetWindowThreadProcessId(hCurrWnd, NULL);
@@ -663,7 +663,7 @@ LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam)
             }
             if (id >= 0)
             {
-                if (strcmp(csClassName, "paneClassDC") == 0)
+                if (wcscmp(csClassName, L"paneClassDC") == 0)
                 {
                     pptView[id].hWnd2 = hCurrWnd;
                 }
@@ -737,7 +737,7 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
     CWPSTRUCT *cwp;
     cwp = (CWPSTRUCT *)lParam;
     HHOOK hook = NULL;
-    char filename[MAX_PATH];
+    wchar_t filename[MAX_PATH];
 
     DWORD windowThread = GetWindowThreadProcessId(cwp->hwnd, NULL);
     int id = -1;
@@ -758,9 +758,9 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
             {
                 if ((pptView[id].currentSlide > 0)
                     && (pptView[id].previewPath != NULL
-                    && strlen(pptView[id].previewPath) > 0))
+                    && wcslen(pptView[id].previewPath) > 0))
                 {
-                    sprintf_s(filename, MAX_PATH, "%s%i.bmp",
+                    swprintf_s(filename, MAX_PATH, L"%s%i.bmp",
                         pptView[id].previewPath,
                         pptView[id].currentSlide);
                     CaptureAndSaveWindow(cwp->hwnd, filename);
@@ -820,7 +820,7 @@ LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam){
     return CallNextHookEx(hook, nCode, wParam, lParam);
 }
 
-VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename)
+VOID CaptureAndSaveWindow(HWND hWnd, wchar_t* filename)
 {
     HBITMAP hBmp;
     if ((hBmp = CaptureWindow(hWnd)) == NULL)
@@ -863,7 +863,7 @@ VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename)
 
         // Writing:
         FILE* pFile;
-        int err = fopen_s(&pFile, filename, "wb");
+        int err = _wfopen_s(&pFile, filename, L"wb");
         if (err == 0)
         {
             fwrite(&bmf, sizeof(bmf), 1, pFile);
@@ -893,7 +893,7 @@ HBITMAP CaptureWindow(HWND hWnd)
         if ((hMemDC = CreateCompatibleDC(hDC)) != NULL)
         {
             hDCBmp = (HBITMAP)SelectObject(hMemDC, hImage);
-            HMODULE hLib = LoadLibrary("User32");
+			HMODULE hLib = LoadLibrary(L"User32");
             // PrintWindow works for windows outside displayable area
             // but was only introduced in WinXP. BitBlt requires the window to
             // be topmost and within the viewable area of the display

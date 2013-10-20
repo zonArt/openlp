@@ -26,13 +26,13 @@
 
 #define DllExport extern "C"  __declspec( dllexport )
 
-#define DEBUG(...)  if (debug) printf(__VA_ARGS__)
+#define DEBUG(...)  if (debug) wprintf(__VA_ARGS__)
 
 enum PPTVIEWSTATE {PPT_CLOSED, PPT_STARTED, PPT_OPENED, PPT_LOADED,
     PPT_CLOSING};
 
-DllExport int OpenPPT(char *filename, HWND hParentWnd, RECT rect,
-    char *previewPath);
+DllExport int OpenPPT(wchar_t *filename, HWND hParentWnd, RECT rect,
+    wchar_t *previewPath);
 DllExport BOOL CheckInstalled();
 DllExport void ClosePPT(int id);
 DllExport int GetCurrentSlide(int id);
@@ -50,11 +50,11 @@ DllExport void SetDebug(BOOL onOff);
 LRESULT CALLBACK CbtProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK CwpProc(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam);
-BOOL GetPPTViewerPath(char *pptViewerPath, int stringSize);
-BOOL GetPPTViewerPathFromReg(char *pptViewerPath, int stringSize);
+BOOL GetPPTViewerPath(wchar_t *pptViewerPath, int stringSize);
+BOOL GetPPTViewerPathFromReg(wchar_t *pptViewerPath, int stringSize);
 HBITMAP CaptureWindow(HWND hWnd);
-VOID SaveBitmap(CHAR* filename, HBITMAP hBmp) ;
-VOID CaptureAndSaveWindow(HWND hWnd, CHAR* filename);
+VOID SaveBitmap(wchar_t* filename, HBITMAP hBmp) ;
+VOID CaptureAndSaveWindow(HWND hWnd, wchar_t* filename);
 BOOL GetPPTInfo(int id);
 BOOL SavePPTInfo(int id);
 void Unhook(int id);
@@ -80,8 +80,8 @@ struct PPTVIEW
     int lastSlideSteps;
     int steps;
     int guess;
-    char filename[MAX_PATH];
-    char previewPath[MAX_PATH];
+    wchar_t filename[MAX_PATH];
+    wchar_t previewPath[MAX_PATH];
     int slideNos[MAX_SLIDES];
     PPTVIEWSTATE state;
 };
