@@ -30,8 +30,8 @@
 Package to test the openlp.core.ui package.
 """
 import os
-from unittest import TestCase
 
+from unittest import TestCase
 from PyQt4 import QtGui
 
 from openlp.core.lib import Registry, ImageManager, ScreenList
