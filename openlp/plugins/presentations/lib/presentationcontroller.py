@@ -298,18 +298,22 @@ class PresentationDocument(object):
         titles = []
         notes = []
         titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-        with open(titlesfile) as fi:
-            titles = fi.readlines()
+        if os.path.exists(titlesfile):
+            try:
+                with open(titlesfile) as fi:
+                    titles = fi.read().splitlines()
+            except:
+                titles = []
         for index in range(len(titles)):
             notesfile = os.path.join(self.get_thumbnail_folder(), 
                 'slideNotes%d.txt' % (index + 1))
             note = ''
-            try:
-                if os.path.exists(notesfile):
+            if os.path.exists(notesfile):
+                try:
                     with open(notesfile) as fn:
                         note = fn.read()
-            except:
-                note = ''
+                except:
+                    note = ''
             notes.append(note)
         return titles, notes
 

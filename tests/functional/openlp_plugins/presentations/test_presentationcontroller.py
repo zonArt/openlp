@@ -1,0 +1,141 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
+"""
+Functional tests to test the Impress class and related methods.
+"""
+from unittest import TestCase
+import os
+import io
+from mock import MagicMock, patch, mock_open
+from openlp.plugins.presentations.lib.presentationcontroller import PresentationController, PresentationDocument
+
+class TestLibModule(TestCase):
+
+    def setUp(self):
+        mocked_plugin = MagicMock()
+        mocked_plugin.settings_section = 'presentations'
+        self.presentation = PresentationController(mocked_plugin)
+        self.document = PresentationDocument(self.presentation, '')
+
+    def save_titles_and_notes_test(self):
+        """
+        Test PresentationDocument.save_titles_and_notes method with two valid lists
+        """
+        # GIVEN: two lists of length==2 and a mocked open and get_thumbnail_folder
+        with patch('builtins.open') as mocked_open, \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder') \
+            as mocked_get_thumbnail_folder:
+            t = ['uno', 'dos']
+            n = ['one', 'two']
+            # WHEN: calling save_titles_and_notes
+            mocked_get_thumbnail_folder.return_value = 'test'
+            self.document.save_titles_and_notes(t,n)
+            # THEN: the last call to open should have been for slideNotes2.txt
+            mocked_open.assert_called_with(
+                os.path.join('test','slideNotes2.txt'), mode='w')
+            assert mocked_open.call_count == 3, 'There should be exactly three files opened'
+
+    def save_titles_and_notes_with_None_and_empty_test(self):
+        """
+        Test PresentationDocument.save_titles_and_notes method with no data
+        """
+        # GIVEN: None and an empty list and a mocked open and get_thumbnail_folder
+        with patch('builtins.open') as mocked_open, \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder') \
+            as mocked_get_thumbnail_folder:
+            t = None
+            n = []
+            # WHEN: calling save_titles_and_notes
+            mocked_get_thumbnail_folder.return_value = 'test'
+            self.document.save_titles_and_notes(t,n)
+            # THEN: the one and only call to open should have been for titles.txt
+            mocked_open.assert_called_once_with(
+                os.path.join('test','titles.txt'), mode='w')
+
+
+    def get_titles_and_notes_test(self):
+        """
+        Test PresentationDocument.get_titles_and_notes method
+        """
+        # GIVEN: A mocked open, get_thumbnail_folder and exists
+        with patch('builtins.open', mock_open(read_data='uno\ndos\n')) as mocked_open, \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder') \
+            as mocked_get_thumbnail_folder, \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+            mocked_get_thumbnail_folder.return_value = 'test'
+            mocked_exists.return_value = True
+            # WHEN: calling get_titles_and_notes
+            result_titles, result_notes = self.document.get_titles_and_notes()
+            # THEN: it should return two items for the titles and two empty strings for the notes
+            assert type(result_titles) is list
+            assert len(result_titles) == 2
+            assert type(result_notes) is list
+            assert len(result_notes) == 2
+            assert mocked_open.call_count == 3
+            mocked_open.assert_called_with(os.path.join('test','slideNotes2.txt'))
+            assert mocked_exists.call_count == 3
+
+    def get_titles_and_notes_with_file_not_found_test(self):
+        """
+        Test PresentationDocument.get_titles_and_notes method with file not found
+        """
+        # GIVEN: A mocked open, get_thumbnail_folder and exists
+        with patch('builtins.open') as mocked_open, \
+             patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder') \
+             as mocked_get_thumbnail_folder, \
+             patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+            mocked_get_thumbnail_folder.return_value = 'test'
+            mocked_exists.return_value = False
+            #WHEN: calling get_titles_and_notes
+            result_titles, result_notes = self.document.get_titles_and_notes()
+            # THEN: it should return two empty lists
+            assert type(result_titles) is list
+            assert len(result_titles) == 0
+            assert type(result_notes) is list
+            assert len(result_notes) == 0
+            mocked_open.call_count == 0
+            assert mocked_exists.call_count == 1
+
+    def get_titles_and_notes_with_file_error_test(self):
+        """
+        Test PresentationDocument.get_titles_and_notes method with file errors
+        """
+        # GIVEN: A mocked open, get_thumbnail_folder and exists
+        with patch('builtins.open') as mocked_open, \
+             patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder') \
+             as mocked_get_thumbnail_folder, \
+             patch('openlp.plugins.presentations.lib.presentationcontroller.os.path.exists') as mocked_exists:
+            mocked_get_thumbnail_folder.return_value = 'test'
+            mocked_exists.return_value = True
+            mocked_open.side_effect = IOError()
+            # WHEN: calling get_titles_and_notes
+            result_titles, result_notes = self.document.get_titles_and_notes()
+            # THEN: it should return two empty lists
+            assert type(result_titles) is list
+            
