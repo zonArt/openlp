@@ -281,7 +281,7 @@ class Controller(object):
 
 class MessageListener(object):
     """
-    This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
+    This is the Presentation listener who acts on events from the slide controller and passes the messages on the
     correct presentation handlers
     """
     log.info('Message Listener loaded')
@@ -316,7 +316,7 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.processor
-        if self.handler == self.media_item.Automatic:
+        if self.handler == self.media_item.automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
                 return
