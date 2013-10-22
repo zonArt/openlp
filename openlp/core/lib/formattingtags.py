@@ -36,7 +36,7 @@ from openlp.core.lib import Settings, translate
 
 class FormattingTags(object):
     """
-    Static Class to HTML Tags to be access around the code the list is managed by the Options Tab.
+    Static Class for HTML Tags to be access around the code the list is managed by the Options Tab.
     """
     html_expands = []
 
@@ -48,22 +48,15 @@ class FormattingTags(object):
         return FormattingTags.html_expands
 
     @staticmethod
-    def save_html_tags():
+    def save_html_tags(new_tags):
         """
-        Saves all formatting tags except protected ones.
+        Saves all formatting tags except protected ones
+
+        `new_tags`
+            The tags to be saved..
         """
-        tags = []
-        for tag in FormattingTags.html_expands:
-            if not tag['protected'] and not tag.get('temporary'):
-                # Using dict ensures that copy is made and encoding of values a little later does not affect tags in
-                # the original list
-                tags.append(dict(tag))
-                tag = tags[-1]
-                # Remove key 'temporary' from tags. It is not needed to be saved.
-                if 'temporary' in tag:
-                    del tag['temporary']
         # Formatting Tags were also known as display tags.
-        Settings().setValue('formattingTags/html_tags', json.dumps(tags) if tags else '')
+        Settings().setValue('formattingTags/html_tags', json.dumps(new_tags) if new_tags else '')
 
     @staticmethod
     def load_tags():

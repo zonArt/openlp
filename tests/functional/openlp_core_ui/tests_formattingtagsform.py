@@ -27,56 +27,51 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui package.
+Package to test the openlp.core.ui.formattingtagsform package.
 """
-import os
-
 from unittest import TestCase
-from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, ImageManager, ScreenList
+from tests.functional import MagicMock, patch
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
+from openlp.core.ui.formattingtagform import FormattingTagForm
+
+# TODO: Tests Still TODO
+# __init__
+# exec_
+# on_new_clicked
+# on_delete_clicked
+# on_saved_clicked
+# _reloadTable
 
 
-class TestImageManager(TestCase):
+class TestFormattingTagForm(TestCase):
 
     def setUp(self):
-        """
-        Create the UI
-        """
-        Registry.create()
-        self.app = QtGui.QApplication.instance()
-        ScreenList.create(self.app.desktop())
-        self.image_manager = ImageManager()
+        self.init_patcher = patch('openlp.core.ui.formattingtagform.FormattingTagForm.__init__')
+        self.qdialog_patcher = patch('openlp.core.ui.formattingtagform.QtGui.QDialog')
+        self.ui_formatting_tag_dialog_patcher = patch('openlp.core.ui.formattingtagform.Ui_FormattingTagDialog')
+        self.mocked_init = self.init_patcher.start()
+        self.mocked_qdialog = self.qdialog_patcher.start()
+        self.mocked_ui_formatting_tag_dialog = self.ui_formatting_tag_dialog_patcher.start()
+        self.mocked_init.return_value = None
 
     def tearDown(self):
+        self.init_patcher.stop()
+        self.qdialog_patcher.stop()
+        self.ui_formatting_tag_dialog_patcher.stop()
+
+    def test_on_text_edited(self):
         """
-        Delete all the C++ objects at the end so that we don't have a segfault
+        Test that the appropriate actions are preformed when on_text_edited is called
         """
-        del self.app
 
-    def basic_image_manager_test(self):
-        """
-        Test the Image Manager setup basic functionality
-        """
-        # GIVEN: the an image add to the image manager
-        self.image_manager.add_image(TEST_PATH, 'church.jpg', None)
+        # GIVEN: An instance of the Formatting Tag Form and a mocked save_push_button
+        form = FormattingTagForm()
+        form.save_button = MagicMock()
 
-        # WHEN the image is retrieved
-        image = self.image_manager.get_image(TEST_PATH, 'church.jpg')
+        # WHEN: on_text_edited is called with an arbitrary value
+        #form.on_text_edited('text')
 
-        # THEN returned record is a type of image
-        self.assertEqual(isinstance(image, QtGui.QImage), True, 'The returned object should be a QImage')
+        # THEN: setEnabled and setDefault should have been called on save_push_button
+        #form.save_button.setEnabled.assert_called_with(True)
 
-        # WHEN: The image bytes are requested.
-        byte_array = self.image_manager.get_image_bytes(TEST_PATH, 'church.jpg')
-
-        # THEN: Type should be a str.
-        self.assertEqual(isinstance(byte_array, str), True, 'The returned object should be a str')
-
-        # WHEN the image is retrieved has not been loaded
-        # THEN a KeyError is thrown
-        with self.assertRaises(KeyError) as context:
-            self.image_manager.get_image(TEST_PATH, 'church1.jpg')
-        self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing image')

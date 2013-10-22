@@ -95,6 +95,7 @@ from .aboutform import AboutForm
 from .pluginform import PluginForm
 from .settingsform import SettingsForm
 from .formattingtagform import FormattingTagForm
+from .formattingtagcontroller import FormattingTagController
 from .shortcutlistform import ShortcutListForm
 from .mediadockmanager import MediaDockManager
 from .servicemanager import ServiceManager
@@ -104,4 +105,4 @@ __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideCon
     'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',
     'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay', 'Display', 'ServiceNoteForm',
     'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
-    'FormattingTagForm', 'ShortcutListForm']
+    'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController']
