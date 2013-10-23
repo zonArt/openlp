@@ -31,7 +31,8 @@ Provide HTML Tag management and Formatting Tag access class
 """
 import json
 
-from openlp.core.lib import Settings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import translate
 
 
 class FormattingTags(object):

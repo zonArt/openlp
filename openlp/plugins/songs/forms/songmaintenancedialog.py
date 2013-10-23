@@ -29,7 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import UiStrings, build_icon
+from openlp.core.common import UiStrings
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box
 from openlp.plugins.songs.lib.ui import SongStrings
 

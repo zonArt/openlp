@@ -32,13 +32,13 @@ The bible import functions for OpenLP
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Settings, UiStrings, translate
+from openlp.core.common import AppLocation, Settings, UiStrings, translate
 from openlp.core.lib.db import delete_database
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation, get_locale_key
+from openlp.core.utils import get_locale_key
 from openlp.plugins.bibles.lib.manager import BibleFormat
 from openlp.plugins.bibles.lib.db import BiblesResourcesDB, clean_filename
 

@@ -29,7 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Settings, SettingsTab, UiStrings, translate
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab
 
 
 class PresentationTab(SettingsTab):

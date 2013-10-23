@@ -7,7 +7,8 @@ from unittest import TestCase
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, ServiceItem, Settings
+from openlp.core.common import Settings
+from openlp.core.lib import Registry, ServiceItem
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
 from tests.functional import patch, MagicMock
 

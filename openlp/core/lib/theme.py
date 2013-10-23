@@ -32,68 +32,15 @@ Provide the theme XML and handling functions for OpenLP v2 themes.
 import os
 import re
 import logging
+import json
 
 from xml.dom.minidom import Document
 from lxml import etree, objectify
+from openlp.core.common import AppLocation
 
-from openlp.core.lib import str_to_bool, ScreenList
+from openlp.core.lib import str_to_bool, ScreenList, get_text_file_string
 
 log = logging.getLogger(__name__)
-
-BLANK_THEME_XML = \
-'''<?xml version="1.0" encoding="utf-8"?>
- <theme version="1.0">
-   <name> </name>
-   <background type="image">
-      <filename></filename>
-      <borderColor>#000000</borderColor>
-   </background>
-   <background type="gradient">
-      <startColor>#000000</startColor>
-      <endColor>#000000</endColor>
-      <direction>vertical</direction>
-   </background>
-   <background type="solid">
-      <color>#000000</color>
-   </background>
-   <font type="main">
-      <name>Arial</name>
-      <color>#FFFFFF</color>
-      <size>40</size>
-      <bold>False</bold>
-      <italics>False</italics>
-      <line_adjustment>0</line_adjustment>
-      <shadow shadowColor="#000000" shadowSize="5">True</shadow>
-      <outline outlineColor="#000000" outlineSize="2">False</outline>
-      <location override="False" x="10" y="10" width="1004" height="690"/>
-   </font>
-   <font type="footer">
-      <name>Arial</name>
-      <color>#FFFFFF</color>
-      <size>12</size>
-      <bold>False</bold>
-      <italics>False</italics>
-      <line_adjustment>0</line_adjustment>
-      <shadow shadowColor="#000000" shadowSize="5">True</shadow>
-      <outline outlineColor="#000000" outlineSize="2">False</outline>
-      <location override="False" x="10" y="690" width="1004" height="78"/>
-   </font>
-   <display>
-      <horizontalAlign>0</horizontalAlign>
-      <verticalAlign>0</verticalAlign>
-      <slideTransition>False</slideTransition>
-   </display>
- </theme>
-'''
-
-
-class ThemeLevel(object):
-    """
-    Provides an enumeration for the level a theme applies to
-    """
-    Global = 1
-    Service = 2
-    Song = 3
 
 
 class BackgroundType(object):
@@ -217,9 +164,32 @@ class ThemeXML(object):
         """
         Initialise the theme object.
         """
-        # Create the minidom document
-        self.theme_xml = Document()
-        self.parse_xml(BLANK_THEME_XML)
+        # basic theme object with defaults
+        json_dir = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'core', 'lib', 'json')
+        json_file = os.path.join(json_dir, 'theme.json')
+        jsn = get_text_file_string(json_file)
+        jsn = json.loads(jsn)
+        self.expand_json(jsn)
+
+    def expand_json(self, var, prev=None):
+        """
+        Expand the json objects and make into variables.
+
+        ``var``
+            The array list to be processed.
+
+        ``prev``
+            The preceding string to add to the key to make the variable.
+        """
+        for key, value in var.items():
+            if prev:
+                key = prev + "_" + key
+            else:
+                key = key
+            if isinstance(value, dict):
+                self.expand_json(value, key)
+            else:
+                setattr(self, key, value)
 
     def extend_image_filename(self, path):
         """

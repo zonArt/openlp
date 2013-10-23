@@ -36,7 +36,7 @@ import re
 from PyQt4.QtGui import QDialog
 from PyQt4 import QtCore
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.forms.booknamedialog import Ui_BookNameDialog
 from openlp.plugins.bibles.lib import BibleStrings

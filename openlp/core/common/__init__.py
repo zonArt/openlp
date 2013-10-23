@@ -27,91 +27,83 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.core.ui.media` module contains classes and objects for media player integration.
+The :mod:`common` module contains most of the components and libraries that make
+OpenLP work.
 """
+import os
 import logging
-
-from openlp.core.common import Settings
+import sys
 
 from PyQt4 import QtCore
 
 log = logging.getLogger(__name__)
 
 
-class MediaState(object):
+def check_directory_exists(directory, do_not_log=False):
     """
-    An enumeration for possible States of the Media Player
+    Check a theme directory exists and if not create it
+
+    ``directory``
+        The directory to make sure exists
+
+    ``do_not_log``
+        To not log anything. This is need for the start up, when the log isn't ready.
     """
-    Off = 0
-    Loaded = 1
-    Playing = 2
-    Paused = 3
-    Stopped = 4
+    if not do_not_log:
+        log.debug('check_directory_exists %s' % directory)
+    try:
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+    except IOError:
+        pass
 
 
-class MediaType(object):
+def get_frozen_path(frozen_option, non_frozen_option):
     """
-    An enumeration of possible Media Types
+    Return a path based on the system status.
     """
-    Unused = 0
-    Audio = 1
-    Video = 2
-    CD = 3
-    DVD = 4
-    Folder = 5
+    if hasattr(sys, 'frozen') and sys.frozen == 1:
+        return frozen_option
+    return non_frozen_option
 
 
-class MediaInfo(object):
+class ThemeLevel(object):
     """
-    This class hold the media related info
+    Provides an enumeration for the level a theme applies to
     """
-    file_info = None
-    volume = 100
-    is_flash = False
-    is_background = False
-    length = 0
-    start_time = 0
-    end_time = 0
-    media_type = MediaType()
+    Global = 1
+    Service = 2
+    Song = 3
 
 
-def get_media_players():
+def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
+              qt_translate=QtCore.QCoreApplication.translate):
     """
-    This method extracts the configured media players and overridden player
-    from the settings.
+    A special shortcut method to wrap around the Qt4 translation functions. This abstracts the translation procedure so
+    that we can change it if at a later date if necessary, without having to redo the whole of OpenLP.
+
+    ``context``
+        The translation context, used to give each string a context or a namespace.
+
+    ``text``
+        The text to put into the translation tables for translation.
+
+    ``comment``
+        An identifying string for when the same text is used in different roles within the same context.
     """
-    log.debug('get_media_players')
-    saved_players = Settings().value('media/players')
-    reg_ex = QtCore.QRegExp(".*\[(.*)\].*")
-    if Settings().value('media/override player') == QtCore.Qt.Checked:
-        if reg_ex.exactMatch(saved_players):
-            overridden_player = '%s' % reg_ex.cap(1)
-        else:
-            overridden_player = 'auto'
-    else:
-        overridden_player = ''
-    saved_players_list = saved_players.replace('[', '').replace(']', '').split(',')
-    return saved_players_list, overridden_player
+    return qt_translate(context, text, comment, encoding, n)
 
 
-def set_media_players(players_list, overridden_player='auto'):
+class SlideLimits(object):
     """
-    This method saves the configured media players and overridden player to the
-    settings
-
-    ``players_list``
-        A list with all active media players.
-
-    ``overridden_player``
-        Here an special media player is chosen for all media actions.
+    Provides an enumeration for behaviour of OpenLP at the end limits of each service item when pressing the up/down
+    arrow keys
     """
-    log.debug('set_media_players')
-    players = ','.join(players_list)
-    if Settings().value('media/override player') == QtCore.Qt.Checked and overridden_player != 'auto':
-        players = players.replace(overridden_player, '[%s]' % overridden_player)
-    Settings().setValue('media/players', players)
+    End = 1
+    Wrap = 2
+    Next = 3
 
-from .mediacontroller import MediaController
-from .playertab import PlayerTab
+from .uistrings import UiStrings
+from .settings import Settings
+from .applocation import AppLocation
 
-__all__ = ['MediaController', 'PlayerTab']

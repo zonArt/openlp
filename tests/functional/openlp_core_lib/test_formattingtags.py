@@ -59,7 +59,7 @@ class TestFormattingTags(TestCase):
         Test the FormattingTags class' get_html_tags static method.
         """
         with patch('openlp.core.lib.translate') as mocked_translate, \
-                patch('openlp.core.lib.settings') as mocked_settings, \
+                patch('openlp.core.common.settings') as mocked_settings, \
                 patch('openlp.core.lib.formattingtags.json') as mocked_json:
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate, comment: string_to_translate
@@ -80,7 +80,7 @@ class TestFormattingTags(TestCase):
         FormattingTags class - test the get_html_tags(), add_html_tags() and remove_html_tag() methods.
         """
         with patch('openlp.core.lib.translate') as mocked_translate, \
-                patch('openlp.core.lib.settings') as mocked_settings, \
+                patch('openlp.core.common.settings') as mocked_settings, \
                 patch('openlp.core.lib.formattingtags.json') as mocked_json:
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate: string_to_translate

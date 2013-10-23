@@ -85,7 +85,7 @@ try:
 except ImportError:
     VLC_VERSION = '-'
 
-from openlp.core.lib import UiStrings, Settings, translate
+from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.utils import get_application_version
 
 from .exceptiondialog import Ui_ExceptionDialog

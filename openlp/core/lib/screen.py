@@ -36,7 +36,8 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import Registry
 
 log = logging.getLogger(__name__)
 
@@ -244,7 +245,6 @@ class ScreenList(object):
         """
         Loads the screen size and the monitor number from the settings.
         """
-        from openlp.core.lib import Settings
         # Add the screen settings to the settings dict. This has to be done here due to cyclic dependency.
         # Do not do this anywhere else.
         screen_settings = {

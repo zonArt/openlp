@@ -34,7 +34,7 @@ import logging
 
 import pyodbc
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)

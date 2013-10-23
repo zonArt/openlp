@@ -27,8 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`songshowplusimport` module provides the functionality for importing
-SongShow Plus songs into the OpenLP database.
+The :mod:`songshowplusimport` module provides the functionality for importing SongShow Plus songs into the OpenLP
+database.
 """
 import chardet
 import os
@@ -55,6 +55,7 @@ SONG_NUMBER = 36
 CUSTOM_VERSE = 37
 
 log = logging.getLogger(__name__)
+
 
 class SongShowPlusImport(SongImport):
     """

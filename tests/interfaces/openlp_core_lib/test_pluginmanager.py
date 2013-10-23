@@ -9,8 +9,9 @@ from unittest import TestCase
 
 from PyQt4 import QtGui
 
+from openlp.core.common import Settings
 from openlp.core.lib.pluginmanager import PluginManager
-from openlp.core.lib import Registry, Settings
+from openlp.core.lib import Registry
 from tests.interfaces import MagicMock
 
 

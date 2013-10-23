@@ -1,4 +1,3 @@
-#lint:disable
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
@@ -27,72 +26,25 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Package to test the openlp.core.lib.uistrings package.
+"""
+from unittest import TestCase
 
-import logging
-
-from PyQt4 import QtGui
-
-from .editcustomslidedialog import Ui_CustomSlideEditDialog
-
-log = logging.getLogger(__name__)
+from openlp.core.common import UiStrings
 
 
-class EditCustomSlideForm(QtGui.QDialog, Ui_CustomSlideEditDialog):
-    """
-    Class documentation goes here.
-    """
-    log.info('Custom Verse Editor loaded')
+class TestUiStrings(TestCase):
 
-    def __init__(self, parent=None):
+    def check_same_instance_test(self):
         """
-        Constructor
+        Test the UiStrings class - we always should have only one instance of the UiStrings class.
         """
-        super(EditCustomSlideForm, self).__init__(parent)
-        self.setupUi(self)
-        # Connecting signals and slots
-        self.insert_button.clicked.connect(self.on_insert_button_clicked)
-        self.split_button.clicked.connect(self.on_split_button_clicked)
+        # WHEN: Create two instances of the UiStrings class.
+        first_instance = UiStrings()
+        second_instance = UiStrings()
 
-    def set_text(self, text):
-        """
-        Set the text for slide_text_edit.
+        # THEN: Check if the instances are the same.
+        self.assertIs(first_instance, second_instance, 'Two UiStrings objects should be the same instance')
 
-        ``text``
-            The text (unicode).
-        """
-        self.slide_text_edit.clear()
-        if text:
-            self.slide_text_edit.setPlainText(text)
-        self.slide_text_edit.setFocus()
 
-    def get_text(self):
-        """
-        Returns a list with all slides.
-        """
-        return self.slide_text_edit.toPlainText().split('\n[===]\n')
-
-    def on_insert_button_clicked(self):
-        """
-        Adds a slide split at the cursor.
-        """
-        self.insert_single_line_text_at_cursor('[===]')
-        self.slide_text_edit.setFocus()
-
-    def on_split_button_clicked(self):
-        """
-        Adds an optional split at cursor.
-        """
-        self.insert_single_line_text_at_cursor('[---]')
-        self.slide_text_edit.setFocus()
-
-    def insert_single_line_text_at_cursor(self, text):
-        """
-        Adds ``text`` in a single line at the cursor position.
-        """
-        full_text = self.slide_text_edit.toPlainText()
-        position = self.slide_text_edit.textCursor().position()
-        if position and full_text[position - 1] != '\n':
-            text = '\n' + text
-        if position == len(full_text) or full_text[position] != '\n':
-            text += '\n'
-        self.slide_text_edit.insertPlainText(text)
