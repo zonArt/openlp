@@ -249,10 +249,7 @@ class ImpressDocument(PresentationDocument):
             window = self.document.getCurrentController().getFrame().getContainerWindow()
             window.setVisible(False)
         self.presentation = self.document.getPresentation()
-        try:
-            self.presentation.Display = ScreenList().current['number'] + 1
-        except:
-            self.presentation.Display = 1
+        self.presentation.Display = ScreenList().current['number'] + 1
         self.control = None
         self.create_thumbnails()
         self.create_titles_and_notes()
@@ -456,23 +453,26 @@ class ImpressDocument(PresentationDocument):
     def __get_text_from_page(self, slide_no, text_type=TextType.SlideText):
         """
         Return any text extracted from the presentation page.
-
-        ``notes``
-            A boolean. If set the method searches the notes of the slide.
+        ``slide_no``
+            1 based slide index
+        ``text_type``
+            A TextType. Enumeration of the types of supported text 
         """
         text = ''
-        pages = self.document.getDrawPages()
-        page = pages.getByIndex(slide_no - 1)
-        if text_type==TextType.Notes:
-            page = page.getNotesPage()
-        for index in range(page.getCount()):
-            shape = page.getByIndex(index)
-            shapeType = shape.getShapeType()
-            if shape.supportsService("com.sun.star.drawing.Text"):
-                # if they requested title, make sure it is the title
-                if text_type!=TextType.Title or \
-                    shapeType == "com.sun.star.presentation.TitleTextShape":
-                    text += shape.getString() + '\n'
+        if text_type >= TextType.Title and text_type <= TextType.Notes:
+            pages = self.document.getDrawPages()
+            if slide_no > 0 and slide_no <= pages.getCount():
+                page = pages.getByIndex(slide_no - 1)
+                if text_type==TextType.Notes:
+                    page = page.getNotesPage()
+                for index in range(page.getCount()):
+                    shape = page.getByIndex(index)
+                    shapeType = shape.getShapeType()
+                    if shape.supportsService("com.sun.star.drawing.Text"):
+                        # if they requested title, make sure it is the title
+                        if text_type!=TextType.Title or \
+                            shapeType == "com.sun.star.presentation.TitleTextShape":
+                            text += shape.getString() + '\n'
         return text
 
     def create_titles_and_notes(self):
