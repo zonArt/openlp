@@ -32,9 +32,12 @@ Package to test the openlp.core.lib package.
 import os
 from unittest import TestCase
 
-from openlp.core.lib import ItemCapabilities, ServiceItem, Registry
+
 from tests.functional import MagicMock, patch
 from tests.utils import assert_length, convert_file_service_item
+
+from openlp.core.lib import ItemCapabilities, ServiceItem, Registry
+
 
 VERSE = 'The Lord said to {r}Noah{/r}: \n'\
         'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n'\
