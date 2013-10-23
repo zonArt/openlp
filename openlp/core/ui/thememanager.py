@@ -33,7 +33,6 @@ import os
 import zipfile
 import shutil
 import logging
-import re
 
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
@@ -59,7 +58,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         """
         super(ThemeManager, self).__init__(parent)
         Registry().register('theme_manager', self)
-        Registry().register_function('bootstrap_initialise', self.load_first_time_themes)
+        Registry().register_function('bootstrap_initialise', self.initialise)
         Registry().register_function('bootstrap_post_set_up', self._push_themes)
         self.settings_section = 'themes'
         self.theme_form = ThemeForm(self)
@@ -135,15 +134,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         Registry().register_function('theme_update_global', self.change_global_from_tab)
         # Variables
         self.theme_list = []
-        self.path = AppLocation.get_section_data_path(self.settings_section)
-        check_directory_exists(self.path)
-        self.thumb_path = os.path.join(self.path, 'thumbnails')
-        check_directory_exists(self.thumb_path)
-        self.theme_form.path = self.path
         self.old_background_image = None
-        self.bad_v1_name_chars = re.compile(r'[%+\[\]]')
-        # Last little bits of setting up
-        self.global_theme = Settings().value(self.settings_section + '/global theme')
 
     def check_list_state(self, item):
         """
@@ -392,6 +383,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         """
         Imports any themes on start up and makes sure there is at least one theme
         """
+        log.debug('load_first_time_themes called')
         self.application.set_busy_cursor()
         files = AppLocation.get_files(self.settings_section, '.otz')
         for theme_file in files:
@@ -410,8 +402,8 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
 
     def load_themes(self):
         """
-        Loads the theme lists and triggers updates across the whole system
-        using direct calls or core functions and events for the plugins.
+        Loads the theme lists and triggers updates across the whole system using direct calls or core functions and
+        events for the plugins.
         The plugins will call back in to get the real list if they want it.
         """
         log.debug('Load themes from dir')
@@ -636,18 +628,18 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         self.main_window.finished_progress_bar()
         self.load_themes()
 
-    def generate_image(self, theme_data, forcePage=False):
+    def generate_image(self, theme_data, force_page=False):
         """
         Call the renderer to build a Sample Image
 
         ``theme_data``
             The theme to generated a preview for.
 
-        ``forcePage``
+        ``force_page``
             Flag to tell message lines per page need to be generated.
         """
         log.debug('generate_image \n%s ', theme_data)
-        return self.renderer.generate_preview(theme_data, forcePage)
+        return self.renderer.generate_preview(theme_data, force_page)
 
     def get_preview_image(self, theme):
         """
@@ -672,7 +664,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         theme.extend_image_filename(path)
         return theme
 
-    def _validate_theme_action(self, select_text, confirm_title, confirm_text, testPlugin=True, confirm=True):
+    def _validate_theme_action(self, select_text, confirm_title, confirm_text, test_plugin=True, confirm=True):
         """
         Check to see if theme has been selected and the destructive action
         is allowed.
@@ -694,7 +686,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                     message=translate('OpenLP.ThemeManager', 'You are unable to delete the default theme.'))
                 return False
             # check for use in the system else where.
-            if testPlugin:
+            if test_plugin:
                 for plugin in self.plugin_manager.plugins:
                     if plugin.uses_theme(theme):
                         critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
