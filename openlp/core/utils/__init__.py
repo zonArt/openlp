@@ -37,11 +37,14 @@ import os
 import re
 from subprocess import Popen, PIPE
 import sys
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import Registry, Settings
+from openlp.core.common import AppLocation, Settings
+from openlp.core.lib import Registry
 
 
 if sys.platform != 'win32' and sys.platform != 'darwin':
@@ -51,7 +54,7 @@ if sys.platform != 'win32' and sys.platform != 'darwin':
     except ImportError:
         XDG_BASE_AVAILABLE = False
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 
 log = logging.getLogger(__name__)
 APPLICATION_VERSION = {}
@@ -79,15 +82,6 @@ class VersionThread(QtCore.QThread):
         version = check_latest_version(app_version)
         if LooseVersion(str(version)) > LooseVersion(str(app_version['full'])):
             Registry().execute('openlp_version_check', '%s' % version)
-
-
-def _get_frozen_path(frozen_option, non_frozen_option):
-    """
-    Return a path based on the system status.
-    """
-    if hasattr(sys, 'frozen') and sys.frozen == 1:
-        return frozen_option
-    return non_frozen_option
 
 
 def get_application_version():
@@ -256,7 +250,7 @@ def is_not_image_file(file_name):
     if not file_name:
         return True
     else:
-        formats = [str(fmt).lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
+        formats = [bytes(fmt).decode().lower() for fmt in QtGui.QImageReader.supportedImageFormats()]
         file_part, file_extension = os.path.splitext(str(file_name))
         if file_extension[1:].lower() in formats and os.path.exists(file_name):
             return False
@@ -418,18 +412,17 @@ def get_natural_key(string):
     """
     key = DIGITS_OR_NONDIGITS.findall(string)
     key = [int(part) if part.isdigit() else get_locale_key(part) for part in key]
-    # Python 3 does not support comparision of different types anymore. So make sure, that we do not compare str
+    # Python 3 does not support comparison of different types anymore. So make sure, that we do not compare str
     # and int.
     if string[0].isdigit():
         return [b''] + key
     return key
 
 
-from .applocation import AppLocation
 from .languagemanager import LanguageManager
 from .actions import ActionList
 
 
-__all__ = ['AppLocation', 'ActionList', 'LanguageManager', 'get_application_version', 'check_latest_version',
+__all__ = ['ActionList', 'LanguageManager', 'get_application_version', 'check_latest_version',
     'add_actions', 'get_filesystem_encoding', 'get_web_page', 'get_uno_command', 'get_uno_instance',
     'delete_file', 'clean_filename', 'format_time', 'get_locale_key', 'get_natural_key']

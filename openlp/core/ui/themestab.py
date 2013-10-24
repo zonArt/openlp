@@ -33,8 +33,8 @@ The Themes configuration tab
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, Settings, SettingsTab, UiStrings, translate
-from openlp.core.lib.theme import ThemeLevel
+from openlp.core.common import Settings, ThemeLevel, UiStrings, translate
+from openlp.core.lib import Registry, SettingsTab
 from openlp.core.lib.ui import find_and_set_in_combo_box
 
 

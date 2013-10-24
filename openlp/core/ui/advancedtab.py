@@ -36,9 +36,9 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Settings, UiStrings, translate, build_icon
-from openlp.core.utils import AppLocation, format_time, get_images_filter
-from openlp.core.lib import SlideLimits
+from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
+from openlp.core.lib import SettingsTab, build_icon
+from openlp.core.utils import format_time, get_images_filter
 
 log = logging.getLogger(__name__)
 

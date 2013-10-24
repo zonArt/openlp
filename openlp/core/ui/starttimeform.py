@@ -33,7 +33,8 @@ from PyQt4 import QtGui
 
 from .starttimedialog import Ui_StartTimeDialog
 
-from openlp.core.lib import UiStrings, Registry, translate
+from openlp.core.common import UiStrings, translate
+from openlp.core.lib import Registry
 from openlp.core.lib.ui import critical_error_message_box
 
 
@@ -88,9 +89,9 @@ class StartTimeForm(QtGui.QDialog, Ui_StartTimeDialog):
         """
         Split time up into hours minutes and seconds from secongs
         """
-        hours = seconds / 3600
+        hours = seconds // 3600
         seconds -= 3600 * hours
-        minutes = seconds / 60
+        minutes = seconds // 60
         seconds -= 60 * minutes
         return hours, minutes, seconds
 

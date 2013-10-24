@@ -33,7 +33,8 @@ plugin.
 import logging
 import re
 
-from openlp.core.lib import Settings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import translate
 
 
 log = logging.getLogger(__name__)

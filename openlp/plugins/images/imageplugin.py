@@ -31,10 +31,11 @@ from PyQt4 import QtGui
 
 import logging
 
-from openlp.core.lib import Plugin, StringContent, Registry, ImageSource, Settings, build_icon, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import Plugin, StringContent, Registry, ImageSource, build_icon
 from openlp.core.lib.db import Manager
 from openlp.plugins.images.lib import ImageMediaItem, ImageTab
-from openlp.plugins.images.lib.db import init_schema, ImageFilenames
+from openlp.plugins.images.lib.db import init_schema
 
 log = logging.getLogger(__name__)
 

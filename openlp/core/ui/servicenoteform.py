@@ -31,7 +31,8 @@ The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm`
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import SpellTextEdit, Registry, translate
+from openlp.core.common import translate
+from openlp.core.lib import SpellTextEdit, Registry
 from openlp.core.lib.ui import create_button_box
 
 

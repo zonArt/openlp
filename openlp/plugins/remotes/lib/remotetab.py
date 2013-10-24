@@ -31,9 +31,8 @@ import os.path
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import Settings, SettingsTab, translate
-from openlp.core.utils import AppLocation
-
+from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.lib import SettingsTab
 
 ZERO_URL = '0.0.0.0'
 
@@ -198,21 +197,7 @@ class RemoteTab(SettingsTab):
         """
         Update the display based on the data input on the screen
         """
-        ip_address = 'localhost'
-        if self.address_edit.text() == ZERO_URL:
-            interfaces = QtNetwork.QNetworkInterface.allInterfaces()
-            for interface in interfaces:
-                if not interface.isValid():
-                    continue
-                if not (interface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
-                    continue
-                for address in interface.addressEntries():
-                    ip = address.ip()
-                    if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ip_address = ip
-                        break
-        else:
-            ip_address = self.address_edit.text()
+        ip_address = self.get_ip_address(self.address_edit.text())
         http_url = 'http://%s:%s/' % (ip_address, self.port_spin_box.value())
         https_url = 'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
         self.remote_url.setText('<a href="%s">%s</a>' % (http_url, http_url))
@@ -221,10 +206,29 @@ class RemoteTab(SettingsTab):
         https_url_temp = https_url + 'stage'
         self.stage_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.stage_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
-        http_url_temp = http_url + 'live'
-        https_url_temp = https_url + 'live'
+        http_url_temp = http_url + 'main'
+        https_url_temp = https_url + 'main'
         self.live_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
         self.live_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+
+    def get_ip_address(self, ip_address):
+        """
+        returns the IP address in dependency of the passed address
+        ip_address == 0.0.0.0: return the IP address of the first valid interface
+        else: return ip_address
+        """
+        if ip_address == ZERO_URL:
+            interfaces = QtNetwork.QNetworkInterface.allInterfaces()
+            for interface in interfaces:
+                if not interface.isValid():
+                    continue
+                if not (interface.flags() & (QtNetwork.QNetworkInterface.IsUp | QtNetwork.QNetworkInterface.IsRunning)):
+                    continue
+                for address in interface.addressEntries():
+                    ip = address.ip()
+                    if ip.protocol() == QtNetwork.QAbstractSocket.IPv4Protocol and ip != QtNetwork.QHostAddress.LocalHost:
+                        return ip.toString()
+        return ip_address
 
     def load(self):
         """

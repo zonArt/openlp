@@ -2,12 +2,12 @@
 Package to test the openlp.core.ui package.
 """
 from unittest import TestCase
-from mock import patch
 
 from PyQt4 import QtCore, QtGui, QtTest
 
 from openlp.core.lib import Registry
 from openlp.core.ui import servicenoteform
+from tests.interfaces import patch
 
 
 class TestStartNoteDialog(TestCase):

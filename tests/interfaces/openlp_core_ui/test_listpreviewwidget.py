@@ -3,12 +3,12 @@
 """
 
 from unittest import TestCase
-from mock import MagicMock, patch
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import Registry, ServiceItem
 from openlp.core.ui import listpreviewwidget
+from tests.interfaces import MagicMock, patch
 from tests.utils.osdinteraction import read_service_from_file
 
 

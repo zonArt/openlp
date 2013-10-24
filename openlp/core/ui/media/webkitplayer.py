@@ -33,7 +33,8 @@ from PyQt4 import QtGui
 
 import logging
 
-from openlp.core.lib import Settings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import translate
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
 
