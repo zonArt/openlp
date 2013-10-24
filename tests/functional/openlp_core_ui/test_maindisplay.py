@@ -45,30 +45,40 @@ class TestMainDisplay(TestCase):
     #   - MainDisplay
     #   - AudioPlayer
 
-    def setUp(self):
-        self.main_dispaly_patcher = patch('openlp.core.ui.maindisplay.MainDisplay')
-        self.mocked_main_dispaly = self.main_dispaly_patcher.start()
-        self.mocked_main_dispaly.__init__()
-
-        #.setAutoFillBackground, .setStyleSheet, .setAttribute, .repaint
-
-
-    def tearDown(self):
-        self.main_dispaly_patcher.stop()
-
-
 
     def set_transparency_enable_test(self):
         """
         Test creating an instance of the MainDisplay class
         """
-        # GIVEN: Reset mocks: MainDisplay.__init__, MainDisplay.setAutoFillBackground, etc. And an instance of MainDisplay
-        #self.mocked_main_dispaly.__init__()
+        # GIVEN: get an instance of MainDisplay
+        display = MagicMock()
+        main_dispaly = MainDisplay(display)
 
         # WHEN: MainDispaly.set_transparency is called with a true value"
-        self.mocked_main_dispaly.set_transparency(True)
+        main_dispaly.set_transparency(True)
 
-        # THEN: MainDisplay.setAutoFillBackground, MainDisplay.setStyleSheet, MainDisplay.setAttribute,
-        # MainDisplay.repaint should have been called with known values"
-        assert self.mocked_main_dispaly.StyleSheet != "QGraphicsView {background: transparent; border: 0px;}", \
+        # THEN: check MainDisplay.setAutoFillBackground, MainDisplay.setStyleSheet, MainDisplay.setAttribute,
+        assert main_dispaly.StyleSheet == "QGraphicsView {background: transparent; border: 0px;}", \
             'MainDisplay instance should be transparent'
+        assert main_dispaly.getAutoFillBackground == False, \
+            'MainDisplay instance should be without background auto fill'
+        assert main_dispaly.getAttribute(QtCore.Qt.WA_TranslucentBackground) == True, \
+            'MainDisplay hasnt translusent background'
+
+    def set_transparency_disable_test(self):
+        """
+        Test creating an instance of the MainDisplay class
+        """
+        # GIVEN: get an instance of MainDisplay
+        display = MagicMock()
+        main_dispaly = MainDisplay(display)
+
+        # WHEN: MainDispaly.set_transparency is called with a False value"
+        main_dispaly.set_transparency(False)
+
+        # THEN: check MainDisplay.setAutoFillBackground, MainDisplay.setStyleSheet, MainDisplay.setAttribute,
+        assert main_dispaly.StyleSheet == "QGraphicsView {}", \
+            'MainDisplay instance should not be transparent'
+        assert main_dispaly.getAutoFillBackground == True, 'MainDisplay instance should be with background auto fill'
+        assert main_dispaly.getAttribute(QtCore.Qt.WA_TranslucentBackground) == True, \
+            'MainDisplay hasnt translusent background'
