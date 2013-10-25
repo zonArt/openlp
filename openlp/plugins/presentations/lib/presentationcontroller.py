@@ -303,6 +303,7 @@ class PresentationDocument(object):
                 with open(titlesfile) as fi:
                     titles = fi.read().splitlines()
             except:
+                log.exception('Failed to open/read existing titles file')
                 titles = []
         for index in range(len(titles)):
             notesfile = os.path.join(self.get_thumbnail_folder(), 
@@ -313,6 +314,7 @@ class PresentationDocument(object):
                     with open(notesfile) as fn:
                         note = fn.read()
                 except:
+                    log.exception('Failed to open/read notes file')
                     note = ''
             notes.append(note)
         return titles, notes
