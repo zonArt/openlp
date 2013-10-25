@@ -54,7 +54,7 @@ class TestLibModule(TestCase):
         # WHEN: We "convert" it to a bool
         isInstalled = self.ppc.check_available()
         # THEN: We should get back a True bool
-        assert isInstalled is True, u'The result should be True'
+        assert isInstalled is True, 'The result should be True'
 
     # add _test to the following if necessary
     def verify_loading_document(self):
@@ -68,7 +68,7 @@ class TestLibModule(TestCase):
         self.doc.load_presentation()
         result = self.doc.is_loaded()
         # THEN: result should be true
-        assert result is True, u'The result should be True'
+        assert result is True, 'The result should be True'
 
     def create_titles_and_notes_test(self):
         """

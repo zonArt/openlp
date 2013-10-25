@@ -54,7 +54,7 @@ class TestLibModule(TestCase):
         # WHEN: We "convert" it to a bool
         isInstalled = self.ppc.check_available()
         # THEN: We should get back a True bool
-        assert isInstalled is True, u'The result should be True'
+        assert isInstalled is True, 'The result should be True'
 
     # add _test to the following if necessary to enable test
     # I don't have powerpointviewer to verify
@@ -104,8 +104,10 @@ class TestLibModule(TestCase):
         """
         # GIVEN: mocked PresentationController.save_titles_and_notes and an nonexistent file
         with patch('builtins.open') as mocked_open, \
-            patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.exists') as mocked_exists:
+            patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.exists') as mocked_exists, \
+            patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists') as mocked_dir_exists:
             mocked_exists.return_value = False
+            mocked_dir_exists.return_value = False
             self.doc = PptviewDocument(self.ppc,'Idontexist.pptx')
             self.doc.save_titles_and_notes = MagicMock()
             # WHEN: reading the titles and notes
