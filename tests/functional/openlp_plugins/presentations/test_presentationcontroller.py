@@ -27,7 +27,8 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Functional tests to test the Impress class and related methods.
+Functional tests to test the PresentationController and PresentationDocument
+classes and related methods.
 """
 from unittest import TestCase
 import os
@@ -48,20 +49,25 @@ class TestLibModule(TestCase):
         Test PresentationDocument.save_titles_and_notes method with two valid lists
         """
         # GIVEN: two lists of length==2 and a mocked open and get_thumbnail_folder
-        with patch('builtins.open') as mocked_open, \
+        mocked_open = mock_open()
+        with patch('builtins.open', mocked_open), \
             patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder') \
             as mocked_get_thumbnail_folder:
-            t = ['uno', 'dos']
-            n = ['one', 'two']
+            titles = ['uno', 'dos']
+            notes = ['one', 'two']
             # WHEN: calling save_titles_and_notes
             mocked_get_thumbnail_folder.return_value = 'test'
-            self.document.save_titles_and_notes(t,n)
+            self.document.save_titles_and_notes(titles,notes)
             # THEN: the last call to open should have been for slideNotes2.txt
-            mocked_open.assert_called_with(
-                os.path.join('test','slideNotes2.txt'), mode='w')
+            mocked_open.assert_any_call(os.path.join('test','titles.txt'), mode='w')
+            mocked_open.assert_any_call(os.path.join('test','slideNotes1.txt'), mode='w')
+            mocked_open.assert_any_call(os.path.join('test','slideNotes2.txt'), mode='w')
             assert mocked_open.call_count == 3, 'There should be exactly three files opened'
+            mocked_open().writelines.assert_called_once_with(['uno','dos'])
+            mocked_open().write.assert_called_any('one')
+            mocked_open().write.assert_called_any('two')
 
-    def save_titles_and_notes_with_None_and_empty_test(self):
+    def save_titles_and_notes_with_None_test(self):
         """
         Test PresentationDocument.save_titles_and_notes method with no data
         """
@@ -69,14 +75,13 @@ class TestLibModule(TestCase):
         with patch('builtins.open') as mocked_open, \
             patch('openlp.plugins.presentations.lib.presentationcontroller.PresentationDocument.get_thumbnail_folder') \
             as mocked_get_thumbnail_folder:
-            t = None
-            n = []
+            titles = None
+            notes = None
             # WHEN: calling save_titles_and_notes
             mocked_get_thumbnail_folder.return_value = 'test'
-            self.document.save_titles_and_notes(t,n)
-            # THEN: the one and only call to open should have been for titles.txt
-            mocked_open.assert_called_once_with(
-                os.path.join('test','titles.txt'), mode='w')
+            self.document.save_titles_and_notes(titles,notes)
+            # THEN: No file should have been created
+            assert mocked_open.call_count == 0, 'No file should be created'
 
 
     def get_titles_and_notes_test(self):
@@ -97,9 +102,11 @@ class TestLibModule(TestCase):
             assert len(result_titles) == 2
             assert type(result_notes) is list
             assert len(result_notes) == 2
-            assert mocked_open.call_count == 3
-            mocked_open.assert_called_with(os.path.join('test','slideNotes2.txt'))
-            assert mocked_exists.call_count == 3
+            assert mocked_open.call_count == 3, 'Three files should be opened'
+            mocked_open.assert_any_call(os.path.join('test','titles.txt'))
+            mocked_open.assert_any_call(os.path.join('test','slideNotes1.txt'))
+            mocked_open.assert_any_call(os.path.join('test','slideNotes2.txt'))
+            assert mocked_exists.call_count == 3, 'Three files should have been checked'
 
     def get_titles_and_notes_with_file_not_found_test(self):
         """

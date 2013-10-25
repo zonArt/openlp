@@ -157,9 +157,11 @@ class PptviewDocument(PresentationDocument):
         and the notes to 'slideNotes[x].txt'
         in the thumbnails directory
         """
+        titles = None
+        notes = None
         filename = os.path.normpath(self.filepath)
         # let's make sure we have a valid zipped presentation
-        if zipfile.is_zipfile(filename):
+        if os.path.exists(filename) and zipfile.is_zipfile(filename):
             namespaces = {"p": 
                 "http://schemas.openxmlformats.org/presentationml/2006/main", 
                 "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}

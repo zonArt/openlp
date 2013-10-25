@@ -322,15 +322,16 @@ class PresentationDocument(object):
         Performs the actual persisting of titles to the titles.txt
         and notes to the slideNote%.txt
         """
-        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-        with open(titlesfile, mode='w') as fo:
-            fo.writelines(titles)
-        for num in range(len(notes)):
-            notesfile = os.path.join(self.get_thumbnail_folder(), 
-                'slideNotes%d.txt' % (num+1))
-            with open(notesfile, mode='w') as fn:
-                fn.write(notes[num])
-
+        if titles:
+            titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+            with open(titlesfile, mode='w') as fo:
+                fo.writelines(titles)
+        if notes:
+            for slide_no, note in enumerate(notes):
+                notesfile = os.path.join(self.get_thumbnail_folder(), 
+                    'slideNotes%d.txt' % (slide_no+1))
+                with open(notesfile, mode='w') as fn:
+                    fn.write(notes[slide_no])
 
 class PresentationController(object):
     """

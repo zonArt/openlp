@@ -326,7 +326,6 @@ class PowerpointDocument(PresentationDocument):
         """
         titles = []
         notes = []
-        num = 0
         for slide in self.presentation.Slides:
             try:
                 text = slide.Shapes.Title.TextFrame.TextRange.Text
@@ -334,12 +333,11 @@ class PowerpointDocument(PresentationDocument):
                 log.exception(e)
                 text = ''
             titles.append(text.replace('\n',' ').replace('\x0b',' ') + '\n')
-            num += 1
             note = _get_text_from_shapes(slide.NotesPage.Shapes)
             if len(note) == 0:
                 note = ' '
             notes.append(note)
-            self.save_titles_and_notes(titles,notes)
+        self.save_titles_and_notes(titles,notes)
         return
 
 def _get_text_from_shapes(shapes):

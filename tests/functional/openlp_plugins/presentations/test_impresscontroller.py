@@ -45,16 +45,6 @@ class TestLibModule(TestCase):
         self.ppc = ImpressController(mocked_plugin)
         self.doc = ImpressDocument(self.ppc,self.file_name)
 
-    def verify_installation(self):
-        """
-        Test the installation of ImpressViewer
-        """
-        # GIVEN: A boolean value set to true
-        # WHEN: We "convert" it to a bool
-        isInstalled = self.ppc.check_available()
-        # THEN: We should get back a True bool
-        assert isInstalled is True, 'The result should be True'
-
     def create_titles_and_notes_test(self):
         """
         Test ImpressDocument.create_titles_and_notes
@@ -75,38 +65,6 @@ class TestLibModule(TestCase):
         self.doc.create_titles_and_notes()
         # THEN: save_titles_and_notes should have been called once with two arrays of two elements
         self.doc.save_titles_and_notes.assert_called_once_with(['\n','\n'],[' ',' '])
-
-    def _mock_a_LibreOffice_document(self,pageCount,noteCount,textCount):
-        pages = MagicMock()
-        page = MagicMock()
-        pages.getByIndex.return_value = page
-        notesPage = MagicMock()
-        notesPage.getCount.return_value = noteCount
-        shape = MagicMock()
-        shape.supportsService.return_value = True
-        shape.getString.return_value = 'Note'
-        notesPage.getByIndex.return_value = shape
-        page.getNotesPage.return_value = notesPage
-        page.getCount.return_value = textCount
-        #pageShape.getString.return_value = 'Title'
-        #pageShape.getString.side_effect = self._get_string_side_effect
-        #page.getByIndex.return_value = pageShape
-        page.getByIndex.side_effect = self._get_page_shape_side_effect
-        pages.getCount.return_value = pageCount
-        document = MagicMock()
-        document.getDrawPages.return_value = pages
-        document.getByIndex.return_value = page
-        return document
-
-    def _get_page_shape_side_effect(*args, **kwargs):
-        pageShape = MagicMock()
-        pageShape.supportsService.return_value = True
-        if args[1] == 0:
-            pageShape.getShapeType.return_value = 'com.sun.star.presentation.TitleTextShape'
-            pageShape.getString.return_value = 'Title'
-        else:
-            pageShape.getString.return_value = 'String'
-        return pageShape
 
     def get_text_from_page_out_of_bound_test(self):
         """
@@ -158,3 +116,32 @@ class TestLibModule(TestCase):
         result = self.doc._ImpressDocument__get_text_from_page(1,TextType.SlideText)
         # THEN: result should be 'Title\nString\nString\n'
         assert result == 'Title\nString\nString\n', 'Result should be exactly \'Title\\nString\\nString\\n\''
+
+    def _mock_a_LibreOffice_document(self,pageCount,noteCount,textCount):
+        pages = MagicMock()
+        page = MagicMock()
+        pages.getByIndex.return_value = page
+        notesPage = MagicMock()
+        notesPage.getCount.return_value = noteCount
+        shape = MagicMock()
+        shape.supportsService.return_value = True
+        shape.getString.return_value = 'Note'
+        notesPage.getByIndex.return_value = shape
+        page.getNotesPage.return_value = notesPage
+        page.getCount.return_value = textCount
+        page.getByIndex.side_effect = self._get_page_shape_side_effect
+        pages.getCount.return_value = pageCount
+        document = MagicMock()
+        document.getDrawPages.return_value = pages
+        document.getByIndex.return_value = page
+        return document
+
+    def _get_page_shape_side_effect(*args, **kwargs):
+        pageShape = MagicMock()
+        pageShape.supportsService.return_value = True
+        if args[1] == 0:
+            pageShape.getShapeType.return_value = 'com.sun.star.presentation.TitleTextShape'
+            pageShape.getString.return_value = 'Title'
+        else:
+            pageShape.getString.return_value = 'String'
+        return pageShape

@@ -32,7 +32,7 @@ Functional tests to test the PowerPointController class and related methods.
 from unittest import TestCase
 import os
 from mock import MagicMock, patch
-from openlp.plugins.presentations.lib.powerpointcontroller import PowerpointController, PowerpointDocument
+from openlp.plugins.presentations.lib.powerpointcontroller import PowerpointController, PowerpointDocument, _get_text_from_shapes
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
 
@@ -44,9 +44,9 @@ class TestLibModule(TestCase):
         self.ppc = PowerpointController(mocked_plugin)
         self.file_name = os.path.join(TEST_PATH,"test.pptx")
         self.doc = PowerpointDocument(self.ppc,self.file_name)
-        self.doc.presentation_deleted()
-        
-    def verify_installation_test(self):
+
+    # add _test    to the name to enable
+    def verify_installation(self):
         """
         Test the installation of Powerpoint
         """
@@ -70,20 +70,58 @@ class TestLibModule(TestCase):
         # THEN: result should be true
         assert result is True, u'The result should be True'
 
-    def verify_titles_test(self):
+    def create_titles_and_notes_test(self):
         """
-        Test reading the titles from PowerPoint
+        Test creating the titles from PowerPoint
         """
-        # GIVEN:
+        # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
         self.doc = PowerpointDocument(self.ppc,self.file_name)
-        self.doc.load_presentation()
-        self.doc.create_titles_and_notes()
-        #self.doc.load_presentation()
+        self.doc.save_titles_and_notes = MagicMock()
+        self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
+        slide = MagicMock()
+        slide.Shapes.Title.TextFrame.TextRange.Text = 'SlideText'
+        pres = MagicMock()
+        pres.Slides = [slide,slide]
+        self.doc.presentation = pres
         # WHEN reading the titles and notes
-        titles,notes = self.doc.get_titles_and_notes()
-        print("titles: ".join(titles))
-        print("notes: ".join(notes))
-        # THEN there should be exactly 5 titles and 5 notes
-        assert len(titles)==5, u'There should be five titles'
-        assert len(notes)==5, u'Theres should be five notes'
+        self.doc.create_titles_and_notes()
+        # THEN the save should have been called exactly once with 2 titles and 2 notes
+        self.doc.save_titles_and_notes.assert_called_once_with(['SlideText\n', 'SlideText\n'], [' ', ' '])
+
+    def create_titles_and_notes_with_no_slides_test(self):
+        """
+        Test creating the titles from PowerPoint when it returns no slides
+        """
+        # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
+        self.doc = PowerpointDocument(self.ppc,self.file_name)
+        self.doc.save_titles_and_notes = MagicMock()
+        self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
+        pres = MagicMock()
+        pres.Slides = []
+        self.doc.presentation = pres
+        # WHEN reading the titles and notes
+        self.doc.create_titles_and_notes()
+        # THEN the save should have been called exactly once with empty titles and notes
+        self.doc.save_titles_and_notes.assert_called_once_with([], [])
+
+    def get_text_from_shapes_test(self):
+        """
+        Test getting text from powerpoint shapes 
+        """
+        # GIVEN: mocked 
+        shape = MagicMock()
+        shape.PlaceholderFormat.Type = 2
+        shape.HasTextFrame = shape.TextFrame.HasText = True
+        shape.TextFrame.TextRange.Text = 'slideText'
+        shapes = [shape,shape]
+        result = _get_text_from_shapes(shapes)
+        assert result == 'slideText\nslideText\n'
         
+    def get_text_from_shapes_with_no_shapes_test(self):
+        """
+        Test getting text from powerpoint shapes with no shapes
+        """
+        # GIVEN: mocked 
+        shapes = []
+        result = _get_text_from_shapes(shapes)
+        assert result == ''
