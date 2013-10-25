@@ -32,7 +32,7 @@ Package to test the openlp.core.lib package.
 import os
 from unittest import TestCase
 
-from openlp.core.lib import ItemCapabilities, ServiceItem, Registry
+from openlp.core.lib import ItemCapabilities, ServiceItem, Registry, ServiceItemType
 from tests.functional import MagicMock, patch
 from tests.utils import assert_length, convert_file_service_item
 
@@ -122,7 +122,7 @@ class TestServiceItem(TestCase):
 
         # THEN: We should get back a valid service item
         self.assertTrue(service_item.is_valid, 'The new service item should be valid')
-        self.assertEqual(test_file, service_item.get_rendered_frame(0),
+        self.assertEqual(os.path.normpath(test_file), os.path.normpath(service_item.get_rendered_frame(0)),
             'The first frame should match the path to the image')
         self.assertEqual(frame_array, service_item.get_frames()[0],
             'The return should match frame array1')
@@ -149,8 +149,8 @@ class TestServiceItem(TestCase):
         # GIVEN: A new service item and a mocked add icon function
         image_name1 = 'image_1.jpg'
         image_name2 = 'image_2.jpg'
-        test_file1 = os.path.join('/home/openlp', image_name1)
-        test_file2 = os.path.join('/home/openlp', image_name2)
+        test_file1 = os.path.normpath(os.path.join('/home/openlp', image_name1))
+        test_file2 = os.path.normpath(os.path.join('/home/openlp', image_name2))
         frame_array1 = {'path': test_file1, 'title': image_name1}
         frame_array2 = {'path': test_file2, 'title': image_name2}
 
@@ -175,15 +175,15 @@ class TestServiceItem(TestCase):
         # new layout of service item. The layout use in serviceitem_image_2.osd is actually invalid now.
         self.assertTrue(service_item.is_valid, 'The first service item should be valid')
         self.assertTrue(service_item2.is_valid, 'The second service item should be valid')
-        self.assertEqual(test_file1, service_item.get_rendered_frame(0),
+        self.assertEqual(test_file1, os.path.normpath(service_item.get_rendered_frame(0)),
             'The first frame should match the path to the image')
-        self.assertEqual(test_file2, service_item2.get_rendered_frame(0),
+        self.assertEqual(test_file2, os.path.normpath(service_item2.get_rendered_frame(0)),
             'The Second frame should match the path to the image')
         self.assertEqual(frame_array1, service_item.get_frames()[0], 'The return should match the frame array1')
         self.assertEqual(frame_array2, service_item2.get_frames()[0], 'The return should match the frame array2')
-        self.assertEqual(test_file1, service_item.get_frame_path(0),
+        self.assertEqual(test_file1, os.path.normpath(service_item.get_frame_path(0)),
             'The frame path should match the full path to the image')
-        self.assertEqual(test_file2, service_item2.get_frame_path(0),
+        self.assertEqual(test_file2, os.path.normpath(service_item2.get_frame_path(0)),
             'The frame path should match the full path to the image')
         self.assertEqual(image_name1, service_item.get_frame_title(0),
             'The 1st frame title should match the image name')
@@ -200,3 +200,40 @@ class TestServiceItem(TestCase):
             'This service item should be able to be run in a can be made to Loop')
         self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
             'This service item should be able to have new items added to it')
+
+    def add_from_command_for_a_presentation_test(self):
+        """
+        Test the Service Item - adding a presentation
+        """
+        # GIVEN: A service item, a mocked icon and presentation data
+        service_item = ServiceItem(None)
+        presentation_name = 'test.pptx'
+        image = MagicMock()
+        displaytitle = 'DisplayTitle'
+        notes = 'Note1\nNote2\n'
+        frame = {'title': presentation_name, 'image': image,
+            'path': TEST_PATH, 'displaytitle': displaytitle,
+            'notes': notes }
+        # WHEN: adding presentation to service_item
+        service_item.add_from_command(TEST_PATH, presentation_name, image, displaytitle, notes)
+        # THEN: verify that it is setup as a Command and that the frame data matches
+        assert service_item.service_item_type == ServiceItemType.Command
+        assert service_item.get_frames()[0] == frame
+
+    def add_from_comamnd_without_displaytitle_and_notes_test(self):
+        """
+        Test the Service Item - add from command, but not presentation
+        """
+        # GIVEN: A new service item, a mocked icon and image data
+        service_item = ServiceItem(None)
+        image_name = 'test.img'
+        image = MagicMock()
+        frame = {'title': image_name, 'image': image,
+            'path': TEST_PATH, 'displaytitle': None,
+            'notes': None}
+        # WHEN: adding image to service_item
+        service_item.add_from_command(TEST_PATH, image_name, image)
+        # THEN: verify that it is setup as a Command and that the frame data matches
+        assert service_item.service_item_type == ServiceItemType.Command
+        print(service_item.get_frames()[0])
+        assert service_item.get_frames()[0] == frame

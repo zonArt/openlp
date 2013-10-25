@@ -59,7 +59,7 @@ class TestRouter(TestCase):
         """
         Create the UI
         """
-        fd, self.ini_file = mkstemp('.ini')
+        self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         Settings().extend_default_settings(__default_settings__)
@@ -70,6 +70,7 @@ class TestRouter(TestCase):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         del self.application
+        os.close(self.fd)
         os.unlink(self.ini_file)
 
     def password_encrypter_test(self):
@@ -110,3 +111,20 @@ class TestRouter(TestCase):
             'The mocked function should match defined value.'
         assert function['secure'] == False, \
             'The mocked function should not require any security.'
+
+    def send_appropriate_header_test(self):
+        """
+        Test the header sending logic
+        """
+        headers = [ ['test.html','text/html'], ['test.css','text/css'],
+            ['test.js','application/javascript'], ['test.jpg','image/jpeg'],
+            ['test.gif','image/gif'],['test.ico','image/x-icon'],
+            ['test.png','image/png'],['test.whatever','text/plain'],
+            ['test','text/plain'],['','text/plain']]
+        send_header = MagicMock()
+        self.router.send_header = send_header
+        for header in headers:
+            self.router.send_appropriate_header(header[0])
+            send_header.assert_called_with('Content-type',header[1])
+            send_header.reset()
+    
