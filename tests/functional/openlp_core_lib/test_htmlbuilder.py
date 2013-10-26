@@ -216,9 +216,9 @@ class Htmbuilder(TestCase):
             is_live = False
             background = None
             plugin = MagicMock()
-            plugin.get_display_css = MagicMock(return_value='plugin CSS')
-            plugin.get_display_javascript = MagicMock(return_value='plugin JS')
-            plugin.get_display_html = MagicMock(return_value='plugin HTML')
+            plugin.get_display_css.return_value = 'plugin CSS'
+            plugin.get_display_javascript.return_value = 'plugin JS'
+            plugin.get_display_html.return_value = 'plugin HTML'
             plugins = [plugin]
 
             # WHEN: Create the html.
