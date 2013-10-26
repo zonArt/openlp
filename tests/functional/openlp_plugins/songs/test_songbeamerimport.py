@@ -53,7 +53,6 @@ SONG_TEST_DATA = {'Lobsinget dem Herrn.sng':
          'song_number': "1"}
         }
 
-
 class TestSongBeamerImport(TestCase):
     """
     Test the functions in the :mod:`songbeamerimport` module.
