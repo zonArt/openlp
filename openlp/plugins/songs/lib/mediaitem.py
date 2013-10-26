@@ -35,10 +35,10 @@ import shutil
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_
 
-from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, Settings, \
-    UiStrings, translate, check_item_selected, create_separated_list, check_directory_exists
+from openlp.core.common import AppLocation, Settings, check_directory_exists, UiStrings, translate
+from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, PluginStatus, ServiceItemContext, \
+     check_item_selected, create_separated_list
 from openlp.core.lib.ui import create_widget_action
-from openlp.core.utils import AppLocation
 from openlp.plugins.songs.forms.editsongform import EditSongForm
 from openlp.plugins.songs.forms.songmaintenanceform import SongMaintenanceForm
 from openlp.plugins.songs.forms.songimportform import SongImportForm
@@ -72,6 +72,11 @@ class SongMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = 'songs/song'
         super(SongMediaItem, self).__init__(parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         self.single_service_item = False
         # Holds information about whether the edit is remotely triggered and which Song is required.
         self.remote_song = -1

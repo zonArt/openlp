@@ -32,6 +32,7 @@ for the songs plugin.
 """
 from openlp.core.lib import translate
 
+
 class SongStrings(object):
     """
     Provide standard strings for use throughout the songs plugin.

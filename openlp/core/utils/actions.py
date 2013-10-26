@@ -34,7 +34,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings
+from openlp.core.common import Settings
 
 
 log = logging.getLogger(__name__)

@@ -37,8 +37,9 @@ from collections import deque
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, SlideLimits, \
-    ServiceItemAction, Settings, Registry, UiStrings, ScreenList, build_icon, build_html, translate
+from openlp.core.common import Settings, SlideLimits, UiStrings, translate
+from openlp.core.lib import OpenLPToolbar, ItemCapabilities, ServiceItem, ImageSource, ServiceItemAction, Registry, \
+    ScreenList, build_icon, build_html
 from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder

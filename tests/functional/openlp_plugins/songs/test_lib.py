@@ -1,13 +1,39 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 This module contains tests for the lib submodule of the Songs plugin.
 """
-
 from unittest import TestCase
-
-from mock import patch, MagicMock
 
 from openlp.plugins.songs.lib import VerseType, clean_string, clean_title, strip_rtf
 from openlp.plugins.songs.lib.songcompare import songs_probably_equal, _remove_typos, _op_length
+from tests.functional import patch, MagicMock
 
 
 class TestLib(TestCase):
@@ -68,10 +94,10 @@ class TestLib(TestCase):
         # GIVEN: Two equal songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.full_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
         assert result == True, 'The result should be True'
 
@@ -82,10 +108,10 @@ class TestLib(TestCase):
         # GIVEN: A song and a short version of the same song.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.short_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
         assert result == True, 'The result should be True'
 
@@ -96,10 +122,10 @@ class TestLib(TestCase):
         # GIVEN: A song and the same song with lots of errors.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.error_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be True.
         assert result == True, 'The result should be True'
 
@@ -110,10 +136,10 @@ class TestLib(TestCase):
         # GIVEN: Two different songs.
         self.song1.search_lyrics = self.full_lyrics
         self.song2.search_lyrics = self.different_lyrics
-        
+
         # WHEN: We compare those songs for equality.
         result = songs_probably_equal(self.song1, self.song2)
-        
+
         # THEN: The result should be False.
         assert result == False, 'The result should be False'
 

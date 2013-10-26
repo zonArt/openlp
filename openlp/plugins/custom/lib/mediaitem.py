@@ -32,8 +32,9 @@ import logging
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
-from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, Settings, PluginStatus,\
-    UiStrings, check_item_selected, translate
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, PluginStatus,\
+   check_item_selected
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder
 from openlp.plugins.custom.lib.db import CustomSlide
@@ -58,6 +59,11 @@ class CustomMediaItem(MediaManagerItem):
     def __init__(self, parent, plugin):
         self.icon_path = 'custom/custom'
         super(CustomMediaItem, self).__init__(parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         self.edit_custom_form = EditCustomForm(self, self.main_window, self.plugin.manager)
         self.single_service_item = False
         self.quick_preview_allowed = True
@@ -65,7 +71,7 @@ class CustomMediaItem(MediaManagerItem):
         # Holds information about whether the edit is remotely triggered and
         # which Custom is required.
         self.remote_custom = -1
-        self.manager = plugin.manager
+        self.manager = self.plugin.manager
 
     def add_end_header_bar(self):
         self.toolbar.addSeparator()

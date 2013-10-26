@@ -1,13 +1,13 @@
 """
 Package to test the openlp.plugins.songs.forms.editsongform package.
 """
-from mock import MagicMock
 from unittest import TestCase
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import Registry
 from openlp.plugins.songs.forms.editsongform import EditSongForm
+from tests.interfaces import MagicMock
 
 
 class TestEditSongForm(TestCase):

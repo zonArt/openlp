@@ -31,7 +31,7 @@ Package to test the openlp.core.lib.maindisplay package.
 """
 from unittest import TestCase
 
-from mock import MagicMock
+from tests.functional import MagicMock
 from PyQt4 import QtCore
 
 from openlp.core.ui.maindisplay import MainDisplay

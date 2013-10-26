@@ -32,11 +32,11 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, ServiceItemContext, Settings, \
-    StringContent, TreeWidgetWithDnD, UiStrings, build_icon, check_directory_exists, check_item_selected, \
-    create_thumb, translate, validate_thumb
+from openlp.core.common import AppLocation, Settings, UiStrings, check_directory_exists, translate
+from openlp.core.lib import ItemCapabilities, MediaManagerItem, Registry, ServiceItemContext, \
+    StringContent, TreeWidgetWithDnD, build_icon, check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
-from openlp.core.utils import AppLocation, delete_file, get_locale_key, get_images_filter
+from openlp.core.utils import delete_file, get_locale_key, get_images_filter
 from openlp.plugins.images.forms import AddGroupForm, ChooseGroupForm
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 
@@ -52,10 +52,18 @@ class ImageMediaItem(MediaManagerItem):
 
     def __init__(self, parent, plugin):
         self.icon_path = 'images/image'
+        self.manager = None
+        self.choose_group_form = None
+        self.add_group_form = None
         super(ImageMediaItem, self).__init__(parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         self.quick_preview_allowed = True
         self.has_search = True
-        self.manager = plugin.manager
+        self.manager = self.plugin.manager
         self.choose_group_form = ChooseGroupForm(self)
         self.add_group_form = AddGroupForm(self)
         self.fill_groups_combobox(self.choose_group_form.group_combobox)
@@ -91,8 +99,8 @@ class ImageMediaItem(MediaManagerItem):
         self.list_view.setIconSize(QtCore.QSize(88, 50))
         self.list_view.setIndentation(self.list_view.default_indentation)
         self.list_view.allow_internal_dnd = True
-        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
-        check_directory_exists(self.servicePath)
+        self.service_path = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
+        check_directory_exists(self.service_path)
         # Load images from the database
         self.load_full_list(
             self.manager.get_all_objects(ImageFilenames, order_by_ref=ImageFilenames.filename), initial_load=True)
@@ -193,7 +201,7 @@ class ImageMediaItem(MediaManagerItem):
         """
         images = self.manager.get_all_objects(ImageFilenames, ImageFilenames.group_id == image_group.id)
         for image in images:
-            delete_file(os.path.join(self.servicePath, os.path.split(image.filename)[1]))
+            delete_file(os.path.join(self.service_path, os.path.split(image.filename)[1]))
             self.manager.delete_object(ImageFilenames, image.id)
         image_groups = self.manager.get_all_objects(ImageGroups, ImageGroups.parent_id == image_group.id)
         for group in image_groups:
@@ -215,7 +223,7 @@ class ImageMediaItem(MediaManagerItem):
                 if row_item:
                     item_data = row_item.data(0, QtCore.Qt.UserRole)
                     if isinstance(item_data, ImageFilenames):
-                        delete_file(os.path.join(self.servicePath, row_item.text(0)))
+                        delete_file(os.path.join(self.service_path, row_item.text(0)))
                         if item_data.group_id == 0:
                             self.list_view.takeTopLevelItem(self.list_view.indexOfTopLevelItem(row_item))
                         else:
@@ -339,7 +347,7 @@ class ImageMediaItem(MediaManagerItem):
         for imageFile in images:
             log.debug('Loading image: %s', imageFile.filename)
             filename = os.path.split(imageFile.filename)[1]
-            thumb = os.path.join(self.servicePath, filename)
+            thumb = os.path.join(self.service_path, filename)
             if not os.path.exists(imageFile.filename):
                 icon = build_icon(':/general/general_delete.png')
             else:
@@ -672,7 +680,16 @@ class ImageMediaItem(MediaManagerItem):
                     translate('ImagePlugin.MediaItem', 'There was a problem replacing your background, '
                         'the image file "%s" no longer exists.') % filename)
 
-    def search(self, string, showError):
+    def search(self, string, show_error=True):
+        """
+        Perform a search on the image file names.
+
+        ``string``
+            The glob to search for
+
+        ``show_error``
+            Unused.
+        """
         files = self.manager.get_all_objects(ImageFilenames, filter_clause=ImageFilenames.filename.contains(string),
             order_by_ref=ImageFilenames.filename)
         results = []

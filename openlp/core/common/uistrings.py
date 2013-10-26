@@ -31,7 +31,7 @@ The :mod:`uistrings` module provides standard strings for OpenLP.
 """
 import logging
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 
 
 log = logging.getLogger(__name__)

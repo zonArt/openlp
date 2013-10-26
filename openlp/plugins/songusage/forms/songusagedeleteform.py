@@ -27,9 +27,10 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import translate
+from openlp.core.lib import Registry
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from .songusagedeletedialog import Ui_SongUsageDeleteDialog
 
