@@ -36,13 +36,18 @@ from tests.functional import MagicMock
 
 class TestPresentationController(TestCase):
     """
-    Test the mediaitem methods.
+    Test the PresentationController.
     """
-    def setUp(self):
-        """
-        Set up the components need for all tests.
-        """
-        self.pres_controller = PresentationController(plugin=MagicMock())
-
     def constructor_test(self):
-        assert(self.pres_controller.name == "PresentationController")
+        """
+        Test the Constructor
+        """
+        # GIVEN: No presentation controller
+        controller = None
+
+        # WHEN: The presentation controller object is created
+        controller = PresentationController(plugin=MagicMock())
+
+        # THEN: The name of the presentation controller should be correct
+        self.assertEqual('PresentationController', controller.name,
+                         'The name of the presentation controller should be correct')
