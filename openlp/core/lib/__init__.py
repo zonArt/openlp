@@ -217,9 +217,9 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     if not return_icon:
         return
     if os.path.exists(thumb_path):
-        return build_icon(str(thumb_path))
+        return build_icon(thumb_path)
     # Fallback for files with animation support.
-    return build_icon(str(image_path))
+    return build_icon(image_path)
 
 
 def validate_thumb(file_path, thumb_path):
