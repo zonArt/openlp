@@ -161,7 +161,7 @@ class PresentationMediaItem(MediaManagerItem):
                 self.main_window.increment_progress_bar()
             if current_list.count(file) > 0:
                 continue
-            filename = os.path.split(str(file))[1]
+            filename = os.path.split(file)[1]
             if not os.path.exists(file):
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(build_icon(ERROR_IMAGE))
@@ -179,7 +179,7 @@ class PresentationMediaItem(MediaManagerItem):
                 controller_name = self.findControllerByType(filename)
                 if controller_name:
                     controller = self.controllers[controller_name]
-                    doc = controller.add_document(str(file))
+                    doc = controller.add_document(file)
                     thumb = os.path.join(doc.get_thumbnail_folder(), 'icon.png')
                     preview = doc.get_thumbnail_path(1, True)
                     if not preview and not initial_load:
