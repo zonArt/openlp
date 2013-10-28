@@ -124,8 +124,9 @@ from urllib.parse import urlparse, parse_qs
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, Settings, PluginStatus, StringContent, image_to_byte, resize_image, ItemCapabilities
+from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte, resize_image, ItemCapabilities
 from openlp.core.utils import AppLocation, translate
+from openlp.core.common import Settings
 
 log = logging.getLogger(__name__)
 

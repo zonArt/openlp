@@ -34,7 +34,8 @@ Base Tags cannot be changed.
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import FormattingTags, translate
+from openlp.core.common import translate
+from openlp.core.lib import FormattingTags
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
 from openlp.core.ui.formattingtagcontroller import FormattingTagController
 

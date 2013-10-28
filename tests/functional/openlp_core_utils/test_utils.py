@@ -31,7 +31,7 @@ Functional tests to test the AppLocation class and related methods.
 """
 from unittest import TestCase
 
-from openlp.core.utils import clean_filename, get_filesystem_encoding, _get_frozen_path, get_locale_key, \
+from openlp.core.utils import clean_filename, get_filesystem_encoding, get_locale_key, \
     get_natural_key, split_filename
 from tests.functional import patch
 
@@ -74,34 +74,6 @@ class TestUtils(TestCase):
             mocked_getfilesystemencoding.assert_called_with()
             mocked_getdefaultencoding.assert_called_with()
             self.assertEqual('utf-8', result, 'The result should be "utf-8"')
-
-    def get_frozen_path_in_unfrozen_app_test(self):
-        """
-        Test the _get_frozen_path() function when the application is not frozen (compiled by PyInstaller)
-        """
-        with patch('openlp.core.utils.sys') as mocked_sys:
-            # GIVEN: The sys module "without" a "frozen" attribute
-            mocked_sys.frozen = None
-
-            # WHEN: We call _get_frozen_path() with two parameters
-            frozen_path = _get_frozen_path('frozen', 'not frozen')
-
-            # THEN: The non-frozen parameter is returned
-            self.assertEqual('not frozen', frozen_path, '_get_frozen_path should return "not frozen"')
-
-    def get_frozen_path_in_frozen_app_test(self):
-        """
-        Test the _get_frozen_path() function when the application is frozen (compiled by PyInstaller)
-        """
-        with patch('openlp.core.utils.sys') as mocked_sys:
-            # GIVEN: The sys module *with* a "frozen" attribute
-            mocked_sys.frozen = 1
-
-            # WHEN: We call _get_frozen_path() with two parameters
-            frozen_path = _get_frozen_path('frozen', 'not frozen')
-
-            # THEN: The frozen parameter is returned
-            self.assertEqual('frozen', frozen_path, 'Should return "frozen"')
 
     def split_filename_with_file_path_test(self):
         """

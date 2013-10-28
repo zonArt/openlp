@@ -37,12 +37,10 @@ import ssl
 import socket
 import os
 import logging
-from urllib.parse import urlparse, parse_qs
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Settings
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation, Settings
 
 from openlp.plugins.remotes.lib import HttpRouter
 

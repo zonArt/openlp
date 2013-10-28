@@ -30,7 +30,7 @@
 import logging
 from lxml import etree, objectify
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 

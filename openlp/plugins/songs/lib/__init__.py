@@ -36,8 +36,9 @@ import re
 
 from PyQt4 import QtGui
 
+from openlp.core.common import AppLocation
 from openlp.core.lib import translate
-from openlp.core.utils import AppLocation, CONTROL_CHARS
+from openlp.core.utils import CONTROL_CHARS
 from openlp.plugins.songs.lib.db import MediaFile, Song
 from .db import Author
 from .ui import SongStrings
