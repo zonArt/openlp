@@ -332,12 +332,12 @@ class PowerpointDocument(PresentationDocument):
             except Exception as e:
                 log.exception(e)
                 text = ''
-            titles.append(text.replace('\n',' ').replace('\x0b',' ') + '\n')
+            titles.append(text.replace('\n', ' ').replace('\x0b', ' ') + '\n')
             note = _get_text_from_shapes(slide.NotesPage.Shapes)
             if len(note) == 0:
                 note = ' '
             notes.append(note)
-        self.save_titles_and_notes(titles,notes)
+        self.save_titles_and_notes(titles, notes)
         return
 
 def _get_text_from_shapes(shapes):

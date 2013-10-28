@@ -116,16 +116,16 @@ class TestRouter(TestCase):
         """
         Test the header sending logic
         """
-        headers = [ ['test.html','text/html'], ['test.css','text/css'],
-            ['test.js','application/javascript'], ['test.jpg','image/jpeg'],
-            ['test.gif','image/gif'],['test.ico','image/x-icon'],
-            ['test.png','image/png'],['test.whatever','text/plain'],
-            ['test','text/plain'],['','text/plain']]
+        headers = [ ['test.html', 'text/html'], ['test.css', 'text/css'],
+            ['test.js', 'application/javascript'], ['test.jpg', 'image/jpeg'],
+            ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
+            ['test.png', 'image/png'], ['test.whatever', 'text/plain'],
+            ['test', 'text/plain'], ['', 'text/plain']]
         send_header = MagicMock()
         self.router.send_header = send_header
         for header in headers:
             self.router.send_appropriate_header(header[0])
-            send_header.assert_called_with('Content-type',header[1])
+            send_header.assert_called_with('Content-type', header[1])
             send_header.reset_mock()
 
     def serve_thumbnail_without_params_test(self):
@@ -149,7 +149,8 @@ class TestRouter(TestCase):
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
         # WHEN: pass a bad controller
-        self.router.serve_thumbnail('badcontroller','tecnologia 1.pptx/slide1.png')
+        self.router.serve_thumbnail('badcontroller',
+            'tecnologia 1.pptx/slide1.png')
         # THEN: a 404 should be returned
         self.assertEqual(len(self.router.send_header.mock_calls), 1,
             'One header')
@@ -160,12 +161,14 @@ class TestRouter(TestCase):
         self.router.send_response.assert_called_once_with(404)
         # WHEN: pass a bad filename
         self.router.send_response.reset_mock()
-        self.router.serve_thumbnail('presentations','tecnologia 1.pptx/badfilename.png')
+        self.router.serve_thumbnail('presentations',
+            'tecnologia 1.pptx/badfilename.png')
         # THEN: return a 404
         self.router.send_response.assert_called_once_with(404)
         # WHEN: a dangerous URL is passed
         self.router.send_response.reset_mock()
-        self.router.serve_thumbnail('presentations','../tecnologia 1.pptx/slide1.png')
+        self.router.serve_thumbnail('presentations',
+            '../tecnologia 1.pptx/slide1.png')
         # THEN: return a 404
         self.router.send_response.assert_called_once_with(404)
 
@@ -184,7 +187,8 @@ class TestRouter(TestCase):
             mocked_exists.return_value = True
             mocked_location.get_section_data_path.return_value = ''
             # WHEN: pass good controller and filename
-            result = self.router.serve_thumbnail('presentations','another%20test/slide1.png')
+            result = self.router.serve_thumbnail('presentations',
+                'another%20test/slide1.png')
             # THEN: a file should be returned
             self.assertEqual(len(self.router.send_header.mock_calls), 1,
                 'One header')

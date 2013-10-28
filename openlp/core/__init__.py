@@ -291,7 +291,8 @@ def main(args=None):
         Settings.set_filename(portable_settings_file)
         portable_settings = Settings()
         # Set our data path
-        data_path = os.path.abspath(os.path.join(application_path, '..', '..', 'Data',))
+        data_path = os.path.abspath(os.path.join(application_path,
+            '..', '..', 'Data',))
         log.info('Data path: %s', data_path)
         # Point to our data path
         portable_settings.setValue('advanced/data path', data_path)

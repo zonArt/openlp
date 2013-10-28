@@ -42,8 +42,8 @@ class TestLibModule(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
         self.ppc = PptviewController(mocked_plugin)
-        self.file_name = os.path.join(TEST_PATH,"test.pptx")
-        self.doc = PptviewDocument(self.ppc,self.file_name)
+        self.file_name = os.path.join(TEST_PATH, "test.pptx")
+        self.doc = PptviewDocument(self.ppc, self.file_name)
 
     #add _test to the function name to enable test
     def verify_installation(self):
@@ -65,7 +65,7 @@ class TestLibModule(TestCase):
         # GIVEN: the filename
         print(self.file_name)
         # WHEN: loading the filename
-        self.doc = PptviewDocument(self.ppc,self.file_name)
+        self.doc = PptviewDocument(self.ppc, self.file_name)
         self.doc.load_presentation()
         result = self.doc.is_loaded()
         # THEN: result should be true
@@ -77,10 +77,10 @@ class TestLibModule(TestCase):
         Test reading the titles from PowerpointViewer
         """
         # GIVEN:
-        self.doc = PptviewDocument(self.ppc,self.file_name)
+        self.doc = PptviewDocument(self.ppc, self.file_name)
         self.doc.create_titles_and_notes()
         # WHEN reading the titles and notes
-        titles,notes = self.doc.get_titles_and_notes()
+        titles, notes = self.doc.get_titles_and_notes()
         print("titles: ".join(titles))
         print("notes: ".join(notes))
         # THEN there should be exactly 5 titles and 5 notes
@@ -111,12 +111,12 @@ class TestLibModule(TestCase):
             patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists') as mocked_dir_exists:
             mocked_exists.return_value = False
             mocked_dir_exists.return_value = False
-            self.doc = PptviewDocument(self.ppc,'Idontexist.pptx')
+            self.doc = PptviewDocument(self.ppc, 'Idontexist.pptx')
             self.doc.save_titles_and_notes = MagicMock()
             # WHEN: reading the titles and notes
             self.doc.create_titles_and_notes()
             # THEN:
-            self.doc.save_titles_and_notes.assert_called_once_with(None,None)
+            self.doc.save_titles_and_notes.assert_called_once_with(None, None)
             mocked_exists.assert_any_call('Idontexist.pptx')
             self.assertEqual(mocked_open.call_count, 0,
                 'There should be no calls to open a file')
@@ -132,12 +132,13 @@ class TestLibModule(TestCase):
             mocked_is_zf.return_value = False
             mocked_exists.return_value = True
             mocked_open.filesize = 10
-            self.doc = PptviewDocument(self.ppc,os.path.join(TEST_PATH,"test.ppt"))
+            self.doc = PptviewDocument(self.ppc,
+                os.path.join(TEST_PATH, "test.ppt"))
             self.doc.save_titles_and_notes = MagicMock()
             # WHEN: reading the titles and notes
             self.doc.create_titles_and_notes()
             # THEN:
-            self.doc.save_titles_and_notes.assert_called_once_with(None,None)
+            self.doc.save_titles_and_notes.assert_called_once_with(None, None)
             self.assertEqual(mocked_is_zf.call_count, 1,
                 'is_zipfile should have been called once')
             

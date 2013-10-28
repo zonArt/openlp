@@ -56,17 +56,17 @@ class TestLibModule(TestCase):
             notes = ['one', 'two']
             # WHEN: calling save_titles_and_notes
             mocked_get_thumbnail_folder.return_value = 'test'
-            self.document.save_titles_and_notes(titles,notes)
+            self.document.save_titles_and_notes(titles, notes)
             # THEN: the last call to open should have been for slideNotes2.txt
             mocked_open.assert_any_call(
-                os.path.join('test','titles.txt'), mode='w')
+                os.path.join('test', 'titles.txt'), mode='w')
             mocked_open.assert_any_call(
-                os.path.join('test','slideNotes1.txt'), mode='w')
+                os.path.join('test', 'slideNotes1.txt'), mode='w')
             mocked_open.assert_any_call(
-                os.path.join('test','slideNotes2.txt'), mode='w')
+                os.path.join('test', 'slideNotes2.txt'), mode='w')
             self.assertEqual(mocked_open.call_count, 3,
                 'There should be exactly three files opened')
-            mocked_open().writelines.assert_called_once_with(['uno','dos'])
+            mocked_open().writelines.assert_called_once_with(['uno', 'dos'])
             mocked_open().write.assert_called_any('one')
             mocked_open().write.assert_called_any('two')
 
@@ -82,7 +82,7 @@ class TestLibModule(TestCase):
             notes = None
             # WHEN: calling save_titles_and_notes
             mocked_get_thumbnail_folder.return_value = 'test'
-            self.document.save_titles_and_notes(titles,notes)
+            self.document.save_titles_and_notes(titles, notes)
             # THEN: No file should have been created
             self.assertEqual(mocked_open.call_count, 0,
                 'No file should be created')
@@ -112,9 +112,9 @@ class TestLibModule(TestCase):
                 'There should be two items in the notes')
             self.assertEqual(mocked_open.call_count, 3,
                 'Three files should be opened')
-            mocked_open.assert_any_call(os.path.join('test','titles.txt'))
-            mocked_open.assert_any_call(os.path.join('test','slideNotes1.txt'))
-            mocked_open.assert_any_call(os.path.join('test','slideNotes2.txt'))
+            mocked_open.assert_any_call(os.path.join('test', 'titles.txt'))
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes1.txt'))
+            mocked_open.assert_any_call(os.path.join('test', 'slideNotes2.txt'))
             self.assertEqual(mocked_exists.call_count, 3,
                 'Three files should have been checked')
 

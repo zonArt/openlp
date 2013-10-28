@@ -305,7 +305,7 @@ class PresentationDocument(object):
             except:
                 log.exception('Failed to open/read existing titles file')
                 titles = []
-        for slide_no, title in enumerate(titles,1):
+        for slide_no, title in enumerate(titles, 1):
             notes_file = os.path.join(self.get_thumbnail_folder(),
                 'slideNotes%d.txt' % slide_no)
             note = ''
@@ -329,7 +329,7 @@ class PresentationDocument(object):
             with open(titles_file, mode='w') as fo:
                 fo.writelines(titles)
         if notes:
-            for slide_no, note in enumerate(notes,1):
+            for slide_no, note in enumerate(notes, 1):
                 notes_file = os.path.join(self.get_thumbnail_folder(),
                     'slideNotes%d.txt' % slide_no)
                 with open(notes_file, mode='w') as fn:

@@ -44,8 +44,8 @@ class TestLibModule(TestCase):
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
         self.ppc = PowerpointController(mocked_plugin)
-        self.file_name = os.path.join(TEST_PATH,"test.pptx")
-        self.doc = PowerpointDocument(self.ppc,self.file_name)
+        self.file_name = os.path.join(TEST_PATH, "test.pptx")
+        self.doc = PowerpointDocument(self.ppc, self.file_name)
 
     # add _test    to the name to enable
     def verify_installation(self):
@@ -66,7 +66,7 @@ class TestLibModule(TestCase):
         # GIVEN: the filename
         print(self.file_name)
         # WHEN: loading the filename
-        self.doc = PowerpointDocument(self.ppc,self.file_name)
+        self.doc = PowerpointDocument(self.ppc, self.file_name)
         self.doc.load_presentation()
         result = self.doc.is_loaded()
         # THEN: result should be true
@@ -77,13 +77,13 @@ class TestLibModule(TestCase):
         Test creating the titles from PowerPoint
         """
         # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
-        self.doc = PowerpointDocument(self.ppc,self.file_name)
+        self.doc = PowerpointDocument(self.ppc, self.file_name)
         self.doc.save_titles_and_notes = MagicMock()
         self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
         slide = MagicMock()
         slide.Shapes.Title.TextFrame.TextRange.Text = 'SlideText'
         pres = MagicMock()
-        pres.Slides = [slide,slide]
+        pres.Slides = [slide, slide]
         self.doc.presentation = pres
         # WHEN reading the titles and notes
         self.doc.create_titles_and_notes()
@@ -96,7 +96,7 @@ class TestLibModule(TestCase):
         Test creating the titles from PowerPoint when it returns no slides
         """
         # GIVEN: mocked save_titles_and_notes, _get_text_from_shapes and two mocked slides
-        self.doc = PowerpointDocument(self.ppc,self.file_name)
+        self.doc = PowerpointDocument(self.ppc, self.file_name)
         self.doc.save_titles_and_notes = MagicMock()
         self.doc._PowerpointDocument__get_text_from_shapes = MagicMock()
         pres = MagicMock()
@@ -116,7 +116,7 @@ class TestLibModule(TestCase):
         shape.PlaceholderFormat.Type = 2
         shape.HasTextFrame = shape.TextFrame.HasText = True
         shape.TextFrame.TextRange.Text = 'slideText'
-        shapes = [shape,shape]
+        shapes = [shape, shape]
         result = _get_text_from_shapes(shapes)
         self.assertEqual(result, 'slideText\nslideText\n',
             'result should match \'slideText\nslideText\n\'')

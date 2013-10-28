@@ -43,9 +43,9 @@ class TestLibModule(TestCase):
     def setUp(self):
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
-        self.file_name = os.path.join(TEST_PATH,'test.pptx')
+        self.file_name = os.path.join(TEST_PATH, 'test.pptx')
         self.ppc = ImpressController(mocked_plugin)
-        self.doc = ImpressDocument(self.ppc,self.file_name)
+        self.doc = ImpressDocument(self.ppc, self.file_name)
 
     def create_titles_and_notes_test(self):
         """
@@ -60,7 +60,7 @@ class TestLibModule(TestCase):
         # WHEN reading the titles and notes
         self.doc.create_titles_and_notes()
         # THEN save_titles_and_notes should have been called with empty arrays
-        self.doc.save_titles_and_notes.assert_called_once_with([],[])
+        self.doc.save_titles_and_notes.assert_called_once_with([], [])
         # GIVEN: reset mock and set it to 2 pages
         self.doc.save_titles_and_notes.reset_mock()
         self.doc.document.getDrawPages().getCount.return_value = 2
@@ -69,7 +69,7 @@ class TestLibModule(TestCase):
         # THEN: save_titles_and_notes should have been called once with
         # two arrays of two elements
         self.doc.save_titles_and_notes.assert_called_once_with(
-            ['\n','\n'], [' ',' '])
+            ['\n', '\n'], [' ', ' '])
 
     def get_text_from_page_out_of_bound_test(self):
         """
@@ -77,17 +77,17 @@ class TestLibModule(TestCase):
         """
         # GIVEN: mocked LibreOffice Document with one slide,
         # two notes and three texts
-        self.doc.document = self._mock_a_LibreOffice_document(1,2,3)
+        self.doc.document = self._mock_a_LibreOffice_document(1, 2, 3)
         # WHEN: __get_text_from_page is called with an index of 0x00
-        result = self.doc._ImpressDocument__get_text_from_page(0,TextType.Notes)
+        result = self.doc._ImpressDocument__get_text_from_page(0, TextType.Notes)
         # THEN: the result should be an empty string
         self.assertEqual(result, '', 'Result should be an empty string')
         # WHEN: regardless of the type of text, index 0x00 is out of bounds
-        result = self.doc._ImpressDocument__get_text_from_page(0,TextType.Title)
+        result = self.doc._ImpressDocument__get_text_from_page(0, TextType.Title)
         # THEN: result should be an empty string
         self.assertEqual(result, '', 'Result should be an empty string')
         # WHEN: when called with 2, it should also be out of bounds
-        result = self.doc._ImpressDocument__get_text_from_page(2,TextType.SlideText)
+        result = self.doc._ImpressDocument__get_text_from_page(2, TextType.SlideText)
         # THEN: result should be an empty string ... and, getByIndex should
         # have never been called
         self.assertEqual(result, '', 'Result should be an empty string')
@@ -100,9 +100,9 @@ class TestLibModule(TestCase):
         """
         # GIVEN: mocked LibreOffice Document with one slide, two notes and
         # three texts
-        self.doc.document = self._mock_a_LibreOffice_document(1,2,3)
+        self.doc.document = self._mock_a_LibreOffice_document(1, 2, 3)
         # WHEN: called with TextType 3
-        result = self.doc._ImpressDocument__get_text_from_page(1,3)
+        result = self.doc._ImpressDocument__get_text_from_page(1, 3)
         # THEN: result should be an empty string
         self.assertEqual(result, '', 'Result should be and empty string')
         self.assertEqual(self.doc.document.getDrawPages().getByIndex.call_count,
@@ -114,7 +114,7 @@ class TestLibModule(TestCase):
         """
         # GIVEN: mocked LibreOffice Document with one slide,
         # two notes and three texts
-        self.doc.document = self._mock_a_LibreOffice_document(1,2,3)
+        self.doc.document = self._mock_a_LibreOffice_document(1, 2, 3)
         # WHEN: __get_text_from_page is called to get the Notes
         result = self.doc._ImpressDocument__get_text_from_page(1, TextType.Notes)
         # THEN: result should be 'Note\nNote\n'

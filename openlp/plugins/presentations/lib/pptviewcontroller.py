@@ -211,11 +211,11 @@ class PptviewDocument(PresentationDocument):
                         # Let's remove the \n from the titles and 
                         # just add one at the end
                         if node_type == 'ctrTitle':
-                            text = text.replace('\n',' '). \
+                            text = text.replace('\n', ' '). \
                                 replace('\x0b', ' ') + '\n'
                         list_to_add[index] = text
         # now let's write the files
-        self.save_titles_and_notes(titles,notes)
+        self.save_titles_and_notes(titles, notes)
         return
 
     def close_presentation(self):

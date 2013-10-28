@@ -450,7 +450,8 @@ class HttpRouter(object):
         Return the latest display image as a byte stream.
         """
         result = {
-            'slide_image': 'data:image/png;base64,' + str(image_to_byte(self.live_controller.slide_image))
+            'slide_image': 'data:image/png;base64,' +
+            str(image_to_byte(self.live_controller.slide_image))
         }
         self.do_json_header()
         return json.dumps({'results': result}).encode()
@@ -513,12 +514,12 @@ class HttpRouter(object):
                         dataPath = AppLocation.get_data_path()
                         if frame['image'][0:len(dataPath)] == dataPath:
                             item['img'] = frame['image'][len(dataPath):]
-                        #'data:image/png;base64,' + str(image_to_byte(resize_image(frame['image'],80,80)))
+                        #'data:image/png;base64,' + str(image_to_byte(resize_image(frame['image'], 80, 80)))
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
                 if current_item.notes:
-                    item['notes'] = item.get('notes','') + '\n' + current_item.notes
+                    item['notes'] = item.get('notes', '') + '\n' + current_item.notes
                 data.append(item)
         json_data = {'results': {'slides': data}}
         if current_item:
