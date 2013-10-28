@@ -121,7 +121,6 @@ import urllib.request
 import urllib.error
 from urllib.parse import urlparse, parse_qs
 
-
 from mako.template import Template
 from PyQt4 import QtCore
 
@@ -399,17 +398,20 @@ class HttpRouter(object):
         Serve an image file. If not found return 404.
         """
         log.debug('serve thumbnail %s/thumbnails/%s' % (controller_name, file_name))
+        supported_controllers = ['presentations']
         content = ''
-        full_path = os.path.normpath(os.path.join(
-            AppLocation.get_section_data_path(controller_name), 
-            'thumbnails/' + file_name))
-        full_path = urllib.parse.unquote(full_path)
-        
-        if os.path.exists(full_path):
-            self.send_appropriate_header(full_path)
-            file_handle = open(full_path, 'rb')
-            content = file_handle.read()
-        else:
+        if controller_name and file_name:
+            if controller_name in supported_controllers:
+                full_path = urllib.parse.unquote(file_name)
+                if not '..' in full_path:
+                    full_path = os.path.normpath(os.path.join(
+                        AppLocation.get_section_data_path(controller_name), 
+                        'thumbnails/' + full_path))
+                    if os.path.exists(full_path):
+                        ext = self.send_appropriate_header(full_path)
+                        file_handle = open(full_path, 'rb')
+                        content = file_handle.read()
+        if len(content)==0:
             content = self.do_not_found()
         return content
 
@@ -501,7 +503,7 @@ class HttpRouter(object):
                 else:
                     item['tag'] = str(index + 1)
                     if current_item.is_capable(ItemCapabilities.HasDisplayTitle):
-                        item['title'] = str(frame['displaytitle'])
+                        item['title'] = str(frame['display_title'])
                     if current_item.is_capable(ItemCapabilities.HasNotes):
                         item['notes'] = str(frame['notes'])
                     if current_item.is_capable(ItemCapabilities.HasThumbnails):

@@ -316,7 +316,7 @@ class ServiceItem(object):
         self._raw_frames.append({'title': title, 'raw_slide': raw_slide, 'verseTag': verse_tag})
         self._new_item()
 
-    def add_from_command(self, path, file_name, image, displaytitle=None, notes=None):
+    def add_from_command(self, path, file_name, image, display_title=None, notes=None):
         """
         Add a slide from a command.
 
@@ -331,7 +331,7 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append({'title': file_name, 'image': image, 
-            'path': path, 'displaytitle': displaytitle, 'notes': notes})
+            'path': path, 'display_title': display_title, 'notes': notes})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -378,7 +378,7 @@ class ServiceItem(object):
             for slide in self._raw_frames:
                 service_data.append({'title': slide['title'], 
                     'image': slide['image'], 'path': slide['path'], 
-                    'displaytitle': slide['displaytitle'], 'notes': slide['notes']})
+                    'display_title': slide['display_title'], 'notes': slide['notes']})
         return {'header': service_header, 'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -451,7 +451,7 @@ class ServiceItem(object):
                 if path:
                     self.has_original_files = False
                     self.add_from_command(path, text_image['title'], 
-                        text_image['image'], text_image['displaytitle'], 
+                        text_image['image'], text_image['display_title'],
                         text_image['notes'])
                 else:
                     self.add_from_command(text_image['path'], 

@@ -52,9 +52,9 @@ class TestLibModule(TestCase):
         """
         # GIVEN: A boolean value set to true
         # WHEN: We "convert" it to a bool
-        isInstalled = self.ppc.check_available()
+        is_installed = self.ppc.check_available()
         # THEN: We should get back a True bool
-        assert isInstalled is True, 'The result should be True'
+        self.assertEqual(is_installed, True, 'The result should be True')
 
     # add _test to the following if necessary to enable test
     # I don't have powerpointviewer to verify
@@ -69,7 +69,7 @@ class TestLibModule(TestCase):
         self.doc.load_presentation()
         result = self.doc.is_loaded()
         # THEN: result should be true
-        assert result is True, 'The result should be True'
+        self.assertEqual(result, True, 'The result should be True')
 
     # disabled
     def verify_titles(self):
@@ -84,8 +84,8 @@ class TestLibModule(TestCase):
         print("titles: ".join(titles))
         print("notes: ".join(notes))
         # THEN there should be exactly 5 titles and 5 notes
-        assert len(titles)==5, 'There should be five titles'
-        assert len(notes)==5, 'Theres should be five notes'
+        self.assertEqual(len(titles), 5, 'There should be five titles')
+        self.assertEqual(len(notes), 5, 'There should be five notes')
 
     def create_titles_and_notes_test(self):
         """
@@ -96,7 +96,10 @@ class TestLibModule(TestCase):
         # WHEN reading the titles and notes
         self.doc.create_titles_and_notes()
         # THEN save_titles_and_notes should have been called once with empty arrays
-        self.doc.save_titles_and_notes.assert_called_once_with(['Test 1\n', '\n', 'Test 2\n', 'Test 4\n', 'Test 3\n'], ['Notes for slide 1', 'Inserted', 'Notes for slide 2', 'Notes \nfor slide 4', 'Notes for slide 3'])
+        self.doc.save_titles_and_notes.assert_called_once_with(
+            ['Test 1\n', '\n', 'Test 2\n', 'Test 4\n', 'Test 3\n'],
+            ['Notes for slide 1', 'Inserted', 'Notes for slide 2',
+            'Notes \nfor slide 4', 'Notes for slide 3'])
 
     def create_titles_and_notes_nonexistent_file_test(self):
         """
@@ -115,6 +118,8 @@ class TestLibModule(TestCase):
             # THEN:
             self.doc.save_titles_and_notes.assert_called_once_with(None,None)
             mocked_exists.assert_any_call('Idontexist.pptx')
+            self.assertEqual(mocked_open.call_count, 0,
+                'There should be no calls to open a file')
         
     def create_titles_and_notes_invalid_file_test(self):
         """
@@ -133,5 +138,6 @@ class TestLibModule(TestCase):
             self.doc.create_titles_and_notes()
             # THEN:
             self.doc.save_titles_and_notes.assert_called_once_with(None,None)
-            assert mocked_is_zf.call_count == 1
+            self.assertEqual(mocked_is_zf.call_count, 1,
+                'is_zipfile should have been called once')
             

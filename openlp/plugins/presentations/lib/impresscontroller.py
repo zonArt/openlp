@@ -183,9 +183,9 @@ class ImpressController(PresentationController):
         docs = desktop.getComponents()
         cnt = 0
         if docs.hasElements():
-            list = docs.createEnumeration()
-            while list.hasMoreElements():
-                doc = list.nextElement()
+            element_list = docs.createEnumeration()
+            while element_list.hasMoreElements():
+                doc = element_list.nextElement()
                 if doc.getImplementationName() != 'com.sun.star.comp.framework.BackingComp':
                     cnt += 1
         if cnt > 0:
@@ -459,19 +459,19 @@ class ImpressDocument(PresentationDocument):
             A TextType. Enumeration of the types of supported text 
         """
         text = ''
-        if text_type >= TextType.Title and text_type <= TextType.Notes:
+        if TextType.Title <= text_type <= TextType.Notes:
             pages = self.document.getDrawPages()
-            if slide_no > 0 and slide_no <= pages.getCount():
+            if 0 < slide_no <= pages.getCount():
                 page = pages.getByIndex(slide_no - 1)
                 if text_type==TextType.Notes:
                     page = page.getNotesPage()
                 for index in range(page.getCount()):
                     shape = page.getByIndex(index)
-                    shapeType = shape.getShapeType()
+                    shape_type = shape.getShapeType()
                     if shape.supportsService("com.sun.star.drawing.Text"):
                         # if they requested title, make sure it is the title
                         if text_type!=TextType.Title or \
-                            shapeType == "com.sun.star.presentation.TitleTextShape":
+                            shape_type == "com.sun.star.presentation.TitleTextShape":
                             text += shape.getString() + '\n'
         return text
 
@@ -493,5 +493,5 @@ class ImpressDocument(PresentationDocument):
             if len(note) == 0:
                 note = ' '
             notes.append(note)
-        self.save_titles_and_notes(titles,notes)
+        self.save_titles_and_notes(titles, notes)
         return

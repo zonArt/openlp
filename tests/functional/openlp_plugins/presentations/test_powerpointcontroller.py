@@ -31,10 +31,12 @@ Functional tests to test the PowerPointController class and related methods.
 """
 from unittest import TestCase
 import os
-from mock import MagicMock, patch
-from openlp.plugins.presentations.lib.powerpointcontroller import PowerpointController, PowerpointDocument, _get_text_from_shapes
+from mock import MagicMock
+from openlp.plugins.presentations.lib.powerpointcontroller import \
+    PowerpointController, PowerpointDocument, _get_text_from_shapes
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+    '..', 'resources'))
 
 class TestLibModule(TestCase):
 
@@ -52,9 +54,9 @@ class TestLibModule(TestCase):
         """
         # GIVEN: A boolean value set to true
         # WHEN: We "convert" it to a bool
-        isInstalled = self.ppc.check_available()
+        is_installed = self.ppc.check_available()
         # THEN: We should get back a True bool
-        assert isInstalled is True, 'The result should be True'
+        self.assertEqual(is_installed, True, 'The result should be True')
 
     # add _test to the following if necessary
     def verify_loading_document(self):
@@ -68,7 +70,7 @@ class TestLibModule(TestCase):
         self.doc.load_presentation()
         result = self.doc.is_loaded()
         # THEN: result should be true
-        assert result is True, 'The result should be True'
+        self.assertEqual(result, True, 'The result should be True')
 
     def create_titles_and_notes_test(self):
         """
@@ -86,7 +88,8 @@ class TestLibModule(TestCase):
         # WHEN reading the titles and notes
         self.doc.create_titles_and_notes()
         # THEN the save should have been called exactly once with 2 titles and 2 notes
-        self.doc.save_titles_and_notes.assert_called_once_with(['SlideText\n', 'SlideText\n'], [' ', ' '])
+        self.doc.save_titles_and_notes.assert_called_once_with(
+            ['SlideText\n', 'SlideText\n'], [' ', ' '])
 
     def create_titles_and_notes_with_no_slides_test(self):
         """
@@ -115,8 +118,9 @@ class TestLibModule(TestCase):
         shape.TextFrame.TextRange.Text = 'slideText'
         shapes = [shape,shape]
         result = _get_text_from_shapes(shapes)
-        assert result == 'slideText\nslideText\n'
-        
+        self.assertEqual(result, 'slideText\nslideText\n',
+            'result should match \'slideText\nslideText\n\'')
+
     def get_text_from_shapes_with_no_shapes_test(self):
         """
         Test getting text from powerpoint shapes with no shapes
@@ -124,4 +128,4 @@ class TestLibModule(TestCase):
         # GIVEN: mocked 
         shapes = []
         result = _get_text_from_shapes(shapes)
-        assert result == ''
+        self.assertEqual(result, '', 'result should be empty')

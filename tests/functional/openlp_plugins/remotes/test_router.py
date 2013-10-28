@@ -37,7 +37,7 @@ from PyQt4 import QtGui
 
 from openlp.core.lib import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
-from tests.functional import MagicMock
+from mock import MagicMock, patch, mock_open
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -126,5 +126,67 @@ class TestRouter(TestCase):
         for header in headers:
             self.router.send_appropriate_header(header[0])
             send_header.assert_called_with('Content-type',header[1])
-            send_header.reset()
-    
+            send_header.reset_mock()
+
+    def serve_thumbnail_without_params_test(self):
+        """
+        Test the serve_thumbnail routine without params
+        """
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router.serve_thumbnail()
+        self.router.send_response.assert_called_once_with(404)
+
+    def serve_thumbnail_with_invalid_params_test(self):
+        """
+        Test the serve_thumbnail routine with invalid params
+        """
+        # GIVEN: Mocked send_header, send_response, end_headers and wfile
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        # WHEN: pass a bad controller
+        self.router.serve_thumbnail('badcontroller','tecnologia 1.pptx/slide1.png')
+        # THEN: a 404 should be returned
+        self.assertEqual(len(self.router.send_header.mock_calls), 1,
+            'One header')
+        self.assertEqual(len(self.router.send_response.mock_calls), 1,
+            'One response')
+        self.assertEqual(len(self.router.wfile.mock_calls), 1,
+            'Once call to write to the socket')
+        self.router.send_response.assert_called_once_with(404)
+        # WHEN: pass a bad filename
+        self.router.send_response.reset_mock()
+        self.router.serve_thumbnail('presentations','tecnologia 1.pptx/badfilename.png')
+        # THEN: return a 404
+        self.router.send_response.assert_called_once_with(404)
+        # WHEN: a dangerous URL is passed
+        self.router.send_response.reset_mock()
+        self.router.serve_thumbnail('presentations','../tecnologia 1.pptx/slide1.png')
+        # THEN: return a 404
+        self.router.send_response.assert_called_once_with(404)
+
+    def serve_thumbnail_with_valid_params_test(self):
+        """
+        Test the serve_thumbnail routine with valid params
+        """
+        # GIVEN: Mocked send_header, send_response, end_headers and wfile
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
+            patch('builtins.open', mock_open(read_data='123')), \
+            patch('openlp.plugins.remotes.lib.httprouter.AppLocation') as mocked_location:
+            mocked_exists.return_value = True
+            mocked_location.get_section_data_path.return_value = ''
+            # WHEN: pass good controller and filename
+            result = self.router.serve_thumbnail('presentations','another%20test/slide1.png')
+            # THEN: a file should be returned
+            self.assertEqual(len(self.router.send_header.mock_calls), 1,
+                'One header')
+            self.assertEqual(result, '123', 'The content should match \'123\'')
+            mocked_exists.assert_called_with(os.path.normpath('thumbnails/another test/slide1.png'))

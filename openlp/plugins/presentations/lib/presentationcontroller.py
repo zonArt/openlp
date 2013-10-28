@@ -297,21 +297,21 @@ class PresentationDocument(object):
         """
         titles = []
         notes = []
-        titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-        if os.path.exists(titlesfile):
+        titles_file = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+        if os.path.exists(titles_file):
             try:
-                with open(titlesfile) as fi:
-                    titles = fi.read().splitlines()
+                with open(titles_file) as fi:
+                    titles = fi.read().splitlines(keepends=True)
             except:
                 log.exception('Failed to open/read existing titles file')
                 titles = []
-        for index in range(len(titles)):
-            notesfile = os.path.join(self.get_thumbnail_folder(), 
-                'slideNotes%d.txt' % (index + 1))
+        for slide_no, title in enumerate(titles,1):
+            notes_file = os.path.join(self.get_thumbnail_folder(),
+                'slideNotes%d.txt' % slide_no)
             note = ''
-            if os.path.exists(notesfile):
+            if os.path.exists(notes_file):
                 try:
-                    with open(notesfile) as fn:
+                    with open(notes_file) as fn:
                         note = fn.read()
                 except:
                     log.exception('Failed to open/read notes file')
@@ -325,15 +325,15 @@ class PresentationDocument(object):
         and notes to the slideNote%.txt
         """
         if titles:
-            titlesfile = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
-            with open(titlesfile, mode='w') as fo:
+            titles_file = os.path.join(self.get_thumbnail_folder(), 'titles.txt')
+            with open(titles_file, mode='w') as fo:
                 fo.writelines(titles)
         if notes:
-            for slide_no, note in enumerate(notes):
-                notesfile = os.path.join(self.get_thumbnail_folder(), 
-                    'slideNotes%d.txt' % (slide_no+1))
-                with open(notesfile, mode='w') as fn:
-                    fn.write(notes[slide_no])
+            for slide_no, note in enumerate(notes,1):
+                notes_file = os.path.join(self.get_thumbnail_folder(),
+                    'slideNotes%d.txt' % slide_no)
+                with open(notes_file, mode='w') as fn:
+                    fn.write(note)
 
 class PresentationController(object):
     """

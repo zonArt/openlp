@@ -1185,9 +1185,9 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             # Add the children to their parent treewidgetitem.
             for count, frame in enumerate(serviceitem.get_frames()):
                 child = QtGui.QTreeWidgetItem(treewidgetitem)
-                # prefer to use a displaytitle
+                # prefer to use a display_title
                 if serviceitem.is_capable(ItemCapabilities.HasDisplayTitle):
-                    text = frame['displaytitle'].replace('\n',' ')
+                    text = frame['display_title'].replace('\n',' ')
                     # oops, it is missing, let's make one up
                     if len(text.strip()) == 0:
                         text = '[slide ' + str(count+1) + ']'

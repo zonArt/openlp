@@ -178,29 +178,29 @@ class PptviewDocument(PresentationDocument):
                 notes = ['' for i in range(len(nodes))]
                 # loop thru the file list to find slides and notes
                 for zip_info in zip_file.infolist():
-                    nodeType = ''
+                    node_type = ''
                     index = -1
-                    listToAdd = None
+                    list_to_add = None
                     # check if it is a slide
                     match = re.search("slides/slide(.+)\.xml", zip_info.filename)
                     if match:
                         index = int(match.group(1))-1
-                        nodeType = 'ctrTitle'
-                        listToAdd = titles
+                        node_type = 'ctrTitle'
+                        list_to_add = titles
                     # or a note
                     match = re.search("notesSlides/notesSlide(.+)\.xml", 
                         zip_info.filename)
                     if match:
                         index = int(match.group(1))-1
-                        nodeType = 'body'
-                        listToAdd = notes
+                        node_type = 'body'
+                        list_to_add = notes
                     # if it is one of our files, index shouldn't be -1
                     if index >= 0:
                         with zip_file.open(zip_info) as zipped_file:
                             tree = ElementTree.parse(zipped_file)
                         text = ''
                         nodes = tree.getroot().findall(".//p:ph[@type='" + 
-                            nodeType + "']../../..//p:txBody//a:t", 
+                            node_type + "']../../..//p:txBody//a:t",
                             namespaces=namespaces)
                         # if we found any content
                         if nodes and len(nodes)>0:
@@ -210,10 +210,10 @@ class PptviewDocument(PresentationDocument):
                                 text += node.text
                         # Let's remove the \n from the titles and 
                         # just add one at the end
-                        if nodeType == 'ctrTitle':
+                        if node_type == 'ctrTitle':
                             text = text.replace('\n',' '). \
                                 replace('\x0b', ' ') + '\n'
-                        listToAdd[index] = text
+                        list_to_add[index] = text
         # now let's write the files
         self.save_titles_and_notes(titles,notes)
         return
