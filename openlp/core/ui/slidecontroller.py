@@ -815,7 +815,7 @@ class SlideController(DisplayController):
             self.update_preview()
         else:
             self.preview_widget.change_slide(index)
-            self.slide_selected()
+        self.slide_selected()
 
     def main_display_set_background(self):
         """
@@ -1046,7 +1046,7 @@ class SlideController(DisplayController):
                 else:
                     row = self.preview_widget.slide_count() - 1
             self.preview_widget.change_slide(row)
-            self.slide_selected()
+        self.slide_selected()
 
     def on_slide_selected_previous(self):
         """
@@ -1069,7 +1069,7 @@ class SlideController(DisplayController):
                 else:
                     row = 0
             self.preview_widget.change_slide(row)
-            self.slide_selected()
+        self.slide_selected()
 
     def on_toggle_loop(self):
         """

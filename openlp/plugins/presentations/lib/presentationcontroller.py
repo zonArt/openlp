@@ -301,7 +301,7 @@ class PresentationDocument(object):
         if os.path.exists(titles_file):
             try:
                 with open(titles_file) as fi:
-                    titles = fi.read().splitlines(keepends=True)
+                    titles = fi.read().splitlines()
             except:
                 log.exception('Failed to open/read existing titles file')
                 titles = []

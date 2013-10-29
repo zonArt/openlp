@@ -30,6 +30,7 @@
 This module contains tests for the lib submodule of the Remotes plugin.
 """
 import os
+import urllib.request
 from unittest import TestCase
 from tempfile import mkstemp
 
@@ -38,6 +39,7 @@ from PyQt4 import QtGui
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
 from mock import MagicMock, patch, mock_open
+from urllib.parse import urlparse
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -181,16 +183,30 @@ class TestRouter(TestCase):
         self.router.send_header = MagicMock()
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
+        file_name = 'another%20test/slide1.png'
+        full_path = os.path.normpath(os.path.join('thumbnails',file_name))
+        width = 120
+        height = 90
         with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
             patch('builtins.open', mock_open(read_data='123')), \
-            patch('openlp.plugins.remotes.lib.httprouter.AppLocation') as mocked_location:
+            patch('openlp.plugins.remotes.lib.httprouter.AppLocation') \
+                as mocked_location, \
+            patch('openlp.plugins.remotes.lib.httprouter.resize_image') \
+                as mocked_resize, \
+            patch('openlp.plugins.remotes.lib.httprouter.image_to_byte')\
+                as mocked_image_to_byte:
             mocked_exists.return_value = True
+            mocked_image_to_byte.return_value = '123'
             mocked_location.get_section_data_path.return_value = ''
             # WHEN: pass good controller and filename
             result = self.router.serve_thumbnail('presentations',
-                'another%20test/slide1.png')
+                '{0}x{1}'.format(width, height),
+                file_name)
             # THEN: a file should be returned
-            self.assertEqual(len(self.router.send_header.mock_calls), 1,
+            self.assertEqual(self.router.send_header.call_count, 1,
                 'One header')
             self.assertEqual(result, '123', 'The content should match \'123\'')
-            mocked_exists.assert_called_with(os.path.normpath('thumbnails/another test/slide1.png'))
+            mocked_exists.assert_called_with(urllib.parse.unquote(full_path))
+            self.assertEqual(mocked_image_to_byte.call_count, 1, 'Called once')
+            mocked_resize.assert_called_once_with(
+                urllib.parse.unquote(full_path), width, height)

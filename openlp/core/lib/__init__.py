@@ -144,12 +144,17 @@ def build_icon(icon):
     return button_icon
 
 
-def image_to_byte(image):
+def image_to_byte(image, base_64=True):
     """
     Resize an image to fit on the current screen for the web and returns it as a byte stream.
 
     ``image``
         The image to converted.
+
+    ``base_64``
+        If True returns the image as Base64 bytes, otherwise
+        the image is returned as a byte array
+        To preserve original intention, this defaults to True
     """
     log.debug('image_to_byte - start')
     byte_array = QtCore.QByteArray()
@@ -158,6 +163,8 @@ def image_to_byte(image):
     buffie.open(QtCore.QIODevice.WriteOnly)
     image.save(buffie, "PNG")
     log.debug('image_to_byte - end')
+    if not base_64:
+        return byte_array
     # convert to base64 encoding so does not get missed!
     return bytes(byte_array.toBase64()).decode('utf-8')
 

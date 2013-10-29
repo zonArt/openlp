@@ -151,7 +151,7 @@ class HttpRouter(object):
             ('^/(stage)$', {'function': self.serve_file, 'secure': False}),
             ('^/(main)$', {'function': self.serve_file, 'secure': False}),
             (r'^/files/(.*)$', {'function': self.serve_file, 'secure': False}),
-            (r'^/(.*)/thumbnails/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
+            (r'^/(.*)/thumbnails([^/]+)?/(.*)$', {'function': self.serve_thumbnail, 'secure': False}),
             (r'^/api/poll$', {'function': self.poll, 'secure': False}),
             (r'^/main/poll$', {'function': self.main_poll, 'secure': False}),
             (r'^/main/image$', {'function': self.main_image, 'secure': False}),
@@ -394,24 +394,38 @@ class HttpRouter(object):
             self.send_header('Content-type', 'text/plain')
         return ext
 
-    def serve_thumbnail(self, controller_name=None, file_name=None):
+    def serve_thumbnail(self, controller_name=None, dimensions=None, file_name=None):
         """
         Serve an image file. If not found return 404.
         """
-        log.debug('serve thumbnail %s/thumbnails/%s' % (controller_name, file_name))
+        log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name,
+            dimensions, file_name))
         supported_controllers = ['presentations']
         content = ''
         if controller_name and file_name:
             if controller_name in supported_controllers:
                 full_path = urllib.parse.unquote(file_name)
-                if not '..' in full_path:
+                if not '..' in full_path: # no hacking please
+                    width = 80
+                    height = 80
+                    if dimensions:
+                        match = re.search('(\d+)x(\d+)',
+                            dimensions)
+                        if match:
+                            width = int(match.group(1))
+                            height = int(match.group(2))
+                    # let's make sure that the dimensions are within reason
+                    width = min(width,1000)
+                    width = max(width,10)
+                    height = min(height,1000)
+                    height = max(height,10)
                     full_path = os.path.normpath(os.path.join(
                         AppLocation.get_section_data_path(controller_name), 
                         'thumbnails/' + full_path))
                     if os.path.exists(full_path):
                         ext = self.send_appropriate_header(full_path)
-                        file_handle = open(full_path, 'rb')
-                        content = file_handle.read()
+                        content = image_to_byte(resize_image(full_path, width,
+                            height),False)
         if len(content)==0:
             content = self.do_not_found()
         return content
@@ -514,7 +528,6 @@ class HttpRouter(object):
                         dataPath = AppLocation.get_data_path()
                         if frame['image'][0:len(dataPath)] == dataPath:
                             item['img'] = frame['image'][len(dataPath):]
-                        #'data:image/png;base64,' + str(image_to_byte(resize_image(frame['image'], 80, 80)))
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
