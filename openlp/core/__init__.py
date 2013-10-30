@@ -184,7 +184,8 @@ class OpenLP(QtGui.QApplication):
         ``traceback``
             A traceback object with the details of where the exception occurred.
         """
-        log.exception(''.join(format_exception(exctype, value, traceback)))
+        # We can't log.exception here because the last exception no longer exists, we're actually busy handling it.
+        log.critical(''.join(format_exception(exctype, value, traceback)))
         if not hasattr(self, 'exception_form'):
             self.exception_form = ExceptionForm()
         self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exctype, value, traceback)))
