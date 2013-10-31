@@ -807,15 +807,21 @@ class SlideController(DisplayController):
         """
         Go to the requested slide
         """
-        index = int(message[0])
+        index = 0
+        if len(message) == 0 or message[0]=='undefined':
+            return
+        else:
+            index = int(message[0])
         if not self.service_item:
             return
         if self.service_item.is_command():
-            Registry().execute('%s_slide' % self.service_item.name.lower(), [self.service_item, self.is_live, index])
+            Registry().execute('%s_slide' % self.service_item.name.lower(),
+                [self.service_item, self.is_live, index])
             self.update_preview()
+            self.selected_row = index
         else:
             self.preview_widget.change_slide(index)
-        self.slide_selected()
+            self.slide_selected()
 
     def main_display_set_background(self):
         """
@@ -987,6 +993,7 @@ class SlideController(DisplayController):
         """
         self.preview_widget.change_slide(row)
         self.update_preview()
+        self.selected_row = row
         Registry().execute('slidecontroller_%s_changed' % self.type_prefix, row)
 
     def update_preview(self):
@@ -1030,6 +1037,7 @@ class SlideController(DisplayController):
         Registry().execute('%s_next' % self.service_item.name.lower(), [self.service_item, self.is_live])
         if self.service_item.is_command() and self.is_live:
             self.update_preview()
+
         else:
             row = self.preview_widget.current_slide_number() + 1
             if row == self.preview_widget.slide_count():
@@ -1046,7 +1054,7 @@ class SlideController(DisplayController):
                 else:
                     row = self.preview_widget.slide_count() - 1
             self.preview_widget.change_slide(row)
-        self.slide_selected()
+            self.slide_selected()
 
     def on_slide_selected_previous(self):
         """
@@ -1069,7 +1077,7 @@ class SlideController(DisplayController):
                 else:
                     row = 0
             self.preview_widget.change_slide(row)
-        self.slide_selected()
+            self.slide_selected()
 
     def on_toggle_loop(self):
         """

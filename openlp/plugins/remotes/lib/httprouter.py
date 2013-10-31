@@ -327,7 +327,8 @@ class HttpRouter(object):
             'no_results': translate('RemotePlugin.Mobile', 'No Results'),
             'options': translate('RemotePlugin.Mobile', 'Options'),
             'service': translate('RemotePlugin.Mobile', 'Service'),
-            'slides': translate('RemotePlugin.Mobile', 'Slides')
+            'slides': translate('RemotePlugin.Mobile', 'Slides'),
+            'settings': translate('RemotePlugin.Mobile', 'Settings'),
         }
 
     def serve_file(self, file_name=None):

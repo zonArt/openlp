@@ -120,6 +120,21 @@
       <a href="#" id="controller-previous" data-role="button" data-icon="arrow-l">${prev}</a>
       <a href="#" id="controller-next" data-role="button" data-icon="arrow-r" data-iconpos="right">${next}</a>
     </div>
+    <div data-role="controlgroup" data-type="horizontal" style="float:left">
+        <a href="#settings" id="controller-settings" data-role="button" data-icon="gear" data-rel="dialog">${settings}</a>
+    </div>
+  </div>
+</div>
+<div data-role="page" id="settings">
+  <div data-role="header" data-position="inline" data-theme="b">
+    <h1>${settings}</h1>
+  </div>
+  <div data-role="content">
+    Display thumbnails:
+    <div data-role="controlgroup" data-type="horizontal">
+        <a href="#" id="display-thumbnails" data-role="button">Yes</a>
+        <a href="#" id="dont-display-thumbnails" data-role="button">No</a>
+    </div>
   </div>
 </div>
 <div data-role="page" id="alerts">
