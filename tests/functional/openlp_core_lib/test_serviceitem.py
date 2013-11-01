@@ -124,7 +124,7 @@ class TestServiceItem(TestCase):
             service_item.set_from_service(line, TEST_PATH)
 
             # THEN: We should get back a valid service item
-        self.assertTrue(service_item.is_valid, 'The new service item should be valid')
+            self.assertTrue(service_item.is_valid, 'The new service item should be valid')
             self.assertEqual(os.path.normpath(test_file),
                 os.path.normpath(service_item.get_rendered_frame(0)),
                 'The first frame should match the path to the image')
@@ -136,7 +136,7 @@ class TestServiceItem(TestCase):
                 'The frame title should match the image name')
             self.assertEqual(image_name, service_item.get_display_title(),
                 'The display title should match the first image name')
-        self.assertTrue(service_item.is_image(), 'This service item should be of an "image" type')
+            self.assertTrue(service_item.is_image(), 'This service item should be of an "image" type')
             self.assertTrue(service_item.is_capable(ItemCapabilities.CanMaintain),
                 'This service item should be able to be Maintained')
             self.assertTrue(service_item.is_capable(ItemCapabilities.CanPreview),
