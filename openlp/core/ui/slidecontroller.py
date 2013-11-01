@@ -1037,7 +1037,6 @@ class SlideController(DisplayController):
         Registry().execute('%s_next' % self.service_item.name.lower(), [self.service_item, self.is_live])
         if self.service_item.is_command() and self.is_live:
             self.update_preview()
-
         else:
             row = self.preview_widget.current_slide_number() + 1
             if row == self.preview_widget.slide_count():

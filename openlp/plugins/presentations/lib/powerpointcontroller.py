@@ -32,13 +32,14 @@ This modul is for controlling powerpiont. PPT API documentation:
 """
 import os
 import logging
+
 if os.name == 'nt':
     from win32com.client import Dispatch
-    from .ppt import *
     import win32com
     import winreg
     import win32ui
     import pywintypes
+    from .ppt import constants
 
 from openlp.core.lib import ScreenList, Registry
 from .presentationcontroller import PresentationController, PresentationDocument
@@ -356,19 +357,32 @@ def _get_text_from_shapes(shapes):
             text += shape.TextFrame.TextRange.Text + '\n'
     return text
 
-ppE = win32com.client.getevents("PowerPoint.Application")
+if os.name == "nt":
+    ppE = win32com.client.getevents("PowerPoint.Application")
 
-class PowerpointEvents(ppE):
-    def OnSlideShowBegin(self, hwnd ):
-        print("SS Begin")
-    def OnSlideShowEnd(self, pres):
-        print("SS End")
+    class PowerpointEvents(ppE):
+        def OnSlideShowBegin(self, hwnd ):
+            #print("SS Begin")
+            return
 
-    def OnSlideShowNextSlide( self, hwnd ):
-        Registry().execute('slidecontroller_live_change', hwnd.View.CurrentShowPosition - 1)
-        print('Slide change:',hwnd.View.CurrentShowPosition)
-    def OnSlideShowOnNext(self, hwnd ):
-        print("SS Advance")
-    def OnSlideShowOnPrevious(self, hwnd):
-        print("SS GoBack")
+        def OnSlideShowEnd(self, pres):
+            #print("SS End")
+            return
+
+        def OnSlideShowNextSlide( self, hwnd ):
+            Registry().execute('slidecontroller_live_change', hwnd.View.CurrentShowPosition - 1)
+            #print('Slide change:',hwnd.View.CurrentShowPosition)
+            return
+
+        def OnSlideShowOnNext(self, hwnd ):
+            #print("SS Advance")
+            return
+
+        def OnSlideShowOnPrevious(self, hwnd):
+            #print("SS GoBack")
+            return
+
+else:
+    class constants():
+        ppPlaceholderBody = 2
 
