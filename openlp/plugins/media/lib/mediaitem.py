@@ -163,9 +163,8 @@ class MediaMediaItem(MediaManagerItem):
                 service_item.title = 'webkit'
                 service_item.processor = 'webkit'
                 (path, name) = os.path.split(filename)
-                service_item.add_from_command(path, name, CLAPPERBOARD)
-                if self.media_controller.video(DisplayControllerType.Live,
-                    service_item, video_behind_text=True):
+                service_item.add_from_command(path, name,CLAPPERBOARD)
+                if self.media_controller.video(DisplayControllerType.Live, service_item, video_behind_text=True):
                     self.reset_action.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,

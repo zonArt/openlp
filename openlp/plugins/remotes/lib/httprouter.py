@@ -465,8 +465,7 @@ class HttpRouter(object):
         Return the latest display image as a byte stream.
         """
         result = {
-            'slide_image': 'data:image/png;base64,' +
-            str(image_to_byte(self.live_controller.slide_image))
+            'slide_image': 'data:image/png;base64,' + str(image_to_byte(self.live_controller.slide_image))
         }
         self.do_json_header()
         return json.dumps({'results': result}).encode()
