@@ -5,13 +5,12 @@ import os
 from tempfile import mkstemp
 from unittest import TestCase
 
-from mock import patch, MagicMock
-
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, ServiceItem, Settings
-
+from openlp.core.common import Settings
+from openlp.core.lib import Registry, ServiceItem
 from openlp.plugins.songs.lib.mediaitem import SongMediaItem
+from tests.functional import patch, MagicMock
 
 
 class TestMediaItem(TestCase):
@@ -25,9 +24,9 @@ class TestMediaItem(TestCase):
         Registry.create()
         Registry().register('service_list', MagicMock())
         Registry().register('main_window', MagicMock())
-        with patch('openlp.core.lib.mediamanageritem.MediaManagerItem.__init__'), \
+        with patch('openlp.core.lib.mediamanageritem.MediaManagerItem._setup'), \
                 patch('openlp.plugins.songs.forms.editsongform.EditSongForm.__init__'):
-            self.media_item = SongMediaItem(MagicMock(), MagicMock())
+            self.media_item = SongMediaItem(None, MagicMock())
 
         fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)

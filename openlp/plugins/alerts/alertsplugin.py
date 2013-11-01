@@ -31,7 +31,8 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Plugin, Settings, StringContent, build_icon, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.core.lib.db import Manager
 from openlp.core.lib.ui import create_action, UiStrings
 from openlp.core.lib.theme import VerticalType

@@ -36,8 +36,7 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SlideLimits, UiStrings
-from openlp.core.lib.theme import ThemeLevel
+from openlp.core.common import ThemeLevel, SlideLimits, UiStrings
 
 
 log = logging.getLogger(__name__)

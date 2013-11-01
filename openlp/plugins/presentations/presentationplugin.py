@@ -35,8 +35,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Plugin, StringContent, build_icon, translate
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation, translate
+from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.presentations.lib import PresentationController, PresentationMediaItem, PresentationTab
 
 
@@ -109,8 +109,7 @@ class PresentationPlugin(Plugin):
         """
         Create the Media Manager List.
         """
-        self.media_item = PresentationMediaItem(
-            self.main_window.media_dock_manager.media_dock, self, self.icon, self.controllers)
+        self.media_item = PresentationMediaItem(self.main_window.media_dock_manager.media_dock, self, self.controllers)
 
     def register_controllers(self, controller):
         """

@@ -33,7 +33,7 @@ Worship songs into the OpenLP database.
 import os
 import logging
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 BLOCK_TYPES = ('V', 'C', 'B')

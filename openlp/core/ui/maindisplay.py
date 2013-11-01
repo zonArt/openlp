@@ -44,8 +44,8 @@ import sys
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import ServiceItem, Settings, ImageSource, Registry, build_html, expand_tags, \
-    image_to_byte, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import ServiceItem, ImageSource, Registry, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.lib import ScreenList
@@ -243,8 +243,6 @@ class MainDisplay(Display):
             # Windows if there are many items in the service to re-render.
             # Setting the div elements direct seems to solve the issue
             self.frame.findFirstElement("#lyricsmain").setInnerXml(slide)
-            self.frame.findFirstElement("#lyricsoutline").setInnerXml(slide)
-            self.frame.findFirstElement("#lyricsshadow").setInnerXml(slide)
 
     def alert(self, text, location):
         """

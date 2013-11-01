@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, Settings, UiStrings, \
-    create_separated_list, translate
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, create_separated_list
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import set_case_insensitive_completer, create_horizontal_adjusting_combo_box, \
     critical_error_message_box, find_and_set_in_combo_box, build_icon
@@ -64,6 +64,11 @@ class BibleMediaItem(MediaManagerItem):
         self.lock_icon = build_icon(':/bibles/bibles_search_lock.png')
         self.unlock_icon = build_icon(':/bibles/bibles_search_unlock.png')
         MediaManagerItem.__init__(self, parent, plugin)
+
+    def setup_item(self):
+        """
+        Do some additional setup.
+        """
         # Place to store the search results for both bibles.
         self.settings = self.plugin.settings_tab
         self.quick_preview_allowed = True

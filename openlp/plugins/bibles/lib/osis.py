@@ -33,8 +33,7 @@ import chardet
 import codecs
 import re
 
-from openlp.core.lib import translate
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation, translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 log = logging.getLogger(__name__)
