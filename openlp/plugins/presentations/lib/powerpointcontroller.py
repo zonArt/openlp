@@ -32,6 +32,7 @@ This modul is for controlling powerpiont. PPT API documentation:
 """
 import os
 import logging
+from .ppinterface import constants
 
 if os.name == 'nt':
     from win32com.client import Dispatch
@@ -39,7 +40,6 @@ if os.name == 'nt':
     import winreg
     import win32ui
     import pywintypes
-    from .ppt import constants
 
 from openlp.core.lib import ScreenList, Registry
 from .presentationcontroller import PresentationController, PresentationDocument
@@ -381,8 +381,4 @@ if os.name == "nt":
         def OnSlideShowOnPrevious(self, hwnd):
             #print("SS GoBack")
             return
-
-else:
-    class constants():
-        ppPlaceholderBody = 2
 
