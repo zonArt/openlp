@@ -36,6 +36,7 @@ import logging
 import os
 import time
 import queue
+import re
 
 from PyQt4 import QtCore
 
@@ -105,7 +106,7 @@ class Image(object):
     """
     secondary_priority = 0
 
-    def __init__(self, path, source, background):
+    def __init__(self, path, source, background, dimensions=''):
         """
         Create an image for the :class:`ImageManager`'s cache.
 
@@ -127,6 +128,15 @@ class Image(object):
         self.source = source
         self.background = background
         self.timestamp = 0
+        match = re.search('(\d+)x(\d+)', dimensions)
+        if match:
+            # let's make sure that the dimensions are within reason
+            self.width = sorted([10, int(match.group(1)), 1000])[1]
+            self.height = sorted([10, int(match.group(2)), 1000])[1]
+        else:
+            # -1 means use the default dimension in ImageManager
+            self.width = -1
+            self.height = -1
         # FIXME: We assume that the path exist. The caller has to take care that it exists!
         if os.path.exists(path):
             self.timestamp = os.stat(path).st_mtime
@@ -217,13 +227,13 @@ class ImageManager(QtCore.QObject):
                 image.background = background
                 self._reset_image(image)
 
-    def update_image_border(self, path, source, background):
+    def update_image_border(self, path, source, background, dimensions=''):
         """
         Border has changed so update the image affected.
         """
         log.debug('update_image_border')
         # Mark the image as dirty for a rebuild by setting the image and byte stream to None.
-        image = self._cache[(path, source)]
+        image = self._cache[(path, source, dimensions)]
         if image.source == source:
             image.background = background
             self._reset_image(image)
@@ -244,12 +254,12 @@ class ImageManager(QtCore.QObject):
         if not self.image_thread.isRunning():
             self.image_thread.start()
 
-    def get_image(self, path, source):
+    def get_image(self, path, source, dimensions=''):
         """
         Return the ``QImage`` from the cache. If not present wait for the background thread to process it.
         """
         log.debug('getImage %s' % path)
-        image = self._cache[(path, source)]
+        image = self._cache[(path, source, dimensions)]
         if image.image is None:
             self._conversion_queue.modify_priority(image, Priority.High)
             # make sure we are running and if not give it a kick
@@ -264,12 +274,12 @@ class ImageManager(QtCore.QObject):
             self._conversion_queue.modify_priority(image, Priority.Low)
         return image.image
 
-    def get_image_bytes(self, path, source):
+    def get_image_bytes(self, path, source, dimensions=''):
         """
         Returns the byte string for an image. If not present wait for the background thread to process it.
         """
         log.debug('get_image_bytes %s' % path)
-        image = self._cache[(path, source)]
+        image = self._cache[(path, source, dimensions)]
         if image.image_bytes is None:
             self._conversion_queue.modify_priority(image, Priority.Urgent)
             # make sure we are running and if not give it a kick
@@ -279,14 +289,14 @@ class ImageManager(QtCore.QObject):
                 time.sleep(0.1)
         return image.image_bytes
 
-    def add_image(self, path, source, background):
+    def add_image(self, path, source, background, dimensions=''):
         """
         Add image to cache if it is not already there.
         """
         log.debug('add_image %s' % path)
-        if not (path, source) in self._cache:
-            image = Image(path, source, background)
-            self._cache[(path, source)] = image
+        if not (path, source, dimensions) in self._cache:
+            image = Image(path, source, background, dimensions)
+            self._cache[(path, source, dimensions)] = image
             self._conversion_queue.put((image.priority, image.secondary_priority, image))
         # Check if the there are any images with the same path and check if the timestamp has changed.
         for image in list(self._cache.values()):
@@ -315,7 +325,10 @@ class ImageManager(QtCore.QObject):
         image = self._conversion_queue.get()[2]
         # Generate the QImage for the image.
         if image.image is None:
-            image.image = resize_image(image.path, self.width, self.height, image.background)
+            # Let's see if the image was requested with specific dimensions
+            width = self.width if image.width == -1 else image.width
+            height = self.height if image.height == -1 else image.height
+            image.image = resize_image(image.path, width, height, image.background)
             # Set the priority to Lowest and stop here as we need to process more important images first.
             if image.priority == Priority.Normal:
                 self._conversion_queue.modify_priority(image, Priority.Lowest)

@@ -61,16 +61,17 @@ class TestImageManager(TestCase):
         Test the Image Manager setup basic functionality
         """
         # GIVEN: the an image add to the image manager
-        self.image_manager.add_image(TEST_PATH, 'church.jpg', None)
+        full_path = os.path.normpath(os.path.join(TEST_PATH, 'church.jpg'))
+        self.image_manager.add_image(full_path, 'church.jpg', None)
 
         # WHEN the image is retrieved
-        image = self.image_manager.get_image(TEST_PATH, 'church.jpg')
+        image = self.image_manager.get_image(full_path, 'church.jpg')
 
         # THEN returned record is a type of image
         self.assertEqual(isinstance(image, QtGui.QImage), True, 'The returned object should be a QImage')
 
         # WHEN: The image bytes are requested.
-        byte_array = self.image_manager.get_image_bytes(TEST_PATH, 'church.jpg')
+        byte_array = self.image_manager.get_image_bytes(full_path, 'church.jpg')
 
         # THEN: Type should be a str.
         self.assertEqual(isinstance(byte_array, str), True, 'The returned object should be a str')
@@ -80,3 +81,40 @@ class TestImageManager(TestCase):
         with self.assertRaises(KeyError) as context:
             self.image_manager.get_image(TEST_PATH, 'church1.jpg')
         self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing image')
+
+    def different_dimension_image_test(self):
+        """
+        Test the Image Manager with dimensions
+        """
+        # GIVEN: add an image with specific dimensions
+        full_path = os.path.normpath(os.path.join(TEST_PATH, 'church.jpg'))
+        self.image_manager.add_image(full_path, 'church.jpg', None, '80x80')
+
+        # WHEN: the image is retrieved
+        image = self.image_manager.get_image(full_path, 'church.jpg', '80x80')
+
+        # THEN: The return should be of type image
+        self.assertEqual(isinstance(image, QtGui.QImage), True,
+            'The returned object should be a QImage')
+        #print(len(self.image_manager._cache))
+
+        # WHEN: adding the same image with different dimensions
+        self.image_manager.add_image(full_path, 'church.jpg', None, '100x100')
+
+        # THEN: the cache should contain two pictures
+        self.assertEqual(len(self.image_manager._cache), 2,
+            'Image manager should consider two dimensions of the same picture as different')
+
+        # WHEN: adding the same image with first dimensions
+        self.image_manager.add_image(full_path, 'church.jpg', None, '80x80')
+
+        # THEN: the cache should still contain only two pictures
+        self.assertEqual(len(self.image_manager._cache), 2,
+            'Same dimensions should not be added again')
+
+        # WHEN: calling with correct image, but wrong dimensions
+        with self.assertRaises(KeyError) as context:
+            self.image_manager.get_image(full_path, 'church.jpg', '120x120')
+        self.assertNotEquals(context.exception, '',
+            'KeyError exception should have been thrown for missing dimension')
+

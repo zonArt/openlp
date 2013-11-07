@@ -36,6 +36,7 @@ from tempfile import mkstemp
 
 from PyQt4 import QtGui
 
+from openlp.core.lib import Registry
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
 from mock import MagicMock, patch, mock_open
@@ -183,6 +184,9 @@ class TestRouter(TestCase):
         self.router.send_header = MagicMock()
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
+        mocked_image_manager = MagicMock()
+        Registry.create()
+        Registry().register('image_manager',mocked_image_manager)
         file_name = 'another%20test/slide1.png'
         full_path = os.path.normpath(os.path.join('thumbnails',file_name))
         width = 120
@@ -191,8 +195,6 @@ class TestRouter(TestCase):
             patch('builtins.open', mock_open(read_data='123')), \
             patch('openlp.plugins.remotes.lib.httprouter.AppLocation') \
                 as mocked_location, \
-            patch('openlp.plugins.remotes.lib.httprouter.resize_image') \
-                as mocked_resize, \
             patch('openlp.plugins.remotes.lib.httprouter.image_to_byte')\
                 as mocked_image_to_byte:
             mocked_exists.return_value = True
@@ -205,8 +207,11 @@ class TestRouter(TestCase):
             # THEN: a file should be returned
             self.assertEqual(self.router.send_header.call_count, 1,
                 'One header')
-            self.assertEqual(result, '123', 'The content should match \'123\'')
             mocked_exists.assert_called_with(urllib.parse.unquote(full_path))
             self.assertEqual(mocked_image_to_byte.call_count, 1, 'Called once')
-            mocked_resize.assert_called_once_with(
-                urllib.parse.unquote(full_path), width, height)
+            mocked_image_manager.assert_called_any(
+                os.path.normpath('thumbnails\\another test'), 'slide1.png',
+                    None, '120x90')
+            mocked_image_manager.assert_called_any(
+                os.path.normpath('thumbnails\\another test'),'slide1.png',
+                '120x90')

@@ -452,8 +452,8 @@ class ServiceItem(object):
                 if path:
                     self.has_original_files = False
                     self.add_from_command(path, text_image['title'], 
-                        text_image['image'], text_image['display_title'],
-                        text_image['notes'])
+                        text_image['image'], text_image.get('display_title',''),
+                        text_image.get('notes', ''))
                 else:
                     self.add_from_command(text_image['path'], 
                         text_image['title'], text_image['image'])

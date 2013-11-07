@@ -402,31 +402,25 @@ class HttpRouter(object):
         log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name,
             dimensions, file_name))
         supported_controllers = ['presentations']
+        if not dimensions:
+            dimensions = ''
         content = ''
         if controller_name and file_name:
             if controller_name in supported_controllers:
                 full_path = urllib.parse.unquote(file_name)
                 if not '..' in full_path: # no hacking please
-                    width = 80
-                    height = 80
-                    if dimensions:
-                        match = re.search('(\d+)x(\d+)',
-                            dimensions)
-                        if match:
-                            width = int(match.group(1))
-                            height = int(match.group(2))
-                    # let's make sure that the dimensions are within reason
-                    width = min(width,1000)
-                    width = max(width,10)
-                    height = min(height,1000)
-                    height = max(height,10)
                     full_path = os.path.normpath(os.path.join(
                         AppLocation.get_section_data_path(controller_name), 
                         'thumbnails/' + full_path))
                     if os.path.exists(full_path):
+                        path, just_file_name = os.path.split(full_path)
+                        image_manager = Registry().get('image_manager')
+                        image_manager.add_image(full_path, just_file_name, None,
+                            dimensions)
                         ext = self.send_appropriate_header(full_path)
-                        content = image_to_byte(resize_image(full_path, width,
-                            height),False)
+                        content = image_to_byte(
+                            image_manager.get_image(full_path,
+                                just_file_name, dimensions), False)
         if len(content)==0:
             content = self.do_not_found()
         return content
