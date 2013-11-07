@@ -133,7 +133,7 @@ class TestPptviewDocument(TestCase):
         self.mock_os.path.isdir.return_value = False
         self.mock_controller.process.OpenPPT.return_value = -1
         instance = PptviewDocument(self.mock_controller, self.mock_presentation)
-        instance.filepath = 'xyc'
+        instance.filepath = 'test\path.ppt'
         result = instance.load_presentation()
 
         # THEN: The temporary directory should be created and PptviewDocument.load_presentation should return False
