@@ -59,7 +59,7 @@ class TestRouter(TestCase):
         """
         Create the UI
         """
-        fd, self.ini_file = mkstemp('.ini')
+        self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         Settings().extend_default_settings(__default_settings__)
@@ -70,6 +70,7 @@ class TestRouter(TestCase):
         Delete all the C++ objects at the end so that we don't have a segfault
         """
         del self.application
+        os.close(self.fd)
         os.unlink(self.ini_file)
 
     def password_encrypter_test(self):
@@ -110,3 +111,18 @@ class TestRouter(TestCase):
             'The mocked function should match defined value.'
         assert function['secure'] == False, \
             'The mocked function should not require any security.'
+
+    def get_content_type_test(self):
+        """
+        Test the get_content_type logic
+        """
+        headers = [ ['test.html', 'text/html'], ['test.css', 'text/css'],
+            ['test.js', 'application/javascript'], ['test.jpg', 'image/jpeg'],
+            ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
+            ['test.png', 'image/png'], ['test.whatever', 'text/plain'],
+            ['test', 'text/plain'], ['', 'text/plain'],
+            ['/test/test.html', 'text/html'],
+            ['c:\\test\\test.html', 'text/html']]
+        for header in headers:
+            ext, content_type = self.router.get_content_type(header[0])
+            self.assertEqual(content_type, header[1], 'Mismatch of content type')

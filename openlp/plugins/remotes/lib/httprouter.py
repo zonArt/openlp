@@ -346,30 +346,14 @@ class HttpRouter(object):
         path = os.path.normpath(os.path.join(self.html_dir, file_name))
         if not path.startswith(self.html_dir):
             return self.do_not_found()
-        ext = os.path.splitext(file_name)[1]
-        html = None
-        if ext == '.html':
-            self.send_header('Content-type', 'text/html')
-            variables = self.template_vars
-            html = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
-        elif ext == '.css':
-            self.send_header('Content-type', 'text/css')
-        elif ext == '.js':
-            self.send_header('Content-type', 'application/javascript')
-        elif ext == '.jpg':
-            self.send_header('Content-type', 'image/jpeg')
-        elif ext == '.gif':
-            self.send_header('Content-type', 'image/gif')
-        elif ext == '.ico':
-            self.send_header('Content-type', 'image/x-icon')
-        elif ext == '.png':
-            self.send_header('Content-type', 'image/png')
-        else:
-            self.send_header('Content-type', 'text/plain')
+        content = None
+        ext, content_type = self.get_content_type(path)
         file_handle = None
         try:
-            if html:
-                content = html
+            if ext == '.html':
+                variables = self.template_vars
+                content = Template(filename=path, input_encoding='utf-8',
+                    output_encoding='utf-8').render(**variables)
             else:
                 file_handle = open(path, 'rb')
                 log.debug('Opened %s' % path)
@@ -380,7 +364,29 @@ class HttpRouter(object):
         finally:
             if file_handle:
                 file_handle.close()
+        self.send_response(200)
+        self.send_header('Content-type', content_type)
+        self.end_headers()
         return content
+
+    def get_content_type(self, file_name):
+        """
+        Examines the extension of the file and determines
+        what header to send back
+        Returns the extension found
+        """
+        content_type = 'text/plain'
+        file_types = {'.html': 'text/html',
+            '.css': 'text/css',
+            '.js': 'application/javascript',
+            '.jpg': 'image/jpeg',
+            '.gif': 'image/gif',
+            '.ico': 'image/x-icon',
+            '.png': 'image/png'
+        }
+        ext = os.path.splitext(file_name)[1]
+        content_type = file_types.get(ext, 'text/plain')
+        return ext, content_type
 
     def poll(self):
         """
