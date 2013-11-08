@@ -115,21 +115,20 @@ class TestRouter(TestCase):
         assert function['secure'] == False, \
             'The mocked function should not require any security.'
 
-    def send_appropriate_header_test(self):
+    def get_appropriate_content_type_test(self):
         """
-        Test the header sending logic
+        Test the get_content_type logic
         """
         headers = [ ['test.html', 'text/html'], ['test.css', 'text/css'],
             ['test.js', 'application/javascript'], ['test.jpg', 'image/jpeg'],
             ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
             ['test.png', 'image/png'], ['test.whatever', 'text/plain'],
-            ['test', 'text/plain'], ['', 'text/plain']]
-        send_header = MagicMock()
-        self.router.send_header = send_header
+            ['test', 'text/plain'], ['', 'text/plain'],
+            ['/test/test.html', 'text/html'],
+            ['c:\\test\\test.html', 'text/html']]
         for header in headers:
-            self.router.send_appropriate_header(header[0])
-            send_header.assert_called_with('Content-type', header[1])
-            send_header.reset_mock()
+            ext, content_type = self.router.get_content_type(header[0])
+            self.assertEqual(content_type, header[1], 'Mismatch of content type')
 
     def serve_thumbnail_without_params_test(self):
         """
@@ -141,6 +140,10 @@ class TestRouter(TestCase):
         self.router.wfile = MagicMock()
         self.router.serve_thumbnail()
         self.router.send_response.assert_called_once_with(404)
+        self.assertEqual(self.router.send_response.call_count, 1,
+            'Send response called once')
+        self.assertEqual(self.router.end_headers.call_count, 1,
+            'end_headers called once')
 
     def serve_thumbnail_with_invalid_params_test(self):
         """
@@ -207,6 +210,10 @@ class TestRouter(TestCase):
             # THEN: a file should be returned
             self.assertEqual(self.router.send_header.call_count, 1,
                 'One header')
+            self.assertEqual(self.router.send_response.call_count, 1,
+                'Send response called once')
+            self.assertEqual(self.router.end_headers.call_count, 1,
+                'end_headers called once')
             mocked_exists.assert_called_with(urllib.parse.unquote(full_path))
             self.assertEqual(mocked_image_to_byte.call_count, 1, 'Called once')
             mocked_image_manager.assert_called_any(
