@@ -128,6 +128,15 @@ from openlp.core.common import AppLocation, Settings, translate
 from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte
 
 log = logging.getLogger(__name__)
+file_types = {
+    '.html': 'text/html',
+    '.css': 'text/css',
+    '.js': 'application/javascript',
+    '.jpg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.ico': 'image/x-icon',
+    '.png': 'image/png'
+}
 
 
 class HttpRouter(object):
@@ -372,18 +381,10 @@ class HttpRouter(object):
     def get_content_type(self, file_name):
         """
         Examines the extension of the file and determines
-        what header to send back
-        Returns the extension found
+        what the content_type should be, defaults to text/plain
+        Returns the extension and the content_type
         """
         content_type = 'text/plain'
-        file_types = {'.html': 'text/html',
-            '.css': 'text/css',
-            '.js': 'application/javascript',
-            '.jpg': 'image/jpeg',
-            '.gif': 'image/gif',
-            '.ico': 'image/x-icon',
-            '.png': 'image/png'
-        }
         ext = os.path.splitext(file_name)[1]
         content_type = file_types.get(ext, 'text/plain')
         return ext, content_type
