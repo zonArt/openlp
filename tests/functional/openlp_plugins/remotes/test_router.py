@@ -37,7 +37,7 @@ from PyQt4 import QtGui
 
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
-from tests.functional import MagicMock
+from mock import MagicMock, patch, mock_open
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -116,6 +116,7 @@ class TestRouter(TestCase):
         """
         Test the get_content_type logic
         """
+        # GIVEN: a set of files and their corresponding types
         headers = [ ['test.html', 'text/html'], ['test.css', 'text/css'],
             ['test.js', 'application/javascript'], ['test.jpg', 'image/jpeg'],
             ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
@@ -123,6 +124,50 @@ class TestRouter(TestCase):
             ['test', 'text/plain'], ['', 'text/plain'],
             ['/test/test.html', 'text/html'],
             ['c:\\test\\test.html', 'text/html']]
+        # WHEN: calling each file type
         for header in headers:
             ext, content_type = self.router.get_content_type(header[0])
+            # THEN: all types should match
             self.assertEqual(content_type, header[1], 'Mismatch of content type')
+
+    def serve_file_without_params_test(self):
+        """
+        Test the serve_file method without params
+        """
+        # GIVEN: mocked environment
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router.html_dir = os.path.normpath('test/dir')
+        self.router.template_vars = MagicMock()
+        # WHEN: call serve_file with no file_name
+        self.router.serve_file()
+        # THEN: it should return a 404
+        self.router.send_response.assert_called_once_with(404)
+        self.router.send_header.assert_called_once_with('Content-type','text/html')
+        self.assertEqual(self.router.end_headers.call_count, 1,
+            'end_headers called once')
+
+    def serve_file_with_valid_params_test(self):
+        """
+        Test the serve_file method with an existing file
+        """
+        # GIVEN: mocked environment
+        self.router.send_response = MagicMock()
+        self.router.send_header = MagicMock()
+        self.router.end_headers = MagicMock()
+        self.router.wfile = MagicMock()
+        self.router.html_dir = os.path.normpath('test/dir')
+        self.router.template_vars = MagicMock()
+        with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
+            patch('builtins.open', mock_open(read_data='123')):
+            mocked_exists.return_value = True
+            # WHEN: call serve_file with an existing html file
+            self.router.serve_file(os.path.normpath('test/dir/test.html'))
+            # THEN: it should return a 200 and the file
+            self.router.send_response.assert_called_once_with(200)
+            self.router.send_header.assert_called_once_with(
+                'Content-type','text/html')
+            self.assertEqual(self.router.end_headers.call_count, 1,
+                'end_headers called once')
