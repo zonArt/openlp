@@ -32,16 +32,18 @@ The :mod:`db` module provides the core database functionality for OpenLP
 """
 import logging
 import os
-from urllib import quote_plus as urlquote
+from urllib.parse import quote_plus as urlquote
 
 from sqlalchemy import Table, MetaData, Column, types, create_engine
 from sqlalchemy.exc import SQLAlchemyError, InvalidRequestError, DBAPIError, OperationalError
 from sqlalchemy.orm import scoped_session, sessionmaker, mapper
 from sqlalchemy.pool import NullPool
+from alembic.migration import MigrationContext
+from alembic.operations import Operations
 
-from openlp.core.lib import translate, Settings
+from openlp.core.common import AppLocation, Settings, translate
 from openlp.core.lib.ui import critical_error_message_box
-from openlp.core.utils import AppLocation, delete_file
+from openlp.core.utils import delete_file
 
 log = logging.getLogger(__name__)
 
@@ -65,6 +67,17 @@ def init_db(url, auto_flush=True, auto_commit=False):
     return session, metadata
 
 
+def get_upgrade_op(session):
+    """
+    Create a migration context and an operations object for performing upgrades.
+
+    ``session``
+        The SQLAlchemy session object.
+    """
+    context = MigrationContext.configure(session.bind.connect())
+    return Operations(context)
+
+
 def upgrade_db(url, upgrade):
     """
     Upgrade a database.
@@ -82,22 +95,16 @@ def upgrade_db(url, upgrade):
         Provides a class for the metadata table.
         """
         pass
-    load_changes = False
-    tables = []
-    try:
-        tables = upgrade.upgrade_setup(metadata)
-        load_changes = True
-    except (SQLAlchemyError, DBAPIError):
-        pass
-    metadata_table = Table(u'metadata', metadata,
-        Column(u'key', types.Unicode(64), primary_key=True),
-        Column(u'value', types.UnicodeText(), default=None)
+
+    metadata_table = Table('metadata', metadata,
+        Column('key', types.Unicode(64), primary_key=True),
+        Column('value', types.UnicodeText(), default=None)
     )
     metadata_table.create(checkfirst=True)
     mapper(Metadata, metadata_table)
-    version_meta = session.query(Metadata).get(u'version')
+    version_meta = session.query(Metadata).get('version')
     if version_meta is None:
-        version_meta = Metadata.populate(key=u'version', value=u'0')
+        version_meta = Metadata.populate(key='version', value='0')
         session.add(version_meta)
         version = 0
     else:
@@ -105,23 +112,23 @@ def upgrade_db(url, upgrade):
     if version > upgrade.__version__:
         return version, upgrade.__version__
     version += 1
-    if load_changes:
-        while hasattr(upgrade, u'upgrade_%d' % version):
-            log.debug(u'Running upgrade_%d', version)
+    try:
+        while hasattr(upgrade, 'upgrade_%d' % version):
+            log.debug('Running upgrade_%d', version)
             try:
-                upgrade_func = getattr(upgrade, u'upgrade_%d' % version)
-                upgrade_func(session, metadata, tables)
+                upgrade_func = getattr(upgrade, 'upgrade_%d' % version)
+                upgrade_func(session, metadata)
                 session.commit()
                 # Update the version number AFTER a commit so that we are sure the previous transaction happened
-                version_meta.value = unicode(version)
+                version_meta.value = str(version)
                 session.commit()
                 version += 1
             except (SQLAlchemyError, DBAPIError):
-                log.exception(u'Could not run database upgrade script '
-                    '"upgrade_%s", upgrade process has been halted.', version)
+                log.exception('Could not run database upgrade script "upgrade_%s", upgrade process has been halted.',
+                              version)
                 break
-    else:
-        version_meta = Metadata.populate(key=u'version', value=int(upgrade.__version__))
+    except (SQLAlchemyError, DBAPIError):
+        version_meta = Metadata.populate(key='version', value=int(upgrade.__version__))
         session.commit()
     return int(version_meta.value), upgrade.__version__
 
@@ -154,7 +161,7 @@ class BaseModel(object):
         Creates an instance of a class and populates it, returning the instance
         """
         instance = cls()
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             instance.__setattr__(key, value)
         return instance
 
@@ -182,24 +189,24 @@ class Manager(object):
         """
         settings = Settings()
         settings.beginGroup(plugin_name)
-        self.db_url = u''
+        self.db_url = ''
         self.is_dirty = False
         self.session = None
-        db_type = settings.value(u'db type')
-        if db_type == u'sqlite':
+        db_type = settings.value('db type')
+        if db_type == 'sqlite':
             if db_file_name:
-                self.db_url = u'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
+                self.db_url = 'sqlite:///%s/%s' % (AppLocation.get_section_data_path(plugin_name), db_file_name)
             else:
-                self.db_url = u'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
+                self.db_url = 'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
-            self.db_url = u'%s://%s:%s@%s/%s' % (db_type,
-                urlquote(settings.value(u'db username')),
-                urlquote(settings.value(u'db password')),
-                urlquote(settings.value(u'db hostname')),
-                urlquote(settings.value(u'db database')))
-            if db_type == u'mysql':
-                db_encoding = settings.value(u'db encoding')
-                self.db_url += u'?charset=%s' % urlquote(db_encoding)
+            self.db_url = '%s://%s:%s@%s/%s' % (db_type,
+                urlquote(settings.value('db username')),
+                urlquote(settings.value('db password')),
+                urlquote(settings.value('db hostname')),
+                urlquote(settings.value('db database')))
+            if db_type == 'mysql':
+                db_encoding = settings.value('db encoding')
+                self.db_url += '?charset=%s' % urlquote(db_encoding)
         settings.endGroup()
         if upgrade_mod:
             db_ver, up_ver = upgrade_db(self.db_url, upgrade_mod)
@@ -214,7 +221,7 @@ class Manager(object):
         try:
             self.session = init_schema(self.db_url)
         except (SQLAlchemyError, DBAPIError):
-            log.exception(u'Error loading database: %s', self.db_url)
+            log.exception('Error loading database: %s', self.db_url)
             critical_error_message_box(
                 translate('OpenLP.Manager', 'Database Error'),
                 translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s') % self.db_url
@@ -241,13 +248,13 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes to terminate connections on its own
                 # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                 # non-recoverable way. So we only retry 3 times.
-                log.exception(u'Probably a MySQL issue - "MySQL has gone away"')
+                log.exception('Probably a MySQL issue - "MySQL has gone away"')
                 self.session.rollback()
                 if try_count >= 2:
                     raise
             except InvalidRequestError:
                 self.session.rollback()
-                log.exception(u'Object list save failed')
+                log.exception('Object list save failed')
                 return False
             except:
                 self.session.rollback()
@@ -274,13 +281,13 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes to terminate connections on its own
                 # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                 # non-recoverable way. So we only retry 3 times.
-                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                log.exception('Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
                 if try_count >= 2:
                     raise
             except InvalidRequestError:
                 self.session.rollback()
-                log.exception(u'Object list save failed')
+                log.exception('Object list save failed')
                 return False
             except:
                 self.session.rollback()
@@ -306,7 +313,7 @@ class Manager(object):
                     # This exception clause is for users running MySQL which likes to terminate connections on its own
                     # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                     # non-recoverable way. So we only retry 3 times.
-                    log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                    log.exception('Probably a MySQL issue, "MySQL has gone away"')
                     if try_count >= 2:
                         raise
 
@@ -327,7 +334,7 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes to terminate connections on its own
                 # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                 # non-recoverable way. So we only retry 3 times.
-                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                log.exception('Probably a MySQL issue, "MySQL has gone away"')
                 if try_count >= 2:
                     raise
 
@@ -358,7 +365,7 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes to terminate connections on its own
                 # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                 # non-recoverable way. So we only retry 3 times.
-                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                log.exception('Probably a MySQL issue, "MySQL has gone away"')
                 if try_count >= 2:
                     raise
 
@@ -382,7 +389,7 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes to terminate connections on its own
                 # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                 # non-recoverable way. So we only retry 3 times.
-                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                log.exception('Probably a MySQL issue, "MySQL has gone away"')
                 if try_count >= 2:
                     raise
 
@@ -408,13 +415,13 @@ class Manager(object):
                     # This exception clause is for users running MySQL which likes to terminate connections on its own
                     # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                     # non-recoverable way. So we only retry 3 times.
-                    log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                    log.exception('Probably a MySQL issue, "MySQL has gone away"')
                     self.session.rollback()
                     if try_count >= 2:
                         raise
                 except InvalidRequestError:
                     self.session.rollback()
-                    log.exception(u'Failed to delete object')
+                    log.exception('Failed to delete object')
                     return False
                 except:
                     self.session.rollback()
@@ -446,13 +453,13 @@ class Manager(object):
                 # This exception clause is for users running MySQL which likes to terminate connections on its own
                 # without telling anyone. See bug #927473. However, other dbms can raise it, usually in a
                 # non-recoverable way. So we only retry 3 times.
-                log.exception(u'Probably a MySQL issue, "MySQL has gone away"')
+                log.exception('Probably a MySQL issue, "MySQL has gone away"')
                 self.session.rollback()
                 if try_count >= 2:
                     raise
             except InvalidRequestError:
                 self.session.rollback()
-                log.exception(u'Failed to delete %s records', object_class.__name__)
+                log.exception('Failed to delete %s records', object_class.__name__)
                 return False
             except:
                 self.session.rollback()
@@ -464,5 +471,5 @@ class Manager(object):
         """
         if self.is_dirty:
             engine = create_engine(self.db_url)
-            if self.db_url.startswith(u'sqlite'):
+            if self.db_url.startswith('sqlite'):
                 engine.execute("vacuum")

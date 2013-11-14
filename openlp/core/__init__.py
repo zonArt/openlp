@@ -43,21 +43,22 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings, ScreenList, UiStrings, Registry, check_directory_exists
+from openlp.core.common import AppLocation, Settings, UiStrings, check_directory_exists
+from openlp.core.lib import ScreenList, Registry
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
 from openlp.core.ui.firsttimeform import FirstTimeForm
 from openlp.core.ui.exceptionform import ExceptionForm
 from openlp.core.ui import SplashScreen
-from openlp.core.utils import AppLocation, LanguageManager, VersionThread, get_application_version
+from openlp.core.utils import LanguageManager, VersionThread, get_application_version
 
 
-__all__ = [u'OpenLP', u'main']
+__all__ = ['OpenLP', 'main']
 
 
 log = logging.getLogger()
-NT_REPAIR_STYLESHEET = u"""
+NT_REPAIR_STYLESHEET = """
 QMainWindow::separator
 {
   border: none;
@@ -111,22 +112,22 @@ class OpenLP(QtGui.QApplication):
         # Decide how many screens we have and their size
         screens = ScreenList.create(self.desktop())
         # First time checks in settings
-        has_run_wizard = Settings().value(u'core/has run wizard')
+        has_run_wizard = Settings().value('core/has run wizard')
         if not has_run_wizard:
             if FirstTimeForm(screens).exec_() == QtGui.QDialog.Accepted:
-                Settings().setValue(u'core/has run wizard', True)
+                Settings().setValue('core/has run wizard', True)
         # Correct stylesheet bugs
-        application_stylesheet = u''
-        if not Settings().value(u'advanced/alternate rows'):
+        application_stylesheet = ''
+        if not Settings().value('advanced/alternate rows'):
             base_color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Base)
             alternate_rows_repair_stylesheet = \
-                u'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
+                'QTableWidget, QListWidget, QTreeWidget {alternate-background-color: ' + base_color.name() + ';}\n'
             application_stylesheet += alternate_rows_repair_stylesheet
-        if os.name == u'nt':
+        if os.name == 'nt':
             application_stylesheet += NT_REPAIR_STYLESHEET
         if application_stylesheet:
             self.setStyleSheet(application_stylesheet)
-        show_splash = Settings().value(u'core/show splash')
+        show_splash = Settings().value('core/show splash')
         if show_splash:
             self.splash = SplashScreen()
             self.splash.show()
@@ -134,20 +135,20 @@ class OpenLP(QtGui.QApplication):
         self.processEvents()
         # start the main app window
         self.main_window = MainWindow()
-        Registry().execute(u'bootstrap_initialise')
-        Registry().execute(u'bootstrap_post_set_up')
+        Registry().execute('bootstrap_initialise')
+        Registry().execute('bootstrap_post_set_up')
         self.main_window.show()
         if show_splash:
             # now kill the splashscreen
             self.splash.finish(self.main_window)
-            log.debug(u'Splashscreen closed')
+            log.debug('Splashscreen closed')
         # make sure Qt really display the splash screen
         self.processEvents()
         self.main_window.repaint()
         self.processEvents()
         if not has_run_wizard:
             self.main_window.first_time()
-        update_check = Settings().value(u'core/update check')
+        update_check = Settings().value('core/update check')
         if update_check:
             VersionThread(self.main_window).start()
         self.main_window.is_display_blank()
@@ -183,9 +184,10 @@ class OpenLP(QtGui.QApplication):
         ``traceback``
             A traceback object with the details of where the exception occurred.
         """
-        log.exception(''.join(format_exception(exctype, value, traceback)))
-        if not hasattr(self, u'exception_form'):
-            self.exception_form = ExceptionForm(self.main_window)
+        # We can't log.exception here because the last exception no longer exists, we're actually busy handling it.
+        log.critical(''.join(format_exception(exctype, value, traceback)))
+        if not hasattr(self, 'exception_form'):
+            self.exception_form = ExceptionForm()
         self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exctype, value, traceback)))
         self.set_normal_cursor()
         self.exception_form.exec_()
@@ -194,7 +196,7 @@ class OpenLP(QtGui.QApplication):
         """
         Wrapper to make ProcessEvents visible and named correctly
         """
-        log.debug(u'processing event flush')
+        log.debug('processing event flush')
         self.processEvents()
 
     def set_busy_cursor(self):
@@ -217,7 +219,7 @@ class OpenLP(QtGui.QApplication):
         """
         if event.type() == QtCore.QEvent.FileOpen:
             file_name = event.file()
-            log.debug(u'Got open file event for %s!', file_name)
+            log.debug('Got open file event for %s!', file_name)
             self.args.insert(0, file_name)
             return True
         else:
@@ -229,9 +231,9 @@ def set_up_logging(log_path):
     Setup our logging using log_path
     """
     check_directory_exists(log_path, True)
-    filename = os.path.join(log_path, u'openlp.log')
-    logfile = logging.FileHandler(filename, u'w')
-    logfile.setFormatter(logging.Formatter(u'%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
+    filename = os.path.join(log_path, 'openlp.log')
+    logfile = logging.FileHandler(filename, 'w')
+    logfile.setFormatter(logging.Formatter('%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
         print('Logging to: %s' % filename)
@@ -275,40 +277,40 @@ def main(args=None):
     qInitResources()
     # Now create and actually run the application.
     application = OpenLP(qt_args)
-    application.setOrganizationName(u'OpenLP')
-    application.setOrganizationDomain(u'openlp.org')
+    application.setOrganizationName('OpenLP')
+    application.setOrganizationDomain('openlp.org')
     if options.portable:
-        application.setApplicationName(u'OpenLPPortable')
+        application.setApplicationName('OpenLPPortable')
         Settings.setDefaultFormat(Settings.IniFormat)
         # Get location OpenLPPortable.ini
         application_path = AppLocation.get_directory(AppLocation.AppDir)
-        set_up_logging(os.path.abspath(os.path.join(application_path, u'..', u'..', u'Other')))
-        log.info(u'Running portable')
-        portable_settings_file = os.path.abspath(os.path.join(application_path, u'..', u'..', u'Data', u'OpenLP.ini'))
+        set_up_logging(os.path.abspath(os.path.join(application_path, '..', '..', 'Other')))
+        log.info('Running portable')
+        portable_settings_file = os.path.abspath(os.path.join(application_path, '..', '..', 'Data', 'OpenLP.ini'))
         # Make this our settings file
-        log.info(u'INI file: %s', portable_settings_file)
+        log.info('INI file: %s', portable_settings_file)
         Settings.set_filename(portable_settings_file)
         portable_settings = Settings()
         # Set our data path
-        data_path = os.path.abspath(os.path.join(application_path, u'..', u'..', u'Data',))
-        log.info(u'Data path: %s', data_path)
+        data_path = os.path.abspath(os.path.join(application_path, '..', '..', 'Data',))
+        log.info('Data path: %s', data_path)
         # Point to our data path
-        portable_settings.setValue(u'advanced/data path', data_path)
-        portable_settings.setValue(u'advanced/is portable', True)
+        portable_settings.setValue('advanced/data path', data_path)
+        portable_settings.setValue('advanced/is portable', True)
         portable_settings.sync()
     else:
-        application.setApplicationName(u'OpenLP')
+        application.setApplicationName('OpenLP')
         set_up_logging(AppLocation.get_directory(AppLocation.CacheDir))
     Registry.create()
-    Registry().register(u'application', application)
-    application.setApplicationVersion(get_application_version()[u'version'])
+    Registry().register('application', application)
+    application.setApplicationVersion(get_application_version()['version'])
     # Instance check
     if application.is_already_running():
         sys.exit()
     # Remove/convert obsolete settings.
     Settings().remove_obsolete_settings()
     # First time checks in settings
-    if not Settings().value(u'core/has run wizard'):
+    if not Settings().value('core/has run wizard'):
         if not FirstTimeLanguageForm().exec_():
             # if cancel then stop processing
             sys.exit()
@@ -320,7 +322,7 @@ def main(args=None):
     if not default_translator.isEmpty():
         application.installTranslator(default_translator)
     else:
-        log.debug(u'Could not find default_translator.')
+        log.debug('Could not find default_translator.')
     if not options.no_error_form:
         sys.excepthook = application.hook_exception
     sys.exit(application.run(qt_args))

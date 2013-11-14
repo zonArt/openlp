@@ -28,17 +28,29 @@
 ###############################################################################
 """
 The :mod:`formattingtagform` provides an Tag Edit facility. The Base set are protected and included each time loaded.
-Custom tags can be defined and saved. The Custom Tag arrays are saved in a pickle so QSettings works on them. Base Tags
-cannot be changed.
+Custom tags can be defined and saved. The Custom Tag arrays are saved in a json string so QSettings works on them.
+Base Tags cannot be changed.
 """
-from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import FormattingTags, translate
-from openlp.core.lib.ui import critical_error_message_box
+from PyQt4 import QtGui
+
+from openlp.core.common import translate
+from openlp.core.lib import FormattingTags
 from openlp.core.ui.formattingtagdialog import Ui_FormattingTagDialog
+from openlp.core.ui.formattingtagcontroller import FormattingTagController
 
 
-class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
+class EditColumn(object):
+    """
+    Hides the magic numbers for the table columns
+    """
+    Description = 0
+    Tag = 1
+    StartHtml = 2
+    EndHtml = 3
+
+
+class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog, FormattingTagController):
     """
     The :class:`FormattingTagForm` manages the settings tab .
     """
@@ -46,19 +58,19 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(FormattingTagForm, self).__init__(parent)
         self.setupUi(self)
+        self.services = FormattingTagController()
         self.tag_table_widget.itemSelectionChanged.connect(self.on_row_selected)
-        self.new_push_button.clicked.connect(self.on_new_clicked)
-        self.save_push_button.clicked.connect(self.on_saved_clicked)
-        self.delete_push_button.clicked.connect(self.on_delete_clicked)
+        self.new_button.clicked.connect(self.on_new_clicked)
+        #self.save_button.clicked.connect(self.on_saved_clicked)
+        self.delete_button.clicked.connect(self.on_delete_clicked)
+        self.tag_table_widget.currentCellChanged.connect(self.on_current_cell_changed)
         self.button_box.rejected.connect(self.close)
-        self.description_line_edit.textEdited.connect(self.on_text_edited)
-        self.tag_line_edit.textEdited.connect(self.on_text_edited)
-        self.start_tag_line_edit.textEdited.connect(self.on_text_edited)
-        self.end_tag_line_edit.textEdited.connect(self.on_text_edited)
         # Forces reloading of tags from openlp configuration.
         FormattingTags.load_tags()
+        self.is_deleting = False
+        self.reloading = False
 
     def exec_(self):
         """
@@ -66,138 +78,128 @@ class FormattingTagForm(QtGui.QDialog, Ui_FormattingTagDialog):
         """
         # Create initial copy from master
         self._reloadTable()
-        self.selected = -1
         return QtGui.QDialog.exec_(self)
 
     def on_row_selected(self):
         """
         Table Row selected so display items and set field state.
         """
-        self.save_push_button.setEnabled(False)
-        self.selected = self.tag_table_widget.currentRow()
-        html = FormattingTags.get_html_tags()[self.selected]
-        self.description_line_edit.setText(html[u'desc'])
-        self.tag_line_edit.setText(self._strip(html[u'start tag']))
-        self.start_tag_line_edit.setText(html[u'start html'])
-        self.end_tag_line_edit.setText(html[u'end html'])
-        if html[u'protected']:
-            self.description_line_edit.setEnabled(False)
-            self.tag_line_edit.setEnabled(False)
-            self.start_tag_line_edit.setEnabled(False)
-            self.end_tag_line_edit.setEnabled(False)
-            self.delete_push_button.setEnabled(False)
-        else:
-            self.description_line_edit.setEnabled(True)
-            self.tag_line_edit.setEnabled(True)
-            self.start_tag_line_edit.setEnabled(True)
-            self.end_tag_line_edit.setEnabled(True)
-            self.delete_push_button.setEnabled(True)
-
-    def on_text_edited(self, text):
-        """
-        Enable the ``save_push_button`` when any of the selected tag's properties
-        has been changed.
-        """
-        self.save_push_button.setEnabled(True)
+        self.delete_button.setEnabled(True)
 
     def on_new_clicked(self):
         """
-        Add a new tag to list only if it is not a duplicate.
+        Add a new tag to edit list and select it for editing.
         """
-        for html in FormattingTags.get_html_tags():
-            if self._strip(html[u'start tag']) == u'n':
-                critical_error_message_box(
-                    translate('OpenLP.FormattingTagForm', 'Update Error'),
-                    translate('OpenLP.FormattingTagForm', 'Tag "n" already defined.'))
-                return
-        # Add new tag to list
-        tag = {
-            u'desc': translate('OpenLP.FormattingTagForm', 'New Tag'),
-            u'start tag': u'{n}',
-            u'start html': translate('OpenLP.FormattingTagForm', '<HTML here>'),
-            u'end tag': u'{/n}',
-            u'end html': translate('OpenLP.FormattingTagForm', '</and here>'),
-            u'protected': False,
-            u'temporary': False
-        }
-        FormattingTags.add_html_tags([tag])
-        FormattingTags.save_html_tags()
-        self._reloadTable()
-        # Highlight new row
-        self.tag_table_widget.selectRow(self.tag_table_widget.rowCount() - 1)
-        self.on_row_selected()
+        new_row = self.tag_table_widget.rowCount()
+        self.tag_table_widget.insertRow(new_row)
+        self.tag_table_widget.setItem(new_row, 0,
+            QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', 'New Tag%s') % str(new_row)))
+        self.tag_table_widget.setItem(new_row, 1, QtGui.QTableWidgetItem('n%s' % str(new_row)))
+        self.tag_table_widget.setItem(new_row, 2,
+            QtGui.QTableWidgetItem(translate('OpenLP.FormattingTagForm', '<HTML here>')))
+        self.tag_table_widget.setItem(new_row, 3, QtGui.QTableWidgetItem(''))
+        self.tag_table_widget.resizeRowsToContents()
         self.tag_table_widget.scrollToBottom()
+        self.tag_table_widget.selectRow(new_row)
 
     def on_delete_clicked(self):
         """
-        Delete selected custom tag.
+        Delete selected custom row.
         """
-        if self.selected != -1:
-            FormattingTags.remove_html_tag(self.selected)
-            # As the first items are protected we should not have to take care
-            # of negative indexes causing tracebacks.
-            self.tag_table_widget.selectRow(self.selected - 1)
-            self.selected = -1
-            FormattingTags.save_html_tags()
-            self._reloadTable()
+        selected = self.tag_table_widget.currentRow()
+        if selected != -1:
+            self.is_deleting = True
+            self.tag_table_widget.removeRow(selected)
 
-    def on_saved_clicked(self):
+    def accept(self):
         """
         Update Custom Tag details if not duplicate and save the data.
         """
-        html_expands = FormattingTags.get_html_tags()
-        if self.selected != -1:
-            html = html_expands[self.selected]
-            tag = self.tag_line_edit.text()
-            for linenumber, html1 in enumerate(html_expands):
-                if self._strip(html1[u'start tag']) == tag and linenumber != self.selected:
-                    critical_error_message_box(
-                        translate('OpenLP.FormattingTagForm', 'Update Error'),
-                        translate('OpenLP.FormattingTagForm', 'Tag %s already defined.') % tag)
-                    return
-            html[u'desc'] = self.description_line_edit.text()
-            html[u'start html'] = self.start_tag_line_edit.text()
-            html[u'end html'] = self.end_tag_line_edit.text()
-            html[u'start tag'] = u'{%s}' % tag
-            html[u'end tag'] = u'{/%s}' % tag
-            # Keep temporary tags when the user changes one.
-            html[u'temporary'] = False
-            self.selected = -1
-        FormattingTags.save_html_tags()
-        self._reloadTable()
+        count = 0
+        self.services.pre_save()
+        while count < self.tag_table_widget.rowCount():
+            error = self.services.validate_for_save(self.tag_table_widget.item(count, 0).text(),
+                self.tag_table_widget.item(count, 1).text(), self.tag_table_widget.item(count, 2).text(),
+                self.tag_table_widget.item(count, 3).text())
+            if error:
+                QtGui.QMessageBox.warning(self,
+                    translate('OpenLP.FormattingTagForm', 'Validation Error'), error, QtGui.QMessageBox.Ok)
+                self.tag_table_widget.selectRow(count)
+                return
+            count += 1
+        self.services.save_tags()
+        QtGui.QDialog.accept(self)
 
     def _reloadTable(self):
         """
         Reset List for loading.
         """
+        self.reloading = True
+        self.tag_table_widget_read.clearContents()
+        self.tag_table_widget_read.setRowCount(0)
         self.tag_table_widget.clearContents()
         self.tag_table_widget.setRowCount(0)
-        self.new_push_button.setEnabled(True)
-        self.save_push_button.setEnabled(False)
-        self.delete_push_button.setEnabled(False)
+        self.new_button.setEnabled(True)
+        self.delete_button.setEnabled(False)
         for linenumber, html in enumerate(FormattingTags.get_html_tags()):
-            self.tag_table_widget.setRowCount(self.tag_table_widget.rowCount() + 1)
-            self.tag_table_widget.setItem(linenumber, 0, QtGui.QTableWidgetItem(html[u'desc']))
-            self.tag_table_widget.setItem(linenumber, 1, QtGui.QTableWidgetItem(self._strip(html[u'start tag'])))
-            self.tag_table_widget.setItem(linenumber, 2, QtGui.QTableWidgetItem(html[u'start html']))
-            self.tag_table_widget.setItem(linenumber, 3, QtGui.QTableWidgetItem(html[u'end html']))
-            # Permanent (persistent) tags do not have this key.
-            if u'temporary' not in html:
-                html[u'temporary'] = False
-            self.tag_table_widget.resizeRowsToContents()
-        self.description_line_edit.setText(u'')
-        self.tag_line_edit.setText(u'')
-        self.start_tag_line_edit.setText(u'')
-        self.end_tag_line_edit.setText(u'')
-        self.description_line_edit.setEnabled(False)
-        self.tag_line_edit.setEnabled(False)
-        self.start_tag_line_edit.setEnabled(False)
-        self.end_tag_line_edit.setEnabled(False)
+            if html['protected']:
+                line = self.tag_table_widget_read.rowCount()
+                self.tag_table_widget_read.setRowCount(line + 1)
+                self.tag_table_widget_read.setItem(line, 0, QtGui.QTableWidgetItem(html['desc']))
+                self.tag_table_widget_read.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html['start tag'])))
+                self.tag_table_widget_read.setItem(line, 2, QtGui.QTableWidgetItem(html['start html']))
+                self.tag_table_widget_read.setItem(line, 3, QtGui.QTableWidgetItem(html['end html']))
+                self.tag_table_widget_read.resizeRowsToContents()
+            else:
+                line = self.tag_table_widget.rowCount()
+                self.tag_table_widget.setRowCount(line + 1)
+                self.tag_table_widget.setItem(line, 0, QtGui.QTableWidgetItem(html['desc']))
+                self.tag_table_widget.setItem(line, 1, QtGui.QTableWidgetItem(self._strip(html['start tag'])))
+                self.tag_table_widget.setItem(line, 2, QtGui.QTableWidgetItem(html['start html']))
+                self.tag_table_widget.setItem(line, 3, QtGui.QTableWidgetItem(html['end html']))
+                self.tag_table_widget.resizeRowsToContents()
+                # Permanent (persistent) tags do not have this key
+                html['temporary'] = False
+        self.reloading = False
 
-    def _strip(self, tag):
+    def on_current_cell_changed(self, cur_row, cur_col, pre_row, pre_col):
         """
-        Remove tag wrappers for editing.
+        This function processes all user edits in the table. It is called on each cell change.
         """
-        tag = tag.replace(u'{', u'')
-        tag = tag.replace(u'}', u'')
-        return tag
+        if self.is_deleting:
+            self.is_deleting = False
+            return
+        if self.reloading:
+            return
+        # only process for editable rows
+        if self.tag_table_widget.item(pre_row, 0):
+            item = self.tag_table_widget.item(pre_row, pre_col)
+            text = item.text()
+            errors = None
+            if pre_col is EditColumn.Description:
+                if not text:
+                    errors = translate('OpenLP.FormattingTagForm', 'Description is missing')
+            elif pre_col is EditColumn.Tag:
+                if not text:
+                    errors = translate('OpenLP.FormattingTagForm', 'Tag is missing')
+            elif pre_col is EditColumn.StartHtml:
+                # HTML edited
+                item = self.tag_table_widget.item(pre_row, 3)
+                end_html = item.text()
+                errors, tag = self.services.start_tag_changed(text, end_html)
+                if tag:
+                    self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
+                self.tag_table_widget.resizeRowsToContents()
+            elif pre_col is EditColumn.EndHtml:
+                # HTML edited
+                item = self.tag_table_widget.item(pre_row, 2)
+                start_html = item.text()
+                errors, tag = self.services.end_tag_changed(start_html, text)
+                if tag:
+                    self.tag_table_widget.setItem(pre_row, 3, QtGui.QTableWidgetItem(tag))
+            if errors:
+                QtGui.QMessageBox.warning(self,
+                    translate('OpenLP.FormattingTagForm', 'Validation Error'), errors, QtGui.QMessageBox.Ok)
+            #self.tag_table_widget.selectRow(pre_row - 1)
+            self.tag_table_widget.resizeRowsToContents()
+

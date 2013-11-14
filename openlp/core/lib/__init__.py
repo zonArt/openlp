@@ -30,12 +30,14 @@
 The :mod:`lib` module contains most of the components and libraries that make
 OpenLP work.
 """
-from __future__ import division
+
 from distutils.version import LooseVersion
 import logging
 import os
 
 from PyQt4 import QtCore, QtGui, Qt
+
+from openlp.core.common import translate
 
 log = logging.getLogger(__name__)
 
@@ -72,16 +74,6 @@ class MediaType(object):
     Video = 2
 
 
-class SlideLimits(object):
-    """
-    Provides an enumeration for behaviour of OpenLP at the end limits of each service item when pressing the up/down
-    arrow keys
-    """
-    End = 1
-    Wrap = 2
-    Next = 3
-
-
 class ServiceItemAction(object):
     """
     Provides an enumeration for the required action moving between service items by left/right arrow keys
@@ -89,24 +81,6 @@ class ServiceItemAction(object):
     Previous = 1
     PreviousLastSlide = 2
     Next = 3
-
-
-def translate(context, text, comment=None, encoding=QtCore.QCoreApplication.CodecForTr, n=-1,
-              qt_translate=QtCore.QCoreApplication.translate):
-    """
-    A special shortcut method to wrap around the Qt4 translation functions. This abstracts the translation procedure so
-    that we can change it if at a later date if necessary, without having to redo the whole of OpenLP.
-
-    ``context``
-        The translation context, used to give each string a context or a namespace.
-
-    ``text``
-        The text to put into the translation tables for translation.
-
-    ``comment``
-        An identifying string for when the same text is used in different roles within the same context.
-    """
-    return qt_translate(context, text, comment, encoding, n)
 
 
 def get_text_file_string(text_file):
@@ -121,20 +95,19 @@ def get_text_file_string(text_file):
     if not os.path.isfile(text_file):
         return False
     file_handle = None
-    content_string = None
+    content = None
     try:
-        file_handle = open(text_file, u'r')
+        file_handle = open(text_file, 'r')
         if not file_handle.read(3) == '\xEF\xBB\xBF':
             # no BOM was found
             file_handle.seek(0)
         content = file_handle.read()
-        content_string = content.decode(u'utf-8')
     except (IOError, UnicodeError):
-        log.exception(u'Failed to open text file %s' % text_file)
+        log.exception('Failed to open text file %s' % text_file)
     finally:
         if file_handle:
             file_handle.close()
-    return content_string
+    return content
 
 
 def str_to_bool(string_value):
@@ -146,7 +119,7 @@ def str_to_bool(string_value):
     """
     if isinstance(string_value, bool):
         return string_value
-    return unicode(string_value).strip().lower() in (u'true', u'yes', u'y')
+    return str(string_value).strip().lower() in ('true', 'yes', 'y')
 
 
 def build_icon(icon):
@@ -161,8 +134,8 @@ def build_icon(icon):
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
         button_icon = icon
-    elif isinstance(icon, basestring):
-        if icon.startswith(u':/'):
+    elif isinstance(icon, str):
+        if icon.startswith(':/'):
             button_icon.addPixmap(QtGui.QPixmap(icon), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         else:
             button_icon.addPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(icon)), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -178,15 +151,15 @@ def image_to_byte(image):
     ``image``
         The image to converted.
     """
-    log.debug(u'image_to_byte - start')
+    log.debug('image_to_byte - start')
     byte_array = QtCore.QByteArray()
     # use buffer to store pixmap into byteArray
     buffie = QtCore.QBuffer(byte_array)
     buffie.open(QtCore.QIODevice.WriteOnly)
     image.save(buffie, "PNG")
-    log.debug(u'image_to_byte - end')
+    log.debug('image_to_byte - end')
     # convert to base64 encoding so does not get missed!
-    return byte_array.toBase64()
+    return bytes(byte_array.toBase64()).decode('utf-8')
 
 
 def create_thumb(image_path, thumb_path, return_icon=True, size=None):
@@ -218,9 +191,9 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     if not return_icon:
         return
     if os.path.exists(thumb_path):
-        return build_icon(unicode(thumb_path))
+        return build_icon(str(thumb_path))
     # Fallback for files with animation support.
-    return build_icon(unicode(image_path))
+    return build_icon(str(image_path))
 
 
 def validate_thumb(file_path, thumb_path):
@@ -241,7 +214,7 @@ def validate_thumb(file_path, thumb_path):
     return image_date <= thumb_date
 
 
-def resize_image(image_path, width, height, background=u'#000000'):
+def resize_image(image_path, width, height, background='#000000'):
     """
     Resize an image to fit on the current screen.
 
@@ -259,7 +232,7 @@ def resize_image(image_path, width, height, background=u'#000000'):
 
     DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
     """
-    log.debug(u'resize_image - start')
+    log.debug('resize_image - start')
     reader = QtGui.QImageReader(image_path)
     # The image's ratio.
     image_ratio = reader.size().width() / reader.size().height()
@@ -309,12 +282,12 @@ def clean_tags(text):
     """
     Remove Tags from text for display
     """
-    text = text.replace(u'<br>', u'\n')
-    text = text.replace(u'{br}', u'\n')
-    text = text.replace(u'&nbsp;', u' ')
+    text = text.replace('<br>', '\n')
+    text = text.replace('{br}', '\n')
+    text = text.replace('&nbsp;', ' ')
     for tag in FormattingTags.get_html_tags():
-        text = text.replace(tag[u'start tag'], u'')
-        text = text.replace(tag[u'end tag'], u'')
+        text = text.replace(tag['start tag'], '')
+        text = text.replace(tag['end tag'], '')
     return text
 
 
@@ -323,74 +296,53 @@ def expand_tags(text):
     Expand tags HTML for display
     """
     for tag in FormattingTags.get_html_tags():
-        text = text.replace(tag[u'start tag'], tag[u'start html'])
-        text = text.replace(tag[u'end tag'], tag[u'end html'])
+        text = text.replace(tag['start tag'], tag['start html'])
+        text = text.replace(tag['end tag'], tag['end html'])
     return text
 
 
-def check_directory_exists(directory, do_not_log=False):
-    """
-    Check a theme directory exists and if not create it
-
-    ``directory``
-        The directory to make sure exists
-
-    ``do_not_log``
-        To not log anything. This is need for the start up, when the log isn't ready.
-    """
-    if not do_not_log:
-        log.debug(u'check_directory_exists %s' % directory)
-    try:
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-    except IOError:
-        pass
-
-
-def create_separated_list(stringlist):
+def create_separated_list(string_list):
     """
     Returns a string that represents a join of a list of strings with a localized separator. This function corresponds
     to QLocale::createSeparatedList which was introduced in Qt 4.8 and implements the algorithm from
     http://www.unicode.org/reports/tr35/#ListPatterns
 
-    ``stringlist``
+    ``string_list``
         List of unicode strings
     """
-    if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion(u'4.9') and \
-            LooseVersion(Qt.qVersion()) >= LooseVersion(u'4.8'):
-        return QtCore.QLocale().createSeparatedList(stringlist)
-    if not stringlist:
-        return u''
-    elif len(stringlist) == 1:
-        return stringlist[0]
-    elif len(stringlist) == 2:
+    if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion('4.9') and \
+            LooseVersion(Qt.qVersion()) >= LooseVersion('4.8'):
+        return QtCore.QLocale().createSeparatedList(string_list)
+    if not string_list:
+        return ''
+    elif len(string_list) == 1:
+        return string_list[0]
+    elif len(string_list) == 2:
         return translate('OpenLP.core.lib', '%s and %s',
-            'Locale list separator: 2 items') % (stringlist[0], stringlist[1])
+            'Locale list separator: 2 items') % (string_list[0], string_list[1])
     else:
         merged = translate('OpenLP.core.lib', '%s, and %s',
-            u'Locale list separator: end') % (stringlist[-2], stringlist[-1])
-        for index in reversed(range(1, len(stringlist) - 2)):
+            'Locale list separator: end') % (string_list[-2], string_list[-1])
+        for index in reversed(list(range(1, len(string_list) - 2))):
             merged = translate('OpenLP.core.lib', '%s, %s',
-                u'Locale list separator: middle') % (stringlist[index], merged)
-        return translate('OpenLP.core.lib', '%s, %s', u'Locale list separator: start') % (stringlist[0], merged)
+                'Locale list separator: middle') % (string_list[index], merged)
+        return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (string_list[0], merged)
 
 
-from registry import Registry
-from uistrings import UiStrings
-from screen import ScreenList
-from settings import Settings
-from listwidgetwithdnd import ListWidgetWithDnD
-from treewidgetwithdnd import TreeWidgetWithDnD
-from formattingtags import FormattingTags
-from spelltextedit import SpellTextEdit
-from plugin import PluginStatus, StringContent, Plugin
-from pluginmanager import PluginManager
-from settingstab import SettingsTab
-from serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
-from htmlbuilder import build_html, build_lyrics_format_css, build_lyrics_outline_css
-from toolbar import OpenLPToolbar
-from dockwidget import OpenLPDockWidget
-from imagemanager import ImageManager
-from renderer import Renderer
-from mediamanageritem import MediaManagerItem
+from .registry import Registry
+from .screen import ScreenList
+from .listwidgetwithdnd import ListWidgetWithDnD
+from .treewidgetwithdnd import TreeWidgetWithDnD
+from .formattingtags import FormattingTags
+from .spelltextedit import SpellTextEdit
+from .plugin import PluginStatus, StringContent, Plugin
+from .pluginmanager import PluginManager
+from .settingstab import SettingsTab
+from .serviceitem import ServiceItem, ServiceItemType, ItemCapabilities
+from .htmlbuilder import build_html, build_lyrics_format_css, build_lyrics_outline_css
+from .toolbar import OpenLPToolbar
+from .dockwidget import OpenLPDockWidget
+from .imagemanager import ImageManager
+from .renderer import Renderer
+from .mediamanageritem import MediaManagerItem
 

@@ -35,6 +35,7 @@ import re
 from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
 
+
 class SongProImport(SongImport):
     """
     The :class:`SongProImport` class provides the ability to import song files
@@ -80,17 +81,17 @@ class SongProImport(SongImport):
         self.encoding = None
         with open(self.import_source, 'r') as songs_file:
             self.import_wizard.progress_bar.setMaximum(0)
-            tag = u''
-            text = u''
+            tag = ''
+            text = ''
             for file_line in songs_file:
                 if self.stop_import_flag:
                     break
-                file_line = unicode(file_line, u'cp1252')
+                file_line = str(file_line, 'cp1252')
                 file_text = file_line.rstrip()
-                if file_text and file_text[0] == u'#':
+                if file_text and file_text[0] == '#':
                     self.processSection(tag, text.rstrip())
                     tag = file_text[1:]
-                    text = u''
+                    text = ''
                 else:
                     text += file_line
 
@@ -98,15 +99,15 @@ class SongProImport(SongImport):
         """
         Process a section of the song, i.e. title, verse etc.
         """
-        if tag == u'T':
+        if tag == 'T':
             self.setDefaults()
             if text:
                 self.title = text
             return
-        elif tag == u'E':
+        elif tag == 'E':
             self.finish()
             return
-        if u'rtf1' in text:
+        if 'rtf1' in text:
             result = strip_rtf(text, self.encoding)
             if result is None:
                 return
@@ -114,32 +115,32 @@ class SongProImport(SongImport):
             text = text.rstrip()
         if not text:
             return
-        if tag == u'A':
+        if tag == 'A':
             self.parse_author(text)
-        elif tag in [u'B', u'C']:
+        elif tag in ['B', 'C']:
             self.addVerse(text, tag)
-        elif tag == u'D':
-            self.addVerse(text, u'E')
-        elif tag == u'G':
+        elif tag == 'D':
+            self.addVerse(text, 'E')
+        elif tag == 'G':
             self.topics.append(text)
-        elif tag == u'M':
+        elif tag == 'M':
             matches = re.findall(r'\d+', text)
             if matches:
                 self.songNumber = matches[-1]
                 self.songBookName = text[:text.rfind(self.songNumber)]
-        elif tag == u'N':
+        elif tag == 'N':
             self.comments = text
-        elif tag == u'O':
+        elif tag == 'O':
             for char in text:
-                if char == u'C':
-                    self.verseOrderList.append(u'C1')
-                elif char == u'B':
-                    self.verseOrderList.append(u'B1')
-                elif char == u'D':
-                    self.verseOrderList.append(u'E1')
-                elif u'1' <= char <= u'7':
-                    self.verseOrderList.append(u'V' + char)
-        elif tag == u'R':
+                if char == 'C':
+                    self.verseOrderList.append('C1')
+                elif char == 'B':
+                    self.verseOrderList.append('B1')
+                elif char == 'D':
+                    self.verseOrderList.append('E1')
+                elif '1' <= char <= '7':
+                    self.verseOrderList.append('V' + char)
+        elif tag == 'R':
             self.addCopyright(text)
-        elif u'1' <= tag <= u'7':
-            self.addVerse(text, u'V' + tag[1:])
+        elif '1' <= tag <= '7':
+            self.addVerse(text, 'V' + tag[1:])

@@ -60,7 +60,7 @@ import logging
 import chardet
 import csv
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 
@@ -71,7 +71,7 @@ class CSVBible(BibleDB):
     """
     This class provides a specialisation for importing of CSV Bibles.
     """
-    log.info(u'CSVBible loaded')
+    log.info('CSVBible loaded')
 
     def __init__(self, parent, **kwargs):
         """
@@ -80,8 +80,8 @@ class CSVBible(BibleDB):
         """
         log.info(self.__class__.__name__)
         BibleDB.__init__(self, parent, **kwargs)
-        self.booksfile = kwargs[u'booksfile']
-        self.versesfile = kwargs[u'versefile']
+        self.booksfile = kwargs['booksfile']
+        self.versesfile = kwargs['versefile']
 
     def do_import(self, bible_name=None):
         """
@@ -93,7 +93,7 @@ class CSVBible(BibleDB):
         success = True
         language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception(u'Importing books from "%s" failed' % self.filename)
+            log.exception('Importing books from "%s" failed' % self.filename)
             return False
         books_file = None
         book_list = {}
@@ -109,17 +109,17 @@ class CSVBible(BibleDB):
                 if self.stop_import_flag:
                     break
                 self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing books... %s') %
-                    unicode(line[2], details['encoding']))
-                book_ref_id = self.get_book_ref_id_by_name(unicode(line[2], details['encoding']), 67, language_id)
+                    str(line[2], details['encoding']))
+                book_ref_id = self.get_book_ref_id_by_name(str(line[2], details['encoding']), 67, language_id)
                 if not book_ref_id:
-                    log.exception(u'Importing books from "%s" failed' % self.booksfile)
+                    log.exception('Importing books from "%s" failed' % self.booksfile)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
-                self.create_book(unicode(line[2], details['encoding']), book_ref_id, book_details[u'testament_id'])
-                book_list[int(line[0])] = unicode(line[2], details['encoding'])
+                self.create_book(str(line[2], details['encoding']), book_ref_id, book_details['testament_id'])
+                book_list[int(line[0])] = str(line[2], details['encoding'])
             self.application.process_events()
         except (IOError, IndexError):
-            log.exception(u'Loading books from file failed')
+            log.exception('Loading books from file failed')
             success = False
         finally:
             if books_file:
@@ -143,7 +143,7 @@ class CSVBible(BibleDB):
                 try:
                     line_book = book_list[int(line[0])]
                 except ValueError:
-                    line_book = unicode(line[0], details['encoding'])
+                    line_book = str(line[0], details['encoding'])
                 if book_ptr != line_book:
                     book = self.get_book(line_book)
                     book_ptr = book.name
@@ -151,15 +151,15 @@ class CSVBible(BibleDB):
                         'Importing verses from %s... Importing verses from <book name>...') % book.name)
                     self.session.commit()
                 try:
-                    verse_text = unicode(line[3], details['encoding'])
+                    verse_text = str(line[3], details['encoding'])
                 except UnicodeError:
-                    verse_text = unicode(line[3], u'cp1252')
+                    verse_text = str(line[3], 'cp1252')
                 self.create_verse(book.id, line[1], line[2], verse_text)
             self.wizard.increment_progress_bar(translate('BiblesPlugin.CSVBible', 'Importing verses... done.'))
             self.application.process_events()
             self.session.commit()
         except IOError:
-            log.exception(u'Loading verses from file failed')
+            log.exception('Loading verses from file failed')
             success = False
         finally:
             if verse_file:
@@ -178,7 +178,7 @@ def get_file_encoding(filename):
         detect_file = open(filename, 'r')
         details = chardet.detect(detect_file.read(1024))
     except IOError:
-        log.exception(u'Error detecting file encoding')
+        log.exception('Error detecting file encoding')
     finally:
         if detect_file:
             detect_file.close()

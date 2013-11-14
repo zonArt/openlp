@@ -29,31 +29,31 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box
 
 
 class Ui_AddGroupDialog(object):
     def setupUi(self, add_group_dialog):
-        add_group_dialog.setObjectName(u'add_group_dialog')
+        add_group_dialog.setObjectName('add_group_dialog')
         add_group_dialog.resize(300, 10)
         self.dialog_layout = QtGui.QVBoxLayout(add_group_dialog)
-        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.dialog_layout.setObjectName('dialog_layout')
         self.name_layout = QtGui.QFormLayout()
-        self.name_layout.setObjectName(u'name_layout')
+        self.name_layout.setObjectName('name_layout')
         self.parent_group_label = QtGui.QLabel(add_group_dialog)
-        self.parent_group_label.setObjectName(u'parent_group_label')
+        self.parent_group_label.setObjectName('parent_group_label')
         self.parent_group_combobox = QtGui.QComboBox(add_group_dialog)
-        self.parent_group_combobox.setObjectName(u'parent_group_combobox')
+        self.parent_group_combobox.setObjectName('parent_group_combobox')
         self.name_layout.addRow(self.parent_group_label, self.parent_group_combobox)
         self.name_label = QtGui.QLabel(add_group_dialog)
-        self.name_label.setObjectName(u'name_label')
+        self.name_label.setObjectName('name_label')
         self.name_edit = QtGui.QLineEdit(add_group_dialog)
-        self.name_edit.setObjectName(u'name_edit')
+        self.name_edit.setObjectName('name_edit')
         self.name_label.setBuddy(self.name_edit)
         self.name_layout.addRow(self.name_label, self.name_edit)
         self.dialog_layout.addLayout(self.name_layout)
-        self.button_box = create_button_box(add_group_dialog, u'button_box', [u'cancel', u'save'])
+        self.button_box = create_button_box(add_group_dialog, 'button_box', ['cancel', 'save'])
         self.dialog_layout.addWidget(self.button_box)
         self.retranslateUi(add_group_dialog)
         add_group_dialog.setMaximumHeight(add_group_dialog.sizeHint().height())

@@ -34,7 +34,7 @@ import logging
 import fnmatch
 import os
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
 log = logging.getLogger(__name__)
@@ -81,7 +81,7 @@ class PowerSongImport(SongImport):
         """
         if os.path.isdir(import_source):
             for file in os.listdir(import_source):
-                if fnmatch.fnmatch(file, u'*.song'):
+                if fnmatch.fnmatch(file, '*.song'):
                     return True
         return False
 
@@ -89,17 +89,17 @@ class PowerSongImport(SongImport):
         """
         Receive either a list of files or a folder (unicode) to import.
         """
-        from importer import SongFormat
-        PS_string = SongFormat.get(SongFormat.PowerSong, u'name')
-        if isinstance(self.import_source, unicode):
+        from .importer import SongFormat
+        PS_string = SongFormat.get(SongFormat.PowerSong, 'name')
+        if isinstance(self.import_source, str):
             if os.path.isdir(self.import_source):
                 dir = self.import_source
                 self.import_source = []
                 for file in os.listdir(dir):
-                    if fnmatch.fnmatch(file, u'*.song'):
+                    if fnmatch.fnmatch(file, '*.song'):
                         self.import_source.append(os.path.join(dir, file))
             else:
-                self.import_source = u''
+                self.import_source = ''
         if not self.import_source or not isinstance(self.import_source, list):
             self.logError(translate('SongsPlugin.PowerSongImport', 'No songs to import.'),
                 translate('SongsPlugin.PowerSongImport', 'No %s files found.') % PS_string)
@@ -119,36 +119,36 @@ class PowerSongImport(SongImport):
                         field = self._readString(song_data)
                     except ValueError:
                         parse_error = True
-                        self.logError(os.path.basename(file), unicode(
+                        self.logError(os.path.basename(file), str(
                             translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Unexpected byte value.')) %
                                 PS_string)
                         break
                     else:
-                        if label == u'TITLE':
-                            self.title = field.replace(u'\n', u' ')
-                        elif label == u'AUTHOR':
+                        if label == 'TITLE':
+                            self.title = field.replace('\n', ' ')
+                        elif label == 'AUTHOR':
                             self.parse_author(field)
-                        elif label == u'COPYRIGHTLINE':
+                        elif label == 'COPYRIGHTLINE':
                             found_copyright = True
                             self._parseCopyrightCCLI(field)
-                        elif label == u'PART':
+                        elif label == 'PART':
                             self.addVerse(field)
             if parse_error:
                 continue
             # Check that file had TITLE field
             if not self.title:
-                self.logError(os.path.basename(file), unicode(
+                self.logError(os.path.basename(file), str(
                     translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "TITLE" header.')) % PS_string)
                 continue
             # Check that file had COPYRIGHTLINE label
             if not found_copyright:
-                self.logError(self.title, unicode(
+                self.logError(self.title, str(
                     translate('SongsPlugin.PowerSongImport', 'Invalid %s file. Missing "COPYRIGHTLINE" header.')) %
                         PS_string)
                 continue
             # Check that file had at least one verse
             if not self.verses:
-                self.logError(self.title, unicode(
+                self.logError(self.title, str(
                     translate('SongsPlugin.PowerSongImport', 'Verses not found. Missing "PART" header.')))
                 continue
             if not self.finish():
@@ -159,7 +159,7 @@ class PowerSongImport(SongImport):
         Reads in next variable-length string.
         """
         string_len = self._read7BitEncodedInteger(file_object)
-        return unicode(file_object.read(string_len), u'utf-8', u'ignore')
+        return str(file_object.read(string_len), 'utf-8', 'ignore')
 
     def _read7BitEncodedInteger(self, file_object):
         """
@@ -206,13 +206,13 @@ class PowerSongImport(SongImport):
         """
         Look for CCLI song number, and get copyright
         """
-        copyright, sep, ccli_no = field.rpartition(u'CCLI')
+        copyright, sep, ccli_no = field.rpartition('CCLI')
         if not sep:
             copyright = ccli_no
-            ccli_no = u''
+            ccli_no = ''
         if copyright:
-            self.addCopyright(copyright.rstrip(u'\n').replace(u'\n', u' '))
+            self.addCopyright(copyright.rstrip('\n').replace('\n', ' '))
         if ccli_no:
-            ccli_no = ccli_no.strip(u' :')
+            ccli_no = ccli_no.strip(' :')
             if ccli_no.isdigit():
                 self.ccliNumber = ccli_no

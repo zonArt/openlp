@@ -35,7 +35,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import translate
+from openlp.core.lib import Registry
 
 
 log = logging.getLogger(__name__)
@@ -45,16 +46,16 @@ class AlertsManager(QtCore.QObject):
     """
     AlertsManager manages the settings of Alerts.
     """
-    log.info(u'Alert Manager loaded')
+    log.info('Alert Manager loaded')
 
     def __init__(self, parent):
-        QtCore.QObject.__init__(self, parent)
-        Registry().register(u'alerts_manager', self)
+        super(AlertsManager, self).__init__(parent)
+        Registry().register('alerts_manager', self)
         self.timer_id = 0
         self.alert_list = []
-        Registry().register_function(u'live_display_active', self.generate_alert)
-        Registry().register_function(u'alerts_text', self.alert_text)
-        QtCore.QObject.connect(self, QtCore.SIGNAL(u'alerts_text'), self.alert_text)
+        Registry().register_function('live_display_active', self.generate_alert)
+        Registry().register_function('alerts_text', self.alert_text)
+        QtCore.QObject.connect(self, QtCore.SIGNAL('alerts_text'), self.alert_text)
 
     def alert_text(self, message):
         """
@@ -63,28 +64,28 @@ class AlertsManager(QtCore.QObject):
         if message:
             self.display_alert(message[0])
 
-    def display_alert(self, text=u''):
+    def display_alert(self, text=''):
         """
         Called from the Alert Tab to display an alert.
 
         ``text``
             display text
         """
-        log.debug(u'display alert called %s' % text)
+        log.debug('display alert called %s' % text)
         if text:
             self.alert_list.append(text)
             if self.timer_id != 0:
                 self.main_window.show_status_message(
                     translate('AlertsPlugin.AlertsManager', 'Alert message created and displayed.'))
                 return
-            self.main_window.show_status_message(u'')
+            self.main_window.show_status_message('')
             self.generate_alert()
 
     def generate_alert(self):
         """
         Format and request the Alert and start the timer.
         """
-        log.debug(u'Generate Alert called')
+        log.debug('Generate Alert called')
         if not self.alert_list:
             return
         text = self.alert_list.pop(0)
@@ -101,10 +102,10 @@ class AlertsManager(QtCore.QObject):
         ``event``
             the QT event that has been triggered.
         """
-        log.debug(u'timer event')
+        log.debug('timer event')
         if event.timerId() == self.timer_id:
             alertTab = self.parent().settings_tab
-            self.live_controller.display.alert(u'', alertTab.location)
+            self.live_controller.display.alert('', alertTab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generate_alert()
@@ -113,8 +114,8 @@ class AlertsManager(QtCore.QObject):
         """
         Adds the live controller to the class dynamically
         """
-        if not hasattr(self, u'_live_controller'):
-            self._live_controller = Registry().get(u'live_controller')
+        if not hasattr(self, '_live_controller'):
+            self._live_controller = Registry().get('live_controller')
         return self._live_controller
 
     live_controller = property(_get_live_controller)
@@ -123,8 +124,8 @@ class AlertsManager(QtCore.QObject):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)

@@ -32,7 +32,7 @@ The About dialog.
 
 from PyQt4 import QtCore, QtGui
 
-from aboutdialog import Ui_AboutDialog
+from .aboutdialog import Ui_AboutDialog
 from openlp.core.lib import translate
 from openlp.core.utils import get_application_version
 
@@ -46,16 +46,16 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         """
         Do some initialisation stuff
         """
-        QtGui.QDialog.__init__(self, parent)
+        super(AboutForm, self).__init__(parent)
         application_version = get_application_version()
         self.setupUi(self)
         about_text = self.about_text_edit.toPlainText()
-        about_text = about_text.replace(u'<version>', application_version[u'version'])
-        if application_version[u'build']:
-            build_text = translate('OpenLP.AboutForm', ' build %s') % application_version[u'build']
+        about_text = about_text.replace('<version>', application_version['version'])
+        if application_version['build']:
+            build_text = translate('OpenLP.AboutForm', ' build %s') % application_version['build']
         else:
-            build_text = u''
-        about_text = about_text.replace(u'<revision>', build_text)
+            build_text = ''
+        about_text = about_text.replace('<revision>', build_text)
         self.about_text_edit.setPlainText(about_text)
         self.volunteer_button.clicked.connect(self.on_volunteer_button_clicked)
 
@@ -64,4 +64,4 @@ class AboutForm(QtGui.QDialog, Ui_AboutDialog):
         Launch a web browser and go to the contribute page on the site.
         """
         import webbrowser
-        webbrowser.open_new(u'http://openlp.org/en/contribute')
+        webbrowser.open_new('http://openlp.org/en/contribute')

@@ -37,53 +37,38 @@ __version__ = 1
 log = logging.getLogger(__name__)
 
 
-def upgrade_setup(metadata):
-    """
-    Set up the latest revision all tables, with reflection, needed for the
-    upgrade process. If you want to drop a table, you need to remove it from
-    here, and add it to your upgrade function.
-    """
-    # Don't define the "metadata" table, as the upgrade mechanism already
-    # defines it.
-    tables = {
-        u'book': Table(u'book', metadata, autoload=True),
-        u'verse': Table(u'verse', metadata, autoload=True)
-    }
-    return tables
-
-
-def upgrade_1(session, metadata, tables):
+def upgrade_1(session, metadata):
     """
     Version 1 upgrade.
 
     This upgrade renames a number of keys to a single naming convention.
     """
-    metadata_table = metadata.tables[u'metadata']
+    metadata_table = Table('metadata', metadata, autoload=True)
     # Copy "Version" to "name" ("version" used by upgrade system)
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
     session.execute(insert(metadata_table).values(
-        key=u'name',
+        key='name',
         value=select(
             [metadata_table.c.value],
-            metadata_table.c.key == u'Version'
+            metadata_table.c.key == 'Version'
         ).as_scalar()
     ))
     # Copy "Copyright" to "copyright"
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
     session.execute(insert(metadata_table).values(
-        key=u'copyright',
+        key='copyright',
         value=select(
             [metadata_table.c.value],
-            metadata_table.c.key == u'Copyright'
+            metadata_table.c.key == 'Copyright'
         ).as_scalar()
     ))
     # Copy "Permissions" to "permissions"
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)
     session.execute(insert(metadata_table).values(
-        key=u'permissions',
+        key='permissions',
         value=select(
             [metadata_table.c.value],
-            metadata_table.c.key == u'Permissions'
+            metadata_table.c.key == 'Permissions'
         ).as_scalar()
     ))
     # Copy "Bookname language" to "book_name_language"
@@ -91,15 +76,15 @@ def upgrade_1(session, metadata, tables):
     value_count = session.execute(
         select(
             [func.count(metadata_table.c.value)],
-            metadata_table.c.key == u'Bookname language'
+            metadata_table.c.key == 'Bookname language'
         )
     ).scalar()
     if value_count > 0:
         session.execute(insert(metadata_table).values(
-            key=u'book_name_language',
+            key='book_name_language',
             value=select(
                 [metadata_table.c.value],
-                metadata_table.c.key == u'Bookname language'
+                metadata_table.c.key == 'Bookname language'
             ).as_scalar()
         ))
     # Copy "download source" to "download_source"
@@ -107,16 +92,16 @@ def upgrade_1(session, metadata, tables):
     value_count = session.execute(
         select(
             [func.count(metadata_table.c.value)],
-            metadata_table.c.key == u'download source'
+            metadata_table.c.key == 'download source'
         )
     ).scalar()
-    log.debug(u'download source: %s', value_count)
+    log.debug('download source: %s', value_count)
     if value_count > 0:
         session.execute(insert(metadata_table).values(
-            key=u'download_source',
+            key='download_source',
             value=select(
                 [metadata_table.c.value],
-                metadata_table.c.key == u'download source'
+                metadata_table.c.key == 'download source'
             ).as_scalar()
         ))
     # Copy "download name" to "download_name"
@@ -124,16 +109,16 @@ def upgrade_1(session, metadata, tables):
     value_count = session.execute(
         select(
             [func.count(metadata_table.c.value)],
-            metadata_table.c.key == u'download name'
+            metadata_table.c.key == 'download name'
         )
     ).scalar()
-    log.debug(u'download name: %s', value_count)
+    log.debug('download name: %s', value_count)
     if value_count > 0:
         session.execute(insert(metadata_table).values(
-            key=u'download_name',
+            key='download_name',
             value=select(
                 [metadata_table.c.value],
-                metadata_table.c.key == u'download name'
+                metadata_table.c.key == 'download name'
             ).as_scalar()
         ))
     # Copy "proxy server" to "proxy_server"
@@ -141,16 +126,16 @@ def upgrade_1(session, metadata, tables):
     value_count = session.execute(
         select(
             [func.count(metadata_table.c.value)],
-            metadata_table.c.key == u'proxy server'
+            metadata_table.c.key == 'proxy server'
         )
     ).scalar()
-    log.debug(u'proxy server: %s', value_count)
+    log.debug('proxy server: %s', value_count)
     if value_count > 0:
         session.execute(insert(metadata_table).values(
-            key=u'proxy_server',
+            key='proxy_server',
             value=select(
                 [metadata_table.c.value],
-                metadata_table.c.key == u'proxy server'
+                metadata_table.c.key == 'proxy server'
             ).as_scalar()
         ))
     # Copy "proxy username" to "proxy_username"
@@ -158,16 +143,16 @@ def upgrade_1(session, metadata, tables):
     value_count = session.execute(
         select(
             [func.count(metadata_table.c.value)],
-            metadata_table.c.key == u'proxy username'
+            metadata_table.c.key == 'proxy username'
         )
     ).scalar()
-    log.debug(u'proxy username: %s', value_count)
+    log.debug('proxy username: %s', value_count)
     if value_count > 0:
         session.execute(insert(metadata_table).values(
-            key=u'proxy_username',
+            key='proxy_username',
             value=select(
                 [metadata_table.c.value],
-                metadata_table.c.key == u'proxy username'
+                metadata_table.c.key == 'proxy username'
             ).as_scalar()
         ))
     # Copy "proxy password" to "proxy_password"
@@ -175,16 +160,16 @@ def upgrade_1(session, metadata, tables):
     value_count = session.execute(
         select(
             [func.count(metadata_table.c.value)],
-            metadata_table.c.key == u'proxy password'
+            metadata_table.c.key == 'proxy password'
         )
     ).scalar()
-    log.debug(u'proxy password: %s', value_count)
+    log.debug('proxy password: %s', value_count)
     if value_count > 0:
         session.execute(insert(metadata_table).values(
-            key=u'proxy_password',
+            key='proxy_password',
             value=select(
                 [metadata_table.c.value],
-                metadata_table.c.key == u'proxy password'
+                metadata_table.c.key == 'proxy password'
             ).as_scalar()
         ))
     # TODO: Clean up in a subsequent release of OpenLP (like 2.0 final)

@@ -29,29 +29,29 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box
 
 class Ui_LanguageDialog(object):
     def setupUi(self, language_dialog):
-        language_dialog.setObjectName(u'language_dialog')
+        language_dialog.setObjectName('language_dialog')
         language_dialog.resize(400, 165)
         self.language_layout = QtGui.QVBoxLayout(language_dialog)
         self.language_layout.setSpacing(8)
         self.language_layout.setMargin(8)
-        self.language_layout.setObjectName(u'language_layout')
+        self.language_layout.setObjectName('language_layout')
         self.bible_label = QtGui.QLabel(language_dialog)
-        self.bible_label.setObjectName(u'bible_label')
+        self.bible_label.setObjectName('bible_label')
         self.language_layout.addWidget(self.bible_label)
         self.info_label = QtGui.QLabel(language_dialog)
         self.info_label.setWordWrap(True)
-        self.info_label.setObjectName(u'info_label')
+        self.info_label.setObjectName('info_label')
         self.language_layout.addWidget(self.info_label)
         self.language_h_box_layout = QtGui.QHBoxLayout()
         self.language_h_box_layout.setSpacing(8)
-        self.language_h_box_layout.setObjectName(u'language_h_box_layout')
+        self.language_h_box_layout.setObjectName('language_h_box_layout')
         self.language_label = QtGui.QLabel(language_dialog)
-        self.language_label.setObjectName(u'language_label')
+        self.language_label.setObjectName('language_label')
         self.language_h_box_layout.addWidget(self.language_label)
         self.language_combo_box = QtGui.QComboBox(language_dialog)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Fixed)
@@ -59,10 +59,10 @@ class Ui_LanguageDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.language_combo_box.sizePolicy().hasHeightForWidth())
         self.language_combo_box.setSizePolicy(sizePolicy)
-        self.language_combo_box.setObjectName(u'language_combo_box')
+        self.language_combo_box.setObjectName('language_combo_box')
         self.language_h_box_layout.addWidget(self.language_combo_box)
         self.language_layout.addLayout(self.language_h_box_layout)
-        self.button_box = create_button_box(language_dialog, u'button_box', [u'cancel', u'ok'])
+        self.button_box = create_button_box(language_dialog, 'button_box', ['cancel', 'ok'])
         self.language_layout.addWidget(self.button_box)
 
         self.retranslateUi(language_dialog)

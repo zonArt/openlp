@@ -33,8 +33,8 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, Settings, check_directory_exists, create_thumb, validate_thumb
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation, Settings, check_directory_exists
+from openlp.core.lib import Registry, create_thumb, validate_thumb
 
 log = logging.getLogger(__name__)
 
@@ -119,7 +119,7 @@ class PresentationDocument(object):
             shutil.rmtree(self.get_thumbnail_folder())
             shutil.rmtree(self.get_temp_folder())
         except OSError:
-            log.exception(u'Failed to delete presentation controller files')
+            log.exception('Failed to delete presentation controller files')
 
     def get_file_name(self):
         """
@@ -248,7 +248,7 @@ class PresentationDocument(object):
             The slide an image is required for, starting at 1
         """
         path = os.path.join(self.get_thumbnail_folder(),
-            self.controller.thumbnail_prefix + unicode(slide_no) + u'.png')
+            self.controller.thumbnail_prefix + str(slide_no) + '.png')
         if os.path.isfile(path) or not check_exists:
             return path
         else:
@@ -266,10 +266,10 @@ class PresentationDocument(object):
                 return
             self.slidenumber = current
         if is_live:
-            prefix = u'live'
+            prefix = 'live'
         else:
-            prefix = u'preview'
-        Registry().execute(u'slidecontroller_%s_change' % prefix, self.slidenumber - 1)
+            prefix = 'preview'
+        Registry().execute('slidecontroller_%s_change' % prefix, self.slidenumber - 1)
 
     def get_slide_text(self, slide_no):
         """
@@ -339,9 +339,9 @@ class PresentationController(object):
         Deletes presentation specific files, e.g. thumbnails.
 
     """
-    log.info(u'PresentationController loaded')
+    log.info('PresentationController loaded')
 
-    def __init__(self, plugin=None, name=u'PresentationController',
+    def __init__(self, plugin=None, name='PresentationController',
         document_class=PresentationDocument):
         """
         This is the constructor for the presentationcontroller object. This provides an easy way for descendent plugins
@@ -367,8 +367,8 @@ class PresentationController(object):
         self.settings_section = self.plugin.settings_section
         self.available = None
         self.temp_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), name)
-        self.thumbnail_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), u'thumbnails')
-        self.thumbnail_prefix = u'slide'
+        self.thumbnail_folder = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
+        self.thumbnail_prefix = 'slide'
         check_directory_exists(self.thumbnail_folder)
         check_directory_exists(self.temp_folder)
 
@@ -376,7 +376,7 @@ class PresentationController(object):
         """
         Return whether the controller is currently enabled
         """
-        if Settings().value(self.settings_section + u'/' + self.name) == QtCore.Qt.Checked:
+        if Settings().value(self.settings_section + '/' + self.name) == QtCore.Qt.Checked:
             return self.is_available()
         else:
             return False
@@ -402,7 +402,7 @@ class PresentationController(object):
         """
         Called at system exit to clean up any running presentations and close the application.
         """
-        log.debug(u'Kill')
+        log.debug('Kill')
         self.close_presentation()
 
     def add_document(self, name):
@@ -417,7 +417,7 @@ class PresentationController(object):
         """
         Called to remove an open document from the collection.
         """
-        log.debug(u'remove_doc Presentation')
+        log.debug('remove_doc Presentation')
         if doc is None:
             return
         if doc in self.docs:
@@ -430,8 +430,8 @@ class PresentationController(object):
         """
         Adds the plugin manager to the class dynamically
         """
-        if not hasattr(self, u'_plugin_manager'):
-            self._plugin_manager = Registry().get(u'plugin_manager')
+        if not hasattr(self, '_plugin_manager'):
+            self._plugin_manager = Registry().get('plugin_manager')
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)

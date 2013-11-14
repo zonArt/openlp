@@ -34,7 +34,7 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings
+from openlp.core.common import Settings
 
 
 log = logging.getLogger(__name__)
@@ -72,13 +72,13 @@ class CategoryActionList(object):
         for weight, action in self.actions:
             if action.text() == key:
                 return action
-        raise KeyError(u'Action "%s" does not exist.' % key)
+        raise KeyError('Action "%s" does not exist.' % key)
 
     def __contains__(self, item):
         """
         Implement the __contains__() method to make this class a dictionary type
         """
-        return self.has_key(item)
+        return item in self
 
     def __len__(self):
         """
@@ -102,12 +102,6 @@ class CategoryActionList(object):
         else:
             self.index += 1
             return self.actions[self.index - 1][1]
-
-    def next(self):
-        """
-        Python 2 "next" method.
-        """
-        return self.__next__()
 
     def has_key(self, key):
         """
@@ -165,13 +159,7 @@ class CategoryList(object):
         for category in self.categories:
             if category.name == key:
                 return category
-        raise KeyError(u'Category "%s" does not exist.' % key)
-
-    def __contains__(self, item):
-        """
-        Implement the __contains__() method to make this class like a dictionary
-        """
-        return self.has_key(item)
+        raise KeyError('Category "%s" does not exist.' % key)
 
     def __len__(self):
         """
@@ -195,12 +183,6 @@ class CategoryList(object):
         else:
             self.index += 1
             return self.categories[self.index - 1]
-
-    def next(self):
-        """
-        Python 2 "next" method for iterator.
-        """
-        return self.__next__()
 
     def has_key(self, key):
         """
@@ -291,7 +273,7 @@ class ActionList(object):
         if category not in self.categories:
             self.categories.append(category)
         settings = Settings()
-        settings.beginGroup(u'shortcuts')
+        settings.beginGroup('shortcuts')
         # Get the default shortcut from the config.
         action.defaultShortcuts = settings.get_default_value(action.objectName())
         if weight is None:
@@ -306,7 +288,7 @@ class ActionList(object):
             return
         # We have to do this to ensure that the loaded shortcut list e. g. STRG+O (German) is converted to CTRL+O,
         # which is only done when we convert the strings in this way (QKeySequencet -> uncode).
-        shortcuts = map(QtGui.QKeySequence.toString, map(QtGui.QKeySequence, shortcuts))
+        shortcuts = list(map(QtGui.QKeySequence.toString, list(map(QtGui.QKeySequence, shortcuts))))
         # Check the alternate shortcut first, to avoid problems when the alternate shortcut becomes the primary shortcut
         #  after removing the (initial) primary shortcut due to conflicts.
         if len(shortcuts) == 2:
@@ -317,7 +299,7 @@ class ActionList(object):
                 actions.append(action)
                 ActionList.shortcut_map[shortcuts[1]] = actions
             else:
-                log.warn(u'Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
+                log.warn('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
                     (shortcuts[1], action.objectName()))
                 shortcuts.remove(shortcuts[1])
         # Check the primary shortcut.
@@ -328,7 +310,7 @@ class ActionList(object):
             actions.append(action)
             ActionList.shortcut_map[shortcuts[0]] = actions
         else:
-            log.warn(u'Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
+            log.warn('Shortcut "%s" is removed from "%s" because another action already uses this shortcut.' %
                 (shortcuts[0], action.objectName()))
             shortcuts.remove(shortcuts[0])
         action.setShortcuts([QtGui.QKeySequence(shortcut) for shortcut in shortcuts])
@@ -349,7 +331,7 @@ class ActionList(object):
         # Remove empty categories.
         if not self.categories[category].actions:
             self.categories.remove(category)
-        shortcuts = map(QtGui.QKeySequence.toString, action.shortcuts())
+        shortcuts = list(map(QtGui.QKeySequence.toString, action.shortcuts()))
         for shortcut in shortcuts:
             # Remove action from the list of actions which are using this shortcut.
             ActionList.shortcut_map[shortcut].remove(action)
@@ -395,7 +377,7 @@ class ActionList(object):
             # Remove empty entries.
             if not ActionList.shortcut_map[old_shortcut]:
                 del ActionList.shortcut_map[old_shortcut]
-        new_shortcuts = map(QtGui.QKeySequence.toString, action.shortcuts())
+        new_shortcuts = list(map(QtGui.QKeySequence.toString, action.shortcuts()))
         # Add the new shortcuts to the map.
         for new_shortcut in new_shortcuts:
             existing_actions = ActionList.shortcut_map.get(new_shortcut, [])
@@ -415,8 +397,7 @@ class ActionList(object):
         global_context = action.shortcutContext() in [QtCore.Qt.WindowShortcut, QtCore.Qt.ApplicationShortcut]
         affected_actions = []
         if global_context:
-            affected_actions = filter(
-                lambda a: isinstance(a, QtGui.QAction), self.get_all_child_objects(action.parent()))
+            affected_actions = [a for a in self.get_all_child_objects(action.parent()) if isinstance(a, QtGui.QAction)]
         for existing_action in existing_actions:
             if action is existing_action:
                 continue
@@ -434,7 +415,7 @@ class ActionList(object):
         """
         children = qobject.children()
         # Append the children's children.
-        children.extend(map(self.get_all_child_objects, children))
+        children.extend(list(map(self.get_all_child_objects, children)))
         return children
 
 

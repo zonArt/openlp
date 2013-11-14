@@ -1,13 +1,16 @@
+
 import sip
-sip.setapi(u'QDate', 2)
-sip.setapi(u'QDateTime', 2)
-sip.setapi(u'QString', 2)
-sip.setapi(u'QTextStream', 2)
-sip.setapi(u'QTime', 2)
-sip.setapi(u'QUrl', 2)
-sip.setapi(u'QVariant', 2)
+sip.setapi('QDate', 2)
+sip.setapi('QDateTime', 2)
+sip.setapi('QString', 2)
+sip.setapi('QTextStream', 2)
+sip.setapi('QTime', 2)
+sip.setapi('QUrl', 2)
+sip.setapi('QVariant', 2)
 
-#from PyQt4 import QtGui
+import sys
 
-# Only one QApplication can be created. Use QtGui.QApplication.instance() when you need to "create" an QApplication.
-#application = QtGui.QApplication([])
+if sys.version_info[1] >= 3:
+    from unittest.mock import patch, MagicMock
+else:
+    from mock import patch, MagicMock

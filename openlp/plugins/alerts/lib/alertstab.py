@@ -29,7 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import SettingsTab, Settings, UiStrings, translate
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import create_valign_selection_widgets
 
 
@@ -38,58 +39,58 @@ class AlertsTab(SettingsTab):
     AlertsTab is the alerts settings tab in the settings dialog.
     """
     def __init__(self, parent, name, visible_title, icon_path):
-        SettingsTab.__init__(self, parent, name, visible_title, icon_path)
+        super(AlertsTab, self).__init__(parent, name, visible_title, icon_path)
 
     def setupUi(self):
-        self.setObjectName(u'AlertsTab')
-        SettingsTab.setupUi(self)
+        self.setObjectName('AlertsTab')
+        super(AlertsTab, self).setupUi()
         self.font_group_box = QtGui.QGroupBox(self.left_column)
-        self.font_group_box.setObjectName(u'font_group_box')
+        self.font_group_box.setObjectName('font_group_box')
         self.font_layout = QtGui.QFormLayout(self.font_group_box)
-        self.font_layout.setObjectName(u'font_layout')
+        self.font_layout.setObjectName('font_layout')
         self.font_label = QtGui.QLabel(self.font_group_box)
-        self.font_label.setObjectName(u'font_label')
+        self.font_label.setObjectName('font_label')
         self.font_combo_box = QtGui.QFontComboBox(self.font_group_box)
-        self.font_combo_box.setObjectName(u'font_combo_box')
+        self.font_combo_box.setObjectName('font_combo_box')
         self.font_layout.addRow(self.font_label, self.font_combo_box)
         self.font_color_label = QtGui.QLabel(self.font_group_box)
-        self.font_color_label.setObjectName(u'font_color_label')
+        self.font_color_label.setObjectName('font_color_label')
         self.color_layout = QtGui.QHBoxLayout()
-        self.color_layout.setObjectName(u'color_layout')
+        self.color_layout.setObjectName('color_layout')
         self.font_color_button = QtGui.QPushButton(self.font_group_box)
-        self.font_color_button.setObjectName(u'font_color_button')
+        self.font_color_button.setObjectName('font_color_button')
         self.color_layout.addWidget(self.font_color_button)
         self.color_layout.addSpacing(20)
         self.background_color_label = QtGui.QLabel(self.font_group_box)
-        self.background_color_label.setObjectName(u'background_color_label')
+        self.background_color_label.setObjectName('background_color_label')
         self.color_layout.addWidget(self.background_color_label)
         self.background_color_button = QtGui.QPushButton(self.font_group_box)
-        self.background_color_button.setObjectName(u'background_color_button')
+        self.background_color_button.setObjectName('background_color_button')
         self.color_layout.addWidget(self.background_color_button)
         self.font_layout.addRow(self.font_color_label, self.color_layout)
         self.font_size_label = QtGui.QLabel(self.font_group_box)
-        self.font_size_label.setObjectName(u'font_size_label')
+        self.font_size_label.setObjectName('font_size_label')
         self.font_size_spin_box = QtGui.QSpinBox(self.font_group_box)
-        self.font_size_spin_box.setObjectName(u'font_size_spin_box')
+        self.font_size_spin_box.setObjectName('font_size_spin_box')
         self.font_layout.addRow(self.font_size_label, self.font_size_spin_box)
         self.timeout_label = QtGui.QLabel(self.font_group_box)
-        self.timeout_label.setObjectName(u'timeout_label')
+        self.timeout_label.setObjectName('timeout_label')
         self.timeout_spin_box = QtGui.QSpinBox(self.font_group_box)
         self.timeout_spin_box.setMaximum(180)
-        self.timeout_spin_box.setObjectName(u'timeout_spin_box')
+        self.timeout_spin_box.setObjectName('timeout_spin_box')
         self.font_layout.addRow(self.timeout_label, self.timeout_spin_box)
         self.vertical_label, self.vertical_combo_box = create_valign_selection_widgets(self.font_group_box)
-        self.vertical_label.setObjectName(u'vertical_label')
-        self.vertical_combo_box.setObjectName(u'vertical_combo_box')
+        self.vertical_label.setObjectName('vertical_label')
+        self.vertical_combo_box.setObjectName('vertical_combo_box')
         self.font_layout.addRow(self.vertical_label, self.vertical_combo_box)
         self.left_layout.addWidget(self.font_group_box)
         self.left_layout.addStretch()
         self.preview_group_box = QtGui.QGroupBox(self.right_column)
-        self.preview_group_box.setObjectName(u'preview_group_box')
+        self.preview_group_box.setObjectName('preview_group_box')
         self.preview_layout = QtGui.QVBoxLayout(self.preview_group_box)
-        self.preview_layout.setObjectName(u'preview_layout')
+        self.preview_layout.setObjectName('preview_layout')
         self.font_preview = QtGui.QLineEdit(self.preview_group_box)
-        self.font_preview.setObjectName(u'font_preview')
+        self.font_preview.setObjectName('font_preview')
         self.preview_layout.addWidget(self.font_preview)
         self.right_layout.addWidget(self.preview_group_box)
         self.right_layout.addStretch()
@@ -116,7 +117,7 @@ class AlertsTab(SettingsTab):
         new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.background_color), self)
         if new_color.isValid():
             self.background_color = new_color.name()
-            self.background_color_button.setStyleSheet(u'background-color: %s' % self.background_color)
+            self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
             self.update_display()
 
     def on_font_combo_box_clicked(self):
@@ -126,7 +127,7 @@ class AlertsTab(SettingsTab):
         new_color = QtGui.QColorDialog.getColor(QtGui.QColor(self.font_color), self)
         if new_color.isValid():
             self.font_color = new_color.name()
-            self.font_color_button.setStyleSheet(u'background-color: %s' % self.font_color)
+            self.font_color_button.setStyleSheet('background-color: %s' % self.font_color)
             self.update_display()
 
     def on_timeout_spin_box_changed(self):
@@ -140,17 +141,17 @@ class AlertsTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.timeout = settings.value(u'timeout')
-        self.font_color = settings.value(u'font color')
-        self.font_size = settings.value(u'font size')
-        self.background_color = settings.value(u'background color')
-        self.font_face = settings.value(u'font face')
-        self.location = settings.value(u'location')
+        self.timeout = settings.value('timeout')
+        self.font_color = settings.value('font color')
+        self.font_size = settings.value('font size')
+        self.background_color = settings.value('background color')
+        self.font_face = settings.value('font face')
+        self.location = settings.value('location')
         settings.endGroup()
         self.font_size_spin_box.setValue(self.font_size)
         self.timeout_spin_box.setValue(self.timeout)
-        self.font_color_button.setStyleSheet(u'background-color: %s' % self.font_color)
-        self.background_color_button.setStyleSheet(u'background-color: %s' % self.background_color)
+        self.font_color_button.setStyleSheet('background-color: %s' % self.font_color)
+        self.background_color_button.setStyleSheet('background-color: %s' % self.background_color)
         self.vertical_combo_box.setCurrentIndex(self.location)
         font = QtGui.QFont()
         font.setFamily(self.font_face)
@@ -162,19 +163,19 @@ class AlertsTab(SettingsTab):
         settings = Settings()
         settings.beginGroup(self.settings_section)
         # Check value has changed as no event handles this field
-        if settings.value(u'location') != self.vertical_combo_box.currentIndex():
+        if settings.value('location') != self.vertical_combo_box.currentIndex():
             self.changed = True
-        settings.setValue(u'background color', self.background_color)
-        settings.setValue(u'font color', self.font_color)
-        settings.setValue(u'font size', self.font_size)
+        settings.setValue('background color', self.background_color)
+        settings.setValue('font color', self.font_color)
+        settings.setValue('font size', self.font_size)
         self.font_face = self.font_combo_box.currentFont().family()
-        settings.setValue(u'font face', self.font_face)
-        settings.setValue(u'timeout', self.timeout)
+        settings.setValue('font face', self.font_face)
+        settings.setValue('timeout', self.timeout)
         self.location = self.vertical_combo_box.currentIndex()
-        settings.setValue(u'location', self.location)
+        settings.setValue('location', self.location)
         settings.endGroup()
         if self.changed:
-            self.settings_form.register_post_process(u'update_display_css')
+            self.settings_form.register_post_process('update_display_css')
         self.changed = False
 
     def update_display(self):
@@ -183,5 +184,5 @@ class AlertsTab(SettingsTab):
         font.setBold(True)
         font.setPointSize(self.font_size)
         self.font_preview.setFont(font)
-        self.font_preview.setStyleSheet(u'background-color: %s; color: %s' % (self.background_color, self.font_color))
+        self.font_preview.setStyleSheet('background-color: %s; color: %s' % (self.background_color, self.font_color))
         self.changed = True

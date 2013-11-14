@@ -32,6 +32,7 @@ for the songs plugin.
 """
 from openlp.core.lib import translate
 
+
 class SongStrings(object):
     """
     Provide standard strings for use throughout the songs plugin.
@@ -39,7 +40,7 @@ class SongStrings(object):
     # These strings should need a good reason to be retranslated elsewhere.
     Author = translate('OpenLP.Ui', 'Author', 'Singular')
     Authors = translate('OpenLP.Ui', 'Authors', 'Plural')
-    AuthorUnknown = u'Author Unknown' # Used to populate the database.
+    AuthorUnknown = 'Author Unknown' # Used to populate the database.
     CopyrightSymbol = translate('OpenLP.Ui', '\xa9', 'Copyright symbol.')
     SongBook = translate('OpenLP.Ui', 'Song Book', 'Singular')
     SongBooks = translate('OpenLP.Ui', 'Song Books', 'Plural')

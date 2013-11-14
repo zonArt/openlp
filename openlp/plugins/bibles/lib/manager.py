@@ -30,14 +30,15 @@
 import logging
 import os
 
-from openlp.core.lib import Registry, Settings, translate
-from openlp.core.utils import AppLocation, delete_file
+from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.lib import Registry
+from openlp.core.utils import delete_file
 from openlp.plugins.bibles.lib import parse_reference, get_reference_separator, LanguageSelection
 from openlp.plugins.bibles.lib.db import BibleDB, BibleMeta
-from csvbible import CSVBible
-from http import HTTPBible
-from opensong import OpenSongBible
-from osis import OSISBible
+from .csvbible import CSVBible
+from .http import HTTPBible
+from .opensong import OpenSongBible
+from .osis import OSISBible
 
 
 
@@ -90,7 +91,7 @@ class BibleManager(object):
     """
     The Bible manager which holds and manages all the Bibles.
     """
-    log.info(u'Bible manager loaded')
+    log.info('Bible manager loaded')
 
     def __init__(self, parent):
         """
@@ -100,14 +101,14 @@ class BibleManager(object):
 
         Init confirms the bible exists and stores the database path.
         """
-        log.debug(u'Bible Initialising')
+        log.debug('Bible Initialising')
         self.parent = parent
-        self.settings_section = u'bibles'
-        self.web = u'Web'
+        self.settings_section = 'bibles'
+        self.web = 'Web'
         self.db_cache = None
         self.path = AppLocation.get_section_data_path(self.settings_section)
-        self.proxy_name = Settings().value(self.settings_section + u'/proxy name')
-        self.suffix = u'.sqlite'
+        self.proxy_name = Settings().value(self.settings_section + '/proxy name')
+        self.suffix = '.sqlite'
         self.import_wizard = None
         self.reload_bibles()
         self.media = None
@@ -118,11 +119,11 @@ class BibleManager(object):
         Bible is encountered, an instance of HTTPBible is loaded instead of the
         BibleDB class.
         """
-        log.debug(u'Reload bibles')
+        log.debug('Reload bibles')
         files = AppLocation.get_files(self.settings_section, self.suffix)
-        if u'alternative_book_names.sqlite' in files:
-            files.remove(u'alternative_book_names.sqlite')
-        log.debug(u'Bible Files %s', files)
+        if 'alternative_book_names.sqlite' in files:
+            files.remove('alternative_book_names.sqlite')
+        log.debug('Bible Files %s', files)
         self.db_cache = {}
         self.old_bible_databases = []
         for filename in files:
@@ -138,19 +139,19 @@ class BibleManager(object):
                 self.old_bible_databases.append([filename, name])
                 bible.session.close()
                 continue
-            log.debug(u'Bible Name: "%s"', name)
+            log.debug('Bible Name: "%s"', name)
             self.db_cache[name] = bible
             # Look to see if lazy load bible exists and get create getter.
-            source = self.db_cache[name].get_object(BibleMeta, u'download_source')
+            source = self.db_cache[name].get_object(BibleMeta, 'download_source')
             if source:
-                download_name = self.db_cache[name].get_object(BibleMeta, u'download_name').value
-                meta_proxy = self.db_cache[name].get_object(BibleMeta, u'proxy_server')
+                download_name = self.db_cache[name].get_object(BibleMeta, 'download_name').value
+                meta_proxy = self.db_cache[name].get_object(BibleMeta, 'proxy_server')
                 web_bible = HTTPBible(self.parent, path=self.path, file=filename, download_source=source.value,
                     download_name=download_name)
                 if meta_proxy:
                     web_bible.proxy_server = meta_proxy.value
                 self.db_cache[name] = web_bible
-        log.debug(u'Bibles reloaded')
+        log.debug('Bibles reloaded')
 
     def set_process_dialog(self, wizard):
         """
@@ -185,7 +186,7 @@ class BibleManager(object):
         ``name``
             The name of the bible.
         """
-        log.debug(u'BibleManager.delete_bible("%s")', name)
+        log.debug('BibleManager.delete_bible("%s")', name)
         bible = self.db_cache[name]
         bible.session.close()
         bible.session = None
@@ -195,7 +196,7 @@ class BibleManager(object):
         """
         Returns a dict with all available Bibles.
         """
-        log.debug(u'get_bibles')
+        log.debug('get_bibles')
         return self.db_cache
 
     def get_books(self, bible):
@@ -205,12 +206,12 @@ class BibleManager(object):
         ``bible``
             Unicode. The Bible to get the list of books from.
         """
-        log.debug(u'BibleManager.get_books("%s")', bible)
+        log.debug('BibleManager.get_books("%s")', bible)
         return [
             {
-                u'name': book.name,
-                u'book_reference_id': book.book_reference_id,
-                u'chapters': self.db_cache[bible].get_chapter_count(book)
+                'name': book.name,
+                'book_reference_id': book.book_reference_id,
+                'chapters': self.db_cache[bible].get_chapter_count(book)
             }
             for book in self.db_cache[bible].get_books()
         ]
@@ -225,7 +226,7 @@ class BibleManager(object):
         ``id``
             Unicode. The book_reference_id to get the book for.
         """
-        log.debug(u'BibleManager.get_book_by_id("%s", "%s")', bible, id)
+        log.debug('BibleManager.get_book_by_id("%s", "%s")', bible, id)
         return self.db_cache[bible].get_book_by_book_ref_id(id)
 
     def get_chapter_count(self, bible, book):
@@ -238,7 +239,7 @@ class BibleManager(object):
         ``book``
             The book object to get the chapter count for.
         """
-        log.debug(u'BibleManager.get_book_chapter_count ("%s", "%s")', bible, book.name)
+        log.debug('BibleManager.get_book_chapter_count ("%s", "%s")', bible, book.name)
         return self.db_cache[bible].get_chapter_count(book)
 
     def get_verse_count(self, bible, book, chapter):
@@ -246,7 +247,7 @@ class BibleManager(object):
         Returns all the number of verses for a given
         book and chapterMaxBibleBookVerses.
         """
-        log.debug(u'BibleManager.get_verse_count("%s", "%s", %s)',
+        log.debug('BibleManager.get_verse_count("%s", "%s", %s)',
             bible, book, chapter)
         language_selection = self.get_language_selection(bible)
         book_ref_id = self.db_cache[bible].get_book_ref_id_by_localised_name(book, language_selection)
@@ -257,7 +258,7 @@ class BibleManager(object):
         Returns all the number of verses for a given
         book_ref_id and chapterMaxBibleBookVerses.
         """
-        log.debug(u'BibleManager.get_verse_count_by_book_ref_id("%s", "%s", "%s")', bible, book_ref_id, chapter)
+        log.debug('BibleManager.get_verse_count_by_book_ref_id("%s", "%s", "%s")', bible, book_ref_id, chapter)
         return self.db_cache[bible].get_verse_count(book_ref_id, chapter)
 
     def get_verses(self, bible, versetext, book_ref_id=False, show_error=True):
@@ -283,7 +284,7 @@ class BibleManager(object):
             Unicode. The book referece id from the book in versetext.
             For second bible this is necessary.
         """
-        log.debug(u'BibleManager.get_verses("%s", "%s")', bible, versetext)
+        log.debug('BibleManager.get_verses("%s", "%s")', bible, versetext)
         if not bible:
             if show_error:
                 self.main_window.information_message(
@@ -301,9 +302,9 @@ class BibleManager(object):
         else:
             if show_error:
                 reference_seperators = {
-                    u'verse': get_reference_separator(u'sep_v_display'),
-                    u'range': get_reference_separator(u'sep_r_display'),
-                    u'list': get_reference_separator(u'sep_l_display')}
+                    'verse': get_reference_separator('sep_v_display'),
+                    'range': get_reference_separator('sep_r_display'),
+                    'list': get_reference_separator('sep_l_display')}
                 self.main_window.information_message(
                     translate('BiblesPlugin.BibleManager', 'Scripture Reference Error'),
                     translate('BiblesPlugin.BibleManager', 'Your scripture reference is either not supported by '
@@ -329,12 +330,12 @@ class BibleManager(object):
         ``bible``
             Unicode. The Bible to get the language selection from.
         """
-        log.debug(u'BibleManager.get_language_selection("%s")', bible)
-        language_selection = self.get_meta_data(bible, u'book_name_language')
+        log.debug('BibleManager.get_language_selection("%s")', bible)
+        language_selection = self.get_meta_data(bible, 'book_name_language')
         if not language_selection or language_selection.value == "None" or language_selection.value == "-1":
             # If None is returned, it's not the singleton object but a
             # BibleMeta object with the value "None"
-            language_selection = Settings().value(self.settings_section + u'/book name language')
+            language_selection = Settings().value(self.settings_section + '/book name language')
         else:
             language_selection = language_selection.value
         try:
@@ -356,7 +357,7 @@ class BibleManager(object):
         ``text``
             The text to search for (unicode).
         """
-        log.debug(u'BibleManager.verse_search("%s", "%s")', bible, text)
+        log.debug('BibleManager.verse_search("%s", "%s")', bible, text)
         if not bible:
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'No Bibles Available'),
@@ -366,10 +367,10 @@ class BibleManager(object):
                 )
             return None
         # Check if the bible or second_bible is a web bible.
-        webbible = self.db_cache[bible].get_object(BibleMeta, u'download_source')
-        second_webbible = u''
+        webbible = self.db_cache[bible].get_object(BibleMeta, 'download_source')
+        second_webbible = ''
         if second_bible:
-            second_webbible = self.db_cache[second_bible].get_object(BibleMeta, u'download_source')
+            second_webbible = self.db_cache[second_bible].get_object(BibleMeta, 'download_source')
         if webbible or second_webbible:
             self.main_window.information_message(
                 translate('BiblesPlugin.BibleManager', 'Web Bible cannot be used'),
@@ -392,38 +393,38 @@ class BibleManager(object):
         """
         Saves the bibles meta data.
         """
-        log.debug(u'save_meta data %s, %s, %s, %s',
+        log.debug('save_meta data %s, %s, %s, %s',
             bible, version, copyright, permissions)
-        self.db_cache[bible].save_meta(u'name', version)
-        self.db_cache[bible].save_meta(u'copyright', copyright)
-        self.db_cache[bible].save_meta(u'permissions', permissions)
-        self.db_cache[bible].save_meta(u'book_name_language',
+        self.db_cache[bible].save_meta('name', version)
+        self.db_cache[bible].save_meta('copyright', copyright)
+        self.db_cache[bible].save_meta('permissions', permissions)
+        self.db_cache[bible].save_meta('book_name_language',
             book_name_language)
 
     def get_meta_data(self, bible, key):
         """
         Returns the meta data for a given key.
         """
-        log.debug(u'get_meta %s,%s', bible, key)
+        log.debug('get_meta %s,%s', bible, key)
         return self.db_cache[bible].get_object(BibleMeta, key)
 
     def update_book(self, bible, book):
         """
         Update a book of the bible.
         """
-        log.debug(u'BibleManager.update_book("%s", "%s")', bible, book.name)
+        log.debug('BibleManager.update_book("%s", "%s")', bible, book.name)
         self.db_cache[bible].update_book(book)
 
     def exists(self, name):
         """
         Check cache to see if new bible.
         """
-        if not isinstance(name, unicode):
-            name = unicode(name)
-        for bible in self.db_cache.keys():
-            log.debug(u'Bible from cache in is_new_bible %s', bible)
-            if not isinstance(bible, unicode):
-                bible = unicode(bible)
+        if not isinstance(name, str):
+            name = str(name)
+        for bible in list(self.db_cache.keys()):
+            log.debug('Bible from cache in is_new_bible %s', bible)
+            if not isinstance(bible, str):
+                bible = str(bible)
             if bible == name:
                 return True
         return False
@@ -439,11 +440,11 @@ class BibleManager(object):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)
 
 
-__all__ = [u'BibleFormat']
+__all__ = ['BibleFormat']

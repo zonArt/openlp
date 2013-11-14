@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# vim: autoindent shiftwidth=4 expandtab textwidth=80 tabstop=4 softtabstop=4
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
 
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
@@ -52,7 +52,7 @@ This is done easily via the ``-d``, ``-p`` and ``-u`` options::
 
 """
 import os
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from getpass import getpass
 import base64
 import json
@@ -61,9 +61,9 @@ import webbrowser
 from optparse import OptionParser
 from PyQt4 import QtCore
 
-SERVER_URL = u'http://www.transifex.net/api/2/project/openlp/'
-IGNORED_PATHS = [u'scripts']
-IGNORED_FILES = [u'setup.py']
+SERVER_URL = 'http://www.transifex.net/api/2/project/openlp/'
+IGNORED_PATHS = ['scripts']
+IGNORED_FILES = ['setup.py']
 
 verbose_mode = False
 quiet_mode = False
@@ -94,45 +94,45 @@ class CommandStack(object):
     def __getitem__(self, index):
         if not index in self.data:
             return None
-        elif self.data[index].get(u'arguments'):
-            return self.data[index][u'command'], self.data[index][u'arguments']
+        elif self.data[index].get('arguments'):
+            return self.data[index]['command'], self.data[index]['arguments']
         else:
-            return self.data[index][u'command']
+            return self.data[index]['command']
 
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         if self.current_index == len(self.data):
             raise StopIteration
         else:
-            current_item = self.data[self.current_index][u'command']
+            current_item = self.data[self.current_index]['command']
             self.current_index += 1
             return current_item
 
     def append(self, command, **kwargs):
-        data = {u'command': command}
-        if u'arguments' in kwargs:
-            data[u'arguments'] = kwargs[u'arguments']
+        data = {'command': command}
+        if 'arguments' in kwargs:
+            data['arguments'] = kwargs['arguments']
         self.data.append(data)
 
     def reset(self):
         self.current_index = 0
 
     def arguments(self):
-        if self.data[self.current_index - 1].get(u'arguments'):
-            return self.data[self.current_index - 1][u'arguments']
+        if self.data[self.current_index - 1].get('arguments'):
+            return self.data[self.current_index - 1]['arguments']
         else:
             return []
 
     def __repr__(self):
         results = []
         for item in self.data:
-            if item.get(u'arguments'):
-                results.append(str((item[u'command'], item[u'arguments'])))
+            if item.get('arguments'):
+                results.append(str((item['command'], item['arguments'])))
             else:
-                results.append(str((item[u'command'], )))
-        return u'[%s]' % u', '.join(results)
+                results.append(str((item['command'], )))
+        return '[%s]' % ', '.join(results)
 
 def print_quiet(text, linefeed=True):
     """
@@ -145,9 +145,9 @@ def print_quiet(text, linefeed=True):
     global quiet_mode
     if not quiet_mode:
         if linefeed:
-            print text
+            print(text)
         else:
-            print text,
+            print(text, end=' ')
 
 def print_verbose(text):
     """
@@ -159,7 +159,7 @@ def print_verbose(text):
     """
     global verbose_mode, quiet_mode
     if not quiet_mode and verbose_mode:
-        print(u'    %s' % text)
+        print('    %s' % text)
 
 def run(command):
     """
@@ -172,9 +172,9 @@ def run(command):
     process = QtCore.QProcess()
     process.start(command)
     while (process.waitForReadyRead()):
-        print_verbose(u'ReadyRead: %s' % QtCore.QString(process.readAll()))
-    print_verbose(u'Error(s):\n%s' % process.readAllStandardError())
-    print_verbose(u'Output:\n%s' % process.readAllStandardOutput())
+        print_verbose('ReadyRead: %s' % QtCore.QString(process.readAll()))
+    print_verbose('Error(s):\n%s' % process.readAllStandardError())
+    print_verbose('Output:\n%s' % process.readAllStandardOutput())
 
 def download_translations():
     """
@@ -183,38 +183,38 @@ def download_translations():
     **Note:** URLs and headers need to remain strings, not unicode.
     """
     global username, password
-    print_quiet(u'Download translation files from Transifex')
+    print_quiet('Download translation files from Transifex')
     if not username:
-        username = raw_input(u'   Transifex username: ')
+        username = input('   Transifex username: ')
     if not password:
-        password = getpass(u'   Transifex password: ')
+        password = getpass('   Transifex password: ')
     # First get the list of languages
     url = SERVER_URL + 'resource/ents/'
     base64string = base64.encodestring(
         '%s:%s' % (username, password))[:-1]
     auth_header =  'Basic %s' % base64string
-    request = urllib2.Request(url + '?details')
+    request = urllib.request.Request(url + '?details')
     request.add_header('Authorization', auth_header)
-    print_verbose(u'Downloading list of languages from: %s' % url)
+    print_verbose('Downloading list of languages from: %s' % url)
     try:
-        json_response = urllib2.urlopen(request)
-    except urllib2.HTTPError:
-        print_quiet(u'Username or password incorrect.')
+        json_response = urllib.request.urlopen(request)
+    except urllib.error.HTTPError:
+        print_quiet('Username or password incorrect.')
         return False
     json_dict = json.loads(json_response.read())
-    languages = [lang[u'code'] for lang in json_dict[u'available_languages']]
+    languages = [lang['code'] for lang in json_dict['available_languages']]
     for language in languages:
         lang_url = url + 'translation/%s/?file' % language
-        request = urllib2.Request(lang_url)
+        request = urllib.request.Request(lang_url)
         request.add_header('Authorization', auth_header)
-        filename = os.path.join(os.path.abspath(u'..'), u'resources', u'i18n',
-            language + u'.ts')
-        print_verbose(u'Get Translation File: %s' % filename)
-        response = urllib2.urlopen(request)
-        fd = open(filename, u'w')
+        filename = os.path.join(os.path.abspath('..'), 'resources', 'i18n',
+            language + '.ts')
+        print_verbose('Get Translation File: %s' % filename)
+        response = urllib.request.urlopen(request)
+        fd = open(filename, 'w')
         fd.write(response.read())
         fd.close()
-    print_quiet(u'   Done.')
+    print_quiet('   Done.')
     return True
 
 def prepare_project():
@@ -222,15 +222,15 @@ def prepare_project():
     This method creates the project file needed to update the translation files
     and compile them into .qm files.
     """
-    print_quiet(u'Generating the openlp.pro file')
+    print_quiet('Generating the openlp.pro file')
     lines = []
-    start_dir = os.path.abspath(u'..')
+    start_dir = os.path.abspath('..')
     start_dir = start_dir + os.sep
-    print_verbose(u'Starting directory: %s' % start_dir)
+    print_verbose('Starting directory: %s' % start_dir)
     for root, dirs, files in os.walk(start_dir):
         for file in files:
-            path = root.replace(start_dir, u'').replace(u'\\', u'/') #.replace(u'..', u'.')
-            if file.startswith(u'hook-') or file.startswith(u'test_'):
+            path = root.replace(start_dir, '').replace('\\', '/') #.replace(u'..', u'.')
+            if file.startswith('hook-') or file.startswith('test_'):
                continue
             ignore = False
             for ignored_path in IGNORED_PATHS:
@@ -246,43 +246,43 @@ def prepare_project():
                     break
             if ignore:
                 continue
-            if file.endswith(u'.py') or file.endswith(u'.pyw'):
+            if file.endswith('.py') or file.endswith('.pyw'):
                 if path:
-                    line = u'%s/%s' % (path, file)
+                    line = '%s/%s' % (path, file)
                 else:
                     line = file
-                print_verbose(u'Parsing "%s"' % line)
-                lines.append(u'SOURCES      += %s' % line)
-            elif file.endswith(u'.ts'):
-                line = u'%s/%s' % (path, file)
-                print_verbose(u'Parsing "%s"' % line)
-                lines.append(u'TRANSLATIONS += %s' % line)
+                print_verbose('Parsing "%s"' % line)
+                lines.append('SOURCES      += %s' % line)
+            elif file.endswith('.ts'):
+                line = '%s/%s' % (path, file)
+                print_verbose('Parsing "%s"' % line)
+                lines.append('TRANSLATIONS += %s' % line)
     lines.sort()
-    file = open(os.path.join(start_dir, u'openlp.pro'), u'w')
-    file.write(u'\n'.join(lines).encode('utf8'))
+    file = open(os.path.join(start_dir, 'openlp.pro'), 'w')
+    file.write('\n'.join(lines).encode('utf8'))
     file.close()
-    print_quiet(u'   Done.')
+    print_quiet('   Done.')
 
 def update_translations():
-    print_quiet(u'Update the translation files')
-    if not os.path.exists(os.path.join(os.path.abspath(u'..'), u'openlp.pro')):
-        print(u'You have not generated a project file yet, please run this script with the -p option.')
+    print_quiet('Update the translation files')
+    if not os.path.exists(os.path.join(os.path.abspath('..'), 'openlp.pro')):
+        print('You have not generated a project file yet, please run this script with the -p option.')
         return
     else:
-        os.chdir(os.path.abspath(u'..'))
-        run(u'pylupdate4 -verbose -noobsolete openlp.pro')
-        os.chdir(os.path.abspath(u'scripts'))
+        os.chdir(os.path.abspath('..'))
+        run('pylupdate4 -verbose -noobsolete openlp.pro')
+        os.chdir(os.path.abspath('scripts'))
 
 def generate_binaries():
-    print_quiet(u'Generate the related *.qm files')
-    if not os.path.exists(os.path.join(os.path.abspath(u'..'), u'openlp.pro')):
-        print(u'You have not generated a project file yet, please run this script with the -p option. It is also ' +
-            u'recommended that you this script with the -u option to update the translation files as well.')
+    print_quiet('Generate the related *.qm files')
+    if not os.path.exists(os.path.join(os.path.abspath('..'), 'openlp.pro')):
+        print('You have not generated a project file yet, please run this script with the -p option. It is also ' +
+            'recommended that you this script with the -u option to update the translation files as well.')
         return
     else:
-        os.chdir(os.path.abspath(u'..'))
-        run(u'lrelease openlp.pro')
-        print_quiet(u'   Done.')
+        os.chdir(os.path.abspath('..'))
+        run('lrelease openlp.pro')
+        print_quiet('   Done.')
 
 
 def create_translation():
@@ -290,11 +290,11 @@ def create_translation():
     This method opens a browser to the OpenLP project page at Transifex so
     that the user can request a new language.
     """
-    print_quiet(u'Please request a new language at the OpenLP project on '
+    print_quiet('Please request a new language at the OpenLP project on '
         'Transifex.')
     webbrowser.open('https://www.transifex.net/projects/p/openlp/'
         'resource/ents/')
-    print_quiet(u'Opening browser to OpenLP project...')
+    print_quiet('Opening browser to OpenLP project...')
 
 def process_stack(command_stack):
     """
@@ -305,9 +305,9 @@ def process_stack(command_stack):
         The command stack to process.
     """
     if command_stack:
-        print_quiet(u'Processing %d commands...' % len(command_stack))
+        print_quiet('Processing %d commands...' % len(command_stack))
         for command in command_stack:
-            print_quiet(u'%d.' % (command_stack.current_index), False)
+            print_quiet('%d.' % (command_stack.current_index), False)
             if command == Command.Download:
                 if not download_translations():
                     return
@@ -319,16 +319,16 @@ def process_stack(command_stack):
                 generate_binaries()
             elif command == Command.Create:
                 create_translation()
-        print_quiet(u'Finished processing commands.')
+        print_quiet('Finished processing commands.')
     else:
-        print_quiet(u'No commands to process.')
+        print_quiet('No commands to process.')
 
 def main():
     global verbose_mode, quiet_mode, username, password
     # Set up command line options.
-    usage = u'%prog [options]\nOptions are parsed in the order they are ' + \
-        u'listed below. If no options are given, "-dpug" will be used.\n\n' + \
-        u'This script is used to manage OpenLP\'s translation files.'
+    usage = '%prog [options]\nOptions are parsed in the order they are ' + \
+        'listed below. If no options are given, "-dpug" will be used.\n\n' + \
+        'This script is used to manage OpenLP\'s translation files.'
     parser = OptionParser(usage=usage)
     parser.add_option('-U', '--username', dest='username', metavar='USERNAME',
         help='Transifex username, used for authentication')
@@ -375,8 +375,8 @@ def main():
     # Process the commands
     process_stack(command_stack)
 
-if __name__ == u'__main__':
-    if os.path.split(os.path.abspath(u'.'))[1] != u'scripts':
-        print(u'You need to run this script from the scripts directory.')
+if __name__ == '__main__':
+    if os.path.split(os.path.abspath('.'))[1] != 'scripts':
+        print('You need to run this script from the scripts directory.')
     else:
         main()

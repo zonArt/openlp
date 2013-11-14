@@ -35,8 +35,8 @@ from openlp.core.lib import Registry, translate
 from openlp.core.lib.ui import critical_error_message_box, find_and_set_in_combo_box
 from openlp.plugins.custom.lib import CustomXMLBuilder, CustomXMLParser
 from openlp.plugins.custom.lib.db import CustomSlide
-from editcustomdialog import Ui_CustomEditDialog
-from editcustomslideform import EditCustomSlideForm
+from .editcustomdialog import Ui_CustomEditDialog
+from .editcustomslideform import EditCustomSlideForm
 
 log = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
     """
     Class documentation goes here.
     """
-    log.info(u'Custom Editor loaded')
+    log.info('Custom Editor loaded')
 
     def __init__(self, media_item, parent, manager):
         """
@@ -64,7 +64,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.edit_all_button.clicked.connect(self.on_edit_all_button_clicked)
         self.slide_list_view.currentRowChanged.connect(self.on_current_row_changed)
         self.slide_list_view.doubleClicked.connect(self.on_edit_button_clicked)
-        Registry().register_function(u'theme_update_list', self.load_themes)
+        Registry().register_function('theme_update_list', self.load_themes)
 
     def load_themes(self, theme_list):
         """
@@ -74,7 +74,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             The list of themes to load.
         """
         self.theme_combo_box.clear()
-        self.theme_combo_box.addItem(u'')
+        self.theme_combo_box.addItem('')
         self.theme_combo_box.addItems(theme_list)
 
     def load_custom(self, id, preview=False):
@@ -91,8 +91,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         self.slide_list_view.clear()
         if id == 0:
             self.custom_slide = CustomSlide()
-            self.title_edit.setText(u'')
-            self.credit_edit.setText(u'')
+            self.title_edit.setText('')
+            self.credit_edit.setText('')
             self.theme_combo_box.setCurrentIndex(0)
         else:
             self.custom_slide = self.manager.get_object(CustomSlide, id)
@@ -111,7 +111,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Override the QDialog method to check if the custom slide has been saved before closing the dialog.
         """
-        log.debug(u'accept')
+        log.debug('accept')
         if self.save_custom():
             QtGui.QDialog.accept(self)
 
@@ -123,9 +123,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             return False
         sxml = CustomXMLBuilder()
         for count in range(self.slide_list_view.count()):
-            sxml.add_verse_to_lyrics(u'custom', unicode(count + 1), self.slide_list_view.item(count).text())
+            sxml.add_verse_to_lyrics('custom', str(count + 1), self.slide_list_view.item(count).text())
         self.custom_slide.title = self.title_edit.text()
-        self.custom_slide.text = unicode(sxml.extract_xml(), u'utf-8')
+        self.custom_slide.text = str(sxml.extract_xml(), 'utf-8')
         self.custom_slide.credits = self.credit_edit.text()
         self.custom_slide.theme_name = self.theme_combo_box.currentText()
         success = self.manager.save_object(self.custom_slide)
@@ -157,7 +157,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Add a new blank slide.
         """
-        self.edit_slide_form.set_text(u'')
+        self.edit_slide_form.set_text('')
         if self.edit_slide_form.exec_():
             self.slide_list_view.addItems(self.edit_slide_form.get_text())
 
@@ -173,12 +173,12 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Edits all slides.
         """
-        slide_text = u''
+        slide_text = ''
         for row in range(self.slide_list_view.count()):
             item = self.slide_list_view.item(row)
             slide_text += item.text()
             if row != self.slide_list_view.count() - 1:
-                slide_text += u'\n[===]\n'
+                slide_text += '\n[===]\n'
         self.edit_slide_form.set_text(slide_text)
         if self.edit_slide_form.exec_():
             self.update_slide_list(self.edit_slide_form.get_text(), True)
@@ -187,9 +187,9 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Save the custom item and preview it.
         """
-        log.debug(u'onPreview')
+        log.debug('onPreview')
         if self.save_custom():
-            Registry().execute(u'custom_preview')
+            Registry().execute('custom_preview')
 
     def update_slide_list(self, slides, edit_all=False):
         """

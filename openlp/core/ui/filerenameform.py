@@ -32,9 +32,10 @@ The file rename dialog.
 
 from PyQt4 import QtGui
 
-from filerenamedialog import Ui_FileRenameDialog
+from .filerenamedialog import Ui_FileRenameDialog
 
-from openlp.core.lib import translate, Registry
+from openlp.core.common import translate
+from openlp.core.lib import Registry
 
 
 class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
@@ -45,7 +46,7 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
         """
         Constructor
         """
-        QtGui.QDialog.__init__(self, self.main_window)
+        super(FileRenameForm, self).__init__(Registry().get('main_window'))
         self.setupUi(self)
 
     def exec_(self, copy=False):
@@ -63,8 +64,8 @@ class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)

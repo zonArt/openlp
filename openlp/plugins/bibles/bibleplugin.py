@@ -43,43 +43,48 @@ log = logging.getLogger(__name__)
 
 
 __default_settings__ = {
-    u'bibles/db type': u'sqlite',
-    u'bibles/last search type': BibleSearch.Reference,
-    u'bibles/verse layout style': LayoutStyle.VersePerSlide,
-    u'bibles/book name language': LanguageSelection.Bible,
-    u'bibles/display brackets': DisplayStyle.NoBrackets,
-    u'bibles/display new chapter': False,
-    u'bibles/second bibles': True,
-    u'bibles/advanced bible': u'',
-    u'bibles/quick bible': u'',
-    u'bibles/proxy name': u'',
-    u'bibles/proxy address': u'',
-    u'bibles/proxy username': u'',
-    u'bibles/proxy password': u'',
-    u'bibles/bible theme': u'',
-    u'bibles/verse separator': u'',
-    u'bibles/range separator': u'',
-    u'bibles/list separator': u'',
-    u'bibles/end separator': u'',
-    u'bibles/last directory import': u''
+    'bibles/db type': 'sqlite',
+    'bibles/last search type': BibleSearch.Reference,
+    'bibles/verse layout style': LayoutStyle.VersePerSlide,
+    'bibles/book name language': LanguageSelection.Bible,
+    'bibles/display brackets': DisplayStyle.NoBrackets,
+    'bibles/is verse number visible': True,
+    'bibles/display new chapter': False,
+    'bibles/second bibles': True,
+    'bibles/advanced bible': '',
+    'bibles/quick bible': '',
+    'bibles/proxy name': '',
+    'bibles/proxy address': '',
+    'bibles/proxy username': '',
+    'bibles/proxy password': '',
+    'bibles/bible theme': '',
+    'bibles/verse separator': '',
+    'bibles/range separator': '',
+    'bibles/list separator': '',
+    'bibles/end separator': '',
+    'bibles/last directory import': ''
 }
 
 
 class BiblePlugin(Plugin):
-    log.info(u'Bible Plugin loaded')
+    """
+    The Bible plugin provides a plugin for managing and displaying Bibles.
+    """
+    log.info('Bible Plugin loaded')
 
     def __init__(self):
-        Plugin.__init__(self, u'bibles', __default_settings__, BibleMediaItem, BiblesTab)
+        super(BiblePlugin, self).__init__('bibles', __default_settings__, BibleMediaItem, BiblesTab)
         self.weight = -9
-        self.icon_path = u':/plugins/plugin_bibles.png'
+        self.icon_path = ':/plugins/plugin_bibles.png'
         self.icon = build_icon(self.icon_path)
-        self.manager = None
+        self.manager = BibleManager(self)
 
     def initialise(self):
-        log.info(u'bibles Initialising')
-        if self.manager is None:
-            self.manager = BibleManager(self)
-        Plugin.initialise(self)
+        """
+        Initialise the Bible plugin.
+        """
+        log.info('bibles Initialising')
+        super(BiblePlugin, self).initialise()
         self.import_bible_item.setVisible(True)
         action_list = ActionList.get_instance()
         action_list.add_action(self.import_bible_item, UiStrings().Import)
@@ -93,7 +98,7 @@ class BiblePlugin(Plugin):
         """
         Tidy up on exit
         """
-        log.info(u'Plugin Finalise')
+        log.info('Plugin Finalise')
         self.manager.finalise()
         Plugin.finalise(self)
         action_list = ActionList.get_instance()
@@ -106,7 +111,7 @@ class BiblePlugin(Plugin):
         """
         Perform tasks on application startup
         """
-        Plugin.app_startup(self)
+        super(BiblePlugin, self).app_startup()
         if self.manager.old_bible_databases:
             if QtGui.QMessageBox.information(self.main_window,
                 translate('OpenLP', 'Information'),
@@ -117,13 +122,13 @@ class BiblePlugin(Plugin):
                 self.on_tools_upgrade_Item_triggered()
 
     def add_import_menu_item(self, import_menu):
-        self.import_bible_item = create_action(import_menu, u'importBibleItem',
+        self.import_bible_item = create_action(import_menu, 'importBibleItem',
             text=translate('BiblesPlugin', '&Bible'), visible=False,
             triggers=self.on_bible_import_click)
         import_menu.addAction(self.import_bible_item)
 
     def add_export_menu_Item(self, export_menu):
-        self.export_bible_item = create_action(export_menu, u'exportBibleItem',
+        self.export_bible_item = create_action(export_menu, 'exportBibleItem',
             text=translate('BiblesPlugin', '&Bible'), visible=False)
         export_menu.addAction(self.export_bible_item)
 
@@ -134,8 +139,8 @@ class BiblePlugin(Plugin):
         ``tools_menu``
             The actual **Tools** menu item, so that your actions can use it as their parent.
         """
-        log.debug(u'add tools menu')
-        self.tools_upgrade_item = create_action(tools_menu, u'toolsUpgradeItem',
+        log.debug('add tools menu')
+        self.tools_upgrade_item = create_action(tools_menu, 'toolsUpgradeItem',
             text=translate('BiblesPlugin', '&Upgrade older Bibles'),
             statustip=translate('BiblesPlugin', 'Upgrade the Bible databases to the latest format.'),
             visible=False, triggers=self.on_tools_upgrade_Item_triggered)
@@ -145,7 +150,7 @@ class BiblePlugin(Plugin):
         """
         Upgrade older bible databases.
         """
-        if not hasattr(self, u'upgrade_wizard'):
+        if not hasattr(self, 'upgrade_wizard'):
             self.upgrade_wizard = BibleUpgradeForm(self.main_window, self.manager, self)
         # If the import was not cancelled then reload.
         if self.upgrade_wizard.exec_():
@@ -166,7 +171,7 @@ class BiblePlugin(Plugin):
         Called to find out if the bible plugin is currently using a theme. Returns ``True`` if the theme is being used,
         otherwise returns ``False``.
         """
-        return unicode(self.settings_tab.bible_theme) == theme
+        return str(self.settings_tab.bible_theme) == theme
 
     def rename_theme(self, old_theme, new_theme):
         """
@@ -188,23 +193,23 @@ class BiblePlugin(Plugin):
         """
         ## Name PluginList ##
         self.text_strings[StringContent.Name] = {
-            u'singular': translate('BiblesPlugin', 'Bible', 'name singular'),
-            u'plural': translate('BiblesPlugin', 'Bibles', 'name plural')
+            'singular': translate('BiblesPlugin', 'Bible', 'name singular'),
+            'plural': translate('BiblesPlugin', 'Bibles', 'name plural')
         }
         ## Name for MediaDockManager, SettingsManager ##
         self.text_strings[StringContent.VisibleName] = {
-            u'title': translate('BiblesPlugin', 'Bibles', 'container title')
+            'title': translate('BiblesPlugin', 'Bibles', 'container title')
         }
         # Middle Header Bar
         tooltips = {
-            u'load': u'',
-            u'import': translate('BiblesPlugin', 'Import a Bible.'),
-            u'new': translate('BiblesPlugin', 'Add a new Bible.'),
-            u'edit': translate('BiblesPlugin', 'Edit the selected Bible.'),
-            u'delete': translate('BiblesPlugin', 'Delete the selected Bible.'),
-            u'preview': translate('BiblesPlugin',
+            'load': '',
+            'import': translate('BiblesPlugin', 'Import a Bible.'),
+            'new': translate('BiblesPlugin', 'Add a new Bible.'),
+            'edit': translate('BiblesPlugin', 'Edit the selected Bible.'),
+            'delete': translate('BiblesPlugin', 'Delete the selected Bible.'),
+            'preview': translate('BiblesPlugin',
                 'Preview the selected Bible.'),
-            u'live': translate('BiblesPlugin', 'Send the selected Bible live.'),
-            u'service': translate('BiblesPlugin', 'Add the selected Bible to the service.')
+            'live': translate('BiblesPlugin', 'Send the selected Bible live.'),
+            'service': translate('BiblesPlugin', 'Add the selected Bible to the service.')
         }
         self.set_plugin_ui_text_strings(tooltips)

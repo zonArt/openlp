@@ -31,7 +31,7 @@ The UI widgets for the service item edit dialog
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box, create_button
 
 
@@ -43,29 +43,29 @@ class Ui_ServiceItemEditDialog(object):
         """
         Set up the UI
         """
-        serviceItemEditDialog.setObjectName(u'serviceItemEditDialog')
+        serviceItemEditDialog.setObjectName('serviceItemEditDialog')
         self.dialog_layout = QtGui.QGridLayout(serviceItemEditDialog)
         self.dialog_layout.setContentsMargins(8, 8, 8, 8)
         self.dialog_layout.setSpacing(8)
-        self.dialog_layout.setObjectName(u'dialog_layout')
+        self.dialog_layout.setObjectName('dialog_layout')
         self.list_widget = QtGui.QListWidget(serviceItemEditDialog)
         self.list_widget.setAlternatingRowColors(True)
-        self.list_widget.setObjectName(u'list_widget')
+        self.list_widget.setObjectName('list_widget')
         self.dialog_layout.addWidget(self.list_widget, 0, 0)
         self.button_layout = QtGui.QVBoxLayout()
-        self.button_layout.setObjectName(u'button_layout')
-        self.delete_button = create_button(serviceItemEditDialog, u'deleteButton', role=u'delete',
+        self.button_layout.setObjectName('button_layout')
+        self.delete_button = create_button(serviceItemEditDialog, 'deleteButton', role='delete',
             click=serviceItemEditDialog.on_delete_button_clicked)
         self.button_layout.addWidget(self.delete_button)
         self.button_layout.addStretch()
-        self.up_button = create_button(serviceItemEditDialog, u'up_button', role=u'up',
+        self.up_button = create_button(serviceItemEditDialog, 'up_button', role='up',
             click=serviceItemEditDialog.on_up_button_clicked)
-        self.down_button = create_button(serviceItemEditDialog, u'down_button', role=u'down',
+        self.down_button = create_button(serviceItemEditDialog, 'down_button', role='down',
             click=serviceItemEditDialog.on_down_button_clicked)
         self.button_layout.addWidget(self.up_button)
         self.button_layout.addWidget(self.down_button)
         self.dialog_layout.addLayout(self.button_layout, 0, 1)
-        self.button_box = create_button_box(serviceItemEditDialog, u'button_box', [u'cancel', u'save'])
+        self.button_box = create_button_box(serviceItemEditDialog, 'button_box', ['cancel', 'save'])
         self.dialog_layout.addWidget(self.button_box, 1, 0, 1, 2)
         self.retranslateUi(serviceItemEditDialog)
 

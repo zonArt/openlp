@@ -27,11 +27,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import translate
+from openlp.core.lib import Registry
 from openlp.plugins.songusage.lib.db import SongUsageItem
-from songusagedeletedialog import Ui_SongUsageDeleteDialog
+from .songusagedeletedialog import Ui_SongUsageDeleteDialog
 
 
 class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
@@ -43,7 +44,7 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         Constructor
         """
         self.manager = manager
-        QtGui.QDialog.__init__(self, parent)
+        super(SongUsageDeleteForm, self).__init__(parent)
         self.setupUi(self)
         self.button_box.clicked.connect(self.on_button_box_clicked)
 
@@ -70,8 +71,8 @@ class SongUsageDeleteForm(QtGui.QDialog, Ui_SongUsageDeleteDialog):
         """
         Adds the main window to the class dynamically
         """
-        if not hasattr(self, u'_main_window'):
-            self._main_window = Registry().get(u'main_window')
+        if not hasattr(self, '_main_window'):
+            self._main_window = Registry().get('main_window')
         return self._main_window
 
     main_window = property(_get_main_window)

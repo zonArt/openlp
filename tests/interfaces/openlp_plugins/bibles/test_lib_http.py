@@ -1,12 +1,11 @@
 """
     Package to test the openlp.plugin.bible.lib.https package.
 """
-
 from unittest import TestCase
-from mock import MagicMock
 
 from openlp.core.lib import Registry
 from openlp.plugins.bibles.lib.http import BGExtract, CWExtract
+from tests.interfaces import MagicMock
 
 
 class TestBibleHTTP(TestCase):
@@ -16,8 +15,8 @@ class TestBibleHTTP(TestCase):
         Set up the Registry
         """
         Registry.create()
-        Registry().register(u'service_list', MagicMock())
-        Registry().register(u'application', MagicMock())
+        Registry().register('service_list', MagicMock())
+        Registry().register('application', MagicMock())
 
     def bible_gateway_extract_books_test(self):
         """
@@ -27,10 +26,10 @@ class TestBibleHTTP(TestCase):
         handler = BGExtract()
 
         # WHEN: The Books list is called
-        books = handler.get_books_from_http(u'NIV')
+        books = handler.get_books_from_http('NIV')
 
         # THEN: We should get back a valid service item
-        assert len(books) == 66, u'The bible should not have had any books added or removed'
+        assert len(books) == 66, 'The bible should not have had any books added or removed'
 
     def bible_gateway_extract_verse_test(self):
         """
@@ -40,10 +39,10 @@ class TestBibleHTTP(TestCase):
         handler = BGExtract()
 
         # WHEN: The Books list is called
-        results = handler.get_bible_chapter(u'NIV', u'John', 3)
+        results = handler.get_bible_chapter('NIV', 'John', 3)
 
         # THEN: We should get back a valid service item
-        assert len(results.verselist) == 36, u'The book of John should not have had any verses added or removed'
+        assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
 
     def crosswalk_extract_books_test(self):
         """
@@ -53,10 +52,10 @@ class TestBibleHTTP(TestCase):
         handler = CWExtract()
 
         # WHEN: The Books list is called
-        books = handler.get_books_from_http(u'niv')
+        books = handler.get_books_from_http('niv')
 
         # THEN: We should get back a valid service item
-        assert len(books) == 66, u'The bible should not have had any books added or removed'
+        assert len(books) == 66, 'The bible should not have had any books added or removed'
 
     def crosswalk_extract_verse_test(self):
         """
@@ -66,8 +65,8 @@ class TestBibleHTTP(TestCase):
         handler = CWExtract()
 
         # WHEN: The Books list is called
-        results = handler.get_bible_chapter(u'niv', u'john', 3)
+        results = handler.get_bible_chapter('niv', 'john', 3)
 
         # THEN: We should get back a valid service item
-        assert len(results.verselist) == 36, u'The book of John should not have had any verses added or removed'
+        assert len(results.verse_list) == 36, 'The book of John should not have had any verses added or removed'
 

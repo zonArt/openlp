@@ -33,7 +33,8 @@ for the Custom Slides plugin, which is inserted into the configuration dialog.
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Settings, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import SettingsTab
 
 
 class CustomTab(SettingsTab):
@@ -41,20 +42,20 @@ class CustomTab(SettingsTab):
     CustomTab is the Custom settings tab in the settings dialog.
     """
     def __init__(self, parent, title, visible_title, icon_path):
-        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        super(CustomTab, self).__init__(parent, title, visible_title, icon_path)
 
     def setupUi(self):
-        self.setObjectName(u'CustomTab')
-        SettingsTab.setupUi(self)
+        self.setObjectName('CustomTab')
+        super(CustomTab, self).setupUi()
         self.custom_mode_group_box = QtGui.QGroupBox(self.left_column)
-        self.custom_mode_group_box.setObjectName(u'custom_mode_group_box')
+        self.custom_mode_group_box.setObjectName('custom_mode_group_box')
         self.custom_mode_layout = QtGui.QFormLayout(self.custom_mode_group_box)
-        self.custom_mode_layout.setObjectName(u'custom_mode_layout')
+        self.custom_mode_layout.setObjectName('custom_mode_layout')
         self.display_footer_check_box = QtGui.QCheckBox(self.custom_mode_group_box)
-        self.display_footer_check_box.setObjectName(u'display_footer_check_box')
+        self.display_footer_check_box.setObjectName('display_footer_check_box')
         self.custom_mode_layout.addRow(self.display_footer_check_box)
         self.add_from_service_checkbox = QtGui.QCheckBox(self.custom_mode_group_box)
-        self.add_from_service_checkbox.setObjectName(u'add_from_service_checkbox')
+        self.add_from_service_checkbox.setObjectName('add_from_service_checkbox')
         self.custom_mode_layout.addRow(self.add_from_service_checkbox)
         self.left_layout.addWidget(self.custom_mode_group_box)
         self.left_layout.addStretch()
@@ -83,8 +84,8 @@ class CustomTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.display_footer = settings.value(u'display footer')
-        self.update_load = settings.value(u'add custom from service')
+        self.display_footer = settings.value('display footer')
+        self.update_load = settings.value('add custom from service')
         self.display_footer_check_box.setChecked(self.display_footer)
         self.add_from_service_checkbox.setChecked(self.update_load)
         settings.endGroup()
@@ -92,9 +93,9 @@ class CustomTab(SettingsTab):
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        settings.setValue(u'display footer', self.display_footer)
-        settings.setValue(u'add custom from service', self.update_load)
+        settings.setValue('display footer', self.display_footer)
+        settings.setValue('add custom from service', self.update_load)
         settings.endGroup()
         if self.tab_visited:
-            self.settings_form.register_post_process(u'custom_config_updated')
+            self.settings_form.register_post_process('custom_config_updated')
         self.tab_visited = False

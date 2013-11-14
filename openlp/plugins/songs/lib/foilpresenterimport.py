@@ -96,6 +96,7 @@ import os
 
 from lxml import etree, objectify
 
+from openlp.core.lib import translate
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song, VerseType
 from openlp.plugins.songs.lib.songimport import SongImport
@@ -113,9 +114,9 @@ class FoilPresenterImport(SongImport):
         """
         Initialise the import.
         """
-        log.debug(u'initialise FoilPresenterImport')
+        log.debug('initialise FoilPresenterImport')
         SongImport.__init__(self, manager, **kwargs)
-        self.FoilPresenter = FoilPresenter(self.manager)
+        self.FoilPresenter = FoilPresenter(self.manager, self)
 
     def doImport(self):
         """
@@ -126,15 +127,14 @@ class FoilPresenterImport(SongImport):
         for file_path in self.import_source:
             if self.stop_import_flag:
                 return
-            self.import_wizard.increment_progress_bar(
-                WizardStrings.ImportingType % os.path.basename(file_path))
+            self.import_wizard.increment_progress_bar(WizardStrings.ImportingType % os.path.basename(file_path))
             try:
                 parsed_file = etree.parse(file_path, parser)
-                xml = unicode(etree.tostring(parsed_file))
+                xml = etree.tostring(parsed_file).decode()
                 self.FoilPresenter.xml_to_song(xml)
             except etree.XMLSyntaxError:
                 self.logError(file_path, SongStrings.XMLSyntaxError)
-                log.exception(u'XML syntax error in file %s' % file_path)
+                log.exception('XML syntax error in file %s' % file_path)
 
 
 class FoilPresenter(object):
@@ -202,8 +202,9 @@ class FoilPresenter(object):
         <copyright> tag.
 
     """
-    def __init__(self, manager):
+    def __init__(self, manager, importer):
         self.manager = manager
+        self.importer = importer
 
     def xml_to_song(self, xml):
         """
@@ -215,29 +216,30 @@ class FoilPresenter(object):
         # No xml get out of here.
         if not xml:
             return
-        if xml[:5] == u'<?xml':
+        if xml[:5] == '<?xml':
             xml = xml[38:]
         song = Song()
         # Values will be set when cleaning the song.
-        song.search_lyrics = u''
-        song.verse_order = u''
-        song.search_title = u''
-        # Because "text" seems to be an reserverd word, we have to recompile it.
-        xml = re.compile(u'<text>').sub(u'<text_>', xml)
-        xml = re.compile(u'</text>').sub(u'</text_>', xml)
+        song.search_lyrics = ''
+        song.verse_order = ''
+        song.search_title = ''
+        self.save_song = True
+        # Because "text" seems to be an reserved word, we have to recompile it.
+        xml = re.compile('<text>').sub('<text_>', xml)
+        xml = re.compile('</text>').sub('</text_>', xml)
         song_xml = objectify.fromstring(xml)
-        foilpresenterfolie = song_xml
-        self._process_copyright(foilpresenterfolie, song)
-        self._process_cclinumber(foilpresenterfolie, song)
-        self._process_titles(foilpresenterfolie, song)
+        self._process_copyright(song_xml, song)
+        self._process_cclinumber(song_xml, song)
+        self._process_titles(song_xml, song)
         # The verse order is processed with the lyrics!
-        self._process_lyrics(foilpresenterfolie, song)
-        self._process_comments(foilpresenterfolie, song)
-        self._process_authors(foilpresenterfolie, song)
-        self._process_songbooks(foilpresenterfolie, song)
-        self._process_topics(foilpresenterfolie, song)
-        clean_song(self.manager, song)
-        self.manager.save_object(song)
+        self._process_lyrics(song_xml, song)
+        self._process_comments(song_xml, song)
+        self._process_authors(song_xml, song)
+        self._process_songbooks(song_xml, song)
+        self._process_topics(song_xml, song)
+        if self.save_song:
+            clean_song(self.manager, song)
+            self.manager.save_object(song)
 
     def _child(self, element):
         """
@@ -247,8 +249,8 @@ class FoilPresenter(object):
             The element.
         """
         if element is not None:
-            return unicode(element)
-        return u''
+            return str(element)
+        return ''
 
     def _process_authors(self, foilpresenterfolie, song):
         """
@@ -267,50 +269,50 @@ class FoilPresenter(object):
             copyright = None
         if copyright:
             strings = []
-            if copyright.find(u'Copyright') != -1:
-                temp = copyright.partition(u'Copyright')
+            if copyright.find('Copyright') != -1:
+                temp = copyright.partition('Copyright')
                 copyright = temp[0]
-            elif copyright.find(u'copyright') != -1:
-                temp = copyright.partition(u'copyright')
+            elif copyright.find('copyright') != -1:
+                temp = copyright.partition('copyright')
                 copyright = temp[0]
-            elif copyright.find(u'©') != -1:
-                temp = copyright.partition(u'©')
+            elif copyright.find('©') != -1:
+                temp = copyright.partition('©')
                 copyright = temp[0]
-            elif copyright.find(u'(c)') != -1:
-                temp = copyright.partition(u'(c)')
+            elif copyright.find('(c)') != -1:
+                temp = copyright.partition('(c)')
                 copyright = temp[0]
-            elif copyright.find(u'(C)') != -1:
-                temp = copyright.partition(u'(C)')
+            elif copyright.find('(C)') != -1:
+                temp = copyright.partition('(C)')
                 copyright = temp[0]
-            elif copyright.find(u'c)') != -1:
-                temp = copyright.partition(u'c)')
+            elif copyright.find('c)') != -1:
+                temp = copyright.partition('c)')
                 copyright = temp[0]
-            elif copyright.find(u'C)') != -1:
-                temp = copyright.partition(u'C)')
+            elif copyright.find('C)') != -1:
+                temp = copyright.partition('C)')
                 copyright = temp[0]
-            elif copyright.find(u'C:') != -1:
-                temp = copyright.partition(u'C:')
+            elif copyright.find('C:') != -1:
+                temp = copyright.partition('C:')
                 copyright = temp[0]
-            elif copyright.find(u'C,)') != -1:
-                temp = copyright.partition(u'C,)')
+            elif copyright.find('C,)') != -1:
+                temp = copyright.partition('C,)')
                 copyright = temp[0]
-            copyright = re.compile(u'\\n').sub(u' ', copyright)
-            copyright = re.compile(u'\(.*\)').sub(u'', copyright)
-            if copyright.find(u'Rechte') != -1:
-                temp = copyright.partition(u'Rechte')
+            copyright = re.compile('\\n').sub(' ', copyright)
+            copyright = re.compile('\(.*\)').sub('', copyright)
+            if copyright.find('Rechte') != -1:
+                temp = copyright.partition('Rechte')
                 copyright = temp[0]
-            markers = [u'Text +u\.?n?d? +Melodie[\w\,\. ]*:',
-                u'Text +u\.?n?d? +Musik', u'T & M', u'Melodie und Satz',
-                u'Text[\w\,\. ]*:', u'Melodie', u'Musik', u'Satz',
-                u'Weise', u'[dD]eutsch', u'[dD]t[\.\:]', u'Englisch',
-                u'[oO]riginal', u'Bearbeitung', u'[R|r]efrain']
+            markers = ['Text +u\.?n?d? +Melodie[\w\,\. ]*:',
+                'Text +u\.?n?d? +Musik', 'T & M', 'Melodie und Satz',
+                'Text[\w\,\. ]*:', 'Melodie', 'Musik', 'Satz',
+                'Weise', '[dD]eutsch', '[dD]t[\.\:]', 'Englisch',
+                '[oO]riginal', 'Bearbeitung', '[R|r]efrain']
             for marker in markers:
-                copyright = re.compile(marker).sub(u'<marker>', copyright, re.U)
-            copyright = re.compile(u'(?<=<marker>) *:').sub(u'', copyright)
+                copyright = re.compile(marker).sub('<marker>', copyright, re.U)
+            copyright = re.compile('(?<=<marker>) *:').sub('', copyright)
             x = 0
             while True:
-                if copyright.find(u'<marker>') != -1:
-                    temp = copyright.partition(u'<marker>')
+                if copyright.find('<marker>') != -1:
+                    temp = copyright.partition('<marker>')
                     if temp[0].strip() and x > 0:
                         strings.append(temp[0])
                     copyright = temp[2]
@@ -322,21 +324,21 @@ class FoilPresenter(object):
                     break
             author_temp = []
             for author in strings:
-                temp = re.split(u',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',
+                temp = re.split(',(?=\D{2})|(?<=\D),|\/(?=\D{3,})|(?<=\D);',
                     author)
                 for tempx in temp:
                     author_temp.append(tempx)
                 for author in author_temp:
-                    regex = u'^[\/,;\-\s\.]+|[\/,;\-\s\.]+$|'\
+                    regex = '^[\/,;\-\s\.]+|[\/,;\-\s\.]+$|'\
                         '\s*[0-9]{4}\s*[\-\/]?\s*([0-9]{4})?[\/,;\-\s\.]*$'
-                    author = re.compile(regex).sub(u'', author)
+                    author = re.compile(regex).sub('', author)
                     author = re.compile(
-                        u'[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub(u'',
+                        '[0-9]{1,2}\.\s?J(ahr)?h\.|um\s*$|vor\s*$').sub('',
                         author)
-                    author = re.compile(u'[N|n]ach.*$').sub(u'', author)
+                    author = re.compile('[N|n]ach.*$').sub('', author)
                     author = author.strip()
-                    if re.search(u'\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', author, re.U):
-                        temp = re.split(u'\s[a|u]nd\s|\s&\s', author)
+                    if re.search('\w+\.?\s+\w{3,}\s+[a|u]nd\s|\w+\.?\s+\w{3,}\s+&\s', author, re.U):
+                        temp = re.split('\s[a|u]nd\s|\s&\s', author)
                         for tempx in temp:
                             tempx = tempx.strip()
                             authors.append(tempx)
@@ -346,8 +348,8 @@ class FoilPresenter(object):
             author = self.manager.get_object_filtered(Author, Author.display_name == display_name)
             if author is None:
                 # We need to create a new author, as the author does not exist.
-                author = Author.populate(display_name=display_name, last_name=display_name.split(u' ')[-1],
-                    first_name=u' '.join(display_name.split(u' ')[:-1]))
+                author = Author.populate(display_name=display_name, last_name=display_name.split(' ')[-1],
+                    first_name=' '.join(display_name.split(' ')[:-1]))
                 self.manager.save_object(author)
             song.authors.append(author)
 
@@ -364,7 +366,7 @@ class FoilPresenter(object):
         try:
             song.ccli_number = self._child(foilpresenterfolie.ccliid)
         except AttributeError:
-            song.ccli_number = u''
+            song.ccli_number = ''
 
     def _process_comments(self, foilpresenterfolie, song):
         """
@@ -379,7 +381,7 @@ class FoilPresenter(object):
         try:
             song.comments = self._child(foilpresenterfolie.notiz)
         except AttributeError:
-            song.comments = u''
+            song.comments = ''
 
     def _process_copyright(self, foilpresenterfolie, song):
         """
@@ -394,7 +396,7 @@ class FoilPresenter(object):
         try:
             song.copyright = self._child(foilpresenterfolie.copyright.text_)
         except AttributeError:
-            song.copyright = u''
+            song.copyright = ''
 
     def _process_lyrics(self, foilpresenterfolie, song):
         """
@@ -420,62 +422,68 @@ class FoilPresenter(object):
             VerseType.tags[VerseType.Intro]: 1,
             VerseType.tags[VerseType.PreChorus]: 1
         }
+        if not hasattr(foilpresenterfolie.strophen, 'strophe'):
+            self.importer.logError(self._child(foilpresenterfolie.titel),
+                str(translate('SongsPlugin.FoilPresenterSongImport',
+                'Invalid Foilpresenter song file. No verses found.')))
+            self.save_song = False
+            return
         for strophe in foilpresenterfolie.strophen.strophe:
-            text = self._child(strophe.text_) if hasattr(strophe, u'text_') else u''
+            text = self._child(strophe.text_) if hasattr(strophe, 'text_') else ''
             verse_name = self._child(strophe.key)
             children = strophe.getchildren()
             sortnr = False
             for child in children:
-                if child.tag == u'sortnr':
+                if child.tag == 'sortnr':
                     verse_sortnr = self._child(strophe.sortnr)
                     sortnr = True
                 # In older Version there is no sortnr, but we need one
             if not sortnr:
-                verse_sortnr = unicode(temp_sortnr_backup)
+                verse_sortnr = str(temp_sortnr_backup)
                 temp_sortnr_backup += 1
             # Foilpresenter allows e. g. "Ref" or "1", but we need "C1" or "V1".
             temp_sortnr_liste.append(verse_sortnr)
-            temp_verse_name = re.compile(u'[0-9].*').sub(u'', verse_name)
+            temp_verse_name = re.compile('[0-9].*').sub('', verse_name)
             temp_verse_name = temp_verse_name[:3].lower()
-            if temp_verse_name == u'ref':
+            if temp_verse_name == 'ref':
                 verse_type = VerseType.tags[VerseType.Chorus]
-            elif temp_verse_name == u'r':
+            elif temp_verse_name == 'r':
                 verse_type = VerseType.tags[VerseType.Chorus]
-            elif temp_verse_name == u'':
+            elif temp_verse_name == '':
                 verse_type = VerseType.tags[VerseType.Verse]
-            elif temp_verse_name == u'v':
+            elif temp_verse_name == 'v':
                 verse_type = VerseType.tags[VerseType.Verse]
-            elif temp_verse_name == u'bri':
+            elif temp_verse_name == 'bri':
                 verse_type = VerseType.tags[VerseType.Bridge]
-            elif temp_verse_name == u'cod':
+            elif temp_verse_name == 'cod':
                 verse_type = VerseType.tags[VerseType.Ending]
-            elif temp_verse_name == u'sch':
+            elif temp_verse_name == 'sch':
                 verse_type = VerseType.tags[VerseType.Ending]
-            elif temp_verse_name == u'pre':
+            elif temp_verse_name == 'pre':
                 verse_type = VerseType.tags[VerseType.PreChorus]
-            elif temp_verse_name == u'int':
+            elif temp_verse_name == 'int':
                 verse_type = VerseType.tags[VerseType.Intro]
             else:
                 verse_type = VerseType.tags[VerseType.Other]
-            verse_number = re.compile(u'[a-zA-Z.+-_ ]*').sub(u'', verse_name)
+            verse_number = re.compile('[a-zA-Z.+-_ ]*').sub('', verse_name)
             # Foilpresenter allows e. g. "C", but we need "C1".
             if not verse_number:
-                verse_number = unicode(verse_count[verse_type])
+                verse_number = str(verse_count[verse_type])
                 verse_count[verse_type] += 1
             else:
                 # test if foilpresenter have the same versenumber two times with
                 # different parts raise the verse number
                 for value in temp_verse_order_backup:
-                    if value == u''.join((verse_type, verse_number)):
-                        verse_number = unicode(int(verse_number) + 1)
+                    if value == ''.join((verse_type, verse_number)):
+                        verse_number = str(int(verse_number) + 1)
             verse_type_index = VerseType.from_tag(verse_type[0])
             verse_type = VerseType.tags[verse_type_index]
-            temp_verse_order[verse_sortnr] = u''.join((verse_type[0],
+            temp_verse_order[verse_sortnr] = ''.join((verse_type[0],
                 verse_number))
-            temp_verse_order_backup.append(u''.join((verse_type[0],
+            temp_verse_order_backup.append(''.join((verse_type[0],
                 verse_number)))
             sxml.add_verse_to_lyrics(verse_type, verse_number, text)
-        song.lyrics = unicode(sxml.extract_xml(), u'utf-8')
+        song.lyrics = str(sxml.extract_xml(), 'utf-8')
         # Process verse order
         verse_order = []
         verse_strophenr = []
@@ -485,14 +493,14 @@ class FoilPresenter(object):
         except AttributeError:
             pass
         # Currently we do not support different "parts"!
-        if u'0' in temp_verse_order:
+        if '0' in temp_verse_order:
             for vers in temp_verse_order_backup:
                 verse_order.append(vers)
         else:
             for number in verse_strophenr:
                 numberx = temp_sortnr_liste[int(number)]
-                verse_order.append(temp_verse_order[unicode(numberx)])
-        song.verse_order = u' '.join(verse_order)
+                verse_order.append(temp_verse_order[str(numberx)])
+        song.verse_order = ' '.join(verse_order)
 
     def _process_songbooks(self, foilpresenterfolie, song):
         """
@@ -505,7 +513,7 @@ class FoilPresenter(object):
             The song object.
         """
         song.song_book_id = 0
-        song.song_number = u''
+        song.song_number = ''
         try:
             for bucheintrag in foilpresenterfolie.buch.bucheintrag:
                 book_name = self._child(bucheintrag.name)
@@ -514,7 +522,7 @@ class FoilPresenter(object):
                         Book.name == book_name)
                     if book is None:
                         # We need to create a book, because it does not exist.
-                        book = Book.populate(name=book_name, publisher=u'')
+                        book = Book.populate(name=book_name, publisher='')
                         self.manager.save_object(book)
                     song.song_book_id = book.id
                     try:
@@ -541,7 +549,7 @@ class FoilPresenter(object):
             for title_string in foilpresenterfolie.titel.titelstring:
                 if not song.title:
                     song.title = self._child(title_string)
-                    song.alternate_title = u''
+                    song.alternate_title = ''
                 else:
                     song.alternate_title = self._child(title_string)
         except AttributeError:

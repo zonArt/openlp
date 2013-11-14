@@ -29,7 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Settings, SettingsTab, translate
+from openlp.core.common import Settings, translate
+from openlp.core.lib import SettingsTab
 
 
 class SongsTab(SettingsTab):
@@ -40,23 +41,23 @@ class SongsTab(SettingsTab):
         """
         Set up the configuration tab UI.
         """
-        self.setObjectName(u'SongsTab')
-        SettingsTab.setupUi(self)
+        self.setObjectName('SongsTab')
+        super(SongsTab, self).setupUi()
         self.mode_group_box = QtGui.QGroupBox(self.left_column)
-        self.mode_group_box.setObjectName(u'mode_group_box')
+        self.mode_group_box.setObjectName('mode_group_box')
         self.mode_layout = QtGui.QVBoxLayout(self.mode_group_box)
-        self.mode_layout.setObjectName(u'mode_layout')
+        self.mode_layout.setObjectName('mode_layout')
         self.search_as_type_check_box = QtGui.QCheckBox(self.mode_group_box)
-        self.search_as_type_check_box.setObjectName(u'SearchAsType_check_box')
+        self.search_as_type_check_box.setObjectName('SearchAsType_check_box')
         self.mode_layout.addWidget(self.search_as_type_check_box)
         self.tool_bar_active_check_box = QtGui.QCheckBox(self.mode_group_box)
-        self.tool_bar_active_check_box.setObjectName(u'tool_bar_active_check_box')
+        self.tool_bar_active_check_box.setObjectName('tool_bar_active_check_box')
         self.mode_layout.addWidget(self.tool_bar_active_check_box)
         self.update_on_edit_check_box = QtGui.QCheckBox(self.mode_group_box)
-        self.update_on_edit_check_box.setObjectName(u'update_on_edit_check_box')
+        self.update_on_edit_check_box.setObjectName('update_on_edit_check_box')
         self.mode_layout.addWidget(self.update_on_edit_check_box)
         self.add_from_service_check_box = QtGui.QCheckBox(self.mode_group_box)
-        self.add_from_service_check_box.setObjectName(u'add_from_service_check_box')
+        self.add_from_service_check_box.setObjectName('add_from_service_check_box')
         self.mode_layout.addWidget(self.add_from_service_check_box)
         self.left_layout.addWidget(self.mode_group_box)
         self.left_layout.addStretch()
@@ -90,10 +91,10 @@ class SongsTab(SettingsTab):
     def load(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        self.song_search = settings.value(u'search as type')
-        self.tool_bar = settings.value(u'display songbar')
-        self.update_edit = settings.value(u'update service on edit')
-        self.update_load = settings.value(u'add song from service')
+        self.song_search = settings.value('search as type')
+        self.tool_bar = settings.value('display songbar')
+        self.update_edit = settings.value('update service on edit')
+        self.update_load = settings.value('add song from service')
         self.search_as_type_check_box.setChecked(self.song_search)
         self.tool_bar_active_check_box.setChecked(self.tool_bar)
         self.update_on_edit_check_box.setChecked(self.update_edit)
@@ -103,11 +104,11 @@ class SongsTab(SettingsTab):
     def save(self):
         settings = Settings()
         settings.beginGroup(self.settings_section)
-        settings.setValue(u'search as type', self.song_search)
-        settings.setValue(u'display songbar', self.tool_bar)
-        settings.setValue(u'update service on edit', self.update_edit)
-        settings.setValue(u'add song from service', self.update_load)
+        settings.setValue('search as type', self.song_search)
+        settings.setValue('display songbar', self.tool_bar)
+        settings.setValue('update service on edit', self.update_edit)
+        settings.setValue('add song from service', self.update_load)
         settings.endGroup()
         if self.tab_visited:
-            self.settings_form.register_post_process(u'songs_config_updated')
+            self.settings_form.register_post_process('songs_config_updated')
         self.tab_visited = False

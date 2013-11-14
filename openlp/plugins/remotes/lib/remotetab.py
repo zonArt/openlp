@@ -31,11 +31,10 @@ import os.path
 
 from PyQt4 import QtCore, QtGui, QtNetwork
 
-from openlp.core.lib import Settings, SettingsTab, translate
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.lib import SettingsTab
 
-
-ZERO_URL = u'0.0.0.0'
+ZERO_URL = '0.0.0.0'
 
 
 class RemoteTab(SettingsTab):
@@ -43,121 +42,121 @@ class RemoteTab(SettingsTab):
     RemoteTab is the Remotes settings tab in the settings dialog.
     """
     def __init__(self, parent, title, visible_title, icon_path):
-        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        super(RemoteTab, self).__init__(parent, title, visible_title, icon_path)
 
     def setupUi(self):
-        self.setObjectName(u'RemoteTab')
-        SettingsTab.setupUi(self)
+        self.setObjectName('RemoteTab')
+        super(RemoteTab, self).setupUi()
         self.server_settings_group_box = QtGui.QGroupBox(self.left_column)
-        self.server_settings_group_box.setObjectName(u'server_settings_group_box')
+        self.server_settings_group_box.setObjectName('server_settings_group_box')
         self.server_settings_layout = QtGui.QFormLayout(self.server_settings_group_box)
-        self.server_settings_layout.setObjectName(u'server_settings_layout')
+        self.server_settings_layout.setObjectName('server_settings_layout')
         self.address_label = QtGui.QLabel(self.server_settings_group_box)
-        self.address_label.setObjectName(u'address_label')
+        self.address_label.setObjectName('address_label')
         self.address_edit = QtGui.QLineEdit(self.server_settings_group_box)
         self.address_edit.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp(u'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'),
+        self.address_edit.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'),
             self))
-        self.address_edit.setObjectName(u'address_edit')
+        self.address_edit.setObjectName('address_edit')
         self.server_settings_layout.addRow(self.address_label, self.address_edit)
         self.twelve_hour_check_box = QtGui.QCheckBox(self.server_settings_group_box)
-        self.twelve_hour_check_box.setObjectName(u'twelve_hour_check_box')
+        self.twelve_hour_check_box.setObjectName('twelve_hour_check_box')
         self.server_settings_layout.addRow(self.twelve_hour_check_box)
         self.left_layout.addWidget(self.server_settings_group_box)
         self.http_settings_group_box = QtGui.QGroupBox(self.left_column)
-        self.http_settings_group_box.setObjectName(u'http_settings_group_box')
+        self.http_settings_group_box.setObjectName('http_settings_group_box')
         self.http_setting_layout = QtGui.QFormLayout(self.http_settings_group_box)
-        self.http_setting_layout.setObjectName(u'http_setting_layout')
+        self.http_setting_layout.setObjectName('http_setting_layout')
         self.port_label = QtGui.QLabel(self.http_settings_group_box)
-        self.port_label.setObjectName(u'port_label')
+        self.port_label.setObjectName('port_label')
         self.port_spin_box = QtGui.QSpinBox(self.http_settings_group_box)
         self.port_spin_box.setMaximum(32767)
-        self.port_spin_box.setObjectName(u'port_spin_box')
+        self.port_spin_box.setObjectName('port_spin_box')
         self.http_setting_layout.addRow(self.port_label, self.port_spin_box)
         self.remote_url_label = QtGui.QLabel(self.http_settings_group_box)
-        self.remote_url_label.setObjectName(u'remote_url_label')
+        self.remote_url_label.setObjectName('remote_url_label')
         self.remote_url = QtGui.QLabel(self.http_settings_group_box)
-        self.remote_url.setObjectName(u'remote_url')
+        self.remote_url.setObjectName('remote_url')
         self.remote_url.setOpenExternalLinks(True)
         self.http_setting_layout.addRow(self.remote_url_label, self.remote_url)
         self.stage_url_label = QtGui.QLabel(self.http_settings_group_box)
-        self.stage_url_label.setObjectName(u'stage_url_label')
+        self.stage_url_label.setObjectName('stage_url_label')
         self.stage_url = QtGui.QLabel(self.http_settings_group_box)
-        self.stage_url.setObjectName(u'stage_url')
+        self.stage_url.setObjectName('stage_url')
         self.stage_url.setOpenExternalLinks(True)
         self.http_setting_layout.addRow(self.stage_url_label, self.stage_url)
         self.live_url_label = QtGui.QLabel(self.http_settings_group_box)
-        self.live_url_label.setObjectName(u'live_url_label')
+        self.live_url_label.setObjectName('live_url_label')
         self.live_url = QtGui.QLabel(self.http_settings_group_box)
-        self.live_url.setObjectName(u'live_url')
+        self.live_url.setObjectName('live_url')
         self.live_url.setOpenExternalLinks(True)
         self.http_setting_layout.addRow(self.live_url_label, self.live_url)
         self.left_layout.addWidget(self.http_settings_group_box)
         self.https_settings_group_box = QtGui.QGroupBox(self.left_column)
         self.https_settings_group_box.setCheckable(True)
         self.https_settings_group_box.setChecked(False)
-        self.https_settings_group_box.setObjectName(u'https_settings_group_box')
+        self.https_settings_group_box.setObjectName('https_settings_group_box')
         self.https_settings_layout = QtGui.QFormLayout(self.https_settings_group_box)
-        self.https_settings_layout.setObjectName(u'https_settings_layout')
+        self.https_settings_layout.setObjectName('https_settings_layout')
         self.https_error_label = QtGui.QLabel(self.https_settings_group_box)
         self.https_error_label.setVisible(False)
         self.https_error_label.setWordWrap(True)
-        self.https_error_label.setObjectName(u'https_error_label')
+        self.https_error_label.setObjectName('https_error_label')
         self.https_settings_layout.addRow(self.https_error_label)
         self.https_port_label = QtGui.QLabel(self.https_settings_group_box)
-        self.https_port_label.setObjectName(u'https_port_label')
+        self.https_port_label.setObjectName('https_port_label')
         self.https_port_spin_box = QtGui.QSpinBox(self.https_settings_group_box)
         self.https_port_spin_box.setMaximum(32767)
-        self.https_port_spin_box.setObjectName(u'https_port_spin_box')
+        self.https_port_spin_box.setObjectName('https_port_spin_box')
         self.https_settings_layout.addRow(self.https_port_label, self.https_port_spin_box)
         self.remote_https_url = QtGui.QLabel(self.https_settings_group_box)
-        self.remote_https_url.setObjectName(u'remote_http_url')
+        self.remote_https_url.setObjectName('remote_http_url')
         self.remote_https_url.setOpenExternalLinks(True)
         self.remote_https_url_label = QtGui.QLabel(self.https_settings_group_box)
-        self.remote_https_url_label.setObjectName(u'remote_http_url_label')
+        self.remote_https_url_label.setObjectName('remote_http_url_label')
         self.https_settings_layout.addRow(self.remote_https_url_label, self.remote_https_url)
         self.stage_https_url_label = QtGui.QLabel(self.http_settings_group_box)
-        self.stage_https_url_label.setObjectName(u'stage_https_url_label')
+        self.stage_https_url_label.setObjectName('stage_https_url_label')
         self.stage_https_url = QtGui.QLabel(self.https_settings_group_box)
-        self.stage_https_url.setObjectName(u'stage_https_url')
+        self.stage_https_url.setObjectName('stage_https_url')
         self.stage_https_url.setOpenExternalLinks(True)
         self.https_settings_layout.addRow(self.stage_https_url_label, self.stage_https_url)
         self.live_https_url_label = QtGui.QLabel(self.https_settings_group_box)
-        self.live_https_url_label.setObjectName(u'live_url_label')
+        self.live_https_url_label.setObjectName('live_url_label')
         self.live_https_url = QtGui.QLabel(self.https_settings_group_box)
-        self.live_https_url.setObjectName(u'live_https_url')
+        self.live_https_url.setObjectName('live_https_url')
         self.live_https_url.setOpenExternalLinks(True)
         self.https_settings_layout.addRow(self.live_https_url_label, self.live_https_url)
         self.left_layout.addWidget(self.https_settings_group_box)
         self.user_login_group_box = QtGui.QGroupBox(self.left_column)
         self.user_login_group_box.setCheckable(True)
         self.user_login_group_box.setChecked(False)
-        self.user_login_group_box.setObjectName(u'user_login_group_box')
+        self.user_login_group_box.setObjectName('user_login_group_box')
         self.user_login_layout = QtGui.QFormLayout(self.user_login_group_box)
-        self.user_login_layout.setObjectName(u'user_login_layout')
+        self.user_login_layout.setObjectName('user_login_layout')
         self.user_id_label = QtGui.QLabel(self.user_login_group_box)
-        self.user_id_label.setObjectName(u'user_id_label')
+        self.user_id_label.setObjectName('user_id_label')
         self.user_id = QtGui.QLineEdit(self.user_login_group_box)
-        self.user_id.setObjectName(u'user_id')
+        self.user_id.setObjectName('user_id')
         self.user_login_layout.addRow(self.user_id_label, self.user_id)
         self.password_label = QtGui.QLabel(self.user_login_group_box)
-        self.password_label.setObjectName(u'password_label')
+        self.password_label.setObjectName('password_label')
         self.password = QtGui.QLineEdit(self.user_login_group_box)
-        self.password.setObjectName(u'password')
+        self.password.setObjectName('password')
         self.user_login_layout.addRow(self.password_label, self.password)
         self.left_layout.addWidget(self.user_login_group_box)
         self.android_app_group_box = QtGui.QGroupBox(self.right_column)
-        self.android_app_group_box.setObjectName(u'android_app_group_box')
+        self.android_app_group_box.setObjectName('android_app_group_box')
         self.right_layout.addWidget(self.android_app_group_box)
         self.qr_layout = QtGui.QVBoxLayout(self.android_app_group_box)
-        self.qr_layout.setObjectName(u'qr_layout')
+        self.qr_layout.setObjectName('qr_layout')
         self.qr_code_label = QtGui.QLabel(self.android_app_group_box)
-        self.qr_code_label.setPixmap(QtGui.QPixmap(u':/remotes/android_app_qr.png'))
+        self.qr_code_label.setPixmap(QtGui.QPixmap(':/remotes/android_app_qr.png'))
         self.qr_code_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.qr_code_label.setObjectName(u'qr_code_label')
+        self.qr_code_label.setObjectName('qr_code_label')
         self.qr_layout.addWidget(self.qr_code_label)
         self.qr_description_label = QtGui.QLabel(self.android_app_group_box)
-        self.qr_description_label.setObjectName(u'qr_description_label')
+        self.qr_description_label.setObjectName('qr_description_label')
         self.qr_description_label.setOpenExternalLinks(True)
         self.qr_description_label.setWordWrap(True)
         self.qr_layout.addWidget(self.qr_description_label)
@@ -198,8 +197,27 @@ class RemoteTab(SettingsTab):
         """
         Update the display based on the data input on the screen
         """
-        ip_address = u'localhost'
-        if self.address_edit.text() == ZERO_URL:
+        ip_address = self.get_ip_address(self.address_edit.text())
+        http_url = 'http://%s:%s/' % (ip_address, self.port_spin_box.value())
+        https_url = 'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
+        self.remote_url.setText('<a href="%s">%s</a>' % (http_url, http_url))
+        self.remote_https_url.setText('<a href="%s">%s</a>' % (https_url, https_url))
+        http_url_temp = http_url + 'stage'
+        https_url_temp = https_url + 'stage'
+        self.stage_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
+        self.stage_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+        http_url_temp = http_url + 'main'
+        https_url_temp = https_url + 'main'
+        self.live_url.setText('<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
+        self.live_https_url.setText('<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+
+    def get_ip_address(self, ip_address):
+        """
+        returns the IP address in dependency of the passed address
+        ip_address == 0.0.0.0: return the IP address of the first valid interface
+        else: return ip_address
+        """
+        if ip_address == ZERO_URL:
             interfaces = QtNetwork.QNetworkInterface.allInterfaces()
             for interface in interfaces:
                 if not interface.isValid():
@@ -208,46 +226,32 @@ class RemoteTab(SettingsTab):
                     continue
                 for address in interface.addressEntries():
                     ip = address.ip()
-                    if ip.protocol() == 0 and ip != QtNetwork.QHostAddress.LocalHost:
-                        ip_address = ip
-                        break
-        else:
-            ip_address = self.address_edit.text()
-        http_url = u'http://%s:%s/' % (ip_address, self.port_spin_box.value())
-        https_url = u'https://%s:%s/' % (ip_address, self.https_port_spin_box.value())
-        self.remote_url.setText(u'<a href="%s">%s</a>' % (http_url, http_url))
-        self.remote_https_url.setText(u'<a href="%s">%s</a>' % (https_url, https_url))
-        http_url_temp = http_url + u'stage'
-        https_url_temp = https_url + u'stage'
-        self.stage_url.setText(u'<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
-        self.stage_https_url.setText(u'<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
-        http_url_temp = http_url + u'live'
-        https_url_temp = https_url + u'live'
-        self.live_url.setText(u'<a href="%s">%s</a>' % (http_url_temp, http_url_temp))
-        self.live_https_url.setText(u'<a href="%s">%s</a>' % (https_url_temp, https_url_temp))
+                    if ip.protocol() == QtNetwork.QAbstractSocket.IPv4Protocol and ip != QtNetwork.QHostAddress.LocalHost:
+                        return ip.toString()
+        return ip_address
 
     def load(self):
         """
         Load the configuration and update the server configuration if necessary
         """
-        self.port_spin_box.setValue(Settings().value(self.settings_section + u'/port'))
-        self.https_port_spin_box.setValue(Settings().value(self.settings_section + u'/https port'))
-        self.address_edit.setText(Settings().value(self.settings_section + u'/ip address'))
-        self.twelve_hour = Settings().value(self.settings_section + u'/twelve hour')
+        self.port_spin_box.setValue(Settings().value(self.settings_section + '/port'))
+        self.https_port_spin_box.setValue(Settings().value(self.settings_section + '/https port'))
+        self.address_edit.setText(Settings().value(self.settings_section + '/ip address'))
+        self.twelve_hour = Settings().value(self.settings_section + '/twelve hour')
         self.twelve_hour_check_box.setChecked(self.twelve_hour)
         local_data = AppLocation.get_directory(AppLocation.DataDir)
-        if not os.path.exists(os.path.join(local_data, u'remotes', u'openlp.crt')) or \
-                not os.path.exists(os.path.join(local_data, u'remotes', u'openlp.key')):
+        if not os.path.exists(os.path.join(local_data, 'remotes', 'openlp.crt')) or \
+                not os.path.exists(os.path.join(local_data, 'remotes', 'openlp.key')):
             self.https_settings_group_box.setChecked(False)
             self.https_settings_group_box.setEnabled(False)
             self.https_error_label.setVisible(True)
         else:
-            self.https_settings_group_box.setChecked(Settings().value(self.settings_section + u'/https enabled'))
+            self.https_settings_group_box.setChecked(Settings().value(self.settings_section + '/https enabled'))
             self.https_settings_group_box.setEnabled(True)
             self.https_error_label.setVisible(False)
-        self.user_login_group_box.setChecked(Settings().value(self.settings_section + u'/authentication enabled'))
-        self.user_id.setText(Settings().value(self.settings_section + u'/user id'))
-        self.password.setText(Settings().value(self.settings_section + u'/password'))
+        self.user_login_group_box.setChecked(Settings().value(self.settings_section + '/authentication enabled'))
+        self.user_id.setText(Settings().value(self.settings_section + '/user id'))
+        self.password.setText(Settings().value(self.settings_section + '/password'))
         self.set_urls()
         self.https_changed()
 
@@ -255,22 +259,22 @@ class RemoteTab(SettingsTab):
         """
         Save the configuration and update the server configuration if necessary
         """
-        if Settings().value(self.settings_section + u'/ip address') != self.address_edit.text() or \
-                Settings().value(self.settings_section + u'/port') != self.port_spin_box.value() or \
-                Settings().value(self.settings_section + u'/https port') != self.https_port_spin_box.value() or \
-                Settings().value(self.settings_section + u'/https enabled') != \
+        if Settings().value(self.settings_section + '/ip address') != self.address_edit.text() or \
+                Settings().value(self.settings_section + '/port') != self.port_spin_box.value() or \
+                Settings().value(self.settings_section + '/https port') != self.https_port_spin_box.value() or \
+                Settings().value(self.settings_section + '/https enabled') != \
                         self.https_settings_group_box.isChecked() or \
-                Settings().value(self.settings_section + u'/authentication enabled') != \
+                Settings().value(self.settings_section + '/authentication enabled') != \
                         self.user_login_group_box.isChecked():
-            self.settings_form.register_post_process(u'remotes_config_updated')
-        Settings().setValue(self.settings_section + u'/port', self.port_spin_box.value())
-        Settings().setValue(self.settings_section + u'/https port', self.https_port_spin_box.value())
-        Settings().setValue(self.settings_section + u'/https enabled', self.https_settings_group_box.isChecked())
-        Settings().setValue(self.settings_section + u'/ip address', self.address_edit.text())
-        Settings().setValue(self.settings_section + u'/twelve hour', self.twelve_hour)
-        Settings().setValue(self.settings_section + u'/authentication enabled', self.user_login_group_box.isChecked())
-        Settings().setValue(self.settings_section + u'/user id', self.user_id.text())
-        Settings().setValue(self.settings_section + u'/password', self.password.text())
+            self.settings_form.register_post_process('remotes_config_updated')
+        Settings().setValue(self.settings_section + '/port', self.port_spin_box.value())
+        Settings().setValue(self.settings_section + '/https port', self.https_port_spin_box.value())
+        Settings().setValue(self.settings_section + '/https enabled', self.https_settings_group_box.isChecked())
+        Settings().setValue(self.settings_section + '/ip address', self.address_edit.text())
+        Settings().setValue(self.settings_section + '/twelve hour', self.twelve_hour)
+        Settings().setValue(self.settings_section + '/authentication enabled', self.user_login_group_box.isChecked())
+        Settings().setValue(self.settings_section + '/user id', self.user_id.text())
+        Settings().setValue(self.settings_section + '/password', self.password.text())
 
     def on_twelve_hour_check_box_changed(self, check_state):
         """

@@ -33,10 +33,10 @@ Worship songs into the OpenLP database.
 import os
 import logging
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.songs.lib.songimport import SongImport
 
-BLOCK_TYPES = (u'V', u'C', u'B')
+BLOCK_TYPES = ('V', 'C', 'B')
 
 log = logging.getLogger(__name__)
 
@@ -112,28 +112,28 @@ class WowImport(SongImport):
                     return
                 self.setDefaults()
                 song_data = open(source, 'rb')
-                if song_data.read(19) != u'WoW File\nSong Words':
-                    self.logError(source, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
+                if song_data.read(19) != 'WoW File\nSong Words':
+                    self.logError(source, str(translate('SongsPlugin.WordsofWorshipSongImport',
                             ('Invalid Words of Worship song file. Missing "Wow File\\nSong Words" header.'))))
                     continue
                 # Seek to byte which stores number of blocks in the song
                 song_data.seek(56)
                 no_of_blocks = ord(song_data.read(1))
                 song_data.seek(66)
-                if song_data.read(16) != u'CSongDoc::CBlock':
-                    self.logError(source, unicode(translate('SongsPlugin.WordsofWorshipSongImport',
+                if song_data.read(16) != 'CSongDoc::CBlock':
+                    self.logError(source, str(translate('SongsPlugin.WordsofWorshipSongImport',
                         ('Invalid Words of Worship song file. Missing "CSongDoc::CBlock" string.'))))
                     continue
                 # Seek to the beginning of the first block
                 song_data.seek(82)
                 for block in range(no_of_blocks):
                     self.linesToRead = ord(song_data.read(4)[:1])
-                    block_text = u''
+                    block_text = ''
                     while self.linesToRead:
-                        self.lineText = unicode(song_data.read(ord(song_data.read(1))), u'cp1252')
+                        self.lineText = str(song_data.read(ord(song_data.read(1))), 'cp1252')
                         song_data.seek(1, os.SEEK_CUR)
                         if block_text:
-                            block_text += u'\n'
+                            block_text += '\n'
                         block_text += self.lineText
                         self.linesToRead -= 1
                     block_type = BLOCK_TYPES[ord(song_data.read(4)[:1])]
@@ -145,14 +145,14 @@ class WowImport(SongImport):
                 # Now to extract the author
                 author_length = ord(song_data.read(1))
                 if author_length:
-                    self.parse_author(unicode(song_data.read(author_length), u'cp1252'))
+                    self.parse_author(str(song_data.read(author_length), 'cp1252'))
                 # Finally the copyright
                 copyright_length = ord(song_data.read(1))
                 if copyright_length:
-                    self.addCopyright(unicode(song_data.read(copyright_length), u'cp1252'))
+                    self.addCopyright(str(song_data.read(copyright_length), 'cp1252'))
                 file_name = os.path.split(source)[1]
                 # Get the song title
-                self.title = file_name.rpartition(u'.')[0]
+                self.title = file_name.rpartition('.')[0]
                 song_data.close()
                 if not self.finish():
                     self.logError(source)

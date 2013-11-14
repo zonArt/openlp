@@ -1,21 +1,48 @@
+# -*- coding: utf-8 -*-
+# vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 Package to test the openlp.core.lib.formattingtags package.
 """
 import copy
 from unittest import TestCase
 
-from mock import patch
-
 from openlp.core.lib import FormattingTags
+from tests.functional import patch
 
 
 TAG = {
-    u'end tag': '{/aa}',
-    u'start html': '<span>',
-    u'start tag': '{aa}',
-    u'protected': False,
-    u'end html': '</span>',
-    u'desc': 'name'
+    'end tag': '{/aa}',
+    'start html': '<span>',
+    'start tag': '{aa}',
+    'protected': False,
+    'end html': '</span>',
+    'desc': 'name'
 }
 
 
@@ -31,12 +58,12 @@ class TestFormattingTags(TestCase):
         """
         Test the FormattingTags class' get_html_tags static method.
         """
-        with patch(u'openlp.core.lib.translate') as mocked_translate, \
-                patch(u'openlp.core.lib.settings') as mocked_settings, \
-                patch(u'openlp.core.lib.formattingtags.json') as mocked_json:
+        with patch('openlp.core.lib.translate') as mocked_translate, \
+                patch('openlp.core.common.settings') as mocked_settings, \
+                patch('openlp.core.lib.formattingtags.json') as mocked_json:
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate, comment: string_to_translate
-            mocked_settings.value.return_value = u''
+            mocked_settings.value.return_value = ''
             mocked_json.load.return_value = []
 
             # WHEN: Get the display tags.
@@ -46,18 +73,18 @@ class TestFormattingTags(TestCase):
             new_tags_list = FormattingTags.get_html_tags()
 
             # THEN: Lists should be identical.
-            assert old_tags_list == new_tags_list, u'The formatting tag lists should be identical.'
+            assert old_tags_list == new_tags_list, 'The formatting tag lists should be identical.'
 
     def get_html_tags_with_user_tags_test(self):
         """
         FormattingTags class - test the get_html_tags(), add_html_tags() and remove_html_tag() methods.
         """
-        with patch(u'openlp.core.lib.translate') as mocked_translate, \
-                patch(u'openlp.core.lib.settings') as mocked_settings, \
-                patch(u'openlp.core.lib.formattingtags.json') as mocked_json:
+        with patch('openlp.core.lib.translate') as mocked_translate, \
+                patch('openlp.core.common.settings') as mocked_settings, \
+                patch('openlp.core.lib.formattingtags.json') as mocked_json:
             # GIVEN: Our mocked modules and functions.
             mocked_translate.side_effect = lambda module, string_to_translate: string_to_translate
-            mocked_settings.value.return_value = u''
+            mocked_settings.value.return_value = ''
             mocked_json.loads.side_effect = [[], [TAG]]
 
             # WHEN: Get the display tags.
@@ -70,15 +97,15 @@ class TestFormattingTags(TestCase):
             new_tags_list = copy.deepcopy(FormattingTags.get_html_tags())
 
             # THEN: Lists should not be identical.
-            assert old_tags_list != new_tags_list, u'The lists should be different.'
+            assert old_tags_list != new_tags_list, 'The lists should be different.'
 
             # THEN: Added tag and last tag should be the same.
             new_tag = new_tags_list.pop()
-            assert TAG == new_tag, u'Tags should be identical.'
+            assert TAG == new_tag, 'Tags should be identical.'
 
             # WHEN: Remove the new tag.
             FormattingTags.remove_html_tag(len(new_tags_list))
 
             # THEN: The lists should now be identical.
-            assert old_tags_list == FormattingTags.get_html_tags(), u'The lists should be identical.'
+            assert old_tags_list == FormattingTags.get_html_tags(), 'The lists should be identical.'
 

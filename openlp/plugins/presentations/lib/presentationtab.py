@@ -29,7 +29,8 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Settings, SettingsTab, UiStrings, translate
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab
 
 
 class PresentationTab(SettingsTab):
@@ -42,33 +43,33 @@ class PresentationTab(SettingsTab):
         """
         self.parent = parent
         self.controllers = controllers
-        SettingsTab.__init__(self, parent, title, visible_title, icon_path)
+        super(PresentationTab, self).__init__(parent, title, visible_title, icon_path)
         self.activated = False
 
     def setupUi(self):
         """
         Create the controls for the settings tab
         """
-        self.setObjectName(u'PresentationTab')
-        SettingsTab.setupUi(self)
+        self.setObjectName('PresentationTab')
+        super(PresentationTab, self).setupUi()
         self.controllers_group_box = QtGui.QGroupBox(self.left_column)
-        self.controllers_group_box.setObjectName(u'controllers_group_box')
+        self.controllers_group_box.setObjectName('controllers_group_box')
         self.controllers_layout = QtGui.QVBoxLayout(self.controllers_group_box)
-        self.controllers_layout.setObjectName(u'ccontrollers_layout')
+        self.controllers_layout.setObjectName('ccontrollers_layout')
         self.presenter_check_boxes = {}
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = QtGui.QCheckBox(self.controllers_group_box)
-            checkbox.setObjectName(controller.name + u'CheckBox')
+            checkbox.setObjectName(controller.name + 'CheckBox')
             self.presenter_check_boxes[controller.name] = checkbox
             self.controllers_layout.addWidget(checkbox)
         self.left_layout.addWidget(self.controllers_group_box)
         self.advanced_group_box = QtGui.QGroupBox(self.left_column)
-        self.advanced_group_box.setObjectName(u'advanced_group_box')
+        self.advanced_group_box.setObjectName('advanced_group_box')
         self.advanced_layout = QtGui.QVBoxLayout(self.advanced_group_box)
-        self.advanced_layout.setObjectName(u'advanced_layout')
+        self.advanced_layout.setObjectName('advanced_layout')
         self.override_app_check_box = QtGui.QCheckBox(self.advanced_group_box)
-        self.override_app_check_box.setObjectName(u'override_app_check_box')
+        self.override_app_check_box.setObjectName('override_app_check_box')
         self.advanced_layout.addWidget(self.override_app_check_box)
         self.left_layout.addWidget(self.advanced_group_box)
         self.left_layout.addStretch()
@@ -100,8 +101,8 @@ class PresentationTab(SettingsTab):
         for key in self.controllers:
             controller = self.controllers[key]
             checkbox = self.presenter_check_boxes[controller.name]
-            checkbox.setChecked(Settings().value(self.settings_section + u'/' + controller.name))
-        self.override_app_check_box.setChecked(Settings().value(self.settings_section + u'/override app'))
+            checkbox.setChecked(Settings().value(self.settings_section + '/' + controller.name))
+        self.override_app_check_box.setChecked(Settings().value(self.settings_section + '/override app'))
 
     def save(self):
         """
@@ -115,7 +116,7 @@ class PresentationTab(SettingsTab):
             controller = self.controllers[key]
             if controller.is_available():
                 checkbox = self.presenter_check_boxes[controller.name]
-                setting_key = self.settings_section + u'/' + controller.name
+                setting_key = self.settings_section + '/' + controller.name
                 if Settings().value(setting_key) != checkbox.checkState():
                     changed = True
                     Settings().setValue(setting_key, checkbox.checkState())
@@ -123,14 +124,14 @@ class PresentationTab(SettingsTab):
                         controller.start_process()
                     else:
                         controller.kill()
-        setting_key = self.settings_section + u'/override app'
+        setting_key = self.settings_section + '/override app'
         if Settings().value(setting_key) != self.override_app_check_box.checkState():
             Settings().setValue(setting_key, self.override_app_check_box.checkState())
             changed = True
         if changed:
-            self.settings_form.register_post_process(u'mediaitem_suffix_reset')
-            self.settings_form.register_post_process(u'mediaitem_presentation_rebuild')
-            self.settings_form.register_post_process(u'mediaitem_suffixes')
+            self.settings_form.register_post_process('mediaitem_suffix_reset')
+            self.settings_form.register_post_process('mediaitem_presentation_rebuild')
+            self.settings_form.register_post_process('mediaitem_suffixes')
 
     def tab_visible(self):
         """

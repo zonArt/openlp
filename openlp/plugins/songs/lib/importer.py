@@ -32,23 +32,23 @@ The :mod:`importer` modules provides the general song import functionality.
 import os
 import logging
 
-from openlp.core.lib import translate, UiStrings
+from openlp.core.common import translate, UiStrings
 from openlp.core.ui.wizard import WizardStrings
-from opensongimport import OpenSongImport
-from easyslidesimport import EasySlidesImport
-from olpimport import OpenLPSongImport
-from openlyricsimport import OpenLyricsImport
-from wowimport import WowImport
-from cclifileimport import CCLIFileImport
-from dreambeamimport import DreamBeamImport
-from powersongimport import PowerSongImport
-from ewimport import EasyWorshipSongImport
-from songbeamerimport import SongBeamerImport
-from songshowplusimport import SongShowPlusImport
-from songproimport import SongProImport
-from sundayplusimport import SundayPlusImport
-from foilpresenterimport import FoilPresenterImport
-from zionworximport import ZionWorxImport
+from .opensongimport import OpenSongImport
+from .easyslidesimport import EasySlidesImport
+from .olpimport import OpenLPSongImport
+from .openlyricsimport import OpenLyricsImport
+from .wowimport import WowImport
+from .cclifileimport import CCLIFileImport
+from .dreambeamimport import DreamBeamImport
+from .powersongimport import PowerSongImport
+from .ewimport import EasyWorshipSongImport
+from .songbeamerimport import SongBeamerImport
+from .songshowplusimport import SongShowPlusImport
+from .songproimport import SongProImport
+from .sundayplusimport import SundayPlusImport
+from .foilpresenterimport import FoilPresenterImport
+from .zionworximport import ZionWorxImport
 # Imports that might fail
 
 
@@ -56,25 +56,31 @@ log = logging.getLogger(__name__)
 
 
 try:
-    from sofimport import SofImport
+    from .sofimport import SofImport
     HAS_SOF = True
 except ImportError:
     log.exception('Error importing %s', 'SofImport')
     HAS_SOF = False
 try:
-    from oooimport import OooImport
+    from .oooimport import OooImport
     HAS_OOO = True
 except ImportError:
     log.exception('Error importing %s', 'OooImport')
     HAS_OOO = False
 HAS_MEDIASHOUT = False
-if os.name == u'nt':
+if os.name == 'nt':
     try:
-        from mediashoutimport import MediaShoutImport
+        from .mediashoutimport import MediaShoutImport
         HAS_MEDIASHOUT = True
     except ImportError:
         log.exception('Error importing %s', 'MediaShoutImport')
-
+HAS_WORSHIPCENTERPRO = False
+if os.name == 'nt':
+    try:
+        from .worshipcenterproimport import WorshipCenterProImport
+        HAS_WORSHIPCENTERPRO = True
+    except ImportError:
+        log.exception('Error importing %s', 'WorshipCenterProImport')
 
 class SongFormatSelect(object):
     """
@@ -157,156 +163,167 @@ class SongFormat(object):
     SongsOfFellowship = 14
     SundayPlus = 15
     WordsOfWorship = 16
-    ZionWorx = 17
+    WorshipCenterPro = 17
+    ZionWorx = 18
 
     # Set optional attribute defaults
     __defaults__ = {
-        u'canDisable': False,
-        u'availability': True,
-        u'selectMode': SongFormatSelect.MultipleFiles,
-        u'filter': u'',
-        u'comboBoxText': None,
-        u'disabledLabelText': translate('SongsPlugin.ImportWizardForm', 'This importer has been disabled.'),
-        u'getFilesTitle': None,
-        u'invalidSourceMsg': None,
-        u'descriptionText': None
+        'canDisable': False,
+        'availability': True,
+        'selectMode': SongFormatSelect.MultipleFiles,
+        'filter': '',
+        'comboBoxText': None,
+        'disabledLabelText': translate('SongsPlugin.ImportWizardForm', 'This importer has been disabled.'),
+        'getFilesTitle': None,
+        'invalidSourceMsg': None,
+        'descriptionText': None
     }
 
     # Set attribute values for each Song Format
     __attributes__ = {
         OpenLyrics: {
-            u'class': OpenLyricsImport,
-            u'name': u'OpenLyrics',
-            u'prefix': u'openLyrics',
-            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
-            u'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
+            'class': OpenLyricsImport,
+            'name': 'OpenLyrics',
+            'prefix': 'openLyrics',
+            'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'OpenLyrics Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'OpenLyrics or OpenLP 2.0 Exported Song')
         },
         OpenLP2: {
-            u'class': OpenLPSongImport,
-            u'name': UiStrings().OLPV2,
-            u'prefix': u'openLP2',
-            u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
+            'class': OpenLPSongImport,
+            'name': UiStrings().OLPV2,
+            'prefix': 'openLP2',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.sqlite)' % (translate('SongsPlugin.ImportWizardForm', 'OpenLP 2.0 Databases'))
         },
         Generic: {
-            u'name': translate('SongsPlugin.ImportWizardForm', 'Generic Document/Presentation'),
-            u'prefix': u'generic',
-            u'canDisable': True,
-            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+            'name': translate('SongsPlugin.ImportWizardForm', 'Generic Document/Presentation'),
+            'prefix': 'generic',
+            'canDisable': True,
+            'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The generic document/presentation importer has been disabled '
                 'because OpenLP cannot access OpenOffice or LibreOffice.'),
-            u'getFilesTitle': translate('SongsPlugin.ImportWizardForm', 'Select Document/Presentation Files')
+            'getFilesTitle': translate('SongsPlugin.ImportWizardForm', 'Select Document/Presentation Files')
         },
         CCLI: {
-            u'class': CCLIFileImport,
-            u'name': u'CCLI/SongSelect',
-            u'prefix': u'ccli',
-            u'filter': u'%s (*.usr *.txt)' % translate('SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
+            'class': CCLIFileImport,
+            'name': 'CCLI/SongSelect',
+            'prefix': 'ccli',
+            'filter': '%s (*.usr *.txt)' % translate('SongsPlugin.ImportWizardForm', 'CCLI SongSelect Files')
         },
         DreamBeam: {
-            u'class': DreamBeamImport,
-            u'name': u'DreamBeam',
-            u'prefix': u'dreamBeam',
-            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'DreamBeam Song Files')
+            'class': DreamBeamImport,
+            'name': 'DreamBeam',
+            'prefix': 'dreamBeam',
+            'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'DreamBeam Song Files')
         },
         EasySlides: {
-            u'class': EasySlidesImport,
-            u'name': u'EasySlides',
-            u'prefix': u'easySlides',
-            u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'EasySlides XML File')
+            'class': EasySlidesImport,
+            'name': 'EasySlides',
+            'prefix': 'easySlides',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.xml)' % translate('SongsPlugin.ImportWizardForm', 'EasySlides XML File')
         },
         EasyWorship: {
-            u'class': EasyWorshipSongImport,
-            u'name': u'EasyWorship',
-            u'prefix': u'ew',
-            u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.db)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Song Database')
+            'class': EasyWorshipSongImport,
+            'name': 'EasyWorship',
+            'prefix': 'ew',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.db)' % translate('SongsPlugin.ImportWizardForm', 'EasyWorship Song Database')
         },
         FoilPresenter: {
-            u'class': FoilPresenterImport,
-            u'name': u'Foilpresenter',
-            u'prefix': u'foilPresenter',
-            u'filter': u'%s (*.foil)' % translate('SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
+            'class': FoilPresenterImport,
+            'name': 'Foilpresenter',
+            'prefix': 'foilPresenter',
+            'filter': '%s (*.foil)' % translate('SongsPlugin.ImportWizardForm', 'Foilpresenter Song Files')
         },
         MediaShout: {
-            u'name': u'MediaShout',
-            u'prefix': u'mediaShout',
-            u'canDisable': True,
-            u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
+            'name': 'MediaShout',
+            'prefix': 'mediaShout',
+            'canDisable': True,
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm',
                 'MediaShout Database'),
-            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+            'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The MediaShout importer is only supported on Windows. It has '
                 'been disabled due to a missing Python module. If you want to '
                 'use this importer, you will need to install the "pyodbc" '
                 'module.')
         },
         OpenSong: {
-            u'class': OpenSongImport,
-            u'name': WizardStrings.OS,
-            u'prefix': u'openSong'
+            'class': OpenSongImport,
+            'name': WizardStrings.OS,
+            'prefix': 'openSong'
         },
         PowerSong: {
-            u'class': PowerSongImport,
-            u'name': u'PowerSong 1.0',
-            u'prefix': u'powerSong',
-            u'selectMode': SongFormatSelect.SingleFolder,
-            u'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm',
+            'class': PowerSongImport,
+            'name': 'PowerSong 1.0',
+            'prefix': 'powerSong',
+            'selectMode': SongFormatSelect.SingleFolder,
+            'invalidSourceMsg': translate('SongsPlugin.ImportWizardForm',
                 'You need to specify a valid PowerSong 1.0 database folder.')
         },
         SongBeamer: {
-            u'class': SongBeamerImport,
-            u'name': u'SongBeamer',
-            u'prefix': u'songBeamer',
-            u'filter': u'%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
+            'class': SongBeamerImport,
+            'name': 'SongBeamer',
+            'prefix': 'songBeamer',
+            'filter': '%s (*.sng)' % translate('SongsPlugin.ImportWizardForm',
                 'SongBeamer Files')
         },
         SongPro: {
-            u'class': SongProImport,
-            u'name': u'SongPro',
-            u'prefix': u'songPro',
-            u'selectMode': SongFormatSelect.SingleFile,
-            u'filter': u'%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'SongPro Text Files'),
-            u'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'SongPro (Export File)'),
-            u'descriptionText': translate('SongsPlugin.ImportWizardForm',
+            'class': SongProImport,
+            'name': 'SongPro',
+            'prefix': 'songPro',
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.txt)' % translate('SongsPlugin.ImportWizardForm', 'SongPro Text Files'),
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'SongPro (Export File)'),
+            'descriptionText': translate('SongsPlugin.ImportWizardForm',
                 'In SongPro, export your songs using the File -> Export menu')
         },
         SongShowPlus: {
-            u'class': SongShowPlusImport,
-            u'name': u'SongShow Plus',
-            u'prefix': u'songShowPlus',
-            u'filter': u'%s (*.sbsong)' % translate('SongsPlugin.ImportWizardForm', 'SongShow Plus Song Files')
+            'class': SongShowPlusImport,
+            'name': 'SongShow Plus',
+            'prefix': 'songShowPlus',
+            'filter': '%s (*.sbsong)' % translate('SongsPlugin.ImportWizardForm', 'SongShow Plus Song Files')
         },
         SongsOfFellowship: {
-            u'name': u'Songs of Fellowship',
-            u'prefix': u'songsOfFellowship',
-            u'canDisable': True,
-            u'filter': u'%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm', 'Songs Of Fellowship Song Files'),
-            u'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+            'name': 'Songs of Fellowship',
+            'prefix': 'songsOfFellowship',
+            'canDisable': True,
+            'filter': '%s (*.rtf)' % translate('SongsPlugin.ImportWizardForm', 'Songs Of Fellowship Song Files'),
+            'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
                 'The Songs of Fellowship importer has been disabled because '
                 'OpenLP cannot access OpenOffice or LibreOffice.')
         },
         SundayPlus: {
-            u'class': SundayPlusImport,
-            u'name': u'SundayPlus',
-            u'prefix': u'sundayPlus',
-            u'filter': u'%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
+            'class': SundayPlusImport,
+            'name': 'SundayPlus',
+            'prefix': 'sundayPlus',
+            'filter': '%s (*.ptf)' % translate('SongsPlugin.ImportWizardForm', 'SundayPlus Song Files')
         },
         WordsOfWorship: {
-            u'class': WowImport,
-            u'name': u'Words of Worship',
-            u'prefix': u'wordsOfWorship',
-            u'filter': u'%s (*.wsg *.wow-song)' %
+            'class': WowImport,
+            'name': 'Words of Worship',
+            'prefix': 'wordsOfWorship',
+            'filter': '%s (*.wsg *.wow-song)' %
                 translate('SongsPlugin.ImportWizardForm', 'Words Of Worship Song Files')
         },
+        WorshipCenterPro: {
+            'name': 'WorshipCenter Pro',
+            'prefix': 'worshipCenterPro',
+            'canDisable': True,
+            'selectMode': SongFormatSelect.SingleFile,
+            'filter': '%s (*.mdb)' % translate('SongsPlugin.ImportWizardForm', 'WorshipCenter Pro Song Files'),
+            'disabledLabelText': translate('SongsPlugin.ImportWizardForm',
+                'The WorshipCenter Pro importer is only supported on Windows. It has been disabled due to a missing '
+                'Python module. If you want to use this importer, you will need to install the "pyodbc" module.')
+        },
         ZionWorx: {
-            u'class': ZionWorxImport,
-            u'name': u'ZionWorx',
-            u'prefix': u'zionWorx',
-            u'selectMode': SongFormatSelect.SingleFile,
-            u'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'ZionWorx (CSV)'),
-            u'descriptionText': translate('SongsPlugin.ImportWizardForm',
+            'class': ZionWorxImport,
+            'name': 'ZionWorx',
+            'prefix': 'zionWorx',
+            'selectMode': SongFormatSelect.SingleFile,
+            'comboBoxText': translate('SongsPlugin.ImportWizardForm', 'ZionWorx (CSV)'),
+            'descriptionText': translate('SongsPlugin.ImportWizardForm',
                 'First convert your ZionWorx database to a CSV text file, as '
                 'explained in the <a href="http://manual.openlp.org/songs.html'
                 '#importing-from-zionworx">User Manual</a>.')
@@ -336,6 +353,7 @@ class SongFormat(object):
             SongFormat.SongsOfFellowship,
             SongFormat.SundayPlus,
             SongFormat.WordsOfWorship,
+            SongFormat.WorshipCenterPro,
             SongFormat.ZionWorx
         ]
 
@@ -376,14 +394,18 @@ class SongFormat(object):
         SongFormat.__attributes__[format][attribute] = value
 
 
-SongFormat.set(SongFormat.SongsOfFellowship, u'availability', HAS_SOF)
+SongFormat.set(SongFormat.SongsOfFellowship, 'availability', HAS_SOF)
 if HAS_SOF:
-    SongFormat.set(SongFormat.SongsOfFellowship, u'class', SofImport)
-SongFormat.set(SongFormat.Generic, u'availability', HAS_OOO)
+    SongFormat.set(SongFormat.SongsOfFellowship, 'class', SofImport)
+SongFormat.set(SongFormat.Generic, 'availability', HAS_OOO)
 if HAS_OOO:
-    SongFormat.set(SongFormat.Generic, u'class', OooImport)
-SongFormat.set(SongFormat.MediaShout, u'availability', HAS_MEDIASHOUT)
+    SongFormat.set(SongFormat.Generic, 'class', OooImport)
+SongFormat.set(SongFormat.MediaShout, 'availability', HAS_MEDIASHOUT)
 if HAS_MEDIASHOUT:
-    SongFormat.set(SongFormat.MediaShout, u'class', MediaShoutImport)
+    SongFormat.set(SongFormat.MediaShout, 'class', MediaShoutImport)
+SongFormat.set(SongFormat.WorshipCenterPro, 'availability', HAS_WORSHIPCENTERPRO)
+if HAS_WORSHIPCENTERPRO:
+    SongFormat.set(SongFormat.WorshipCenterPro, 'class', WorshipCenterProImport)
 
-__all__ = [u'SongFormat', u'SongFormatSelect']
+
+__all__ = ['SongFormat', 'SongFormatSelect']

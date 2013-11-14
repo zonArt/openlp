@@ -31,7 +31,7 @@ The layout of the theme
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box
 
 
@@ -43,30 +43,30 @@ class Ui_ThemeLayoutDialog(object):
         """
         Set up the UI
         """
-        themeLayoutDialog.setObjectName(u'themeLayoutDialogDialog')
+        themeLayoutDialog.setObjectName('themeLayoutDialogDialog')
         #themeLayoutDialog.resize(300, 200)
         self.previewLayout = QtGui.QVBoxLayout(themeLayoutDialog)
-        self.previewLayout.setObjectName(u'previewLayout')
+        self.previewLayout.setObjectName('previewLayout')
         self.previewArea = QtGui.QWidget(themeLayoutDialog)
-        self.previewArea.setObjectName(u'previewArea')
+        self.previewArea.setObjectName('previewArea')
         self.previewAreaLayout = QtGui.QGridLayout(self.previewArea)
         self.previewAreaLayout.setMargin(0)
         self.previewAreaLayout.setColumnStretch(0, 1)
         self.previewAreaLayout.setRowStretch(0, 1)
-        self.previewAreaLayout.setObjectName(u'previewAreaLayout')
+        self.previewAreaLayout.setObjectName('previewAreaLayout')
         self.themeDisplayLabel = QtGui.QLabel(self.previewArea)
         self.themeDisplayLabel.setFrameShape(QtGui.QFrame.Box)
         self.themeDisplayLabel.setScaledContents(True)
-        self.themeDisplayLabel.setObjectName(u'themeDisplayLabel')
+        self.themeDisplayLabel.setObjectName('themeDisplayLabel')
         self.previewAreaLayout.addWidget(self.themeDisplayLabel)
         self.previewLayout.addWidget(self.previewArea)
         self.mainColourLabel = QtGui.QLabel(self.previewArea)
-        self.mainColourLabel.setObjectName(u'mainColourLabel')
+        self.mainColourLabel.setObjectName('mainColourLabel')
         self.previewLayout.addWidget(self.mainColourLabel)
         self.footerColourLabel = QtGui.QLabel(self.previewArea)
-        self.footerColourLabel.setObjectName(u'footerColourLabel')
+        self.footerColourLabel.setObjectName('footerColourLabel')
         self.previewLayout.addWidget(self.footerColourLabel)
-        self.button_box = create_button_box(themeLayoutDialog, u'button_box', [u'ok'])
+        self.button_box = create_button_box(themeLayoutDialog, 'button_box', ['ok'])
         self.previewLayout.addWidget(self.button_box)
         self.retranslateUi(themeLayoutDialog)
 
