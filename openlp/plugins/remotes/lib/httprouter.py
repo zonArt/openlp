@@ -128,7 +128,7 @@ from openlp.core.common import AppLocation, Settings, translate
 from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte
 
 log = logging.getLogger(__name__)
-file_types = {
+FILE_TYPES = {
     '.html': 'text/html',
     '.css': 'text/css',
     '.js': 'application/javascript',
@@ -361,8 +361,7 @@ class HttpRouter(object):
         try:
             if ext == '.html':
                 variables = self.template_vars
-                content = Template(filename=path, input_encoding='utf-8',
-                    output_encoding='utf-8').render(**variables)
+                content = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
             else:
                 file_handle = open(path, 'rb')
                 log.debug('Opened %s' % path)
@@ -386,7 +385,7 @@ class HttpRouter(object):
         """
         content_type = 'text/plain'
         ext = os.path.splitext(file_name)[1]
-        content_type = file_types.get(ext, 'text/plain')
+        content_type = FILE_TYPES.get(ext, 'text/plain')
         return ext, content_type
 
     def poll(self):

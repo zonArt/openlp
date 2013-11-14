@@ -37,7 +37,8 @@ from PyQt4 import QtGui
 
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
-from mock import MagicMock, patch, mock_open
+from tests.functional import MagicMock, patch
+from mock import mock_open
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -50,6 +51,7 @@ __default_settings__ = {
     'remotes/ip address': '0.0.0.0'
 }
 
+TEST_PATH = os.path.abspath(os.path.dirname(__file__))
 
 class TestRouter(TestCase):
     """
@@ -122,8 +124,7 @@ class TestRouter(TestCase):
             ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
             ['test.png', 'image/png'], ['test.whatever', 'text/plain'],
             ['test', 'text/plain'], ['', 'text/plain'],
-            ['/test/test.html', 'text/html'],
-            ['c:\\test\\test.html', 'text/html']]
+            [os.path.join(TEST_PATH,'test.html'), 'text/html']]
         # WHEN: calling each file type
         for header in headers:
             ext, content_type = self.router.get_content_type(header[0])
