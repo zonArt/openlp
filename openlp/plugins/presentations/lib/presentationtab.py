@@ -137,12 +137,12 @@ class PresentationTab(SettingsTab):
             checkbox.setChecked(Settings().value(self.settings_section + '/' + controller.name))
         self.override_app_check_box.setChecked(Settings().value(self.settings_section + '/override app'))
         # load pdf-program settings
-        enable_given_pdf_program = Settings().value(self.settings_section + '/enable_given_pdf_program')
-        self.pdf_program_check_box.setChecked(enable_given_pdf_program)
-        self.pdf_program_path.setReadOnly(not enable_given_pdf_program)
-        self.pdf_program_path.setPalette(self.get_grey_text_palette(not enable_given_pdf_program))
-        self.pdf_program_browse_button.setEnabled(enable_given_pdf_program)
-        pdf_program = Settings().value(self.settings_section + '/given_pdf_program')
+        enable_pdf_program = Settings().value(self.settings_section + '/enable_pdf_program')
+        self.pdf_program_check_box.setChecked(enable_pdf_program)
+        self.pdf_program_path.setReadOnly(not enable_pdf_program)
+        self.pdf_program_path.setPalette(self.get_grey_text_palette(not enable_pdf_program))
+        self.pdf_program_browse_button.setEnabled(enable_pdf_program)
+        pdf_program = Settings().value(self.settings_section + '/pdf_program')
         if pdf_program:
             self.pdf_program_path.setText(pdf_program)
 
@@ -173,15 +173,15 @@ class PresentationTab(SettingsTab):
         
         # Save pdf-settings
         pdf_program = self.pdf_program_path.text()
-        enable_given_pdf_program = self.pdf_program_check_box.checkState()
+        enable_pdf_program = self.pdf_program_check_box.checkState()
         # If the given program is blank disable using the program
         if pdf_program == '':
-            enable_given_pdf_program = 0
-        if pdf_program != Settings().value(self.settings_section + '/given_pdf_program'):
-            Settings().setValue(self.settings_section + '/given_pdf_program',  pdf_program)
+            enable_pdf_program = 0
+        if pdf_program != Settings().value(self.settings_section + '/pdf_program'):
+            Settings().setValue(self.settings_section + '/pdf_program',  pdf_program)
             changed = True
-        if enable_given_pdf_program != Settings().value(self.settings_section + '/enable_given_pdf_program'):
-            Settings().setValue(self.settings_section + '/enable_given_pdf_program',  enable_given_pdf_program)
+        if enable_pdf_program != Settings().value(self.settings_section + '/enable_pdf_program'):
+            Settings().setValue(self.settings_section + '/enable_pdf_program',  enable_pdf_program)
             changed = True
         
         if changed:

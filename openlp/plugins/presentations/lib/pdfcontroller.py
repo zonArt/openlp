@@ -58,14 +58,13 @@ class PdfController(PresentationController):
         self.supports = ['pdf']
         self.mudrawbin = ''
         self.gsbin = ''
-        if self.check_installed() and self.mudrawbin != '':
+        if self.check_installed() and self.mudrawbin:
             self.also_supports = ['xps']
 
     def check_binary(program_path):
         """
         Function that checks whether a binary is either ghostscript or mudraw or neither.
         """
-
         program_type = None
         runlog = ''
         try:
@@ -74,7 +73,6 @@ class PdfController(PresentationController):
             runlog = e.output
         except Exception:
             runlog = ''
-            
         # Analyse the output to see it the program is mudraw, ghostscript or neither
         for line in runlog.splitlines():
             found_mudraw = re.search('usage: mudraw.*', line)
@@ -87,8 +85,6 @@ class PdfController(PresentationController):
                 break
         log.info('in check_binary, found: ' + program_type)
         return program_type
-
-
 
     def check_available(self):
         """
@@ -103,44 +99,40 @@ class PdfController(PresentationController):
         """
         log.debug('check_installed Pdf')
         # Use the user defined program if given
-        if (Settings().value('presentations/enable_given_pdf_program')):
-            given_pdf_program = Settings().value('presentations/given_pdf_program')
-            type = self.check_binary(given_pdf_program)
+        if (Settings().value('presentations/enable_pdf_program')):
+            pdf_program = Settings().value('presentations/pdf_program')
+            type = self.check_binary(pdf_program)
             if type == 'gs':
-                self.gsbin = given_pdf_program
+                self.gsbin = pdf_program
                 return True
             elif type == 'mudraw':
-                self.mudrawbin = given_pdf_program
+                self.mudrawbin = pdf_program
                 return True
-
         # Fallback to autodetection
         application_path = AppLocation.get_directory(AppLocation.AppDir)
-        if os.name != 'nt':
+        if os.name == 'nt':
+            # for windows we only accept mudraw.exe in the base folder
+            application_path = AppLocation.get_directory(AppLocation.AppDir)
+            if os.path.isfile(application_path + '/../mudraw.exe'):
+                self.mudrawbin = application_path + '/../mudraw.exe'
+        else:
             # First try to find mupdf
             try:
                 self.mudrawbin = check_output(['which', 'mudraw']).decode(encoding='UTF-8').rstrip('\n')
             except CalledProcessError:
                 self.mudrawbin = ''
-
             # if mupdf isn't installed, fallback to ghostscript
-            if self.mudrawbin == '':
+            if not self.mudrawbin:
                 try:
                     self.gsbin = check_output(['which', 'gs']).rstrip('\n')
                 except CalledProcessError:
                     self.gsbin = ''
-                
             # Last option: check if mudraw is placed in OpenLP base folder
-            if self.mudrawbin == '' and self.gsbin == '':
+            if not self.mudrawbin and not self.gsbin:
                 application_path = AppLocation.get_directory(AppLocation.AppDir)
                 if os.path.isfile(application_path + '/../mudraw'):
                     self.mudrawbin = application_path + '/../mudraw'
-        else:
-            # for windows we only accept mudraw.exe in the base folder
-            application_path = AppLocation.get_directory(AppLocation.AppDir)
-            if os.path.isfile(application_path + '/../mudraw.exe'):
-                self.mudrawbin = application_path + '/../mudraw.exe'
-            
-        if self.mudrawbin == '' and self.gsbin == '':
+        if not self.mudrawbin and not self.gsbin:
             return False
         else:
             return True
@@ -192,7 +184,6 @@ quit \n\
         tmpfile = NamedTemporaryFile(delete=False)
         tmpfile.write(postscript)
         tmpfile.close()
-        
         # Run the script on the pdf to get the size
         runlog = []
         try:
@@ -201,7 +192,6 @@ quit \n\
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
         os.unlink(tmpfile.name)
-        
         # Extract the pdf resolution from output, the format is " Size: x: <width>, y: <height>"
         width = 0
         height = 0
@@ -212,12 +202,10 @@ quit \n\
                 break;
             except AttributeError:
                 pass
-
         # Calculate the ratio from pdf to screen
         if width > 0 and height > 0:
             width_ratio = size.right() / float(width)
             height_ratio = size.bottom() / float(height)
-            
             # return the resolution that should be used. 72 is default.
             if width_ratio > height_ratio:
                 return int(height_ratio * 72)
@@ -231,7 +219,6 @@ quit \n\
         Called when a presentation is added to the SlideController. It generates images from the PDF.
         """
         log.debug('load_presentation pdf')
-        
         # Check if the images has already been created, and if yes load them
         if os.path.isfile(os.path.join(self.get_temp_folder(), 'mainslide001.png')):
             created_files = sorted(os.listdir(self.get_temp_folder()))
@@ -240,16 +227,15 @@ quit \n\
                     self.image_files.append(os.path.join(self.get_temp_folder(), fn))
             self.num_pages = len(self.image_files)
             return True
-        
         size = ScreenList().current['size']
         # Generate images from PDF that will fit the frame.
         runlog = ''
         try:
             if not os.path.isdir(self.get_temp_folder()):
                 os.makedirs(self.get_temp_folder())
-            if self.controller.mudrawbin != '':
+            if self.controller.mudrawbin:
                 runlog = check_output([self.controller.mudrawbin, '-w', str(size.right()), '-h', str(size.bottom()), '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.filepath])
-            elif self.controller.gsbin != '':
+            elif self.controller.gsbin:
                 resolution = self.gs_get_resolution(size)
                 runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m', '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4', '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.filepath])
             created_files = sorted(os.listdir(self.get_temp_folder()))
@@ -261,7 +247,6 @@ quit \n\
             log.debug(runlog)
             return False 
         self.num_pages = len(self.image_files)
-        
         # Create thumbnails
         self.create_thumbnails()
         return True
@@ -273,8 +258,6 @@ quit \n\
         log.debug('create_thumbnails pdf')
         if self.check_thumbnails():
             return
-        log.debug('create_thumbnails proceeding')
-        
         # use builtin function to create thumbnails from generated images
         index = 1
         for image in self.image_files:

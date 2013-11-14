@@ -244,21 +244,17 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.list_view.selectedItems()
             if len(items) > 1:
                 return False
-        
         filename = items[0].data(QtCore.Qt.UserRole)
         file_type = os.path.splitext(filename)[1][1:]
         if not self.display_type_combo_box.currentText():
             return False
-        
-        if context == ServiceItemContext.Live and (file_type == 'pdf' or file_type == 'xps'):
+        if (file_type == 'pdf' or file_type == 'xps') and context != ServiceItemContext.Service:
             service_item.add_capability(ItemCapabilities.CanMaintain)
             service_item.add_capability(ItemCapabilities.CanPreview)
             service_item.add_capability(ItemCapabilities.CanLoop)
             service_item.add_capability(ItemCapabilities.CanAppend)
             # force a nonexistent theme
             service_item.theme = -1
-            
-            # Why the loop when we above return False if len(items) is > 1?
             for bitem in items:
                 filename = bitem.data(QtCore.Qt.UserRole)
                 (path, name) = os.path.split(filename)
@@ -270,16 +266,17 @@ class PresentationMediaItem(MediaManagerItem):
                     controller = self.controllers[processor]
                     service_item.processor = None
                     doc = controller.add_document(filename)
-                    if doc.get_thumbnail_path(1, True) is None or not os.path.isfile(os.path.join(doc.get_temp_folder(), 'mainslide001.png')):
+                    if doc.get_thumbnail_path(1, True) is None or not os.path.isfile(
+                            os.path.join(doc.get_temp_folder(), 'mainslide001.png')):
                         doc.load_presentation()
                     i = 1
                     imagefile = 'mainslide%03d.png' % i
-                    img = os.path.join(doc.get_temp_folder(), imagefile)
-                    while os.path.isfile(img):
-                        service_item.add_from_image(img, name)
+                    image = os.path.join(doc.get_temp_folder(), imagefile)
+                    while os.path.isfile(image):
+                        service_item.add_from_image(image, name)
                         i += 1
                         imagefile = 'mainslide%03d.png' % i
-                        img = os.path.join(doc.get_temp_folder(), imagefile)
+                        image = os.path.join(doc.get_temp_folder(), imagefile)
                     doc.close_presentation()
                     return True
                 else:
@@ -291,8 +288,6 @@ class PresentationMediaItem(MediaManagerItem):
         else:
             service_item.processor = self.display_type_combo_box.currentText()
             service_item.add_capability(ItemCapabilities.ProvidesOwnDisplay)
-
-            # Why the loop when we above return False if len(items) is > 1?
             for bitem in items:
                 filename = bitem.data(QtCore.Qt.UserRole)
                 (path, name) = os.path.split(filename)

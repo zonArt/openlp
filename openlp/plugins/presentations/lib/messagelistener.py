@@ -33,6 +33,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Registry
 from openlp.core.ui import HideMode
+from openlp.core.lib import ServiceItemContext
 
 log = logging.getLogger(__name__)
 
@@ -69,6 +70,7 @@ class Controller(object):
             return
         self.doc.slidenumber = slide_no
         self.hide_mode = hide_mode
+        log.debug('add_handler, slidenumber: %d' % slide_no)
         if self.is_live:
             if hide_mode == HideMode.Screen:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -316,6 +318,14 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.processor
+        #self.media_item.generate_slide_data(self, service_item, item=None, xml_version=False,remote=False, context=ServiceItemContext.Service)
+        if file.endswith('.pdf') or file.endswith('.xps'):
+            log.debug('Trying to convert from pdf to images for service-item')
+            if is_live:
+                self.media_item.generate_slide_data(self, item, None, False, False, ServiceItemContext.Live)
+            else:
+                self.media_item.generate_slide_data(self, item, None, False, False, ServiceItemContext.Preview)
+        
         if self.handler == self.media_item.Automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
@@ -326,9 +336,10 @@ class MessageListener(object):
             controller = self.preview_handler
         # when presenting PDF, we're using the image presentation code, 
         # so handler & processor is set to None, and we skip adding the handler.
+        log.debug('file: %s' % file)
         if self.handler == None:
             self.controller = controller
-        else: 
+        else:
             controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])
 
     def slide(self, message):
