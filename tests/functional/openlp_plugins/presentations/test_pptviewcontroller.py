@@ -29,8 +29,8 @@
 """
 This module contains tests for the pptviewcontroller module of the Presentations plugin.
 """
-from unittest import TestCase
 from mock import MagicMock, patch
+from unittest import TestCase
 
 from openlp.plugins.presentations.lib.pptviewcontroller import PptviewDocument
 
@@ -104,7 +104,7 @@ class TestPptviewDocument(TestCase):
         self.rect_patcher.stop()
         self.screen_list_patcher.stop()
 
-    def oload_presentation_succesfull_test(self):
+    def load_presentation_succesfull_test(self):
         """
         Test the PptviewDocument.load_presentation() method when the PPT is successfully opened
         """

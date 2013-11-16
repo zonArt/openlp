@@ -223,12 +223,12 @@ DllExport int OpenPPT(wchar_t *filename, HWND hParentWnd, RECT rect,
         {
             if (steps <= pptView[id].steps)
             {
-                Sleep(25);
+                Sleep(100);
                 DEBUG(L"OpenPPT: Step %d/%d\n", steps, pptView[id].steps);
                 steps++;
                 NextStep(id);
             }
-            Sleep(75);
+            Sleep(10);
         }
         DEBUG(L"OpenPPT: Slides %d, Steps %d, first slide steps %d\n",
             pptView[id].slideCount, pptView[id].steps,
