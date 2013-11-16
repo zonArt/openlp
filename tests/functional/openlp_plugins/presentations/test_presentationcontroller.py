@@ -50,9 +50,9 @@ from openlp.plugins.presentations.lib.presentationcontroller import Presentation
 #       _get_plugin_manager
 
 
-class TestPptviewDocument(TestCase):
+class TestPresentationDocument(TestCase):
     """
-    Test the PptviewDocument Class
+    Test the PresentationDocument Class
     """
     # TODO: Items left to test
     #   PresentationDocument
