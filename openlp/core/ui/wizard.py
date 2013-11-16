@@ -32,9 +32,10 @@ The :mod:``wizard`` module provides generic wizard tools for OpenLP.
 import logging
 import os
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, Settings, UiStrings, build_icon, translate
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import Registry, build_icon
 from openlp.core.lib.ui import add_welcome_page
 
 log = logging.getLogger(__name__)

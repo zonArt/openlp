@@ -2,12 +2,12 @@
 Package to test the openlp.core.ui.mainwindow package.
 """
 from unittest import TestCase
-from mock import MagicMock, patch
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import Registry
 from openlp.core.ui.mainwindow import MainWindow
+from tests.interfaces import MagicMock, patch
 
 
 class TestMainWindow(TestCase):

@@ -35,8 +35,9 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
+from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
-    ServiceItemContext, Settings, Registry, UiStrings, translate
+    ServiceItemContext, Registry
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
 
@@ -82,10 +83,17 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Constructor to create the media manager item.
         """
-        super(MediaManagerItem, self).__init__()
+        super(MediaManagerItem, self).__init__(parent)
+        self.plugin = plugin
+        self._setup()
+        self.setup_item()
+
+    def _setup(self):
+        """
+        Run some initial setup. This method is separate from __init__ in order to mock it out in tests.
+        """
         self.hide()
         self.whitespace = re.compile(r'[\W_]+', re.UNICODE)
-        self.plugin = plugin
         visible_title = self.plugin.get_string(StringContent.VisibleName)
         self.title = str(visible_title['title'])
         Registry().register(self.plugin.name, self)
@@ -105,6 +113,12 @@ class MediaManagerItem(QtGui.QWidget):
         # Need to use event as called across threads and UI is updated
         QtCore.QObject.connect(self, QtCore.SIGNAL('%s_go_live' % self.plugin.name), self.go_live_remote)
         QtCore.QObject.connect(self, QtCore.SIGNAL('%s_add_to_service' % self.plugin.name), self.add_to_service_remote)
+
+    def setup_item(self):
+        """
+        Override this for additional Plugin setup
+        """
+        pass
 
     def required_icons(self):
         """

@@ -30,9 +30,9 @@
 This module contains tests for the http module of the Bibles plugin.
 """
 from unittest import TestCase
-from mock import MagicMock, patch
 from bs4 import BeautifulSoup
 
+from tests.functional import patch, MagicMock
 from openlp.plugins.bibles.lib.http import BSExtract
 
 #TODO: Items left to test

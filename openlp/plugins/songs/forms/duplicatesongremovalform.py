@@ -37,13 +37,13 @@ from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Registry, translate
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
-from openlp.core.utils import AppLocation
 from openlp.plugins.songs.lib import delete_song
 from openlp.plugins.songs.lib.db import Song, MediaFile
 from openlp.plugins.songs.forms.songreviewwidget import SongReviewWidget
 from openlp.plugins.songs.lib.songcompare import songs_probably_equal
 
 log = logging.getLogger(__name__)
+
 
 class DuplicateSongRemovalForm(OpenLPWizard):
     """

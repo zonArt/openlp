@@ -27,6 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
+
 class VerseReferenceList(object):
     """
     The VerseReferenceList class encapsulates a list of verse references, but maintains the order in which they were

@@ -31,7 +31,7 @@ The UI widgets of the language selection dialog.
 """
 from PyQt4 import QtGui
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import create_button_box
 
 

@@ -76,12 +76,6 @@ try:
 except ImportError:
     ICU_VERSION = '-'
 try:
-    import cherrypy
-    CHERRYPY_VERSION = cherrypy.__version__
-except ImportError:
-    CHERRYPY_VERSION = '-'
-
-try:
     WEBKIT_VERSION = QtWebKit.qWebKitVersion()
 except AttributeError:
     WEBKIT_VERSION = '-'
@@ -91,7 +85,7 @@ try:
 except ImportError:
     VLC_VERSION = '-'
 
-from openlp.core.lib import UiStrings, Settings, translate
+from openlp.core.common import Settings, UiStrings, translate
 from openlp.core.utils import get_application_version
 
 from .exceptiondialog import Ui_ExceptionDialog
@@ -107,7 +101,7 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Constructor.
         """
-        super(ExceptionForm, self).__init__(self.main_window)
+        super(ExceptionForm, self).__init__()
         self.setupUi(self)
         self.settings_section = 'crashreport'
 
@@ -140,7 +134,6 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             'Chardet: %s\n' % CHARDET_VERSION + \
             'PyEnchant: %s\n' % ENCHANT_VERSION + \
             'Mako: %s\n' % MAKO_VERSION + \
-            'CherryPy: %s\n' % CHERRYPY_VERSION + \
             'pyICU: %s\n' % ICU_VERSION + \
             'pyUNO bridge: %s\n' % self._pyuno_import() + \
             'VLC: %s\n' % VLC_VERSION

@@ -60,7 +60,7 @@ import logging
 import chardet
 import csv
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.bibles.lib.db import BibleDB, BiblesResourcesDB
 
 

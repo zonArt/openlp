@@ -35,6 +35,7 @@ import re
 from openlp.plugins.songs.lib import strip_rtf
 from openlp.plugins.songs.lib.songimport import SongImport
 
+
 class SongProImport(SongImport):
     """
     The :class:`SongProImport` class provides the ability to import song files

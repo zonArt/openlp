@@ -31,7 +31,7 @@ The UI widgets for the time dialog
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import UiStrings, translate
+from openlp.core.common import UiStrings, translate
 from openlp.core.lib.ui import create_button_box
 
 
