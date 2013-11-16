@@ -29,8 +29,10 @@
 """
 This module contains tests for the pptviewcontroller module of the Presentations plugin.
 """
-from mock import MagicMock, patch
+
 from unittest import TestCase
+
+from tests.functional import MagicMock, patch
 
 from openlp.plugins.presentations.lib.pptviewcontroller import PptviewDocument
 

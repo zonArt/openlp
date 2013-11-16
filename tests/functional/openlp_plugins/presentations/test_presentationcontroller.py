@@ -27,10 +27,12 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the pptviewcontroller module of the Presentations plugin.
+This module contains tests for the presentationcontroller module of the Presentations plugin.
 """
-from mock import MagicMock, patch
+
 from unittest import TestCase
+
+from tests.functional import MagicMock, patch
 
 from openlp.plugins.presentations.lib.presentationcontroller import PresentationDocument
 
@@ -98,7 +100,6 @@ class TestPptviewDocument(TestCase):
         self.mock_controller = MagicMock()
 
         self.mock_get_thumbnail_folder.return_value = 'returned/path/'
-
 
     def tearDown(self):
         """
