@@ -35,7 +35,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import translate
+from openlp.core.lib import Registry
 
 
 log = logging.getLogger(__name__)

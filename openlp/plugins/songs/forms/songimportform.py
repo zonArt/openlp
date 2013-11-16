@@ -35,7 +35,9 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import FileDialog, Registry, Settings, UiStrings, translate
+from openlp.core.common import UiStrings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import FileDialog, Registry
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.wizard import OpenLPWizard, WizardStrings
 from openlp.plugins.songs.lib.importer import SongFormat, SongFormatSelect

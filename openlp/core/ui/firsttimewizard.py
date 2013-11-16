@@ -33,7 +33,7 @@ from PyQt4 import QtCore, QtGui
 
 import sys
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.ui import add_welcome_page
 
 

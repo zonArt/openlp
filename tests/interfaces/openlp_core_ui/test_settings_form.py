@@ -3,12 +3,11 @@ Package to test the openlp.core.lib.settingsform package.
 """
 from unittest import TestCase
 
-from mock import MagicMock, patch
-
 from PyQt4 import QtCore, QtTest, QtGui
 
 from openlp.core.ui import settingsform
 from openlp.core.lib import Registry, ScreenList
+from tests.interfaces import MagicMock, patch
 
 
 SCREEN = {

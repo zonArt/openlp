@@ -3,12 +3,12 @@
 """
 
 from unittest import TestCase
-from mock import MagicMock, Mock, patch
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import Registry, ScreenList, ServiceItem
 from openlp.core.ui.mainwindow import MainWindow
+from tests.interfaces import MagicMock, patch
 
 
 class TestServiceManager(TestCase):
@@ -41,7 +41,7 @@ class TestServiceManager(TestCase):
         # WHEN I have an empty display
         # THEN the count of items should be zero
         self.assertEqual(self.service_manager.service_manager_list.topLevelItemCount(), 0,
-            'The service manager list should be empty ')
+                         'The service manager list should be empty ')
 
     def context_menu_test(self):
         """
@@ -49,8 +49,8 @@ class TestServiceManager(TestCase):
         """
         # GIVEN: A service item added
         with patch('PyQt4.QtGui.QTreeWidget.itemAt') as mocked_item_at_method, \
-                patch('PyQt4.QtGui.QWidget.mapToGlobal') as mocked_map_to_global, \
-                patch('PyQt4.QtGui.QMenu.exec_') as mocked_exec:
+                patch('PyQt4.QtGui.QWidget.mapToGlobal'), \
+                patch('PyQt4.QtGui.QMenu.exec_'):
             mocked_item = MagicMock()
             mocked_item.parent.return_value = None
             mocked_item_at_method.return_value = mocked_item
@@ -61,12 +61,12 @@ class TestServiceManager(TestCase):
             self.service_manager.service_items = [{'service_item': service_item}]
             q_point = None
             # Mocked actions.
-            self.service_manager.edit_action.setVisible = Mock()
-            self.service_manager.create_custom_action.setVisible = Mock()
-            self.service_manager.maintain_action.setVisible = Mock()
-            self.service_manager.notes_action.setVisible = Mock()
-            self.service_manager.time_action.setVisible = Mock()
-            self.service_manager.auto_start_action.setVisible = Mock()
+            self.service_manager.edit_action.setVisible = MagicMock()
+            self.service_manager.create_custom_action.setVisible = MagicMock()
+            self.service_manager.maintain_action.setVisible = MagicMock()
+            self.service_manager.notes_action.setVisible = MagicMock()
+            self.service_manager.time_action.setVisible = MagicMock()
+            self.service_manager.auto_start_action.setVisible = MagicMock()
 
             # WHEN: Show the context menu.
             self.service_manager.context_menu(q_point)

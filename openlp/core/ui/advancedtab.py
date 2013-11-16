@@ -36,9 +36,9 @@ import sys
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import SettingsTab, Settings, UiStrings, translate, build_icon
-from openlp.core.utils import AppLocation, format_time, get_images_filter
-from openlp.core.lib import SlideLimits
+from openlp.core.common import AppLocation, Settings, SlideLimits, UiStrings, translate
+from openlp.core.lib import SettingsTab, build_icon
+from openlp.core.utils import format_time, get_images_filter
 
 log = logging.getLogger(__name__)
 
@@ -283,7 +283,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_day.setItemText(0, translate('OpenLP.AdvancedTab', 'Monday'))
         self.service_name_day.setItemText(1, translate('OpenLP.AdvancedTab', 'Tuesday'))
         self.service_name_day.setItemText(2, translate('OpenLP.AdvancedTab', 'Wednesday'))
-        self.service_name_day.setItemText(3, translate('OpenLP.AdvancedTab', 'Thurdsday'))
+        self.service_name_day.setItemText(3, translate('OpenLP.AdvancedTab', 'Thursday'))
         self.service_name_day.setItemText(4, translate('OpenLP.AdvancedTab', 'Friday'))
         self.service_name_day.setItemText(5, translate('OpenLP.AdvancedTab', 'Saturday'))
         self.service_name_day.setItemText(6, translate('OpenLP.AdvancedTab', 'Sunday'))

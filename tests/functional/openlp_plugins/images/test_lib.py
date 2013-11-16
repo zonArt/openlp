@@ -1,16 +1,40 @@
 # -*- coding: utf-8 -*-
 # vim: autoindent shiftwidth=4 expandtab textwidth=120 tabstop=4 softtabstop=4
+
+###############################################################################
+# OpenLP - Open Source Lyrics Projection                                      #
+# --------------------------------------------------------------------------- #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
+# Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
+# Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
+# Christian Richter, Philip Ridout, Simon Scudder, Jeffrey Smith,             #
+# Maikel Stuivenberg, Martin Thompson, Jon Tibble, Dave Warnock,              #
+# Frode Woldsund, Martin Zibricky, Patrick Zimmermann                         #
+# --------------------------------------------------------------------------- #
+# This program is free software; you can redistribute it and/or modify it     #
+# under the terms of the GNU General Public License as published by the Free  #
+# Software Foundation; version 2 of the License.                              #
+#                                                                             #
+# This program is distributed in the hope that it will be useful, but WITHOUT #
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       #
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    #
+# more details.                                                               #
+#                                                                             #
+# You should have received a copy of the GNU General Public License along     #
+# with this program; if not, write to the Free Software Foundation, Inc., 59  #
+# Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
+###############################################################################
 """
 This module contains tests for the lib submodule of the Images plugin.
 """
-
 from unittest import TestCase
-
-from mock import MagicMock, patch
 
 from openlp.core.lib import Registry
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 from openlp.plugins.images.lib.mediaitem import ImageMediaItem
+from tests.functional import MagicMock, patch
 
 
 class TestImageMediaItem(TestCase):
@@ -24,11 +48,10 @@ class TestImageMediaItem(TestCase):
         Registry().register('service_list', MagicMock())
         Registry().register('main_window', self.mocked_main_window)
         Registry().register('live_controller', MagicMock())
-        mocked_parent = MagicMock()
         mocked_plugin = MagicMock()
-        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.__init__') as mocked_init:
-            mocked_init.return_value = None
-            self.media_item = ImageMediaItem(mocked_parent, mocked_plugin)
+        with patch('openlp.plugins.images.lib.mediaitem.MediaManagerItem._setup'), \
+                patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.setup_item'):
+            self.media_item = ImageMediaItem(None, mocked_plugin)
 
     def save_new_images_list_empty_list_test(self):
         """
@@ -36,7 +59,7 @@ class TestImageMediaItem(TestCase):
         """
         # GIVEN: An empty image_list
         image_list = []
-        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
+        with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list'):
             self.media_item.manager = MagicMock()
 
             # WHEN: We run save_new_images_list with the empty list
@@ -50,8 +73,8 @@ class TestImageMediaItem(TestCase):
         """
         Test that the save_new_images_list() calls load_full_list() when reload_list is set to True
         """
-        # GIVEN: A list with 1 image
-        image_list = [ 'test_image.jpg' ]
+        # GIVEN: A list with 1 image and a mocked out manager
+        image_list = ['test_image.jpg']
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
             ImageFilenames.filename = ''
             self.media_item.manager = MagicMock()
@@ -69,8 +92,8 @@ class TestImageMediaItem(TestCase):
         """
         Test that the save_new_images_list() doesn't call load_full_list() when reload_list is set to False
         """
-        # GIVEN: A list with 1 image
-        image_list = [ 'test_image.jpg' ]
+        # GIVEN: A list with 1 image and a mocked out manager
+        image_list = ['test_image.jpg']
         with patch('openlp.plugins.images.lib.mediaitem.ImageMediaItem.load_full_list') as mocked_load_full_list:
             self.media_item.manager = MagicMock()
 
@@ -126,9 +149,35 @@ class TestImageMediaItem(TestCase):
         self.media_item.reset_action.setVisible.assert_called_with(False)
         self.media_item.live_controller.display.reset_image.assert_called_with()
 
+    def recursively_delete_group_test(self):
+        """
+        Test that recursively_delete_group() works
+        """
+        # GIVEN: An ImageGroups object and mocked functions
+        with patch('openlp.core.utils.delete_file') as mocked_delete_file:
+            ImageFilenames.group_id = 1
+            ImageGroups.parent_id = 1
+            self.media_item.manager = MagicMock()
+            self.media_item.manager.get_all_objects.side_effect = self._recursively_delete_group_side_effect
+            self.media_item.service_path = ""
+            test_group = ImageGroups()
+            test_group.id = 1
+
+            # WHEN: recursively_delete_group() is called
+            self.media_item.recursively_delete_group(test_group)
+
+            # THEN:
+            assert mocked_delete_file.call_count == 0, 'delete_file() should not be called'
+            assert self.media_item.manager.delete_object.call_count == 7, \
+                'manager.delete_object() should be called exactly 7 times'
+
+            # CLEANUP: Remove added attribute from ImageFilenames and ImageGroups
+            delattr(ImageFilenames, 'group_id')
+            delattr(ImageGroups, 'parent_id')
+
     def _recursively_delete_group_side_effect(*args, **kwargs):
         """
-        Side effect method that creates custom retun values for the recursively_delete_group method
+        Side effect method that creates custom return values for the recursively_delete_group method
         """
         if args[1] == ImageFilenames and args[2]:
             # Create some fake objects that should be removed
@@ -150,29 +199,3 @@ class TestImageMediaItem(TestCase):
             returned_object1.id = 1
             return [returned_object1]
         return []
-
-    def recursively_delete_group_test(self):
-        """
-        Test that recursively_delete_group() works
-        """
-        # GIVEN: An ImageGroups object and mocked functions
-        with patch('openlp.core.utils.delete_file') as mocked_delete_file:
-            ImageFilenames.group_id = 1
-            ImageGroups.parent_id = 1
-            self.media_item.manager = MagicMock()
-            self.media_item.manager.get_all_objects.side_effect = self._recursively_delete_group_side_effect
-            self.media_item.servicePath = ""
-            test_group = ImageGroups()
-            test_group.id = 1
-
-            # WHEN: recursively_delete_group() is called
-            self.media_item.recursively_delete_group(test_group)
-
-            # THEN:
-            assert mocked_delete_file.call_count == 0, 'delete_file() should not be called'
-            assert self.media_item.manager.delete_object.call_count == 7, \
-                'manager.delete_object() should be called exactly 7 times'
-
-            # CLEANUP: Remove added attribute from ImageFilenames and ImageGroups
-            delattr(ImageFilenames, 'group_id')
-            delattr(ImageGroups, 'parent_id')

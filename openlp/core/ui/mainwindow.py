@@ -42,12 +42,14 @@ from datetime import datetime
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, Registry, \
-    Settings, ScreenList, build_icon, check_directory_exists, translate
+    ScreenList, build_icon
 from openlp.core.lib.ui import UiStrings, create_action
 from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
     MediaDockManager, ShortcutListForm, FormattingTagForm
+
+from openlp.core.common import AppLocation, Settings, check_directory_exists, translate
 from openlp.core.ui.media import MediaController
-from openlp.core.utils import AppLocation, LanguageManager, add_actions, get_application_version
+from openlp.core.utils import LanguageManager, add_actions, get_application_version
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.firsttimeform import FirstTimeForm
 

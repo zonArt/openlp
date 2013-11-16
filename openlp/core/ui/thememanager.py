@@ -38,19 +38,18 @@ import re
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, Registry, Settings, UiStrings, \
-    get_text_file_string, build_icon, translate, check_item_selected, check_directory_exists, create_thumb, \
-    validate_thumb
-from openlp.core.lib.theme import ThemeXML, BackgroundType, VerticalType, BackgroundGradientType
+from openlp.core.common import AppLocation, Settings, check_directory_exists, UiStrings, translate
+from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, Registry, get_text_file_string, build_icon, \
+    check_item_selected, create_thumb, validate_thumb
+from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
-from openlp.core.theme import Theme
-from openlp.core.ui import FileRenameForm, ThemeForm
-from openlp.core.utils import AppLocation, delete_file, get_locale_key, get_filesystem_encoding
+from openlp.core.ui import FileRenameForm, ThemeForm, ThemeManagerHelper
+from openlp.core.utils import delete_file, get_locale_key, get_filesystem_encoding
 
 log = logging.getLogger(__name__)
 
 
-class ThemeManager(QtGui.QWidget):
+class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
     """
     Manages the orders of Theme.
     """
@@ -329,8 +328,8 @@ class ThemeManager(QtGui.QWidget):
         try:
             encoding = get_filesystem_encoding()
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
-        except OSError as xxx_todo_changeme1:
-            shutil.Error = xxx_todo_changeme1
+        except OSError as os_error:
+            shutil.Error = os_error
             log.exception('Error deleting theme %s', theme)
 
     def on_export_theme(self):
@@ -470,7 +469,7 @@ class ThemeManager(QtGui.QWidget):
             log.debug('No theme data - using default theme')
             return ThemeXML()
         else:
-            return self._create_theme_fom_Xml(xml, self.path)
+            return self._create_theme_from_Xml(xml, self.path)
 
     def over_write_message_box(self, theme_name):
         """
@@ -502,35 +501,30 @@ class ThemeManager(QtGui.QWidget):
                 log.exception('Theme contains "%s" XML files' % len(xml_file))
                 raise Exception('validation')
             xml_tree = ElementTree(element=XML(theme_zip.read(xml_file[0]))).getroot()
-            v1_background = xml_tree.find('BackgroundType')
-            if v1_background is not None:
-                theme_name, file_xml, out_file, abort_import = \
-                    self.unzip_version_122(directory, theme_zip, xml_file[0], xml_tree, v1_background, out_file)
+            theme_name = xml_tree.find('name').text.strip()
+            theme_folder = os.path.join(directory, theme_name)
+            theme_exists = os.path.exists(theme_folder)
+            if theme_exists and not self.over_write_message_box(theme_name):
+                abort_import = True
+                return
             else:
-                theme_name = xml_tree.find('name').text.strip()
-                theme_folder = os.path.join(directory, theme_name)
-                theme_exists = os.path.exists(theme_folder)
-                if theme_exists and not self.over_write_message_box(theme_name):
-                    abort_import = True
-                    return
+                abort_import = False
+            for name in theme_zip.namelist():
+                name = name.replace('/', os.path.sep)
+                split_name = name.split(os.path.sep)
+                if split_name[-1] == '' or len(split_name) == 1:
+                    # is directory or preview file
+                    continue
+                full_name = os.path.join(directory, name)
+                check_directory_exists(os.path.dirname(full_name))
+                if os.path.splitext(name)[1].lower() == '.xml':
+                    file_xml = str(theme_zip.read(name), 'utf-8')
+                    out_file = open(full_name, 'w')
+                    out_file.write(file_xml)
                 else:
-                    abort_import = False
-                for name in theme_zip.namelist():
-                    name = name.replace('/', os.path.sep)
-                    split_name = name.split(os.path.sep)
-                    if split_name[-1] == '' or len(split_name) == 1:
-                        # is directory or preview file
-                        continue
-                    full_name = os.path.join(directory, name)
-                    check_directory_exists(os.path.dirname(full_name))
-                    if os.path.splitext(name)[1].lower() == '.xml':
-                        file_xml = str(theme_zip.read(name), 'utf-8')
-                        out_file = open(full_name, 'w')
-                        out_file.write(file_xml)
-                    else:
-                        out_file = open(full_name, 'wb')
-                        out_file.write(theme_zip.read(name))
-                    out_file.close()
+                    out_file = open(full_name, 'wb')
+                    out_file.write(theme_zip.read(name))
+                out_file.close()
         except (IOError, zipfile.BadZipfile):
             log.exception('Importing theme from zip failed %s' % file_name)
             raise Exception('validation')
@@ -549,7 +543,7 @@ class ThemeManager(QtGui.QWidget):
             if not abort_import:
                 # As all files are closed, we can create the Theme.
                 if file_xml:
-                    theme = self._create_theme_fom_Xml(file_xml, self.path)
+                    theme = self._create_theme_from_Xml(file_xml, self.path)
                     self.generate_and_save_image(directory, theme_name, theme)
                 # Only show the error message, when IOError was not raised (in
                 # this case the error message has already been shown).
@@ -558,38 +552,6 @@ class ThemeManager(QtGui.QWidget):
                         translate('OpenLP.ThemeManager', 'Validation Error'),
                         translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
                     log.exception('Theme file does not contain XML data %s' % file_name)
-
-    def unzip_version_122(self, dir_name, zip_file, xml_file, xml_tree, background, out_file):
-        """
-        Unzip openlp.org 1.2x theme file and upgrade the theme xml. When calling
-        this method, please keep in mind, that some parameters are redundant.
-        """
-        theme_name = xml_tree.find('Name').text.strip()
-        theme_name = self.bad_v1_name_chars.sub('', theme_name)
-        theme_folder = os.path.join(dir_name, theme_name)
-        theme_exists = os.path.exists(theme_folder)
-        if theme_exists and not self.over_write_message_box(theme_name):
-            return '', '', '', True
-        themedir = os.path.join(dir_name, theme_name)
-        check_directory_exists(themedir)
-        file_xml = str(zip_file.read(xml_file), 'utf-8')
-        file_xml = self._migrate_version_122(file_xml)
-        out_file = open(os.path.join(themedir, theme_name + '.xml'), 'w')
-        out_file.write(file_xml.encode('utf-8'))
-        out_file.close()
-        if background.text.strip() == '2':
-            image_name = xml_tree.find('BackgroundParameter1').text.strip()
-            # image file has same extension and is in subfolder
-            image_file = [name for name in zip_file.namelist() if os.path.splitext(name)[1].lower()
-                == os.path.splitext(image_name)[1].lower() and name.find(r'/')]
-            if len(image_file) >= 1:
-                out_file = open(os.path.join(themedir, image_name), 'wb')
-                out_file.write(zip_file.read(image_file[0]))
-                out_file.close()
-            else:
-                log.exception('Theme file does not contain image file "%s"' % image_name.decode('utf-8', 'replace'))
-                raise Exception('validation')
-        return theme_name, file_xml, out_file, False
 
     def check_if_theme_exists(self, theme_name):
         """
@@ -698,7 +660,7 @@ class ThemeManager(QtGui.QWidget):
         image = os.path.join(self.path, theme + '.png')
         return image
 
-    def _create_theme_fom_Xml(self, theme_xml, path):
+    def _create_theme_from_Xml(self, theme_xml, path):
         """
         Return a theme object using information parsed from XML
 
@@ -741,55 +703,6 @@ class ThemeManager(QtGui.QWidget):
                         return False
             return True
         return False
-
-    def _migrate_version_122(self, xml_data):
-        """
-        Convert the xml data from version 1 format to the current format.
-
-        New fields are loaded with defaults to provide a complete, working
-        theme containing all compatible customisations from the old theme.
-
-        ``xml_data``
-            Version 1 theme to convert
-        """
-        theme = Theme(xml_data)
-        new_theme = ThemeXML()
-        new_theme.theme_name = self.bad_v1_name_chars.sub('', theme.Name)
-        if theme.BackgroundType == BackgroundType.Solid:
-            new_theme.background_type = BackgroundType.to_string(BackgroundType.Solid)
-            new_theme.background_color = str(theme.BackgroundParameter1.name())
-        elif theme.BackgroundType == BackgroundType.Horizontal:
-            new_theme.background_type = BackgroundType.to_string(BackgroundType.Gradient)
-            new_theme.background_direction = BackgroundGradientType.to_string(BackgroundGradientType.Horizontal)
-            if theme.BackgroundParameter3.name() == 1:
-                new_theme.background_direction = BackgroundGradientType.to_string(BackgroundGradientType.Horizontal)
-            new_theme.background_start_color = str(theme.BackgroundParameter1.name())
-            new_theme.background_end_color = str(theme.BackgroundParameter2.name())
-        elif theme.BackgroundType == BackgroundType.Image:
-            new_theme.background_type = BackgroundType.to_string(BackgroundType.Image)
-            new_theme.background_filename = str(theme.BackgroundParameter1)
-        elif theme.BackgroundType == BackgroundType.Transparent:
-            new_theme.background_type = BackgroundType.to_string(BackgroundType.Transparent)
-        new_theme.font_main_name = theme.FontName
-        new_theme.font_main_color = str(theme.FontColor.name())
-        new_theme.font_main_size = theme.FontProportion * 3
-        new_theme.font_footer_name = theme.FontName
-        new_theme.font_footer_color = str(theme.FontColor.name())
-        new_theme.font_main_shadow = False
-        if theme.Shadow == 1:
-            new_theme.font_main_shadow = True
-            new_theme.font_main_shadow_color = str(theme.ShadowColor.name())
-        if theme.Outline == 1:
-            new_theme.font_main_outline = True
-            new_theme.font_main_outline_color = str(theme.OutlineColor.name())
-        vAlignCorrection = VerticalType.Top
-        if theme.VerticalAlign == 2:
-            vAlignCorrection = VerticalType.Middle
-        elif theme.VerticalAlign == 1:
-            vAlignCorrection = VerticalType.Bottom
-        new_theme.display_horizontal_align = theme.HorizontalAlign
-        new_theme.display_vertical_align = vAlignCorrection
-        return new_theme.extract_xml()
 
     def _get_renderer(self):
         """

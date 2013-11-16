@@ -36,7 +36,8 @@ from datetime import datetime
 from PyQt4 import QtGui
 from PyQt4.phonon import Phonon
 
-from openlp.core.lib import Settings, translate
+from openlp.core.common import Settings
+from openlp.core.lib import translate
 
 from openlp.core.ui.media import MediaState
 from openlp.core.ui.media.mediaplayer import MediaPlayer
@@ -45,36 +46,22 @@ from openlp.core.ui.media.mediaplayer import MediaPlayer
 log = logging.getLogger(__name__)
 
 ADDITIONAL_EXT = {
-        'audio/ac3': ['.ac3'],
-        'audio/flac': ['.flac'],
-        'audio/x-m4a': ['.m4a'],
-        'audio/midi': ['.mid', '.midi'],
-        'audio/x-mp3': ['.mp3'],
-        'audio/mpeg': ['.mp3', '.mp2', '.mpga', '.mpega', '.m4a'],
-        'audio/qcelp': ['.qcp'],
-        'audio/x-wma': ['.wma'],
-        'audio/x-ms-wma': ['.wma'],
-        'video/x-flv': ['.flv'],
-        'video/x-matroska': ['.mpv', '.mkv'],
-        'video/x-wmv': ['.wmv'],
-        'video/x-mpg': ['.mpg'],
-        'video/mpeg': ['.mp4', '.mts', '.mov'],
-        'video/x-ms-wmv': ['.wmv']}
-
-VIDEO_CSS = """
-#videobackboard {
-    z-index:3;
-    background-color: %(bgcolor)s;
+    'audio/ac3': ['.ac3'],
+    'audio/flac': ['.flac'],
+    'audio/x-m4a': ['.m4a'],
+    'audio/midi': ['.mid', '.midi'],
+    'audio/x-mp3': ['.mp3'],
+    'audio/mpeg': ['.mp3', '.mp2', '.mpga', '.mpega', '.m4a'],
+    'audio/qcelp': ['.qcp'],
+    'audio/x-wma': ['.wma'],
+    'audio/x-ms-wma': ['.wma'],
+    'video/x-flv': ['.flv'],
+    'video/x-matroska': ['.mpv', '.mkv'],
+    'video/x-wmv': ['.wmv'],
+    'video/x-mpg': ['.mpg'],
+    'video/mpeg': ['.mp4', '.mts', '.mov'],
+    'video/x-ms-wmv': ['.wmv']
 }
-#video1 {
-    background-color: %(bgcolor)s;
-    z-index:4;
-}
-#video2 {
-    background-color: %(bgcolor)s;
-    z-index:4;
-}
-"""
 
 
 class PhononPlayer(MediaPlayer):
@@ -268,8 +255,7 @@ class PhononPlayer(MediaPlayer):
         """
         Add css style sheets to htmlbuilder
         """
-        background = QtGui.QColor(Settings().value('players/background color')).name()
-        return VIDEO_CSS % {'bgcolor': background}
+        return ''
 
     def get_info(self):
         """

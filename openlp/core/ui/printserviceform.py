@@ -36,9 +36,10 @@ import os
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.lib import Settings, UiStrings, Registry, translate, get_text_file_string
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import Registry, get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
-from openlp.core.utils import AppLocation
+from openlp.core.common import AppLocation
 
 DEFAULT_CSS = """/*
 Edit this file to customize the service order print. Note, that not all CSS
