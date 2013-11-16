@@ -36,7 +36,7 @@ from urllib import parse
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import UiStrings
+from openlp.core.common import UiStrings
 
 log = logging.getLogger(__name__)
 
