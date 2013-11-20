@@ -326,7 +326,7 @@ class MessageListener(object):
             else:
                 self.media_item.generate_slide_data(self, item, None, False, False, ServiceItemContext.Preview)
         
-        if self.handler == self.media_item.Automatic:
+        if self.handler == self.media_item.automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
                 return

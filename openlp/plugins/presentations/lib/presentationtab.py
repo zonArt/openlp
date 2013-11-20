@@ -29,11 +29,10 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Settings, SettingsTab, UiStrings, translate, build_icon
+from openlp.core.common import Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab, build_icon
 from openlp.core.lib.ui import critical_error_message_box
 from .pdfcontroller import PdfController
-#from openlp.plugins.presentations.lib.pdfcontroller import PdfController
-#from pdfcontroller import check_binary
 
 class PresentationTab(SettingsTab):
     """

@@ -26,7 +26,372 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+This module is responsible for generating the HTML for :class:`~openlp.core.ui.maindisplay`. The ``build_html`` function
+is the function which has to be called from outside. The generated and returned HTML will look similar to this::
 
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <title>OpenLP Display</title>
+        <style>
+        *{
+            margin: 0;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+            -webkit-user-select: none;
+        }
+        body {
+            background-color: #000000;
+        }
+        .size {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+        }
+        #black {
+            z-index: 8;
+            background-color: black;
+            display: none;
+        }
+        #bgimage {
+            z-index: 1;
+        }
+        #image {
+            z-index: 2;
+        }
+
+        #videobackboard {
+            z-index:3;
+            background-color: #000000;
+        }
+        #video {
+            background-color: #000000;
+            z-index:4;
+        }
+
+        #flash {
+            z-index:5;
+        }
+
+            #alert {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index: 10;
+                width: 100%;
+                vertical-align: bottom;
+                font-family: DejaVu Sans;
+                font-size: 40pt;
+                color: #ffffff;
+                background-color: #660000;
+                word-wrap: break-word;
+            }
+
+        #footer {
+            position: absolute;
+            z-index: 6;
+
+            left: 10px;
+            bottom: 0px;
+            width: 1580px;
+            font-family: Nimbus Sans L;
+            font-size: 12pt;
+            color: #FFFFFF;
+            text-align: left;
+            white-space: nowrap;
+
+        }
+        /* lyric css */
+
+        .lyricstable {
+            z-index: 5;
+            position: absolute;
+            display: table;
+            left: 10px; top: 0px;
+        }
+        .lyricscell {
+            display: table-cell;
+            word-wrap: break-word;
+            -webkit-transition: opacity 0.4s ease;
+            white-space:pre-wrap; word-wrap: break-word; text-align: left; vertical-align: top; font-family: Nimbus Sans L; font-size: 40pt; color: #FFFFFF; line-height: 100%; margin: 0;padding: 0; padding-bottom: 0; padding-left: 4px; width: 1580px; height: 810px;
+        }
+        .lyricsmain {
+             -webkit-text-stroke: 0.125em #000000; -webkit-text-fill-color: #FFFFFF;  text-shadow: #000000 5px 5px;
+        }
+
+        sup {
+            font-size: 0.6em;
+            vertical-align: top;
+            position: relative;
+            top: -0.3em;
+        }
+        </style>
+        <script>
+            var timer = null;
+            var transition = false;
+
+            function show_video(state, path, volume, loop, variable_value){
+                // Sometimes  video.currentTime stops slightly short of video.duration and video.ended is intermittent!
+
+                var video = document.getElementById('video');
+                if(volume != null){
+                    video.volume = volume;
+                }
+                switch(state){
+                    case 'load':
+                        video.src = 'file:///' + path;
+                        if(loop == true) {
+                            video.loop = true;
+                        }
+                        video.load();
+                        break;
+                    case 'play':
+                        video.play();
+                        break;
+                    case 'pause':
+                        video.pause();
+                        break;
+                    case 'stop':
+                        show_video('pause');
+                        video.currentTime = 0;
+                        break;
+                    case 'close':
+                        show_video('stop');
+                        video.src = '';
+                        break;
+                    case 'length':
+                        return video.duration;
+                    case 'current_time':
+                        return video.currentTime;
+                    case 'seek':
+                        video.currentTime = variable_value;
+                        break;
+                    case 'isEnded':
+                        return video.ended;
+                    case 'setVisible':
+                        video.style.visibility = variable_value;
+                        break;
+                    case 'setBackBoard':
+                        var back = document.getElementById('videobackboard');
+                        back.style.visibility = variable_value;
+                        break;
+               }
+            }
+
+            function getFlashMovieObject(movieName)
+            {
+                if (window.document[movieName]){
+                    return window.document[movieName];
+                }
+                if (document.embeds && document.embeds[movieName]){
+                    return document.embeds[movieName];
+                }
+            }
+
+            function show_flash(state, path, volume, variable_value){
+                var text = document.getElementById('flash');
+                var flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                var src = "src = 'file:///" + path + "'";
+                var view_parm = " wmode='opaque'" + " width='100%%'" + " height='100%%'";
+                var swf_parm = " name='OpenLPFlashMovie'" + " autostart='true' loop='false' play='true'" +
+                    " hidden='false' swliveconnect='true' allowscriptaccess='always'" + " volume='" + volume + "'";
+
+                switch(state){
+                    case 'load':
+                        text.innerHTML = "<embed " + src + view_parm + swf_parm + "/>";
+                        flashMovie = getFlashMovieObject("OpenLPFlashMovie");
+                        flashMovie.Play();
+                        break;
+                    case 'play':
+                        flashMovie.Play();
+                        break;
+                    case 'pause':
+                        flashMovie.StopPlay();
+                        break;
+                    case 'stop':
+                        flashMovie.StopPlay();
+                        tempHtml = text.innerHTML;
+                        text.innerHTML = '';
+                        text.innerHTML = tempHtml;
+                        break;
+                    case 'close':
+                        flashMovie.StopPlay();
+                        text.innerHTML = '';
+                        break;
+                    case 'length':
+                        return flashMovie.TotalFrames();
+                    case 'current_time':
+                        return flashMovie.CurrentFrame();
+                    case 'seek':
+        //                flashMovie.GotoFrame(variable_value);
+                        break;
+                    case 'isEnded':
+                        //TODO check flash end
+                        return false;
+                    case 'setVisible':
+                        text.style.visibility = variable_value;
+                        break;
+                }
+            }
+
+            function show_alert(alerttext, position){
+                var text = document.getElementById('alert');
+                text.innerHTML = alerttext;
+                if(alerttext == '') {
+                    text.style.visibility = 'hidden';
+                    return 0;
+                }
+                if(position == ''){
+                    position = getComputedStyle(text, '').verticalAlign;
+                }
+                switch(position)
+                {
+                    case 'top':
+                        text.style.top = '0px';
+                        break;
+                    case 'middle':
+                        text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                            + 'px';
+                        break;
+                    case 'bottom':
+                        text.style.top = (window.innerHeight - text.clientHeight)
+                            + 'px';
+                        break;
+                }
+                text.style.visibility = 'visible';
+                return text.clientHeight;
+            }
+
+            function update_css(align, font, size, color, bgcolor){
+                var text = document.getElementById('alert');
+                text.style.fontSize = size + "pt";
+                text.style.fontFamily = font;
+                text.style.color = color;
+                text.style.backgroundColor = bgcolor;
+                switch(align)
+                {
+                    case 'top':
+                        text.style.top = '0px';
+                        break;
+                    case 'middle':
+                        text.style.top = ((window.innerHeight - text.clientHeight) / 2)
+                            + 'px';
+                        break;
+                    case 'bottom':
+                        text.style.top = (window.innerHeight - text.clientHeight)
+                            + 'px';
+                        break;
+                }
+            }
+
+
+            function show_image(src){
+                var img = document.getElementById('image');
+                img.src = src;
+                if(src == '')
+                    img.style.display = 'none';
+                else
+                    img.style.display = 'block';
+            }
+
+            function show_blank(state){
+                var black = 'none';
+                var lyrics = '';
+                switch(state){
+                    case 'theme':
+                        lyrics = 'hidden';
+                        break;
+                    case 'black':
+                        black = 'block';
+                        break;
+                    case 'desktop':
+                        break;
+                }
+                document.getElementById('black').style.display = black;
+                document.getElementById('lyricsmain').style.visibility = lyrics;
+                document.getElementById('image').style.visibility = lyrics;
+                document.getElementById('footer').style.visibility = lyrics;
+            }
+
+            function show_footer(footertext){
+                document.getElementById('footer').innerHTML = footertext;
+            }
+
+            function show_text(new_text){
+                var match = /-webkit-text-fill-color:[^;"]+/gi;
+                if(timer != null)
+                    clearTimeout(timer);
+                /*
+                QtWebkit bug with outlines and justify causing outline alignment
+                problems. (Bug 859950) Surround each word with a <span> to workaround,
+                but only in this scenario.
+                */
+                var txt = document.getElementById('lyricsmain');
+                if(window.getComputedStyle(txt).textAlign == 'justify'){
+                    if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
+                        new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
+                            function(match) {
+                                return '</span>' + match + '<span>';
+                            });
+                        new_text = '<span>' + new_text + '</span>';
+                    }
+                }
+                text_fade('lyricsmain', new_text);
+            }
+
+            function text_fade(id, new_text){
+                /*
+                Show the text.
+                */
+                var text = document.getElementById(id);
+                if(text == null) return;
+                if(!transition){
+                    text.innerHTML = new_text;
+                    return;
+                }
+                // Fade text out. 0.1 to minimize the time "nothing" is shown on the screen.
+                text.style.opacity = '0.1';
+                // Fade new text in after the old text has finished fading out.
+                timer = window.setTimeout(function(){_show_text(text, new_text)}, 400);
+            }
+
+            function _show_text(text, new_text) {
+                /*
+                Helper function to show the new_text delayed.
+                */
+                text.innerHTML = new_text;
+                text.style.opacity = '1';
+                // Wait until the text is completely visible. We want to save the timer id, to be able to call
+                // clearTimeout(timer) when the text has changed before finishing fading.
+                timer = window.setTimeout(function(){timer = null;}, 400);
+            }
+
+            function show_text_completed(){
+                return (timer == null);
+            }
+        </script>
+        </head>
+        <body>
+        <img id="bgimage" class="size" style="display:none;" />
+        <img id="image" class="size" style="display:none;" />
+
+        <div id="videobackboard" class="size" style="visibility:hidden"></div>
+        <video id="video" class="size" style="visibility:hidden" autobuffer preload></video>
+
+        <div id="flash" class="size" style="visibility:hidden"></div>
+
+            <div id="alert" style="visibility:hidden"></div>
+
+        <div class="lyricstable"><div id="lyricsmain" style="opacity:1" class="lyricscell lyricsmain"></div></div>
+        <div id="footer" class="footer"></div>
+        <div id="black" class="size"></div>
+        </body>
+        </html>
+"""
 import logging
 
 from PyQt4 import QtWebKit
@@ -114,12 +479,6 @@ sup {
         document.getElementById('black').style.display = black;
         document.getElementById('lyricsmain').style.visibility = lyrics;
         document.getElementById('image').style.visibility = lyrics;
-        outline = document.getElementById('lyricsoutline')
-        if(outline != null)
-            outline.style.visibility = lyrics;
-        shadow = document.getElementById('lyricsshadow')
-        if(shadow != null)
-            shadow.style.visibility = lyrics;
         document.getElementById('footer').style.visibility = lyrics;
     }
 
@@ -138,9 +497,6 @@ sup {
         */
         var txt = document.getElementById('lyricsmain');
         if(window.getComputedStyle(txt).textAlign == 'justify'){
-            var outline = document.getElementById('lyricsoutline');
-            if(outline != null)
-                txt = outline;
             if(window.getComputedStyle(txt).webkitTextStrokeWidth != '0px'){
                 new_text = new_text.replace(/(\s|&nbsp;)+(?![^<]*>)/g,
                     function(match) {
@@ -150,8 +506,6 @@ sup {
             }
         }
         text_fade('lyricsmain', new_text);
-        text_fade('lyricsoutline', new_text);
-        text_fade('lyricsshadow', new_text.replace(match, ''));
     }
 
     function text_fade(id, new_text){
@@ -190,7 +544,7 @@ sup {
 <img id="bgimage" class="size" %s />
 <img id="image" class="size" %s />
 %s
-%s
+<div class="lyricstable"><div id="lyricsmain" style="opacity:1" class="lyricscell lyricsmain"></div></div>
 <div id="footer" class="footer"></div>
 <div id="black" class="size"></div>
 </body>
@@ -222,8 +576,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     """
     width = screen['size'].width()
     height = screen['size'].height()
-    theme = item.themedata
-    webkit_ver = webkit_version()
+    theme_data = item.themedata
     # Image generated and poked in
     if background:
         bgimage_src = 'src="data:image/png;base64,%s"' % background
@@ -247,12 +600,12 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
         build_background_css(item, width),
         css_additions,
         build_footer_css(item, height),
-        build_lyrics_css(item, webkit_ver),
-        'true' if theme and theme.display_slide_transition and is_live else 'false',
+        build_lyrics_css(item),
+        'true' if theme_data and theme_data.display_slide_transition and is_live else 'false',
         js_additions,
-        bgimage_src, image_src,
-        html_additions,
-        build_lyrics_html(item, webkit_ver)
+        bgimage_src,
+        image_src,
+        html_additions
     )
     return html
 
@@ -303,15 +656,12 @@ def build_background_css(item, width):
     return background
 
 
-def build_lyrics_css(item, webkit_ver):
+def build_lyrics_css(item):
     """
     Build the lyrics display css
 
     ``item``
         Service Item containing theme and location information
-
-    ``webkitvers``
-        The version of qtwebkit we're using
 
     """
     style = """
@@ -328,81 +678,44 @@ def build_lyrics_css(item, webkit_ver):
     %s
 }
 .lyricsmain {
-%s
+    %s
 }
-.lyricsoutline {
-%s
-}
-.lyricsshadow {
-%s
-}
-    """
-    theme = item.themedata
+"""
+    theme_data = item.themedata
     lyricstable = ''
     lyrics = ''
     lyricsmain = ''
-    outline = ''
-    shadow = ''
-    if theme and item.main:
+    if theme_data and item.main:
         lyricstable = 'left: %spx; top: %spx;' % (item.main.x(), item.main.y())
-        lyrics = build_lyrics_format_css(theme, item.main.width(), item.main.height())
-        # For performance reasons we want to show as few DIV's as possible, especially when animating/transitions.
-        # However some bugs in older versions of qtwebkit mean we need to perform workarounds and add extra divs. Only
-        # do these when needed.
-        #
-        # Before 533.3 the webkit-text-fill colour wasn't displayed, only the stroke (outline) color. So put stroke
-        # layer underneath the main text.
-        #
-        # Up to 534.3 the webkit-text-stroke was sometimes out of alignment with the fill, or normal text.
-        # letter-spacing=1 is workaround https://bugs.webkit.org/show_bug.cgi?id=44403
-        #
-        # Up to 534.3 the text-shadow didn't get displayed when webkit-text-stroke was used. So use an offset text
-        # layer underneath. https://bugs.webkit.org/show_bug.cgi?id=19728
-        if webkit_ver >= 533.3:
-            lyricsmain += build_lyrics_outline_css(theme)
-        else:
-            outline = build_lyrics_outline_css(theme)
-        if theme.font_main_shadow:
-            if theme.font_main_outline and webkit_ver <= 534.3:
-                shadow = 'padding-left: %spx; padding-top: %spx;' % \
-                    (int(theme.font_main_shadow_size) + (int(theme.font_main_outline_size) * 2),
-                    theme.font_main_shadow_size)
-                shadow += build_lyrics_outline_css(theme, True)
-            else:
-                lyricsmain += ' text-shadow: %s %spx %spx;' % \
-                    (theme.font_main_shadow_color, theme.font_main_shadow_size, theme.font_main_shadow_size)
-    lyrics_css = style % (lyricstable, lyrics, lyricsmain, outline, shadow)
+        lyrics = build_lyrics_format_css(theme_data, item.main.width(), item.main.height())
+        lyricsmain += build_lyrics_outline_css(theme_data)
+        if theme_data.font_main_shadow:
+            lyricsmain += ' text-shadow: %s %spx %spx;' % \
+                (theme_data.font_main_shadow_color, theme_data.font_main_shadow_size, theme_data.font_main_shadow_size)
+    lyrics_css = style % (lyricstable, lyrics, lyricsmain)
     return lyrics_css
 
 
-def build_lyrics_outline_css(theme, is_shadow=False):
+def build_lyrics_outline_css(theme_data):
     """
     Build the css which controls the theme outline. Also used by renderer for splitting verses
 
-    ``theme``
+    ``theme_data``
         Object containing theme information
-
-    ``is_shadow``
-        If true, use the shadow colors instead
     """
-    if theme.font_main_outline:
-        size = float(theme.font_main_outline_size) / 16
-        if is_shadow:
-            fill_color = theme.font_main_shadow_color
-            outline_color = theme.font_main_shadow_color
-        else:
-            fill_color = theme.font_main_color
-            outline_color = theme.font_main_outline_color
+    if theme_data.font_main_outline:
+        size = float(theme_data.font_main_outline_size) / 16
+        fill_color = theme_data.font_main_color
+        outline_color = theme_data.font_main_outline_color
         return ' -webkit-text-stroke: %sem %s; -webkit-text-fill-color: %s; ' % (size, outline_color, fill_color)
-    else:
-        return ''
+    return ''
 
 
-def build_lyrics_format_css(theme, width, height):
+def build_lyrics_format_css(theme_data, width, height):
     """
     Build the css which controls the theme format. Also used by renderer for splitting verses
 
-    ``theme``
+    ``theme_data``
         Object containing theme information
 
     ``width``
@@ -411,17 +724,17 @@ def build_lyrics_format_css(theme, width, height):
     ``height``
         Height of the lyrics block
     """
-    align = HorizontalType.Names[theme.display_horizontal_align]
-    valign = VerticalType.Names[theme.display_vertical_align]
-    if theme.font_main_outline:
-        left_margin = int(theme.font_main_outline_size) * 2
+    align = HorizontalType.Names[theme_data.display_horizontal_align]
+    valign = VerticalType.Names[theme_data.display_vertical_align]
+    if theme_data.font_main_outline:
+        left_margin = int(theme_data.font_main_outline_size) * 2
     else:
         left_margin = 0
     justify = 'white-space:pre-wrap;'
     # fix tag incompatibilities
-    if theme.display_horizontal_align == HorizontalType.Justify:
+    if theme_data.display_horizontal_align == HorizontalType.Justify:
         justify = ''
-    if theme.display_vertical_align == VerticalType.Bottom:
+    if theme_data.display_vertical_align == VerticalType.Bottom:
         padding_bottom = '0.5em'
     else:
         padding_bottom = '0'
@@ -429,41 +742,13 @@ def build_lyrics_format_css(theme, width, height):
         'text-align: %s; vertical-align: %s; font-family: %s; ' \
         'font-size: %spt; color: %s; line-height: %d%%; margin: 0;' \
         'padding: 0; padding-bottom: %s; padding-left: %spx; width: %spx; height: %spx; ' % \
-        (justify, align, valign, theme.font_main_name, theme.font_main_size,
-        theme.font_main_color, 100 + int(theme.font_main_line_adjustment), padding_bottom, left_margin, width, height)
-    if theme.font_main_outline:
-        if webkit_version() <= 534.3:
-            lyrics += ' letter-spacing: 1px;'
-    if theme.font_main_italics:
-        lyrics += ' font-style:italic; '
-    if theme.font_main_bold:
-        lyrics += ' font-weight:bold; '
-    return lyrics
-
-
-def build_lyrics_html(item, webkitvers):
-    """
-    Build the HTML required to show the lyrics
-
-    ``item``
-        Service Item containing theme and location information
-
-    ``webkitvers``
-        The version of qtwebkit we're using
-    """
-    # Bugs in some versions of QtWebKit mean we sometimes need additional divs for outline and shadow, since the CSS
-    # doesn't work. To support vertical alignment middle and bottom, nested div's using display:table/display:table-cell
-    #  are required for each lyric block.
-    lyrics = ''
-    theme = item.themedata
-    if webkitvers <= 534.3 and theme and theme.font_main_outline:
-        lyrics += '<div class="lyricstable"><div id="lyricsshadow" style="opacity:1" ' \
-            'class="lyricscell lyricsshadow"></div></div>'
-        if webkitvers < 533.3:
-            lyrics += '<div class="lyricstable"><div id="lyricsoutline" style="opacity:1" ' \
-                'class="lyricscell lyricsoutline"></div></div>'
-    lyrics += '<div class="lyricstable"><div id="lyricsmain" style="opacity:1" ' \
-        'class="lyricscell lyricsmain"></div></div>'
+        (justify, align, valign, theme_data.font_main_name, theme_data.font_main_size,
+        theme_data.font_main_color, 100 + int(theme_data.font_main_line_adjustment), padding_bottom,
+        left_margin, width, height)
+    if theme_data.font_main_italics:
+        lyrics += 'font-style:italic; '
+    if theme_data.font_main_bold:
+        lyrics += 'font-weight:bold; '
     return lyrics
 
 

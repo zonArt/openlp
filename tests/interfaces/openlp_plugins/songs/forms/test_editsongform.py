@@ -1,13 +1,13 @@
 """
 Package to test the openlp.plugins.songs.forms.editsongform package.
 """
-from mock import MagicMock
 from unittest import TestCase
 
 from PyQt4 import QtGui
 
 from openlp.core.lib import Registry
 from openlp.plugins.songs.forms.editsongform import EditSongForm
+from tests.interfaces import MagicMock
 
 
 class TestEditSongForm(TestCase):
@@ -55,9 +55,9 @@ class TestEditSongForm(TestCase):
         self.form.verse_list_widget.rowCount = MagicMock(return_value=2)
         # Mock out the verse.
         first_verse = MagicMock()
-        first_verse.data = MagicMock(return_value='V1')
+        first_verse.data.return_value = 'V1'
         second_verse = MagicMock()
-        second_verse.data = MagicMock(return_value= 'V2')
+        second_verse.data.return_value = 'V2'
         self.form.verse_list_widget.item = MagicMock(side_effect=[first_verse, second_verse])
         self.form._extract_verse_order = MagicMock(return_value=given_verse_order.split())
 
@@ -76,9 +76,9 @@ class TestEditSongForm(TestCase):
         self.form.verse_list_widget.rowCount = MagicMock(return_value=2)
         # Mock out the verse.
         first_verse = MagicMock()
-        first_verse.data = MagicMock(return_value='V1')
+        first_verse.data.return_value = 'V1'
         second_verse = MagicMock()
-        second_verse.data = MagicMock(return_value= 'V2')
+        second_verse.data.return_value = 'V2'
         self.form.verse_list_widget.item = MagicMock(side_effect=[first_verse, second_verse])
         self.form._extract_verse_order = MagicMock(return_value=[given_verse_order])
 
@@ -98,7 +98,7 @@ class TestEditSongForm(TestCase):
         self.form.verse_list_widget.rowCount = MagicMock(return_value=1)
         # Mock out the verse. (We want a verse type to be returned).
         mocked_verse = MagicMock()
-        mocked_verse.data = MagicMock(return_value='V1')
+        mocked_verse.data.return_value = 'V1'
         self.form.verse_list_widget.item = MagicMock(return_value=mocked_verse)
         self.form._extract_verse_order = MagicMock(return_value=[])
         self.form.verse_order_edit.text = MagicMock(return_value=given_verse_order)

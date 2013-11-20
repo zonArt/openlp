@@ -32,10 +32,10 @@ import logging
 from tempfile import NamedTemporaryFile
 import re
 from subprocess import check_output, CalledProcessError, STDOUT
-#from PyQt4 import QtCore, QtGui
 
 from openlp.core.utils import AppLocation
-from openlp.core.lib import ScreenList, Settings
+from openlp.core.common import Settings
+from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
 
