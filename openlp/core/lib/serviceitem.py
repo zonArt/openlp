@@ -331,8 +331,8 @@ class ServiceItem(object):
             The command of/for the slide.
         """
         self.service_item_type = ServiceItemType.Command
-        self._raw_frames.append({'title': file_name, 'image': image, 
-            'path': path, 'display_title': display_title, 'notes': notes})
+        self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
+            'display_title': display_title, 'notes': notes})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -451,12 +451,10 @@ class ServiceItem(object):
                     self.title = text_image['title']
                 if path:
                     self.has_original_files = False
-                    self.add_from_command(path, text_image['title'], 
-                        text_image['image'], text_image.get('display_title',''),
-                        text_image.get('notes', ''))
+                    self.add_from_command(path, text_image['title'], text_image['image'],
+                        text_image.get('display_title',''), text_image.get('notes', ''))
                 else:
-                    self.add_from_command(text_image['path'], 
-                        text_image['title'], text_image['image'])
+                    self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
         self._new_item()
 
     def get_display_title(self):

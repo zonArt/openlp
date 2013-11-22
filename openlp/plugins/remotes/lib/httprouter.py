@@ -124,11 +124,19 @@ from urllib.parse import urlparse, parse_qs
 from mako.template import Template
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte, resize_image, ItemCapabilities
-from openlp.core.utils import AppLocation, translate
-from openlp.core.common import Settings
+from openlp.core.common import AppLocation, Settings, translate
+from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte
 
 log = logging.getLogger(__name__)
+FILE_TYPES = {
+    '.html': 'text/html',
+    '.css': 'text/css',
+    '.js': 'application/javascript',
+    '.jpg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.ico': 'image/x-icon',
+    '.png': 'image/png'
+}
 
 
 class HttpRouter(object):
@@ -350,13 +358,12 @@ class HttpRouter(object):
         if not path.startswith(self.html_dir):
             return self.do_not_found()
         content = None
-        ext, content_type = self.get_content_type(file_name)
+        ext, content_type = self.get_content_type(path)
         file_handle = None
         try:
             if ext == '.html':
                 variables = self.template_vars
-                content = Template(filename=path, input_encoding='utf-8',
-                    output_encoding='utf-8').render(**variables)
+                content = Template(filename=path, input_encoding='utf-8', output_encoding='utf-8').render(**variables)
             else:
                 file_handle = open(path, 'rb')
                 log.debug('Opened %s' % path)
@@ -375,20 +382,12 @@ class HttpRouter(object):
     def get_content_type(self, file_name):
         """
         Examines the extension of the file and determines
-        what header to send back
-        Returns the extension found
+        what the content_type should be, defaults to text/plain
+        Returns the extension and the content_type
         """
         content_type = 'text/plain'
-        file_types = {'.html': 'text/html',
-            '.css': 'text/css',
-            '.js': 'application/javascript',
-            '.jpg': 'image/jpeg',
-            '.gif': 'image/gif',
-            '.ico': 'image/x-icon',
-            '.png': 'image/png'
-        }
         ext = os.path.splitext(file_name)[1]
-        content_type = file_types.get(ext, 'text/plain')
+        content_type = FILE_TYPES.get(ext, 'text/plain')
         return ext, content_type
 
     def serve_thumbnail(self, controller_name=None, dimensions=None, file_name=None):

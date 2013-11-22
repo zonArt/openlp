@@ -815,8 +815,7 @@ class SlideController(DisplayController):
         if not self.service_item:
             return
         if self.service_item.is_command():
-            Registry().execute('%s_slide' % self.service_item.name.lower(),
-                [self.service_item, self.is_live, index])
+            Registry().execute('%s_slide' % self.service_item.name.lower(), [self.service_item, self.is_live, index])
             self.update_preview()
             self.selected_row = index
         else:

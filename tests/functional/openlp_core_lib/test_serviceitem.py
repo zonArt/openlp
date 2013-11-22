@@ -35,8 +35,7 @@ from unittest import TestCase
 from tests.functional import MagicMock, patch
 from tests.utils import assert_length, convert_file_service_item
 
-from openlp.core.lib import ItemCapabilities, ServiceItem, Registry, \
-    ServiceItemType
+from openlp.core.lib import ItemCapabilities, ServiceItem, Registry, ServiceItemType
 
 
 VERSE = 'The Lord said to {r}Noah{/r}: \n'\
@@ -123,28 +122,28 @@ class TestServiceItem(TestCase):
             mocked_exists.return_value = True
             service_item.set_from_service(line, TEST_PATH)
 
-            # THEN: We should get back a valid service item
-            self.assertTrue(service_item.is_valid, 'The new service item should be valid')
-            self.assertEqual(os.path.normpath(test_file),
-                os.path.normpath(service_item.get_rendered_frame(0)),
-                'The first frame should match the path to the image')
-            self.assertEqual(frame_array, service_item.get_frames()[0],
-                'The return should match frame array1')
-            self.assertEqual(test_file, service_item.get_frame_path(0),
-                'The frame path should match the full path to the image')
-            self.assertEqual(image_name, service_item.get_frame_title(0),
-                'The frame title should match the image name')
-            self.assertEqual(image_name, service_item.get_display_title(),
-                'The display title should match the first image name')
-            self.assertTrue(service_item.is_image(), 'This service item should be of an "image" type')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanMaintain),
-                'This service item should be able to be Maintained')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanPreview),
-                'This service item should be able to be be Previewed')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanLoop),
-                'This service item should be able to be run in a can be made to Loop')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
-                'This service item should be able to have new items added to it')
+        # THEN: We should get back a valid service item
+        self.assertTrue(service_item.is_valid, 'The new service item should be valid')
+        self.assertEqual(os.path.normpath(test_file),
+            os.path.normpath(service_item.get_rendered_frame(0)),
+            'The first frame should match the path to the image')
+        self.assertEqual(frame_array, service_item.get_frames()[0],
+            'The return should match frame array1')
+        self.assertEqual(test_file, service_item.get_frame_path(0),
+            'The frame path should match the full path to the image')
+        self.assertEqual(image_name, service_item.get_frame_title(0),
+            'The frame title should match the image name')
+        self.assertEqual(image_name, service_item.get_display_title(),
+            'The display title should match the first image name')
+        self.assertTrue(service_item.is_image(), 'This service item should be of an "image" type')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanMaintain),
+            'This service item should be able to be Maintained')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanPreview),
+            'This service item should be able to be be Previewed')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanLoop),
+            'This service item should be able to be run in a can be made to Loop')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
+            'This service item should be able to have new items added to it')
 
     def service_item_load_image_from_local_service_test(self):
         """
@@ -153,10 +152,8 @@ class TestServiceItem(TestCase):
         # GIVEN: A new service item and a mocked add icon function
         image_name1 = 'image_1.jpg'
         image_name2 = 'image_2.jpg'
-        test_file1 = os.path.normpath(os.path.join('/home/openlp',
-            image_name1))
-        test_file2 = os.path.normpath(os.path.join('/home/openlp',
-            image_name2))
+        test_file1 = os.path.normpath(os.path.join('/home/openlp', image_name1))
+        test_file2 = os.path.normpath(os.path.join('/home/openlp', image_name2))
         frame_array1 = {'path': test_file1, 'title': image_name1}
         frame_array2 = {'path': test_file2, 'title': image_name2}
 
@@ -175,44 +172,44 @@ class TestServiceItem(TestCase):
             service_item2.set_from_service(line2)
             service_item.set_from_service(line)
 
-            # THEN: We should get back a valid service item
+        # THEN: We should get back a valid service item
 
-            # This test is copied from service_item.py, but is changed since to conform to
-            # new layout of service item. The layout use in serviceitem_image_2.osd is actually invalid now.
-            self.assertTrue(service_item.is_valid, 'The first service item should be valid')
-            self.assertTrue(service_item2.is_valid, 'The second service item should be valid')
-            self.assertEqual(test_file1,
-                os.path.normpath(service_item.get_rendered_frame(0)),
-                'The first frame should match the path to the image')
-            self.assertEqual(test_file2,
-                os.path.normpath(service_item2.get_rendered_frame(0)),
-                'The Second frame should match the path to the image')
-            # There is a problem with the following two asserts in Windows
-            # and it is not easily fixable (although it looks simple)
-            if os.name != 'nt':
-                self.assertEqual(frame_array1, service_item.get_frames()[0], 'The return should match the frame array1')
-                self.assertEqual(frame_array2, service_item2.get_frames()[0], 'The return should match the frame array2')
-            self.assertEqual(test_file1, os.path.normpath(
-                service_item.get_frame_path(0)),
-                'The frame path should match the full path to the image')
-            self.assertEqual(test_file2, os.path.normpath(
-                service_item2.get_frame_path(0)),
-                'The frame path should match the full path to the image')
-            self.assertEqual(image_name1, service_item.get_frame_title(0),
-                'The 1st frame title should match the image name')
-            self.assertEqual(image_name2, service_item2.get_frame_title(0),
-                'The 2nd frame title should match the image name')
-            self.assertEqual(service_item.name, service_item.title.lower(),
-                'The plugin name should match the display title, as there are > 1 Images')
-            self.assertTrue(service_item.is_image(), 'This service item should be of an "image" type')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanMaintain),
-                'This service item should be able to be Maintained')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanPreview),
-                'This service item should be able to be be Previewed')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanLoop),
-                'This service item should be able to be run in a can be made to Loop')
-            self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
-                'This service item should be able to have new items added to it')
+        # This test is copied from service_item.py, but is changed since to conform to
+        # new layout of service item. The layout use in serviceitem_image_2.osd is actually invalid now.
+        self.assertTrue(service_item.is_valid, 'The first service item should be valid')
+        self.assertTrue(service_item2.is_valid, 'The second service item should be valid')
+        self.assertEqual(test_file1,
+            os.path.normpath(service_item.get_rendered_frame(0)),
+            'The first frame should match the path to the image')
+        self.assertEqual(test_file2,
+            os.path.normpath(service_item2.get_rendered_frame(0)),
+            'The Second frame should match the path to the image')
+        # There is a problem with the following two asserts in Windows
+        # and it is not easily fixable (although it looks simple)
+        if os.name != 'nt':
+            self.assertEqual(frame_array1, service_item.get_frames()[0], 'The return should match the frame array1')
+            self.assertEqual(frame_array2, service_item2.get_frames()[0], 'The return should match the frame array2')
+        self.assertEqual(test_file1, os.path.normpath(
+            service_item.get_frame_path(0)),
+            'The frame path should match the full path to the image')
+        self.assertEqual(test_file2, os.path.normpath(
+            service_item2.get_frame_path(0)),
+            'The frame path should match the full path to the image')
+        self.assertEqual(image_name1, service_item.get_frame_title(0),
+            'The 1st frame title should match the image name')
+        self.assertEqual(image_name2, service_item2.get_frame_title(0),
+            'The 2nd frame title should match the image name')
+        self.assertEqual(service_item.name, service_item.title.lower(),
+            'The plugin name should match the display title, as there are > 1 Images')
+        self.assertTrue(service_item.is_image(), 'This service item should be of an "image" type')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanMaintain),
+            'This service item should be able to be Maintained')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanPreview),
+            'This service item should be able to be be Previewed')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanLoop),
+            'This service item should be able to be run in a can be made to Loop')
+        self.assertTrue(service_item.is_capable(ItemCapabilities.CanAppend),
+            'This service item should be able to have new items added to it')
 
     def add_from_command_for_a_presentation_test(self):
         """

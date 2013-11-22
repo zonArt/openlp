@@ -152,8 +152,7 @@ def image_to_byte(image, base_64=True):
         The image to converted.
 
     ``base_64``
-        If True returns the image as Base64 bytes, otherwise
-        the image is returned as a byte array
+        If True returns the image as Base64 bytes, otherwise the image is returned as a byte array
         To preserve original intention, this defaults to True
     """
     log.debug('image_to_byte - start')
