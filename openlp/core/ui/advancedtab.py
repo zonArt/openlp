@@ -283,7 +283,7 @@ class AdvancedTab(SettingsTab):
         self.service_name_day.setItemText(0, translate('OpenLP.AdvancedTab', 'Monday'))
         self.service_name_day.setItemText(1, translate('OpenLP.AdvancedTab', 'Tuesday'))
         self.service_name_day.setItemText(2, translate('OpenLP.AdvancedTab', 'Wednesday'))
-        self.service_name_day.setItemText(3, translate('OpenLP.AdvancedTab', 'Thurdsday'))
+        self.service_name_day.setItemText(3, translate('OpenLP.AdvancedTab', 'Thursday'))
         self.service_name_day.setItemText(4, translate('OpenLP.AdvancedTab', 'Friday'))
         self.service_name_day.setItemText(5, translate('OpenLP.AdvancedTab', 'Saturday'))
         self.service_name_day.setItemText(6, translate('OpenLP.AdvancedTab', 'Sunday'))
