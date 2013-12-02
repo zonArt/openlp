@@ -125,7 +125,7 @@ from mako.template import Template
 from PyQt4 import QtCore
 
 from openlp.core.common import AppLocation, Settings, translate
-from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte
+from openlp.core.lib import Registry, PluginStatus, StringContent, image_to_byte, ItemCapabilities
 
 log = logging.getLogger(__name__)
 FILE_TYPES = {

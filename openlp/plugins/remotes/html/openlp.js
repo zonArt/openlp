@@ -398,5 +398,5 @@ $.ajaxSetup({cache: false});
 $("#search").live("pageinit", function (event) {
   OpenLP.getSearchablePlugins();
 });
-setInterval("OpenLP.pollServer();", 50000);
+setInterval("OpenLP.pollServer();", 500);
 OpenLP.pollServer();
