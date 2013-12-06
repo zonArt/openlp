@@ -73,11 +73,11 @@ class TestThemeManagerHelper(TestCase):
 
         # THEN:
         self.assertEqual(1, self.helper.build_theme_path.call_count,
-            'The function build_theme_path should have been called')
+                         'The function build_theme_path should have been called')
         self.assertEqual(1, self.helper.load_first_time_themes.call_count,
-            'The function load_first_time_themes should have been called')
+                         'The function load_first_time_themes should have been called only once')
         self.assertEqual(self.helper.global_theme , 'my_theme',
-            'The global theme should have been set to my_theme')
+                         'The global theme should have been set to my_theme')
 
     def test_build_theme_path(self):
         """
