@@ -64,9 +64,9 @@ class TestTheme(TestCase):
         self.assertTrue(default_theme.background_border_color == '#000000', 'The theme should have a black border')
         self.assertTrue(default_theme.background_type == 'solid', 'The theme should have a solid backgrounds')
         self.assertTrue(default_theme.display_vertical_align == 0,
-            'The theme should have a display_vertical_align of 0')
+                        'The theme should have a display_vertical_align of 0')
         self.assertTrue(default_theme.font_footer_name == "Arial",
-            'The theme should have a font_footer_name of Arial')
+                        'The theme should have a font_footer_name of Arial')
         self.assertTrue(default_theme.font_main_bold is False, 'The theme should have a font_main_bold of false')
         self.assertTrue(len(default_theme.__dict__) == 47, 'The theme should have 47 variables')
 
