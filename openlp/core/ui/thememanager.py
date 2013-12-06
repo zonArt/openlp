@@ -39,7 +39,7 @@ from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import ImageSource, OpenLPToolbar, Registry, get_text_file_string, build_icon, \
+from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, Registry, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
@@ -374,7 +374,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         Opens a file dialog to select the theme file(s) to import before attempting to extract OpenLP themes from
         those files. This process will load both OpenLP version 1 and version 2 themes.
         """
-        files = QtGui.QFileDialog.getOpenFileNames(self,
+        files = FileDialog.getOpenFileNames(self,
             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
             Settings().value(self.settings_section + '/last directory import'),
             translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
