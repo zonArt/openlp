@@ -33,7 +33,6 @@ import os
 from unittest import TestCase
 from tempfile import mkstemp
 
-from openlp.core.common import AppLocation, get_frozen_path
 from openlp.core.common import Settings
 from openlp.core.ui import ThemeManagerHelper
 from tests.functional import patch, MagicMock
@@ -76,7 +75,7 @@ class TestThemeManagerHelper(TestCase):
                          'The function build_theme_path should have been called')
         self.assertEqual(1, self.helper.load_first_time_themes.call_count,
                          'The function load_first_time_themes should have been called only once')
-        self.assertEqual(self.helper.global_theme , 'my_theme',
+        self.assertEqual(self.helper.global_theme, 'my_theme',
                          'The global theme should have been set to my_theme')
 
     def test_build_theme_path(self):
@@ -96,4 +95,5 @@ class TestThemeManagerHelper(TestCase):
         self.helper.build_theme_path()
 
         # THEN:
-        A=1
+        self.assertEqual(self.helper.path, self.helper.theme_form.path,
+                         'The theme path and the main path should be the same value')
