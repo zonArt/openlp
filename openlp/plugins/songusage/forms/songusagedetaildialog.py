@@ -29,7 +29,8 @@
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import build_icon, translate
+from openlp.core.common import translate
+from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box
 
 

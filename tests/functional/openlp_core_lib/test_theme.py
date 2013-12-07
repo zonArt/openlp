@@ -27,24 +27,46 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.lib.uistrings package.
+Package to test the openlp.core.lib.theme package.
 """
+from tests.functional import MagicMock, patch
 from unittest import TestCase
 
-from openlp.core.lib import UiStrings
+from openlp.core.lib.theme import ThemeXML
 
 
-class TestUiStrings(TestCase):
-
-    def check_same_instance_test(self):
+class TestTheme(TestCase):
+    """
+    Test the functions in the Theme module
+    """
+    def setUp(self):
         """
-        Test the UiStrings class - we always should have only one instance of the UiStrings class.
+        Create the UI
         """
-        # WHEN: Create two instances of the UiStrings class.
-        first_instance = UiStrings()
-        second_instance = UiStrings()
+        pass
 
-        # THEN: Check if the instances are the same.
-        self.assertIs(first_instance, second_instance, 'Two UiStrings objects should be the same instance')
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        pass
 
+    def test_new_theme(self):
+        """
+        Test the theme creation - basic test
+        """
+        # GIVEN: A new theme
+
+        # WHEN: A theme is created
+        default_theme = ThemeXML()
+
+        # THEN: We should get some default behaviours
+        self.assertTrue(default_theme.background_border_color == '#000000', 'The theme should have a black border')
+        self.assertTrue(default_theme.background_type == 'solid', 'The theme should have a solid backgrounds')
+        self.assertTrue(default_theme.display_vertical_align == 0,
+                        'The theme should have a display_vertical_align of 0')
+        self.assertTrue(default_theme.font_footer_name == "Arial",
+                        'The theme should have a font_footer_name of Arial')
+        self.assertTrue(default_theme.font_main_bold is False, 'The theme should have a font_main_bold of false')
+        self.assertTrue(len(default_theme.__dict__) == 47, 'The theme should have 47 variables')
 

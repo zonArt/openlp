@@ -33,8 +33,8 @@ cannot be changed.
 """
 
 import re
-
-from openlp.core.lib import FormattingTags, translate
+from openlp.core.common import translate
+from openlp.core.lib import FormattingTags
 
 
 class FormattingTagController(object):

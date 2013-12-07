@@ -32,7 +32,8 @@ import os
 from PyQt4 import QtGui, QtCore
 from sqlalchemy.sql import and_
 
-from openlp.core.lib import Registry, UiStrings, translate
+from openlp.core.common import UiStrings, translate
+from openlp.core.lib import Registry
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.plugins.songs.forms.authorsform import AuthorsForm
 from openlp.plugins.songs.forms.topicsform import TopicsForm

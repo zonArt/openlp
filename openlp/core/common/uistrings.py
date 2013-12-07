@@ -31,7 +31,7 @@ The :mod:`uistrings` module provides standard strings for OpenLP.
 """
 import logging
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 
 
 log = logging.getLogger(__name__)
@@ -83,6 +83,8 @@ class UiStrings(object):
         self.Error = translate('OpenLP.Ui', 'Error')
         self.Export = translate('OpenLP.Ui', 'Export')
         self.File = translate('OpenLP.Ui', 'File')
+        self.FileNotFound = translate('OpenLP.Ui', 'File Not Found')
+        self.FileNotFoundMessage = translate('OpenLP.Ui', 'File %s not found.\nPlease try selecting it individually.')
         self.FontSizePtUnit = translate('OpenLP.Ui', 'pt', 'Abbreviated font pointsize unit')
         self.Help = translate('OpenLP.Ui', 'Help')
         self.Hours = translate('OpenLP.Ui', 'h', 'The abbreviated unit for hours')

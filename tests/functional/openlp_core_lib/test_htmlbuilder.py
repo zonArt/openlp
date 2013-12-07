@@ -3,13 +3,13 @@ Package to test the openlp.core.lib.htmlbuilder module.
 """
 
 from unittest import TestCase
-from mock import MagicMock, patch
 
 from PyQt4 import QtCore
 
 from openlp.core.lib.htmlbuilder import build_html, build_background_css, build_lyrics_css, build_lyrics_outline_css, \
     build_lyrics_format_css, build_footer_css
 from openlp.core.lib.theme import HorizontalType, VerticalType
+from tests.functional import MagicMock, patch
 
 
 HTML = """
@@ -216,9 +216,9 @@ class Htmbuilder(TestCase):
             is_live = False
             background = None
             plugin = MagicMock()
-            plugin.get_display_css = MagicMock(return_value='plugin CSS')
-            plugin.get_display_javascript = MagicMock(return_value='plugin JS')
-            plugin.get_display_html = MagicMock(return_value='plugin HTML')
+            plugin.get_display_css.return_value = 'plugin CSS'
+            plugin.get_display_javascript.return_value = 'plugin JS'
+            plugin.get_display_html.return_value = 'plugin HTML'
             plugins = [plugin]
 
             # WHEN: Create the html.

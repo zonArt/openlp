@@ -38,7 +38,8 @@ from html.parser import HTMLParseError
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from openlp.core.lib import Registry, translate
+from openlp.core.common import translate
+from openlp.core.lib import Registry
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults
@@ -378,7 +379,7 @@ class BSExtract(object):
             send_error_message('parse')
             return None
         content = content.find_all('li')
-        return [book.contents[0].contents[0] for book in content]
+        return [book.contents[0].contents[0] for book in content if len(book.contents[0].contents)]
 
     def _get_application(self):
         """

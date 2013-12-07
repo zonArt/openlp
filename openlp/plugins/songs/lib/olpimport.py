@@ -36,7 +36,7 @@ from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import class_mapper, mapper, relation, scoped_session, sessionmaker
 from sqlalchemy.orm.exc import UnmappedClassError
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.core.lib.db import BaseModel
 from openlp.core.ui.wizard import WizardStrings
 from openlp.plugins.songs.lib import clean_song

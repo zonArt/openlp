@@ -29,7 +29,7 @@
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import translate
+from openlp.core.common import translate
 from openlp.plugins.alerts.lib.db import AlertItem
 
 from .alertdialog import Ui_AlertDialog
