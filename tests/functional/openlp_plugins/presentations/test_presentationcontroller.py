@@ -26,3 +26,28 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+This module contains tests for the Presentation Controller.
+"""
+from unittest import TestCase
+
+from openlp.plugins.presentations.lib.presentationcontroller import PresentationController
+from tests.functional import MagicMock
+
+class TestPresentationController(TestCase):
+    """
+    Test the PresentationController.
+    """
+    def constructor_test(self):
+        """
+        Test the Constructor
+        """
+        # GIVEN: No presentation controller
+        controller = None
+
+        # WHEN: The presentation controller object is created
+        controller = PresentationController(plugin=MagicMock())
+
+        # THEN: The name of the presentation controller should be correct
+        self.assertEqual('PresentationController', controller.name,
+                         'The name of the presentation controller should be correct')

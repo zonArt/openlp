@@ -59,7 +59,6 @@ class TestAppLocation(TestCase):
 
             # WHEN: we call AppLocation.get_data_path()
             data_path = AppLocation.get_data_path()
-            print(data_path)
 
             # THEN: check that all the correct methods were called, and the result is correct
             mocked_settings.contains.assert_called_with('advanced/data path')
