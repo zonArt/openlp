@@ -33,7 +33,8 @@ import logging
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import PluginStatus, Registry, build_icon
+from openlp.core.common import Registry
+from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.ui import AdvancedTab, GeneralTab, ThemesTab
 from openlp.core.ui.media import PlayerTab
 from .settingsdialog import Ui_SettingsDialog

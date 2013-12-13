@@ -38,7 +38,7 @@ import bs4
 import sqlalchemy
 from lxml import etree
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 
 from PyQt4 import Qt, QtCore, QtGui, QtWebKit
 

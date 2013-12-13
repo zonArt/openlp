@@ -32,8 +32,8 @@ import logging
 from PyQt4 import QtCore, QtGui
 from sqlalchemy.sql import or_, func, and_
 
-from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import Registry, MediaManagerItem, ItemCapabilities, ServiceItemContext, PluginStatus,\
+from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.lib import MediaManagerItem, ItemCapabilities, ServiceItemContext, PluginStatus,\
    check_item_selected
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm
 from openlp.plugins.custom.lib import CustomXMLParser, CustomXMLBuilder

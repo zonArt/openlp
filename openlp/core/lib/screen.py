@@ -36,8 +36,7 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.common import Settings, translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, Settings, translate
 
 log = logging.getLogger(__name__)
 

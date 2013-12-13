@@ -329,7 +329,6 @@ def create_separated_list(string_list):
         return translate('OpenLP.core.lib', '%s, %s', 'Locale list separator: start') % (string_list[0], merged)
 
 
-from .registry import Registry
 from .filedialog import FileDialog
 from .screen import ScreenList
 from .listwidgetwithdnd import ListWidgetWithDnD

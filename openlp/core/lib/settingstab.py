@@ -35,7 +35,7 @@ own tab to the settings dialog.
 from PyQt4 import QtGui
 
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 
 
 class SettingsTab(QtGui.QWidget):

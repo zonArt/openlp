@@ -34,8 +34,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import UiStrings, translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, UiStrings, translate
 from openlp.core.lib.theme import BackgroundType, BackgroundGradientType
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui import ThemeLayoutForm

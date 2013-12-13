@@ -103,6 +103,7 @@ class SlideLimits(object):
     Wrap = 2
     Next = 3
 
+from .registry import Registry
 from .uistrings import UiStrings
 from .settings import Settings
 from .applocation import AppLocation

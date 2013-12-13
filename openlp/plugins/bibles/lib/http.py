@@ -38,8 +38,7 @@ from html.parser import HTMLParseError
 
 from bs4 import BeautifulSoup, NavigableString, Tag
 
-from openlp.core.common import translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, translate
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.utils import get_web_page
 from openlp.plugins.bibles.lib import SearchResults

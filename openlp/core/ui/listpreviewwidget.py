@@ -33,7 +33,8 @@ It is based on a QTableWidget but represents its contents in list form.
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import ImageSource, Registry, ServiceItem
+from openlp.core.common import Registry
+from openlp.core.lib import ImageSource, ServiceItem
 
 
 class ListPreviewWidget(QtGui.QTableWidget):

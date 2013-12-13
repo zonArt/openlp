@@ -33,8 +33,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import Registry, SettingsTab, ScreenList
+from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab, ScreenList
 
 log = logging.getLogger(__name__)
 

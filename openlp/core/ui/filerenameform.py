@@ -34,8 +34,7 @@ from PyQt4 import QtGui
 
 from .filerenamedialog import Ui_FileRenameDialog
 
-from openlp.core.common import translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, translate
 
 
 class FileRenameForm(QtGui.QDialog, Ui_FileRenameDialog):

@@ -31,7 +31,7 @@ This module contains tests for the lib submodule of the Images plugin.
 """
 from unittest import TestCase
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.plugins.images.lib.db import ImageFilenames, ImageGroups
 from openlp.plugins.images.lib.mediaitem import ImageMediaItem
 from tests.functional import MagicMock, patch

@@ -33,8 +33,7 @@ import re
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry
-from openlp.core.common import Settings, translate
+from openlp.core.common import Registry, Settings, translate
 from openlp.core.utils.actions import ActionList
 from .shortcutlistdialog import Ui_ShortcutListDialog
 

@@ -34,8 +34,8 @@ import sys
 import logging
 import imp
 
-from openlp.core.lib import Plugin, PluginStatus, Registry
-from openlp.core.common import AppLocation
+from openlp.core.lib import Plugin, PluginStatus
+from openlp.core.common import AppLocation, Registry
 
 log = logging.getLogger(__name__)
 

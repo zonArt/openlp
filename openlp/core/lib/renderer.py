@@ -31,9 +31,9 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.common import Settings
-from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, \
-    ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css
+from openlp.core.common import Registry, Settings
+from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, ScreenList, ServiceItem, expand_tags, \
+    build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.common import ThemeLevel
 from openlp.core.ui import MainDisplay
 

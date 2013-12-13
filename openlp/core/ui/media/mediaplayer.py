@@ -31,7 +31,7 @@ The :mod:`~openlp.core.ui.media.mediaplayer` module contains the MediaPlayer cla
 """
 import os
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.core.ui.media import MediaState
 
 

@@ -33,7 +33,8 @@ from unittest import TestCase
 
 from PyQt4 import QtGui, QtCore
 
-from openlp.core.lib import Registry, ScreenList
+from openlp.core.common import Registry
+from openlp.core.lib import ScreenList
 from tests.functional import MagicMock
 
 SCREEN = {

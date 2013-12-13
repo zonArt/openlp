@@ -37,8 +37,8 @@ import logging
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, Registry, get_text_file_string, build_icon, \
+from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
+from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
