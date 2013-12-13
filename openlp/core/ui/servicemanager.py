@@ -730,7 +730,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 Settings().setValue('servicemanager/last file', file_name)
             else:
                 critical_error_message_box(message=translate('OpenLP.ServiceManager', 'File is not a valid service.'))
-                log.exception('File contains no service data')
+                log.error('File contains no service data')
         except (IOError, NameError, zipfile.BadZipfile):
             log.exception('Problem loading service file %s' % file_name)
             critical_error_message_box(message=translate('OpenLP.ServiceManager',
@@ -741,7 +741,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                 QtGui.QMessageBox.information(self, translate('OpenLP.ServiceManager', 'Empty File'),
                     translate('OpenLP.ServiceManager', 'This service file does not contain any data.'))
             else:
-                log.exception('Service file is cannot be extracted as zip: '
+                log.error('Service file is cannot be extracted as zip: '
                     '%s' % file_name)
                 QtGui.QMessageBox.information(self, translate('OpenLP.ServiceManager', 'Corrupt File'),
                     translate('OpenLP.ServiceManager',

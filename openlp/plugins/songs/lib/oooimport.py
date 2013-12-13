@@ -127,7 +127,7 @@ class OooImport(SongImport):
                     manager = uno_instance.ServiceManager
                     self.desktop = manager.createInstanceWithContext("com.sun.star.frame.Desktop", uno_instance)
                     return
-            raise
+            raise Exception('Unable to start LibreOffice')
 
     def startOooProcess(self):
         try:

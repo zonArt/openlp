@@ -30,14 +30,30 @@
 The :mod:`common` module contains most of the components and libraries that make
 OpenLP work.
 """
+import re
 import os
 import logging
 import sys
+import traceback
 
 from PyQt4 import QtCore
 
 log = logging.getLogger(__name__)
 
+
+FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
+SECOND_CAMEL_REGEX = re.compile('([a-z0-9])([A-Z])')
+
+
+def trace_error_handler(logger):
+    """
+    Log the calling path of an exception
+
+    'logger'
+    Logger to use so traceback is logged to correct class
+    """
+    for tb in traceback.extract_stack():
+        logger.error('Called by ' + tb[3] + ' at line ' + str(tb[1]) + ' in ' + tb[0])
 
 def check_directory_exists(directory, do_not_log=False):
     """
@@ -103,6 +119,15 @@ class SlideLimits(object):
     Wrap = 2
     Next = 3
 
+
+def de_hump(name):
+    """
+    Change any Camel Case string to python string
+    """
+    sub_name = FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
+    return SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
+
+from .openlpmixin import OpenLPMixin
 from .registry import Registry
 from .uistrings import UiStrings
 from .settings import Settings

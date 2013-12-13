@@ -490,7 +490,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
             theme_zip = zipfile.ZipFile(file_name)
             xml_file = [name for name in theme_zip.namelist() if os.path.splitext(name)[1].lower() == '.xml']
             if len(xml_file) != 1:
-                log.exception('Theme contains "%s" XML files' % len(xml_file))
+                log.error('Theme contains "%s" XML files' % len(xml_file))
                 raise Exception('validation')
             xml_tree = ElementTree(element=XML(theme_zip.read(xml_file[0]))).getroot()
             theme_name = xml_tree.find('name').text.strip()
@@ -543,7 +543,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                     critical_error_message_box(
                         translate('OpenLP.ThemeManager', 'Validation Error'),
                         translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
-                    log.exception('Theme file does not contain XML data %s' % file_name)
+                    log.error('Theme file does not contain XML data %s' % file_name)
 
     def check_if_theme_exists(self, theme_name):
         """
