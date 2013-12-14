@@ -27,33 +27,64 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Provide Error Handling Services
+Provide Error Handling and login Services
 """
 import logging
+import inspect
 
 from openlp.core.common import trace_error_handler
+DO_NOT_TRACE_EVENTS = ['timerEvent', 'paintEvent']
 
 
 class OpenLPMixin(object):
     """
     Base Calling object for OpenLP classes.
     """
-    def __init__(self, parent=None):
-        super(OpenLPMixin, self).__init__(parent)
-        print(self.__class__, self.__module__)
+    def __init__(self):
+        super().__init__()
+        self.logger = logging.getLogger(self.__module__)
+        for name, m in inspect.getmembers(self, inspect.ismethod):
+            if name not in DO_NOT_TRACE_EVENTS:
+                if not name.startswith("_") and not name.startswith("log_"):
+                    setattr(self, name, self.logging_wrapper(m, self))
+
+    def logging_wrapper(self, func, parent):
+        """
+        Code to added debug wrapper to work on called functions within a decorated class.
+        """
+        def wrapped(*args, **kwargs):
+            if parent.logger.getEffectiveLevel() == logging.DEBUG:
+                parent.logger.debug("Entering %s" % func.__name__)
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                if parent.logger.getEffectiveLevel() <= logging.ERROR:
+                    parent.logger.error('Exception in %s : %s' % (func.__name__, e))
+                raise e
+        return wrapped
+
+    def log_debug(self, message):
+        """
+        Common log debug handler which prints the calling path
+        """
+        self.logger.debug(message)
+
+    def log_info(self, message):
+        """
+        Common log info handler which prints the calling path
+        """
+        self.logger.info(message)
 
     def log_error(self, message):
         """
         Common log error handler which prints the calling path
         """
-        log = logging.getLogger(self.__module__)
-        trace_error_handler(log)
-        log.error(message)
+        trace_error_handler(self.logger)
+        self.logger.error(message)
 
     def log_exception(self, message):
         """
         Common log exception handler which prints the calling path
         """
-        log = logging.getLogger(self.__module__)
-        trace_error_handler(log)
-        log.exception(message)
+        trace_error_handler(self.logger)
+        self.logger.exception(message)
