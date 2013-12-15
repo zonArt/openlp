@@ -55,6 +55,7 @@ def trace_error_handler(logger):
     for tb in traceback.extract_stack():
         logger.error('Called by ' + tb[3] + ' at line ' + str(tb[1]) + ' in ' + tb[0])
 
+
 def check_directory_exists(directory, do_not_log=False):
     """
     Check a theme directory exists and if not create it
@@ -129,6 +130,7 @@ def de_hump(name):
 
 from .openlpmixin import OpenLPMixin
 from .registry import Registry
+from .registrymixin import RegistryMixin
 from .uistrings import UiStrings
 from .settings import Settings
 from .applocation import AppLocation

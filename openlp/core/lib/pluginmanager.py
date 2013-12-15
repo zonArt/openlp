@@ -34,10 +34,10 @@ import sys
 import imp
 
 from openlp.core.lib import Plugin, PluginStatus
-from openlp.core.common import AppLocation, Registry, OpenLPMixin
+from openlp.core.common import AppLocation, Registry, OpenLPMixin, RegistryMixin
 
 
-class PluginManager(OpenLPMixin):
+class PluginManager(OpenLPMixin, RegistryMixin):
     """
     This is the Plugin manager, which loads all the plugins,
     and executes all the hooks, as and when necessary.
@@ -49,8 +49,6 @@ class PluginManager(OpenLPMixin):
         """
         super(PluginManager, self).__init__()
         self.log_info('Plugin manager Initialising')
-        Registry().register('plugin_manager', self)
-        Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
         self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
         self.log_debug('Base path %s ' % self.base_path)
         self.plugins = []
