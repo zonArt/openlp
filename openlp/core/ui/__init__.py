@@ -86,7 +86,7 @@ from .starttimeform import StartTimeForm
 from .maindisplay import MainDisplay, Display
 from .servicenoteform import ServiceNoteForm
 from .serviceitemeditform import ServiceItemEditForm
-from .slidecontroller import SlideController, DisplayController
+from .slidecontroller import SlideController, DisplayController, PreviewController, LiveController
 from .splashscreen import SplashScreen
 from .generaltab import GeneralTab
 from .themestab import ThemesTab

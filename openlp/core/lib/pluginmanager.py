@@ -37,17 +37,17 @@ from openlp.core.lib import Plugin, PluginStatus
 from openlp.core.common import AppLocation, Registry, OpenLPMixin, RegistryMixin
 
 
-class PluginManager(OpenLPMixin, RegistryMixin):
+class PluginManager(RegistryMixin, OpenLPMixin):
     """
     This is the Plugin manager, which loads all the plugins,
     and executes all the hooks, as and when necessary.
     """
-    def __init__(self):
+    def __init__(self, parent=None):
         """
         The constructor for the plugin manager. Passes the controllers on to
         the plugins for them to interact with via their ServiceItems.
         """
-        super(PluginManager, self).__init__()
+        super(PluginManager, self).__init__(parent)
         self.log_info('Plugin manager Initialising')
         self.base_path = os.path.abspath(AppLocation.get_directory(AppLocation.PluginsDir))
         self.log_debug('Base path %s ' % self.base_path)

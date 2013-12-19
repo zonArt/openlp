@@ -45,8 +45,8 @@ from openlp.core.common import Registry, AppLocation, Settings, check_directory_
 from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, ScreenList, \
     build_icon
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
-    MediaDockManager, ShortcutListForm, FormattingTagForm
+from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, LiveController, PluginForm, \
+    MediaDockManager, ShortcutListForm, FormattingTagForm, PreviewController
 
 from openlp.core.ui.media import MediaController
 from openlp.core.utils import LanguageManager, add_actions, get_application_version
@@ -106,13 +106,13 @@ class Ui_MainWindow(object):
         self.control_splitter.setObjectName('control_splitter')
         self.main_contentLayout.addWidget(self.control_splitter)
         # Create slide controllers
-        self.preview_controller = SlideController(self)
-        self.live_controller = SlideController(self, True)
+        self.preview_controller = PreviewController(self)
+        self.live_controller = LiveController(self)
         preview_visible = Settings().value('user interface/preview panel')
-        self.preview_controller.panel.setVisible(preview_visible)
+        #self.preview_controller.panel.setVisible(preview_visible)
         live_visible = Settings().value('user interface/live panel')
         panel_locked = Settings().value('user interface/lock panel')
-        self.live_controller.panel.setVisible(live_visible)
+        #self.live_controller.panel.setVisible(live_visible)
         # Create menu
         self.menu_bar = QtGui.QMenuBar(main_window)
         self.menu_bar.setObjectName('menu_bar')
@@ -504,7 +504,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.formatting_tag_form = FormattingTagForm(self)
         self.shortcut_form = ShortcutListForm(self)
         # Set up the path with plugins
-        self.plugin_manager = PluginManager()
+        self.plugin_manager = PluginManager(self)
         self.image_manager = ImageManager()
         # Set up the interface
         self.setupUi(self)
@@ -592,6 +592,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         QtGui.QWidget.show(self)
         if self.live_controller.display.isVisible():
+
+
+
             self.live_controller.display.setFocus()
         self.activateWindow()
         if self.arguments:
@@ -1194,8 +1197,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.move(settings.value('main window position'))
         self.restoreGeometry(settings.value('main window geometry'))
         self.restoreState(settings.value('main window state'))
-        self.live_controller.splitter.restoreState(settings.value('live splitter geometry'))
-        self.preview_controller.splitter.restoreState(settings.value('preview splitter geometry'))
+        #self.live_controller.splitter.restoreState(settings.value('live splitter geometry'))
+        #self.preview_controller.splitter.restoreState(settings.value('preview splitter geometry'))
         self.control_splitter.restoreState(settings.value('main window splitter geometry'))
         #This needs to be called after restoreState(), because saveState() also saves the "Collapsible" property
         #which was True (by default) < OpenLP 2.1.

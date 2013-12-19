@@ -80,12 +80,12 @@ class DisplayController(QtGui.QWidget):
     """
     Controller is a general display controller widget.
     """
-    def __init__(self, parent, is_live=False):
+    def __init__(self, parent):
         """
         Set up the general Controller.
         """
         super(DisplayController, self).__init__(parent)
-        self.is_live = is_live
+        self.is_live = False
         self.display = None
         self.controller_type = DisplayControllerType.Plugin
 
@@ -105,12 +105,20 @@ class SlideController(DisplayController):
     SlideController is the slide controller widget. This widget is what the
     user uses to control the displaying of verses/slides/etc on the screen.
     """
-    def __init__(self, parent, is_live=False):
+    def __init__(self, parent):
         """
         Set up the Slide Controller.
         """
-        super(SlideController, self).__init__(parent, is_live)
-        Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
+        super(SlideController, self).__init__(parent)
+
+    def post_set_up(self):
+        """
+        Call by bootstrap functions
+        """
+        self.initialise()
+        self.screen_size_changed()
+
+    def initialise(self):
         self.screens = ScreenList()
         try:
             self.ratio = self.screens.current['size'].width() / self.screens.current['size'].height()
@@ -122,7 +130,7 @@ class SlideController(DisplayController):
         self.service_item = None
         self.slide_limits = None
         self.update_slide_limits()
-        self.panel = QtGui.QWidget(parent.control_splitter)
+        self.panel = QtGui.QWidget(self.main_window.control_splitter)
         self.slide_list = {}
         self.slide_count = 0
         self.slide_image = None
@@ -132,21 +140,6 @@ class SlideController(DisplayController):
         self.panel_layout.setMargin(0)
         # Type label for the top of the slide controller
         self.type_label = QtGui.QLabel(self.panel)
-        if self.is_live:
-            Registry().register('live_controller', self)
-            self.type_label.setText(UiStrings().Live)
-            self.split = 1
-            self.type_prefix = 'live'
-            self.keypress_queue = deque()
-            self.keypress_loop = False
-            self.category = UiStrings().LiveToolbar
-            ActionList.get_instance().add_category(str(self.category), CategoryOrder.standard_toolbar)
-        else:
-            Registry().register('preview_controller', self)
-            self.type_label.setText(UiStrings().Preview)
-            self.split = 0
-            self.type_prefix = 'preview'
-            self.category = None
         self.type_label.setStyleSheet('font-weight: bold; font-size: 12pt;')
         self.type_label.setAlignment(QtCore.Qt.AlignCenter)
         self.panel_layout.addWidget(self.type_label)
@@ -391,12 +384,6 @@ class SlideController(DisplayController):
                                self.on_slide_selected_next)
         QtCore.QObject.connect(self, QtCore.SIGNAL('slidecontroller_%s_previous' % self.type_prefix),
                                self.on_slide_selected_previous)
-
-    def bootstrap_post_set_up(self):
-        """
-        Call by bootstrap functions
-        """
-        self.screen_size_changed()
 
     def _slide_shortcut_activated(self):
         """
@@ -1350,3 +1337,47 @@ class SlideController(DisplayController):
         return self._main_window
 
     main_window = property(_get_main_window)
+
+
+class PreviewController(RegistryMixin, SlideController, OpenLPMixin):
+    """
+    Set up the Live Controller.
+    """
+    def __init__(self, parent):
+        """
+        Set up the general Controller.
+        """
+        super(PreviewController, self).__init__(parent)
+        self.split = 0
+        self.type_prefix = 'preview'
+        self.category = None
+
+    def bootstrap_post_set_up(self):
+        """
+        process the bootstrap post setup request
+        """
+        self.post_set_up()
+
+
+class LiveController(RegistryMixin, OpenLPMixin, SlideController):
+    """
+    Set up the Live Controller.
+    """
+    def __init__(self, parent):
+        """
+        Set up the general Controller.
+        """
+        super(LiveController, self).__init__(parent)
+        self.is_live = True
+        self.split = 1
+        self.type_prefix = 'live'
+        self.keypress_queue = deque()
+        self.keypress_loop = False
+        self.category = UiStrings().LiveToolbar
+        ActionList.get_instance().add_category(str(self.category), CategoryOrder.standard_toolbar)
+
+    def bootstrap_post_set_up(self):
+        """
+        process the bootstrap post setup request
+        """
+        self.post_set_up()

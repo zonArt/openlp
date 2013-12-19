@@ -29,8 +29,6 @@
 """
 Provide Registry Services
 """
-
-
 from openlp.core.common import Registry, de_hump
 
 
@@ -38,14 +36,17 @@ class RegistryMixin(object):
     """
     This adds registry components to classes to use at run time.
     """
-    def __init__(self):
+    def __init__(self, parent):
         """
         Register the class and bootstrap hooks.
         """
+        try:
+            super(RegistryMixin, self).__init__(parent)
+        except TypeError:
+            super(RegistryMixin, self).__init__()
         Registry().register(de_hump(self.__class__.__name__), self)
         Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
-        super().__init__()
 
     def bootstrap_initialise(self):
         """
