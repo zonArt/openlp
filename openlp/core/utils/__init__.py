@@ -349,9 +349,9 @@ def get_web_page(url, header=None, update_openlp=False):
     if not url:
         return None
     req = urllib.request.Request(url)
-    user_agent = _get_user_agent()
-    log.debug('Using user agent: %s', user_agent)
-    req.add_header('User-Agent', user_agent)
+    if not header or header[0].lower() != 'user-agent':
+        user_agent = _get_user_agent()
+        req.add_header('User-Agent', user_agent)
     if header:
         req.add_header(header[0], header[1])
     page = None

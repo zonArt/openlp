@@ -325,6 +325,7 @@ class TestUtils(TestCase):
             mocked_request_object.add_header.assert_called_with('User-Agent', 'user_agent')
             self.assertEqual(1, mocked_request_object.add_header.call_count,
                              'There should only be 1 call to add_header')
+            mock_get_user_agent.assert_called_with()
             mock_urlopen.assert_called_with(mocked_request_object)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(0, MockRegistry.call_count, 'The Registry() object should have never been called')
@@ -351,9 +352,38 @@ class TestUtils(TestCase):
 
             # THEN: The correct methods are called with the correct arguments and a web page is returned
             MockRequest.assert_called_with(fake_url)
-            mocked_request_object.add_header.assert_called_with('Fake-Header', 'fake value')
+            mocked_request_object.add_header.assert_called_with(fake_header[0], fake_header[1])
             self.assertEqual(2, mocked_request_object.add_header.call_count,
                              'There should only be 2 calls to add_header')
+            mock_get_user_agent.assert_called_with()
+            mock_urlopen.assert_called_with(mocked_request_object)
+            mocked_page_object.geturl.assert_called_with()
+            self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')
+
+    def get_web_page_with_user_agent_in_headers_test(self):
+        """
+        Test that adding a user agent in the header when calling get_web_page() adds that user agent to the request
+        """
+        with patch('openlp.core.utils.urllib.request.Request') as MockRequest, \
+                patch('openlp.core.utils.urllib.request.urlopen') as mock_urlopen, \
+                patch('openlp.core.utils._get_user_agent') as mock_get_user_agent:
+            # GIVEN: Mocked out objects, a fake URL and a fake header
+            mocked_request_object = MagicMock()
+            MockRequest.return_value = mocked_request_object
+            mocked_page_object = MagicMock()
+            mock_urlopen.return_value = mocked_page_object
+            fake_url = 'this://is.a.fake/url'
+            user_agent_header = ('User-Agent', 'OpenLP/2.1.0')
+
+            # WHEN: The get_web_page() method is called
+            returned_page = get_web_page(fake_url, header=user_agent_header)
+
+            # THEN: The correct methods are called with the correct arguments and a web page is returned
+            MockRequest.assert_called_with(fake_url)
+            mocked_request_object.add_header.assert_called_with(user_agent_header[0], user_agent_header[1])
+            self.assertEqual(1, mocked_request_object.add_header.call_count,
+                             'There should only be 1 call to add_header')
+            self.assertEqual(0, mock_get_user_agent.call_count, '_get_user_agent should not have been called')
             mock_urlopen.assert_called_with(mocked_request_object)
             mocked_page_object.geturl.assert_called_with()
             self.assertEqual(mocked_page_object, returned_page, 'The returned page should be the mock object')

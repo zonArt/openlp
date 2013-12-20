@@ -168,7 +168,7 @@ class TestRouter(TestCase):
 
             # WHEN: call serve_file with an existing html file
             self.router.serve_file(os.path.normpath('test/dir/test.html'))
-            
+
             # THEN: it should return a 200 and the file
             self.router.send_response.assert_called_once_with(200)
             self.router.send_header.assert_called_once_with('Content-type', 'text/html')
