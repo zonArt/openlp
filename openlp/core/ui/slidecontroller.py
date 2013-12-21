@@ -31,7 +31,6 @@ The :mod:`slidecontroller` module contains the most important part of OpenLP - t
 """
 
 import os
-import logging
 import copy
 from collections import deque
 
@@ -44,8 +43,6 @@ from openlp.core.ui import HideMode, MainDisplay, Display, DisplayControllerType
 from openlp.core.lib.ui import create_action
 from openlp.core.utils.actions import ActionList, CategoryOrder
 from openlp.core.ui.listpreviewwidget import ListPreviewWidget
-
-log = logging.getLogger(__name__)
 
 # Threshold which has to be trespassed to toggle.
 HIDE_MENU_THRESHOLD = 27
@@ -280,8 +277,7 @@ class SlideController(DisplayController):
             self.audio_menu = QtGui.QMenu(translate('OpenLP.SlideController', 'Background Audio'), self.toolbar)
             self.audio_pause_item.setMenu(self.audio_menu)
             self.audio_pause_item.setParent(self.toolbar)
-            self.toolbar.widgetForAction(self.audio_pause_item).setPopupMode(
-                QtGui.QToolButton.MenuButtonPopup)
+            self.toolbar.widgetForAction(self.audio_pause_item).setPopupMode(QtGui.QToolButton.MenuButtonPopup)
             self.next_track_item = create_action(self, 'nextTrackItem', text=UiStrings().NextTrack,
                                                  icon=':/slides/media_playback_next.png',
                                                  tooltip=translate('OpenLP.SlideController',
@@ -358,7 +354,7 @@ class SlideController(DisplayController):
                                                       triggers=self._slide_shortcut_activated) for s in shortcuts])
             self.shortcut_timer.timeout.connect(self._slide_shortcut_activated)
         # Signals
-        self.preview_widget.clicked.connect(self.on_slide_selected)
+        self.preview_widget.itemSelectionChanged.connect(self.on_slide_selected)
         if self.is_live:
             # Need to use event as called across threads and UI is updated
             QtCore.QObject.connect(self, QtCore.SIGNAL('slidecontroller_toggle_display'), self.toggle_display)
@@ -674,7 +670,6 @@ class SlideController(DisplayController):
         """
         Method to update the service item if the screen has changed
         """
-        log.debug('refresh_service_item live = %s' % self.is_live)
         if self.service_item.is_text() or self.service_item.is_image():
             item = self.service_item
             item.render()
@@ -685,7 +680,6 @@ class SlideController(DisplayController):
         Method to install the service item into the controller
         Called by plugins
         """
-        log.debug('add_service_item live = %s' % self.is_live)
         item.render()
         slide_no = 0
         if self.song_edit:
@@ -705,7 +699,6 @@ class SlideController(DisplayController):
         Method to install the service item into the controller and request the correct toolbar for the plugin. Called by
         :class:`~openlp.core.ui.ServiceManager`
         """
-        log.debug('add_service_manager_item live = %s' % self.is_live)
         # If no valid slide number is specified we take the first one, but we remember the initial value to see if we
         # should reload the song or not
         slide_num = slide_no
@@ -730,7 +723,6 @@ class SlideController(DisplayController):
         """
         Loads a ServiceItem into the system from ServiceManager. Display the slide number passed.
         """
-        log.debug('processManagerItem live = %s' % self.is_live)
         self.on_stop_loop()
         old_item = self.service_item
         # take a copy not a link to the servicemanager copy.
@@ -747,7 +739,7 @@ class SlideController(DisplayController):
             self.audio_pause_item.setChecked(False)
             # If the current item has background audio
             if self.service_item.is_capable(ItemCapabilities.HasBackgroundAudio):
-                log.debug('Starting to play...')
+                self.log_debug('Starting to play...')
                 self.display.audio_player.add_to_playlist(self.service_item.background_audio)
                 self.track_menu.clear()
                 for counter in range(len(self.service_item.background_audio)):
@@ -826,7 +818,6 @@ class SlideController(DisplayController):
         """
         Allow the main display to blank the main display at startup time
         """
-        log.debug('main_display_set_background live = %s' % self.is_live)
         display_type = Settings().value(self.main_window.general_settings_section + '/screen blank')
         if self.screens.which_screen(self.window()) != self.screens.which_screen(self.display):
             # Order done to handle initial conversion
@@ -859,7 +850,7 @@ class SlideController(DisplayController):
         """
         if checked is None:
             checked = self.blank_screen.isChecked()
-        log.debug('on_blank_display %s' % checked)
+        self.log_debug('on_blank_display %s' % checked)
         self.hide_menu.setDefaultAction(self.blank_screen)
         self.blank_screen.setChecked(checked)
         self.theme_screen.setChecked(False)
@@ -878,7 +869,7 @@ class SlideController(DisplayController):
         """
         if checked is None:
             checked = self.theme_screen.isChecked()
-        log.debug('on_theme_display %s' % checked)
+        self.log_debug('on_theme_display %s' % checked)
         self.hide_menu.setDefaultAction(self.theme_screen)
         self.blank_screen.setChecked(False)
         self.theme_screen.setChecked(checked)
@@ -897,7 +888,7 @@ class SlideController(DisplayController):
         """
         if checked is None:
             checked = self.desktop_screen.isChecked()
-        log.debug('on_hide_display %s' % checked)
+        self.log_debug('on_hide_display %s' % checked)
         self.hide_menu.setDefaultAction(self.desktop_screen)
         self.blank_screen.setChecked(False)
         self.theme_screen.setChecked(False)
@@ -915,7 +906,7 @@ class SlideController(DisplayController):
         Blank/Hide the display screen within a plugin if required.
         """
         hide_mode = self.hide_mode()
-        log.debug('blank_plugin %s ', hide_mode)
+        self.log_debug('blank_plugin %s ', hide_mode)
         if self.service_item is not None:
             if hide_mode:
                 if not self.service_item.is_command():
@@ -936,7 +927,7 @@ class SlideController(DisplayController):
         """
         Tell the plugin to hide the display screen.
         """
-        log.debug('hide_plugin %s ', hide)
+        self.log_debug('hide_plugin %s ', hide)
         if self.service_item is not None:
             if hide:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -951,9 +942,10 @@ class SlideController(DisplayController):
             else:
                 Registry().execute('live_display_show')
 
-    def on_slide_selected(self):
+    def on_slide_selected(self, field=None):
         """
         Slide selected in controller
+        Note for some reason a dummy field is required.  Nothing is passed!
         """
         self.slide_selected()
 
@@ -998,7 +990,7 @@ class SlideController(DisplayController):
         """
         This updates the preview frame, for example after changing a slide or using *Blank to Theme*.
         """
-        log.debug('update_preview %s ' % self.screens.current['primary'])
+        self.log_debug('update_preview %s ' % self.screens.current['primary'])
         if not self.screens.current['primary'] and self.service_item and \
                 self.service_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             # Grab now, but try again in a couple of seconds if slide change is slow
@@ -1109,7 +1101,7 @@ class SlideController(DisplayController):
             checked = self.play_slides_loop.isChecked()
         else:
             self.play_slides_loop.setChecked(checked)
-        log.debug('on_play_slides_loop %s' % checked)
+        self.log_debug('on_play_slides_loop %s' % checked)
         if checked:
             self.play_slides_loop.setIcon(build_icon(':/media/media_stop.png'))
             self.play_slides_loop.setText(UiStrings().StopPlaySlidesInLoop)
@@ -1130,7 +1122,7 @@ class SlideController(DisplayController):
             checked = self.play_slides_once.isChecked()
         else:
             self.play_slides_once.setChecked(checked)
-        log.debug('on_play_slides_once %s' % checked)
+        self.log_debug('on_play_slides_once %s' % checked)
         if checked:
             self.play_slides_once.setIcon(build_icon(':/media/media_stop.png'))
             self.play_slides_once.setText(UiStrings().StopPlaySlidesToEnd)
@@ -1211,7 +1203,6 @@ class SlideController(DisplayController):
         """
         Respond to the arrival of a media service item
         """
-        log.debug('SlideController on_media_start')
         self.media_controller.video(self.controller_type, item, self.hide_mode())
         if not self.is_live:
             self.preview_display.show()
@@ -1221,7 +1212,6 @@ class SlideController(DisplayController):
         """
         Respond to a request to close the Video
         """
-        log.debug('SlideController on_media_close')
         self.media_controller.media_reset(self)
         self.preview_display.hide()
         self.slide_preview.show()
@@ -1339,7 +1329,7 @@ class SlideController(DisplayController):
     main_window = property(_get_main_window)
 
 
-class PreviewController(RegistryMixin, SlideController, OpenLPMixin):
+class PreviewController(RegistryMixin, OpenLPMixin, SlideController):
     """
     Set up the Live Controller.
     """
