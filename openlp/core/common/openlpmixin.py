@@ -57,8 +57,7 @@ class OpenLPMixin(object):
         Code to added debug wrapper to work on called functions within a decorated class.
         """
         def wrapped(*args, **kwargs):
-            if parent.logger.getEffectiveLevel() == logging.DEBUG:
-                parent.logger.debug("Entering %s" % func.__name__)
+            parent.logger.debug("Entering %s" % func.__name__)
             try:
                 return func(*args, **kwargs)
             except Exception as e:
