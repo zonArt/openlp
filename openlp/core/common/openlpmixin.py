@@ -46,10 +46,11 @@ class OpenLPMixin(object):
         except TypeError:
             super(OpenLPMixin, self).__init__()
         self.logger = logging.getLogger("%s.%s" % (self.__module__, self.__class__.__name__))
-        for name, m in inspect.getmembers(self, inspect.ismethod):
-            if name not in DO_NOT_TRACE_EVENTS:
-                if not name.startswith("_") and not name.startswith("log"):
-                    setattr(self, name, self.logging_wrapper(m, self))
+        if self.logger.getEffectiveLevel() == logging.DEBUG:
+            for name, m in inspect.getmembers(self, inspect.ismethod):
+                if name not in DO_NOT_TRACE_EVENTS:
+                    if not name.startswith("_") and not name.startswith("log"):
+                        setattr(self, name, self.logging_wrapper(m, self))
 
     def logging_wrapper(self, func, parent):
         """

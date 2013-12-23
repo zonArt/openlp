@@ -506,6 +506,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # Set up the path with plugins
         self.plugin_manager = PluginManager(self)
         self.image_manager = ImageManager()
+        self.renderer = Renderer()
         # Set up the interface
         self.setupUi(self)
         # Define the media Dock Manager
@@ -543,7 +544,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Registry().register_function('openlp_version_check', self.version_notice)
         Registry().register_function('config_screen_changed', self.screen_changed)
         Registry().register_function('bootstrap_post_set_up', self.restore_current_media_manager_item)
-        self.renderer = Renderer()
         # Reset the cursor
         self.application.set_normal_cursor()
 

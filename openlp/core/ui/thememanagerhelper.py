@@ -29,32 +29,20 @@
 """
 The Theme Controller helps manages adding, deleteing and modifying of themes.
 """
-import logging
 import os
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists
-
-log = logging.getLogger(__name__)
+from openlp.core.common import AppLocation, check_directory_exists
 
 
 class ThemeManagerHelper(object):
     """
     Manages the non ui theme functions.
     """
-    def initialise(self):
-        """
-        Setup the manager
-        """
-        log.debug('initialise called')
-        self.global_theme = Settings().value(self.settings_section + '/global theme')
-        self.build_theme_path()
-        self.load_first_time_themes()
-
     def build_theme_path(self):
         """
         Set up the theme path variables
         """
-        log.debug('build theme path called')
+        self.log_debug('build theme path called')
         self.path = AppLocation.get_section_data_path(self.settings_section)
         check_directory_exists(self.path)
         self.thumb_path = os.path.join(self.path, 'thumbnails')
