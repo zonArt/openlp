@@ -906,7 +906,7 @@ class SlideController(DisplayController):
         Blank/Hide the display screen within a plugin if required.
         """
         hide_mode = self.hide_mode()
-        self.log_debug('blank_plugin %s ', hide_mode)
+        self.log_debug('blank_plugin %s ' % hide_mode)
         if self.service_item is not None:
             if hide_mode:
                 if not self.service_item.is_command():
@@ -927,7 +927,7 @@ class SlideController(DisplayController):
         """
         Tell the plugin to hide the display screen.
         """
-        self.log_debug('hide_plugin %s ', hide)
+        self.log_debug('hide_plugin %s ' % hide)
         if self.service_item is not None:
             if hide:
                 Registry().execute('live_display_hide', HideMode.Screen)
@@ -1045,7 +1045,7 @@ class SlideController(DisplayController):
             self.preview_widget.change_slide(row)
             self.slide_selected()
 
-    def on_slide_selected_previous(self):
+    def on_slide_selected_previous(self, field=None):
         """
         Go to the previous slide.
         """

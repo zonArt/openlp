@@ -122,9 +122,9 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
                                                   text=translate('OpenLP.ThemeManager', 'Set As &Global Default'),
                                                   icon=':/general/general_export.png',
                                                   triggers=self.change_global_from_screen)
-        self.exportAction = create_widget_action(self.menu,
-                                                 text=translate('OpenLP.ThemeManager', '&Export Theme'),
-                                                 icon=':/general/general_export.png', triggers=self.on_export_theme)
+        self.export_action = create_widget_action(self.menu,
+                                                  text=translate('OpenLP.ThemeManager', '&Export Theme'),
+                                                  icon=':/general/general_export.png', triggers=self.on_export_theme)
         # Signals
         self.theme_list_widget.doubleClicked.connect(self.change_global_from_screen)
         self.theme_list_widget.currentItemChanged.connect(self.check_list_state)
@@ -383,7 +383,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
                                             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
                                             Settings().value(self.settings_section + '/last directory import'),
                                             translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
-        self.log_info('New Themes %s', str(files))
+        self.log_info('New Themes %s' % str(files))
         if not files:
             return
         self.application.set_busy_cursor()
@@ -480,9 +480,11 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
         """
         ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
                                          translate('OpenLP.ThemeManager',
-                'Theme %s already exists. Do you want to replace it?').replace('%s', theme_name),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-            QtGui.QMessageBox.No)
+                                         'Theme %s already exists. Do you want to replace it?')
+                                         .replace('%s', theme_name),
+                                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                           QtGui.QMessageBox.No),
+                                         QtGui.QMessageBox.No)
         return ret == QtGui.QMessageBox.Yes
 
     def unzip_theme(self, file_name, directory):
@@ -573,8 +575,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
 
     def save_theme(self, theme, image_from, image_to):
         """
-        Called by thememaintenance Dialog to save the theme
-        and to trigger the reload of the theme list
+        Called by thememaintenance Dialog to save the theme and to trigger the reload of the theme list
         """
         self._write_theme(theme, image_from, image_to)
         if theme.background_type == BackgroundType.to_string(BackgroundType.Image):
@@ -585,8 +586,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
 
     def _write_theme(self, theme, image_from, image_to):
         """
-        Writes the theme to the disk and handles the background image if
-        necessary
+        Writes the theme to the disk and handles the background image if necessary
         """
         name = theme.theme_name
         theme_pretty_xml = theme.extract_formatted_xml()
@@ -671,8 +671,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
 
     def _validate_theme_action(self, select_text, confirm_title, confirm_text, test_plugin=True, confirm=True):
         """
-        Check to see if theme has been selected and the destructive action
-        is allowed.
+        Check to see if theme has been selected and the destructive action is allowed.
         """
         self.global_theme = Settings().value(self.settings_section + '/global theme')
         if check_item_selected(self.theme_list_widget, select_text):
