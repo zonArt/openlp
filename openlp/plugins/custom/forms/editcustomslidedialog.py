@@ -55,4 +55,4 @@ class Ui_CustomSlideEditDialog(object):
         self.split_button.setToolTip(UiStrings().SplitToolTip)
         self.insert_button.setText(translate('CustomPlugin.EditCustomForm', 'Insert Slide'))
         self.insert_button.setToolTip(translate('CustomPlugin.EditCustomForm',
-            'Split a slide into two by inserting a slide splitter.'))
+                                                'Split a slide into two by inserting a slide splitter.'))

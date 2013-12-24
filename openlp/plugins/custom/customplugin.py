@@ -42,35 +42,33 @@ from openlp.plugins.custom.lib.mediaitem import CustomSearch
 log = logging.getLogger(__name__)
 
 __default_settings__ = {
-        'custom/db type': 'sqlite',
-        'custom/last search type':  CustomSearch.Titles,
-        'custom/display footer': True,
-        'custom/add custom from service': True
+    'custom/db type': 'sqlite',
+    'custom/last search type':  CustomSearch.Titles,
+    'custom/display footer': True,
+    'custom/add custom from service': True
 }
 
 
 class CustomPlugin(Plugin):
     """
-    This plugin enables the user to create, edit and display
-    custom slide shows. Custom shows are divided into slides.
+    This plugin enables the user to create, edit and display custom slide shows. Custom shows are divided into slides.
     Each show is able to have it's own theme.
-    Custom shows are designed to replace the use of songs where
-    the songs plugin has become restrictive. Examples could be
-    Welcome slides, Bible Reading information, Orders of service.
+    Custom shows are designed to replace the use of songs where the songs plugin has become restrictive.
+    Examples could be Welcome slides, Bible Reading information, Orders of service.
     """
     log.info('Custom Plugin loaded')
 
     def __init__(self):
         super(CustomPlugin, self).__init__('custom', __default_settings__, CustomMediaItem, CustomTab)
         self.weight = -5
-        self.manager = Manager('custom', init_schema)
+        self.db_manager = Manager('custom', init_schema)
         self.icon_path = ':/plugins/plugin_custom.png'
         self.icon = build_icon(self.icon_path)
 
     def about(self):
         about_text = translate('CustomPlugin', '<strong>Custom Slide Plugin </strong><br />The custom slide plugin '
-            'provides the ability to set up custom text slides that can be displayed on the screen '
-            'the same way songs are. This plugin provides greater freedom over the songs plugin.')
+                               'provides the ability to set up custom text slides that can be displayed on the screen '
+                               'the same way songs are. This plugin provides greater freedom over the songs plugin.')
         return about_text
 
     def uses_theme(self, theme):
@@ -79,11 +77,11 @@ class CustomPlugin(Plugin):
 
         Returns True if the theme is being used, otherwise returns False.
         """
-        if self.manager.get_all_objects(CustomSlide, CustomSlide.theme_name == theme):
+        if self.db_manager.get_all_objects(CustomSlide, CustomSlide.theme_name == theme):
             return True
         return False
 
-    def rename_theme(self, oldTheme, newTheme):
+    def rename_theme(self, old_theme, new_theme):
         """
         Renames a theme the custom plugin is using making the plugin use the
         new name.
@@ -94,10 +92,10 @@ class CustomPlugin(Plugin):
         ``newTheme``
             The new name the plugin should now use.
         """
-        customs_using_theme = self.manager.get_all_objects(CustomSlide, CustomSlide.theme_name == oldTheme)
+        customs_using_theme = self.db_manager.get_all_objects(CustomSlide, CustomSlide.theme_name == old_theme)
         for custom in customs_using_theme:
-            custom.theme_name = newTheme
-            self.manager.save_object(custom)
+            custom.theme_name = new_theme
+            self.db_manager.save_object(custom)
 
     def set_plugin_text_strings(self):
         """
@@ -130,5 +128,5 @@ class CustomPlugin(Plugin):
         Time to tidy up on exit
         """
         log.info('Custom Finalising')
-        self.manager.finalise()
+        self.db_manager.finalise()
         Plugin.finalise(self)

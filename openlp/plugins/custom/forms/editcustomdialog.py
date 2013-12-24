@@ -70,14 +70,14 @@ class Ui_CustomEditDialog(object):
         self.edit_all_button.setObjectName('edit_all_button')
         self.button_layout.addWidget(self.edit_all_button)
         self.delete_button = create_button(custom_edit_dialog, 'delete_button', role='delete',
-            click=custom_edit_dialog.on_delete_button_clicked)
+                                           click=custom_edit_dialog.on_delete_button_clicked)
         self.delete_button.setEnabled(False)
         self.button_layout.addWidget(self.delete_button)
         self.button_layout.addStretch()
         self.up_button = create_button(custom_edit_dialog, 'up_button', role='up', enabled=False,
-            click=custom_edit_dialog.on_up_button_clicked)
+                                       click=custom_edit_dialog.on_up_button_clicked)
         self.down_button = create_button(custom_edit_dialog, 'down_button', role='down', enabled=False,
-            click=custom_edit_dialog.on_down_button_clicked)
+                                         click=custom_edit_dialog.on_down_button_clicked)
         self.button_layout.addWidget(self.up_button)
         self.button_layout.addWidget(self.down_button)
         self.central_layout.addLayout(self.button_layout)

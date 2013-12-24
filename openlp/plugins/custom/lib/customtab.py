@@ -67,7 +67,7 @@ class CustomTab(SettingsTab):
         self.custom_mode_group_box.setTitle(translate('CustomPlugin.CustomTab', 'Custom Display'))
         self.display_footer_check_box.setText(translate('CustomPlugin.CustomTab', 'Display footer'))
         self.add_from_service_checkbox.setText(translate('CustomPlugin.CustomTab',
-            'Import missing custom slides from service files'))
+                                               'Import missing custom slides from service files'))
 
     def on_display_footer_check_box_changed(self, check_state):
         """

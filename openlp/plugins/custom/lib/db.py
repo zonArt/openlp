@@ -37,6 +37,7 @@ from sqlalchemy.orm import mapper
 from openlp.core.lib.db import BaseModel, init_db
 from openlp.core.utils import get_locale_key
 
+
 class CustomSlide(BaseModel):
     """
     CustomSlide model
@@ -65,11 +66,11 @@ def init_schema(url):
     session, metadata = init_db(url)
 
     custom_slide_table = Table('custom_slide', metadata,
-        Column('id', types.Integer(), primary_key=True),
-        Column('title', types.Unicode(255), nullable=False),
-        Column('text', types.UnicodeText, nullable=False),
-        Column('credits', types.UnicodeText),
-        Column('theme_name', types.Unicode(128))
+                               Column('id', types.Integer(), primary_key=True),
+                               Column('title', types.Unicode(255), nullable=False),
+                               Column('text', types.UnicodeText, nullable=False),
+                               Column('credits', types.UnicodeText),
+                               Column('theme_name', types.Unicode(128))
     )
 
     mapper(CustomSlide, custom_slide_table)
