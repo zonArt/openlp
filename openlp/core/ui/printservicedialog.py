@@ -65,7 +65,7 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.setIconSize(QtCore.QSize(22, 22))
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.print_button = self.toolbar.addAction(build_icon(':/general/general_print.png'),
-            translate('OpenLP.PrintServiceForm', 'Print'))
+                                                   translate('OpenLP.PrintServiceForm', 'Print'))
         self.options_button = QtGui.QToolButton(self.toolbar)
         self.options_button.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.options_button.setIcon(build_icon(':/system/system_configure.png'))
@@ -73,9 +73,9 @@ class Ui_PrintServiceDialog(object):
         self.toolbar.addWidget(self.options_button)
         self.toolbar.addSeparator()
         self.plain_copy = self.toolbar.addAction(build_icon(':/system/system_edit_copy.png'),
-            translate('OpenLP.PrintServiceForm', 'Copy'))
+                                                 translate('OpenLP.PrintServiceForm', 'Copy'))
         self.html_copy = self.toolbar.addAction(build_icon(':/system/system_edit_copy.png'),
-            translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
+                                                translate('OpenLP.PrintServiceForm', 'Copy as HTML'))
         self.toolbar.addSeparator()
         self.zoom_in_button = QtGui.QToolButton(self.toolbar)
         self.zoom_in_button.setIcon(build_icon(':/general/general_zoom_in.png'))

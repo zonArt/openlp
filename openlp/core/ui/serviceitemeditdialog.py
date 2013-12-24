@@ -55,13 +55,13 @@ class Ui_ServiceItemEditDialog(object):
         self.button_layout = QtGui.QVBoxLayout()
         self.button_layout.setObjectName('button_layout')
         self.delete_button = create_button(serviceItemEditDialog, 'deleteButton', role='delete',
-            click=serviceItemEditDialog.on_delete_button_clicked)
+                                           click=serviceItemEditDialog.on_delete_button_clicked)
         self.button_layout.addWidget(self.delete_button)
         self.button_layout.addStretch()
         self.up_button = create_button(serviceItemEditDialog, 'up_button', role='up',
-            click=serviceItemEditDialog.on_up_button_clicked)
+                                       click=serviceItemEditDialog.on_up_button_clicked)
         self.down_button = create_button(serviceItemEditDialog, 'down_button', role='down',
-            click=serviceItemEditDialog.on_down_button_clicked)
+                                         click=serviceItemEditDialog.on_down_button_clicked)
         self.button_layout.addWidget(self.up_button)
         self.button_layout.addWidget(self.down_button)
         self.dialog_layout.addLayout(self.button_layout, 0, 1)

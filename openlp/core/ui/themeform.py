@@ -62,7 +62,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         super(ThemeForm, self).__init__(parent)
         self.setupUi(self)
         self.registerFields()
-        self.updateThemeAllowed = True
+        self.update_theme_allowed = True
         self.temp_background_filename = ''
         self.themeLayoutForm = ThemeLayoutForm(self)
         self.backgroundComboBox.currentIndexChanged.connect(self.onBackgroundComboBoxCurrentIndexChanged)
@@ -222,7 +222,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Change state as Outline check box changed
         """
-        if self.updateThemeAllowed:
+        if self.update_theme_allowed:
             self.theme.font_main_outline = state == QtCore.Qt.Checked
             self.outlineColorButton.setEnabled(self.theme.font_main_outline)
             self.outlineSizeSpinBox.setEnabled(self.theme.font_main_outline)
@@ -232,7 +232,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Change state as Shadow check box changed
         """
-        if self.updateThemeAllowed:
+        if self.update_theme_allowed:
             if state == QtCore.Qt.Checked:
                 self.theme.font_main_shadow = True
             else:
@@ -246,7 +246,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Change state as Main Area Position check box changed
         NOTE the font_main_override is the inverse of the check box value
         """
-        if self.updateThemeAllowed:
+        if self.update_theme_allowed:
             self.theme.font_main_override = not (value == QtCore.Qt.Checked)
 
     def onFooterPositionCheckBoxStateChanged(self, value):
@@ -254,7 +254,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Change state as Footer Area Position check box changed
         NOTE the font_footer_override is the inverse of the check box value
         """
-        if self.updateThemeAllowed:
+        if self.update_theme_allowed:
             self.theme.font_footer_override = not (value == QtCore.Qt.Checked)
 
     def exec_(self, edit=False):
@@ -263,9 +263,9 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         log.debug('Editing theme %s' % self.theme.theme_name)
         self.temp_background_filename = ''
-        self.updateThemeAllowed = False
+        self.update_theme_allowed = False
         self.setDefaults()
-        self.updateThemeAllowed = True
+        self.update_theme_allowed = True
         self.themeNameLabel.setVisible(not edit)
         self.themeNameEdit.setVisible(not edit)
         self.edit_mode = edit
@@ -383,7 +383,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Background style Combo box has changed.
         """
         # do not allow updates when screen is building for the first time.
-        if self.updateThemeAllowed:
+        if self.update_theme_allowed:
             self.theme.background_type = BackgroundType.to_string(index)
             if self.theme.background_type != BackgroundType.to_string(BackgroundType.Image) and \
                     self.temp_background_filename == '':
@@ -399,7 +399,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         """
         Background gradient Combo box has changed.
         """
-        if self.updateThemeAllowed:
+        if self.update_theme_allowed:
             self.theme.background_direction = BackgroundGradientType.to_string(index)
             self.setBackgroundPageValues()
 
@@ -482,7 +482,7 @@ class ThemeForm(QtGui.QWizard, Ui_ThemeWizard):
         Update the theme object from the UI for fields not already updated
         when the are changed.
         """
-        if not self.updateThemeAllowed:
+        if not self.update_theme_allowed:
             return
         log.debug('updateTheme')
         # main page
