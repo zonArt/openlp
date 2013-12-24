@@ -154,19 +154,19 @@ class ServiceManagerDialog(object):
         self.order_toolbar = OpenLPToolbar(self)
         action_list = ActionList.get_instance()
         action_list.add_category(UiStrings().Service, CategoryOrder.standard_toolbar)
-        self.service_manager_list.move_top = self.order_toolbar.add_toolbar_action('move_top',
+        self.service_manager_list.move_top = self.order_toolbar.add_toolbar_action('moveTop',
             text=translate('OpenLP.ServiceManager', 'Move to &top'), icon=':/services/service_top.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item to the top of the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.on_service_top)
-        self.service_manager_list.move_up = self.order_toolbar.add_toolbar_action('move_up',
+        self.service_manager_list.move_up = self.order_toolbar.add_toolbar_action('moveUp',
             text=translate('OpenLP.ServiceManager', 'Move &up'), icon=':/services/service_up.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item up one position in the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.on_service_up)
-        self.service_manager_list.move_down = self.order_toolbar.add_toolbar_action('move_down',
+        self.service_manager_list.move_down = self.order_toolbar.add_toolbar_action('moveDown',
             text=translate('OpenLP.ServiceManager', 'Move &down'), icon=':/services/service_down.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item down one position in the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.on_service_down)
-        self.service_manager_list.move_bottom = self.order_toolbar.add_toolbar_action('move_bottom',
+        self.service_manager_list.move_bottom = self.order_toolbar.add_toolbar_action('moveBottom',
             text=translate('OpenLP.ServiceManager', 'Move to &bottom'), icon=':/services/service_bottom.png',
             tooltip=translate('OpenLP.ServiceManager', 'Move item to the end of the service.'),
             can_shortcuts=True, category=UiStrings().Service, triggers=self.on_service_end)

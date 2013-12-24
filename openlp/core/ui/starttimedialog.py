@@ -62,7 +62,7 @@ class Ui_StartTimeDialog(object):
         self.hour_label = QtGui.QLabel(StartTimeDialog)
         self.hour_label.setObjectName('hour_label')
         self.dialog_layout.addWidget(self.hour_label, 1, 0, 1, 1)
-        self.hour_spin_box = QtGui.R(StartTimeDialog)
+        self.hour_spin_box = QtGui.QSpinBox(StartTimeDialog)
         self.hour_spin_box.setObjectName('hour_spin_box')
         self.hour_spin_box.setMinimum(0)
         self.hour_spin_box.setMaximum(4)

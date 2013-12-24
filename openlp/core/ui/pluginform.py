@@ -56,20 +56,20 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
         self.load()
         self._clear_details()
         # Right, now let's put some signals and slots together!
-        self.pluginListWidget.itemSelectionChanged.connect(self.on_plugin_list_widget_selection_changed)
-        self.statusComboBox.currentIndexChanged.connect(self.on_status_combo_box_changed)
+        self.plugin_list_widget.itemSelectionChanged.connect(self.on_plugin_list_widget_selection_changed)
+        self.status_combo_box.currentIndexChanged.connect(self.on_status_combo_box_changed)
 
     def load(self):
         """
         Load the plugin details into the screen
         """
-        self.pluginListWidget.clear()
+        self.plugin_list_widget.clear()
         self.programatic_change = True
         self._clear_details()
         self.programatic_change = True
         plugin_list_width = 0
         for plugin in self.plugin_manager.plugins:
-            item = QtGui.QListWidgetItem(self.pluginListWidget)
+            item = QtGui.QListWidgetItem(self.plugin_list_widget)
             # We do this just to make 100% sure the status is an integer as
             # sometimes when it's loaded from the config, it isn't cast to int.
             plugin.status = int(plugin.status)
@@ -85,43 +85,43 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             # If the plugin has an icon, set it!
             if plugin.icon:
                 item.setIcon(plugin.icon)
-            self.pluginListWidget.addItem(item)
+            self.plugin_list_widget.addItem(item)
             plugin_list_width = max(plugin_list_width, self.fontMetrics().width(
                 translate('OpenLP.PluginForm', '%s (Inactive)') % plugin.name_strings['singular']))
-        self.pluginListWidget.setFixedWidth(plugin_list_width + self.pluginListWidget.iconSize().width() + 48)
+        self.plugin_list_widget.setFixedWidth(plugin_list_width + self.plugin_list_widget.iconSize().width() + 48)
 
     def _clear_details(self):
         """
         Clear the plugin details widgets
         """
-        self.statusComboBox.setCurrentIndex(-1)
-        self.versionNumberLabel.setText('')
-        self.aboutTextBrowser.setHtml('')
-        self.statusComboBox.setEnabled(False)
+        self.status_combo_box.setCurrentIndex(-1)
+        self.version_number_label.setText('')
+        self.about_text_browser.setHtml('')
+        self.status_combo_box.setEnabled(False)
 
     def _set_details(self):
         """
         Set the details of the currently selected plugin
         """
         log.debug('PluginStatus: %s', str(self.active_plugin.status))
-        self.versionNumberLabel.setText(self.active_plugin.version)
-        self.aboutTextBrowser.setHtml(self.active_plugin.about())
+        self.version_number_label.setText(self.active_plugin.version)
+        self.about_text_browser.setHtml(self.active_plugin.about())
         self.programatic_change = True
         status = PluginStatus.Active
         if self.active_plugin.status == PluginStatus.Active:
             status = PluginStatus.Inactive
-        self.statusComboBox.setCurrentIndex(status)
-        self.statusComboBox.setEnabled(True)
+        self.status_combo_box.setCurrentIndex(status)
+        self.status_combo_box.setEnabled(True)
         self.programatic_change = False
 
     def on_plugin_list_widget_selection_changed(self):
         """
         If the selected plugin changes, update the form
         """
-        if self.pluginListWidget.currentItem() is None:
+        if self.plugin_list_widget.currentItem() is None:
             self._clear_details()
             return
-        plugin_name_singular = self.pluginListWidget.currentItem().text().split('(')[0][:-1]
+        plugin_name_singular = self.plugin_list_widget.currentItem().text().split('(')[0][:-1]
         self.active_plugin = None
         for plugin in self.plugin_manager.plugins:
             if plugin.status != PluginStatus.Disabled:
@@ -153,7 +153,7 @@ class PluginForm(QtGui.QDialog, Ui_PluginViewDialog):
             status_text = translate('OpenLP.PluginForm', '%s (Inactive)')
         elif self.active_plugin.status == PluginStatus.Disabled:
             status_text = translate('OpenLP.PluginForm', '%s (Disabled)')
-        self.pluginListWidget.currentItem().setText(
+        self.plugin_list_widget.currentItem().setText(
             status_text % self.active_plugin.name_strings['singular'])
 
     def _get_plugin_manager(self):
