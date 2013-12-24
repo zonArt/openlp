@@ -37,7 +37,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 from tempfile import gettempdir
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 
 from PyQt4 import QtCore, QtGui
 
@@ -68,7 +68,7 @@ class ThemeScreenshotThread(QtCore.QThread):
             filename = config.get('theme_%s' % theme, 'filename')
             screenshot = config.get('theme_%s' % theme, 'screenshot')
             urllib.request.urlretrieve('%s%s' % (self.parent().web, screenshot),
-                os.path.join(gettempdir(), 'openlp', screenshot))
+                                       os.path.join(gettempdir(), 'openlp', screenshot))
             item = QtGui.QListWidgetItem(title, self.parent().themes_list_widget)
             item.setData(QtCore.Qt.UserRole, filename)
             item.setCheckState(QtCore.Qt.Unchecked)
@@ -90,14 +90,16 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         self.screens = screens
         # check to see if we have web access
         self.web = 'http://openlp.org/files/frw/'
-        self.config = SafeConfigParser()
-        self.web_access = get_web_page('%s%s' % (self.web, 'download.cfg'))
+        self.config = ConfigParser()
+        user_agent = 'OpenLP/' + Registry().get('application').applicationVersion()
+        self.web_access = get_web_page('%s%s' % (self.web, 'download.cfg'), header=('User-Agent', user_agent))
         if self.web_access:
             files = self.web_access.read()
             self.config.read_string(files.decode())
         self.update_screen_list_combo()
         self.was_download_cancelled = False
         self.theme_screenshot_thread = None
+        self.has_run_wizard = False
         self.downloading = translate('OpenLP.FirstTimeWizard', 'Downloading %s...')
         self.cancel_button.clicked.connect(self.on_cancel_button_clicked)
         self.no_internet_finish_button.clicked.connect(self.on_no_internet_finish_button_clicked)
