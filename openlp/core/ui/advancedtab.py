@@ -523,9 +523,9 @@ class AdvancedTab(SettingsTab):
         """
         old_root_path = str(self.data_directory_label.text())
         # Get the new directory location.
-        new_data_path = QtGui.QFileDialog.getExistingDirectory(
-            self, translate('OpenLP.AdvancedTab', 'Select Data Directory Location'), old_root_path,
-            options=QtGui.QFileDialog.ShowDirsOnly)
+        new_data_path = QtGui.QFileDialog.getExistingDirectory(self, translate('OpenLP.AdvancedTab',
+                                                                               'Select Data Directory Location'),
+                                                               old_root_path, options=QtGui.QFileDialog.ShowDirsOnly)
         # Set the new data path.
         if new_data_path:
             new_data_path = os.path.normpath(new_data_path)
@@ -535,12 +535,13 @@ class AdvancedTab(SettingsTab):
         else:
             return
         # Make sure they want to change the data.
-        answer = QtGui.QMessageBox.question(self,
-            translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
-            translate('OpenLP.AdvancedTab', 'Are you sure you want to change the location of the OpenLP '
-                'data directory to:\n\n%s\n\n '
-                'The data directory will be changed when OpenLP is closed.').replace('%s', new_data_path),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+        answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Confirm Data Directory Change'),
+                                            translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
+                                            'location of the OpenLP data directory to:\n\n%s\n\nThe data directory '
+                                            'will be changed when OpenLP is closed.').replace('%s', new_data_path),
+                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                              QtGui.QMessageBox.No),
+                                            QtGui.QMessageBox.No)
         if answer != QtGui.QMessageBox.Yes:
             return
         # Check if data already exists here.
@@ -558,11 +559,13 @@ class AdvancedTab(SettingsTab):
         if self.current_data_path.lower() != new_data_path.lower():
             # Make sure they want to change the data location back to the
             # default.
-            answer = QtGui.QMessageBox.question(self,
-                translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
-                translate('OpenLP.AdvancedTab', 'Are you sure you want to change the location of the OpenLP '
-                'data directory to the default location?\n\nThis location will be used after OpenLP is closed.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+            answer = QtGui.QMessageBox.question(self, translate('OpenLP.AdvancedTab', 'Reset Data Directory'),
+                                                translate('OpenLP.AdvancedTab', 'Are you sure you want to change the '
+                                                'location of the OpenLP data directory to the default location?\n\nThis'
+                                                ' location will be used after OpenLP is closed.'),
+                                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                  QtGui.QMessageBox.No),
+                                                QtGui.QMessageBox.No)
             if answer != QtGui.QMessageBox.Yes:
                 return
             self.check_data_overwrite(new_data_path)
@@ -595,11 +598,15 @@ class AdvancedTab(SettingsTab):
             self.data_exists = True
             # Check is they want to replace existing data.
             answer = QtGui.QMessageBox.warning(self,
-                translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
-                translate('OpenLP.AdvancedTab', 'WARNING: \n\nThe location you have selected \n\n%s\n\n'
-                'appears to contain OpenLP data files. Do you wish to replace these files with the current data files?'
-                ).replace('%s', os.path.abspath(data_path,)),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No), QtGui.QMessageBox.No)
+                                               translate('OpenLP.AdvancedTab', 'Overwrite Existing Data'),
+                                               translate('OpenLP.AdvancedTab',
+                                                         'WARNING: \n\nThe location you have selected \n\n%s\n\n'
+                                                         'appears to contain OpenLP data files. Do you wish to '
+                                                         'replace these files with the current data files?').replace
+                                                         ('%s', os.path.abspath(data_path,)),
+                                               QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                 QtGui.QMessageBox.No),
+                                               QtGui.QMessageBox.No)
             if answer == QtGui.QMessageBox.Yes:
                 self.data_directory_copy_check_box.setChecked(True)
                 self.new_data_directory_has_files_label.show()
@@ -637,9 +644,9 @@ class AdvancedTab(SettingsTab):
         ``checked``
             The state of the check box (boolean).
         """
-        QtGui.QMessageBox.information(self,
-            translate('OpenLP.AdvancedTab', 'Restart Required'),
-            translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP has been restarted.'))
+        QtGui.QMessageBox.information(self, translate('OpenLP.AdvancedTab', 'Restart Required'),
+                                      translate('OpenLP.AdvancedTab', 'This change will only take effect once OpenLP '
+                                                                      'has been restarted.'))
 
     def on_end_slide_button_clicked(self):
         """

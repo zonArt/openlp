@@ -144,19 +144,19 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
                 system += 'Desktop: GNOME\n'
             elif os.environ.get('DESKTOP_SESSION') == 'xfce':
                 system += 'Desktop: Xfce\n'
-        return (openlp_version, description, traceback, system, libraries)
+        return openlp_version, description, traceback, system, libraries
 
     def on_save_report_button_clicked(self):
         """
         Saving exception log and system information to a file.
         """
         report_text = translate('OpenLP.ExceptionForm',
-            '**OpenLP Bug Report**\n'
-            'Version: %s\n\n'
-            '--- Details of the Exception. ---\n\n%s\n\n '
-            '--- Exception Traceback ---\n%s\n'
-            '--- System information ---\n%s\n'
-            '--- Library Versions ---\n%s\n')
+                                '**OpenLP Bug Report**\n'
+                                'Version: %s\n\n'
+                                '--- Details of the Exception. ---\n\n%s\n\n '
+                                '--- Exception Traceback ---\n%s\n'
+                                '--- System information ---\n%s\n'
+                                '--- Library Versions ---\n%s\n')
         filename = QtGui.QFileDialog.getSaveFileName(self,
             translate('OpenLP.ExceptionForm', 'Save Crash Report'),
             Settings().value(self.settings_section + '/last directory'),
@@ -202,12 +202,12 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
             if ':' in line:
                 exception = line.split('\n')[-1].split(':')[0]
         subject = 'Bug report: %s in %s' % (exception, source)
-        mailto_url = QtCore.QUrl('mailto:bugs@openlp.org')
-        mailto_url.addQueryItem('subject', subject)
-        mailto_url.addQueryItem('body', body % content)
+        mail_to_url = QtCore.QUrl('mailto:bugs@openlp.org')
+        mail_to_url.addQueryItem('subject', subject)
+        mail_to_url.addQueryItem('body', body % content)
         if self.file_attachment:
-            mailto_url.addQueryItem('attach', self.file_attachment)
-        QtGui.QDesktopServices.openUrl(mailto_url)
+            mail_to_url.addQueryItem('attach', self.file_attachment)
+        QtGui.QDesktopServices.openUrl(mail_to_url)
 
     def on_description_updated(self):
         """
@@ -226,9 +226,9 @@ class ExceptionForm(QtGui.QDialog, Ui_ExceptionDialog):
         """
         Attache files to the bug report e-mail.
         """
-        files = QtGui.QFileDialog.getOpenFileName(
-            self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
-                Settings().value(self.settings_section + '/last directory'), '%s (*.*) (*)' % UiStrings().AllFiles)
+        files = QtGui.QFileDialog.getOpenFileName(self, translate('ImagePlugin.ExceptionDialog', 'Select Attachment'),
+                                                  Settings().value(self.settings_section + '/last directory'),
+                                                  '%s (*.*) (*)' % UiStrings().AllFiles)
         log.info('New files(s) %s', str(files))
         if files:
             self.file_attachment = str(files)
