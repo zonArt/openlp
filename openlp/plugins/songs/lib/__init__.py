@@ -130,7 +130,7 @@ SPECIAL_CHARS = {
     'line': '\n',
     'tab': '\t',
     'emdash': '\u2014',
-    'endash': '\u2014',
+    'endash': '\u2013',
     'emspace': '\u2003',
     'enspace': '\u2002',
     'qmspace': '\u2005',

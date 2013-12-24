@@ -44,6 +44,7 @@ from openlp.plugins.songs.lib.xml import SongXML
 
 log = logging.getLogger(__name__)
 
+
 class SongImport(QtCore.QObject):
     """
     Helper class for import a song from a third party source into OpenLP
@@ -153,7 +154,7 @@ class SongImport(QtCore.QObject):
         text = text.replace('\u201c', '"')
         text = text.replace('\u201d', '"')
         text = text.replace('\u2026', '...')
-        text = text.replace('\u2014', '-')
+        text = text.replace('\u2013', '-')
         text = text.replace('\u2014', '-')
         # Remove surplus blank lines, spaces, trailing/leading spaces
         text = re.sub(r'[ \t\v]+', ' ', text)
