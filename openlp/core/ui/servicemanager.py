@@ -517,7 +517,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
                         audio_files.append((file_name, new_file))
                         service_item['header']['background_audio'][i] = new_file
                 # Add the service item to the service.
-                service.append({'service_item_from_item': service_item})
+                service.append({'serviceitem': service_item})
         self.repaint_service_list(-1, -1)
         for file_item in write_list:
             file_size = os.path.getsize(file_item)
@@ -593,7 +593,7 @@ class ServiceManager(QtGui.QWidget, ServiceManagerDialog):
             self.main_window.increment_progress_bar()
             service_item = item['service_item'].get_service_repr(self._save_lite)
             #TODO: check for file item on save.
-            service.append({'service_item_from_item': service_item})
+            service.append({'serviceitem': service_item})
             self.main_window.increment_progress_bar()
         service_content = json.dumps(service)
         zip_file = None
