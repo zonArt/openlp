@@ -229,7 +229,7 @@ class Renderer(object):
             self.image_manager.add_image(
                 theme_data.background_filename, ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
-        service_item.themedata = theme_data
+        service_item.theme_data = theme_data
         service_item.main = main
         service_item.footer = footer
         service_item.render(True)

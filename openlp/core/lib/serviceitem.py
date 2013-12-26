@@ -161,7 +161,7 @@ class ServiceItem(object):
         self.capabilities = []
         self.is_valid = True
         self.icon = None
-        self.themedata = None
+        self.theme_data = None
         self.main = None
         self.footer = None
         self.bg_image_bytes = None

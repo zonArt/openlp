@@ -283,7 +283,7 @@ class MainDisplay(Display):
         if not hasattr(self, 'service_item'):
             return False
         self.override['image'] = path
-        self.override['theme'] = self.service_item.themedata.background_filename
+        self.override['theme'] = self.service_item.theme_data.background_filename
         self.image(path)
         # Update the preview frame.
         if self.is_live:
@@ -343,7 +343,7 @@ class MainDisplay(Display):
         if self.is_live and hasattr(self, 'service_item'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
-            if self.service_item.themedata and self.service_item.themedata.display_slide_transition:
+            if self.service_item.theme_data and self.service_item.theme_data.display_slide_transition:
                 while not self.frame.evaluateJavaScript('show_text_completed()'):
                     self.application.process_events()
         # Wait for the webview to update before getting the preview.
@@ -383,17 +383,17 @@ class MainDisplay(Display):
                 Registry().execute('video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override['theme'] != service_item.themedata.background_filename:
+            elif self.override['theme'] != service_item.theme_data.background_filename:
                 Registry().execute('live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
                 background = self.image_manager.get_image_bytes(self.override['image'], ImageSource.ImagePlugin)
-        self.set_transparency(self.service_item.themedata.background_type ==
+        self.set_transparency(self.service_item.theme_data.background_type ==
                               BackgroundType.to_string(BackgroundType.Transparent))
-        if self.service_item.themedata.background_filename:
+        if self.service_item.theme_data.background_filename:
             self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(
-                self.service_item.themedata.background_filename, ImageSource.Theme
+                self.service_item.theme_data.background_filename, ImageSource.Theme
             )
         if image_path:
             image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
