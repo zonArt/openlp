@@ -50,7 +50,7 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         Run the Dialog with correct heading.
         """
         pixmap = image.scaledToHeight(400, QtCore.Qt.SmoothTransformation)
-        self.themeDisplayLabel.setPixmap(pixmap)
-        displayAspectRatio = float(image.width()) / image.height()
-        self.themeDisplayLabel.setFixedSize(400, 400 / displayAspectRatio)
+        self.theme_display_label.setPixmap(pixmap)
+        display_aspect_ratio = float(image.width()) / image.height()
+        self.theme_display_label.setFixedSize(400, 400 / display_aspect_ratio)
         return QtGui.QDialog.exec_(self)
