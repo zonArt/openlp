@@ -379,7 +379,7 @@ class BSExtract(object):
             send_error_message('parse')
             return None
         content = content.find_all('li')
-        return [book.contents[0].contents[0] for book in content]
+        return [book.contents[0].contents[0] for book in content if len(book.contents[0].contents)]
 
     def _get_application(self):
         """

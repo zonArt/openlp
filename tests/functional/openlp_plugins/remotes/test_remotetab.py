@@ -62,7 +62,7 @@ class TestRemoteTab(TestCase):
         """
         Create the UI
         """
-        fd, self.ini_file = mkstemp('.ini')
+        self.fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
         self.application = QtGui.QApplication.instance()
         Settings().extend_default_settings(__default_settings__)
@@ -76,6 +76,7 @@ class TestRemoteTab(TestCase):
         del self.application
         del self.parent
         del self.form
+        os.close(self.fd)
         os.unlink(self.ini_file)
 
     def get_ip_address_default_test(self):

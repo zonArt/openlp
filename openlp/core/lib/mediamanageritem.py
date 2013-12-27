@@ -36,7 +36,7 @@ import re
 from PyQt4 import QtCore, QtGui
 
 from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
+from openlp.core.lib import FileDialog, OpenLPToolbar, ServiceItem, StringContent, ListWidgetWithDnD, \
     ServiceItemContext, Registry
 from openlp.core.lib.searchedit import SearchEdit
 from openlp.core.lib.ui import create_widget_action, critical_error_message_box
@@ -319,7 +319,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Add a file to the list widget to make it available for showing
         """
-        files = QtGui.QFileDialog.getOpenFileNames(self, self.on_new_prompt,
+        files = FileDialog.getOpenFileNames(self, self.on_new_prompt,
             Settings().value(self.settings_section + '/last directory'), self.on_new_file_masks)
         log.info('New files(s) %s', files)
         if files:
