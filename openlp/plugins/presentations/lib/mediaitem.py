@@ -238,7 +238,7 @@ class PresentationMediaItem(MediaManagerItem):
             Settings().setValue(self.settings_section + '/presentations files', self.get_file_list())
 
     def generate_slide_data(self, service_item, item=None, xml_version=False,
-        remote=False, context=ServiceItemContext.Service):
+        remote=False, context=ServiceItemContext.Service, presentation_file=None):
         """
         Load the relevant information for displaying the presentation in the slidecontroller. In the case of
         powerpoints, an image for each slide.
@@ -249,7 +249,9 @@ class PresentationMediaItem(MediaManagerItem):
             items = self.list_view.selectedItems()
             if len(items) > 1:
                 return False
-        filename = items[0].data(QtCore.Qt.UserRole)
+        filename = presentation_file
+        if filename is None:
+            filename = items[0].data(QtCore.Qt.UserRole)            
         file_type = os.path.splitext(filename)[1][1:]
         if not self.display_type_combo_box.currentText():
             return False
@@ -261,7 +263,9 @@ class PresentationMediaItem(MediaManagerItem):
             # force a nonexistent theme
             service_item.theme = -1
             for bitem in items:
-                filename = bitem.data(QtCore.Qt.UserRole)
+                filename = presentation_file
+                if filename is None:
+                    filename = bitem.data(QtCore.Qt.UserRole)
                 (path, name) = os.path.split(filename)
                 service_item.title = name
                 if os.path.exists(filename):
@@ -298,7 +302,7 @@ class PresentationMediaItem(MediaManagerItem):
                 (path, name) = os.path.split(filename)
                 service_item.title = name
                 if os.path.exists(filename):
-                    if service_item.processor == self.Automatic:
+                    if service_item.processor == self.automatic:
                         service_item.processor = self.findControllerByType(filename)
                         if not service_item.processor:
                             return False

@@ -33,7 +33,7 @@ from PyQt4 import QtCore
 
 from openlp.core.lib import Registry
 from openlp.core.ui import HideMode
-from openlp.core.lib import ServiceItemContext
+from openlp.core.lib import ServiceItemContext, ServiceItem
 
 log = logging.getLogger(__name__)
 
@@ -318,14 +318,26 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.processor
-        #self.media_item.generate_slide_data(self, service_item, item=None, xml_version=False,remote=False, context=ServiceItemContext.Service)
+        # When starting presentation from the servicemanager/slidecontroller we convert 
+        # PDF/XPS-serviceitems into image-serviceitems. When started from the mediamanager
+        # the conversion has already been done.
         if file.endswith('.pdf') or file.endswith('.xps'):
-            log.debug('Trying to convert from pdf to images for service-item')
+            log.debug('Converting from pdf/xps to images for serviceitem with file %s', file)
+            # Create a new image-serviceitem which will overwrite the old one
+            new_item = ServiceItem()
+            new_item.name = 'images'
             if is_live:
-                self.media_item.generate_slide_data(self, item, None, False, False, ServiceItemContext.Live)
+                self.media_item.generate_slide_data(new_item, item, False, False, ServiceItemContext.Live, file)
             else:
-                self.media_item.generate_slide_data(self, item, None, False, False, ServiceItemContext.Preview)
-        
+                self.media_item.generate_slide_data(new_item, item, False, False, ServiceItemContext.Preview, file)
+            # We need to overwrite the current serviceitem to make the slidecontroller
+            # present the images, so we do some copying
+            service_repr = {'serviceitem': new_item.get_service_repr(True) }
+            item.set_from_service(service_repr)
+            item._raw_frames = new_item._raw_frames
+            # When presenting PDF or XPS, we are using the image presentation code, 
+            # so handler & processor is set to None, and we skip adding the handler.
+            self.handler = None
         if self.handler == self.media_item.automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
@@ -334,9 +346,8 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        # when presenting PDF, we're using the image presentation code, 
+        # When presenting PDF or XPS, we are using the image presentation code, 
         # so handler & processor is set to None, and we skip adding the handler.
-        log.debug('file: %s' % file)
         if self.handler == None:
             self.controller = controller
         else:
