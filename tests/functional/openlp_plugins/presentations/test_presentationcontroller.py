@@ -36,6 +36,9 @@ from openlp.plugins.presentations.lib.presentationcontroller import Presentation
 from tests.functional import MagicMock, patch, mock_open
 
 class TestPresentationController(TestCase):
+    """
+    Test the PresentationController.
+    """
 
     def setUp(self):
         mocked_plugin = MagicMock()
@@ -44,9 +47,6 @@ class TestPresentationController(TestCase):
         self.document = PresentationDocument(self.presentation, '')
 
 
-    """
-    Test the PresentationController.
-    """
     def constructor_test(self):
         """
         Test the Constructor
