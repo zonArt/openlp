@@ -32,16 +32,32 @@ classes and related methods.
 """
 from unittest import TestCase
 import os
-from mock import MagicMock, patch, mock_open
 from openlp.plugins.presentations.lib.presentationcontroller import PresentationController, PresentationDocument
+from tests.functional import MagicMock, patch, mock_open
 
-class TestLibModule(TestCase):
+class TestPresentationController(TestCase):
 
     def setUp(self):
         mocked_plugin = MagicMock()
         mocked_plugin.settings_section = 'presentations'
         self.presentation = PresentationController(mocked_plugin)
         self.document = PresentationDocument(self.presentation, '')
+
+
+    """
+    Test the PresentationController.
+    """
+    def constructor_test(self):
+        """
+        Test the Constructor
+        """
+        # GIVEN: A mocked plugin
+
+        # WHEN: The PresentationController is created
+
+        # THEN: The name of the presentation controller should be correct
+        self.assertEqual('PresentationController', self.presentation.name,
+                         'The name of the presentation controller should be correct')
 
     def save_titles_and_notes_test(self):
         """
@@ -162,4 +178,4 @@ class TestLibModule(TestCase):
             # THEN: it should return two empty lists
             self.assertIs(type(result_titles), list,
                 'result_titles should be a list')
-            
+

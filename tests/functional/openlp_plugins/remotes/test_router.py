@@ -39,9 +39,8 @@ from PyQt4 import QtGui
 from openlp.core.lib import Registry
 from openlp.core.common import Settings
 from openlp.plugins.remotes.lib.httpserver import HttpRouter
-from tests.functional import MagicMock, patch
-from mock import mock_open
 from urllib.parse import urlparse
+from tests.functional import MagicMock, patch, mock_open
 
 __default_settings__ = {
     'remotes/twelve hour': True,
@@ -55,6 +54,7 @@ __default_settings__ = {
 }
 
 TEST_PATH = os.path.abspath(os.path.dirname(__file__))
+
 
 class TestRouter(TestCase):
     """
@@ -94,7 +94,7 @@ class TestRouter(TestCase):
 
         # THEN: the function should return the correct password
         self.assertEqual(router.auth, test_value,
-            'The result for make_sha_hash should return the correct encrypted password')
+                         'The result for make_sha_hash should return the correct encrypted password')
 
     def process_http_request_test(self):
         """
@@ -112,10 +112,8 @@ class TestRouter(TestCase):
         function, args = router.process_http_request('/stage/api/poll', None)
 
         # THEN: the function should have been called only once
-        assert function['function'] == mocked_function, \
-            'The mocked function should match defined value.'
-        assert function['secure'] == False, \
-            'The mocked function should not require any security.'
+        self.assertEqual(mocked_function, function['function'], 'The mocked function should match defined value.')
+        self.assertFalse(function['secure'], 'The mocked function should not require any security.')
 
     def get_content_type_test(self):
         """
@@ -127,10 +125,12 @@ class TestRouter(TestCase):
             ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
             ['test.png', 'image/png'], ['test.whatever', 'text/plain'],
             ['test', 'text/plain'], ['', 'text/plain'],
-            [os.path.join(TEST_PATH,'test.html'), 'text/html']]
+            [os.path.join(TEST_PATH, 'test.html'), 'text/html']]
+
         # WHEN: calling each file type
         for header in headers:
             ext, content_type = self.router.get_content_type(header[0])
+
             # THEN: all types should match
             self.assertEqual(content_type, header[1], 'Mismatch of content type')
 
@@ -145,13 +145,14 @@ class TestRouter(TestCase):
         self.router.wfile = MagicMock()
         self.router.html_dir = os.path.normpath('test/dir')
         self.router.template_vars = MagicMock()
+
         # WHEN: call serve_file with no file_name
         self.router.serve_file()
+
         # THEN: it should return a 404
         self.router.send_response.assert_called_once_with(404)
         self.router.send_header.assert_called_once_with('Content-type','text/html')
-        self.assertEqual(self.router.end_headers.call_count, 1,
-            'end_headers called once')
+        self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
     def serve_file_with_valid_params_test(self):
         """
@@ -165,16 +166,16 @@ class TestRouter(TestCase):
         self.router.html_dir = os.path.normpath('test/dir')
         self.router.template_vars = MagicMock()
         with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
-            patch('builtins.open', mock_open(read_data='123')):
+                patch('builtins.open', mock_open(read_data='123')):
             mocked_exists.return_value = True
+
             # WHEN: call serve_file with an existing html file
             self.router.serve_file(os.path.normpath('test/dir/test.html'))
+
             # THEN: it should return a 200 and the file
             self.router.send_response.assert_called_once_with(200)
-            self.router.send_header.assert_called_once_with(
-                'Content-type','text/html')
-            self.assertEqual(self.router.end_headers.call_count, 1,
-                'end_headers called once')
+            self.router.send_header.assert_called_once_with('Content-type', 'text/html')
+            self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
     def serve_thumbnail_without_params_test(self):
         """

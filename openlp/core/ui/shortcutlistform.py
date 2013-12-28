@@ -74,7 +74,7 @@ class ShortcutListForm(QtGui.QDialog, Ui_ShortcutListDialog):
         if event.key() == QtCore.Qt.Key_Space:
             self.keyReleaseEvent(event)
         elif self.primaryPushButton.isChecked() or self.alternatePushButton.isChecked():
-            event.ignore()
+            self.keyReleaseEvent(event)
         elif event.key() == QtCore.Qt.Key_Escape:
             event.accept()
             self.close()

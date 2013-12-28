@@ -337,8 +337,8 @@ class PresentationDocument(object):
 
 class PresentationController(object):
     """
-    This class is used to control interactions with presentation applications by creating a runtime environment. This is
-    a base class for presentation controllers to inherit from.
+    This class is used to control interactions with presentation applications by creating a runtime environment.
+    This is a base class for presentation controllers to inherit from.
 
     To create a new controller, take a copy of this file and name it so it ends with ``controller.py``, i.e.
     ``foobarcontroller.py``. Make sure it inherits
@@ -386,8 +386,7 @@ class PresentationController(object):
     """
     log.info('PresentationController loaded')
 
-    def __init__(self, plugin=None, name='PresentationController',
-        document_class=PresentationDocument):
+    def __init__(self, plugin=None, name='PresentationController', document_class=PresentationDocument):
         """
         This is the constructor for the presentationcontroller object. This provides an easy way for descendent plugins
         to populate common data. This method *must* be overridden, like so::

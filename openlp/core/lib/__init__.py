@@ -336,6 +336,7 @@ def create_separated_list(string_list):
 
 
 from .registry import Registry
+from .filedialog import FileDialog
 from .screen import ScreenList
 from .listwidgetwithdnd import ListWidgetWithDnD
 from .treewidgetwithdnd import TreeWidgetWithDnD
@@ -351,4 +352,3 @@ from .dockwidget import OpenLPDockWidget
 from .imagemanager import ImageManager
 from .renderer import Renderer
 from .mediamanageritem import MediaManagerItem
-

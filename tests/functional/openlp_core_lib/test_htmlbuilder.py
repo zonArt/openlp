@@ -3,13 +3,13 @@ Package to test the openlp.core.lib.htmlbuilder module.
 """
 
 from unittest import TestCase
-from mock import MagicMock, patch
 
 from PyQt4 import QtCore
 
 from openlp.core.lib.htmlbuilder import build_html, build_background_css, build_lyrics_css, build_lyrics_outline_css, \
     build_lyrics_format_css, build_footer_css
 from openlp.core.lib.theme import HorizontalType, VerticalType
+from tests.functional import MagicMock, patch
 
 
 HTML = """

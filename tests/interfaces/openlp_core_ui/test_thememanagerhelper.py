@@ -27,46 +27,73 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.lib.theme package.
+Interface tests to test the thememanagerhelper class and related methods.
 """
-from tests.functional import MagicMock, patch
+import os
 from unittest import TestCase
+from tempfile import mkstemp
 
-from openlp.core.lib.theme import ThemeXML
+from openlp.core.common import Settings
+from openlp.core.ui import ThemeManagerHelper
+from tests.functional import patch, MagicMock
 
 
-class TestTheme(TestCase):
+class TestThemeManagerHelper(TestCase):
     """
-    Test the functions in the Theme module
+    Test the functions in the ThemeManagerHelp[er module
     """
     def setUp(self):
         """
         Create the UI
         """
-        pass
+        fd, self.ini_file = mkstemp('.ini')
+        Settings().set_filename(self.ini_file)
+        self.helper = ThemeManagerHelper()
+        self.helper.settings_section = "themes"
 
     def tearDown(self):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        pass
+        os.unlink(self.ini_file)
+        os.unlink(Settings().fileName())
 
-    def test_new_theme(self):
+    def test_initialise(self):
         """
-        Test the theme creation - basic test
+        Test the thememanagerhelper initialise - basic test
         """
-        # GIVEN: A new theme
+        # GIVEN: A new a call to initialise
+        Settings().setValue('themes/global theme', 'my_theme')
+        self.helper.build_theme_path = MagicMock()
+        self.helper.load_first_time_themes = MagicMock()
 
-        # WHEN: A theme is created
-        default_theme = ThemeXML()
+        # WHEN: the initialistion is run
+        self.helper.initialise()
 
-        # THEN: We should get some default behaviours
-        self.assertTrue(default_theme.background_border_color == '#000000', 'The theme should have a black border')
-        self.assertTrue(default_theme.background_type == 'solid', 'The theme should have a solid backgrounds')
-        self.assertTrue(default_theme.display_vertical_align == 0,
-                        'The theme should have a display_vertical_align of 0')
-        self.assertTrue(default_theme.font_footer_name == "Arial",
-                        'The theme should have a font_footer_name of Arial')
-        self.assertTrue(default_theme.font_main_bold is False, 'The theme should have a font_main_bold of false')
-        self.assertTrue(len(default_theme.__dict__) == 47, 'The theme should have 47 variables')
+        # THEN:
+        self.assertEqual(1, self.helper.build_theme_path.call_count,
+                         'The function build_theme_path should have been called')
+        self.assertEqual(1, self.helper.load_first_time_themes.call_count,
+                         'The function load_first_time_themes should have been called only once')
+        self.assertEqual(self.helper.global_theme, 'my_theme',
+                         'The global theme should have been set to my_theme')
 
+    def test_build_theme_path(self):
+        """
+        Test the thememanagerhelper build_theme_path - basic test
+        """
+        # GIVEN: A new a call to initialise
+        with patch('openlp.core.common.applocation.check_directory_exists') as mocked_check_directory_exists:
+            # GIVEN: A mocked out Settings class and a mocked out AppLocation.get_directory()
+            mocked_check_directory_exists.return_value = True
+        Settings().setValue('themes/global theme', 'my_theme')
+
+        self.helper.theme_form = MagicMock()
+        #self.helper.load_first_time_themes = MagicMock()
+
+        # WHEN: the build_theme_path is run
+        self.helper.build_theme_path()
+
+        # THEN:
+        self.assertEqual(self.helper.path, self.helper.theme_form.path,
+                         'The theme path and the main path should be the same value')
