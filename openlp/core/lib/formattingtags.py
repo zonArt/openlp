@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -68,47 +68,56 @@ class FormattingTags(object):
         FormattingTags.html_expands = []
         base_tags = []
         # Append the base tags.
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Red'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Red'),
             'start tag': '{r}',
             'start html': '<span style="-webkit-text-fill-color:red">',
             'end tag': '{/r}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Black'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Black'),
             'start tag': '{b}',
             'start html': '<span style="-webkit-text-fill-color:black">',
             'end tag': '{/b}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Blue'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Blue'),
             'start tag': '{bl}',
             'start html': '<span style="-webkit-text-fill-color:blue">',
             'end tag': '{/bl}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Yellow'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Yellow'),
             'start tag': '{y}',
             'start html': '<span style="-webkit-text-fill-color:yellow">',
             'end tag': '{/y}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Green'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Green'),
             'start tag': '{g}',
             'start html': '<span style="-webkit-text-fill-color:green">',
             'end tag': '{/g}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Pink'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Pink'),
             'start tag': '{pk}',
             'start html': '<span style="-webkit-text-fill-color:#FFC0CB">',
             'end tag': '{/pk}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Orange'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Orange'),
             'start tag': '{o}',
             'start html': '<span style="-webkit-text-fill-color:#FFA500">',
             'end tag': '{/o}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Purple'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Purple'),
             'start tag': '{pp}',
             'start html': '<span style="-webkit-text-fill-color:#800080">',
             'end tag': '{/pp}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'White'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'White'),
             'start tag': '{w}',
             'start html': '<span style="-webkit-text-fill-color:white">',
             'end tag': '{/w}', 'end html': '</span>', 'protected': True,
@@ -128,7 +137,8 @@ class FormattingTags(object):
             'start tag': '{p}', 'start html': '<p>', 'end tag': '{/p}',
             'end html': '</p>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Bold'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Bold'),
             'start tag': '{st}', 'start html': '<strong>',
             'end tag': '{/st}', 'end html': '</strong>',
             'protected': True, 'temporary': False})
@@ -142,9 +152,11 @@ class FormattingTags(object):
             'start html': '<span style="text-decoration: underline;">',
             'end tag': '{/u}', 'end html': '</span>', 'protected': True,
             'temporary': False})
-        base_tags.append({'desc': translate('OpenLP.FormattingTags', 'Break'),
+        base_tags.append({
+            'desc': translate('OpenLP.FormattingTags', 'Break'),
             'start tag': '{br}', 'start html': '<br>', 'end tag': '',
-            'end html': '', 'protected': True, 'temporary': False})
+            'end html': '', 'protected': True,
+            'temporary': False})
         FormattingTags.add_html_tags(base_tags)
         FormattingTags.add_html_tags(temporary_tags)
         user_expands_string = str(Settings().value('formattingTags/html_tags'))

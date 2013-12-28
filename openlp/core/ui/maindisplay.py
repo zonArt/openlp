@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -215,7 +215,7 @@ class MainDisplay(Display):
             service_item = ServiceItem()
             service_item.bg_image_bytes = image_to_byte(self.initial_fame)
             self.web_view.setHtml(build_html(service_item, self.screen, self.is_live, None,
-                plugins=self.plugin_manager.plugins))
+                                  plugins=self.plugin_manager.plugins))
             self.__hideMouse()
         log.debug('Finished MainDisplay setup')
 
@@ -283,7 +283,7 @@ class MainDisplay(Display):
         if not hasattr(self, 'service_item'):
             return False
         self.override['image'] = path
-        self.override['theme'] = self.service_item.themedata.background_filename
+        self.override['theme'] = self.service_item.theme_data.background_filename
         self.image(path)
         # Update the preview frame.
         if self.is_live:
@@ -343,7 +343,7 @@ class MainDisplay(Display):
         if self.is_live and hasattr(self, 'service_item'):
             # Wait for the fade to finish before geting the preview.
             # Important otherwise preview will have incorrect text if at all!
-            if self.service_item.themedata and self.service_item.themedata.display_slide_transition:
+            if self.service_item.theme_data and self.service_item.theme_data.display_slide_transition:
                 while not self.frame.evaluateJavaScript('show_text_completed()'):
                     self.application.process_events()
         # Wait for the webview to update before getting the preview.
@@ -383,24 +383,24 @@ class MainDisplay(Display):
                 Registry().execute('video_background_replaced')
                 self.override = {}
             # We have a different theme.
-            elif self.override['theme'] != service_item.themedata.background_filename:
+            elif self.override['theme'] != service_item.theme_data.background_filename:
                 Registry().execute('live_theme_changed')
                 self.override = {}
             else:
                 # replace the background
                 background = self.image_manager.get_image_bytes(self.override['image'], ImageSource.ImagePlugin)
-        self.set_transparency(self.service_item.themedata.background_type ==
-            BackgroundType.to_string(BackgroundType.Transparent))
-        if self.service_item.themedata.background_filename:
+        self.set_transparency(self.service_item.theme_data.background_type ==
+                              BackgroundType.to_string(BackgroundType.Transparent))
+        if self.service_item.theme_data.background_filename:
             self.service_item.bg_image_bytes = self.image_manager.get_image_bytes(
-                self.service_item.themedata.background_filename, ImageSource.Theme
+                self.service_item.theme_data.background_filename, ImageSource.Theme
             )
         if image_path:
             image_bytes = self.image_manager.get_image_bytes(image_path, ImageSource.ImagePlugin)
         else:
             image_bytes = None
         html = build_html(self.service_item, self.screen, self.is_live, background, image_bytes,
-            plugins=self.plugin_manager.plugins)
+                          plugins=self.plugin_manager.plugins)
         log.debug('buildHtml - pre setHtml')
         self.web_view.setHtml(html)
         log.debug('buildHtml - post setHtml')
@@ -535,7 +535,7 @@ class AudioPlayer(QtCore.QObject):
         """
         log.debug('AudioPlayer Initialisation started')
         super(AudioPlayer, self).__init__(parent)
-        self.currentIndex = -1
+        self.current_index = -1
         self.playlist = []
         self.repeat = False
         self.media_object = Phonon.MediaObject()
@@ -558,9 +558,9 @@ class AudioPlayer(QtCore.QObject):
         Just before the audio player finishes the current track, queue the next
         item in the playlist, if there is one.
         """
-        self.currentIndex += 1
-        if len(self.playlist) > self.currentIndex:
-            self.media_object.enqueue(self.playlist[self.currentIndex])
+        self.current_index += 1
+        if len(self.playlist) > self.current_index:
+            self.media_object.enqueue(self.playlist[self.current_index])
 
     def on_finished(self):
         """
@@ -570,7 +570,7 @@ class AudioPlayer(QtCore.QObject):
             log.debug('Repeat is enabled... here we go again!')
             self.media_object.clearQueue()
             self.media_object.clear()
-            self.currentIndex = -1
+            self.current_index = -1
             self.play()
 
     def connectVolumeSlider(self, slider):
@@ -583,7 +583,7 @@ class AudioPlayer(QtCore.QObject):
         """
         Reset the audio player, clearing the playlist and the queue.
         """
-        self.currentIndex = -1
+        self.current_index = -1
         self.playlist = []
         self.stop()
         self.media_object.clear()
@@ -593,7 +593,7 @@ class AudioPlayer(QtCore.QObject):
         We want to play the file so start it
         """
         log.debug('AudioPlayer.play() called')
-        if self.currentIndex == -1:
+        if self.current_index == -1:
             self.on_about_to_finish()
         self.media_object.play()
 
@@ -611,43 +611,43 @@ class AudioPlayer(QtCore.QObject):
         log.debug('AudioPlayer.stop() called')
         self.media_object.stop()
 
-    def add_to_playlist(self, filenames):
+    def add_to_playlist(self, file_names):
         """
         Add another file to the playlist.
 
-        ``filenames``
+        ``file_names``
             A list with files to be added to the playlist.
         """
-        if not isinstance(filenames, list):
-            filenames = [filenames]
-        self.playlist.extend(list(map(Phonon.MediaSource, filenames)))
+        if not isinstance(file_names, list):
+            file_names = [file_names]
+        self.playlist.extend(list(map(Phonon.MediaSource, file_names)))
 
     def next(self):
         """
         Skip forward to the next track in the list
         """
-        if not self.repeat and self.currentIndex + 1 >= len(self.playlist):
+        if not self.repeat and self.current_index + 1 >= len(self.playlist):
             return
-        isPlaying = self.media_object.state() == Phonon.PlayingState
-        self.currentIndex += 1
-        if self.repeat and self.currentIndex == len(self.playlist):
-            self.currentIndex = 0
+        is_playing = self.media_object.state() == Phonon.PlayingState
+        self.current_index += 1
+        if self.repeat and self.current_index == len(self.playlist):
+            self.current_index = 0
         self.media_object.clearQueue()
         self.media_object.clear()
-        self.media_object.enqueue(self.playlist[self.currentIndex])
-        if isPlaying:
+        self.media_object.enqueue(self.playlist[self.current_index])
+        if is_playing:
             self.media_object.play()
 
     def go_to(self, index):
         """
         Go to a particular track in the list
         """
-        isPlaying = self.media_object.state() == Phonon.PlayingState
+        is_playing = self.media_object.state() == Phonon.PlayingState
         self.media_object.clearQueue()
         self.media_object.clear()
-        self.currentIndex = index
-        self.media_object.enqueue(self.playlist[self.currentIndex])
-        if isPlaying:
+        self.current_index = index
+        self.media_object.enqueue(self.playlist[self.current_index])
+        if is_playing:
             self.media_object.play()
 
     def connectSlot(self, signal, slot):

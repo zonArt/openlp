@@ -233,8 +233,8 @@ class Htmbuilder(TestCase):
         """
         # GIVEN: Mocked arguments.
         item = MagicMock()
-        item.themedata.background_start_color = '#000000'
-        item.themedata.background_end_color = '#FFFFFF'
+        item.theme_data.background_start_color = '#000000'
+        item.theme_data.background_end_color = '#FFFFFF'
         width = 10
 
         # WHEN: Create the css.
@@ -254,9 +254,9 @@ class Htmbuilder(TestCase):
             mocked_build_lyrics_outline_css.return_value = ''
             item = MagicMock()
             item.main = QtCore.QRect(10, 20, 10, 20)
-            item.themedata.font_main_shadow = True
-            item.themedata.font_main_shadow_color = '#000000'
-            item.themedata.font_main_shadow_size = 5
+            item.theme_data.font_main_shadow = True
+            item.theme_data.font_main_shadow_color = '#000000'
+            item.theme_data.font_main_shadow_size = 5
 
             # WHEN: Create the css.
             css = build_lyrics_css(item)
@@ -305,20 +305,20 @@ class Htmbuilder(TestCase):
         assert LYRICS_FORMAT_CSS == css, 'The lyrics format css should be equal.'
 
     def build_footer_css_test(self):
-       """
-       Test the build_footer_css() function
-       """
-       # GIVEN: Create a theme.
-       item = MagicMock()
-       item.footer = QtCore.QRect(10, 921, 1260, 103)
-       item.themedata.font_footer_name = 'Arial'
-       item.themedata.font_footer_size = 12
-       item.themedata.font_footer_color = '#FFFFFF'
-       height = 1024
+        """
+        Test the build_footer_css() function
+        """
+        # GIVEN: Create a theme.
+        item = MagicMock()
+        item.footer = QtCore.QRect(10, 921, 1260, 103)
+        item.theme_data.font_footer_name = 'Arial'
+        item.theme_data.font_footer_size = 12
+        item.theme_data.font_footer_color = '#FFFFFF'
+        height = 1024
 
-       # WHEN: create the css.
-       css = build_footer_css(item, height)
+        # WHEN: create the css.
+        css = build_footer_css(item, height)
 
-       # THEN: THE css should be the same.
-       assert FOOTER_CSS == css, 'The footer strings should be equal.'
+        # THEN: THE css should be the same.
+        assert FOOTER_CSS == css, 'The footer strings should be equal.'
 
