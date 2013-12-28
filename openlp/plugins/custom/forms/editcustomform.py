@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -82,7 +82,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Called when editing or creating a new custom.
 
         ``id``
-            The cutom's id. If zero, then a new custom is created.
+            The custom's id. If zero, then a new custom is created.
 
         ``preview``
             States whether the custom is edited while being previewed in the
@@ -98,8 +98,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
             self.custom_slide = self.manager.get_object(CustomSlide, id)
             self.title_edit.setText(self.custom_slide.title)
             self.credit_edit.setText(self.custom_slide.credits)
-            custom_XML = CustomXMLParser(self.custom_slide.text)
-            slide_list = custom_XML.get_verses()
+            custom_xml = CustomXMLParser(self.custom_slide.text)
+            slide_list = custom_xml.get_verses()
             self.slide_list_view.addItems([slide[1] for slide in slide_list])
             theme = self.custom_slide.theme_name
             find_and_set_in_combo_box(self.theme_combo_box, theme)
@@ -136,22 +136,22 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Move a slide up in the list when the "Up" button is clicked.
         """
-        selectedRow = self.slide_list_view.currentRow()
-        if selectedRow != 0:
-            qw = self.slide_list_view.takeItem(selectedRow)
-            self.slide_list_view.insertItem(selectedRow - 1, qw)
-            self.slide_list_view.setCurrentRow(selectedRow - 1)
+        selected_row = self.slide_list_view.currentRow()
+        if selected_row != 0:
+            qw = self.slide_list_view.takeItem(selected_row)
+            self.slide_list_view.insertItem(selected_row - 1, qw)
+            self.slide_list_view.setCurrentRow(selected_row - 1)
 
     def on_down_button_clicked(self):
         """
         Move a slide down in the list when the "Down" button is clicked.
         """
-        selectedRow = self.slide_list_view.currentRow()
+        selected_row = self.slide_list_view.currentRow()
         # zero base arrays
-        if selectedRow != self.slide_list_view.count() - 1:
-            qw = self.slide_list_view.takeItem(selectedRow)
-            self.slide_list_view.insertItem(selectedRow + 1, qw)
-            self.slide_list_view.setCurrentRow(selectedRow + 1)
+        if selected_row != self.slide_list_view.count() - 1:
+            qw = self.slide_list_view.takeItem(selected_row)
+            self.slide_list_view.insertItem(selected_row + 1, qw)
+            self.slide_list_view.setCurrentRow(selected_row + 1)
 
     def on_add_button_clicked(self):
         """
@@ -256,6 +256,6 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         # We must have at least one slide.
         if self.slide_list_view.count() == 0:
             critical_error_message_box(message=translate('CustomPlugin.EditCustomForm',
-                'You need to add at least one slide.'))
+                                                         'You need to add at least one slide.'))
             return False
         return True

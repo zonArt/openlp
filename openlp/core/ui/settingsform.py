@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -137,11 +137,11 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             if plugin.settings_tab:
                 plugin.settings_tab.post_set_up()
 
-    def tab_changed(self, tabIndex):
+    def tab_changed(self, tab_index):
         """
         A different settings tab is selected
         """
-        self.stacked_layout.setCurrentIndex(tabIndex)
+        self.stacked_layout.setCurrentIndex(tab_index)
         self.stacked_layout.currentWidget().tab_visible()
 
     def register_post_process(self, function):

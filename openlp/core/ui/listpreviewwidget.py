@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -76,9 +76,9 @@ class ListPreviewWidget(QtGui.QTableWidget):
                 self.resizeRowsToContents()
             else:
                 # Sort out image heights.
-                for framenumber in range(len(self.service_item.get_frames())):
+                for frame_number in range(len(self.service_item.get_frames())):
                     height = self.viewport().width() // self.screen_ratio
-                    self.setRowHeight(framenumber, height)
+                    self.setRowHeight(frame_number, height)
 
     def screen_size_changed(self, screen_ratio):
         """
@@ -88,7 +88,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         self.screen_ratio = screen_ratio
         self.__recalculate_layout()
 
-    def replace_service_item(self, service_item, width, slideNumber):
+    def replace_service_item(self, service_item, width, slide_number):
         """
         Replaces the current preview items with the ones in service_item.
         Displays the given slide.
@@ -99,7 +99,7 @@ class ListPreviewWidget(QtGui.QTableWidget):
         self.setColumnWidth(0, width)
         row = 0
         text = []
-        for framenumber, frame in enumerate(self.service_item.get_frames()):
+        for frame_number, frame in enumerate(self.service_item.get_frames()):
             self.setRowCount(self.slide_count() + 1)
             item = QtGui.QTableWidgetItem()
             slide_height = 0
@@ -125,19 +125,19 @@ class ListPreviewWidget(QtGui.QTableWidget):
                 else:
                     image = self.image_manager.get_image(frame['path'], ImageSource.ImagePlugin)
                     label.setPixmap(QtGui.QPixmap.fromImage(image))
-                self.setCellWidget(framenumber, 0, label)
+                self.setCellWidget(frame_number, 0, label)
                 slide_height = width // self.screen_ratio
                 row += 1
             text.append(str(row))
-            self.setItem(framenumber, 0, item)
+            self.setItem(frame_number, 0, item)
             if slide_height:
-                self.setRowHeight(framenumber, slide_height)
+                self.setRowHeight(frame_number, slide_height)
         self.setVerticalHeaderLabels(text)
         if self.service_item.is_text():
             self.resizeRowsToContents()
         self.setColumnWidth(0, self.viewport().width())
         self.setFocus()
-        self.change_slide(slideNumber)
+        self.change_slide(slide_number)
 
     def change_slide(self, slide):
         """

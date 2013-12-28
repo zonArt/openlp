@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -79,7 +79,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         if event.button() == QtCore.Qt.RightButton:
             # Rewrite the mouse event to a left button event so the cursor is moved to the location of the pointer.
             event = QtGui.QMouseEvent(QtCore.QEvent.MouseButtonPress,
-                event.pos(), QtCore.Qt.LeftButton, QtCore.Qt.LeftButton, QtCore.Qt.NoModifier)
+                                      event.pos(), QtCore.Qt.LeftButton, QtCore.Qt.LeftButton, QtCore.Qt.NoModifier)
         QtGui.QPlainTextEdit.mousePressEvent(self, event)
 
     def contextMenuEvent(self, event):
@@ -133,7 +133,7 @@ class SpellTextEdit(QtGui.QPlainTextEdit):
         """
         self.dictionary = enchant.Dict(action.text())
         self.highlighter.spelling_dictionary = self.dictionary
-        self.highlighter.highlightBlock(self.toPlainText())
+        self.highlighter.highlight_block(self.toPlainText())
         self.highlighter.rehighlight()
 
     def correct_word(self, word):
@@ -180,7 +180,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         super(Highlighter, self).__init__(*args)
         self.spelling_dictionary = None
 
-    def highlightBlock(self, text):
+    def highlight_block(self, text):
         """
         Highlight misspelt words in a block of text.
         """

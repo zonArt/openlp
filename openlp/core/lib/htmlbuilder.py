@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -576,7 +576,7 @@ def build_html(item, screen, is_live, background, image=None, plugins=None):
     """
     width = screen['size'].width()
     height = screen['size'].height()
-    theme_data = item.themedata
+    theme_data = item.theme_data
     # Image generated and poked in
     if background:
         bgimage_src = 'src="data:image/png;base64,%s"' % background
@@ -630,7 +630,7 @@ def build_background_css(item, width):
         Service Item containing theme and location information
     """
     width = int(width) // 2
-    theme = item.themedata
+    theme = item.theme_data
     background = 'background-color: black'
     if theme:
         if theme.background_type == BackgroundType.to_string(BackgroundType.Transparent):
@@ -681,7 +681,7 @@ def build_lyrics_css(item):
     %s
 }
 """
-    theme_data = item.themedata
+    theme_data = item.theme_data
     lyricstable = ''
     lyrics = ''
     lyricsmain = ''
@@ -769,10 +769,10 @@ def build_footer_css(item, height):
     text-align: left;
     white-space: nowrap;
     """
-    theme = item.themedata
+    theme = item.theme_data
     if not theme or not item.footer:
         return ''
     bottom = height - int(item.footer.y()) - int(item.footer.height())
     lyrics_html = style % (item.footer.x(), bottom, item.footer.width(),
-        theme.font_footer_name, theme.font_footer_size, theme.font_footer_color)
+                           theme.font_footer_name, theme.font_footer_size, theme.font_footer_color)
     return lyrics_html

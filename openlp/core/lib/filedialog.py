@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -40,6 +40,7 @@ from openlp.core.common import UiStrings
 
 log = logging.getLogger(__name__)
 
+
 class FileDialog(QtGui.QFileDialog):
     """
     Subclass QFileDialog to work round a bug
@@ -54,13 +55,12 @@ class FileDialog(QtGui.QFileDialog):
         file_list = []
         for file in files:
             if not os.path.exists(file):
-                log.info('File %s not found. Attempting to unquote.')
+                log.info('File not found. Attempting to unquote.')
                 file = parse.unquote(file)
                 if not os.path.exists(file):
                     log.error('File %s not found.' % file)
                     QtGui.QMessageBox.information(parent, UiStrings().FileNotFound,
-                        UiStrings().FileNotFoundMessage % file)
+                                                  UiStrings().FileNotFoundMessage % file)
                     continue
-                log.info('File %s found.')
             file_list.append(file)
         return file_list
