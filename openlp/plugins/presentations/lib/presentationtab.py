@@ -73,7 +73,7 @@ class PresentationTab(SettingsTab):
         self.override_app_check_box = QtGui.QCheckBox(self.advanced_group_box)
         self.override_app_check_box.setObjectName('override_app_check_box')
         self.advanced_layout.addWidget(self.override_app_check_box)
-
+        self.left_layout.addWidget(self.advanced_group_box)
         # Pdf options
         self.pdf_group_box = QtGui.QGroupBox(self.left_column)
         self.pdf_group_box.setObjectName('pdf_group_box')
@@ -81,7 +81,7 @@ class PresentationTab(SettingsTab):
         self.pdf_layout.setObjectName('pdf_layout')
         self.pdf_program_check_box = QtGui.QCheckBox(self.pdf_group_box)
         self.pdf_program_check_box.setObjectName('pdf_program_check_box')
-        self.pdf_layout.addWidget(self.pdf_program_check_box)
+        self.pdf_layout.addRow(self.pdf_program_check_box)
         self.pdf_program_path_layout = QtGui.QHBoxLayout()
         self.pdf_program_path_layout.setObjectName('pdf_program_path_layout')
         self.pdf_program_path = QtGui.QLineEdit(self.pdf_group_box)
@@ -95,13 +95,14 @@ class PresentationTab(SettingsTab):
         self.pdf_program_browse_button.setEnabled(False)
         self.pdf_program_path_layout.addWidget(self.pdf_program_browse_button)
         self.pdf_layout.addRow(self.pdf_program_path_layout)
+        self.left_layout.addWidget(self.pdf_group_box)
+        self.left_layout.addStretch()
+        self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
+        self.right_layout.addStretch()
+        # Signals and slots
         self.pdf_program_path.editingFinished.connect(self.on_pdf_program_path_edit_finished)
         self.pdf_program_browse_button.clicked.connect(self.on_pdf_program_browse_button_clicked)
         self.pdf_program_check_box.clicked.connect(self.on_pdf_program_check_box_clicked)
-        self.left_layout.addWidget(self.advanced_group_box)
-        self.left_layout.addWidget(self.pdf_group_box)
-        self.left_layout.addStretch()
-        self.right_layout.addStretch()
 
     def retranslateUi(self):
         """
@@ -203,10 +204,10 @@ class PresentationTab(SettingsTab):
         """
         After selecting/typing in a program it is validated that it is a actually ghostscript or mudraw
         """
-        type = None 
+        program_type = None 
         if self.pdf_program_path.text() != '':
-            type = PdfController.check_binary(self.pdf_program_path.text())
-            if not type:
+            program_type = PdfController.check_binary(self.pdf_program_path.text())
+            if not program_type:
                 critical_error_message_box(UiStrings().Error, 
                         translate('PresentationPlugin.PresentationTab', 'The program is not ghostscript or mudraw which is required.'))
                 self.pdf_program_path.setFocus()

@@ -41,7 +41,6 @@ from .presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)
 
-
 class PdfController(PresentationController):
     """
     Class to control PDF presentations
@@ -61,12 +60,15 @@ class PdfController(PresentationController):
         if self.check_installed() and self.mudrawbin:
             self.also_supports = ['xps']
 
+    @staticmethod
     def check_binary(program_path):
         """
         Function that checks whether a binary is either ghostscript or mudraw or neither.
+        Is also used from presentationtab.py
         """
         program_type = None
         runlog = ''
+        log.debug('testing program_path: %s', program_path)
         try:
             runlog = check_output([program_path,  '--help'], stderr=STDOUT)
         except CalledProcessError as e:
@@ -75,15 +77,16 @@ class PdfController(PresentationController):
             runlog = ''
         # Analyse the output to see it the program is mudraw, ghostscript or neither
         for line in runlog.splitlines():
-            found_mudraw = re.search('usage: mudraw.*', line)
+            decoded_line = line.decode()
+            found_mudraw = re.search('usage: mudraw.*', decoded_line)
             if found_mudraw:
                 program_type = 'mudraw'
                 break
-            found_gs = re.search('GPL Ghostscript.*', line)
+            found_gs = re.search('GPL Ghostscript.*', decoded_line)
             if found_gs:
                 program_type = 'gs'
                 break
-        log.info('in check_binary, found: ' + program_type)
+        log.debug('in check_binary, found: %s', program_type)
         return program_type
 
     def check_available(self):
@@ -101,11 +104,11 @@ class PdfController(PresentationController):
         # Use the user defined program if given
         if (Settings().value('presentations/enable_pdf_program')):
             pdf_program = Settings().value('presentations/pdf_program')
-            type = self.check_binary(pdf_program)
-            if type == 'gs':
+            program_type = check_binary(pdf_program)
+            if program_type == 'gs':
                 self.gsbin = pdf_program
                 return True
-            elif type == 'mudraw':
+            elif program_type == 'mudraw':
                 self.mudrawbin = pdf_program
                 return True
         # Fallback to autodetection
