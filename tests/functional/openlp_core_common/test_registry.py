@@ -32,10 +32,10 @@ Package to test the openlp.core.lib package.
 import os
 from unittest import TestCase
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from tests.functional import MagicMock
 
-TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
+TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../', '..', 'resources'))
 
 
 class TestRegistry(TestCase):

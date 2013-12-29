@@ -32,23 +32,21 @@ The Theme Manager manages adding, deleteing and modifying of themes.
 import os
 import zipfile
 import shutil
-import logging
 
 from xml.etree.ElementTree import ElementTree, XML
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, Registry, get_text_file_string, build_icon, \
+from openlp.core.common import Registry, AppLocation, Settings, OpenLPMixin, RegistryMixin, check_directory_exists, \
+    UiStrings, translate
+from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, get_text_file_string, build_icon, \
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
 from openlp.core.ui import FileRenameForm, ThemeForm, ThemeManagerHelper
 from openlp.core.utils import delete_file, get_locale_key, get_filesystem_encoding
 
-log = logging.getLogger(__name__)
 
-
-class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
+class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper):
     """
     Manages the orders of Theme.
     """
@@ -57,9 +55,6 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         Constructor
         """
         super(ThemeManager, self).__init__(parent)
-        Registry().register('theme_manager', self)
-        Registry().register_function('bootstrap_initialise', self.initialise)
-        Registry().register_function('bootstrap_post_set_up', self._push_themes)
         self.settings_section = 'themes'
         self.theme_form = ThemeForm(self)
         self.file_rename_form = FileRenameForm()
@@ -71,30 +66,32 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         self.toolbar = OpenLPToolbar(self)
         self.toolbar.setObjectName('toolbar')
         self.toolbar.add_toolbar_action('newTheme',
-            text=UiStrings().NewTheme, icon=':/themes/theme_new.png',
-            tooltip=translate('OpenLP.ThemeManager', 'Create a new theme.'),
-            triggers=self.on_add_theme)
+                                        text=UiStrings().NewTheme, icon=':/themes/theme_new.png',
+                                        tooltip=translate('OpenLP.ThemeManager', 'Create a new theme.'),
+                                        triggers=self.on_add_theme)
         self.toolbar.add_toolbar_action('editTheme',
-            text=translate('OpenLP.ThemeManager', 'Edit Theme'),
-            icon=':/themes/theme_edit.png',
-            tooltip=translate('OpenLP.ThemeManager', 'Edit a theme.'),
-            triggers=self.on_edit_theme)
+                                        text=translate('OpenLP.ThemeManager', 'Edit Theme'),
+                                        icon=':/themes/theme_edit.png',
+                                        tooltip=translate('OpenLP.ThemeManager', 'Edit a theme.'),
+                                        triggers=self.on_edit_theme)
         self.delete_toolbar_action = self.toolbar.add_toolbar_action('delete_theme',
-            text=translate('OpenLP.ThemeManager', 'Delete Theme'),
-            icon=':/general/general_delete.png',
-            tooltip=translate('OpenLP.ThemeManager', 'Delete a theme.'),
-            triggers=self.on_delete_theme)
+                                                                     text=translate('OpenLP.ThemeManager',
+                                                                                    'Delete Theme'),
+                                                                     icon=':/general/general_delete.png',
+                                                                     tooltip=translate('OpenLP.ThemeManager',
+                                                                                       'Delete a theme.'),
+                                                                     triggers=self.on_delete_theme)
         self.toolbar.addSeparator()
         self.toolbar.add_toolbar_action('importTheme',
-            text=translate('OpenLP.ThemeManager', 'Import Theme'),
-            icon=':/general/general_import.png',
-            tooltip=translate('OpenLP.ThemeManager', 'Import a theme.'),
-            triggers=self.on_import_theme)
+                                        text=translate('OpenLP.ThemeManager', 'Import Theme'),
+                                        icon=':/general/general_import.png',
+                                        tooltip=translate('OpenLP.ThemeManager', 'Import a theme.'),
+                                        triggers=self.on_import_theme)
         self.toolbar.add_toolbar_action('exportTheme',
-            text=translate('OpenLP.ThemeManager', 'Export Theme'),
-            icon=':/general/general_export.png',
-            tooltip=translate('OpenLP.ThemeManager', 'Export a theme.'),
-            triggers=self.on_export_theme)
+                                        text=translate('OpenLP.ThemeManager', 'Export Theme'),
+                                        icon=':/general/general_export.png',
+                                        tooltip=translate('OpenLP.ThemeManager', 'Export a theme.'),
+                                        triggers=self.on_export_theme)
         self.layout.addWidget(self.toolbar)
         self.theme_widget = QtGui.QWidgetAction(self.toolbar)
         self.theme_widget.setObjectName('theme_widget')
@@ -109,25 +106,25 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         # build the context menu
         self.menu = QtGui.QMenu()
         self.edit_action = create_widget_action(self.menu,
-            text=translate('OpenLP.ThemeManager', '&Edit Theme'),
-            icon=':/themes/theme_edit.png', triggers=self.on_edit_theme)
+                                                text=translate('OpenLP.ThemeManager', '&Edit Theme'),
+                                                icon=':/themes/theme_edit.png', triggers=self.on_edit_theme)
         self.copy_action = create_widget_action(self.menu,
-            text=translate('OpenLP.ThemeManager', '&Copy Theme'),
-            icon=':/themes/theme_edit.png', triggers=self.on_copy_theme)
+                                                text=translate('OpenLP.ThemeManager', '&Copy Theme'),
+                                                icon=':/themes/theme_edit.png', triggers=self.on_copy_theme)
         self.rename_action = create_widget_action(self.menu,
-            text=translate('OpenLP.ThemeManager', '&Rename Theme'),
-            icon=':/themes/theme_edit.png', triggers=self.on_rename_theme)
+                                                  text=translate('OpenLP.ThemeManager', '&Rename Theme'),
+                                                  icon=':/themes/theme_edit.png', triggers=self.on_rename_theme)
         self.delete_action = create_widget_action(self.menu,
-            text=translate('OpenLP.ThemeManager', '&Delete Theme'),
-            icon=':/general/general_delete.png', triggers=self.on_delete_theme)
+                                                  text=translate('OpenLP.ThemeManager', '&Delete Theme'),
+                                                  icon=':/general/general_delete.png', triggers=self.on_delete_theme)
         self.menu.addSeparator()
         self.global_action = create_widget_action(self.menu,
-            text=translate('OpenLP.ThemeManager', 'Set As &Global Default'),
-            icon=':/general/general_export.png',
-            triggers=self.change_global_from_screen)
-        self.exportAction = create_widget_action(self.menu,
-            text=translate('OpenLP.ThemeManager', '&Export Theme'),
-            icon=':/general/general_export.png', triggers=self.on_export_theme)
+                                                  text=translate('OpenLP.ThemeManager', 'Set As &Global Default'),
+                                                  icon=':/general/general_export.png',
+                                                  triggers=self.change_global_from_screen)
+        self.export_action = create_widget_action(self.menu,
+                                                  text=translate('OpenLP.ThemeManager', '&Export Theme'),
+                                                  icon=':/general/general_export.png', triggers=self.on_export_theme)
         # Signals
         self.theme_list_widget.doubleClicked.connect(self.change_global_from_screen)
         self.theme_list_widget.currentItemChanged.connect(self.check_list_state)
@@ -136,9 +133,25 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         self.theme_list = []
         self.old_background_image = None
 
-    def check_list_state(self, item):
+    def bootstrap_initialise(self):
+        """
+        process the bootstrap initialise setup request
+        """
+        self.log_debug('initialise called')
+        self.global_theme = Settings().value(self.settings_section + '/global theme')
+        self.build_theme_path()
+        self.load_first_time_themes()
+
+    def bootstrap_post_set_up(self):
+        """
+        process the bootstrap post setup request
+        """
+        self._push_themes()
+
+    def check_list_state(self, item, field=None):
         """
         If Default theme selected remove delete button.
+        Note for some reason a dummy field is required.  Nothing is passed!
         """
         if item is None:
             return
@@ -171,7 +184,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         Change the global theme when it is changed through the Themes settings tab
         """
         self.global_theme = Settings().value(self.settings_section + '/global theme')
-        log.debug('change_global_from_tab %s', self.global_theme)
+        self.log_debug('change_global_from_tab %s' % self.global_theme)
         for count in range(0, self.theme_list_widget.count()):
             # reset the old name
             item = self.theme_list_widget.item(count)
@@ -190,7 +203,6 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         Change the global theme when a theme is double clicked upon in the
         Theme Manager list
         """
-        log.debug('change_global_from_screen %s', index)
         selected_row = self.theme_list_widget.currentRow()
         for count in range(0, self.theme_list_widget.count()):
             item = self.theme_list_widget.item(count)
@@ -207,7 +219,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                 Registry().execute('theme_update_global')
                 self._push_themes()
 
-    def on_add_theme(self):
+    def on_add_theme(self, field=None):
         """
         Loads a new theme with the default settings and then launches the theme
         editing form for the user to make their customisations.
@@ -218,13 +230,13 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         self.theme_form.exec_()
         self.load_themes()
 
-    def on_rename_theme(self):
+    def on_rename_theme(self, field=None):
         """
         Renames an existing theme to a new name
         """
         if self._validate_theme_action(translate('OpenLP.ThemeManager', 'You must select a theme to rename.'),
-                translate('OpenLP.ThemeManager', 'Rename Confirmation'),
-                translate('OpenLP.ThemeManager', 'Rename %s theme?'), False, False):
+                                       translate('OpenLP.ThemeManager', 'Rename Confirmation'),
+                                       translate('OpenLP.ThemeManager', 'Rename %s theme?'), False, False):
             item = self.theme_list_widget.currentItem()
             old_theme_name = item.data(QtCore.Qt.UserRole)
             self.file_rename_form.file_name_edit.setText(old_theme_name)
@@ -242,14 +254,14 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                     self.renderer.update_theme(new_theme_name, old_theme_name)
                     self.load_themes()
 
-    def on_copy_theme(self):
+    def on_copy_theme(self, field=None):
         """
         Copies an existing theme to a new name
         """
         item = self.theme_list_widget.currentItem()
         old_theme_name = item.data(QtCore.Qt.UserRole)
         self.file_rename_form.file_name_edit.setText(translate('OpenLP.ThemeManager',
-            'Copy of %s', 'Copy of <theme name>') % old_theme_name)
+                                                     'Copy of %s', 'Copy of <theme name>') % old_theme_name)
         if self.file_rename_form.exec_(True):
             new_theme_name = self.file_rename_form.file_name_edit.text()
             if self.check_if_theme_exists(new_theme_name):
@@ -260,7 +272,6 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         """
         Takes a theme and makes a new copy of it as well as saving it.
         """
-        log.debug('clone_theme_data')
         save_to = None
         save_from = None
         if theme_data.background_type == 'image':
@@ -271,13 +282,13 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         self.save_theme(theme_data, save_from, save_to)
         self.load_themes()
 
-    def on_edit_theme(self):
+    def on_edit_theme(self, field=None):
         """
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
         """
         if check_item_selected(self.theme_list_widget,
-                translate('OpenLP.ThemeManager', 'You must select a theme to edit.')):
+                               translate('OpenLP.ThemeManager', 'You must select a theme to edit.')):
             item = self.theme_list_widget.currentItem()
             theme = self.get_theme_data(item.data(QtCore.Qt.UserRole))
             if theme.background_type == 'image':
@@ -288,13 +299,13 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
             self.renderer.update_theme(theme.theme_name)
             self.load_themes()
 
-    def on_delete_theme(self):
+    def on_delete_theme(self, field=None):
         """
         Delete a theme
         """
         if self._validate_theme_action(translate('OpenLP.ThemeManager', 'You must select a theme to delete.'),
-                translate('OpenLP.ThemeManager', 'Delete Confirmation'),
-                translate('OpenLP.ThemeManager', 'Delete %s theme?')):
+                                                 translate('OpenLP.ThemeManager', 'Delete Confirmation'),
+                                                 translate('OpenLP.ThemeManager', 'Delete %s theme?')):
             item = self.theme_list_widget.currentItem()
             theme = item.text()
             row = self.theme_list_widget.row(item)
@@ -321,9 +332,9 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
             shutil.rmtree(os.path.join(self.path, theme).encode(encoding))
         except OSError as os_error:
             shutil.Error = os_error
-            log.exception('Error deleting theme %s', theme)
+            self.log_exception('Error deleting theme %s', theme)
 
-    def on_export_theme(self):
+    def on_export_theme(self, field=None):
         """
         Export the theme in a zip file
         """
@@ -333,8 +344,9 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
             return
         theme = item.data(QtCore.Qt.UserRole)
         path = QtGui.QFileDialog.getExistingDirectory(self,
-            translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
-            Settings().value(self.settings_section + '/last directory export'))
+                                                      translate('OpenLP.ThemeManager', 'Save Theme - (%s)') % theme,
+                                                      Settings().value(self.settings_section +
+                                                                       '/last directory export'))
         self.application.set_busy_cursor()
         if path:
             Settings().setValue(self.settings_section + '/last directory export', path)
@@ -349,27 +361,29 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                             os.path.join(source, name).encode('utf-8'), os.path.join(theme, name).encode('utf-8')
                         )
                 QtGui.QMessageBox.information(self,
-                    translate('OpenLP.ThemeManager', 'Theme Exported'),
-                    translate('OpenLP.ThemeManager', 'Your theme has been successfully exported.'))
+                                              translate('OpenLP.ThemeManager', 'Theme Exported'),
+                                              translate('OpenLP.ThemeManager',
+                                                        'Your theme has been successfully exported.'))
             except (IOError, OSError):
-                log.exception('Export Theme Failed')
+                self.log_exception('Export Theme Failed')
                 critical_error_message_box(translate('OpenLP.ThemeManager', 'Theme Export Failed'),
-                    translate('OpenLP.ThemeManager', 'Your theme could not be exported due to an error.'))
+                                           translate('OpenLP.ThemeManager',
+                                                     'Your theme could not be exported due to an error.'))
             finally:
                 if theme_zip:
                     theme_zip.close()
         self.application.set_normal_cursor()
 
-    def on_import_theme(self):
+    def on_import_theme(self, field=None):
         """
         Opens a file dialog to select the theme file(s) to import before attempting to extract OpenLP themes from
         those files. This process will load both OpenLP version 1 and version 2 themes.
         """
         files = FileDialog.getOpenFileNames(self,
-            translate('OpenLP.ThemeManager', 'Select Theme Import File'),
-            Settings().value(self.settings_section + '/last directory import'),
-            translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
-        log.info('New Themes %s', str(files))
+                                            translate('OpenLP.ThemeManager', 'Select Theme Import File'),
+                                            Settings().value(self.settings_section + '/last directory import'),
+                                            translate('OpenLP.ThemeManager', 'OpenLP Themes (*.theme *.otz)'))
+        self.log_info('New Themes %s' % str(files))
         if not files:
             return
         self.application.set_busy_cursor()
@@ -383,7 +397,6 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         """
         Imports any themes on start up and makes sure there is at least one theme
         """
-        log.debug('load_first_time_themes called')
         self.application.set_busy_cursor()
         files = AppLocation.get_files(self.settings_section, '.otz')
         for theme_file in files:
@@ -406,7 +419,6 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         events for the plugins.
         The plugins will call back in to get the real list if they want it.
         """
-        log.debug('Load themes from dir')
         self.theme_list = []
         self.theme_list_widget.clear()
         files = AppLocation.get_files(self.settings_section, '.png')
@@ -444,7 +456,6 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         """
         Return the list of loaded themes
         """
-        log.debug('get themes')
         return self.theme_list
 
     def get_theme_data(self, theme_name):
@@ -454,11 +465,11 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         ``theme_name``
             Name of the theme to load from file
         """
-        log.debug('get theme data for theme %s', theme_name)
+        self.log_debug('get theme data for theme %s' % theme_name)
         xml_file = os.path.join(self.path, str(theme_name), str(theme_name) + '.xml')
         xml = get_text_file_string(xml_file)
         if not xml:
-            log.debug('No theme data - using default theme')
+            self.log_debug('No theme data - using default theme')
             return ThemeXML()
         else:
             return self._create_theme_from_Xml(xml, self.path)
@@ -468,10 +479,12 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         Display a warning box to the user that a theme already exists
         """
         ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
-            translate('OpenLP.ThemeManager',
-                'Theme %s already exists. Do you want to replace it?').replace('%s', theme_name),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-            QtGui.QMessageBox.No)
+                                         translate('OpenLP.ThemeManager',
+                                         'Theme %s already exists. Do you want to replace it?')
+                                         .replace('%s', theme_name),
+                                         QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                           QtGui.QMessageBox.No),
+                                         QtGui.QMessageBox.No)
         return ret == QtGui.QMessageBox.Yes
 
     def unzip_theme(self, file_name, directory):
@@ -480,7 +493,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         Generate a new preview file. Check the XML theme version and upgrade if
         necessary.
         """
-        log.debug('Unzipping theme %s', file_name)
+        self.log_debug('Unzipping theme %s', file_name)
         file_name = str(file_name)
         theme_zip = None
         out_file = None
@@ -490,7 +503,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
             theme_zip = zipfile.ZipFile(file_name)
             xml_file = [name for name in theme_zip.namelist() if os.path.splitext(name)[1].lower() == '.xml']
             if len(xml_file) != 1:
-                log.exception('Theme contains "%s" XML files' % len(xml_file))
+                self.log_error('Theme contains "%s" XML files' % len(xml_file))
                 raise Exception('validation')
             xml_tree = ElementTree(element=XML(theme_zip.read(xml_file[0]))).getroot()
             theme_name = xml_tree.find('name').text.strip()
@@ -518,12 +531,12 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                     out_file.write(theme_zip.read(name))
                 out_file.close()
         except (IOError, zipfile.BadZipfile):
-            log.exception('Importing theme from zip failed %s' % file_name)
+            self.log_exception('Importing theme from zip failed %s' % file_name)
             raise Exception('validation')
         except Exception as info:
             if str(info) == 'validation':
-                critical_error_message_box(translate('OpenLP.ThemeManager',
-                    'Validation Error'), translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
+                critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
+                                           translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
             else:
                 raise
         finally:
@@ -543,7 +556,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                     critical_error_message_box(
                         translate('OpenLP.ThemeManager', 'Validation Error'),
                         translate('OpenLP.ThemeManager', 'File is not a valid theme.'))
-                    log.exception('Theme file does not contain XML data %s' % file_name)
+                    self.log_error('Theme file does not contain XML data %s' % file_name)
 
     def check_if_theme_exists(self, theme_name):
         """
@@ -562,23 +575,21 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
 
     def save_theme(self, theme, image_from, image_to):
         """
-        Called by thememaintenance Dialog to save the theme
-        and to trigger the reload of the theme list
+        Called by thememaintenance Dialog to save the theme and to trigger the reload of the theme list
         """
         self._write_theme(theme, image_from, image_to)
         if theme.background_type == BackgroundType.to_string(BackgroundType.Image):
             self.image_manager.update_image_border(theme.background_filename,
-                ImageSource.Theme, QtGui.QColor(theme.background_border_color))
+                                                   ImageSource.Theme,
+                                                   QtGui.QColor(theme.background_border_color))
             self.image_manager.process_updates()
 
     def _write_theme(self, theme, image_from, image_to):
         """
-        Writes the theme to the disk and handles the background image if
-        necessary
+        Writes the theme to the disk and handles the background image if necessary
         """
         name = theme.theme_name
         theme_pretty_xml = theme.extract_formatted_xml()
-        log.debug('save_theme %s %s', name, theme_pretty_xml.decode('utf-8'))
         theme_dir = os.path.join(self.path, name)
         check_directory_exists(theme_dir)
         theme_file = os.path.join(theme_dir, name + '.xml')
@@ -589,7 +600,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
             out_file = open(theme_file, 'w')
             out_file.write(theme_pretty_xml.decode('UTF-8'))
         except IOError:
-            log.exception('Saving theme to file failed')
+            self.log_exception('Saving theme to file failed')
         finally:
             if out_file:
                 out_file.close()
@@ -599,14 +610,13 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                 shutil.copyfile(str(image_from).encode(encoding), str(image_to).encode(encoding))
             except IOError as xxx_todo_changeme:
                 shutil.Error = xxx_todo_changeme
-                log.exception('Failed to save theme image')
+                self.log_exception('Failed to save theme image')
         self.generate_and_save_image(self.path, name, theme)
 
     def generate_and_save_image(self, directory, name, theme):
         """
         Generate and save a preview image
         """
-        log.debug('generate_and_save_image %s %s', directory, name)
         frame = self.generate_image(theme)
         sample_path_name = os.path.join(self.path, name + '.png')
         if os.path.exists(sample_path_name):
@@ -614,13 +624,11 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         frame.save(sample_path_name, 'png')
         thumb = os.path.join(self.thumb_path, '%s.png' % name)
         create_thumb(sample_path_name, thumb, False)
-        log.debug('Theme image written to %s', sample_path_name)
 
     def update_preview_images(self):
         """
         Called to update the themes' preview images.
         """
-        log.debug('update_preview_images')
         self.main_window.display_progress_bar(len(self.theme_list))
         for theme in self.theme_list:
             self.main_window.increment_progress_bar()
@@ -638,7 +646,6 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         ``force_page``
             Flag to tell message lines per page need to be generated.
         """
-        log.debug('generate_image \n%s ', theme_data)
         return self.renderer.generate_preview(theme_data, force_page)
 
     def get_preview_image(self, theme):
@@ -648,9 +655,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
         ``theme``
             The theme to return the image for
         """
-        log.debug('get_preview_image %s ', theme)
-        image = os.path.join(self.path, theme + '.png')
-        return image
+        return os.path.join(self.path, theme + '.png')
 
     def _create_theme_from_Xml(self, theme_xml, path):
         """
@@ -666,8 +671,7 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
 
     def _validate_theme_action(self, select_text, confirm_title, confirm_text, test_plugin=True, confirm=True):
         """
-        Check to see if theme has been selected and the destructive action
-        is allowed.
+        Check to see if theme has been selected and the destructive action is allowed.
         """
         self.global_theme = Settings().value(self.settings_section + '/global theme')
         if check_item_selected(self.theme_list_widget, select_text):
@@ -676,8 +680,9 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
             # confirm deletion
             if confirm:
                 answer = QtGui.QMessageBox.question(self, confirm_title, confirm_text % theme,
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                    QtGui.QMessageBox.No)
+                                                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                      QtGui.QMessageBox.No),
+                                                    QtGui.QMessageBox.No)
                 if answer == QtGui.QMessageBox.No:
                     return False
             # should be the same unless default
@@ -690,8 +695,9 @@ class ThemeManager(QtGui.QWidget, ThemeManagerHelper):
                 for plugin in self.plugin_manager.plugins:
                     if plugin.uses_theme(theme):
                         critical_error_message_box(translate('OpenLP.ThemeManager', 'Validation Error'),
-                            translate('OpenLP.ThemeManager', 'Theme %s is used in the %s plugin.') %
-                                (theme, plugin.name))
+                                                   translate('OpenLP.ThemeManager',
+                                                             'Theme %s is used in the %s plugin.')
+                                                   % (theme, plugin.name))
                         return False
             return True
         return False

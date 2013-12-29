@@ -35,8 +35,7 @@ import os
 
 from lxml import etree
 
-from openlp.core.common import check_directory_exists, translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, check_directory_exists, translate
 from openlp.core.utils import clean_filename
 from openlp.plugins.songs.lib.xml import OpenLyrics
 

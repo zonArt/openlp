@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,61 +27,40 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm` class.
+Functional tests to test the AppLocation class and related methods.
 """
-from PyQt4 import QtGui
 
-from openlp.core.common import Registry, translate
-from openlp.core.lib import SpellTextEdit
-from openlp.core.lib.ui import create_button_box
+from unittest import TestCase
+
+from openlp.core.common import de_hump
 
 
-class ServiceNoteForm(QtGui.QDialog):
+class TestInitFunctions(TestCase):
     """
-    This is the form that is used to edit the verses of the song.
+    A test suite to test out various functions in the __init__ class.
     """
-    def __init__(self):
+    def de_hump_conversion_test(self):
         """
-        Constructor
+        Test the de_hump function with a class name
         """
-        super(ServiceNoteForm, self).__init__(Registry().get('main_window'))
-        self.setupUi()
-        self.retranslateUi()
+        # GIVEN: a Class name in Camel Case
+        string = "MyClass"
 
-    def exec_(self):
-        """
-        Execute the form and return the result.
-        """
-        self.text_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        # WHEN: we call de_hump
+        new_string = de_hump(string)
 
-    def setupUi(self):
-        """
-        Set up the UI of the dialog
-        """
-        self.setObjectName('serviceNoteEdit')
-        self.dialog_layout = QtGui.QVBoxLayout(self)
-        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
-        self.dialog_layout.setSpacing(8)
-        self.dialog_layout.setObjectName('verticalLayout')
-        self.text_edit = SpellTextEdit(self, False)
-        self.text_edit.setObjectName('textEdit')
-        self.dialog_layout.addWidget(self.text_edit)
-        self.button_box = create_button_box(self, 'button_box', ['cancel', 'save'])
-        self.dialog_layout.addWidget(self.button_box)
+        # THEN: the new string should be converted to python format
+        self.assertTrue(new_string == "my_class", 'The class name should have been converted')
 
-    def retranslateUi(self):
+    def de_hump_static_test(self):
         """
-        Translate the UI on the fly
+        Test the de_hump function with a python string
         """
-        self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
+        # GIVEN: a Class name in Camel Case
+        string = "my_class"
 
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
+        # WHEN: we call de_hump
+        new_string = de_hump(string)
 
-    main_window = property(_get_main_window)
+        # THEN: the new string should be converted to python format
+        self.assertTrue(new_string == "my_class", 'The class name should have been preserved')

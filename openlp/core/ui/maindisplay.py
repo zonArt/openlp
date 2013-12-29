@@ -44,8 +44,8 @@ import sys
 from PyQt4 import QtCore, QtGui, QtWebKit, QtOpenGL
 from PyQt4.phonon import Phonon
 
-from openlp.core.common import Settings, translate
-from openlp.core.lib import ServiceItem, ImageSource, Registry, build_html, expand_tags, image_to_byte
+from openlp.core.common import Registry, Settings, translate
+from openlp.core.lib import ServiceItem, ImageSource, build_html, expand_tags, image_to_byte
 from openlp.core.lib.theme import BackgroundType
 
 from openlp.core.lib import ScreenList
