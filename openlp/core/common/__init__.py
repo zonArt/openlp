@@ -50,7 +50,7 @@ def trace_error_handler(logger):
     Log the calling path of an exception
 
     'logger'
-    Logger to use so traceback is logged to correct class
+        logger to use so traceback is logged to correct class
     """
     for tb in traceback.extract_stack():
         logger.error('Called by ' + tb[3] + ' at line ' + str(tb[1]) + ' in ' + tb[0])
