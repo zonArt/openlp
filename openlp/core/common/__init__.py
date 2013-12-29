@@ -49,7 +49,7 @@ def trace_error_handler(logger):
     """
     Log the calling path of an exception
 
-    'logger'
+    ''logger''
         logger to use so traceback is logged to correct class
     """
     for tb in traceback.extract_stack():
