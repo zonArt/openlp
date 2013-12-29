@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -104,7 +104,7 @@ class PdfController(PresentationController):
         # Use the user defined program if given
         if (Settings().value('presentations/enable_pdf_program')):
             pdf_program = Settings().value('presentations/pdf_program')
-            program_type = check_binary(pdf_program)
+            program_type = self.check_binary(pdf_program)
             if program_type == 'gs':
                 self.gsbin = pdf_program
                 return True
@@ -152,6 +152,9 @@ class PdfController(PresentationController):
 class PdfDocument(PresentationDocument):
     """
     Class which holds information of a single presentation.
+    This class is not actually used to present the PDF, instead we convert to
+    image-serviceitem on the fly and present as such. Therefore some of the 'playback' 
+    functions is not implemented.
     """
     def __init__(self, controller, presentation):
         """
@@ -291,3 +294,8 @@ quit \n\
         log.debug('is_active pdf')
         return self.is_loaded() and not self.hidden
 
+    def get_slide_count(self):
+        """
+        Returns total number of slides
+        """
+        return self.num_pages
