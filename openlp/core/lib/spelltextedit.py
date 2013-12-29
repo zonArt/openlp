@@ -183,6 +183,8 @@ class Highlighter(QtGui.QSyntaxHighlighter):
     def highlightBlock(self, text):
         """
         Highlight misspelt words in a block of text.
+
+        Note, this is a Qt hook.
         """
         if not self.spelling_dictionary:
             return
