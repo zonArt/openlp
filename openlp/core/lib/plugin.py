@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -227,29 +227,29 @@ class Plugin(QtCore.QObject):
         """
         pass
 
-    def add_import_menu_item(self, importMenu):
+    def add_import_menu_item(self, import_menu):
         """
         Create a menu item and add it to the "Import" menu.
 
-        ``importMenu``
+        ``import_menu``
             The Import menu.
         """
         pass
 
-    def add_export_menu_Item(self, exportMenu):
+    def add_export_menu_Item(self, export_menu):
         """
         Create a menu item and add it to the "Export" menu.
 
-        ``exportMenu``
+        ``export_menu``
             The Export menu
         """
         pass
 
-    def add_tools_menu_item(self, toolsMenu):
+    def add_tools_menu_item(self, tools_menu):
         """
         Create a menu item and add it to the "Tools" menu.
 
-        ``toolsMenu``
+        ``tools_menu``
             The Tools menu
         """
         pass
@@ -261,7 +261,8 @@ class Plugin(QtCore.QObject):
         """
         if self.settings_tab_class:
             self.settings_tab = self.settings_tab_class(parent, self.name,
-                self.get_string(StringContent.VisibleName)['title'], self.icon_path)
+                                                        self.get_string(StringContent.VisibleName)['title'],
+                                                        self.icon_path)
 
     def add_to_menu(self, menubar):
         """
@@ -324,14 +325,14 @@ class Plugin(QtCore.QObject):
         """
         return False
 
-    def rename_theme(self, oldTheme, newTheme):
+    def rename_theme(self, old_theme, new_theme):
         """
         Renames a theme a plugin is using making the plugin use the new name.
 
-        ``oldTheme``
+        ``old_theme``
             The name of the theme the plugin should stop using.
 
-        ``newTheme``
+        ``new_theme``
             The new name the plugin should now use.
         """
         pass
@@ -365,9 +366,8 @@ class Plugin(QtCore.QObject):
 
     def __set_name_text_string(self, name, title, tooltip):
         """
-        Utility method for creating a plugin's text_strings. This method makes
-        use of the singular name of the plugin object so must only be called
-        after this has been set.
+        Utility method for creating a plugin's text_strings. This method makes use of the singular name of the
+        plugin object so must only be called after this has been set.
         """
         self.text_strings[name] = {'title': title, 'tooltip': tooltip}
 
