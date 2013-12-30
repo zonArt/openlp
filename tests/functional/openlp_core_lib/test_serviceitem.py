@@ -99,7 +99,7 @@ class TestServiceItem(TestCase):
         self.assertEqual(VERSE[:-1], service_item.get_frames()[0]['text'],
             'The returned text matches the input, except the last line feed')
         self.assertEqual(VERSE.split('\n', 1)[0], service_item.get_rendered_frame(1),
-            'The first line has been returned')
+                         'The first line has been returned')
         self.assertEqual('Slide 1', service_item.get_frame_title(0), '"Slide 1" has been returned as the title')
         self.assertEqual('Slide 2', service_item.get_frame_title(1), '"Slide 2" has been returned as the title')
         self.assertEqual('', service_item.get_frame_title(2), 'Blank has been returned as the title of slide 3')
@@ -216,14 +216,15 @@ class TestServiceItem(TestCase):
         image = MagicMock()
         display_title = 'DisplayTitle'
         notes = 'Note1\nNote2\n'
-        frame = {'title': presentation_name, 'image': image,
-            'path': TEST_PATH, 'display_title': display_title,
-            'notes': notes }
+        frame = {'title': presentation_name, 'image': image, 'path': TEST_PATH,
+                 'display_title': display_title, 'notes': notes}
+
         # WHEN: adding presentation to service_item
         service_item.add_from_command(TEST_PATH, presentation_name, image, display_title, notes)
+
         # THEN: verify that it is setup as a Command and that the frame data matches
-        assert service_item.service_item_type == ServiceItemType.Command
-        assert service_item.get_frames()[0] == frame
+        self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
+        self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')
 
     def add_from_comamnd_without_display_title_and_notes_test(self):
         """
@@ -233,12 +234,12 @@ class TestServiceItem(TestCase):
         service_item = ServiceItem(None)
         image_name = 'test.img'
         image = MagicMock()
-        frame = {'title': image_name, 'image': image,
-            'path': TEST_PATH, 'display_title': None,
-            'notes': None}
+        frame = {'title': image_name, 'image': image, 'path': TEST_PATH,
+                 'display_title': None, 'notes': None}
+
         # WHEN: adding image to service_item
         service_item.add_from_command(TEST_PATH, image_name, image)
+
         # THEN: verify that it is setup as a Command and that the frame data matches
-        assert service_item.service_item_type == ServiceItemType.Command
-        print(service_item.get_frames()[0])
-        assert service_item.get_frames()[0] == frame
+        self.assertEqual(service_item.service_item_type, ServiceItemType.Command, 'It should be a Command')
+        self.assertEqual(service_item.get_frames()[0], frame, 'Frames should match')

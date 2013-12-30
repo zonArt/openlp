@@ -93,13 +93,14 @@ class TestLibModule(TestCase):
         """
         # GIVEN: mocked PresentationController.save_titles_and_notes 
         self.doc.save_titles_and_notes = MagicMock()
+
         # WHEN reading the titles and notes
         self.doc.create_titles_and_notes()
+
         # THEN save_titles_and_notes should have been called once with empty arrays
-        self.doc.save_titles_and_notes.assert_called_once_with(
-            ['Test 1\n', '\n', 'Test 2\n', 'Test 4\n', 'Test 3\n'],
-            ['Notes for slide 1', 'Inserted', 'Notes for slide 2',
-            'Notes \nfor slide 4', 'Notes for slide 3'])
+        self.doc.save_titles_and_notes.assert_called_once_with(['Test 1\n', '\n', 'Test 2\n', 'Test 4\n', 'Test 3\n'],
+                                                               ['Notes for slide 1', 'Inserted', 'Notes for slide 2',
+                                                                'Notes \nfor slide 4', 'Notes for slide 3'])
 
     def create_titles_and_notes_nonexistent_file_test(self):
         """
@@ -108,18 +109,20 @@ class TestLibModule(TestCase):
         # GIVEN: mocked PresentationController.save_titles_and_notes and an nonexistent file
         with patch('builtins.open') as mocked_open, \
             patch('openlp.plugins.presentations.lib.pptviewcontroller.os.path.exists') as mocked_exists, \
-            patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists') as mocked_dir_exists:
+            patch('openlp.plugins.presentations.lib.presentationcontroller.check_directory_exists') as \
+                mocked_dir_exists:
             mocked_exists.return_value = False
             mocked_dir_exists.return_value = False
             self.doc = PptviewDocument(self.ppc, 'Idontexist.pptx')
             self.doc.save_titles_and_notes = MagicMock()
+
             # WHEN: reading the titles and notes
             self.doc.create_titles_and_notes()
+
             # THEN:
             self.doc.save_titles_and_notes.assert_called_once_with(None, None)
             mocked_exists.assert_any_call('Idontexist.pptx')
-            self.assertEqual(mocked_open.call_count, 0,
-                'There should be no calls to open a file')
+            self.assertEqual(mocked_open.call_count, 0, 'There should be no calls to open a file')
         
     def create_titles_and_notes_invalid_file_test(self):
         """
@@ -132,13 +135,13 @@ class TestLibModule(TestCase):
             mocked_is_zf.return_value = False
             mocked_exists.return_value = True
             mocked_open.filesize = 10
-            self.doc = PptviewDocument(self.ppc,
-                os.path.join(TEST_PATH, "test.ppt"))
+            self.doc = PptviewDocument(self.ppc, os.path.join(TEST_PATH, "test.ppt"))
             self.doc.save_titles_and_notes = MagicMock()
+
             # WHEN: reading the titles and notes
             self.doc.create_titles_and_notes()
+
             # THEN:
             self.doc.save_titles_and_notes.assert_called_once_with(None, None)
-            self.assertEqual(mocked_is_zf.call_count, 1,
-                'is_zipfile should have been called once')
+            self.assertEqual(mocked_is_zf.call_count, 1, 'is_zipfile should have been called once')
             

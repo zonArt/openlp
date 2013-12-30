@@ -394,8 +394,7 @@ class HttpRouter(object):
         """
         Serve an image file. If not found return 404.
         """
-        log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name,
-            dimensions, file_name))
+        log.debug('serve thumbnail %s/thumbnails%s/%s' % (controller_name, dimensions, file_name))
         supported_controllers = ['presentations']
         if not dimensions:
             dimensions = ''
@@ -406,7 +405,7 @@ class HttpRouter(object):
                 full_path = urllib.parse.unquote(file_name)
                 if not '..' in full_path: # no hacking please
                     full_path = os.path.normpath(os.path.join(AppLocation.get_section_data_path(controller_name),
-                        'thumbnails/' + full_path))
+                                                              'thumbnails/' + full_path))
                     if os.path.exists(full_path):
                         path, just_file_name = os.path.split(full_path)
                         self.image_manager.add_image(full_path, just_file_name, None, dimensions)

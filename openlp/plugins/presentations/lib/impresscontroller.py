@@ -486,9 +486,7 @@ class ImpressDocument(PresentationDocument):
         notes = []
         pages = self.document.getDrawPages()
         for slide_no in range(1, pages.getCount() + 1):
-            titles.append( 
-                self.__get_text_from_page(slide_no, TextType.Title).
-                replace('\n', ' ') + '\n')
+            titles.append(self.__get_text_from_page(slide_no, TextType.Title).replace('\n', ' ') + '\n')
             note = self.__get_text_from_page(slide_no, TextType.Notes)
             if len(note) == 0:
                 note = ' '

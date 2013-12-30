@@ -352,9 +352,9 @@ def _get_text_from_shapes(shapes):
     """
     text = ''
     for shape in shapes:
-        if shape.PlaceholderFormat.Type == constants.ppPlaceholderBody and \
-            shape.HasTextFrame and shape.TextFrame.HasText:
-            text += shape.TextFrame.TextRange.Text + '\n'
+        if shape.PlaceholderFormat.Type == constants.ppPlaceholderBody:
+            if shape.HasTextFrame and shape.TextFrame.HasText:
+                text += shape.TextFrame.TextRange.Text + '\n'
     return text
 
 if os.name == "nt":

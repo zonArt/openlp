@@ -120,7 +120,7 @@ class TestRouter(TestCase):
         Test the get_content_type logic
         """
         # GIVEN: a set of files and their corresponding types
-        headers = [ ['test.html', 'text/html'], ['test.css', 'text/css'],
+        headers = [['test.html', 'text/html'], ['test.css', 'text/css'],
             ['test.js', 'application/javascript'], ['test.jpg', 'image/jpeg'],
             ['test.gif', 'image/gif'], ['test.ico', 'image/x-icon'],
             ['test.png', 'image/png'], ['test.whatever', 'text/plain'],
@@ -166,7 +166,7 @@ class TestRouter(TestCase):
         self.router.html_dir = os.path.normpath('test/dir')
         self.router.template_vars = MagicMock()
         with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
-                patch('builtins.open', mock_open(read_data='123')):
+            patch('builtins.open', mock_open(read_data='123')):
             mocked_exists.return_value = True
 
             # WHEN: call serve_file with an existing html file
@@ -187,10 +187,8 @@ class TestRouter(TestCase):
         self.router.wfile = MagicMock()
         self.router.serve_thumbnail()
         self.router.send_response.assert_called_once_with(404)
-        self.assertEqual(self.router.send_response.call_count, 1,
-            'Send response called once')
-        self.assertEqual(self.router.end_headers.call_count, 1,
-            'end_headers called once')
+        self.assertEqual(self.router.send_response.call_count, 1, 'Send response called once')
+        self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
 
     def serve_thumbnail_with_invalid_params_test(self):
         """
@@ -201,27 +199,27 @@ class TestRouter(TestCase):
         self.router.send_header = MagicMock()
         self.router.end_headers = MagicMock()
         self.router.wfile = MagicMock()
+
         # WHEN: pass a bad controller
-        self.router.serve_thumbnail('badcontroller',
-            'tecnologia 1.pptx/slide1.png')
+        self.router.serve_thumbnail('badcontroller', 'tecnologia 1.pptx/slide1.png')
+
         # THEN: a 404 should be returned
-        self.assertEqual(len(self.router.send_header.mock_calls), 1,
-            'One header')
-        self.assertEqual(len(self.router.send_response.mock_calls), 1,
-            'One response')
-        self.assertEqual(len(self.router.wfile.mock_calls), 1,
-            'Once call to write to the socket')
+        self.assertEqual(len(self.router.send_header.mock_calls), 1, 'One header')
+        self.assertEqual(len(self.router.send_response.mock_calls), 1, 'One response')
+        self.assertEqual(len(self.router.wfile.mock_calls), 1, 'Once call to write to the socket')
         self.router.send_response.assert_called_once_with(404)
+
         # WHEN: pass a bad filename
         self.router.send_response.reset_mock()
-        self.router.serve_thumbnail('presentations',
-            'tecnologia 1.pptx/badfilename.png')
+        self.router.serve_thumbnail('presentations', 'tecnologia 1.pptx/badfilename.png')
+
         # THEN: return a 404
         self.router.send_response.assert_called_once_with(404)
+
         # WHEN: a dangerous URL is passed
         self.router.send_response.reset_mock()
-        self.router.serve_thumbnail('presentations',
-            '../tecnologia 1.pptx/slide1.png')
+        self.router.serve_thumbnail('presentations', '../tecnologia 1.pptx/slide1.png')
+
         # THEN: return a 404
         self.router.send_response.assert_called_once_with(404)
 
@@ -236,36 +234,28 @@ class TestRouter(TestCase):
         self.router.wfile = MagicMock()
         mocked_image_manager = MagicMock()
         Registry.create()
-        Registry().register('image_manager',mocked_image_manager)
+        Registry().register('image_manager', mocked_image_manager)
         file_name = 'another%20test/slide1.png'
         full_path = os.path.normpath(os.path.join('thumbnails',file_name))
         width = 120
         height = 90
         with patch('openlp.core.lib.os.path.exists') as mocked_exists, \
             patch('builtins.open', mock_open(read_data='123')), \
-            patch('openlp.plugins.remotes.lib.httprouter.AppLocation') \
-                as mocked_location, \
-            patch('openlp.plugins.remotes.lib.httprouter.image_to_byte')\
-                as mocked_image_to_byte:
+            patch('openlp.plugins.remotes.lib.httprouter.AppLocation') as mocked_location, \
+            patch('openlp.plugins.remotes.lib.httprouter.image_to_byte') as mocked_image_to_byte:
             mocked_exists.return_value = True
             mocked_image_to_byte.return_value = '123'
             mocked_location.get_section_data_path.return_value = ''
+
             # WHEN: pass good controller and filename
-            result = self.router.serve_thumbnail('presentations',
-                '{0}x{1}'.format(width, height),
-                file_name)
+            result = self.router.serve_thumbnail('presentations', '{0}x{1}'.format(width, height), file_name)
+
             # THEN: a file should be returned
-            self.assertEqual(self.router.send_header.call_count, 1,
-                'One header')
-            self.assertEqual(self.router.send_response.call_count, 1,
-                'Send response called once')
-            self.assertEqual(self.router.end_headers.call_count, 1,
-                'end_headers called once')
+            self.assertEqual(self.router.send_header.call_count, 1, 'One header')
+            self.assertEqual(self.router.send_response.call_count, 1, 'Send response called once')
+            self.assertEqual(self.router.end_headers.call_count, 1, 'end_headers called once')
             mocked_exists.assert_called_with(urllib.parse.unquote(full_path))
             self.assertEqual(mocked_image_to_byte.call_count, 1, 'Called once')
-            mocked_image_manager.assert_called_any(
-                os.path.normpath('thumbnails\\another test'), 'slide1.png',
-                    None, '120x90')
-            mocked_image_manager.assert_called_any(
-                os.path.normpath('thumbnails\\another test'),'slide1.png',
-                '120x90')
+            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'),
+                                                   'slide1.png', None, '120x90')
+            mocked_image_manager.assert_called_any(os.path.normpath('thumbnails\\another test'), 'slide1.png', '120x90')

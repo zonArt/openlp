@@ -162,16 +162,14 @@ class PptviewDocument(PresentationDocument):
         filename = os.path.normpath(self.filepath)
         # let's make sure we have a valid zipped presentation
         if os.path.exists(filename) and zipfile.is_zipfile(filename):
-            namespaces = {"p": 
-                "http://schemas.openxmlformats.org/presentationml/2006/main", 
-                "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+            namespaces = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main",
+                          "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
             # open the file
             with zipfile.ZipFile(filename) as zip_file:
                 # find the presentation.xml to get the slide count
                 with zip_file.open('ppt/presentation.xml') as pres:
                     tree = ElementTree.parse(pres)
-                nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", 
-                    namespaces=namespaces)
+                nodes = tree.getroot().findall(".//p:sldIdLst/p:sldId", namespaces=namespaces)
                 print ("slide count: " + str(len(nodes)))
                 # initialize the lists
                 titles = ['' for i in range(len(nodes))]
@@ -188,8 +186,7 @@ class PptviewDocument(PresentationDocument):
                         node_type = 'ctrTitle'
                         list_to_add = titles
                     # or a note
-                    match = re.search("notesSlides/notesSlide(.+)\.xml", 
-                        zip_info.filename)
+                    match = re.search("notesSlides/notesSlide(.+)\.xml", zip_info.filename)
                     if match:
                         index = int(match.group(1))-1
                         node_type = 'body'
@@ -199,9 +196,8 @@ class PptviewDocument(PresentationDocument):
                         with zip_file.open(zip_info) as zipped_file:
                             tree = ElementTree.parse(zipped_file)
                         text = ''
-                        nodes = tree.getroot().findall(".//p:ph[@type='" + 
-                            node_type + "']../../..//p:txBody//a:t",
-                            namespaces=namespaces)
+                        nodes = tree.getroot().findall(".//p:ph[@type='" + node_type + "']../../..//p:txBody//a:t",
+                                                       namespaces=namespaces)
                         # if we found any content
                         if nodes and len(nodes)>0:
                             for node in nodes:
@@ -211,8 +207,7 @@ class PptviewDocument(PresentationDocument):
                         # Let's remove the \n from the titles and 
                         # just add one at the end
                         if node_type == 'ctrTitle':
-                            text = text.replace('\n', ' '). \
-                                replace('\x0b', ' ') + '\n'
+                            text = text.replace('\n', ' ').replace('\x0b', ' ') + '\n'
                         list_to_add[index] = text
         # now let's write the files
         self.save_titles_and_notes(titles, notes)

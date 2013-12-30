@@ -332,7 +332,7 @@ class ServiceItem(object):
         """
         self.service_item_type = ServiceItemType.Command
         self._raw_frames.append({'title': file_name, 'image': image, 'path': path,
-            'display_title': display_title, 'notes': notes})
+                                 'display_title': display_title, 'notes': notes})
         self._new_item()
 
     def get_service_repr(self, lite_save):
@@ -377,9 +377,8 @@ class ServiceItem(object):
                 service_data = [slide['title'] for slide in self._raw_frames]
         elif self.service_item_type == ServiceItemType.Command:
             for slide in self._raw_frames:
-                service_data.append({'title': slide['title'], 
-                    'image': slide['image'], 'path': slide['path'], 
-                    'display_title': slide['display_title'], 'notes': slide['notes']})
+                service_data.append({'title': slide['title'], 'image': slide['image'], 'path': slide['path'],
+                                     'display_title': slide['display_title'], 'notes': slide['notes']})
         return {'header': service_header, 'data': service_data}
 
     def set_from_service(self, serviceitem, path=None):
@@ -452,7 +451,7 @@ class ServiceItem(object):
                 if path:
                     self.has_original_files = False
                     self.add_from_command(path, text_image['title'], text_image['image'],
-                        text_image.get('display_title',''), text_image.get('notes', ''))
+                                          text_image.get('display_title',''), text_image.get('notes', ''))
                 else:
                     self.add_from_command(text_image['path'], text_image['title'], text_image['image'])
         self._new_item()

@@ -94,8 +94,7 @@ class TestImageManager(TestCase):
         image = self.image_manager.get_image(full_path, 'church.jpg', '80x80')
 
         # THEN: The return should be of type image
-        self.assertEqual(isinstance(image, QtGui.QImage), True,
-            'The returned object should be a QImage')
+        self.assertEqual(isinstance(image, QtGui.QImage), True, 'The returned object should be a QImage')
         #print(len(self.image_manager._cache))
 
         # WHEN: adding the same image with different dimensions
@@ -103,18 +102,16 @@ class TestImageManager(TestCase):
 
         # THEN: the cache should contain two pictures
         self.assertEqual(len(self.image_manager._cache), 2,
-            'Image manager should consider two dimensions of the same picture as different')
+                         'Image manager should consider two dimensions of the same picture as different')
 
         # WHEN: adding the same image with first dimensions
         self.image_manager.add_image(full_path, 'church.jpg', None, '80x80')
 
         # THEN: the cache should still contain only two pictures
-        self.assertEqual(len(self.image_manager._cache), 2,
-            'Same dimensions should not be added again')
+        self.assertEqual(len(self.image_manager._cache), 2, 'Same dimensions should not be added again')
 
         # WHEN: calling with correct image, but wrong dimensions
         with self.assertRaises(KeyError) as context:
             self.image_manager.get_image(full_path, 'church.jpg', '120x120')
-        self.assertNotEquals(context.exception, '',
-            'KeyError exception should have been thrown for missing dimension')
+        self.assertNotEquals(context.exception, '', 'KeyError exception should have been thrown for missing dimension')
 
