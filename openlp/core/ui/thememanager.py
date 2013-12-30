@@ -304,8 +304,8 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
         Delete a theme
         """
         if self._validate_theme_action(translate('OpenLP.ThemeManager', 'You must select a theme to delete.'),
-                                                 translate('OpenLP.ThemeManager', 'Delete Confirmation'),
-                                                 translate('OpenLP.ThemeManager', 'Delete %s theme?')):
+                                       translate('OpenLP.ThemeManager', 'Delete Confirmation'),
+                                       translate('OpenLP.ThemeManager', 'Delete %s theme?')):
             item = self.theme_list_widget.currentItem()
             theme = item.text()
             row = self.theme_list_widget.row(item)
@@ -472,7 +472,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
             self.log_debug('No theme data - using default theme')
             return ThemeXML()
         else:
-            return self._create_theme_from_Xml(xml, self.path)
+            return self._create_theme_from_xml(xml, self.path)
 
     def over_write_message_box(self, theme_name):
         """
@@ -548,8 +548,8 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
             if not abort_import:
                 # As all files are closed, we can create the Theme.
                 if file_xml:
-                    theme = self._create_theme_from_Xml(file_xml, self.path)
-                    self.generate_and_save_image(directory, theme_name, theme)
+                    theme = self._create_theme_from_xml(file_xml, self.path)
+                    self.generate_and_save_image(theme_name, theme)
                 # Only show the error message, when IOError was not raised (in
                 # this case the error message has already been shown).
                 elif theme_zip is not None:
@@ -611,9 +611,9 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
             except IOError as xxx_todo_changeme:
                 shutil.Error = xxx_todo_changeme
                 self.log_exception('Failed to save theme image')
-        self.generate_and_save_image(self.path, name, theme)
+        self.generate_and_save_image(name, theme)
 
-    def generate_and_save_image(self, directory, name, theme):
+    def generate_and_save_image(self, name, theme):
         """
         Generate and save a preview image
         """
@@ -632,7 +632,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
         self.main_window.display_progress_bar(len(self.theme_list))
         for theme in self.theme_list:
             self.main_window.increment_progress_bar()
-            self.generate_and_save_image(self.path, theme, self.get_theme_data(theme))
+            self.generate_and_save_image(theme, self.get_theme_data(theme))
         self.main_window.finished_progress_bar()
         self.load_themes()
 
@@ -657,7 +657,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
         """
         return os.path.join(self.path, theme + '.png')
 
-    def _create_theme_from_Xml(self, theme_xml, path):
+    def _create_theme_from_xml(self, theme_xml, path):
         """
         Return a theme object using information parsed from XML
 
