@@ -403,7 +403,7 @@ class HttpRouter(object):
         if controller_name and file_name:
             if controller_name in supported_controllers:
                 full_path = urllib.parse.unquote(file_name)
-                if not '..' in full_path: # no hacking please
+                if not '..' in full_path:  # no hacking please
                     full_path = os.path.normpath(os.path.join(AppLocation.get_section_data_path(controller_name),
                                                               'thumbnails/' + full_path))
                     if os.path.exists(full_path):
@@ -412,10 +412,10 @@ class HttpRouter(object):
                         ext, content_type = self.get_content_type(full_path)
                         image = self.image_manager.get_image(full_path, just_file_name, dimensions)
                         content = image_to_byte(image, False)
-        if len(content)==0:
+        if len(content) == 0:
             return self.do_not_found()
         self.send_response(200)
-        self.send_header('Content-type',content_type)
+        self.send_header('Content-type', content_type)
         self.end_headers()
         return content
 
@@ -513,9 +513,9 @@ class HttpRouter(object):
                     if current_item.is_capable(ItemCapabilities.HasThumbnails):
                         # If the file is under our app directory tree send the 
                         # portion after the match
-                        dataPath = AppLocation.get_data_path()
-                        if frame['image'][0:len(dataPath)] == dataPath:
-                            item['img'] = urllib.request.pathname2url(frame['image'][len(dataPath):])
+                        data_path = AppLocation.get_data_path()
+                        if frame['image'][0:len(data_path)] == data_path:
+                            item['img'] = urllib.request.pathname2url(frame['image'][len(data_path):])
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)

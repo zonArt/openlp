@@ -805,7 +805,7 @@ class SlideController(DisplayController):
         Go to the requested slide
         """
         index = 0
-        if len(message) == 0 or message[0]=='undefined':
+        if len(message) == 0 or message[0] == 'undefined':
             return
         else:
             index = int(message[0])

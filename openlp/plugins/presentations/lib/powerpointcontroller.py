@@ -27,7 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This modul is for controlling powerpiont. PPT API documentation:
+This module is for controlling powerpoint. PPT API documentation:
 `http://msdn.microsoft.com/en-us/library/aa269321(office.10).aspx`_
 """
 import os
@@ -343,6 +343,7 @@ class PowerpointDocument(PresentationDocument):
         self.save_titles_and_notes(titles, notes)
         return
 
+
 def _get_text_from_shapes(shapes):
     """
     Returns any text extracted from the shapes on a presentation slide.
@@ -361,7 +362,7 @@ if os.name == "nt":
     ppE = win32com.client.getevents("PowerPoint.Application")
 
     class PowerpointEvents(ppE):
-        def OnSlideShowBegin(self, hwnd ):
+        def OnSlideShowBegin(self, hwnd):
             #print("SS Begin")
             return
 
@@ -369,16 +370,15 @@ if os.name == "nt":
             #print("SS End")
             return
 
-        def OnSlideShowNextSlide( self, hwnd ):
+        def OnSlideShowNextSlide(self, hwnd):
             Registry().execute('slidecontroller_live_change', hwnd.View.CurrentShowPosition - 1)
             #print('Slide change:',hwnd.View.CurrentShowPosition)
             return
 
-        def OnSlideShowOnNext(self, hwnd ):
+        def OnSlideShowOnNext(self, hwnd):
             #print("SS Advance")
             return
 
         def OnSlideShowOnPrevious(self, hwnd):
             #print("SS GoBack")
             return
-

@@ -247,8 +247,7 @@ class PresentationDocument(object):
         ``slide_no``
             The slide an image is required for, starting at 1
         """
-        path = os.path.join(self.get_thumbnail_folder(),
-            self.controller.thumbnail_prefix + str(slide_no) + '.png')
+        path = os.path.join(self.get_thumbnail_folder(), self.controller.thumbnail_prefix + str(slide_no) + '.png')
         if os.path.isfile(path) or not check_exists:
             return path
         else:
@@ -477,6 +476,7 @@ class PresentationController(object):
         return self._plugin_manager
 
     plugin_manager = property(_get_plugin_manager)
+
 
 class TextType(object):
     """

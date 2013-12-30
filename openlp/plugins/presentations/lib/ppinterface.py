@@ -27,8 +27,7 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-These declarations have been extracted from the interface file created by
-makepy
+These declarations have been extracted from the interface file created by makepy
 """
 class constants:
     ppPlaceholderBody             =2          # from enum PpPlaceholderType

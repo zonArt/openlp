@@ -463,15 +463,14 @@ class ImpressDocument(PresentationDocument):
             pages = self.document.getDrawPages()
             if 0 < slide_no <= pages.getCount():
                 page = pages.getByIndex(slide_no - 1)
-                if text_type==TextType.Notes:
+                if text_type == TextType.Notes:
                     page = page.getNotesPage()
                 for index in range(page.getCount()):
                     shape = page.getByIndex(index)
                     shape_type = shape.getShapeType()
                     if shape.supportsService("com.sun.star.drawing.Text"):
                         # if they requested title, make sure it is the title
-                        if text_type!=TextType.Title or \
-                            shape_type == "com.sun.star.presentation.TitleTextShape":
+                        if text_type != TextType.Title or shape_type == "com.sun.star.presentation.TitleTextShape":
                             text += shape.getString() + '\n'
         return text
 

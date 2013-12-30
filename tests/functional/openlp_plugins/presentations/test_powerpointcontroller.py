@@ -37,6 +37,7 @@ from openlp.plugins.presentations.lib.powerpointcontroller import \
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'resources'))
 
+
 class TestLibModule(TestCase):
 
     def setUp(self):
@@ -127,7 +128,7 @@ class TestLibModule(TestCase):
         result = _get_text_from_shapes(shapes)
 
         # THEN: it should return the text
-        self.assertEqual(result, 'slideText\nslideText\n','result should match \'slideText\nslideText\n\'')
+        self.assertEqual(result, 'slideText\nslideText\n', 'result should match \'slideText\nslideText\n\'')
 
     def get_text_from_shapes_with_no_shapes_test(self):
         """
