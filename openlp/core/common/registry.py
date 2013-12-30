@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,6 +31,8 @@ Provide Registry Services
 """
 import logging
 import sys
+
+from openlp.core.common import trace_error_handler
 
 log = logging.getLogger(__name__)
 
@@ -76,8 +78,9 @@ class Registry(object):
         if key in self.service_list:
             return self.service_list[key]
         else:
+            trace_error_handler(log)
             log.error('Service %s not found in list' % key)
-            raise KeyError('Service %s not found in list' % key)
+            #raise KeyError('Service %s not found in list' % key)
 
     def register(self, key, reference):
         """
@@ -90,6 +93,7 @@ class Registry(object):
             The service address to be saved.
         """
         if key in self.service_list:
+            trace_error_handler(log)
             log.error('Duplicate service exception %s' % key)
             raise KeyError('Duplicate service exception %s' % key)
         else:
@@ -134,6 +138,7 @@ class Registry(object):
             The function to be called when the event happens.
         """
         if self.running_under_test is False:
+            trace_error_handler(log)
             log.error('Invalid Method call for key %s' % event)
             raise KeyError('Invalid Method call for key %s' % event)
         if event in self.functions_list:
@@ -161,7 +166,9 @@ class Registry(object):
                         results.append(result)
                 except TypeError:
                     # Who has called me can help in debugging
-                    import inspect
-                    log.debug(inspect.currentframe().f_back.f_locals)
+                    trace_error_handler(log)
                     log.exception('Exception for function %s', function)
+        else:
+            trace_error_handler(log)
+            log.error("Event %s not called by not registered" % event)
         return results

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,9 +31,9 @@ Package to test the openlp.core.lib.pluginmanager package.
 """
 from unittest import TestCase
 
-from openlp.core.common import Settings
+from openlp.core.common import Registry, Settings
 from openlp.core.lib.pluginmanager import PluginManager
-from openlp.core.lib import Registry, PluginStatus
+from openlp.core.lib import PluginStatus
 from tests.functional import MagicMock
 
 

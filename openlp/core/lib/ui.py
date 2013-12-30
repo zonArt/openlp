@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,8 +33,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import UiStrings, translate
-from openlp.core.lib import Registry, build_icon
+from openlp.core.common import Registry, UiStrings, translate
+from openlp.core.lib import build_icon
 from openlp.core.utils.actions import ActionList
 
 
@@ -131,7 +131,8 @@ def critical_error_message_box(title=None, message=None, parent=None, question=F
     """
     if question:
         return QtGui.QMessageBox.critical(parent, UiStrings().Error, message,
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+                                          QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                            QtGui.QMessageBox.No))
     return Registry().get('main_window').error_message(title if title else UiStrings().Error, message)
 
 
@@ -293,9 +294,8 @@ def create_action(parent, name, **kwargs):
     if kwargs.get('triggers'):
         action.triggered.connect(kwargs.pop('triggers'))
     for key in list(kwargs.keys()):
-        if key not in ['text', 'icon', 'tooltip', 'statustip', 'checked', 'can_shortcuts',
-                'category', 'triggers']:
-            log.warn('Parameter %s was not consumed in create_action().', key)
+        if key not in ['text', 'icon', 'tooltip', 'statustip', 'checked', 'can_shortcuts', 'category', 'triggers']:
+            log.warn('Parameter %s was not consumed in create_action().' % key)
     return action
 
 

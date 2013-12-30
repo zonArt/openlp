@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -26,8 +26,41 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Functional tests to test the AppLocation class and related methods.
+"""
 
-from .mediaitem import MediaMediaItem
-from .mediatab import MediaTab
+from unittest import TestCase
 
-__all__ = ['MediaMediaItem']
+from openlp.core.common import de_hump
+
+
+class TestInitFunctions(TestCase):
+    """
+    A test suite to test out various functions in the __init__ class.
+    """
+    def de_hump_conversion_test(self):
+        """
+        Test the de_hump function with a class name
+        """
+        # GIVEN: a Class name in Camel Case
+        string = "MyClass"
+
+        # WHEN: we call de_hump
+        new_string = de_hump(string)
+
+        # THEN: the new string should be converted to python format
+        self.assertTrue(new_string == "my_class", 'The class name should have been converted')
+
+    def de_hump_static_test(self):
+        """
+        Test the de_hump function with a python string
+        """
+        # GIVEN: a Class name in Camel Case
+        string = "my_class"
+
+        # WHEN: we call de_hump
+        new_string = de_hump(string)
+
+        # THEN: the new string should be converted to python format
+        self.assertTrue(new_string == "my_class", 'The class name should have been preserved')

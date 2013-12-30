@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -36,8 +36,7 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.common import Settings, translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, Settings, translate
 
 log = logging.getLogger(__name__)
 
@@ -90,17 +89,17 @@ class ScreenList(object):
         log.info('screen_resolution_changed %d' % number)
         for screen in self.screen_list:
             if number == screen['number']:
-                newScreen = {
+                new_screen = {
                     'number': number,
                     'size': self.desktop.screenGeometry(number),
                     'primary': self.desktop.primaryScreen() == number
                 }
                 self.remove_screen(number)
-                self.add_screen(newScreen)
+                self.add_screen(new_screen)
                 # The screen's default size is used, that is why we have to
                 # update the override screen.
                 if screen == self.override:
-                    self.override = copy.deepcopy(newScreen)
+                    self.override = copy.deepcopy(new_screen)
                     self.set_override_display()
                 Registry().execute('config_screen_changed')
                 break
@@ -160,7 +159,7 @@ class ScreenList(object):
                     u'size': PyQt4.QtCore.QRect(0, 0, 1024, 768)
                 }
         """
-        log.info('Screen %d found with resolution %s', screen['number'], screen['size'])
+        log.info('Screen %d found with resolution %s' % (screen['number'], screen['size']))
         if screen['primary']:
             self.current = screen
             self.override = copy.deepcopy(self.current)
@@ -200,7 +199,7 @@ class ScreenList(object):
         ``number``
             The screen number (int).
         """
-        log.debug('set_current_display %s', number)
+        log.debug('set_current_display %s' % number)
         if number + 1 > self.display_count:
             self.current = self.screen_list[0]
         else:

@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from PyQt4 import QtGui, QtTest, QtCore
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 # Import needed due to import problems.
 from openlp.plugins.custom.lib.mediaitem import CustomMediaItem
 from openlp.plugins.custom.forms.editcustomform import EditCustomForm

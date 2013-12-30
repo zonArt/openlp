@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -50,7 +50,7 @@ class ThemeLayoutForm(QtGui.QDialog, Ui_ThemeLayoutDialog):
         Run the Dialog with correct heading.
         """
         pixmap = image.scaledToHeight(400, QtCore.Qt.SmoothTransformation)
-        self.themeDisplayLabel.setPixmap(pixmap)
-        displayAspectRatio = float(image.width()) / image.height()
-        self.themeDisplayLabel.setFixedSize(400, 400 / displayAspectRatio)
+        self.theme_display_label.setPixmap(pixmap)
+        display_aspect_ratio = float(image.width()) / image.height()
+        self.theme_display_label.setFixedSize(400, 400 / display_aspect_ratio)
         return QtGui.QDialog.exec_(self)

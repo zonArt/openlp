@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from PyQt4 import QtCore, QtGui, QtTest
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.core.ui import starttimeform
 from tests.interfaces import MagicMock, patch
 

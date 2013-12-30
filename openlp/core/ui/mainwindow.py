@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -41,13 +41,13 @@ from datetime import datetime
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, Registry, \
-    ScreenList, build_icon
+from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.lib import Renderer, OpenLPDockWidget, PluginManager, ImageManager, PluginStatus, ScreenList, \
+    build_icon
 from openlp.core.lib.ui import UiStrings, create_action
-from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, SlideController, PluginForm, \
-    MediaDockManager, ShortcutListForm, FormattingTagForm
+from openlp.core.ui import AboutForm, SettingsForm, ServiceManager, ThemeManager, LiveController, PluginForm, \
+    MediaDockManager, ShortcutListForm, FormattingTagForm, PreviewController
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists, translate
 from openlp.core.ui.media import MediaController
 from openlp.core.utils import LanguageManager, add_actions, get_application_version
 from openlp.core.utils.actions import ActionList, CategoryOrder
@@ -96,23 +96,21 @@ class Ui_MainWindow(object):
         # Set up the main container, which contains all the other form widgets.
         self.main_content = QtGui.QWidget(main_window)
         self.main_content.setObjectName('main_content')
-        self.main_contentLayout = QtGui.QHBoxLayout(self.main_content)
-        self.main_contentLayout.setSpacing(0)
-        self.main_contentLayout.setMargin(0)
-        self.main_contentLayout.setObjectName('main_contentLayout')
+        self.main_content_layout = QtGui.QHBoxLayout(self.main_content)
+        self.main_content_layout.setSpacing(0)
+        self.main_content_layout.setMargin(0)
+        self.main_content_layout.setObjectName('main_content_layout')
         main_window.setCentralWidget(self.main_content)
         self.control_splitter = QtGui.QSplitter(self.main_content)
         self.control_splitter.setOrientation(QtCore.Qt.Horizontal)
         self.control_splitter.setObjectName('control_splitter')
-        self.main_contentLayout.addWidget(self.control_splitter)
+        self.main_content_layout.addWidget(self.control_splitter)
         # Create slide controllers
-        self.preview_controller = SlideController(self)
-        self.live_controller = SlideController(self, True)
+        self.preview_controller = PreviewController(self)
+        self.live_controller = LiveController(self)
         preview_visible = Settings().value('user interface/preview panel')
-        self.preview_controller.panel.setVisible(preview_visible)
         live_visible = Settings().value('user interface/live panel')
         panel_locked = Settings().value('user interface/lock panel')
-        self.live_controller.panel.setVisible(live_visible)
         # Create menu
         self.menu_bar = QtGui.QMenuBar(main_window)
         self.menu_bar.setObjectName('menu_bar')
@@ -127,8 +125,8 @@ class Ui_MainWindow(object):
         # View Menu
         self.view_menu = QtGui.QMenu(self.menu_bar)
         self.view_menu.setObjectName('viewMenu')
-        self.view_modeMenu = QtGui.QMenu(self.view_menu)
-        self.view_modeMenu.setObjectName('viewModeMenu')
+        self.view_mode_menu = QtGui.QMenu(self.view_menu)
+        self.view_mode_menu.setObjectName('viewModeMenu')
         # Tools Menu
         self.tools_menu = QtGui.QMenu(self.menu_bar)
         self.tools_menu.setObjectName('tools_menu')
@@ -155,7 +153,7 @@ class Ui_MainWindow(object):
         self.status_bar.addPermanentWidget(self.default_theme_label)
         # Create the MediaManager
         self.media_manager_dock = OpenLPDockWidget(main_window, 'media_manager_dock',
-            ':/system/system_mediamanager.png')
+                                                   ':/system/system_mediamanager.png')
         self.media_manager_dock.setStyleSheet(MEDIA_MANAGER_STYLE)
         # Create the media toolbox
         self.media_tool_box = QtGui.QToolBox(self.media_manager_dock)
@@ -164,13 +162,13 @@ class Ui_MainWindow(object):
         main_window.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.media_manager_dock)
         # Create the service manager
         self.service_manager_dock = OpenLPDockWidget(main_window, 'service_manager_dock',
-            ':/system/system_servicemanager.png')
+                                                     ':/system/system_servicemanager.png')
         self.service_manager_contents = ServiceManager(self.service_manager_dock)
         self.service_manager_dock.setWidget(self.service_manager_contents)
         main_window.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.service_manager_dock)
         # Create the theme manager
         self.theme_manager_dock = OpenLPDockWidget(main_window, 'theme_manager_dock',
-            ':/system/system_thememanager.png')
+                                                   ':/system/system_thememanager.png')
         self.theme_manager_contents = ThemeManager(self.theme_manager_dock)
         self.theme_manager_contents.setObjectName('theme_manager_contents')
         self.theme_manager_dock.setWidget(self.theme_manager_contents)
@@ -178,98 +176,86 @@ class Ui_MainWindow(object):
         # Create the menu items
         action_list = ActionList.get_instance()
         action_list.add_category(UiStrings().File, CategoryOrder.standard_menu)
-        self.file_new_item = create_action(main_window, 'fileNewItem',
-            icon=':/general/general_new.png',
-            can_shortcuts=True,
-            category=UiStrings().File,
-            triggers=self.service_manager_contents.on_new_service_clicked)
-        self.file_open_item = create_action(main_window, 'fileOpenItem',
-            icon=':/general/general_open.png',
-            can_shortcuts=True,
-            category=UiStrings().File,
-            triggers=self.service_manager_contents.on_load_service_clicked)
-        self.file_save_item = create_action(main_window, 'fileSaveItem',
-            icon=':/general/general_save.png',
-            can_shortcuts=True,
-            category=UiStrings().File,
-            triggers=self.service_manager_contents.save_file)
-        self.file_save_as_item = create_action(main_window, 'fileSaveAsItem',
-            can_shortcuts=True,
-            category=UiStrings().File,
-            triggers=self.service_manager_contents.save_file_as)
-        self.print_service_order_item = create_action(main_window,
-            'printServiceItem', can_shortcuts=True,
-            category=UiStrings().File,
-            triggers=self.service_manager_contents.print_service_order)
-        self.file_exit_item = create_action(main_window, 'fileExitItem',
-            icon=':/system/system_exit.png',
-            can_shortcuts=True,
-            category=UiStrings().File, triggers=main_window.close)
+        self.file_new_item = create_action(main_window, 'fileNewItem', icon=':/general/general_new.png',
+                                           can_shortcuts=True, category=UiStrings().File,
+                                           triggers=self.service_manager_contents.on_new_service_clicked)
+        self.file_open_item = create_action(main_window, 'fileOpenItem', icon=':/general/general_open.png',
+                                            can_shortcuts=True, category=UiStrings().File,
+                                            triggers=self.service_manager_contents.on_load_service_clicked)
+        self.file_save_item = create_action(main_window, 'fileSaveItem', icon=':/general/general_save.png',
+                                            can_shortcuts=True, category=UiStrings().File,
+                                            triggers=self.service_manager_contents.save_file)
+        self.file_save_as_item = create_action(main_window, 'fileSaveAsItem', can_shortcuts=True,
+                                               category=UiStrings().File,
+                                               triggers=self.service_manager_contents.save_file_as)
+        self.print_service_order_item = create_action(main_window, 'printServiceItem', can_shortcuts=True,
+                                                      category=UiStrings().File,
+                                                      triggers=self.service_manager_contents.print_service_order)
+        self.file_exit_item = create_action(main_window, 'fileExitItem', icon=':/system/system_exit.png',
+                                            can_shortcuts=True,
+                                            category=UiStrings().File, triggers=main_window.close)
         # Give QT Extra Hint that this is the Exit Menu Item
         self.file_exit_item.setMenuRole(QtGui.QAction.QuitRole)
         action_list.add_category(UiStrings().Import, CategoryOrder.standard_menu)
-        self.import_theme_item = create_action(
-            main_window, 'importThemeItem', category=UiStrings().Import, can_shortcuts=True)
+        self.import_theme_item = create_action(main_window, 'importThemeItem', category=UiStrings().Import,
+                                               can_shortcuts=True)
         self.import_language_item = create_action(main_window, 'importLanguageItem')
         action_list.add_category(UiStrings().Export, CategoryOrder.standard_menu)
-        self.export_theme_item = create_action(
-            main_window, 'exportThemeItem', category=UiStrings().Export, can_shortcuts=True)
+        self.export_theme_item = create_action(main_window, 'exportThemeItem', category=UiStrings().Export,
+                                               can_shortcuts=True)
         self.export_language_item = create_action(main_window, 'exportLanguageItem')
         action_list.add_category(UiStrings().View, CategoryOrder.standard_menu)
-        self.view_media_manager_item = create_action(main_window,
-            'viewMediaManagerItem',
-            icon=':/system/system_mediamanager.png',
-            checked=self.media_manager_dock.isVisible(),
-            can_shortcuts=True,
-            category=UiStrings().View, triggers=self.toggle_media_manager)
-        self.view_theme_manager_item = create_action(main_window,
-            'viewThemeManagerItem', can_shortcuts=True,
-            icon=':/system/system_thememanager.png',
-            checked=self.theme_manager_dock.isVisible(),
-            category=UiStrings().View, triggers=self.toggle_theme_manager)
-        self.view_service_manager_item = create_action(main_window,
-            'viewServiceManagerItem', can_shortcuts=True,
-            icon=':/system/system_servicemanager.png',
-            checked=self.service_manager_dock.isVisible(),
-            category=UiStrings().View, triggers=self.toggle_service_manager)
-        self.view_preview_panel = create_action(main_window, 'viewPreviewPanel',
-            can_shortcuts=True, checked=preview_visible,
-            category=UiStrings().View, triggers=self.set_preview_panel_visibility)
-        self.view_live_panel = create_action(main_window, 'viewLivePanel',
-            can_shortcuts=True, checked=live_visible,
-            category=UiStrings().View, triggers=self.set_live_panel_visibility)
-        self.lock_panel = create_action(main_window, 'lockPanel',
-            can_shortcuts=True, checked=panel_locked,
-            category=UiStrings().View,
-            triggers=self.set_lock_panel)
+        self.view_media_manager_item = create_action(main_window, 'viewMediaManagerItem',
+                                                     icon=':/system/system_mediamanager.png',
+                                                     checked=self.media_manager_dock.isVisible(),
+                                                     can_shortcuts=True,
+                                                     category=UiStrings().View, triggers=self.toggle_media_manager)
+        self.view_theme_manager_item = create_action(main_window, 'viewThemeManagerItem', can_shortcuts=True,
+                                                     icon=':/system/system_thememanager.png',
+                                                     checked=self.theme_manager_dock.isVisible(),
+                                                     category=UiStrings().View, triggers=self.toggle_theme_manager)
+        self.view_service_manager_item = create_action(main_window, 'viewServiceManagerItem', can_shortcuts=True,
+                                                       icon=':/system/system_servicemanager.png',
+                                                       checked=self.service_manager_dock.isVisible(),
+                                                       category=UiStrings().View, triggers=self.toggle_service_manager)
+        self.view_preview_panel = create_action(main_window, 'viewPreviewPanel', can_shortcuts=True,
+                                                checked=preview_visible, category=UiStrings().View,
+                                                triggers=self.set_preview_panel_visibility)
+        self.view_live_panel = create_action(main_window, 'viewLivePanel', can_shortcuts=True, checked=live_visible,
+                                             category=UiStrings().View, triggers=self.set_live_panel_visibility)
+        self.lock_panel = create_action(main_window, 'lockPanel', can_shortcuts=True, checked=panel_locked,
+                                        category=UiStrings().View, triggers=self.set_lock_panel)
         action_list.add_category(UiStrings().ViewMode, CategoryOrder.standard_menu)
-        self.mode_default_Item = create_action(
+        self.mode_default_item = create_action(
             main_window, 'modeDefaultItem', checked=False, category=UiStrings().ViewMode, can_shortcuts=True)
-        self.mode_setup_item = create_action(
-            main_window, 'modeSetupItem', checked=False, category=UiStrings().ViewMode, can_shortcuts=True)
-        self.mode_live_item = create_action(
-            main_window, 'modeLiveItem', checked=True, category=UiStrings().ViewMode, can_shortcuts=True)
+        self.mode_setup_item = create_action(main_window, 'modeSetupItem', checked=False, category=UiStrings().ViewMode,
+                                             can_shortcuts=True)
+        self.mode_live_item = create_action(main_window, 'modeLiveItem', checked=True, category=UiStrings().ViewMode, 
+                                            can_shortcuts=True)
         self.mode_group = QtGui.QActionGroup(main_window)
-        self.mode_group.addAction(self.mode_default_Item)
+        self.mode_group.addAction(self.mode_default_item)
         self.mode_group.addAction(self.mode_setup_item)
         self.mode_group.addAction(self.mode_live_item)
-        self.mode_default_Item.setChecked(True)
+        self.mode_default_item.setChecked(True)
         action_list.add_category(UiStrings().Tools, CategoryOrder.standard_menu)
         self.tools_add_tool_item = create_action(main_window,
-            'toolsAddToolItem', icon=':/tools/tools_add.png', category=UiStrings().Tools, can_shortcuts=True)
+                                                 'toolsAddToolItem', icon=':/tools/tools_add.png', 
+                                                 category=UiStrings().Tools, can_shortcuts=True)
         self.tools_open_data_folder = create_action(main_window,
-            'toolsOpenDataFolder', icon=':/general/general_open.png', category=UiStrings().Tools, can_shortcuts=True)
+                                                    'toolsOpenDataFolder', icon=':/general/general_open.png', 
+                                                    category=UiStrings().Tools, can_shortcuts=True)
         self.tools_first_time_wizard = create_action(main_window,
-            'toolsFirstTimeWizard', icon=':/general/general_revert.png',
-            category=UiStrings().Tools, can_shortcuts=True)
+                                                     'toolsFirstTimeWizard', icon=':/general/general_revert.png',
+                                                     category=UiStrings().Tools, can_shortcuts=True)
         self.update_theme_images = create_action(main_window,
-            'updateThemeImages', category=UiStrings().Tools, can_shortcuts=True)
+                                                 'updateThemeImages', category=UiStrings().Tools, can_shortcuts=True)
         action_list.add_category(UiStrings().Settings, CategoryOrder.standard_menu)
-        self.settingsPluginListItem = create_action(main_window,
-            'settingsPluginListItem',
-            icon=':/system/settings_plugin_list.png',
-            can_shortcuts=True,
-            category=UiStrings().Settings, triggers=self.on_plugin_item_clicked)
+        self.settings_plugin_list_item = create_action(main_window,
+                                                       'settingsPluginListItem',
+                                                       icon=':/system/settings_plugin_list.png',
+                                                       can_shortcuts=True,
+                                                       category=UiStrings().Settings,
+                                                       triggers=self.on_plugin_item_clicked)
         # i18n Language Items
         self.auto_language_item = create_action(main_window, 'autoLanguageItem', checked=LanguageManager.auto_language)
         self.language_group = QtGui.QActionGroup(main_window)
@@ -282,73 +268,77 @@ class Ui_MainWindow(object):
             language_item = create_action(main_window, key, checked=qm_list[key] == saved_language)
             add_actions(self.language_group, [language_item])
         self.settings_shortcuts_item = create_action(main_window, 'settingsShortcutsItem',
-            icon=':/system/system_configure_shortcuts.png', category=UiStrings().Settings, can_shortcuts=True)
+                                                     icon=':/system/system_configure_shortcuts.png', 
+                                                     category=UiStrings().Settings, can_shortcuts=True)
         # Formatting Tags were also known as display tags.
         self.formatting_tag_item = create_action(main_window, 'displayTagItem',
-            icon=':/system/tag_editor.png', category=UiStrings().Settings, can_shortcuts=True)
+                                                 icon=':/system/tag_editor.png', category=UiStrings().Settings, 
+                                                 can_shortcuts=True)
         self.settings_configure_item = create_action(main_window, 'settingsConfigureItem',
-            icon=':/system/system_settings.png', can_shortcuts=True, category=UiStrings().Settings)
+                                                     icon=':/system/system_settings.png', can_shortcuts=True, 
+                                                     category=UiStrings().Settings)
         # Give QT Extra Hint that this is the Preferences Menu Item
         self.settings_configure_item.setMenuRole(QtGui.QAction.PreferencesRole)
-        self.settings_import_item = create_action(
-            main_window, 'settingsImportItem', category=UiStrings().Import, can_shortcuts=True)
-        self.settings_export_item = create_action(
-            main_window, 'settingsExportItem', category=UiStrings().Export, can_shortcuts=True)
+        self.settings_import_item = create_action(main_window, 'settingsImportItem', 
+                                                  category=UiStrings().Import, can_shortcuts=True)
+        self.settings_export_item = create_action(main_window, 'settingsExportItem', 
+                                                  category=UiStrings().Export, can_shortcuts=True)
         action_list.add_category(UiStrings().Help, CategoryOrder.standard_menu)
         self.about_item = create_action(main_window, 'aboutItem', icon=':/system/system_about.png',
-            can_shortcuts=True, category=UiStrings().Help, triggers=self.on_about_item_clicked)
+                                        can_shortcuts=True, category=UiStrings().Help, 
+                                        triggers=self.on_about_item_clicked)
         # Give QT Extra Hint that this is an About Menu Item
         self.about_item.setMenuRole(QtGui.QAction.AboutRole)
         if os.name == 'nt':
-            self.localHelpFile = os.path.join(
-                AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
-            self.offlineHelpItem = create_action(main_window, 'offlineHelpItem',
-                icon=':/system/system_help_contents.png',
-                can_shortcuts=True,
-                category=UiStrings().Help, triggers=self.on_offline_help_clicked)
+            self.local_help_file = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
+            self.offline_help_item = create_action(main_window, 'offline_help_item',
+                                                   icon=':/system/system_help_contents.png',
+                                                   can_shortcuts=True,
+                                                   category=UiStrings().Help, triggers=self.on_offline_help_clicked)
         self.on_line_help_item = create_action(main_window, 'onlineHelpItem',
-            icon=':/system/system_online_help.png',
-            can_shortcuts=True,
-            category=UiStrings().Help, triggers=self.on_online_help_clicked)
+                                               icon=':/system/system_online_help.png',
+                                               can_shortcuts=True,
+                                               category=UiStrings().Help, triggers=self.on_online_help_clicked)
         self.web_site_item = create_action(main_window, 'webSiteItem', can_shortcuts=True, category=UiStrings().Help)
-        # Shortcuts not connected to buttons or menu entires.
+        # Shortcuts not connected to buttons or menu entries.
         self.search_shortcut_action = create_action(main_window,
-            'searchShortcut', can_shortcuts=True, category=translate('OpenLP.MainWindow', 'General'),
-            triggers=self.on_search_shortcut_triggered)
+                                                    'searchShortcut', can_shortcuts=True, 
+                                                    category=translate('OpenLP.MainWindow', 'General'),
+                                                    triggers=self.on_search_shortcut_triggered)
         add_actions(self.file_import_menu, (self.settings_import_item, None, self.import_theme_item,
-            self.import_language_item))
+                    self.import_language_item))
         add_actions(self.file_export_menu, (self.settings_export_item, None, self.export_theme_item,
-            self.export_language_item))
+                    self.export_language_item))
         add_actions(self.file_menu, (self.file_new_item, self.file_open_item,
-            self.file_save_item, self.file_save_as_item, self.recent_files_menu.menuAction(), None,
-            self.file_import_menu.menuAction(), self.file_export_menu.menuAction(), None, self.print_service_order_item,
-            self.file_exit_item))
-        add_actions(self.view_modeMenu, (self.mode_default_Item, self.mode_setup_item, self.mode_live_item))
-        add_actions(self.view_menu, (self.view_modeMenu.menuAction(), None, self.view_media_manager_item,
-            self.view_service_manager_item, self.view_theme_manager_item, None, self.view_preview_panel,
-            self.view_live_panel, None, self.lock_panel))
+                    self.file_save_item, self.file_save_as_item, self.recent_files_menu.menuAction(), None,
+                    self.file_import_menu.menuAction(), self.file_export_menu.menuAction(), None, self.print_service_order_item,
+                    self.file_exit_item))
+        add_actions(self.view_mode_menu, (self.mode_default_item, self.mode_setup_item, self.mode_live_item))
+        add_actions(self.view_menu, (self.view_mode_menu.menuAction(), None, self.view_media_manager_item,
+                    self.view_service_manager_item, self.view_theme_manager_item, None, self.view_preview_panel,
+                    self.view_live_panel, None, self.lock_panel))
         # i18n add Language Actions
         add_actions(self.settings_language_menu, (self.auto_language_item, None))
         add_actions(self.settings_language_menu, self.language_group.actions())
         # Order things differently in OS X so that Preferences menu item in the
         # app menu is correct (this gets picked up automatically by Qt).
         if sys.platform == 'darwin':
-            add_actions(self.settings_menu, (self.settingsPluginListItem, self.settings_language_menu.menuAction(),
-                None, self.settings_configure_item, self.settings_shortcuts_item, self.formatting_tag_item))
+            add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
+                        None, self.settings_configure_item, self.settings_shortcuts_item, self.formatting_tag_item))
         else:
-            add_actions(self.settings_menu, (self.settingsPluginListItem, self.settings_language_menu.menuAction(),
-                None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
+            add_actions(self.settings_menu, (self.settings_plugin_list_item, self.settings_language_menu.menuAction(),
+                        None, self.formatting_tag_item, self.settings_shortcuts_item, self.settings_configure_item))
         add_actions(self.tools_menu, (self.tools_add_tool_item, None))
         add_actions(self.tools_menu, (self.tools_open_data_folder, None))
         add_actions(self.tools_menu, (self.tools_first_time_wizard, None))
         add_actions(self.tools_menu, [self.update_theme_images])
         if os.name == 'nt':
-            add_actions(self.help_menu, (self.offlineHelpItem, self.on_line_help_item, None, self.web_site_item,
-                self.about_item))
+            add_actions(self.help_menu, (self.offline_help_item, self.on_line_help_item, None, self.web_site_item,
+                        self.about_item))
         else:
             add_actions(self.help_menu, (self.on_line_help_item, None, self.web_site_item, self.about_item))
         add_actions(self.menu_bar, (self.file_menu.menuAction(), self.view_menu.menuAction(),
-            self.tools_menu.menuAction(), self.settings_menu.menuAction(), self.help_menu.menuAction()))
+                    self.tools_menu.menuAction(), self.settings_menu.menuAction(), self.help_menu.menuAction()))
         add_actions(self, [self.search_shortcut_action])
         # Initialise the translation
         self.retranslateUi(main_window)
@@ -360,7 +350,7 @@ class Ui_MainWindow(object):
         self.import_language_item.setVisible(False)
         self.export_language_item.setVisible(False)
         self.set_lock_panel(panel_locked)
-        self.settingsImported = False
+        self.settings_imported = False
 
     def retranslateUi(self, main_window):
         """
@@ -372,7 +362,7 @@ class Ui_MainWindow(object):
         self.file_export_menu.setTitle(translate('OpenLP.MainWindow', '&Export'))
         self.recent_files_menu.setTitle(translate('OpenLP.MainWindow', '&Recent Files'))
         self.view_menu.setTitle(translate('OpenLP.MainWindow', '&View'))
-        self.view_modeMenu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
+        self.view_mode_menu.setTitle(translate('OpenLP.MainWindow', 'M&ode'))
         self.tools_menu.setTitle(translate('OpenLP.MainWindow', '&Tools'))
         self.settings_menu.setTitle(translate('OpenLP.MainWindow', '&Settings'))
         self.settings_language_menu.setTitle(translate('OpenLP.MainWindow', '&Language'))
@@ -392,7 +382,7 @@ class Ui_MainWindow(object):
         self.file_save_as_item.setText(translate('OpenLP.MainWindow', 'Save &As...'))
         self.file_save_as_item.setToolTip(translate('OpenLP.MainWindow', 'Save Service As'))
         self.file_save_as_item.setStatusTip(translate('OpenLP.MainWindow',
-            'Save the current service under a new name.'))
+                                            'Save the current service under a new name.'))
         self.print_service_order_item.setText(UiStrings().PrintService)
         self.print_service_order_item.setStatusTip(translate('OpenLP.MainWindow', 'Print the current service.'))
         self.file_exit_item.setText(translate('OpenLP.MainWindow', 'E&xit'))
@@ -405,23 +395,24 @@ class Ui_MainWindow(object):
         self.formatting_tag_item.setText(translate('OpenLP.MainWindow', 'Configure &Formatting Tags...'))
         self.settings_configure_item.setText(translate('OpenLP.MainWindow', '&Configure OpenLP...'))
         self.settings_export_item.setStatusTip(translate('OpenLP.MainWindow',
-            'Export OpenLP settings to a specified *.config file'))
+                                               'Export OpenLP settings to a specified *.config file'))
         self.settings_export_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.settings_import_item.setStatusTip(translate('OpenLP.MainWindow',
-            'Import OpenLP settings from a specified *.config file previously exported on this or another machine'))
+                                               'Import OpenLP settings from a specified *.config file previously '
+                                               'exported on this or another machine'))
         self.settings_import_item.setText(translate('OpenLP.MainWindow', 'Settings'))
         self.view_media_manager_item.setText(translate('OpenLP.MainWindow', '&Media Manager'))
         self.view_media_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Media Manager'))
         self.view_media_manager_item.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the media manager.'))
+                                                  'Toggle the visibility of the media manager.'))
         self.view_theme_manager_item.setText(translate('OpenLP.MainWindow', '&Theme Manager'))
         self.view_theme_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Theme Manager'))
         self.view_theme_manager_item.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the theme manager.'))
+                                                  'Toggle the visibility of the theme manager.'))
         self.view_service_manager_item.setText(translate('OpenLP.MainWindow', '&Service Manager'))
         self.view_service_manager_item.setToolTip(translate('OpenLP.MainWindow', 'Toggle Service Manager'))
         self.view_service_manager_item.setStatusTip(translate('OpenLP.MainWindow',
-            'Toggle the visibility of the service manager.'))
+                                                    'Toggle the visibility of the service manager.'))
         self.view_preview_panel.setText(translate('OpenLP.MainWindow', '&Preview Panel'))
         self.view_preview_panel.setToolTip(translate('OpenLP.MainWindow', 'Toggle Preview Panel'))
         self.view_preview_panel.setStatusTip(
@@ -431,12 +422,12 @@ class Ui_MainWindow(object):
         self.lock_panel.setText(translate('OpenLP.MainWindow', 'L&ock Panels'))
         self.lock_panel.setStatusTip(translate('OpenLP.MainWindow', 'Prevent the panels being moved.'))
         self.view_live_panel.setStatusTip(translate('OpenLP.MainWindow', 'Toggle the visibility of the live panel.'))
-        self.settingsPluginListItem.setText(translate('OpenLP.MainWindow', '&Plugin List'))
-        self.settingsPluginListItem.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
+        self.settings_plugin_list_item.setText(translate('OpenLP.MainWindow', '&Plugin List'))
+        self.settings_plugin_list_item.setStatusTip(translate('OpenLP.MainWindow', 'List the Plugins'))
         self.about_item.setText(translate('OpenLP.MainWindow', '&About'))
         self.about_item.setStatusTip(translate('OpenLP.MainWindow', 'More information about OpenLP'))
         if os.name == 'nt':
-            self.offlineHelpItem.setText(translate('OpenLP.MainWindow', '&User Guide'))
+            self.offline_help_item.setText(translate('OpenLP.MainWindow', '&User Guide'))
         self.on_line_help_item.setText(translate('OpenLP.MainWindow', '&Online Help'))
         self.search_shortcut_action.setText(UiStrings().Search)
         self.search_shortcut_action.setToolTip(
@@ -449,18 +440,18 @@ class Ui_MainWindow(object):
         self.auto_language_item.setStatusTip(translate('OpenLP.MainWindow', 'Use the system language, if available.'))
         self.tools_add_tool_item.setText(translate('OpenLP.MainWindow', 'Add &Tool...'))
         self.tools_add_tool_item.setStatusTip(translate('OpenLP.MainWindow',
-            'Add an application to the list of tools.'))
+                                                        'Add an application to the list of tools.'))
         self.tools_open_data_folder.setText(translate('OpenLP.MainWindow', 'Open &Data Folder...'))
         self.tools_open_data_folder.setStatusTip(translate('OpenLP.MainWindow',
-            'Open the folder where songs, bibles and other data resides.'))
+                                                 'Open the folder where songs, bibles and other data resides.'))
         self.tools_first_time_wizard.setText(translate('OpenLP.MainWindow', 'Re-run First Time Wizard'))
         self.tools_first_time_wizard.setStatusTip(translate('OpenLP.MainWindow',
-            'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
+                                                  'Re-run the First Time Wizard, importing songs, Bibles and themes.'))
         self.update_theme_images.setText(translate('OpenLP.MainWindow', 'Update Theme Images'))
         self.update_theme_images.setStatusTip(translate('OpenLP.MainWindow',
-            'Update the preview images for all themes.'))
-        self.mode_default_Item.setText(translate('OpenLP.MainWindow', '&Default'))
-        self.mode_default_Item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode back to the default.'))
+                                                        'Update the preview images for all themes.'))
+        self.mode_default_item.setText(translate('OpenLP.MainWindow', '&Default'))
+        self.mode_default_item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode back to the default.'))
         self.mode_setup_item.setText(translate('OpenLP.MainWindow', '&Setup'))
         self.mode_setup_item.setStatusTip(translate('OpenLP.MainWindow', 'Set the view mode to Setup.'))
         self.mode_live_item.setText(translate('OpenLP.MainWindow', '&Live'))
@@ -504,14 +495,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.formatting_tag_form = FormattingTagForm(self)
         self.shortcut_form = ShortcutListForm(self)
         # Set up the path with plugins
-        self.plugin_manager = PluginManager()
+        self.plugin_manager = PluginManager(self)
         self.image_manager = ImageManager()
+        self.renderer = Renderer()
         # Set up the interface
         self.setupUi(self)
         # Define the media Dock Manager
         self.media_dock_manager = MediaDockManager(self.media_tool_box)
         # Load settings after setupUi so default UI sizes are overwritten
-        self.load_settings()
         # Once settings are loaded update the menu with the recent files.
         self.update_recent_files_menu()
         self.plugin_form = PluginForm(self)
@@ -523,7 +514,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.export_theme_item.triggered.connect(self.theme_manager_contents.on_export_theme)
         self.web_site_item.triggered.connect(self.on_help_web_site_clicked)
         self.tools_open_data_folder.triggered.connect(self.on_tools_open_data_folder_clicked)
-        self.tools_first_time_wizard.triggered.connect(self.on_first_time_wzard_clicked)
+        self.tools_first_time_wizard.triggered.connect(self.on_first_time_wizard_clicked)
         self.update_theme_images.triggered.connect(self.on_update_theme_images)
         self.formatting_tag_item.triggered.connect(self.on_formatting_tag_item_clicked)
         self.settings_configure_item.triggered.connect(self.on_settings_configure_iem_clicked)
@@ -532,7 +523,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.settings_export_item.triggered.connect(self.on_settings_export_item_clicked)
         # i18n set signals for languages
         self.language_group.triggered.connect(LanguageManager.set_language)
-        self.mode_default_Item.triggered.connect(self.on_mode_default_item_clicked)
+        self.mode_default_item.triggered.connect(self.on_mode_default_item_clicked)
         self.mode_setup_item.triggered.connect(self.on_mode_setup_item_clicked)
         self.mode_live_item.triggered.connect(self.on_mode_live_item_clicked)
         # Media Manager
@@ -542,10 +533,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Registry().register_function('theme_update_global', self.default_theme_changed)
         Registry().register_function('openlp_version_check', self.version_notice)
         Registry().register_function('config_screen_changed', self.screen_changed)
-        Registry().register_function('bootstrap_post_set_up', self.restore_current_media_manager_item)
-        self.renderer = Renderer()
+        Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
         # Reset the cursor
         self.application.set_normal_cursor()
+
+    def bootstrap_post_set_up(self):
+        """
+        process the bootstrap post setup request
+        """
+        self.preview_controller.panel.setVisible(Settings().value('user interface/preview panel'))
+        self.live_controller.panel.setVisible(Settings().value('user interface/live panel'))
+        self.load_settings()
+        self.restore_current_media_manager_item()
 
     def restore_current_media_manager_item(self):
         """
@@ -559,7 +558,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
     def on_search_shortcut_triggered(self):
         """
-        Called when the search shotcut has been pressed.
+        Called when the search shortcut has been pressed.
         """
         # Make sure the media_dock is visible.
         if not self.media_manager_dock.isVisible():
@@ -583,7 +582,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         log.debug('version_notice')
         version_text = translate('OpenLP.MainWindow', 'Version %s of OpenLP is now available for download (you are '
-            'currently running version %s). \n\nYou can download the latest version from http://openlp.org/.')
+                                 'currently running version %s). \n\nYou can download the latest version from '
+                                 'http://openlp.org/.')
         self.version_text = version_text % (version, get_application_version()['full'])
 
     def show(self):
@@ -607,12 +607,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.timer_version_id = self.startTimer(1000)
         view_mode = Settings().value('%s/view mode' % self.general_settings_section)
         if view_mode == 'default':
-            self.mode_default_Item.setChecked(True)
+            self.mode_default_item.setChecked(True)
         elif view_mode == 'setup':
-            self.setViewMode(True, True, False, True, False)
+            self.set_view_mode(True, True, False, True, False)
             self.mode_setup_item.setChecked(True)
         elif view_mode == 'live':
-            self.setViewMode(False, True, False, False, True)
+            self.set_view_mode(False, True, False, False, True)
             self.mode_live_item.setChecked(True)
 
     def app_startup(self):
@@ -638,21 +638,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         temp_dir = os.path.join(str(gettempdir()), 'openlp')
         shutil.rmtree(temp_dir, True)
 
-    def on_first_time_wzard_clicked(self):
+    def on_first_time_wizard_clicked(self):
         """
-        Re-run the first time wizard.  Prompts the user for run confirmation
-        If wizard is run, songs, bibles and themes are imported.  The default
-        theme is changed (if necessary).  The plugins in pluginmanager are
+        Re-run the first time wizard.  Prompts the user for run confirmation.If wizard is run, songs, bibles and
+        themes are imported.  The default theme is changed (if necessary).  The plugins in pluginmanager are
         set active/in-active to match the selection in the wizard.
         """
         answer = QtGui.QMessageBox.warning(self,
-            translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
-            translate('OpenLP.MainWindow', 'Are you sure you want to re-run the First Time Wizard?\n\n'
-                'Re-running this wizard may make changes to your current '
-                'OpenLP configuration and possibly add songs to your '
-                'existing songs list and change your default theme.'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.No)
+                                           translate('OpenLP.MainWindow', 'Re-run First Time Wizard?'),
+                                           translate('OpenLP.MainWindow', 'Are you sure you want to re-run the First '
+                                                     'Time Wizard?\n\nRe-running this wizard may make changes to your '
+                                                     'current OpenLP configuration and possibly add songs to your '
+                                                     '#existing songs list and change your default theme.'),
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | 
+                                                                             QtGui.QMessageBox.No),
+                                           QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
         screens = ScreenList()
@@ -663,15 +663,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.application.set_busy_cursor()
         self.first_time()
         for plugin in self.plugin_manager.plugins:
-            self.activePlugin = plugin
-            oldStatus = self.activePlugin.status
-            self.activePlugin.set_status()
-            if oldStatus != self.activePlugin.status:
-                if self.activePlugin.status == PluginStatus.Active:
-                    self.activePlugin.toggle_status(PluginStatus.Active)
-                    self.activePlugin.app_startup()
+            self.active_plugin = plugin
+            old_status = self.active_plugin.status
+            self.active_plugin.set_status()
+            if old_status != self.active_plugin.status:
+                if self.active_plugin.status == PluginStatus.Active:
+                    self.active_plugin.toggle_status(PluginStatus.Active)
+                    self.active_plugin.app_startup()
                 else:
-                    self.activePlugin.toggle_status(PluginStatus.Inactive)
+                    self.active_plugin.toggle_status(PluginStatus.Inactive)
         # Set global theme and
         Registry().execute('theme_update_global', self.theme_manager_contents.global_theme)
         self.theme_manager_contents.load_first_time_themes()
@@ -688,7 +688,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         if settings.value('%s/screen blank' % self.general_settings_section):
             if settings.value('%s/blank warning' % self.general_settings_section):
                 QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Main Display Blanked'),
-                    translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
+                                           translate('OpenLP.MainWindow', 'The Main Display has been blanked out'))
 
     def error_message(self, title, message):
         """
@@ -743,7 +743,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Load the local OpenLP help file
         """
-        os.startfile(self.localHelpFile)
+        os.startfile(self.local_help_file)
 
     def on_online_help_clicked(self):
         """
@@ -809,15 +809,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Import settings from an export INI file
         """
         answer = QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings?'),
-            translate('OpenLP.MainWindow', 'Are you sure you want to import settings?\n\n'
-                'Importing settings will make permanent changes to your current OpenLP configuration.\n\n'
-                'Importing incorrect settings may cause erratic behaviour or OpenLP to terminate abnormally.'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                QtGui.QMessageBox.No)
+                                            translate('OpenLP.MainWindow', 'Are you sure you want to import '
+                                                                           'settings?\n\n Importing settings will '
+                                                                           'make permanent changes to your current '
+                                                                           'OpenLP configuration.\n\n Importing '
+                                                                           'incorrect settings may cause erratic '
+                                                                           'behaviour or OpenLP to terminate '
+                                                                           'abnormally.'),
+                                            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                              QtGui.QMessageBox.No),
+                                            QtGui.QMessageBox.No)
         if answer == QtGui.QMessageBox.No:
             return
         import_file_name = QtGui.QFileDialog.getOpenFileName(self, translate('OpenLP.MainWindow', 'Open File'), '',
-            translate('OpenLP.MainWindow', 'OpenLP Export Settings Files (*.conf)'))
+                                                             translate('OpenLP.MainWindow', 'OpenLP Export Settings '
+                                                                                            'Files (*.conf)'))
         if not import_file_name:
             return
         setting_sections = []
@@ -850,9 +856,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # load what we can from it, and just silently ignore anything we don't recognise.
         if import_settings.value('SettingsImport/type') != 'OpenLP_settings_export':
             QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'Import settings'),
-                translate('OpenLP.MainWindow', 'The file you have selected does not appear to be a valid OpenLP '
-                    'settings file.\n\nProcessing has terminated and no changes have been made.'),
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                                       translate('OpenLP.MainWindow', 'The file you have selected does not appear to '
+                                                 'be a valid OpenLP settings file.\n\nProcessing has terminated and '
+                                                 'no changes have been made.'),
+                                       QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
             return
         import_keys = import_settings.allKeys()
         for section_key in import_keys:
@@ -885,10 +892,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         # We must do an immediate restart or current configuration will overwrite what was just imported when
         # application terminates normally.   We need to exit without saving configuration.
         QtGui.QMessageBox.information(self, translate('OpenLP.MainWindow', 'Import settings'),
-            translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
-                'be applied the next time you start OpenLP.'),
-            QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
-        self.settingsImported = True
+                                      translate('OpenLP.MainWindow', 'OpenLP will now close.  Imported settings will '
+                                      'be applied the next time you start OpenLP.'),
+                                      QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+        self.settings_imported = True
         self.clean_up()
         QtCore.QCoreApplication.exit()
 
@@ -897,8 +904,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Export settings to a .conf file in INI format
         """
         export_file_name = QtGui.QFileDialog.getSaveFileName(self,
-            translate('OpenLP.MainWindow', 'Export Settings File'), '',
-            translate('OpenLP.MainWindow', 'OpenLP Export Settings File (*.conf)'))
+                                                             translate('OpenLP.MainWindow', 'Export Settings File'),
+                                                             '',
+                                                             translate('OpenLP.MainWindow', 'OpenLP Export Settings '
+                                                                                            'File (*.conf)'))
         if not export_file_name:
             return
             # Make sure it's a .conf file.
@@ -967,21 +976,21 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         Put OpenLP into "Default" view mode.
         """
-        self.setViewMode(True, True, True, True, True, 'default')
+        self.set_view_mode(True, True, True, True, True, 'default')
 
     def on_mode_setup_item_clicked(self):
         """
         Put OpenLP into "Setup" view mode.
         """
-        self.setViewMode(True, True, False, True, False, 'setup')
+        self.set_view_mode(True, True, False, True, False, 'setup')
 
     def on_mode_live_item_clicked(self):
         """
         Put OpenLP into "Live" view mode.
         """
-        self.setViewMode(False, True, False, False, True, 'live')
+        self.set_view_mode(False, True, False, False, True, 'live')
 
-    def setViewMode(self, media=True, service=True, theme=True, preview=True, live=True, mode=''):
+    def set_view_mode(self, media=True, service=True, theme=True, preview=True, live=True, mode=''):
         """
         Set OpenLP to a different view mode.
         """
@@ -1018,7 +1027,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             event.ignore()
             return
         # If we just did a settings import, close without saving changes.
-        if self.settingsImported:
+        if self.settings_imported:
             self.clean_up(False)
             event.accept()
         if self.service_manager_contents.is_modified():
@@ -1037,9 +1046,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         else:
             if Settings().value('advanced/enable exit confirmation'):
                 ret = QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'Close OpenLP'),
-                        translate('OpenLP.MainWindow', 'Are you sure you want to close OpenLP?'),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No),
-                    QtGui.QMessageBox.Yes)
+                                                 translate('OpenLP.MainWindow', 'Are you sure you want to close '
+                                                                                'OpenLP?'),
+                                                 QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui
+                                                 .QMessageBox.No),
+                                                 QtGui.QMessageBox.Yes)
                 if ret == QtGui.QMessageBox.Yes:
                     self.clean_up()
                     event.accept()
@@ -1108,7 +1119,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Update the default theme indicator in the status bar
         """
         self.default_theme_label.setText(translate('OpenLP.MainWindow', 'Default Theme: %s') %
-            Settings().value('themes/global theme'))
+                                         Settings().value('themes/global theme'))
 
     def toggle_media_manager(self):
         """
@@ -1197,8 +1208,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.live_controller.splitter.restoreState(settings.value('live splitter geometry'))
         self.preview_controller.splitter.restoreState(settings.value('preview splitter geometry'))
         self.control_splitter.restoreState(settings.value('main window splitter geometry'))
-        #This needs to be called after restoreState(), because saveState() also saves the "Collapsible" property
-        #which was True (by default) < OpenLP 2.1.
+        # This needs to be called after restoreState(), because saveState() also saves the "Collapsible" property
+        # which was True (by default) < OpenLP 2.1.
         self.control_splitter.setChildrenCollapsible(False)
         settings.endGroup()
 
@@ -1207,7 +1218,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Save the main window settings.
         """
         # Exit if we just did a settings import.
-        if self.settingsImported:
+        if self.settings_imported:
             return
         log.debug('Saving QSettings')
         settings = Settings()
@@ -1228,22 +1239,23 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         Updates the recent file menu with the latest list of service files accessed.
         """
         recent_file_count = Settings().value('advanced/recent file count')
-        existing_recent_files = [recentFile for recentFile in self.recent_files
-            if os.path.isfile(str(recentFile))]
+        existing_recent_files = [recentFile for recentFile in self.recent_files if os.path.isfile(str(recentFile))]
         recent_files_to_display = existing_recent_files[0:recent_file_count]
         self.recent_files_menu.clear()
         for file_id, filename in enumerate(recent_files_to_display):
             log.debug('Recent file name: %s', filename)
             action = create_action(self, '',
-                text='&%d %s' % (file_id + 1, os.path.splitext(os.path.basename(
-                str(filename)))[0]), data=filename,
-                triggers=self.service_manager_contents.on_recent_service_clicked)
+                                   text='&%d %s' % (file_id + 1,
+                                   os.path.splitext(os.path.basename(str(filename)))[0]), data=filename,
+                                   triggers=self.service_manager_contents.on_recent_service_clicked)
             self.recent_files_menu.addAction(action)
         clear_recent_files_action = create_action(self, '',
-            text=translate('OpenLP.MainWindow', 'Clear List', 'Clear List of recent files'),
-            statustip=translate('OpenLP.MainWindow', 'Clear the list of recent files.'),
-            enabled=bool(self.recent_files),
-            triggers=self.clear_recent_file_menu)
+                                                  text=translate('OpenLP.MainWindow', 'Clear List', 'Clear List of '
+                                                                                                   'recent files'),
+                                                  statustip=translate('OpenLP.MainWindow', 'Clear the list of recent '
+                                                                                          'files.'),
+                                                  enabled=bool(self.recent_files),
+                                                  triggers=self.clear_recent_file_menu)
         add_actions(self.recent_files_menu, (None, clear_recent_files_action))
         clear_recent_files_action.setEnabled(bool(self.recent_files))
 
@@ -1312,7 +1324,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             # Has the thread passed some data to be displayed so display it and stop all waiting
             if hasattr(self, 'version_text'):
                 QtGui.QMessageBox.question(self, translate('OpenLP.MainWindow', 'OpenLP Version Updated'),
-                    self.version_text)
+                                           self.version_text)
             else:
                 # the thread has not confirmed it is running or it has not yet sent any data so lets keep waiting
                 if not hasattr(self, 'version_update_running') or self.version_update_running:
@@ -1344,16 +1356,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
             try:
                 self.showStatusMessage(
                     translate('OpenLP.MainWindow', 'Copying OpenLP data to new data directory location - %s '
-                    '- Please wait for copy to finish').replace('%s', self.new_data_path))
+                              '- Please wait for copy to finish').replace('%s', self.new_data_path))
                 dir_util.copy_tree(old_data_path, self.new_data_path)
-                log.info('Copy sucessful')
+                log.info('Copy successful')
             except (IOError, os.error, DistutilsFileError) as why:
                 self.application.set_normal_cursor()
                 log.exception('Data copy failed %s' % str(why))
                 QtGui.QMessageBox.critical(self, translate('OpenLP.MainWindow', 'New Data Directory Error'),
-                    translate('OpenLP.MainWindow',
-                        'OpenLP Data directory copy failed\n\n%s').replace('%s', str(why)),
-                    QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
+                                           translate('OpenLP.MainWindow',
+                                           'OpenLP Data directory copy failed\n\n%s').replace('%s', str(why)),
+                                           QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
                 return False
         else:
             log.info('No data copy requested')

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -43,8 +43,8 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, Settings, UiStrings, check_directory_exists
-from openlp.core.lib import ScreenList, Registry
+from openlp.core.common import Registry, AppLocation, Settings, UiStrings, check_directory_exists
+from openlp.core.lib import ScreenList
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
 from openlp.core.ui.firsttimelanguageform import FirstTimeLanguageForm
@@ -162,7 +162,8 @@ class OpenLP(QtGui.QApplication):
         self.shared_memory = QtCore.QSharedMemory('OpenLP')
         if self.shared_memory.attach():
             status = QtGui.QMessageBox.critical(None, UiStrings().Error, UiStrings().OpenLPStart,
-                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No))
+                                                QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Yes |
+                                                                                  QtGui.QMessageBox.No))
             if status == QtGui.QMessageBox.No:
                 return True
             return False
@@ -248,16 +249,16 @@ def main(args=None):
     usage = 'Usage: %prog [options] [qt-options]'
     parser = OptionParser(usage=usage)
     parser.add_option('-e', '--no-error-form', dest='no_error_form', action='store_true',
-        help='Disable the error notification form.')
+                      help='Disable the error notification form.')
     parser.add_option('-l', '--log-level', dest='loglevel', default='warning', metavar='LEVEL',
-        help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
+                      help='Set logging to LEVEL level. Valid values are "debug", "info", "warning".')
     parser.add_option('-p', '--portable', dest='portable', action='store_true',
-        help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).')
+                      help='Specify if this should be run as a portable app, off a USB flash drive (not implemented).')
     parser.add_option('-d', '--dev-version', dest='dev_version', action='store_true',
-        help='Ignore the version file and pull the version directly from Bazaar')
+                      help='Ignore the version file and pull the version directly from Bazaar')
     parser.add_option('-s', '--style', dest='style', help='Set the Qt4 style (passed directly to Qt4).')
     # Parse command line options and deal with them.
-    # Use args supplied programatically if possible.
+    # Use args supplied pragmatically if possible.
     (options, args) = parser.parse_args(args) if args else parser.parse_args()
     qt_args = []
     if options.loglevel.lower() in ['d', 'debug']:
@@ -326,4 +327,3 @@ def main(args=None):
     if not options.no_error_form:
         sys.excepthook = application.hook_exception
     sys.exit(application.run(qt_args))
-

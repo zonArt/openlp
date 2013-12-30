@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Eric Ludin, Edwin Lunando, Brian T. Meyer,    #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,8 +31,8 @@ The :mod:`~openlp.core.ui.media.playertab` module holds the configuration tab fo
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import Registry, SettingsTab
+from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 

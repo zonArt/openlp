@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -26,8 +26,36 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Provide Registry Services
+"""
+from openlp.core.common import Registry, de_hump
 
-from .mediaitem import MediaMediaItem
-from .mediatab import MediaTab
 
-__all__ = ['MediaMediaItem']
+class RegistryMixin(object):
+    """
+    This adds registry components to classes to use at run time.
+    """
+    def __init__(self, parent):
+        """
+        Register the class and bootstrap hooks.
+        """
+        try:
+            super(RegistryMixin, self).__init__(parent)
+        except TypeError:
+            super(RegistryMixin, self).__init__()
+        Registry().register(de_hump(self.__class__.__name__), self)
+        Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
+        Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
+
+    def bootstrap_initialise(self):
+        """
+        Dummy method to be overridden
+        """
+        pass
+
+    def bootstrap_post_set_up(self):
+        """
+        Dummy method to be overridden
+        """
+        pass

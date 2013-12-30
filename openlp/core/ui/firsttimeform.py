@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -41,8 +41,8 @@ from configparser import ConfigParser
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists, translate
-from openlp.core.lib import PluginStatus, Registry, build_icon
+from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, translate
+from openlp.core.lib import PluginStatus, build_icon
 from openlp.core.utils import get_web_page
 from .firsttimewizard import Ui_FirstTimeWizard, FirstTimePage
 
@@ -137,13 +137,13 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             bible_languages = bible_languages.split(',')
             for lang in bible_languages:
                 language = self.config.get('bibles_%s' % lang, 'title')
-                langItem = QtGui.QTreeWidgetItem(self.bibles_tree_widget, [language])
+                lang_item = QtGui.QTreeWidgetItem(self.bibles_tree_widget, [language])
                 bibles = self.config.get('bibles_%s' % lang, 'translations')
                 bibles = bibles.split(',')
                 for bible in bibles:
                     title = self.config.get('bible_%s' % bible, 'title')
                     filename = self.config.get('bible_%s' % bible, 'filename')
-                    item = QtGui.QTreeWidgetItem(langItem, [title])
+                    item = QtGui.QTreeWidgetItem(lang_item, [title])
                     item.setData(0, QtCore.Qt.UserRole, filename)
                     item.setCheckState(0, QtCore.Qt.Unchecked)
                     item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -239,7 +239,8 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
         """
         Process the triggering of the cancel button.
         """
-        if self.last_id == FirstTimePage.NoInternet or (self.last_id <= FirstTimePage.Plugins and not self.has_run_wizard):
+        if self.last_id == FirstTimePage.NoInternet or \
+                (self.last_id <= FirstTimePage.Plugins and not self.has_run_wizard):
             QtCore.QCoreApplication.exit()
             sys.exit()
         self.was_download_cancelled = True
@@ -391,17 +392,17 @@ class FirstTimeForm(QtGui.QWizard, Ui_FirstTimeWizard):
             self.progress_bar.setValue(self.progress_bar.maximum())
             if self.has_run_wizard:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                    'Download complete. Click the finish button to return to OpenLP.'))
+                                            'Download complete. Click the finish button to return to OpenLP.'))
             else:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                    'Download complete. Click the finish button to start OpenLP.'))
+                                            'Download complete. Click the finish button to start OpenLP.'))
         else:
             if self.has_run_wizard:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                    'Click the finish button to return to OpenLP.'))
+                                            'Click the finish button to return to OpenLP.'))
             else:
                 self.progress_label.setText(translate('OpenLP.FirstTimeWizard',
-                    'Click the finish button to start OpenLP.'))
+                                            'Click the finish button to start OpenLP.'))
         self.finish_button.setVisible(True)
         self.finish_button.setEnabled(True)
         self.cancel_button.setVisible(False)
