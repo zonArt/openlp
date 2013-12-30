@@ -405,18 +405,14 @@ class HttpRouter(object):
             if controller_name in supported_controllers:
                 full_path = urllib.parse.unquote(file_name)
                 if not '..' in full_path: # no hacking please
-                    full_path = os.path.normpath(os.path.join(
-                        AppLocation.get_section_data_path(controller_name), 
+                    full_path = os.path.normpath(os.path.join(AppLocation.get_section_data_path(controller_name),
                         'thumbnails/' + full_path))
                     if os.path.exists(full_path):
                         path, just_file_name = os.path.split(full_path)
-                        image_manager = Registry().get('image_manager')
-                        image_manager.add_image(full_path, just_file_name, None,
-                            dimensions)
+                        self.image_manager.add_image(full_path, just_file_name, None, dimensions)
                         ext, content_type = self.get_content_type(full_path)
-                        content = image_to_byte(
-                            image_manager.get_image(full_path,
-                                just_file_name, dimensions), False)
+                        image = self.image_manager.get_image(full_path, just_file_name, dimensions)
+                        content = image_to_byte(image, False)
         if len(content)==0:
             return self.do_not_found()
         self.send_response(200)
@@ -520,7 +516,7 @@ class HttpRouter(object):
                         # portion after the match
                         dataPath = AppLocation.get_data_path()
                         if frame['image'][0:len(dataPath)] == dataPath:
-                            item['img'] = frame['image'][len(dataPath):]
+                            item['img'] = urllib.request.pathname2url(frame['image'][len(dataPath):])
                     item['text'] = str(frame['title'])
                     item['html'] = str(frame['title'])
                 item['selected'] = (self.live_controller.selected_row == index)
@@ -689,3 +685,13 @@ class HttpRouter(object):
         return self._alerts_manager
 
     alerts_manager = property(_get_alerts_manager)
+
+    def _get_image_manager(self):
+        """
+        Adds the image manager to the class dynamically
+        """
+        if not hasattr(self, '_image_manager'):
+            self._image_manager = Registry().get('image_manager')
+        return self._image_manager
+
+    image_manager = property(_get_image_manager)
