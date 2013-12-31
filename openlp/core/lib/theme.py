@@ -36,7 +36,7 @@ import json
 
 from xml.dom.minidom import Document
 from lxml import etree, objectify
-from openlp.core.common import AppLocation
+from openlp.core.common import AppLocation, de_hump
 
 from openlp.core.lib import str_to_bool, ScreenList, get_text_file_string
 
@@ -157,9 +157,6 @@ class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
     """
-    FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
-    SECOND_CAMEL_REGEX = re.compile('([a-z0-9])([A-Z])')
-
     def __init__(self):
         """
         Initialise the theme object.
@@ -532,7 +529,7 @@ class ThemeXML(object):
         reject, master, element, value = self._translate_tags(master, element, value)
         if reject:
             return
-        field = self._de_hump(element)
+        field = de_hump(element)
         tag = master + '_' + field
         if field in BOOLEAN_LIST:
             setattr(self, tag, str_to_bool(value))
@@ -556,13 +553,6 @@ class ThemeXML(object):
             if key[0:1] != '_':
                 theme_strings.append('%30s: %s' % (key, getattr(self, key)))
         return '\n'.join(theme_strings)
-
-    def _de_hump(self, name):
-        """
-        Change Camel Case string to python string
-        """
-        sub_name = ThemeXML.FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
-        return ThemeXML.SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
 
     def _build_xml_from_attrs(self):
         """

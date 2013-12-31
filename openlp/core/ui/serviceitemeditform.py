@@ -30,7 +30,7 @@
 The service item edit dialog
 """
 from PyQt4 import QtGui
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 
 from .serviceitemeditdialog import Ui_ServiceItemEditDialog
 

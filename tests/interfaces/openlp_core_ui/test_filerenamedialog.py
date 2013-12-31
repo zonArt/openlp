@@ -5,7 +5,7 @@ from unittest import TestCase
 
 from PyQt4 import QtGui, QtTest
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.core.ui import filerenameform
 from tests.interfaces import MagicMock, patch
 

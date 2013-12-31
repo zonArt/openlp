@@ -34,7 +34,8 @@ import os
 from unittest import TestCase
 from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, ImageManager, ScreenList
+from openlp.core.common import Registry
+from openlp.core.lib import ImageManager, ScreenList
 
 TEST_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources'))
 

@@ -6,7 +6,8 @@ from unittest import TestCase
 
 from PyQt4 import QtGui
 
-from openlp.core.lib import Registry, ScreenList, ServiceItem
+from openlp.core.common import Registry
+from openlp.core.lib import ScreenList, ServiceItem
 from openlp.core.ui.mainwindow import MainWindow
 from tests.interfaces import MagicMock, patch
 

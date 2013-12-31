@@ -3,7 +3,7 @@
 """
 from unittest import TestCase
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.plugins.bibles.lib.http import BGExtract, CWExtract
 from tests.interfaces import MagicMock
 

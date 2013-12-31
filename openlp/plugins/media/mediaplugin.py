@@ -31,8 +31,8 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.common import translate
-from openlp.core.lib import Plugin, Registry, StringContent, build_icon
+from openlp.core.common import Registry, translate
+from openlp.core.lib import Plugin, StringContent, build_icon
 from openlp.plugins.media.lib import MediaMediaItem, MediaTab
 
 

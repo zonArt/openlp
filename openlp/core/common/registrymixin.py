@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2014 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2013 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,61 +27,35 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`~openlp.core.ui.servicenoteform` module contains the `ServiceNoteForm` class.
+Provide Registry Services
 """
-from PyQt4 import QtGui
-
-from openlp.core.common import Registry, translate
-from openlp.core.lib import SpellTextEdit
-from openlp.core.lib.ui import create_button_box
+from openlp.core.common import Registry, de_hump
 
 
-class ServiceNoteForm(QtGui.QDialog):
+class RegistryMixin(object):
     """
-    This is the form that is used to edit the verses of the song.
+    This adds registry components to classes to use at run time.
     """
-    def __init__(self):
+    def __init__(self, parent):
         """
-        Constructor
+        Register the class and bootstrap hooks.
         """
-        super(ServiceNoteForm, self).__init__(Registry().get('main_window'))
-        self.setupUi()
-        self.retranslateUi()
+        try:
+            super(RegistryMixin, self).__init__(parent)
+        except TypeError:
+            super(RegistryMixin, self).__init__()
+        Registry().register(de_hump(self.__class__.__name__), self)
+        Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
+        Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
 
-    def exec_(self):
+    def bootstrap_initialise(self):
         """
-        Execute the form and return the result.
+        Dummy method to be overridden
         """
-        self.text_edit.setFocus()
-        return QtGui.QDialog.exec_(self)
+        pass
 
-    def setupUi(self):
+    def bootstrap_post_set_up(self):
         """
-        Set up the UI of the dialog
+        Dummy method to be overridden
         """
-        self.setObjectName('serviceNoteEdit')
-        self.dialog_layout = QtGui.QVBoxLayout(self)
-        self.dialog_layout.setContentsMargins(8, 8, 8, 8)
-        self.dialog_layout.setSpacing(8)
-        self.dialog_layout.setObjectName('verticalLayout')
-        self.text_edit = SpellTextEdit(self, False)
-        self.text_edit.setObjectName('textEdit')
-        self.dialog_layout.addWidget(self.text_edit)
-        self.button_box = create_button_box(self, 'button_box', ['cancel', 'save'])
-        self.dialog_layout.addWidget(self.button_box)
-
-    def retranslateUi(self):
-        """
-        Translate the UI on the fly
-        """
-        self.setWindowTitle(translate('OpenLP.ServiceNoteForm', 'Service Item Notes'))
-
-    def _get_main_window(self):
-        """
-        Adds the main window to the class dynamically
-        """
-        if not hasattr(self, '_main_window'):
-            self._main_window = Registry().get('main_window')
-        return self._main_window
-
-    main_window = property(_get_main_window)
+        pass

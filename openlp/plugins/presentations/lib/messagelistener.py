@@ -32,7 +32,7 @@ import copy
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.core.ui import HideMode
 from openlp.core.lib import ServiceItemContext, ServiceItem
 

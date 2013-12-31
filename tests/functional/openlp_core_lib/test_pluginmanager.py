@@ -31,9 +31,9 @@ Package to test the openlp.core.lib.pluginmanager package.
 """
 from unittest import TestCase
 
-from openlp.core.common import Settings
+from openlp.core.common import Registry, Settings
 from openlp.core.lib.pluginmanager import PluginManager
-from openlp.core.lib import Registry, PluginStatus
+from openlp.core.lib import PluginStatus
 from tests.functional import MagicMock
 
 

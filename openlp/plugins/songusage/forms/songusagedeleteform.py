@@ -29,8 +29,7 @@
 
 from PyQt4 import QtGui
 
-from openlp.core.common import translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, translate
 from openlp.plugins.songusage.lib.db import SongUsageItem
 from .songusagedeletedialog import Ui_SongUsageDeleteDialog
 
