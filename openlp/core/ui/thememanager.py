@@ -56,11 +56,11 @@ class Ui_ThemeManager(object):
         """
 
         # start with the layout
-        self.layout = QtGui.QVBoxLayout(self)
+        self.layout = QtGui.QVBoxLayout(widget)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         self.layout.setObjectName('layout')
-        self.toolbar = OpenLPToolbar(self)
+        self.toolbar = OpenLPToolbar(widget)
         self.toolbar.setObjectName('toolbar')
         self.toolbar.add_toolbar_action('newTheme',
                                         text=UiStrings().NewTheme, icon=':/themes/theme_new.png',
@@ -93,7 +93,7 @@ class Ui_ThemeManager(object):
         self.theme_widget = QtGui.QWidgetAction(self.toolbar)
         self.theme_widget.setObjectName('theme_widget')
         # create theme manager list
-        self.theme_list_widget = QtGui.QListWidget(self)
+        self.theme_list_widget = QtGui.QListWidget(widget)
         self.theme_list_widget.setAlternatingRowColors(True)
         self.theme_list_widget.setIconSize(QtCore.QSize(88, 50))
         self.theme_list_widget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)

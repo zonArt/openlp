@@ -106,11 +106,11 @@ class Ui_ServiceManager(object):
         Define the UI
         """
         # start with the layout
-        self.layout = QtGui.QVBoxLayout(self)
+        self.layout = QtGui.QVBoxLayout(widget)
         self.layout.setSpacing(0)
         self.layout.setMargin(0)
         # Create the top toolbar
-        self.toolbar = OpenLPToolbar(self)
+        self.toolbar = OpenLPToolbar(widget)
         self.toolbar.add_toolbar_action('newService', text=UiStrings().NewService, icon=':/general/general_new.png',
                                         tooltip=UiStrings().CreateService, triggers=self.on_new_service_clicked)
         self.toolbar.add_toolbar_action('openService', text=UiStrings().OpenService,
@@ -122,7 +122,7 @@ class Ui_ServiceManager(object):
                                         tooltip=translate('OpenLP.ServiceManager', 'Save this service.'),
                                         triggers=self.decide_save_method)
         self.toolbar.addSeparator()
-        self.theme_label = QtGui.QLabel('%s:' % UiStrings().Theme, self)
+        self.theme_label = QtGui.QLabel('%s:' % UiStrings().Theme, widget)
         self.theme_label.setMargin(3)
         self.theme_label.setObjectName('theme_label')
         self.toolbar.add_toolbar_widget(self.theme_label)
@@ -135,7 +135,7 @@ class Ui_ServiceManager(object):
         self.toolbar.setObjectName('toolbar')
         self.layout.addWidget(self.toolbar)
         # Create the service manager list
-        self.service_manager_list = ServiceManagerList(self)
+        self.service_manager_list = ServiceManagerList(widget)
         self.service_manager_list.setEditTriggers(
             QtGui.QAbstractItemView.CurrentChanged |
             QtGui.QAbstractItemView.DoubleClicked |
@@ -153,7 +153,7 @@ class Ui_ServiceManager(object):
         self.service_manager_list.__class__.dropEvent = self.drop_event
         self.layout.addWidget(self.service_manager_list)
         # Add the bottom toolbar
-        self.order_toolbar = OpenLPToolbar(self)
+        self.order_toolbar = OpenLPToolbar(widget)
         action_list = ActionList.get_instance()
         action_list.add_category(UiStrings().Service, CategoryOrder.standard_toolbar)
         self.service_manager_list.move_top = self.order_toolbar.add_toolbar_action(

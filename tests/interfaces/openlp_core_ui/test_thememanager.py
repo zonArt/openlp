@@ -33,10 +33,7 @@ import os
 from unittest import TestCase
 from tempfile import mkstemp
 
-from PyQt4 import QtGui, QtTest, QtCore
-
 from openlp.core.common import Registry, Settings
-from openlp.core.lib import ScreenList
 from openlp.core.ui import ThemeManager
 from tests.functional import patch, MagicMock
 
@@ -98,5 +95,21 @@ class TestThemeManager(TestCase):
         self.theme_manager.build_theme_path()
 
         #  THEN:
-        self.assertEqual(self.theme_manager.path, self.theme_manager.theme_form.path,
-                         'The theme path and the main path should be the same value')
+        assert self.theme_manager.thumb_path.startswith(self.theme_manager.path) is True, \
+            'The thumb path and the main path should start with the same value'
+
+    def click_on_new_theme_test(self):
+        """
+        Test the on_add_theme event handler is called by the UI
+        """
+        # GIVEN: An initial form
+        Settings().setValue('themes/global theme', 'my_theme')
+        mocked_event = MagicMock()
+        self.theme_manager.on_add_theme = mocked_event
+        self.theme_manager.setup_ui(self.theme_manager)
+
+        # WHEN displaying the UI and pressing cancel
+        new_theme = self.theme_manager.toolbar.actions['newTheme']
+        new_theme.trigger()
+
+        assert mocked_event.call_count == 1, 'The on_add_theme method should have been called once'
