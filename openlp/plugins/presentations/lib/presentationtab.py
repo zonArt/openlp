@@ -34,6 +34,7 @@ from openlp.core.lib import SettingsTab, build_icon
 from openlp.core.lib.ui import critical_error_message_box
 from .pdfcontroller import PdfController
 
+
 class PresentationTab(SettingsTab):
     """
     PresentationsTab is the Presentations settings tab in the settings dialog.
@@ -120,7 +121,6 @@ class PresentationTab(SettingsTab):
         self.pdf_program_check_box.setText(
             translate('PresentationPlugin.PresentationTab', 'Use given full path for mudraw or ghostscript binary:'))
 
-
     def set_controller_text(self, checkbox, controller):
         if checkbox.isEnabled():
             checkbox.setText(controller.name)
@@ -170,7 +170,6 @@ class PresentationTab(SettingsTab):
         if Settings().value(setting_key) != self.override_app_check_box.checkState():
             Settings().setValue(setting_key, self.override_app_check_box.checkState())
             changed = True
-        
         # Save pdf-settings
         pdf_program = self.pdf_program_path.text()
         enable_pdf_program = self.pdf_program_check_box.checkState()
@@ -183,7 +182,6 @@ class PresentationTab(SettingsTab):
         if enable_pdf_program != Settings().value(self.settings_section + '/enable_pdf_program'):
             Settings().setValue(self.settings_section + '/enable_pdf_program',  enable_pdf_program)
             changed = True
-        
         if changed:
             self.settings_form.register_post_process('mediaitem_suffix_reset')
             self.settings_form.register_post_process('mediaitem_presentation_rebuild')
@@ -199,24 +197,26 @@ class PresentationTab(SettingsTab):
             checkbox = self.presenter_check_boxes[controller.name]
             checkbox.setEnabled(controller.is_available())
             self.set_controller_text(checkbox, controller)
-        
+
     def on_pdf_program_path_edit_finished(self):
         """
         After selecting/typing in a program it is validated that it is a actually ghostscript or mudraw
         """
-        program_type = None 
+        program_type = None
         if self.pdf_program_path.text() != '':
             program_type = PdfController.check_binary(self.pdf_program_path.text())
             if not program_type:
-                critical_error_message_box(UiStrings().Error, 
-                        translate('PresentationPlugin.PresentationTab', 'The program is not ghostscript or mudraw which is required.'))
+                critical_error_message_box(UiStrings().Error,
+                                           translate('PresentationPlugin.PresentationTab',
+                                                     'The program is not ghostscript or mudraw which is required.'))
                 self.pdf_program_path.setFocus()
 
     def on_pdf_program_browse_button_clicked(self):
         """
         Select the mudraw or ghostscript binary that should be used.
         """
-        filename = QtGui.QFileDialog.getOpenFileName(self, translate('PresentationPlugin.PresentationTab', 'Select mudraw or ghostscript binary.'))
+        filename = QtGui.QFileDialog.getOpenFileName(self, translate('PresentationPlugin.PresentationTab',
+                                                                     'Select mudraw or ghostscript binary.'))
         if filename:
             self.pdf_program_path.setText(filename)
         self.pdf_program_path.setFocus()

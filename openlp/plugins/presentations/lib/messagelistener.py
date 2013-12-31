@@ -28,6 +28,7 @@
 ###############################################################################
 
 import logging
+import copy
 
 from PyQt4 import QtCore
 
@@ -318,24 +319,26 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.processor
-        # When starting presentation from the servicemanager/slidecontroller we convert 
+        # When starting presentation from the servicemanager we convert
         # PDF/XPS-serviceitems into image-serviceitems. When started from the mediamanager
-        # the conversion has already been done.
+        # the conversion has already been done at this point.
         if file.endswith('.pdf') or file.endswith('.xps'):
             log.debug('Converting from pdf/xps to images for serviceitem with file %s', file)
-            # Create a new image-serviceitem which will overwrite the old one
-            new_item = ServiceItem()
-            new_item.name = 'images'
+            # Create a copy of the original item, and then clear the original item so it can be filled with images
+            item_cpy = copy.copy(item)
+            item.__init__(None)
             if is_live:
-                self.media_item.generate_slide_data(new_item, item, False, False, ServiceItemContext.Live, file)
+                self.media_item.generate_slide_data(item, item_cpy, False, False, ServiceItemContext.Live, file)
             else:
-                self.media_item.generate_slide_data(new_item, item, False, False, ServiceItemContext.Preview, file)
-            # We need to overwrite the current serviceitem to make the slidecontroller
-            # present the images, so we do some copying
-            service_repr = {'serviceitem': new_item.get_service_repr(True) }
-            item.set_from_service(service_repr)
-            item._raw_frames = new_item._raw_frames
-            # When presenting PDF or XPS, we are using the image presentation code, 
+                self.media_item.generate_slide_data(item, item_cpy, False, False, ServiceItemContext.Preview, file)
+            # Some of the original serviceitem attributes is needed in the new serviceitem
+            item.footer = item_cpy.footer
+            item.from_service = item_cpy.from_service
+            item.iconic_representation = item_cpy.iconic_representation
+            item.image_border = item_cpy.image_border
+            item.main = item_cpy.main
+            item.theme_data = item_cpy.theme_data
+            # When presenting PDF or XPS, we are using the image presentation code,
             # so handler & processor is set to None, and we skip adding the handler.
             self.handler = None
         if self.handler == self.media_item.automatic:
@@ -346,9 +349,9 @@ class MessageListener(object):
             controller = self.live_handler
         else:
             controller = self.preview_handler
-        # When presenting PDF or XPS, we are using the image presentation code, 
+        # When presenting PDF or XPS, we are using the image presentation code,
         # so handler & processor is set to None, and we skip adding the handler.
-        if self.handler == None:
+        if self.handler is None:
             self.controller = controller
         else:
             controller.add_handler(self.controllers[self.handler], file, hide_mode, message[3])

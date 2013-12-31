@@ -38,8 +38,8 @@ from openlp.core.common import Settings
 from openlp.core.lib import ScreenList
 from .presentationcontroller import PresentationController, PresentationDocument
 
-
 log = logging.getLogger(__name__)
+
 
 class PdfController(PresentationController):
     """
@@ -139,7 +139,7 @@ class PdfController(PresentationController):
             return False
         else:
             return True
-        
+
     def kill(self):
         """
         Called at system exit to clean up any running presentations
@@ -153,7 +153,7 @@ class PdfDocument(PresentationDocument):
     """
     Class which holds information of a single presentation.
     This class is not actually used to present the PDF, instead we convert to
-    image-serviceitem on the fly and present as such. Therefore some of the 'playback' 
+    image-serviceitem on the fly and present as such. Therefore some of the 'playback'
     functions is not implemented.
     """
     def __init__(self, controller, presentation):
@@ -169,7 +169,7 @@ class PdfDocument(PresentationDocument):
         self.num_pages = -1
 
     def gs_get_resolution(self,  size):
-        """ 
+        """
         Only used when using ghostscript
         Ghostscript can't scale automaticly while keeping aspect like mupdf, so we need
         to get the ratio bewteen the screen size and the PDF to scale
@@ -187,17 +187,18 @@ flush \n\
 quit \n\
 '
         # Put postscript into tempfile
-        tmpfile = NamedTemporaryFile(delete=False)
-        tmpfile.write(postscript)
-        tmpfile.close()
+        tmp_file = NamedTemporaryFile(delete=False)
+        tmp_file.write(postscript)
+        tmp_file.close()
         # Run the script on the pdf to get the size
         runlog = []
         try:
-            runlog = check_output([self.controller.gsbin, '-dNOPAUSE', '-dNODISPLAY', '-dBATCH', '-sFile=' + self.filepath, tmpfile.name])
+            runlog = check_output([self.controller.gsbin, '-dNOPAUSE', '-dNODISPLAY', '-dBATCH',
+                                   '-sFile=' + self.filepath, tmp_file.name])
         except CalledProcessError as e:
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
-        os.unlink(tmpfile.name)
+        os.unlink(tmp_file.name)
         # Extract the pdf resolution from output, the format is " Size: x: <width>, y: <height>"
         width = 0
         height = 0
@@ -205,7 +206,7 @@ quit \n\
             try:
                 width = re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line).group(1)
                 height = re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line).group(1)
-                break;
+                break
             except AttributeError:
                 pass
         # Calculate the ratio from pdf to screen
@@ -240,18 +241,22 @@ quit \n\
             if not os.path.isdir(self.get_temp_folder()):
                 os.makedirs(self.get_temp_folder())
             if self.controller.mudrawbin:
-                runlog = check_output([self.controller.mudrawbin, '-w', str(size.right()), '-h', str(size.bottom()), '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.filepath])
+                runlog = check_output([self.controller.mudrawbin, '-w', str(size.right()), '-h', str(size.bottom()),
+                                       '-o', os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.filepath])
             elif self.controller.gsbin:
                 resolution = self.gs_get_resolution(size)
-                runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m', '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4', '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'), self.filepath])
+                runlog = check_output([self.controller.gsbin, '-dSAFER', '-dNOPAUSE', '-dBATCH', '-sDEVICE=png16m',
+                                       '-r' + str(resolution), '-dTextAlphaBits=4', '-dGraphicsAlphaBits=4',
+                                       '-sOutputFile=' + os.path.join(self.get_temp_folder(), 'mainslide%03d.png'),
+                                       self.filepath])
             created_files = sorted(os.listdir(self.get_temp_folder()))
             for fn in created_files:
                 if os.path.isfile(os.path.join(self.get_temp_folder(), fn)):
                     self.image_files.append(os.path.join(self.get_temp_folder(), fn))
-        except Exception as e: 
+        except Exception as e:
             log.debug(e)
             log.debug(runlog)
-            return False 
+            return False
         self.num_pages = len(self.image_files)
         # Create thumbnails
         self.create_thumbnails()
@@ -277,7 +282,7 @@ quit \n\
         """
         log.debug('close_presentation pdf')
         self.controller.remove_doc(self)
-        
+
     def is_loaded(self):
         """
         Returns true if a presentation is loaded.

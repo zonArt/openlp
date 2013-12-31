@@ -116,7 +116,7 @@ class PresentationMediaItem(MediaManagerItem):
         self.display_type_label = QtGui.QLabel(self.presentation_widget)
         self.display_type_label.setObjectName('display_type_label')
         self.display_type_combo_box = create_horizontal_adjusting_combo_box(self.presentation_widget,
-            'display_type_combo_box')
+                                                                            'display_type_combo_box')
         self.display_type_label.setBuddy(self.display_type_combo_box)
         self.display_layout.addRow(self.display_type_label, self.display_type_combo_box)
         # Add the Presentation widget to the page layout.
@@ -177,9 +177,8 @@ class PresentationMediaItem(MediaManagerItem):
                 if titles.count(filename) > 0:
                     if not initial_load:
                         critical_error_message_box(translate('PresentationPlugin.MediaItem', 'File Exists'),
-                            translate('PresentationPlugin.MediaItem',
-                                'A presentation with that filename already exists.')
-                            )
+                                                   translate('PresentationPlugin.MediaItem',
+                                                             'A presentation with that filename already exists.'))
                     continue
                 controller_name = self.findControllerByType(filename)
                 if controller_name:
@@ -203,7 +202,8 @@ class PresentationMediaItem(MediaManagerItem):
                         icon = build_icon(':/general/general_delete.png')
                     else:
                         critical_error_message_box(UiStrings().UnsupportedFile,
-                            translate('PresentationPlugin.MediaItem', 'This type of presentation is not supported.'))
+                                                   translate('PresentationPlugin.MediaItem',
+                                                             'This type of presentation is not supported.'))
                         continue
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setData(QtCore.Qt.UserRole, file)
@@ -238,7 +238,7 @@ class PresentationMediaItem(MediaManagerItem):
             Settings().setValue(self.settings_section + '/presentations files', self.get_file_list())
 
     def generate_slide_data(self, service_item, item=None, xml_version=False,
-        remote=False, context=ServiceItemContext.Service, presentation_file=None):
+                            remote=False, context=ServiceItemContext.Service, presentation_file=None):
         """
         Load the relevant information for displaying the presentation in the slidecontroller. In the case of
         powerpoints, an image for each slide.
@@ -251,7 +251,7 @@ class PresentationMediaItem(MediaManagerItem):
                 return False
         filename = presentation_file
         if filename is None:
-            filename = items[0].data(QtCore.Qt.UserRole)            
+            filename = items[0].data(QtCore.Qt.UserRole)
         file_type = os.path.splitext(filename)[1][1:]
         if not self.display_type_combo_box.currentText():
             return False
@@ -292,7 +292,8 @@ class PresentationMediaItem(MediaManagerItem):
                     # File is no longer present
                     if not remote:
                         critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
-                            translate('PresentationPlugin.MediaItem', 'The presentation %s no longer exists.') % filename)
+                                                   translate('PresentationPlugin.MediaItem',
+                                                             'The presentation %s no longer exists.') % filename)
                     return False
         else:
             service_item.processor = self.display_type_combo_box.currentText()
@@ -322,15 +323,18 @@ class PresentationMediaItem(MediaManagerItem):
                     else:
                         # File is no longer present
                         if not remote:
-                            critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
-                                translate('PresentationPlugin.MediaItem',
-                                    'The presentation %s is incomplete, please reload.') % filename)
+                            critical_error_message_box(translate('PresentationPlugin.MediaItem',
+                                                                 'Missing Presentation'),
+                                                       translate('PresentationPlugin.MediaItem',
+                                                                 'The presentation %s is incomplete, please reload.')
+                                                       % filename)
                         return False
                 else:
                     # File is no longer present
                     if not remote:
                         critical_error_message_box(translate('PresentationPlugin.MediaItem', 'Missing Presentation'),
-                            translate('PresentationPlugin.MediaItem', 'The presentation %s no longer exists.') % filename)
+                                                   translate('PresentationPlugin.MediaItem',
+                                                             'The presentation %s no longer exists.') % filename)
                     return False
 
     def findControllerByType(self, filename):

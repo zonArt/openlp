@@ -46,6 +46,7 @@ __default_settings__ = {
     'presentations/enable_pdf_program': False
 }
 
+
 class TestPdfController(TestCase):
     """
     Test the PdfController.
@@ -82,7 +83,7 @@ class TestPdfController(TestCase):
         controller = None
 
         # WHEN: The presentation controller object is created
-        controller = PdfController(plugin = MagicMock())
+        controller = PdfController(plugin=MagicMock())
 
         # THEN: The name of the presentation controller should be correct
         self.assertEqual('Pdf', controller.name, 'The name of the presentation controller should be correct')
@@ -93,16 +94,16 @@ class TestPdfController(TestCase):
         """
         # GIVEN: A Pdf-file
         test_file = os.path.join(TEST_RESOURCES_PATH, 'presentations', 'pdf_test1.pdf')
-        
+
         # WHEN: The Pdf is loaded
-        controller = PdfController(plugin = MagicMock())
+        controller = PdfController(plugin=MagicMock())
         if not controller.check_available():
             raise SkipTest('Could not detect mudraw or ghostscript, so skipping PDF test')
         controller.temp_folder = self.temp_folder
         controller.thumbnail_folder = self.thumbnail_folder
         document = PdfDocument(controller, test_file)
         loaded = document.load_presentation()
-        
+
         # THEN: The load should succeed and we should be able to get a pagecount
         self.assertTrue(loaded, 'The loading of the PDF should succeed.')
         self.assertEqual(3, document.get_slide_count(), 'The pagecount of the PDF should be 3.')
