@@ -51,7 +51,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
         Initialise the settings form
         """
         Registry().register('settings_form', self)
-        Registry().register_function('bootstrap_post_set_up', self.post_set_up)
+        Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)
         super(SettingsForm, self).__init__(parent)
         self.processes = []
         self.setupUi(self)
@@ -117,7 +117,7 @@ class SettingsForm(QtGui.QDialog, Ui_SettingsDialog):
             self.stacked_layout.widget(tabIndex).cancel()
         return QtGui.QDialog.reject(self)
 
-    def post_set_up(self):
+    def bootstrap_post_set_up(self):
         """
         Run any post-setup code for the tabs on the form
         """

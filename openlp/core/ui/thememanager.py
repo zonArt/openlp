@@ -42,22 +42,19 @@ from openlp.core.lib import FileDialog, ImageSource, OpenLPToolbar, get_text_fil
     check_item_selected, create_thumb, validate_thumb
 from openlp.core.lib.theme import ThemeXML, BackgroundType
 from openlp.core.lib.ui import critical_error_message_box, create_widget_action
-from openlp.core.ui import FileRenameForm, ThemeForm, ThemeManagerHelper
+from openlp.core.ui import FileRenameForm, ThemeForm
 from openlp.core.utils import delete_file, get_locale_key, get_filesystem_encoding
 
 
-class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper):
+class Ui_ThemeManager(object):
     """
-    Manages the orders of Theme.
+    UI part of the Theme Manager
     """
-    def __init__(self, parent=None):
+    def setup_ui(self, widget):
         """
-        Constructor
+        Define the UI
         """
-        super(ThemeManager, self).__init__(parent)
-        self.settings_section = 'themes'
-        self.theme_form = ThemeForm(self)
-        self.file_rename_form = FileRenameForm()
+
         # start with the layout
         self.layout = QtGui.QVBoxLayout(self)
         self.layout.setSpacing(0)
@@ -128,7 +125,18 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
         # Signals
         self.theme_list_widget.doubleClicked.connect(self.change_global_from_screen)
         self.theme_list_widget.currentItemChanged.connect(self.check_list_state)
-        Registry().register_function('theme_update_global', self.change_global_from_tab)
+
+
+class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
+    """
+    Manages the orders of Theme.
+    """
+    def __init__(self, parent=None):
+        """
+        Constructor
+        """
+        super(ThemeManager, self).__init__(parent)
+        self.settings_section = 'themes'
         # Variables
         self.theme_list = []
         self.old_background_image = None
@@ -137,7 +145,7 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
         """
         process the bootstrap initialise setup request
         """
-        self.log_debug('initialise called')
+        self.setup_ui(self)
         self.global_theme = Settings().value(self.settings_section + '/global theme')
         self.build_theme_path()
         self.load_first_time_themes()
@@ -146,7 +154,20 @@ class ThemeManager(RegistryMixin, OpenLPMixin, QtGui.QWidget, ThemeManagerHelper
         """
         process the bootstrap post setup request
         """
+        self.theme_form = ThemeForm(self)
+        self.theme_form.path = self.path
+        self.file_rename_form = FileRenameForm()
+        Registry().register_function('theme_update_global', self.change_global_from_tab)
         self._push_themes()
+
+    def build_theme_path(self):
+        """
+        Set up the theme path variables
+        """
+        self.path = AppLocation.get_section_data_path(self.settings_section)
+        check_directory_exists(self.path)
+        self.thumb_path = os.path.join(self.path, 'thumbnails')
+        check_directory_exists(self.thumb_path)
 
     def check_list_state(self, item, field=None):
         """

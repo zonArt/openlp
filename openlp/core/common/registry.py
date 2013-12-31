@@ -172,5 +172,5 @@ class Registry(object):
                     log.exception('Exception for function %s', function)
         else:
             trace_error_handler(log)
-            log.error("Event %s not called by not registered" % event)
+            log.error("Event %s called but not registered" % event)
         return results

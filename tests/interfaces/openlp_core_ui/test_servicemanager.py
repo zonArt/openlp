@@ -25,7 +25,6 @@ class TestServiceManager(TestCase):
         with patch('openlp.core.lib.PluginManager'):
             self.main_window = MainWindow()
         self.service_manager = Registry().get('service_manager')
-        self.event_was_called = False
 
     def tearDown(self):
         """
@@ -306,33 +305,17 @@ class TestServiceManager(TestCase):
             self.service_manager.auto_start_action.setVisible.assert_called_with(True), \
                 'The action should be set visible.'
 
-    def click_on_new_service_test1(self):
+    def click_on_new_service_test(self):
         """
-        Test the on_new_service event handler
-        """
-        # GIVEN: An initial form
-        self.service_manager.setup_ui(self.service_manager)
-
-        # WHEN displaying the UI and pressing cancel
-        new_service = self.service_manager.toolbar.actions['newService']
-        self.service_manager.on_new_service_clicked = self.dummy_event()
-        new_service.trigger()
-        assert self.event_was_called is True, 'The on_new_service_clicked method should have been called'
-
-    def click_on_new_service_test2(self):
-        """
-        Test the on_new_service event handler
+        Test the on_new_service event handler is called by the UI
         """
         # GIVEN: An initial form
-        self.service_manager.setup_ui(self.service_manager)
-
-        # WHEN displaying the UI and pressing cancel
-        new_service = self.service_manager.toolbar.actions['newService']
         mocked_event = MagicMock()
         self.service_manager.on_new_service_clicked = mocked_event
-        new_service.trigger()
-        print(mocked_event.call_count)
-        assert self.event_was_called == 1, 'The on_new_service_clicked method should have been called'
+        self.service_manager.setup_ui(self.service_manager)
 
-    def dummy_event(self):
-        self.event_was_called = True
+        # WHEN displaying the UI and pressing cancel
+        new_service = self.service_manager.toolbar.actions['newService']
+        new_service.trigger()
+
+        assert mocked_event.call_count == 1, 'The on_new_service_clicked method should have been called once'
