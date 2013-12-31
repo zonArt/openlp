@@ -32,6 +32,7 @@ from PyQt4 import QtCore, QtGui
 from openlp.core.common import UiStrings, translate
 from openlp.core.lib import build_icon
 from openlp.core.lib.ui import create_button_box, create_button
+from openlp.core.ui import SingleColumnTableWidget
 from openlp.plugins.songs.lib.ui import SongStrings
 
 
@@ -346,25 +347,3 @@ def create_combo_box(parent, name):
     combo_box.setInsertPolicy(QtGui.QComboBox.NoInsert)
     combo_box.setObjectName(name)
     return combo_box
-
-
-class SingleColumnTableWidget(QtGui.QTableWidget):
-    """
-    Class to for a single column table widget to use for the verse table widget.
-    """
-    def __init__(self, parent):
-        """
-        Constructor
-        """
-        super(SingleColumnTableWidget, self).__init__(parent)
-        self.horizontalHeader().setVisible(False)
-        self.setColumnCount(1)
-
-    def resizeEvent(self, event):
-        """
-        Resize the first column together with the widget.
-        """
-        QtGui.QTableWidget.resizeEvent(self, event)
-        if self.columnCount():
-            self.setColumnWidth(0, event.size().width())
-            self.resizeRowsToContents()
