@@ -4,7 +4,7 @@
 
 from unittest import TestCase
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtTest, QtCore
 
 from openlp.core.common import Registry
 from openlp.core.lib import ScreenList, ServiceItem, ItemCapabilities
@@ -25,6 +25,7 @@ class TestServiceManager(TestCase):
         with patch('openlp.core.lib.PluginManager'):
             self.main_window = MainWindow()
         self.service_manager = Registry().get('service_manager')
+        self.event_was_called = False
 
     def tearDown(self):
         """
@@ -35,7 +36,7 @@ class TestServiceManager(TestCase):
 
     def basic_service_manager_test(self):
         """
-        Test the Service Manager display functionality
+        Test the Service Manager UI Functionality
         """
         # GIVEN: A New Service Manager instance
 
@@ -86,7 +87,6 @@ class TestServiceManager(TestCase):
                 'The action should be set invisible.'
             self.service_manager.auto_start_action.setVisible.assert_called_once_with(False), \
                 'The action should be set invisible.'
-
 
     def edit_context_menu_test(self):
         """
@@ -306,3 +306,33 @@ class TestServiceManager(TestCase):
             self.service_manager.auto_start_action.setVisible.assert_called_with(True), \
                 'The action should be set visible.'
 
+    def click_on_new_service_test1(self):
+        """
+        Test the on_new_service event handler
+        """
+        # GIVEN: An initial form
+        self.service_manager.setup_ui(self.service_manager)
+
+        # WHEN displaying the UI and pressing cancel
+        new_service = self.service_manager.toolbar.actions['newService']
+        self.service_manager.on_new_service_clicked = self.dummy_event()
+        new_service.trigger()
+        assert self.event_was_called is True, 'The on_new_service_clicked method should have been called'
+
+    def click_on_new_service_test2(self):
+        """
+        Test the on_new_service event handler
+        """
+        # GIVEN: An initial form
+        self.service_manager.setup_ui(self.service_manager)
+
+        # WHEN displaying the UI and pressing cancel
+        new_service = self.service_manager.toolbar.actions['newService']
+        mocked_event = MagicMock()
+        self.service_manager.on_new_service_clicked = mocked_event
+        new_service.trigger()
+        print(mocked_event.call_count)
+        assert self.event_was_called == 1, 'The on_new_service_clicked method should have been called'
+
+    def dummy_event(self):
+        self.event_was_called = True

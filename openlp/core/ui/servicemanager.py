@@ -397,7 +397,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         if not suffix in self.suffixes:
             self.suffixes.append(suffix)
 
-    def on_new_service_clicked(self):
+    def on_new_service_clicked(self, field=None):
         """
         Create a new service.
         """
@@ -861,7 +861,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 theme_action.setChecked(True)
         self.menu.exec_(self.service_manager_list.mapToGlobal(point))
 
-    def on_service_item_note_form(self):
+    def on_service_item_note_form(self, field=None):
         """
         Allow the service note to be edited
         """
@@ -872,7 +872,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             self.repaint_service_list(item, -1)
             self.set_modified()
 
-    def on_start_time_form(self):
+    def on_start_time_form(self, field=None):
         """
         Opens a dialog to type in service item notes.
         """
@@ -911,7 +911,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 self.main_window.general_settings_section + '/loop delay')
         self.set_modified()
 
-    def on_timed_slide_interval(self):
+    def on_timed_slide_interval(self, field=None):
         """
         Shows input dialog for enter interval in seconds for delay
         """
@@ -944,7 +944,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.service_items[item]['service_item'].will_auto_start = \
             not self.service_items[item]['service_item'].will_auto_start
 
-    def on_service_item_edit_form(self):
+    def on_service_item_edit_form(self, field=None):
         """
         Opens a dialog to edit the service item and update the service display if changes are saved.
         """
@@ -1024,7 +1024,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 prev_item_last_slide = service_iterator.value()
             service_iterator += 1
 
-    def on_set_item(self, message):
+    def on_set_item(self, message, field=None):
         """
         Called by a signal to select a specific item and make it live usually from remote.
         """
@@ -1137,7 +1137,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
             self.repaint_service_list(len(self.service_items) - 1, child)
             self.set_modified()
 
-    def on_delete_from_service(self):
+    def on_delete_from_service(self, field=None):
         """
         Remove the current ServiceItem from the list.
         """
