@@ -148,8 +148,7 @@ class AlertsPlugin(Plugin):
         """
         Give the alerts plugin the opportunity to add items to the **Tools** menu.
 
-        :param tools_menu:
-            The actual **Tools** menu item, so that your actions can use it as their parent.
+        :param tools_menu: The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.info('add tools menu')
         self.tools_alert_item = create_action(tools_menu, 'toolsAlertItem',
@@ -240,10 +239,9 @@ class AlertsPlugin(Plugin):
 
     def refresh_css(self, frame):
         """
-        Trigger an update of the CSS in the maindisplay.
+        Trigger an update of the CSS in the main display.
 
-        ``frame``
-            The Web frame holding the page.
+        :param frame: The Web frame holding the page.
         """
         align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript('update_css("%s", "%s", "%s", "%s", "%s")' %

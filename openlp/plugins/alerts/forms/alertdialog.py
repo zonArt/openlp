@@ -39,7 +39,7 @@ class Ui_AlertDialog(object):
         """
         Setup the Alert UI dialog
 
-        :param alert_dialog:
+        :param alert_dialog: The dialog
         """
         alert_dialog.setObjectName('alert_dialog')
         alert_dialog.resize(400, 300)
@@ -93,7 +93,8 @@ class Ui_AlertDialog(object):
     def retranslateUi(self, alert_dialog):
         """
         Retranslate the UI strings
-        :param alert_dialog:
+
+        :param alert_dialog: The dialog
         """
         alert_dialog.setWindowTitle(translate('AlertsPlugin.AlertForm', 'Alert Message'))
         self.alert_entry_label.setText(translate('AlertsPlugin.AlertForm', 'Alert &text:'))

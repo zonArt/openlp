@@ -177,8 +177,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         """
         Prepares the alert text for displaying.
 
-        ``text``
-            The alert text (unicode).
+        :param text: The alert text.
         """
         if not text:
             return False
@@ -213,8 +212,7 @@ class AlertForm(QtGui.QDialog, Ui_AlertDialog):
         Called when the *alert_list_widget*'s current row has been changed. This enables or disables buttons which
         require an item to act on.
 
-        ``row``
-            The row (int). If there is no current row, the value is -1.
+        :param row: The row (int). If there is no current row, the value is -1.
         """
         if row == -1:
             self.display_button.setEnabled(False)

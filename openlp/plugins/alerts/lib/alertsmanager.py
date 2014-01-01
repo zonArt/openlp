@@ -59,6 +59,8 @@ class AlertsManager(QtCore.QObject):
     def alert_text(self, message):
         """
         Called via a alerts_text event. Message is single element array containing text.
+
+        :param message: The message text to be displayed
         """
         if message:
             self.display_alert(message[0])
@@ -67,8 +69,7 @@ class AlertsManager(QtCore.QObject):
         """
         Called from the Alert Tab to display an alert.
 
-        :param text:
-            The text to display
+        :param text: The text to display
         """
         log.debug('display alert called %s' % text)
         if text:
@@ -98,8 +99,7 @@ class AlertsManager(QtCore.QObject):
         """
         Time has finished so if our time then request the next Alert if there is one and reset the timer.
 
-        :param event:
-            the QT event that has been triggered.
+        :param event: the QT event that has been triggered.
         """
         log.debug('timer event')
         if event.timerId() == self.timer_id:

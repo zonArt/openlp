@@ -365,7 +365,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def set_file_name(self, file_name):
         """
         Setter for service file.
-        
+
         :param file_name: The service file name
         """
         self._file_name = str(file_name)
