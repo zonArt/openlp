@@ -93,7 +93,7 @@ class CSVBible(BibleDB):
         success = True
         language_id = self.get_language(bible_name)
         if not language_id:
-            log.exception('Importing books from "%s" failed' % self.filename)
+            log.error('Importing books from "%s" failed' % self.filename)
             return False
         books_file = None
         book_list = {}
@@ -112,7 +112,7 @@ class CSVBible(BibleDB):
                     str(line[2], details['encoding']))
                 book_ref_id = self.get_book_ref_id_by_name(str(line[2], details['encoding']), 67, language_id)
                 if not book_ref_id:
-                    log.exception('Importing books from "%s" failed' % self.booksfile)
+                    log.error('Importing books from "%s" failed' % self.booksfile)
                     return False
                 book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                 self.create_book(str(line[2], details['encoding']), book_ref_id, book_details['testament_id'])

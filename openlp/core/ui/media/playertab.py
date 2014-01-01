@@ -31,8 +31,8 @@ The :mod:`~openlp.core.ui.media.playertab` module holds the configuration tab fo
 """
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import Registry, SettingsTab
+from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.lib import SettingsTab
 from openlp.core.lib.ui import create_button
 from openlp.core.ui.media import get_media_players, set_media_players
 

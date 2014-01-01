@@ -33,8 +33,8 @@ import logging
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import UiStrings, translate
-from openlp.core.lib import Registry, build_icon
+from openlp.core.common import Registry, UiStrings, translate
+from openlp.core.lib import build_icon
 from openlp.core.utils.actions import ActionList
 
 

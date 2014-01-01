@@ -33,7 +33,7 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 
 
 class TreeWidgetWithDnD(QtGui.QTreeWidget):

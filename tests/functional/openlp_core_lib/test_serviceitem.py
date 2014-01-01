@@ -36,7 +36,8 @@ from unittest import TestCase
 from tests.functional import MagicMock, patch
 from tests.utils import assert_length, convert_file_service_item
 
-from openlp.core.lib import ItemCapabilities, ServiceItem, Registry
+from openlp.core.common import Registry
+from openlp.core.lib import ItemCapabilities, ServiceItem
 
 
 VERSE = 'The Lord said to {r}Noah{/r}: \n'\
