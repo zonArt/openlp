@@ -50,6 +50,8 @@ class PdfController(PresentationController):
     def __init__(self, plugin):
         """
         Initialise the class
+
+        :param plugin: The plugin that creates the controller.
         """
         log.debug('Initialising')
         self.process = None
@@ -65,6 +67,9 @@ class PdfController(PresentationController):
         """
         Function that checks whether a binary is either ghostscript or mudraw or neither.
         Is also used from presentationtab.py
+
+        :param program_path:The full path to the binary to check.
+        :return: Type of the binary, 'gs' if ghostscript, 'mudraw' if mudraw, None if invalid.
         """
         program_type = None
         runlog = ''
@@ -92,6 +97,8 @@ class PdfController(PresentationController):
     def check_available(self):
         """
         PdfController is able to run on this machine.
+
+        :return: True if program to open PDF-files was found, otherwise False.
         """
         log.debug('check_available Pdf')
         return self.check_installed()
@@ -99,6 +106,8 @@ class PdfController(PresentationController):
     def check_installed(self):
         """
         Check the viewer is installed.
+
+        :return: True if program to open PDF-files was found, otherwise False.
         """
         log.debug('check_installed Pdf')
         # Use the user defined program if given
@@ -171,8 +180,11 @@ class PdfDocument(PresentationDocument):
     def gs_get_resolution(self,  size):
         """
         Only used when using ghostscript
-        Ghostscript can't scale automaticly while keeping aspect like mupdf, so we need
-        to get the ratio bewteen the screen size and the PDF to scale
+        Ghostscript can't scale automatically while keeping aspect like mupdf, so we need
+        to get the ratio between the screen size and the PDF to scale
+
+        :param size: Size struct containing the screen size.
+        :return: The resolution dpi to be used.
         """
         # Use a postscript script to get size of the pdf. It is assumed that all pages have same size
         postscript = '%!PS \n\
@@ -224,6 +236,8 @@ quit \n\
     def load_presentation(self):
         """
         Called when a presentation is added to the SlideController. It generates images from the PDF.
+
+        :return: True is loading succeeded, otherwise False.
         """
         log.debug('load_presentation pdf')
         # Check if the images has already been created, and if yes load them
@@ -286,6 +300,8 @@ quit \n\
     def is_loaded(self):
         """
         Returns true if a presentation is loaded.
+
+        :return: True if loaded, False if not.
         """
         log.debug('is_loaded pdf')
         if self.num_pages < 0:
@@ -295,6 +311,8 @@ quit \n\
     def is_active(self):
         """
         Returns true if a presentation is currently active.
+
+        :return: True if active, False if not.
         """
         log.debug('is_active pdf')
         return self.is_loaded() and not self.hidden
@@ -302,5 +320,7 @@ quit \n\
     def get_slide_count(self):
         """
         Returns total number of slides
+
+        :return: The number of pages in the presentation..
         """
         return self.num_pages

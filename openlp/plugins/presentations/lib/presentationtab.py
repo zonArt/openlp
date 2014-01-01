@@ -225,6 +225,8 @@ class PresentationTab(SettingsTab):
         """
         When checkbox for manual entering pdf-program is clicked,
         enable or disable the textbox for the programpath and the browse-button.
+
+        :param checked: If the box is checked or not.
         """
         self.pdf_program_path.setReadOnly(not checked)
         self.pdf_program_path.setPalette(self.get_grey_text_palette(not checked))
@@ -233,6 +235,9 @@ class PresentationTab(SettingsTab):
     def get_grey_text_palette(self, greyed):
         """
         Returns a QPalette with greyed out text as used for placeholderText.
+
+        :param greyed: Determines whether the palette should be grayed.
+        :return: The created palette.
         """
         palette = QtGui.QPalette()
         color = self.palette().color(QtGui.QPalette.Active, QtGui.QPalette.Text)
