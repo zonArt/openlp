@@ -63,6 +63,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
     def keyPressEvent(self, event):
         """
         Capture Key press and respond accordingly.
+        :param event:
         """
         if isinstance(event, QtGui.QKeyEvent):
             # here accept the event and do something
@@ -83,6 +84,7 @@ class ServiceManagerList(QtGui.QTreeWidget):
         """
         Drag and drop event does not care what data is selected as the recipient will use events to request the data
         move just tell it what plugin to call
+        :param event:
         """
         if event.buttons() != QtCore.Qt.LeftButton:
             event.ignore()
@@ -104,6 +106,7 @@ class Ui_ServiceManager(object):
     def setup_ui(self, widget):
         """
         Define the UI
+        :param widget:
         """
         # start with the layout
         self.layout = QtGui.QVBoxLayout(widget)
@@ -298,8 +301,7 @@ class Ui_ServiceManager(object):
         """
         Accept Drag events
 
-        ``event``
-            Handle of the event passed
+        :param event: Handle of the event passed
         """
         event.accept()
 
@@ -327,6 +329,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.service_has_all_original_files = True
 
     def bootstrap_initialise(self):
+        """
+        To be called as part of initialisation
+        """
         self.setup_ui(self)
         # Need to use event as called across threads and UI is updated
         QtCore.QObject.connect(self, QtCore.SIGNAL('servicemanager_set_item'), self.on_set_item)
@@ -342,6 +347,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def set_modified(self, modified=True):
         """
         Setter for property "modified". Sets whether or not the current service has been modified.
+
+        :param modified: Indicates if the service has new or removed items.  Used to trigger a remote update.
         """
         if modified:
             self.service_id += 1
@@ -358,6 +365,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def set_file_name(self, file_name):
         """
         Setter for service file.
+        
+        :param file_name: The service file name
         """
         self._file_name = str(file_name)
         self.main_window.set_service_modified(self.is_modified(), self.short_file_name())
@@ -387,8 +396,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Adds Suffixes supported to the master list. Called from Plugins.
 
-        ``suffix_list``
-            New Suffix's to be supported
+        :param suffix_list: New Suffix's to be supported
         """
         for suffix in suffix_list:
             if not suffix in self.suffixes:
@@ -397,6 +405,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_new_service_clicked(self, field=None):
         """
         Create a new service.
+        :param field:
         """
         if self.is_modified():
             result = self.save_modified_service()
@@ -411,8 +420,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Loads the service file and saves the existing one it there is one unchanged.
 
-        ``load_file``
-            The service file to the loaded.  Will be None is from menu so selection will be required.
+        :param load_file: The service file to the loaded.  Will be None is from menu so selection will be required.
         """
         if self.is_modified():
             result = self.save_modified_service()
@@ -450,6 +458,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_recent_service_clicked(self, field=None):
         """
         Load a recent file as the service triggered by mainwindow recent service list.
+        :param field:
         """
         sender = self.sender()
         self.load_file(sender.data())
@@ -484,7 +493,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         path, file_name = os.path.split(path_file_name)
         base_name = os.path.splitext(file_name)[0]
         service_file_name = '%s.osj' % base_name
-        self.log_debug('ServiceManager.save_file - %s', path_file_name)
+        self.log_debug('ServiceManager.save_file - %s' % path_file_name)
         Settings().setValue(self.main_window.service_manager_settings_section + '/last directory', path)
         service = []
         write_list = []
@@ -564,7 +573,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                     shutil.copy(audio_from, save_file)
                 zip_file.write(audio_from, audio_to)
         except IOError:
-            self.log_exception('Failed to save service to disk: %s', temp_file_name)
+            self.log_exception('Failed to save service to disk: %s' % temp_file_name)
             self.main_window.error_message(translate('OpenLP.ServiceManager', 'Error Saving File'),
                                            translate('OpenLP.ServiceManager', 'There was an error saving your file.'))
             success = False
@@ -686,6 +695,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def decide_save_method(self, field=None):
         """
         Determine which type of save method to use.
+        :param field:
         """
         if not self.file_name():
             return self.save_file_as()
@@ -697,6 +707,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def load_file(self, file_name):
         """
         Load an existing service file
+        :param file_name:
         """
         if not file_name:
             return False
@@ -719,7 +730,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 os_file = ucs_file.replace('/', os.path.sep)
                 if not os_file.startswith('audio'):
                     os_file = os.path.split(os_file)[1]
-                self.log_debug('Extract file: %s', os_file)
+                self.log_debug('Extract file: %s' % os_file)
                 zip_info.filename = os_file
                 zip_file.extract(zip_info, self.service_path)
                 if os_file.endswith('osj') or os_file.endswith('osd'):
@@ -795,6 +806,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def context_menu(self, point):
         """
         The Right click context menu from the Serviceitem list
+
+        :param point: The location of the cursor.
         """
         item = self.service_manager_list.itemAt(point)
         if item is None:
@@ -861,6 +874,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_service_item_note_form(self, field=None):
         """
         Allow the service note to be edited
+        :param field:
         """
         item = self.find_service_item()[0]
         self.service_note_form.text_edit.setPlainText(self.service_items[item]['service_item'].notes)
@@ -872,6 +886,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_start_time_form(self, field=None):
         """
         Opens a dialog to type in service item notes.
+        :param field:
         """
         item = self.find_service_item()[0]
         self.start_time_form.item = self.service_items[item]
@@ -881,6 +896,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def toggle_auto_play_slides_once(self, field=None):
         """
         Toggle Auto play slide once. Inverts auto play once option for the item
+        :param field:
         """
         item = self.find_service_item()[0]
         service_item = self.service_items[item]['service_item']
@@ -896,6 +912,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def toggle_auto_play_slides_loop(self, field=None):
         """
         Toggle Auto play slide loop.
+        :param field:
         """
         item = self.find_service_item()[0]
         service_item = self.service_items[item]['service_item']
@@ -911,6 +928,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_timed_slide_interval(self, field=None):
         """
         Shows input dialog for enter interval in seconds for delay
+        :param field:
         """
         item = self.find_service_item()[0]
         service_item = self.service_items[item]['service_item']
@@ -944,6 +962,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_service_item_edit_form(self, field=None):
         """
         Opens a dialog to edit the service item and update the service display if changes are saved.
+        :param field:
         """
         item = self.find_service_item()[0]
         self.service_item_edit_form.set_service_item(self.service_items[item]['service_item'])
@@ -956,11 +975,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         Called by the SlideController to request a preview item be made live and allows the next preview to be updated
         if relevant.
 
-        ``unique_identifier``
-            Reference to the service_item
-
-        ``row``
-            individual row number
+        :param unique_identifier: Reference to the service_item
+        :param row: individual row number
         """
         for sitem in self.service_items:
             if sitem['service_item'].unique_identifier == unique_identifier:
@@ -991,9 +1007,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Called by the SlideController to select the previous service item.
 
-        ``last_slide``
-            Is this the last slide in the service_item
-
+        :param last_slide: Is this the last slide in the service_item.
         """
         if not self.service_manager_list.selected_items():
             return
@@ -1024,12 +1038,17 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_set_item(self, message, field=None):
         """
         Called by a signal to select a specific item and make it live usually from remote.
+
+        :param field:
+        :param message: The data passed in from a remove message
         """
         self.set_item(int(message))
 
     def set_item(self, index):
         """
         Makes a specific item in the service live.
+
+        :param index: The index of the service item list to be actioned.
         """
         if 0 >= index < self.service_manager_list.topLevelItemCount():
             item = self.service_manager_list.topLevelItem(index)
@@ -1059,6 +1078,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_collapse_all(self, field=None):
         """
         Collapse all the service items.
+        :param field:
         """
         for item in self.service_items:
             item['expanded'] = False
@@ -1067,6 +1087,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def collapsed(self, item):
         """
         Record if an item is collapsed. Used when repainting the list to get the correct state.
+
+        :param item: The service item to be checked
         """
         pos = item.data(0, QtCore.Qt.UserRole)
         self.service_items[pos - 1]['expanded'] = False
@@ -1074,6 +1096,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_expand_all(self, field=None):
         """
         Collapse all the service items.
+        :param field:
         """
         for item in self.service_items:
             item['expanded'] = True
@@ -1082,6 +1105,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def expanded(self, item):
         """
         Record if an item is collapsed. Used when repainting the list to get the correct state.
+
+        :param item: The service item to be checked
         """
         pos = item.data(0, QtCore.Qt.UserRole)
         self.service_items[pos - 1]['expanded'] = True
@@ -1089,6 +1114,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_service_top(self, field=None):
         """
         Move the current ServiceItem to the top of the list.
+        :param field:
         """
         item, child = self.find_service_item()
         if item < len(self.service_items) and item != -1:
@@ -1101,6 +1127,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_service_up(self, field=None):
         """
         Move the current ServiceItem one position up in the list.
+        :param field:
         """
         item, child = self.find_service_item()
         if item > 0:
@@ -1113,6 +1140,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_service_down(self, field=None):
         """
         Move the current ServiceItem one position down in the list.
+        :param field:
         """
         item, child = self.find_service_item()
         if item < len(self.service_items) and item != -1:
@@ -1125,6 +1153,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_service_end(self, field=None):
         """
         Move the current ServiceItem to the bottom of the list.
+        :param field:
         """
         item, child = self.find_service_item()
         if item < len(self.service_items) and item != -1:
@@ -1137,6 +1166,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_delete_from_service(self, field=None):
         """
         Remove the current ServiceItem from the list.
+        :param field:
         """
         item = self.find_service_item()[0]
         if item != -1:
@@ -1149,11 +1179,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         Clear the existing service list and prepaint all the items. This is used when moving items as the move takes
         place in a supporting list, and when regenerating all the items due to theme changes.
 
-        ``service_item``
-            The item which changed. (int)
-
-        ``service_item_child``
-            The child of the ``service_item``, which will be selected. (int)
+        :param service_item: The item which changed. (int)
+        :param service_item_child: The child of the ``service_item``, which will be selected. (int)
         """
         # Correct order of items in array
         count = 1
@@ -1235,6 +1262,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_theme_combo_box_selected(self, current_index):
         """
         Set the theme for the current service.
+
+        :param current_index: The combo box index for the selected item
         """
         self.service_theme = self.theme_combo_box.currentText()
         self.renderer.set_service_theme(self.service_theme)
@@ -1252,6 +1281,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def regenerate_service_items(self, changed=False):
         """
         Rebuild the service list as things have changed and a repaint is the easiest way to do this.
+
+        :param changed: True if the list has changed for new / removed items. False for a theme change.
         """
         self.application.set_busy_cursor()
         # force reset of renderer as theme data has changed
@@ -1288,6 +1319,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def replace_service_item(self, new_item):
         """
         Using the service item passed replace the one with the same edit id if found.
+
+        :param new_item: a new service item to up date an existing one.
         """
         for item_count, item in enumerate(self.service_items):
             if item['service_item'].edit_id == new_item.edit_id and item['service_item'].name == new_item.name:
@@ -1302,29 +1335,30 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Add a Service item to the list
 
-        ``item``
-            Service Item to be added
-
-        ``expand``
-            Override the default expand settings. (Tristate)
+        :param item: Service Item to be added
+        :param rebuild: Do we need to rebuild the live display (Default False)
+        :param expand: Override the default expand settings. (Tristate)
+        :param replace: Is the service item a replacement (Default False)
+        :param repaint: Do we need to repaint the service item list (Default True)
+        :param selected: Has the item been selected (Default False)
         """
         # if not passed set to config value
         if expand is None:
             expand = Settings().value('advanced/expand service item')
         item.from_service = True
         if replace:
-            sitem, child = self.find_service_item()
-            item.merge(self.service_items[sitem]['service_item'])
-            self.service_items[sitem]['service_item'] = item
-            self.repaint_service_list(sitem, child)
+            s_item, child = self.find_service_item()
+            item.merge(self.service_items[s_item]['service_item'])
+            self.service_items[s_item]['service_item'] = item
+            self.repaint_service_list(s_item, child)
             self.live_controller.replace_service_manager_item(item)
         else:
             item.render()
             # nothing selected for dnd
             if self.drop_position == 0:
                 if isinstance(item, list):
-                    for inditem in item:
-                        self.service_items.append({'service_item': inditem,
+                    for ind_item in item:
+                        self.service_items.append({'service_item': ind_item,
                                                    'order': len(self.service_items) + 1,
                                                    'expanded': expand, 'selected': selected})
                 else:
@@ -1371,6 +1405,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_make_live(self, field=None):
         """
         Send the current item to the Live slide controller but triggered by a tablewidget click event.
+        :param field:
         """
         self.make_live()
 
@@ -1378,8 +1413,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Send the current item to the Live slide controller
 
-        ``row``
-            Row number to be displayed if from preview. -1 is passed if the value is not set
+        :param row: Row number to be displayed if from preview. -1 is passed if the value is not set
         """
         item, child = self.find_service_item()
         # No items in service
@@ -1408,6 +1442,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def remote_edit(self, field=None):
         """
         Triggers a remote edit to a plugin to allow item to be edited.
+        :param field:
         """
         item = self.find_service_item()[0]
         if self.service_items[item]['service_item'].is_capable(ItemCapabilities.CanEdit):
@@ -1419,6 +1454,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def create_custom(self, field=None):
         """
         Saves the current text item as a custom slide
+        :param field:
         """
         item = self.find_service_item()[0]
         Registry().execute('custom_create_from_service', self.service_items[item]['service_item'])
@@ -1452,8 +1488,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         Receive drop event and trigger an internal event to get the plugins to build and push the correct service item.
         The drag event payload carries the plugin name
 
-        ``event``
-            Handle of the event pint passed
+        :param event: Handle of the event passed
         """
         link = event.mimeData()
         if link.hasUrls():
@@ -1512,8 +1547,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Called from ThemeManager when the Themes have changed
 
-        ``theme_list``
-            A list of current themes to be displayed
+        :param theme_list: A list of current themes to be displayed
         """
         self.theme_combo_box.clear()
         self.theme_menu.clear()
@@ -1539,6 +1573,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def on_theme_change_action(self, field=None):
         """
         Handles theme change events
+
+        :param field:
         """
         theme = self.sender().objectName()
         # No object name means that the "Default" theme is supposed to be used.
@@ -1551,6 +1587,8 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def _get_parent_item_data(self, item):
         """
         Finds and returns the parent item for any item
+
+        :param item: The service item list item to be checked.
         """
         parent_item = item.parent()
         if parent_item is None:

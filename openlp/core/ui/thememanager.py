@@ -53,8 +53,8 @@ class Ui_ThemeManager(object):
     def setup_ui(self, widget):
         """
         Define the UI
+        :param widget: The screen object the the dialog is to be attached to.
         """
-
         # start with the layout
         self.layout = QtGui.QVBoxLayout(widget)
         self.layout.setSpacing(0)
@@ -173,6 +173,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         If Default theme selected remove delete button.
         Note for some reason a dummy field is required.  Nothing is passed!
+
+        :param field:
+        :param item: Service Item to process
         """
         if item is None:
             return
@@ -186,8 +189,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
 
     def context_menu(self, point):
         """
-        Build the Right Click Context menu and set state depending on
-        the type of theme.
+        Build the Right Click Context menu and set state depending on the type of theme.
+
+        :param point: The position of the mouse so the correct item can be found.
         """
         item = self.theme_list_widget.itemAt(point)
         if item is None:
@@ -221,8 +225,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
 
     def change_global_from_screen(self, index=-1):
         """
-        Change the global theme when a theme is double clicked upon in the
-        Theme Manager list
+        Change the global theme when a theme is double clicked upon in the Theme Manager list.
+
+        :param index:
         """
         selected_row = self.theme_list_widget.currentRow()
         for count in range(0, self.theme_list_widget.count()):
@@ -242,8 +247,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
 
     def on_add_theme(self, field=None):
         """
-        Loads a new theme with the default settings and then launches the theme
-        editing form for the user to make their customisations.
+        Loads a new theme with the default settings and then launches the theme editing form for the user to make
+        their customisations.
+        :param field:
         """
         theme = ThemeXML()
         theme.set_default_header_footer()
@@ -254,6 +260,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def on_rename_theme(self, field=None):
         """
         Renames an existing theme to a new name
+        :param field:
         """
         if self._validate_theme_action(translate('OpenLP.ThemeManager', 'You must select a theme to rename.'),
                                        translate('OpenLP.ThemeManager', 'Rename Confirmation'),
@@ -278,6 +285,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def on_copy_theme(self, field=None):
         """
         Copies an existing theme to a new name
+        :param field:
         """
         item = self.theme_list_widget.currentItem()
         old_theme_name = item.data(QtCore.Qt.UserRole)
@@ -292,6 +300,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def clone_theme_data(self, theme_data, new_theme_name):
         """
         Takes a theme and makes a new copy of it as well as saving it.
+
+        :param theme_data: The theme to be used
+        :param new_theme_name: The new theme name to save the data to
         """
         save_to = None
         save_from = None
@@ -307,6 +318,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Loads the settings for the theme that is to be edited and launches the
         theme editing form so the user can make their changes.
+        :param field:
         """
         if check_item_selected(self.theme_list_widget,
                                translate('OpenLP.ThemeManager', 'You must select a theme to edit.')):
@@ -322,7 +334,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
 
     def on_delete_theme(self, field=None):
         """
-        Delete a theme
+        Delete a theme triggered by the UI.
+        :param field:
         """
         if self._validate_theme_action(translate('OpenLP.ThemeManager', 'You must select a theme to delete.'),
                                        translate('OpenLP.ThemeManager', 'Delete Confirmation'),
@@ -341,8 +354,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Delete a theme.
 
-        ``theme``
-            The theme to delete.
+        :param theme: The theme to delete.
         """
         self.theme_list.remove(theme)
         thumb = '%s.png' % theme
@@ -358,6 +370,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def on_export_theme(self, field=None):
         """
         Export the theme in a zip file
+        :param field:
         """
         item = self.theme_list_widget.currentItem()
         if item is None:
@@ -399,6 +412,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Opens a file dialog to select the theme file(s) to import before attempting to extract OpenLP themes from
         those files. This process will load both OpenLP version 1 and version 2 themes.
+        :param field:
         """
         files = FileDialog.getOpenFileNames(self,
                                             translate('OpenLP.ThemeManager', 'Select Theme Import File'),
@@ -483,8 +497,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Returns a theme object from an XML file
 
-        ``theme_name``
-            Name of the theme to load from file
+        :param theme_name: Name of the theme to load from file
+        :return The theme object.
         """
         self.log_debug('get theme data for theme %s' % theme_name)
         xml_file = os.path.join(self.path, str(theme_name), str(theme_name) + '.xml')
@@ -498,6 +512,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def over_write_message_box(self, theme_name):
         """
         Display a warning box to the user that a theme already exists
+        :param theme_name: Name of the theme.
+        :return Confirm if the theme is to be overeritten.
         """
         ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
                                          translate('OpenLP.ThemeManager',
@@ -510,11 +526,12 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
 
     def unzip_theme(self, file_name, directory):
         """
-        Unzip the theme, remove the preview file if stored
-        Generate a new preview file. Check the XML theme version and upgrade if
-        necessary.
+        Unzip the theme, remove the preview file if stored. Generate a new preview file. Check the XML theme version
+        and upgrade if necessary.
+        :param file_name:
+        :param directory:
         """
-        self.log_debug('Unzipping theme %s', file_name)
+        self.log_debug('Unzipping theme %s' % file_name)
         file_name = str(file_name)
         theme_zip = None
         out_file = None
@@ -583,8 +600,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Check if theme already exists and displays error message
 
-        ``theme_name``
-            Name of the Theme to test
+        :param theme_name:  Name of the Theme to test
+        :return True or False if theme exists
         """
         theme_dir = os.path.join(self.path, theme_name)
         if os.path.exists(theme_dir):
@@ -596,7 +613,11 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
 
     def save_theme(self, theme, image_from, image_to):
         """
-        Called by thememaintenance Dialog to save the theme and to trigger the reload of the theme list
+        Called by theme maintenance Dialog to save the theme and to trigger the reload of the theme list
+
+        :param theme: The theme data object.
+        :param image_from: Where the theme image is currently located.
+        :param image_to: Where the Theme Image is to be saved to
         """
         self._write_theme(theme, image_from, image_to)
         if theme.background_type == BackgroundType.to_string(BackgroundType.Image):
@@ -608,6 +629,10 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def _write_theme(self, theme, image_from, image_to):
         """
         Writes the theme to the disk and handles the background image if necessary
+
+        :param theme: The theme data object.
+        :param image_from: Where the theme image is currently located.
+        :param image_to: Where the Theme Image is to be saved to
         """
         name = theme.theme_name
         theme_pretty_xml = theme.extract_formatted_xml()
@@ -637,6 +662,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def generate_and_save_image(self, name, theme):
         """
         Generate and save a preview image
+
+        :param name: The name of the theme.
+        :param theme: The theme data object.
         """
         frame = self.generate_image(theme)
         sample_path_name = os.path.join(self.path, name + '.png')
@@ -661,11 +689,8 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Call the renderer to build a Sample Image
 
-        ``theme_data``
-            The theme to generated a preview for.
-
-        ``force_page``
-            Flag to tell message lines per page need to be generated.
+        :param theme_data: The theme to generated a preview for.
+        :param force_page: Flag to tell message lines per page need to be generated.
         """
         return self.renderer.generate_preview(theme_data, force_page)
 
@@ -673,26 +698,33 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Return an image representing the look of the theme
 
-        ``theme``
-            The theme to return the image for
+        :param theme: The theme to return the image for.
         """
         return os.path.join(self.path, theme + '.png')
 
-    def _create_theme_from_xml(self, theme_xml, path):
+    def _create_theme_from_xml(self, theme_xml, image_path):
         """
         Return a theme object using information parsed from XML
 
-        ``theme_xml``
-            The XML data to load into the theme
+        :param theme_xml: The Theme data object.
+        :param image_path: Where the theme image is stored
+        :return Theme data.
         """
         theme = ThemeXML()
         theme.parse(theme_xml)
-        theme.extend_image_filename(path)
+        theme.extend_image_filename(image_path)
         return theme
 
     def _validate_theme_action(self, select_text, confirm_title, confirm_text, test_plugin=True, confirm=True):
         """
         Check to see if theme has been selected and the destructive action is allowed.
+
+        :param select_text: Text for message box if no item selected.
+        :param confirm_title: Confirm message title to be displayed.
+        :param confirm_text: Confirm message text to be displayed.
+        :param test_plugin: Do we check the plugins for theme usage.
+        :param confirm: Do we display a confirm box before run checks.
+        :return True or False depending on the validity.
         """
         self.global_theme = Settings().value(self.settings_section + '/global theme')
         if check_item_selected(self.theme_list_widget, select_text):

@@ -67,8 +67,8 @@ class AlertsManager(QtCore.QObject):
         """
         Called from the Alert Tab to display an alert.
 
-        ``text``
-            display text
+        :param text:
+            The text to display
         """
         log.debug('display alert called %s' % text)
         if text:
@@ -98,7 +98,7 @@ class AlertsManager(QtCore.QObject):
         """
         Time has finished so if our time then request the next Alert if there is one and reset the timer.
 
-        ``event``
+        :param event:
             the QT event that has been triggered.
         """
         log.debug('timer event')
