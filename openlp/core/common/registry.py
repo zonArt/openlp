@@ -80,7 +80,7 @@ class Registry(object):
         else:
             trace_error_handler(log)
             log.error('Service %s not found in list' % key)
-            #raise KeyError('Service %s not found in list' % key)
+            return None
 
     def register(self, key, reference):
         """

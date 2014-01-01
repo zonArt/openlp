@@ -50,6 +50,7 @@ class TestThemeManagerHelper(TestCase):
         Settings().set_filename(self.ini_file)
         self.helper = ThemeManagerHelper()
         self.helper.settings_section = "themes"
+        self.helper.log_debug = MagicMock()
 
     def tearDown(self):
         """
@@ -57,26 +58,6 @@ class TestThemeManagerHelper(TestCase):
         """
         os.unlink(self.ini_file)
         os.unlink(Settings().fileName())
-
-    def test_initialise(self):
-        """
-        Test the thememanagerhelper initialise - basic test
-        """
-        # GIVEN: A new a call to initialise
-        Settings().setValue('themes/global theme', 'my_theme')
-        self.helper.build_theme_path = MagicMock()
-        self.helper.load_first_time_themes = MagicMock()
-
-        # WHEN: the initialistion is run
-        self.helper.initialise()
-
-        # THEN:
-        self.assertEqual(1, self.helper.build_theme_path.call_count,
-                         'The function build_theme_path should have been called')
-        self.assertEqual(1, self.helper.load_first_time_themes.call_count,
-                         'The function load_first_time_themes should have been called only once')
-        self.assertEqual(self.helper.global_theme, 'my_theme',
-                         'The global theme should have been set to my_theme')
 
     def test_build_theme_path(self):
         """
