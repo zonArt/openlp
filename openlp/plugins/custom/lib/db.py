@@ -71,7 +71,7 @@ def init_schema(url):
                                Column('text', types.UnicodeText, nullable=False),
                                Column('credits', types.UnicodeText),
                                Column('theme_name', types.Unicode(128))
-    )
+                               )
 
     mapper(CustomSlide, custom_slide_table)
 

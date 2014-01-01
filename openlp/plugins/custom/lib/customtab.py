@@ -72,6 +72,8 @@ class CustomTab(SettingsTab):
     def on_display_footer_check_box_changed(self, check_state):
         """
         Toggle the setting for displaying the footer.
+
+        :param check_state: The current check box state
         """
         self.display_footer = False
         # we have a set value convert to True/False
@@ -79,9 +81,18 @@ class CustomTab(SettingsTab):
             self.display_footer = True
 
     def on_add_from_service_check_box_changed(self, check_state):
+        """
+        Allows service items to create Custom items.
+
+        :param check_state: The current check box state
+        """
         self.update_load = (check_state == QtCore.Qt.Checked)
 
     def load(self):
+        """
+
+        Load the settings into the dialog
+        """
         settings = Settings()
         settings.beginGroup(self.settings_section)
         self.display_footer = settings.value('display footer')
@@ -91,6 +102,9 @@ class CustomTab(SettingsTab):
         settings.endGroup()
 
     def save(self):
+        """
+        Save the Dialog settings
+        """
         settings = Settings()
         settings.beginGroup(self.settings_section)
         settings.setValue('display footer', self.display_footer)
