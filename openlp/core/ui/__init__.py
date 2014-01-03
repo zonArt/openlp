@@ -99,11 +99,10 @@ from .formattingtagcontroller import FormattingTagController
 from .shortcutlistform import ShortcutListForm
 from .mediadockmanager import MediaDockManager
 from .servicemanager import ServiceManager
-from .thememanagerhelper import ThemeManagerHelper
 from .thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
     'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',
     'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay', 'Display', 'ServiceNoteForm',
     'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
-    'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController', 'ThemeManagerHelper']
+    'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController']

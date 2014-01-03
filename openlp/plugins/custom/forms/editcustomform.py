@@ -70,8 +70,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Load a list of themes into the themes combo box.
 
-        ``theme_list``
-            The list of themes to load.
+        :param theme_list: The list of themes to load.
         """
         self.theme_combo_box.clear()
         self.theme_combo_box.addItem('')
@@ -81,12 +80,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Called when editing or creating a new custom.
 
-        ``id``
-            The custom's id. If zero, then a new custom is created.
-
-        ``preview``
-            States whether the custom is edited while being previewed in the
-            preview panel.
+        :param id: The custom's id. If zero, then a new custom is created.
+        :param preview: States whether the custom is edited while being previewed in the preview panel.
         """
         self.slide_list_view.clear()
         if id == 0:
@@ -195,11 +190,8 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         """
         Updates the slide list after editing slides.
 
-        ``slides``
-            A list of all slides which have been edited.
-
-        ``edit_all``
-            Indicates if all slides or only one slide has been edited.
+        :param slides: A list of all slides which have been edited.
+        :param edit_all:  Indicates if all slides or only one slide has been edited.
         """
         if edit_all:
             self.slide_list_view.clear()
@@ -229,8 +221,7 @@ class EditCustomForm(QtGui.QDialog, Ui_CustomEditDialog):
         Called when the *slide_list_view*'s current row has been changed. This
         enables or disables buttons which require an slide to act on.
 
-        ``row``
-            The row (int). If there is no current row, the value is -1.
+        :param row: The row (int). If there is no current row, the value is -1.
         """
         if row == -1:
             self.delete_button.setEnabled(False)

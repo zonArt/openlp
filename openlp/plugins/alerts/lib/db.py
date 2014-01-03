@@ -47,14 +47,14 @@ def init_schema(url):
     """
     Setup the alerts database connection and initialise the database schema
 
-    ``url``
+    :param url:
         The database to setup
     """
     session, metadata = init_db(url)
 
     alerts_table = Table('alerts', metadata,
-        Column('id', types.Integer(), primary_key=True),
-        Column('text', types.UnicodeText, nullable=False))
+                         Column('id', types.Integer(), primary_key=True),
+                         Column('text', types.UnicodeText, nullable=False))
 
     mapper(AlertItem, alerts_table)
 
