@@ -64,13 +64,13 @@ class TestRegistry(TestCase):
         # WHEN I try to get back a non existent component
         # THEN I will get an exception
         temp = Registry().get('test2')
-        self.assertEqual(temp, None, 'KeyError error None should not have been returned for missing service')
+        self.assertEqual(temp, None, 'None should have been returned for missing service')
 
         # WHEN I try to replace a component I should be allowed (testing only)
         Registry().remove('test1')
         # THEN I will get an exception
         temp = Registry().get('test1')
-        self.assertEqual(temp, None, 'KeyError error None should have been returned for deleted service')
+        self.assertEqual(temp, None, 'None should have been returned for deleted service')
 
     def registry_function_test(self):
         """
