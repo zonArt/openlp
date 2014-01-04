@@ -31,48 +31,55 @@ Package to test the openlp.core.ui.slidecontroller package.
 """
 from unittest import TestCase
 
-from openlp.core.ui import SlideController
+from openlp.core.common import Registry
+from openlp.core.ui import ServiceManager
 
 from tests.interfaces import MagicMock, patch
 
 
-class TestSlideController(TestCase):
+class TestServiceManager(TestCase):
 
-    def initial_slide_controller_test(self):
+    def setUp(self):
         """
-        Test the initial slide controller state .
+        Create the UI
         """
-        # GIVEN: A new slideController instance.
-        slide_controller = SlideController(None)
-        # WHEN: the default controller is built.
-        # THEN: The controller should not be a live controller.
-        self.assertEqual(slide_controller.is_live, False, 'The base slide controller should not be a live controller')
+        Registry.create()
+        #self.app = QtGui.QApplication([])
+        #ScreenList.create(self.app.desktop())
+        #Registry().register('application', MagicMock())
+        #with patch('openlp.core.lib.PluginManager'):
+        #    self.main_window = MainWindow()
+        #self.service_manager = Registry().get('service_manager')
 
-    def toggle_blank_test(self):
+    def tearDown(self):
         """
-        Test the setting of the display blank icons by display type.
+        Delete all the C++ objects at the end so that we don't have a segfault
         """
-        # GIVEN: A new slideController instance.
-        slide_controller = SlideController(None)
-        service_item = MagicMock()
-        toolbar = MagicMock()
-        toolbar.set_widget_visible = self.dummy_widget_visible
-        slide_controller.toolbar = toolbar
-        slide_controller.service_item = service_item
+        #del self.main_window
+        #del self.app
+        pass
 
-        # WHEN a text based service item is used
-        slide_controller.service_item.is_text = MagicMock(return_value=True)
-        slide_controller.set_blank_menu()
+    def initial_service_manager_test(self):
+        """
+        Test the initial of service manager.
+        """
+        # GIVEN: A new service manager instance.
+        ServiceManager(None)
+        # WHEN: the default service manager is built.
+        # THEN: The the controller should be registered in the registry.
+        self.assertNotEqual(Registry().get('service_manager'), None, 'The base service manager should be registered')
 
-        # THEN: then call set up the toolbar to blank the display screen.
-        self.assertEqual(len(self.test_widget), 3, 'There should be three icons to display on the screen')
-
-        # WHEN a non text based service item is used
-        slide_controller.service_item.is_text = MagicMock(return_value=False)
-        slide_controller.set_blank_menu()
-
-        # THEN: then call set up the toolbar to blank the display screen.
-        self.assertEqual(len(self.test_widget), 2, 'There should be only two icons to display on the screen')
-
-    def dummy_widget_visible(self, widget, visible=True):
-        self.test_widget = widget
+    def create_basic_service_test(self):
+        """
+        Test the create basic service array
+        """
+        # GIVEN: A new service manager instance.
+        service_manager = ServiceManager(None)
+        # WHEN: when the basic service array is created.
+        service_manager._save_lite = False
+        service_manager.service_theme = 'test_theme'
+        service = service_manager.create_basic_service()[0]
+        # THEN: The the controller should be registered in the registry.
+        self.assertNotEqual(service, None, 'The base service should be created')
+        self.assertEqual(service['openlp_core']['service-theme'], 'test_theme', 'The test theme should be saved')
+        self.assertEqual(service['openlp_core']['lite-service'], False, 'The lite service should be saved')
