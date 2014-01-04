@@ -342,18 +342,16 @@ def create_valign_selection_widgets(parent):
     return label, combo_box
 
 
-def find_and_set_in_combo_box(combo_box, value_to_find):
+def find_and_set_in_combo_box(combo_box, value_to_find, set_missing=True):
     """
     Find a string in a combo box and set it as the selected item if present
 
-    ``combo_box``
-        The combo box to check for selected items
-
-    ``value_to_find``
-        The value to find
+    :param combo_box: The combo box to check for selected items
+    :param value_to_find: The value to find
+    :param set_missing: if not found leave value as current
     """
     index = combo_box.findText(value_to_find, QtCore.Qt.MatchExactly)
     if index == -1:
         # Not Found.
-        index = 0
+        index = 0 if set_missing else combo_box.currentIndex()
     combo_box.setCurrentIndex(index)
