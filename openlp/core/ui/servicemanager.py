@@ -475,6 +475,19 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         Settings().setValue('servicemanager/last file', '')
         self.plugin_manager.new_service_created()
 
+    def create_basic_service(self):
+        """
+        Create the initial service array with the base items to be saved.
+
+        :return service array
+        """
+        service = []
+        core = {'lite-service': self._save_lite,
+                'service-theme': self.service_theme
+                }
+        service.append({'openlp_core': core})
+        return service
+
     def save_file(self):
         """
         Save the current service file.
@@ -495,7 +508,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         service_file_name = '%s.osj' % base_name
         self.log_debug('ServiceManager.save_file - %s' % path_file_name)
         Settings().setValue(self.main_window.service_manager_settings_section + '/last directory', path)
-        service = []
+        service = self.create_basic_service()
         write_list = []
         missing_list = []
         audio_files = []
@@ -607,9 +620,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         path, file_name = os.path.split(path_file_name)
         base_name = os.path.splitext(file_name)[0]
         service_file_name = '%s.osj' % base_name
-        self.log_debug('ServiceManager.save_file - %s', path_file_name)
+        self.log_debug('ServiceManager.save_file - %s' % path_file_name)
         Settings().setValue(self.main_window.service_manager_settings_section + '/last directory', path)
-        service = []
+        service = self.create_basic_service()
         self.application.set_busy_cursor()
         # Number of items + 1 to zip it
         self.main_window.display_progress_bar(len(self.service_items) + 1)
@@ -647,7 +660,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         delete_file(temp_file_name)
         return success
 
-    def save_file_as(self):
+    def save_file_as(self, field=None):
         """
         Get a file name and then call :func:`ServiceManager.save_file` to save the file.
         """
@@ -748,19 +761,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
                 self.new_file()
                 self.set_file_name(file_name)
                 self.main_window.display_progress_bar(len(items))
-                for item in items:
-                    self.main_window.increment_progress_bar()
-                    service_item = ServiceItem()
-                    if self._save_lite:
-                        service_item.set_from_service(item)
-                    else:
-                        service_item.set_from_service(item, self.service_path)
-                    service_item.validate_item(self.suffixes)
-                    if service_item.is_capable(ItemCapabilities.OnLoadUpdate):
-                        new_item = Registry().get(service_item.name).service_load(service_item)
-                        if new_item:
-                            service_item = new_item
-                    self.add_service_item(service_item, repaint=False)
+                self.process_service_items(items)
                 delete_file(p_file)
                 self.main_window.add_recent_file(file_name)
                 self.set_modified(False)
@@ -793,6 +794,34 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         self.main_window.finished_progress_bar()
         self.application.set_normal_cursor()
         self.repaint_service_list(-1, -1)
+
+    def process_service_items(self, service_items):
+        """
+        Process all the array of service items loaded from the saved service
+
+        :param service_items: list of service_items
+        """
+        for item in service_items:
+            self.main_window.increment_progress_bar()
+            service_item = ServiceItem()
+            if 'openlp_core' in item:
+                item = item.get('openlp_core')
+                theme = item.get('service-theme', None)
+                if theme:
+                    find_and_set_in_combo_box(self.theme_combo_box, theme, set_missing=False)
+                    if theme == self.theme_combo_box.currentText():
+                        self.renderer.set_service_theme(theme)
+            else:
+                if self._save_lite:
+                    service_item.set_from_service(item)
+                else:
+                    service_item.set_from_service(item, self.service_path)
+                service_item.validate_item(self.suffixes)
+                if service_item.is_capable(ItemCapabilities.OnLoadUpdate):
+                    new_item = Registry().get(service_item.name).service_load(service_item)
+                    if new_item:
+                        service_item = new_item
+                self.add_service_item(service_item, repaint=False)
 
     def load_last_file(self):
         """
@@ -896,6 +925,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def toggle_auto_play_slides_once(self, field=None):
         """
         Toggle Auto play slide once. Inverts auto play once option for the item
+
         :param field:
         """
         item = self.find_service_item()[0]
@@ -912,6 +942,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
     def toggle_auto_play_slides_loop(self, field=None):
         """
         Toggle Auto play slide loop.
+
         :param field:
         """
         item = self.find_service_item()[0]

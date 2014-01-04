@@ -38,7 +38,7 @@ class TestListPreviewWidget(TestCase):
 
     def initial_slide_count_test(self):
         """
-        Test the inital slide count.
+        Test the initial slide count .
         """
         # GIVEN: A new ListPreviewWidget instance.
         # WHEN: No SlideItem has been added yet.
@@ -47,7 +47,7 @@ class TestListPreviewWidget(TestCase):
 
     def initial_slide_number_test(self):
         """
-        Test the inital slide number.
+        Test the initial current slide number.
         """
         # GIVEN: A new ListPreviewWidget instance.
         # WHEN: No SlideItem has been added yet.

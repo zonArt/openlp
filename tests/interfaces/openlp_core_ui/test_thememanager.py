@@ -33,6 +33,8 @@ import os
 from unittest import TestCase
 from tempfile import mkstemp
 
+from PyQt4 import QtGui
+
 from openlp.core.common import Registry, Settings
 from openlp.core.ui import ThemeManager
 from tests.functional import patch, MagicMock
@@ -48,6 +50,7 @@ class TestThemeManager(TestCase):
         """
         fd, self.ini_file = mkstemp('.ini')
         Settings().set_filename(self.ini_file)
+        self.app = QtGui.QApplication([])
         Registry.create()
         self.theme_manager = ThemeManager()
 
@@ -57,6 +60,7 @@ class TestThemeManager(TestCase):
         """
         os.unlink(self.ini_file)
         os.unlink(Settings().fileName())
+        del self.app
 
     def initialise_test(self):
         """
