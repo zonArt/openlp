@@ -63,6 +63,7 @@ class Registry(object):
         registry.service_list = {}
         registry.functions_list = {}
         registry.running_under_test = False
+        registry.initialising = True
         # Allow the tests to remove Registry entries but not the live system
         if 'nose' in sys.argv[0]:
             registry.running_under_test = True
@@ -78,9 +79,10 @@ class Registry(object):
         if key in self.service_list:
             return self.service_list[key]
         else:
-            trace_error_handler(log)
-            log.error('Service %s not found in list' % key)
-            return None
+            if not self.initialising:
+                trace_error_handler(log)
+                log.error('Service %s not found in list' % key)
+                raise KeyError('Service %s not found in list' % key)
 
     def register(self, key, reference):
         """
@@ -170,5 +172,5 @@ class Registry(object):
                     log.exception('Exception for function %s', function)
         else:
             trace_error_handler(log)
-            log.error("Event %s not called by not registered" % event)
+            log.error("Event %s called but not registered" % event)
         return results
