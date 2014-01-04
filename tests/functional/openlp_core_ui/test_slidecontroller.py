@@ -44,8 +44,8 @@ class TestSlideController(TestCase):
         """
         # GIVEN: A new slideController instance.
         slide_controller = SlideController(None)
-        # WHEN: No SlideItem has been added yet.
-        # THEN: The count of items should be zero.
+        # WHEN: the default controller is built.
+        # THEN: The the controller should not be a live controller.
         self.assertEqual(slide_controller.is_live, False, 'The base slide controller should not be a live controller')
 
     def toggle_blank_test(self):
@@ -64,14 +64,14 @@ class TestSlideController(TestCase):
         slide_controller.service_item.is_text = MagicMock(return_value=True)
         slide_controller.set_blank_menu()
 
-         # THEN: then call set up the toolbar to blank the display screen.
+        # THEN: then call set up the toolbar to blank the display screen.
         self.assertEqual(len(self.test_widget), 3, 'There should be three icons to display on the screen')
 
         # WHEN a non text based service item is used
         slide_controller.service_item.is_text = MagicMock(return_value=False)
         slide_controller.set_blank_menu()
 
-         # THEN: then call set up the toolbar to blank the display screen.
+        # THEN: then call set up the toolbar to blank the display screen.
         self.assertEqual(len(self.test_widget), 2, 'There should be only two icons to display on the screen')
 
     def dummy_widget_visible(self, widget, visible=True):
