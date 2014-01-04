@@ -158,7 +158,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         self.theme_form.path = self.path
         self.file_rename_form = FileRenameForm()
         Registry().register_function('theme_update_global', self.change_global_from_tab)
-        self._push_themes()
+        self.load_themes()
 
     def build_theme_path(self):
         """
@@ -446,7 +446,6 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
             self._write_theme(theme, None, None)
             Settings().setValue(self.settings_section + '/global theme', theme.theme_name)
         self.application.set_normal_cursor()
-        self.load_themes()
 
     def load_themes(self):
         """

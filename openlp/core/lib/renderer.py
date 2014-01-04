@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.common import Registry, Settings
+from openlp.core.common import Registry, OpenLPMixin, RegistryMixin, Settings
 from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, ScreenList, ServiceItem, expand_tags, \
     build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.common import ThemeLevel
@@ -50,12 +50,11 @@ VERSE_FOR_LINE_COUNT = '\n'.join(map(str, range(100)))
 FOOTER = ['Arky Arky (Unknown)', 'Public Domain', 'CCLI 123456']
 
 
-class Renderer(object):
+class Renderer(OpenLPMixin, RegistryMixin):
     """
     Class to pull all Renderer interactions into one place. The plugins will call helper methods to do the rendering but
     this class will provide display defense code.
     """
-    log.info('Renderer Loaded')
 
     def __init__(self):
         """
@@ -63,20 +62,21 @@ class Renderer(object):
         """
         log.debug('Initialisation started')
         self.screens = ScreenList()
-        Registry().register('renderer', self)
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = ''
         self.service_theme_name = ''
         self.item_theme_name = ''
         self.force_page = False
-        self.display = MainDisplay(None, False, self)
-        self.display.setup()
         self._theme_dimensions = {}
         self._calculate_default()
-        Registry().register_function('theme_update_global', self.set_global_theme)
         self.web = QtWebKit.QWebView()
         self.web.setVisible(False)
         self.web_frame = self.web.page().mainFrame()
+        Registry().register_function('theme_update_global', self.set_global_theme)
+
+    def bootstrap_initialise(self):
+        self.display = MainDisplay(None, False, self)
+        self.display.setup()
 
     def update_display(self):
         """

@@ -160,7 +160,8 @@ class ThemesTab(SettingsTab):
         """
         After setting things up...
         """
-        Registry().execute('theme_update_global')
+        #Registry().execute('theme_update_global')
+        pass
 
     def on_song_level_button_clicked(self):
         """

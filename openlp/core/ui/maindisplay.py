@@ -56,9 +56,8 @@ log = logging.getLogger(__name__)
 
 class Display(QtGui.QGraphicsView):
     """
-    This is a general display screen class. Here the general display settings
-    will done. It will be used as specialized classes by Main Display and
-    Preview display.
+    This is a general display screen class. Here the general display settings will done. It will be used as
+    specialized classes by Main Display and Preview display.
     """
     def __init__(self, parent, live, controller):
         """
@@ -521,8 +520,7 @@ class MainDisplay(Display):
 
 class AudioPlayer(QtCore.QObject):
     """
-    This Class will play audio only allowing components to work with a
-    soundtrack independent of the user interface.
+    This Class will play audio only allowing components to work with a soundtrack independent of the user interface.
     """
     log.info('AudioPlayer Loaded')
 
