@@ -316,7 +316,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Sets up the service manager, toolbars, list view, et al.
         """
+        print("ServiceManager - before super")
         super(ServiceManager, self).__init__(parent)
+        print("ServiceManager - after super")
         self.active = build_icon(':/media/auto-start_active.png')
         self.inactive = build_icon(':/media/auto-start_inactive.png')
         self.service_items = []
@@ -332,6 +334,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         To be called as part of initialisation
         """
+        print("ServiceManager - bs i")
         self.setup_ui(self)
         # Need to use event as called across threads and UI is updated
         QtCore.QObject.connect(self, QtCore.SIGNAL('servicemanager_set_item'), self.on_set_item)
@@ -340,6 +343,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Can be set up as a late setup
         """
+        print("ServiceManager - bs psu")
         self.service_note_form = ServiceNoteForm()
         self.service_item_edit_form = ServiceItemEditForm()
         self.start_time_form = StartTimeForm()
@@ -1638,6 +1642,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Adds the Renderer to the class dynamically
         """
+        print("serviceManager _get_renderer")
         if not hasattr(self, '_renderer'):
             self._renderer = Registry().get('renderer')
         return self._renderer

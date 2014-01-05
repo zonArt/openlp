@@ -468,7 +468,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         This constructor sets up the interface, the various managers, and the plugins.
         """
+        print("Mainwindow - before super")
         super(MainWindow, self).__init__()
+        print("Mainwindow - after super")
         Registry().register('main_window', self)
         self.clipboard = self.application.clipboard()
         self.arguments = self.application.args
@@ -541,6 +543,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         """
         process the bootstrap post setup request
         """
+        print("Mainwindow - bs post")
         self.preview_controller.panel.setVisible(Settings().value('user interface/preview panel'))
         self.live_controller.panel.setVisible(Settings().value('user interface/live panel'))
         self.load_settings()

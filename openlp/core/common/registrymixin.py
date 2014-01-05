@@ -40,10 +40,12 @@ class RegistryMixin(object):
         """
         Register the class and bootstrap hooks.
         """
+        print("RegistryMixin - before super ", self.__class__.__name__)
         try:
             super(RegistryMixin, self).__init__(parent)
         except TypeError:
             super(RegistryMixin, self).__init__()
+        print("RegistryMixin - after super")
         Registry().register(de_hump(self.__class__.__name__), self)
         Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
         Registry().register_function('bootstrap_post_set_up', self.bootstrap_post_set_up)

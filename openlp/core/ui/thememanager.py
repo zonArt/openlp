@@ -135,7 +135,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         Constructor
         """
+        print("ThemeManager - before super")
         super(ThemeManager, self).__init__(parent)
+        print("ThemeManager - after super")
         self.settings_section = 'themes'
         # Variables
         self.theme_list = []
@@ -145,6 +147,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         process the bootstrap initialise setup request
         """
+        print("ThemeManager - bs i")
         self.setup_ui(self)
         self.global_theme = Settings().value(self.settings_section + '/global theme')
         self.build_theme_path()
@@ -154,6 +157,7 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
         """
         process the bootstrap post setup request
         """
+        print("ThemeManager - bs psu")
         self.theme_form = ThemeForm(self)
         self.theme_form.path = self.path
         self.file_rename_form = FileRenameForm()

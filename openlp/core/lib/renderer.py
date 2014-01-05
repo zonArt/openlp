@@ -27,7 +27,6 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 
-import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
@@ -36,8 +35,6 @@ from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, Scree
     build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.common import ThemeLevel
 from openlp.core.ui import MainDisplay
-
-log = logging.getLogger(__name__)
 
 VERSE = 'The Lord said to {r}Noah{/r}: \n' \
     'There\'s gonna be a {su}floody{/su}, {sb}floody{/sb}\n' \
@@ -60,7 +57,9 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Initialise the renderer.
         """
-        log.debug('Initialisation started')
+        print("Renderer - before super")
+        super(Renderer, self).__init__(None)
+        print("Renderer - after super")
         self.screens = ScreenList()
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = ''
@@ -75,6 +74,10 @@ class Renderer(OpenLPMixin, RegistryMixin):
         Registry().register_function('theme_update_global', self.set_global_theme)
 
     def bootstrap_initialise(self):
+        """
+
+
+        """
         self.display = MainDisplay(None, False, self)
         self.display.setup()
 
@@ -82,7 +85,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Updates the renderer's information about the current screen.
         """
-        log.debug('Update Display')
+        self.log_debug('Update Display')
         self._calculate_default()
         if self.display:
             self.display.close()
@@ -94,15 +97,11 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         This method updates the theme in ``_theme_dimensions`` when a theme has been edited or renamed.
 
-        ``theme_name``
-            The current theme name.
-
-        ``old_theme_name``
-            The old theme name. Has only to be passed, when the theme has been renamed. Defaults to *None*.
-
-        ``only_delete``
-            Only remove the given ``theme_name`` from the ``_theme_dimensions`` list. This can be used when a theme is
-            permanently deleted.
+        :param theme_name: The current theme name.
+        :param old_theme_name: The old theme name. Has only to be passed, when the theme has been renamed.
+        Defaults to *None*.
+        :param only_delete: Only remove the given ``theme_name`` from the ``_theme_dimensions`` list. This can be
+        used when a theme is permanently deleted.
         """
         if old_theme_name is not None and old_theme_name in self._theme_dimensions:
             del self._theme_dimensions[old_theme_name]
@@ -115,8 +114,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Helper method to save theme names and theme data.
 
-        ``theme_name``
-            The theme name.
+        :param theme_name: The theme name
         """
         if theme_name not in self._theme_dimensions:
             theme_data = self.theme_manager.get_theme_data(theme_name)
@@ -134,10 +132,9 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Set up the theme to be used before rendering an item.
 
-        ``override_theme_data``
-            The theme data should be passed, when we want to use our own theme data, regardless of the theme level. This
-            should for example be used in the theme manager. **Note**, this is **not** to be mixed up with the
-            ``set_item_theme`` method.
+        :param override_theme_data: The theme data should be passed, when we want to use our own theme data, regardless
+         of the theme level. This should for example be used in the theme manager. **Note**, this is **not** to
+         be mixed up with the ``set_item_theme`` method.
         """
         # Just assume we use the global theme.
         theme_to_use = self.global_theme_name
@@ -167,8 +164,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Sets the theme level.
 
-        ``theme_level``
-            The theme level to be used.
+        :param theme_level: The theme level to be used.
         """
         self.theme_level = theme_level
 
@@ -187,8 +183,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Set the service-level theme.
 
-        ``service_theme_name``
-            The service level theme's name.
+        :param service_theme_name: The service level theme's name.
         """
         self._set_theme(service_theme_name)
         self.service_theme_name = service_theme_name
@@ -197,8 +192,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Set the item-level theme. **Note**, this has to be done for each item we are rendering.
 
-        ``item_theme_name``
-            The item theme's name.
+        :param item_theme_name: The item theme's name.
         """
         self._set_theme(item_theme_name)
         self.item_theme_name = item_theme_name
@@ -207,13 +201,10 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Generate a preview of a theme.
 
-        ``theme_data``
-            The theme to generated a preview for.
-
-        ``force_page``
-            Flag to tell message lines per page need to be generated.
+        :param theme_data:  The theme to generated a preview for.
+        :param force_page: Flag to tell message lines per page need to be generated.
         """
-        log.debug('generate preview')
+        self.log_debug('generate preview')
         # save value for use in format_slide
         self.force_page = force_page
         # build a service item to generate preview
@@ -245,13 +236,11 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Calculate how much text can fit on a slide.
 
-        ``text``
-            The words to go on the slides.
+        :param text:  The words to go on the slides.
+        :param item: The :class:`~openlp.core.lib.serviceitem.ServiceItem` item object.
 
-        ``item``
-            The :class:`~openlp.core.lib.serviceitem.ServiceItem` item object.
         """
-        log.debug('format slide')
+        self.log_debug('format slide')
         # Add line endings after each line of text used for bibles.
         line_end = '<br>'
         if item.is_capable(ItemCapabilities.NoLineBreaks):
@@ -329,7 +318,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         self.width = screen_size.width()
         self.height = screen_size.height()
         self.screen_ratio = self.height / self.width
-        log.debug('_calculate default %s, %f' % (screen_size, self.screen_ratio))
+        self.log_debug('_calculate default %s, %f' % (screen_size, self.screen_ratio))
         # 90% is start of footer
         self.footer_start = int(self.height * 0.90)
 
@@ -337,8 +326,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Calculates the placement and size of the main rectangle.
 
-        ``theme_data``
-            The theme information
+        :param theme_data: The theme information
         """
         if not theme_data.font_main_override:
             return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
@@ -350,8 +338,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Calculates the placement and size of the footer rectangle.
 
-        ``theme_data``
-            The theme data.
+        :param theme_data: The theme data.
         """
         if not theme_data.font_footer_override:
             return QtCore.QRect(10, self.footer_start, self.width - 20, self.height - self.footer_start)
@@ -364,16 +351,11 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Sets the rectangle within which text should be rendered.
 
-        ``theme_data``
-            The theme data.
-
-        ``rect_main``
-            The main text block.
-
-        ``rect_footer``
-            The footer text block.
+        :param theme_data: The theme data.
+        :param rect_main: The main text block.
+        :param rect_footer: The footer text block.
         """
-        log.debug('_set_text_rectangle %s , %s' % (rect_main, rect_footer))
+        self.log_debug('_set_text_rectangle %s , %s' % (rect_main, rect_footer))
         self._rect = rect_main
         self._rect_footer = rect_footer
         self.page_width = self._rect.width()
@@ -409,16 +391,13 @@ class Renderer(OpenLPMixin, RegistryMixin):
     def _paginate_slide(self, lines, line_end):
         """
         Figure out how much text can appear on a slide, using the current theme settings.
+
         **Note:** The smallest possible "unit" of text for a slide is one line. If the line is too long it will be cut
         off when displayed.
 
-        ``lines``
-            The text to be fitted on the slide split into lines.
-
-        ``line_end``
-            The text added after each line. Either ``u' '`` or ``u'<br>``.
+        :param lines: The text to be fitted on the slide split into lines.
+        :param line_end: The text added after each line. Either ``u' '`` or ``u'<br>``.
         """
-        log.debug('_paginate_slide - Start')
         formatted = []
         previous_html = ''
         previous_raw = ''
@@ -431,22 +410,19 @@ class Renderer(OpenLPMixin, RegistryMixin):
         else:
             previous_raw = separator.join(lines)
         formatted.append(previous_raw)
-        log.debug('_paginate_slide - End')
+        self.log_debug('_paginate_slide - End')
         return formatted
 
     def _paginate_slide_words(self, lines, line_end):
         """
         Figure out how much text can appear on a slide, using the current theme settings.
+
         **Note:** The smallest possible "unit" of text for a slide is one word. If one line is too long it will be
         processed word by word. This is sometimes need for **bible** verses.
 
-        ``lines``
-            The text to be fitted on the slide split into lines.
-
-        ``line_end``
-            The text added after each line. Either ``u' '`` or ``u'<br>``. This is needed for **bibles**.
+        :param lines: The text to be fitted on the slide split into lines.
+        :param line_end: The text added after each line. Either ``u' '`` or ``u'<br>``. This is needed for **bibles**.
         """
-        log.debug('_paginate_slide_words - Start')
         formatted = []
         previous_html = ''
         previous_raw = ''
@@ -476,7 +452,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
                 previous_html += html_line + line_end
                 previous_raw += line + line_end
         formatted.append(previous_raw)
-        log.debug('_paginate_slide_words - End')
+        self.log_debug('_paginate_slide_words - End')
         return formatted
 
     def _get_start_tags(self, raw_text):
@@ -488,8 +464,8 @@ class Renderer(OpenLPMixin, RegistryMixin):
         The first unicode string is the text, with correct closing tags. The second unicode string are OpenLP's opening
         formatting tags and the third unicode string the html opening formatting tags.
 
-        ``raw_text``
-            The text to test. The text must **not** contain html tags, only OpenLP formatting tags are allowed::
+        :param raw_text: The text to test. The text must **not** contain html tags, only OpenLP formatting tags
+        are allowed::
 
                 {st}{r}Text text text
         """
@@ -522,29 +498,18 @@ class Renderer(OpenLPMixin, RegistryMixin):
         and word based (word by word). It is assumed that this method is **only** called, when the lines/words to be
         rendered do **not** fit as a whole.
 
-        ``formatted``
-            The list to append any slides.
-
-        ``previous_html``
-            The html text which is know to fit on a slide, but is not yet added to the list of slides. (unicode string)
-
-        ``previous_raw``
-            The raw text (with formatting tags) which is know to fit on a slide, but is not yet added to the list of
-            slides. (unicode string)
-
-        ``html_list``
-            The elements which do not fit on a slide and needs to be processed using the binary chop. The text contains
-            html.
-
-        ``raw_list``
-            The elements which do not fit on a slide and needs to be processed using the binary chop. The elements can
-            contain formatting tags.
-
-        ``separator``
-            The separator for the elements. For lines this is ``u'<br>'`` and for words this is ``u' '``.
-
-        ``line_end``
-            The text added after each "element line". Either ``u' '`` or ``u'<br>``. This is needed for bibles.
+        :param formatted: The list to append any slides.
+        :param previous_html: The html text which is know to fit on a slide, but is not yet added to the list of
+        slides. (unicode string)
+        :param previous_raw: The raw text (with formatting tags) which is know to fit on a slide, but is not yet added
+        to the list of slides. (unicode string)
+        :param html_list: The elements which do not fit on a slide and needs to be processed using the binary chop.
+        The text contains html.
+        :param raw_list: The elements which do not fit on a slide and needs to be processed using the binary chop.
+        The elements can contain formatting tags.
+        :param separator: The separator for the elements. For lines this is ``u'<br>'`` and for words this is ``u' '``.
+        :param line_end: The text added after each "element line". Either ``u' '`` or ``u'<br>``. This is needed for
+         bibles.
         """
         smallest_index = 0
         highest_index = len(html_list) - 1
@@ -591,8 +556,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Checks if the given ``text`` fits on a slide. If it does ``True`` is returned, otherwise ``False``.
 
-        ``text``
-            The text to check. It may contain HTML tags.
+        :param text:  The text to check. It may contain HTML tags.
         """
         self.web_frame.evaluateJavaScript('show_text("%s")' % text.replace('\\', '\\\\').replace('\"', '\\\"'))
         return self.web_frame.contentsSize().height() <= self.empty_height
@@ -600,6 +564,8 @@ class Renderer(OpenLPMixin, RegistryMixin):
     def _words_split(self, line):
         """
         Split the slide up by word so can wrap better
+
+        :param line: Line to be split
         """
         # this parse we are to be wordy
         line = line.replace('\n', ' ')
@@ -619,7 +585,8 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Adds the theme manager to the class dynamically
         """
-        if not hasattr(self, '_theme_manager'):
+        print("renderer _get_theme_manager")
+        if not hasattr(self, '_theme_manager') or not self._theme_manager :
             self._theme_manager = Registry().get('theme_manager')
         return self._theme_manager
 

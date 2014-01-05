@@ -63,12 +63,14 @@ class Display(QtGui.QGraphicsView):
         """
         Constructor
         """
+        print("Display - before super")
         if live:
             super(Display, self).__init__()
             # Overwrite the parent() method.
             self.parent = lambda: parent
         else:
             super(Display, self).__init__(parent)
+        print("Display - after super")
         self.is_live = live
         self.controller = controller
         self.screen = {}
@@ -125,7 +127,9 @@ class MainDisplay(Display):
         """
         Constructor
         """
+        print("MainDisplay - before super")
         super(MainDisplay, self).__init__(parent, live, controller)
+        print("MainDisplay - after super")
         self.screens = ScreenList()
         self.rebuild_css = False
         self.hide_mode = None
