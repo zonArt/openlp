@@ -75,8 +75,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
 
     def bootstrap_initialise(self):
         """
-
-
+        Initialise functions
         """
         self.display = MainDisplay(None, False, self)
         self.display.setup()
@@ -85,7 +84,6 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Updates the renderer's information about the current screen.
         """
-        self.log_debug('Update Display')
         self._calculate_default()
         if self.display:
             self.display.close()
@@ -126,7 +124,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         # if No file do not update cache
         if theme_data.background_filename:
             self.image_manager.add_image(theme_data.background_filename,
-                ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
+                                         ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
 
     def pre_render(self, override_theme_data=None):
         """
@@ -410,7 +408,6 @@ class Renderer(OpenLPMixin, RegistryMixin):
         else:
             previous_raw = separator.join(lines)
         formatted.append(previous_raw)
-        self.log_debug('_paginate_slide - End')
         return formatted
 
     def _paginate_slide_words(self, lines, line_end):
@@ -452,7 +449,6 @@ class Renderer(OpenLPMixin, RegistryMixin):
                 previous_html += html_line + line_end
                 previous_raw += line + line_end
         formatted.append(previous_raw)
-        self.log_debug('_paginate_slide_words - End')
         return formatted
 
     def _get_start_tags(self, raw_text):
@@ -466,7 +462,6 @@ class Renderer(OpenLPMixin, RegistryMixin):
 
         :param raw_text: The text to test. The text must **not** contain html tags, only OpenLP formatting tags
         are allowed::
-
                 {st}{r}Text text text
         """
         raw_tags = []
