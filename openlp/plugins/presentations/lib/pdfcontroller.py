@@ -57,10 +57,9 @@ class PdfController(PresentationController):
         self.process = None
         PresentationController.__init__(self, plugin, 'Pdf', PdfDocument)
         self.supports = ['pdf']
-        self.mudrawbin = ''
-        self.gsbin = ''
-        if self.check_installed() and self.mudrawbin:
-            self.also_supports = ['xps']
+        self.also_supports = []
+        # Determine whether mudraw or ghostscript is used
+        self.check_installed()
 
     @staticmethod
     def check_binary(program_path):
@@ -110,44 +109,49 @@ class PdfController(PresentationController):
         :return: True if program to open PDF-files was found, otherwise False.
         """
         log.debug('check_installed Pdf')
+        self.mudrawbin = ''
+        self.gsbin = ''
+        self.also_supports = []
         # Use the user defined program if given
         if (Settings().value('presentations/enable_pdf_program')):
             pdf_program = Settings().value('presentations/pdf_program')
             program_type = self.check_binary(pdf_program)
             if program_type == 'gs':
                 self.gsbin = pdf_program
-                return True
             elif program_type == 'mudraw':
                 self.mudrawbin = pdf_program
-                return True
-        # Fallback to autodetection
-        application_path = AppLocation.get_directory(AppLocation.AppDir)
-        if os.name == 'nt':
-            # for windows we only accept mudraw.exe in the base folder
+        else:
+            # Fallback to autodetection
             application_path = AppLocation.get_directory(AppLocation.AppDir)
-            if os.path.isfile(application_path + '/../mudraw.exe'):
-                self.mudrawbin = application_path + '/../mudraw.exe'
-        else:
-            # First try to find mupdf
-            try:
-                self.mudrawbin = check_output(['which', 'mudraw']).decode(encoding='UTF-8').rstrip('\n')
-            except CalledProcessError:
-                self.mudrawbin = ''
-            # if mupdf isn't installed, fallback to ghostscript
-            if not self.mudrawbin:
-                try:
-                    self.gsbin = check_output(['which', 'gs']).rstrip('\n')
-                except CalledProcessError:
-                    self.gsbin = ''
-            # Last option: check if mudraw is placed in OpenLP base folder
-            if not self.mudrawbin and not self.gsbin:
+            if os.name == 'nt':
+                # for windows we only accept mudraw.exe in the base folder
                 application_path = AppLocation.get_directory(AppLocation.AppDir)
-                if os.path.isfile(application_path + '/../mudraw'):
-                    self.mudrawbin = application_path + '/../mudraw'
-        if not self.mudrawbin and not self.gsbin:
-            return False
-        else:
+                if os.path.isfile(application_path + '/../mudraw.exe'):
+                    self.mudrawbin = application_path + '/../mudraw.exe'
+            else:
+                # First try to find mupdf
+                try:
+                    self.mudrawbin = check_output(['which', 'mudraw']).decode(encoding='UTF-8').rstrip('\n')
+                except CalledProcessError:
+                    self.mudrawbin = ''
+                # if mupdf isn't installed, fallback to ghostscript
+                if not self.mudrawbin:
+                    try:
+                        self.gsbin = check_output(['which', 'gs']).rstrip('\n')
+                    except CalledProcessError:
+                        self.gsbin = ''
+                # Last option: check if mudraw is placed in OpenLP base folder
+                if not self.mudrawbin and not self.gsbin:
+                    application_path = AppLocation.get_directory(AppLocation.AppDir)
+                    if os.path.isfile(application_path + '/../mudraw'):
+                        self.mudrawbin = application_path + '/../mudraw'
+        if self.mudrawbin:
+            self.also_supports = ['xps']
             return True
+        elif self.gsbin:
+            return True
+        else:
+            return False
 
     def kill(self):
         """

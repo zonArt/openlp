@@ -138,6 +138,9 @@ class PresentationMediaItem(MediaManagerItem):
         """
         self.display_type_combo_box.clear()
         for item in self.controllers:
+            # For PDF reload backend, since it can have changed
+            if self.controllers[item].name == 'Pdf':
+                self.controllers[item].check_available()
             # load the drop down selection
             if self.controllers[item].enabled():
                 self.display_type_combo_box.addItem(item)
