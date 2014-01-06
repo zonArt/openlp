@@ -187,37 +187,22 @@ class PdfDocument(PresentationDocument):
         :return: The resolution dpi to be used.
         """
         # Use a postscript script to get size of the pdf. It is assumed that all pages have same size
-        postscript = '%!PS \n\
-() = \n\
-File dup (r) file runpdfbegin \n\
-1 pdfgetpage dup \n\
-/MediaBox pget { \n\
-aload pop exch 4 1 roll exch sub 3 1 roll sub \n\
-( Size: x: ) print =print (, y: ) print =print (\n) print \n\
-} if \n\
-flush \n\
-quit \n\
-'
-        # Put postscript into tempfile
-        tmp_file = NamedTemporaryFile(delete=False)
-        tmp_file.write(postscript)
-        tmp_file.close()
+        gs_resolution_script = AppLocation.get_directory(AppLocation.PluginsDir) + '/presentations/lib/ghostscript_get_resolution.ps'
         # Run the script on the pdf to get the size
         runlog = []
         try:
             runlog = check_output([self.controller.gsbin, '-dNOPAUSE', '-dNODISPLAY', '-dBATCH',
-                                   '-sFile=' + self.filepath, tmp_file.name])
+                                   '-sFile=' + self.filepath, gs_resolution_script])
         except CalledProcessError as e:
             log.debug(' '.join(e.cmd))
             log.debug(e.output)
-        os.unlink(tmp_file.name)
         # Extract the pdf resolution from output, the format is " Size: x: <width>, y: <height>"
         width = 0
         height = 0
         for line in runlog.splitlines():
             try:
-                width = re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line).group(1)
-                height = re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line).group(1)
+                width = int(re.search('.*Size: x: (\d+\.?\d*), y: \d+.*', line.decode()).group(1))
+                height = int(re.search('.*Size: x: \d+\.?\d*, y: (\d+\.?\d*).*', line.decode()).group(1))
                 break
             except AttributeError:
                 pass
