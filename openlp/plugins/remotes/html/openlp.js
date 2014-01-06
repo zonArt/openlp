@@ -398,5 +398,6 @@ $.ajaxSetup({cache: false});
 $("#search").live("pageinit", function (event) {
   OpenLP.getSearchablePlugins();
 });
-setInterval("OpenLP.pollServer();", 500);
-OpenLP.pollServer();
+//setInterval("OpenLP.pollServer();", 30000);
+//OpenLP.pollServer();
+var ws = new wsEventEngine("ws://" + window.location.hostname + ":9999/Test", OpenLP.pollServer, 500);
