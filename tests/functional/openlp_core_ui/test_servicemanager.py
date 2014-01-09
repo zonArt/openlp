@@ -27,36 +27,59 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The :mod:`db` module provides the database and schema that is the backend for the Alerts plugin.
+Package to test the openlp.core.ui.slidecontroller package.
 """
+from unittest import TestCase
 
-from sqlalchemy import Column, Table, types
-from sqlalchemy.orm import mapper
+from openlp.core.common import Registry
+from openlp.core.ui import ServiceManager
 
-from openlp.core.lib.db import BaseModel, init_db
-
-
-class AlertItem(BaseModel):
-    """
-    AlertItem model
-    """
-    pass
+from tests.interfaces import MagicMock, patch
 
 
-def init_schema(url):
-    """
-    Setup the alerts database connection and initialise the database schema
+class TestServiceManager(TestCase):
 
-    :param url:
-        The database to setup
-    """
-    session, metadata = init_db(url)
+    def setUp(self):
+        """
+        Create the UI
+        """
+        Registry.create()
+        #self.app = QtGui.QApplication([])
+        #ScreenList.create(self.app.desktop())
+        #Registry().register('application', MagicMock())
+        #with patch('openlp.core.lib.PluginManager'):
+        #    self.main_window = MainWindow()
+        #self.service_manager = Registry().get('service_manager')
 
-    alerts_table = Table('alerts', metadata,
-                         Column('id', types.Integer(), primary_key=True),
-                         Column('text', types.UnicodeText, nullable=False))
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        #del self.main_window
+        #del self.app
+        pass
 
-    mapper(AlertItem, alerts_table)
+    def initial_service_manager_test(self):
+        """
+        Test the initial of service manager.
+        """
+        # GIVEN: A new service manager instance.
+        ServiceManager(None)
+        # WHEN: the default service manager is built.
+        # THEN: The the controller should be registered in the registry.
+        self.assertNotEqual(Registry().get('service_manager'), None, 'The base service manager should be registered')
 
-    metadata.create_all(checkfirst=True)
-    return session
+    def create_basic_service_test(self):
+        """
+        Test the create basic service array
+        """
+        # GIVEN: A new service manager instance.
+        service_manager = ServiceManager(None)
+        # WHEN: when the basic service array is created.
+        service_manager._save_lite = False
+        service_manager.service_theme = 'test_theme'
+        service = service_manager.create_basic_service()[0]
+        # THEN: The the controller should be registered in the registry.
+        self.assertNotEqual(service, None, 'The base service should be created')
+        self.assertEqual(service['openlp_core']['service-theme'], 'test_theme', 'The test theme should be saved')
+        self.assertEqual(service['openlp_core']['lite-service'], False, 'The lite service should be saved')

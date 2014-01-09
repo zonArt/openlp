@@ -35,7 +35,7 @@ import os
 import datetime
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.common import Registry, RegistryMixin, Settings, UiStrings, translate
 from openlp.core.lib import OpenLPToolbar
 from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media import MediaState, MediaInfo, MediaType, get_media_players, set_media_players
@@ -99,7 +99,7 @@ class MediaController(object):
         Constructor
         """
         Registry().register('media_controller', self)
-        Registry().register_function('bootstrap_initialise', self.check_available_media_players)
+        Registry().register_function('bootstrap_initialise', self.bootstrap_initialise)
         self.media_players = {}
         self.display_controllers = {}
         self.current_media_players = {}
@@ -134,20 +134,22 @@ class MediaController(object):
         """
         Set the active players and available media files
         """
+        suffix_list = []
         self.audio_extensions_list = []
         for player in list(self.media_players.values()):
             if player.is_active:
                 for item in player.audio_extensions_list:
                     if not item in self.audio_extensions_list:
                         self.audio_extensions_list.append(item)
-                        self.service_manager.supported_suffixes(item[2:])
+                        suffix_list.append(item[2:])
         self.video_extensions_list = []
         for player in list(self.media_players.values()):
             if player.is_active:
                 for item in player.video_extensions_list:
                     if item not in self.video_extensions_list:
                         self.video_extensions_list.extend(item)
-                        self.service_manager.supported_suffixes(item[2:])
+                        suffix_list.append(item[2:])
+        self.service_manager.supported_suffixes(suffix_list)
 
     def register_players(self, player):
         """
@@ -159,7 +161,7 @@ class MediaController(object):
         """
         self.media_players[player.name] = player
 
-    def check_available_media_players(self):
+    def bootstrap_initialise(self):
         """
         Check to see if we have any media Player's available.
         """
@@ -169,27 +171,28 @@ class MediaController(object):
             if filename.endswith('player.py') and not filename == 'mediaplayer.py':
                 path = os.path.join(controller_dir, filename)
                 if os.path.isfile(path):
-                    modulename = 'openlp.core.ui.media.' + os.path.splitext(filename)[0]
-                    log.debug('Importing controller %s', modulename)
+                    module_name = 'openlp.core.ui.media.' + os.path.splitext(filename)[0]
+                    log.debug('Importing controller %s', module_name)
                     try:
-                        __import__(modulename, globals(), locals(), [])
+                        __import__(module_name, globals(), locals(), [])
                     # On some platforms importing vlc.py might cause
                     # also OSError exceptions. (e.g. Mac OS X)
                     except (ImportError, OSError):
-                        log.warn('Failed to import %s on path %s', modulename, path)
+                        log.warn('Failed to import %s on path %s', module_name, path)
         player_classes = MediaPlayer.__subclasses__()
         for player_class in player_classes:
             player = player_class(self)
             self.register_players(player)
         if not self.media_players:
             return False
-        savedPlayers, overriddenPlayer = get_media_players()
-        invalid_media_players = [mediaPlayer for mediaPlayer in savedPlayers
-            if not mediaPlayer in self.media_players or not self.media_players[mediaPlayer].check_available()]
+        saved_players, overridden_player = get_media_players()
+        invalid_media_players = \
+            [mediaPlayer for mediaPlayer in saved_players if not mediaPlayer in self.media_players or
+                not self.media_players[mediaPlayer].check_available()]
         if invalid_media_players:
             for invalidPlayer in invalid_media_players:
-                savedPlayers.remove(invalidPlayer)
-            set_media_players(savedPlayers, overriddenPlayer)
+                saved_players.remove(invalidPlayer)
+            set_media_players(saved_players, overridden_player)
         self._set_active_players()
         self._generate_extensions_lists()
         return True
@@ -270,14 +273,17 @@ class MediaController(object):
         # Build a Media ToolBar
         controller.mediabar = OpenLPToolbar(controller)
         controller.mediabar.add_toolbar_action('playbackPlay', text='media_playback_play',
-            icon=':/slides/media_playback_start.png',
-            tooltip=translate('OpenLP.SlideController', 'Start playing media.'), triggers=controller.send_to_plugins)
+                                               icon=':/slides/media_playback_start.png',
+                                               tooltip=translate('OpenLP.SlideController', 'Start playing media.'),
+                                               triggers=controller.send_to_plugins)
         controller.mediabar.add_toolbar_action('playbackPause', text='media_playback_pause',
-            icon=':/slides/media_playback_pause.png',
-            tooltip=translate('OpenLP.SlideController', 'Pause playing media.'), triggers=controller.send_to_plugins)
+                                               icon=':/slides/media_playback_pause.png',
+                                               tooltip=translate('OpenLP.SlideController', 'Pause playing media.'),
+                                               triggers=controller.send_to_plugins)
         controller.mediabar.add_toolbar_action('playbackStop', text='media_playback_stop',
-            icon=':/slides/media_playback_stop.png',
-            tooltip=translate('OpenLP.SlideController', 'Stop playing media.'), triggers=controller.send_to_plugins)
+                                               icon=':/slides/media_playback_stop.png',
+                                               tooltip=translate('OpenLP.SlideController', 'Stop playing media.'),
+                                               triggers=controller.send_to_plugins)
         # Build the seek_slider.
         controller.seek_slider = MediaSlider(QtCore.Qt.Horizontal, self, controller)
         controller.seek_slider.setMaximum(1000)
@@ -445,11 +451,11 @@ class MediaController(object):
         if not self._check_file_type(controller, display, service_item):
             # Media could not be loaded correctly
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         if not self.media_play(controller):
             critical_error_message_box(translate('MediaPlugin.MediaItem', 'Unsupported File'),
-                translate('MediaPlugin.MediaItem', 'Unsupported File'))
+                                       translate('MediaPlugin.MediaItem', 'Unsupported File'))
             return False
         service_item.set_media_length(controller.media_info.length)
         self.media_stop(controller)

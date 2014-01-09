@@ -30,5 +30,6 @@
 from .remotetab import RemoteTab
 from .httprouter import HttpRouter
 from .httpserver import OpenLPServer
+from .websocket import WebSocketManager
 
-__all__ = ['RemoteTab', 'OpenLPServer', 'HttpRouter']
+__all__ = ['RemoteTab', 'OpenLPServer', 'HttpRouter','WebSocketManager']

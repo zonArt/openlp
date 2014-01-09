@@ -72,6 +72,11 @@ WIDE_MENU = [
     'desktop_screen_button'
 ]
 
+NON_TEXT_MENU = [
+    'blank_screen_button',
+    'desktop_screen_button'
+]
+
 
 class DisplayController(QtGui.QWidget):
     """
@@ -116,6 +121,9 @@ class SlideController(DisplayController):
         self.screen_size_changed()
 
     def initialise(self):
+        """
+        Initialise the UI elements of the controller
+        """
         self.screens = ScreenList()
         try:
             self.ratio = self.screens.current['size'].width() / self.screens.current['size'].height()
@@ -442,6 +450,8 @@ class SlideController(DisplayController):
     def set_live_hot_keys(self, parent=None):
         """
         Set the live hotkeys
+
+        :param parent: The parent UI object for actions to be added to.
         """
         self.previous_service = create_action(parent, 'previousService',
                                               text=translate('OpenLP.SlideController', 'Previous Service'),
@@ -469,6 +479,8 @@ class SlideController(DisplayController):
     def toggle_display(self, action):
         """
         Toggle the display settings triggered from remote messages.
+
+        :param action: The blank action to be processed.
         """
         if action == 'blank' or action == 'hide':
             self.on_blank_display(True)
@@ -544,6 +556,8 @@ class SlideController(DisplayController):
     def __add_actions_to_widget(self, widget):
         """
         Add actions to the widget specified by `widget`
+
+        :param widget: The UI widget for the actions
         """
         widget.addActions([
             self.previous_item, self.next_item,
@@ -574,6 +588,8 @@ class SlideController(DisplayController):
     def on_controller_size_changed(self, width):
         """
         Change layout of display control buttons on controller size change
+
+        :param width: the new width of the display
         """
         if self.is_live:
             # Space used by the toolbar.
@@ -581,11 +597,23 @@ class SlideController(DisplayController):
             # Add the threshold to prevent flickering.
             if width > used_space + HIDE_MENU_THRESHOLD and self.hide_menu.isVisible():
                 self.toolbar.set_widget_visible(NARROW_MENU, False)
-                self.toolbar.set_widget_visible(WIDE_MENU)
+                self.set_blank_menu()
             # Take away a threshold to prevent flickering.
             elif width < used_space - HIDE_MENU_THRESHOLD and not self.hide_menu.isVisible():
-                self.toolbar.set_widget_visible(WIDE_MENU, False)
+                self.set_blank_menu(False)
                 self.toolbar.set_widget_visible(NARROW_MENU)
+
+    def set_blank_menu(self, visible=True):
+        """
+        Set the correct menu type dependent on the service item type
+
+        :param visible: Do I need to hide the menu?
+        """
+        self.toolbar.set_widget_visible(WIDE_MENU, False)
+        if self.service_item and self.service_item.is_text():
+            self.toolbar.set_widget_visible(WIDE_MENU, visible)
+        else:
+            self.toolbar.set_widget_visible(NON_TEXT_MENU, visible)
 
     def on_song_bar_handler(self):
         """
@@ -612,6 +640,8 @@ class SlideController(DisplayController):
     def enable_tool_bar(self, item):
         """
         Allows the toolbars to be reconfigured based on Controller Type and ServiceItem Type
+
+        :param item: current service item being processed
         """
         if self.is_live:
             self.enable_live_tool_bar(item)
@@ -621,6 +651,8 @@ class SlideController(DisplayController):
     def enable_live_tool_bar(self, item):
         """
         Allows the live toolbar to be customised
+
+        :param item: The current service item
         """
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
@@ -643,6 +675,7 @@ class SlideController(DisplayController):
             self.mediabar.show()
         self.previous_item.setVisible(not item.is_media())
         self.next_item.setVisible(not item.is_media())
+        self.set_blank_menu()
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
         self.toolbar.show()
@@ -977,11 +1010,13 @@ class SlideController(DisplayController):
                         self.display.image(to_display)
                     # reset the store used to display first image
                     self.service_item.bg_image_bytes = None
-            self.update_preview()
             self.selected_row = row
+            self.update_preview()
             self.preview_widget.change_slide(row)
         Registry().execute('slidecontroller_%s_changed' % self.type_prefix, row)
         self.display.setFocus()
+        if self.type_prefix == 'live':
+            Registry().execute('websock_send', '')
 
     def on_slide_change(self, row):
         """
@@ -990,7 +1025,6 @@ class SlideController(DisplayController):
         self.preview_widget.change_slide(row)
         self.update_preview()
         self.selected_row = row
-        Registry().execute('slidecontroller_%s_changed' % self.type_prefix, row)
 
     def update_preview(self):
         """

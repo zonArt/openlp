@@ -41,7 +41,8 @@ if os.name == 'nt':
     import win32ui
     import pywintypes
 
-from openlp.core.lib import ScreenList, Registry
+from openlp.core.lib import ScreenList
+from openlp.core.common import Registry
 from .presentationcontroller import PresentationController, PresentationDocument
 
 log = logging.getLogger(__name__)

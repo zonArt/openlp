@@ -27,24 +27,52 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The Theme Controller helps manages adding, deleteing and modifying of themes.
+Package to test the openlp.core.ui.slidecontroller package.
 """
-import os
+from unittest import TestCase
 
-from openlp.core.common import AppLocation, check_directory_exists
+from openlp.core.ui import SlideController
+
+from tests.interfaces import MagicMock, patch
 
 
-class ThemeManagerHelper(object):
-    """
-    Manages the non ui theme functions.
-    """
-    def build_theme_path(self):
+class TestSlideController(TestCase):
+
+    def initial_slide_controller_test(self):
         """
-        Set up the theme path variables
+        Test the initial slide controller state .
         """
-        self.log_debug('build theme path called')
-        self.path = AppLocation.get_section_data_path(self.settings_section)
-        check_directory_exists(self.path)
-        self.thumb_path = os.path.join(self.path, 'thumbnails')
-        check_directory_exists(self.thumb_path)
-        self.theme_form.path = self.path
+        # GIVEN: A new slideController instance.
+        slide_controller = SlideController(None)
+        # WHEN: the default controller is built.
+        # THEN: The controller should not be a live controller.
+        self.assertEqual(slide_controller.is_live, False, 'The base slide controller should not be a live controller')
+
+    def toggle_blank_test(self):
+        """
+        Test the setting of the display blank icons by display type.
+        """
+        # GIVEN: A new slideController instance.
+        slide_controller = SlideController(None)
+        service_item = MagicMock()
+        toolbar = MagicMock()
+        toolbar.set_widget_visible = self.dummy_widget_visible
+        slide_controller.toolbar = toolbar
+        slide_controller.service_item = service_item
+
+        # WHEN a text based service item is used
+        slide_controller.service_item.is_text = MagicMock(return_value=True)
+        slide_controller.set_blank_menu()
+
+        # THEN: then call set up the toolbar to blank the display screen.
+        self.assertEqual(len(self.test_widget), 3, 'There should be three icons to display on the screen')
+
+        # WHEN a non text based service item is used
+        slide_controller.service_item.is_text = MagicMock(return_value=False)
+        slide_controller.set_blank_menu()
+
+        # THEN: then call set up the toolbar to blank the display screen.
+        self.assertEqual(len(self.test_widget), 2, 'There should be only two icons to display on the screen')
+
+    def dummy_widget_visible(self, widget, visible=True):
+        self.test_widget = widget

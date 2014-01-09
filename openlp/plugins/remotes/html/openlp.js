@@ -400,4 +400,4 @@ $("#search").live("pageinit", function (event) {
 });
 //setInterval("OpenLP.pollServer();", 30000);
 //OpenLP.pollServer();
-var ws = new wsEventEngine("ws://" + window.location.hostname + ":9999/Test", OpenLP.pollServer, 500);
+var ws = new wsEventEngine("ws://" + window.location.hostname + ":8888/Test", OpenLP.pollServer, 500);

@@ -89,8 +89,8 @@ def get_text_file_string(text_file):
     returns False. If there is an error loading the file or the content can't be decoded then the function will return
     None.
 
-    ``textfile``
-        The name of the file.
+    :param text_file: The name of the file.
+    :return The file as a single string
     """
     if not os.path.isfile(text_file):
         return False
@@ -114,8 +114,8 @@ def str_to_bool(string_value):
     """
     Convert a string version of a boolean into a real boolean.
 
-    ``string_value``
-        The string value to examine and convert to a boolean type.
+    :param string_value: The string value to examine and convert to a boolean type.
+    :return The correct boolean value
     """
     if isinstance(string_value, bool):
         return string_value
@@ -127,9 +127,10 @@ def build_icon(icon):
     Build a QIcon instance from an existing QIcon, a resource location, or a physical file location. If the icon is a
     QIcon instance, that icon is simply returned. If not, it builds a QIcon instance from the resource or file name.
 
-    ``icon``
+    :param icon:
         The icon to build. This can be a QIcon, a resource string in the form ``:/resource/file.png``, or a file
         location like ``/path/to/file.png``. However, the **recommended** way is to specify a resource string.
+    :return The build icon.
     """
     button_icon = QtGui.QIcon()
     if isinstance(icon, QtGui.QIcon):
@@ -148,11 +149,8 @@ def image_to_byte(image, base_64=True):
     """
     Resize an image to fit on the current screen for the web and returns it as a byte stream.
 
-    ``image``
-        The image to converted.
-
-    ``base_64``
-        If True returns the image as Base64 bytes, otherwise the image is returned as a byte array
+    :param image: The image to converted.
+    :param base_64: If True returns the image as Base64 bytes, otherwise the image is returned as a byte array.
         To preserve original intention, this defaults to True
     """
     log.debug('image_to_byte - start')
@@ -172,18 +170,12 @@ def create_thumb(image_path, thumb_path, return_icon=True, size=None):
     """
     Create a thumbnail from the given image path and depending on ``return_icon`` it returns an icon from this thumb.
 
-    ``image_path``
-        The image file to create the icon from.
-
-    ``thumb_path``
-        The filename to save the thumbnail to.
-
-    ``return_icon``
-        States if an icon should be build and returned from the thumb. Defaults to ``True``.
-
-    ``size``
-        Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default height of 88
-        is used.
+    :param image_path: The image file to create the icon from.
+    :param thumb_path: The filename to save the thumbnail to.
+    :param return_icon: States if an icon should be build and returned from the thumb. Defaults to ``True``.
+    :param size: Allows to state a own size (QtCore.QSize) to use. Defaults to ``None``, which means that a default
+     height of 88 is used.
+    :return The final icon.
     """
     ext = os.path.splitext(thumb_path)[1].lower()
     reader = QtGui.QImageReader(image_path)
@@ -207,11 +199,9 @@ def validate_thumb(file_path, thumb_path):
     Validates whether an file's thumb still exists and if is up to date. **Note**, you must **not** call this function,
     before checking the existence of the file.
 
-    ``file_path``
-        The path to the file. The file **must** exist!
-
-    ``thumb_path``
-        The path to the thumb.
+    :param file_path: The path to the file. The file **must** exist!
+    :param thumb_path: The path to the thumb.
+    :return True, False if the image has changed since the thumb was created.
     """
     if not os.path.exists(thumb_path):
         return False
@@ -224,19 +214,12 @@ def resize_image(image_path, width, height, background='#000000'):
     """
     Resize an image to fit on the current screen.
 
-    ``image_path``
-        The path to the image to resize.
-
-    ``width``
-        The new image width.
-
-    ``height``
-        The new image height.
-
-    ``background``
-        The background colour. Defaults to black.
-
     DO NOT REMOVE THE DEFAULT BACKGROUND VALUE!
+
+    :param image_path: The path to the image to resize.
+    :param width: The new image width.
+    :param height: The new image height.
+    :param background: The background colour. Defaults to black.
     """
     log.debug('resize_image - start')
     reader = QtGui.QImageReader(image_path)
@@ -271,11 +254,8 @@ def check_item_selected(list_widget, message):
     """
     Check if a list item is selected so an action may be performed on it
 
-    ``list_widget``
-        The list to check for selected items
-
-    ``message``
-        The message to give the user if no item is selected
+    :param list_widget: The list to check for selected items
+    :param message: The message to give the user if no item is selected
     """
     if not list_widget.selectedIndexes():
         QtGui.QMessageBox.information(list_widget.parent(),
@@ -287,6 +267,8 @@ def check_item_selected(list_widget, message):
 def clean_tags(text):
     """
     Remove Tags from text for display
+
+    :param text: Text to be cleaned
     """
     text = text.replace('<br>', '\n')
     text = text.replace('{br}', '\n')
@@ -300,6 +282,8 @@ def clean_tags(text):
 def expand_tags(text):
     """
     Expand tags HTML for display
+
+    :param text: The text to be expanded.
     """
     for tag in FormattingTags.get_html_tags():
         text = text.replace(tag['start tag'], tag['start html'])
@@ -310,11 +294,11 @@ def expand_tags(text):
 def create_separated_list(string_list):
     """
     Returns a string that represents a join of a list of strings with a localized separator. This function corresponds
+
     to QLocale::createSeparatedList which was introduced in Qt 4.8 and implements the algorithm from
     http://www.unicode.org/reports/tr35/#ListPatterns
 
-    ``string_list``
-        List of unicode strings
+     :param string_list: List of unicode strings
     """
     if LooseVersion(Qt.PYQT_VERSION_STR) >= LooseVersion('4.9') and \
             LooseVersion(Qt.qVersion()) >= LooseVersion('4.8'):

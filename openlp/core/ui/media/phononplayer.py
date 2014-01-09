@@ -80,12 +80,12 @@ class PhononPlayer(MediaPlayer):
         self.parent = parent
         self.additional_extensions = ADDITIONAL_EXT
         mimetypes.init()
-        for mimetype in Phonon.BackendCapabilities.availableMimeTypes():
-            mimetype = str(mimetype)
-            if mimetype.startswith('audio/'):
-                self._addToList(self.audio_extensions_list, mimetype)
-            elif mimetype.startswith('video/'):
-                self._addToList(self.video_extensions_list, mimetype)
+        for mime_type in Phonon.BackendCapabilities.availableMimeTypes():
+            mime_type = str(mime_type)
+            if mime_type.startswith('audio/'):
+                self._addToList(self.audio_extensions_list, mime_type)
+            elif mime_type.startswith('video/'):
+                self._addToList(self.video_extensions_list, mime_type)
 
     def _addToList(self, mimetype_list, mimetype):
         """
@@ -144,14 +144,14 @@ class PhononPlayer(MediaPlayer):
         self.volume(display, volume)
         return True
 
-    def media_state_wait(self, display, mediaState):
+    def media_state_wait(self, display, media_state):
         """
         Wait for the video to change its state
         Wait no longer than 5 seconds.
         """
         start = datetime.now()
         current_state = display.media_object.state()
-        while current_state != mediaState:
+        while current_state != media_state:
             current_state = display.media_object.state()
             if current_state == Phonon.ErrorState:
                 return False
@@ -172,8 +172,7 @@ class PhononPlayer(MediaPlayer):
         """
         controller = display.controller
         start_time = 0
-        if display.media_object.state() != Phonon.PausedState and \
-            controller.media_info.start_time > 0:
+        if display.media_object.state() != Phonon.PausedState and controller.media_info.start_time > 0:
             start_time = controller.media_info.start_time
         display.media_object.play()
         if not self.media_state_wait(display, Phonon.PlayingState):
@@ -262,8 +261,8 @@ class PhononPlayer(MediaPlayer):
         Return some info about this player
         """
         return(translate('Media.player', 'Phonon is a media player which '
-            'interacts with the operating system to provide media capabilities.') +
-            '<br/> <strong>' + translate('Media.player', 'Audio') +
-            '</strong><br/>' + str(self.audio_extensions_list) +
-            '<br/><strong>' + translate('Media.player', 'Video') +
-            '</strong><br/>' + str(self.video_extensions_list) + '<br/>')
+               'interacts with the operating system to provide media capabilities.') +
+               '<br/> <strong>' + translate('Media.player', 'Audio') +
+               '</strong><br/>' + str(self.audio_extensions_list) +
+               '<br/><strong>' + translate('Media.player', 'Video') +
+               '</strong><br/>' + str(self.video_extensions_list) + '<br/>')
