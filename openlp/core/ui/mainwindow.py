@@ -548,6 +548,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.live_controller.panel.setVisible(Settings().value('user interface/live panel'))
         self.load_settings()
         self.restore_current_media_manager_item()
+        Registry().execute('theme_update_global')
 
     def restore_current_media_manager_item(self):
         """
@@ -676,7 +677,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                 else:
                     self.active_plugin.toggle_status(PluginStatus.Inactive)
         # Set global theme and
-        Registry().execute('theme_update_global', self.theme_manager_contents.global_theme)
+        Registry().execute('theme_update_global')
         self.theme_manager_contents.load_first_time_themes()
         # Check if any Bibles downloaded.  If there are, they will be processed.
         Registry().execute('bibles_load_list', True)

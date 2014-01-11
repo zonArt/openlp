@@ -60,6 +60,8 @@ class Renderer(OpenLPMixin, RegistryMixin):
         print("Renderer - before super")
         super(Renderer, self).__init__(None)
         print("Renderer - after super")
+        # Need live behaviour if this is also working as a pseudo MainDisplay.
+        self.is_live = True
         self.screens = ScreenList()
         self.theme_level = ThemeLevel.Global
         self.global_theme_name = ''
@@ -77,7 +79,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Initialise functions
         """
-        self.display = MainDisplay(None, False, self)
+        self.display = MainDisplay(self)
         self.display.setup()
 
     def update_display(self):
@@ -87,7 +89,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         self._calculate_default()
         if self.display:
             self.display.close()
-        self.display = MainDisplay(None, False, self)
+        self.display = MainDisplay(self)
         self.display.setup()
         self._theme_dimensions = {}
 
@@ -114,6 +116,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
 
         :param theme_name: The theme name
         """
+        self.log_debug("_set_theme with theme %s" % theme_name)
         if theme_name not in self._theme_dimensions:
             theme_data = self.theme_manager.get_theme_data(theme_name)
             main_rect = self.get_main_rectangle(theme_data)
@@ -169,9 +172,6 @@ class Renderer(OpenLPMixin, RegistryMixin):
     def set_global_theme(self):
         """
         Set the global-level theme name.
-
-        ``global_theme_name``
-            The global-level theme's name.
         """
         global_theme_name = Settings().value('themes/global theme')
         self._set_theme(global_theme_name)
@@ -192,6 +192,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
 
         :param item_theme_name: The item theme's name.
         """
+        self.log_debug("set_item_theme with theme %s" % item_theme_name)
         self._set_theme(item_theme_name)
         self.item_theme_name = item_theme_name
 
@@ -202,7 +203,6 @@ class Renderer(OpenLPMixin, RegistryMixin):
         :param theme_data:  The theme to generated a preview for.
         :param force_page: Flag to tell message lines per page need to be generated.
         """
-        self.log_debug('generate preview')
         # save value for use in format_slide
         self.force_page = force_page
         # build a service item to generate preview

@@ -1024,9 +1024,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         """
         Called by the SlideController to select the next service item.
         """
-        if not self.service_manager_list.selected_items():
+        if not self.service_manager_list.selectedItems():
             return
-        selected = self.service_manager_list.selected_items()[0]
+        selected = self.service_manager_list.selectedItems()[0]
         look_for = 0
         service_iterator = QtGui.QTreeWidgetItemIterator(self.service_manager_list)
         while service_iterator.value():
@@ -1044,9 +1044,9 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
 
         :param last_slide: Is this the last slide in the service_item.
         """
-        if not self.service_manager_list.selected_items():
+        if not self.service_manager_list.selectedItems():
             return
-        selected = self.service_manager_list.selected_items()[0]
+        selected = self.service_manager_list.selectedItems()[0]
         prev_item = None
         prev_item_last_slide = None
         service_iterator = QtGui.QTreeWidgetItemIterator(self.service_manager_list)

@@ -515,8 +515,9 @@ class ThemeManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ThemeManager):
     def over_write_message_box(self, theme_name):
         """
         Display a warning box to the user that a theme already exists
+
         :param theme_name: Name of the theme.
-        :return Confirm if the theme is to be overeritten.
+        :return Confirm if the theme is to be overwritten.
         """
         ret = QtGui.QMessageBox.question(self, translate('OpenLP.ThemeManager', 'Theme Already Exists'),
                                          translate('OpenLP.ThemeManager',

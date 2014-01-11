@@ -74,7 +74,7 @@ class MediaMediaItem(MediaManagerItem):
         self.display_controller.controller_layout = QtGui.QVBoxLayout()
         self.media_controller.register_controller(self.display_controller)
         self.media_controller.set_controls_visible(self.display_controller, False)
-        self.display_controller.preview_display = Display(self.display_controller, False, self.display_controller)
+        self.display_controller.preview_display = Display(self.display_controller)
         self.display_controller.preview_display.hide()
         self.display_controller.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.display_controller.preview_display.screen = {'size': self.display_controller.preview_display.geometry()}
