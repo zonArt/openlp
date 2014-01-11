@@ -27,51 +27,63 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-Package to test the openlp.core.ui.slidecontroller package.
+Package to test the openlp.core.ui.renderer package.
 """
 from unittest import TestCase
 
+from PyQt4 import QtCore
+
 from openlp.core.common import Registry
-from openlp.core.ui import ServiceManager
+from openlp.core.lib import Renderer, ScreenList
 
-from tests.interfaces import MagicMock, patch
+from tests.interfaces import MagicMock
+
+SCREEN = {
+    'primary': False,
+    'number': 1,
+    'size': QtCore.QRect(0, 0, 1024, 768)
+}
 
 
-class TestServiceManager(TestCase):
+class TestRenderer(TestCase):
 
     def setUp(self):
         """
-        Create the UI
+        Set up the components need for all tests.
         """
+        # Mocked out desktop object
+        self.desktop = MagicMock()
+        self.desktop.primaryScreen.return_value = SCREEN['primary']
+        self.desktop.screenCount.return_value = SCREEN['number']
+        self.desktop.screenGeometry.return_value = SCREEN['size']
+        self.screens = ScreenList.create(self.desktop)
         Registry.create()
 
     def tearDown(self):
         """
-        Delete all the C++ objects at the end so that we don't have a segfault
+        Delete QApplication.
         """
-        pass
+        del self.screens
 
-    def initial_service_manager_test(self):
+    def initial_renderer_test(self):
         """
-        Test the initial of service manager.
+        Test the initial renderer state .
         """
-        # GIVEN: A new service manager instance.
-        ServiceManager(None)
-        # WHEN: the default service manager is built.
-        # THEN: The the controller should be registered in the registry.
-        self.assertNotEqual(Registry().get('service_manager'), None, 'The base service manager should be registered')
+        # GIVEN: A new renderer instance.
+        renderer = Renderer()
+        # WHEN: the default renderer is built.
+        # THEN: The renderer should be a live controller.
+        self.assertEqual(renderer.is_live, True, 'The base renderer should be a live controller')
 
-    def create_basic_service_test(self):
+    def default_screen_layout_test(self):
         """
-        Test the create basic service array
+        Test the default layout calculations.
         """
-        # GIVEN: A new service manager instance.
-        service_manager = ServiceManager(None)
-        # WHEN: when the basic service array is created.
-        service_manager._save_lite = False
-        service_manager.service_theme = 'test_theme'
-        service = service_manager.create_basic_service()[0]
-        # THEN: The the controller should be registered in the registry.
-        self.assertNotEqual(service, None, 'The base service should be created')
-        self.assertEqual(service['openlp_core']['service-theme'], 'test_theme', 'The test theme should be saved')
-        self.assertEqual(service['openlp_core']['lite-service'], False, 'The lite service should be saved')
+        # GIVEN: A new renderer instance.
+        renderer = Renderer()
+        # WHEN: given the default screen size has been created.
+        # THEN: The renderer have created a default screen.
+        self.assertEqual(renderer.width, 1024, 'The base renderer should be a live controller')
+        self.assertEqual(renderer.height, 768, 'The base renderer should be a live controller')
+        self.assertEqual(renderer.screen_ratio, 0.75, 'The base renderer should be a live controller')
+        self.assertEqual(renderer.footer_start, 691, 'The base renderer should be a live controller')
