@@ -57,9 +57,7 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Initialise the renderer.
         """
-        print("Renderer - before super")
         super(Renderer, self).__init__(None)
-        print("Renderer - after super")
         # Need live behaviour if this is also working as a pseudo MainDisplay.
         self.is_live = True
         self.screens = ScreenList()
@@ -580,7 +578,6 @@ class Renderer(OpenLPMixin, RegistryMixin):
         """
         Adds the theme manager to the class dynamically
         """
-        print("renderer _get_theme_manager")
         if not hasattr(self, '_theme_manager') or not self._theme_manager :
             self._theme_manager = Registry().get('theme_manager')
         return self._theme_manager

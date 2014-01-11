@@ -63,7 +63,6 @@ class Display(QtGui.QGraphicsView):
         """
         Constructor
         """
-        print("Display - before super", parent, type(parent))
         self.is_live = False
         if hasattr(parent, 'is_live') and parent.is_live:
             self.is_live = True
@@ -73,7 +72,6 @@ class Display(QtGui.QGraphicsView):
             self.parent = lambda: parent
         else:
             super(Display, self).__init__(parent)
-        print("Display - after super")
         self.controller = parent
         self.screen = {}
         # FIXME: On Mac OS X (tested on 10.7) the display screen is corrupt with
@@ -128,9 +126,7 @@ class MainDisplay(OpenLPMixin, Display):
         """
         Constructor
         """
-        print("MainDisplay - before super")
         super(MainDisplay, self).__init__(parent)
-        print("MainDisplay - after super")
         self.screens = ScreenList()
         self.rebuild_css = False
         self.hide_mode = None
