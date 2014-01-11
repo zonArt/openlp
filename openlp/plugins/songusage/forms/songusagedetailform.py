@@ -66,8 +66,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
         """
         Triggered when the Directory selection button is clicked
         """
-        path = QtGui.QFileDialog.getExistingDirectory(self,
-            translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
+        path = QtGui.QFileDialog.getExistingDirectory(
+            self, translate('SongUsagePlugin.SongUsageDetailForm', 'Output File Location'),
             Settings().value(self.plugin.settings_section + '/last directory export'))
         if path:
             Settings().setValue(self.plugin.settings_section + '/last directory export', path)
@@ -83,7 +83,7 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
             self.main_window.error_message(
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Output Path Not Selected'),
                 translate('SongUsagePlugin.SongUsageDetailForm', 'You have not set a valid output location for your'
-                    ' song usage report. Please select an existing path on your computer.')
+                          ' song usage report. \nPlease select an existing path on your computer.')
             )
             return
         check_directory_exists(path)
@@ -109,8 +109,8 @@ class SongUsageDetailForm(QtGui.QDialog, Ui_SongUsageDetailDialog):
                 file_handle.write(record.encode('utf-8'))
             self.main_window.information_message(
                 translate('SongUsagePlugin.SongUsageDetailForm', 'Report Creation'),
-                translate('SongUsagePlugin.SongUsageDetailForm', 'Report \n%s \n'
-                    'has been successfully created. ') % report_file_name
+                translate('SongUsagePlugin.SongUsageDetailForm',
+                          'Report \n%s \nhas been successfully created. ') % report_file_name
             )
         except IOError:
             log.exception('Failed to write out song usage records')
