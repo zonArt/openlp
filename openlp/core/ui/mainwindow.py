@@ -291,7 +291,7 @@ class Ui_MainWindow(object):
         self.about_item.setMenuRole(QtGui.QAction.AboutRole)
         if os.name == 'nt':
             self.local_help_file = os.path.join(AppLocation.get_directory(AppLocation.AppDir), 'OpenLP.chm')
-            self.offline_help_item = create_action(main_window, 'offline_help_item',
+            self.offline_help_item = create_action(main_window, 'offlineHelpItem',
                                                    icon=':/system/system_help_contents.png',
                                                    can_shortcuts=True,
                                                    category=UiStrings().Help, triggers=self.on_offline_help_clicked)
