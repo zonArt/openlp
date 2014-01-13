@@ -156,13 +156,6 @@ class ThemesTab(SettingsTab):
             self.settings_form.register_post_process('theme_update_global')
         self.tab_visited = False
 
-    def post_set_up(self):
-        """
-        After setting things up...
-        """
-        #Registry().execute('theme_update_global')
-        pass
-
     def on_song_level_button_clicked(self):
         """
         Set the theme level
