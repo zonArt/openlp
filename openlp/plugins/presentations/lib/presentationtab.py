@@ -101,7 +101,6 @@ class PresentationTab(SettingsTab):
         self.right_column.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred)
         self.right_layout.addStretch()
         # Signals and slots
-        self.pdf_program_path.editingFinished.connect(self.on_pdf_program_path_edit_finished)
         self.pdf_program_browse_button.clicked.connect(self.on_pdf_program_browse_button_clicked)
         self.pdf_program_check_box.clicked.connect(self.on_pdf_program_check_box_clicked)
 
@@ -139,7 +138,6 @@ class PresentationTab(SettingsTab):
         # load pdf-program settings
         enable_pdf_program = Settings().value(self.settings_section + '/enable_pdf_program')
         self.pdf_program_check_box.setChecked(enable_pdf_program)
-        self.pdf_program_path.setReadOnly(not enable_pdf_program)
         self.pdf_program_path.setPalette(self.get_grey_text_palette(not enable_pdf_program))
         self.pdf_program_browse_button.setEnabled(enable_pdf_program)
         pdf_program = Settings().value(self.settings_section + '/pdf_program')
@@ -198,28 +196,21 @@ class PresentationTab(SettingsTab):
             checkbox.setEnabled(controller.is_available())
             self.set_controller_text(checkbox, controller)
 
-    def on_pdf_program_path_edit_finished(self):
-        """
-        After selecting/typing in a program it is validated that it is a actually ghostscript or mudraw
-        """
-        program_type = None
-        if self.pdf_program_path.text() != '':
-            program_type = PdfController.check_binary(self.pdf_program_path.text())
-            if not program_type:
-                critical_error_message_box(UiStrings().Error,
-                                           translate('PresentationPlugin.PresentationTab',
-                                                     'The program is not ghostscript or mudraw which is required.'))
-                self.pdf_program_path.setFocus()
-
     def on_pdf_program_browse_button_clicked(self):
         """
         Select the mudraw or ghostscript binary that should be used.
         """
         filename = QtGui.QFileDialog.getOpenFileName(self, translate('PresentationPlugin.PresentationTab',
-                                                                     'Select mudraw or ghostscript binary.'))
+                                                                     'Select mudraw or ghostscript binary.'),
+                                                     self.pdf_program_path.text())
         if filename:
-            self.pdf_program_path.setText(filename)
-        self.pdf_program_path.setFocus()
+            program_type = PdfController.check_binary(filename)
+            if not program_type:
+                critical_error_message_box(UiStrings().Error,
+                                           translate('PresentationPlugin.PresentationTab',
+                                                     'The program is not ghostscript or mudraw which is required.'))
+            else:
+                self.pdf_program_path.setText(filename)
 
     def on_pdf_program_check_box_clicked(self, checked):
         """
@@ -228,7 +219,6 @@ class PresentationTab(SettingsTab):
 
         :param checked: If the box is checked or not.
         """
-        self.pdf_program_path.setReadOnly(not checked)
         self.pdf_program_path.setPalette(self.get_grey_text_palette(not checked))
         self.pdf_program_browse_button.setEnabled(checked)
 
