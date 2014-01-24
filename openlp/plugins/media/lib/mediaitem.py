@@ -39,6 +39,8 @@ from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adj
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
 from openlp.core.utils import get_locale_key
+from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
+
 
 
 log = logging.getLogger(__name__)
@@ -115,6 +117,7 @@ class MediaMediaItem(MediaManagerItem):
             triggers=self.onReplaceClick)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
             visible=False, triggers=self.onResetClick)
+        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=':/songs/song_maintenance.png', triggers=self.on_load_optical)
         self.media_widget = QtGui.QWidget(self)
         self.media_widget.setObjectName('media_widget')
         self.display_layout = QtGui.QFormLayout(self.media_widget)
@@ -215,6 +218,7 @@ class MediaMediaItem(MediaManagerItem):
         check_directory_exists(self.servicePath)
         self.load_list(Settings().value(self.settings_section + '/media files'))
         self.populateDisplayTypes()
+        self.media_clip_selector_form = MediaClipSelectorForm(self, self.main_window, None)
 
     def rebuild_players(self):
         """
@@ -311,3 +315,7 @@ class MediaMediaItem(MediaManagerItem):
             if filename.lower().find(string) > -1:
                 results.append([file, filename])
         return results
+
+    def on_load_optical(self):
+        log.debug('in on_load_optical')
+        self.media_clip_selector_form.exec_()
