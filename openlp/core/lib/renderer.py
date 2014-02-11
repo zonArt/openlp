@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,9 +31,9 @@ import logging
 
 from PyQt4 import QtGui, QtCore, QtWebKit
 
-from openlp.core.common import Settings
-from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, Registry, ScreenList, \
-    ServiceItem, expand_tags, build_lyrics_format_css, build_lyrics_outline_css
+from openlp.core.common import Registry, Settings
+from openlp.core.lib import FormattingTags, ImageSource, ItemCapabilities, ScreenList, ServiceItem, expand_tags, \
+    build_lyrics_format_css, build_lyrics_outline_css
 from openlp.core.common import ThemeLevel
 from openlp.core.ui import MainDisplay
 
@@ -229,7 +229,7 @@ class Renderer(object):
             self.image_manager.add_image(
                 theme_data.background_filename, ImageSource.Theme, QtGui.QColor(theme_data.background_border_color))
         theme_data, main, footer = self.pre_render(theme_data)
-        service_item.themedata = theme_data
+        service_item.theme_data = theme_data
         service_item.main = main
         service_item.footer = footer
         service_item.render(True)
@@ -298,7 +298,7 @@ class Renderer(object):
                         if len(slides) > 1 and text:
                             # Add all slides apart from the last one the list.
                             pages.extend(slides[:-1])
-                            if  text_contains_split:
+                            if text_contains_split:
                                 text = slides[-1] + '\n[---]\n' + text
                             else:
                                 text = slides[-1] + '\n' + text
@@ -344,7 +344,7 @@ class Renderer(object):
             return QtCore.QRect(10, 0, self.width - 20, self.footer_start)
         else:
             return QtCore.QRect(theme_data.font_main_x, theme_data.font_main_y,
-                theme_data.font_main_width - 1, theme_data.font_main_height - 1)
+                                theme_data.font_main_width - 1, theme_data.font_main_height - 1)
 
     def get_footer_rectangle(self, theme_data):
         """
@@ -357,7 +357,8 @@ class Renderer(object):
             return QtCore.QRect(10, self.footer_start, self.width - 20, self.height - self.footer_start)
         else:
             return QtCore.QRect(theme_data.font_footer_x,
-                theme_data.font_footer_y, theme_data.font_footer_width - 1, theme_data.font_footer_height - 1)
+                                theme_data.font_footer_y, theme_data.font_footer_width - 1,
+                                theme_data.font_footer_height - 1)
 
     def _set_text_rectangle(self, theme_data, rect_main, rect_footer):
         """
@@ -400,8 +401,8 @@ class Renderer(object):
             </script><style>*{margin: 0; padding: 0; border: 0;}
             #main {position: absolute; top: 0px; %s %s}</style></head><body>
             <div id="main"></div></body></html>""" % \
-            (build_lyrics_format_css(theme_data, self.page_width,
-            self.page_height), build_lyrics_outline_css(theme_data))
+            (build_lyrics_format_css(theme_data, self.page_width, self.page_height),
+             build_lyrics_outline_css(theme_data))
         self.web.setHtml(html)
         self.empty_height = self.web_frame.contentsSize().height()
 

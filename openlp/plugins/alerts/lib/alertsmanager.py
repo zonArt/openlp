@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -35,8 +35,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.common import translate
-from openlp.core.lib import Registry
+from openlp.core.common import Registry, translate
 
 
 log = logging.getLogger(__name__)
@@ -60,6 +59,8 @@ class AlertsManager(QtCore.QObject):
     def alert_text(self, message):
         """
         Called via a alerts_text event. Message is single element array containing text.
+
+        :param message: The message text to be displayed
         """
         if message:
             self.display_alert(message[0])
@@ -68,8 +69,7 @@ class AlertsManager(QtCore.QObject):
         """
         Called from the Alert Tab to display an alert.
 
-        ``text``
-            display text
+        :param text: The text to display
         """
         log.debug('display alert called %s' % text)
         if text:
@@ -99,8 +99,7 @@ class AlertsManager(QtCore.QObject):
         """
         Time has finished so if our time then request the next Alert if there is one and reset the timer.
 
-        ``event``
-            the QT event that has been triggered.
+        :param event: the QT event that has been triggered.
         """
         log.debug('timer event')
         if event.timerId() == self.timer_id:

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -97,8 +97,8 @@ def upgrade_db(url, upgrade):
         pass
 
     metadata_table = Table('metadata', metadata,
-        Column('key', types.Unicode(64), primary_key=True),
-        Column('value', types.UnicodeText(), default=None)
+                           Column('key', types.Unicode(64), primary_key=True),
+                           Column('value', types.UnicodeText(), default=None)
     )
     metadata_table.create(checkfirst=True)
     mapper(Metadata, metadata_table)
@@ -199,11 +199,10 @@ class Manager(object):
             else:
                 self.db_url = 'sqlite:///%s/%s.sqlite' % (AppLocation.get_section_data_path(plugin_name), plugin_name)
         else:
-            self.db_url = '%s://%s:%s@%s/%s' % (db_type,
-                urlquote(settings.value('db username')),
-                urlquote(settings.value('db password')),
-                urlquote(settings.value('db hostname')),
-                urlquote(settings.value('db database')))
+            self.db_url = '%s://%s:%s@%s/%s' % (db_type, urlquote(settings.value('db username')),
+                                                urlquote(settings.value('db password')),
+                                                urlquote(settings.value('db hostname')),
+                                                urlquote(settings.value('db database')))
             if db_type == 'mysql':
                 db_encoding = settings.value('db encoding')
                 self.db_url += '?charset=%s' % urlquote(db_encoding)
@@ -214,18 +213,17 @@ class Manager(object):
                 critical_error_message_box(
                     translate('OpenLP.Manager', 'Database Error'),
                     translate('OpenLP.Manager', 'The database being loaded was created in a more recent version of '
-                        'OpenLP. The database is version %d, while OpenLP expects version %d. The database will not '
-                        'be loaded.\n\nDatabase: %s') % (db_ver, up_ver, self.db_url)
+                              'OpenLP. The database is version %d, while OpenLP expects version %d. The database will '
+                              'not be loaded.\n\nDatabase: %s') % (db_ver, up_ver, self.db_url)
                 )
                 return
         try:
             self.session = init_schema(self.db_url)
         except (SQLAlchemyError, DBAPIError):
             log.exception('Error loading database: %s', self.db_url)
-            critical_error_message_box(
-                translate('OpenLP.Manager', 'Database Error'),
-                translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s') % self.db_url
-            )
+            critical_error_message_box(translate('OpenLP.Manager', 'Database Error'),
+                                       translate('OpenLP.Manager', 'OpenLP cannot load your database.\n\nDatabase: %s')
+                                       % self.db_url)
 
     def save_object(self, object_instance, commit=True):
         """

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -33,8 +33,8 @@ import shutil
 
 from PyQt4 import QtCore
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists
-from openlp.core.lib import Registry, create_thumb, validate_thumb
+from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists
+from openlp.core.lib import create_thumb, validate_thumb
 
 log = logging.getLogger(__name__)
 
@@ -298,8 +298,8 @@ class PresentationDocument(object):
 
 class PresentationController(object):
     """
-    This class is used to control interactions with presentation applications by creating a runtime environment. This is
-    a base class for presentation controllers to inherit from.
+    This class is used to control interactions with presentation applications by creating a runtime environment.
+    This is a base class for presentation controllers to inherit from.
 
     To create a new controller, take a copy of this file and name it so it ends with ``controller.py``, i.e.
     ``foobarcontroller.py``. Make sure it inherits
@@ -347,8 +347,7 @@ class PresentationController(object):
     """
     log.info('PresentationController loaded')
 
-    def __init__(self, plugin=None, name='PresentationController',
-        document_class=PresentationDocument):
+    def __init__(self, plugin=None, name='PresentationController', document_class=PresentationDocument):
         """
         This is the constructor for the presentationcontroller object. This provides an easy way for descendent plugins
         to populate common data. This method *must* be overridden, like so::

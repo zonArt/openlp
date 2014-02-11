@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -131,7 +131,7 @@ class OSISBible(BibleDB):
                     if not language_id:
                         language_id = self.get_language(bible_name)
                         if not language_id:
-                            log.exception('Importing books from "%s" failed' % self.filename)
+                            log.error('Importing books from "%s" failed' % self.filename)
                             return False
                     match_count += 1
                     book = str(match.group(1))
@@ -140,7 +140,7 @@ class OSISBible(BibleDB):
                     verse_text = match.group(4)
                     book_ref_id = self.get_book_ref_id_by_name(book, book_count, language_id)
                     if not book_ref_id:
-                        log.exception('Importing books from "%s" failed' % self.filename)
+                        log.error('Importing books from "%s" failed' % self.filename)
                         return False
                     book_details = BiblesResourcesDB.get_book_by_id(book_ref_id)
                     if not db_book or db_book.name != book_details['name']:

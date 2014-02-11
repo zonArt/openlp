@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -39,8 +39,8 @@ import uuid
 
 from PyQt4 import QtGui
 
-from openlp.core.common import Settings, translate
-from openlp.core.lib import ImageSource, Registry, build_icon, clean_tags, expand_tags
+from openlp.core.common import Registry, Settings, translate
+from openlp.core.lib import ImageSource, build_icon, clean_tags, expand_tags
 
 log = logging.getLogger(__name__)
 
@@ -161,7 +161,7 @@ class ServiceItem(object):
         self.capabilities = []
         self.is_valid = True
         self.icon = None
-        self.themedata = None
+        self.theme_data = None
         self.main = None
         self.footer = None
         self.bg_image_bytes = None
@@ -238,7 +238,7 @@ class ServiceItem(object):
         self.bg_image_bytes = None
         if not provides_own_theme_data:
             self.renderer.set_item_theme(self.theme)
-            self.themedata, self.main, self.footer = self.renderer.pre_render()
+            self.theme_data, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug('Formatting slides: %s' % self.title)
             # Save rendered pages to this dict. In the case that a slide is used

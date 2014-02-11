@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -27,28 +27,43 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-This module contains tests for the presentationcontroller module of the Presentations plugin.
+This module contains tests for the Presentation Controller.
 """
-
 from unittest import TestCase
 
+from openlp.plugins.presentations.lib.presentationcontroller import PresentationController, PresentationDocument
 from tests.functional import MagicMock, patch
 
-from openlp.plugins.presentations.lib.presentationcontroller import PresentationDocument
+class TestPresentationController(TestCase):
+    """
+    Test the PresentationController.
+    """
+    # TODO: Items left to test
+    #   PresentationController
+    #       __init__
+    #       enabled
+    #       is_available
+    #       check_available
+    #       start_process
+    #       kill
+    #       add_document
+    #       remove_doc
+    #       close_presentation
+    #       _get_plugin_manager
 
-# TODO: Items left to test
-#   PresentationController
-#       __init__
-#       enabled
-#       is_available
-#       check_available
-#       start_process
-#       kill
-#       add_document
-#       remove_doc
-#       close_presentation
-#       _get_plugin_manager
+    def constructor_tvest(self):
+        """
+        Test the Constructor
+        """
+        # GIVEN: No presentation controller
+        controller = None
 
+        # WHEN: The presentation controller object is created
+        controller = PresentationController(plugin=MagicMock())
+
+        # THEN: The name of the presentation controller should be correct
+        self.assertEqual('PresentationController', controller.name,
+                         'The name of the presentation controller should be correct')
 
 class TestPresentationDocument(TestCase):
     """

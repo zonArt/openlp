@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -36,7 +36,7 @@ import json
 
 from xml.dom.minidom import Document
 from lxml import etree, objectify
-from openlp.core.common import AppLocation
+from openlp.core.common import AppLocation, de_hump
 
 from openlp.core.lib import str_to_bool, ScreenList, get_text_file_string
 
@@ -150,16 +150,13 @@ class VerticalType(object):
 BOOLEAN_LIST = ['bold', 'italics', 'override', 'outline', 'shadow', 'slide_transition']
 
 INTEGER_LIST = ['size', 'line_adjustment', 'x', 'height', 'y', 'width', 'shadow_size', 'outline_size',
-    'horizontal_align', 'vertical_align', 'wrap_style']
+                'horizontal_align', 'vertical_align', 'wrap_style']
 
 
 class ThemeXML(object):
     """
     A class to encapsulate the Theme XML.
     """
-    FIRST_CAMEL_REGEX = re.compile('(.)([A-Z][a-z]+)')
-    SECOND_CAMEL_REGEX = re.compile('([a-z0-9])([A-Z])')
-
     def __init__(self):
         """
         Initialise the theme object.
@@ -260,7 +257,7 @@ class ThemeXML(object):
         # Create direction element
         self.child_element(background, 'direction', str(direction))
 
-    def add_background_image(self, filename, borderColor):
+    def add_background_image(self, filename, border_color):
         """
         Add a image background.
 
@@ -273,11 +270,11 @@ class ThemeXML(object):
         # Create Filename element
         self.child_element(background, 'filename', filename)
         # Create endColor element
-        self.child_element(background, 'borderColor', str(borderColor))
+        self.child_element(background, 'borderColor', str(border_color))
 
     def add_font(self, name, color, size, override, fonttype='main', bold='False', italics='False',
-        line_adjustment=0, xpos=0, ypos=0, width=0, height=0, outline='False', outline_color='#ffffff',
-        outline_pixel=2, shadow='False', shadow_color='#ffffff', shadow_pixel=5):
+                 line_adjustment=0, xpos=0, ypos=0, width=0, height=0, outline='False', outline_color='#ffffff',
+                 outline_pixel=2, shadow='False', shadow_color='#ffffff', shadow_pixel=5):
         """
         Add a Font.
 
@@ -532,7 +529,7 @@ class ThemeXML(object):
         reject, master, element, value = self._translate_tags(master, element, value)
         if reject:
             return
-        field = self._de_hump(element)
+        field = de_hump(element)
         tag = master + '_' + field
         if field in BOOLEAN_LIST:
             setattr(self, tag, str_to_bool(value))
@@ -556,13 +553,6 @@ class ThemeXML(object):
             if key[0:1] != '_':
                 theme_strings.append('%30s: %s' % (key, getattr(self, key)))
         return '\n'.join(theme_strings)
-
-    def _de_hump(self, name):
-        """
-        Change Camel Case string to python string
-        """
-        sub_name = ThemeXML.FIRST_CAMEL_REGEX.sub(r'\1_\2', name)
-        return ThemeXML.SECOND_CAMEL_REGEX.sub(r'\1_\2', sub_name).lower()
 
     def _build_xml_from_attrs(self):
         """

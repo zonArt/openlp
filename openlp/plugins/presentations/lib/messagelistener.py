@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -31,7 +31,7 @@ import logging
 
 from PyQt4 import QtCore
 
-from openlp.core.lib import Registry
+from openlp.core.common import Registry
 from openlp.core.ui import HideMode
 
 log = logging.getLogger(__name__)
@@ -281,7 +281,7 @@ class Controller(object):
 
 class MessageListener(object):
     """
-    This is the Presentation listener who acts on events from the slide controller and passes the messages on the the
+    This is the Presentation listener who acts on events from the slide controller and passes the messages on the
     correct presentation handlers
     """
     log.info('Message Listener loaded')
@@ -316,7 +316,7 @@ class MessageListener(object):
         hide_mode = message[2]
         file = item.get_frame_path()
         self.handler = item.processor
-        if self.handler == self.media_item.Automatic:
+        if self.handler == self.media_item.automatic:
             self.handler = self.media_item.findControllerByType(file)
             if not self.handler:
                 return

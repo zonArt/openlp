@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -86,7 +86,7 @@ from .starttimeform import StartTimeForm
 from .maindisplay import MainDisplay, Display
 from .servicenoteform import ServiceNoteForm
 from .serviceitemeditform import ServiceItemEditForm
-from .slidecontroller import SlideController, DisplayController
+from .slidecontroller import SlideController, DisplayController, PreviewController, LiveController
 from .splashscreen import SplashScreen
 from .generaltab import GeneralTab
 from .themestab import ThemesTab
@@ -99,11 +99,10 @@ from .formattingtagcontroller import FormattingTagController
 from .shortcutlistform import ShortcutListForm
 from .mediadockmanager import MediaDockManager
 from .servicemanager import ServiceManager
-from .thememanagerhelper import ThemeManagerHelper
 from .thememanager import ThemeManager
 
 __all__ = ['SplashScreen', 'AboutForm', 'SettingsForm', 'MainDisplay', 'SlideController', 'ServiceManager',
     'ThemeManager', 'MediaDockManager', 'ServiceItemEditForm', 'FirstTimeForm', 'FirstTimeLanguageForm', 'ThemeForm',
     'ThemeLayoutForm', 'FileRenameForm', 'StartTimeForm', 'MainDisplay', 'Display', 'ServiceNoteForm',
     'SlideController', 'DisplayController', 'GeneralTab', 'ThemesTab', 'AdvancedTab', 'PluginForm',
-    'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController', 'ThemeManagerHelper']
+    'FormattingTagForm', 'ShortcutListForm', 'FormattingTagController']

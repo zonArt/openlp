@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -127,9 +127,15 @@ __default_settings__ = {
 
 
 class AlertsPlugin(Plugin):
+    """
+    The Alerts Plugin Class
+    """
     log.info('Alerts Plugin loaded')
 
     def __init__(self):
+        """
+        Class __init__ method
+        """
         super(AlertsPlugin, self).__init__('alerts', __default_settings__, settings_tab_class=AlertsTab)
         self.weight = -3
         self.icon_path = ':/plugins/plugin_alerts.png'
@@ -142,17 +148,20 @@ class AlertsPlugin(Plugin):
         """
         Give the alerts plugin the opportunity to add items to the **Tools** menu.
 
-        ``tools_menu``
-            The actual **Tools** menu item, so that your actions can use it as their parent.
+        :param tools_menu: The actual **Tools** menu item, so that your actions can use it as their parent.
         """
         log.info('add tools menu')
         self.tools_alert_item = create_action(tools_menu, 'toolsAlertItem',
-            text=translate('AlertsPlugin', '&Alert'), icon=':/plugins/plugin_alerts.png',
-            statustip=translate('AlertsPlugin', 'Show an alert message.'),
-            visible=False, can_shortcuts=True, triggers=self.on_alerts_trigger)
+                                              text=translate('AlertsPlugin', '&Alert'),
+                                              icon=':/plugins/plugin_alerts.png',
+                                              statustip=translate('AlertsPlugin', 'Show an alert message.'),
+                                              visible=False, can_shortcuts=True, triggers=self.on_alerts_trigger)
         self.main_window.tools_menu.addAction(self.tools_alert_item)
 
     def initialise(self):
+        """
+        Initialise plugin
+        """
         log.info('Alerts Initialising')
         super(AlertsPlugin, self).initialise()
         self.tools_alert_item.setVisible(True)
@@ -171,16 +180,27 @@ class AlertsPlugin(Plugin):
         action_list.remove_action(self.tools_alert_item, 'Tools')
 
     def toggle_alerts_state(self):
+        """
+        Switch the alerts state
+        """
         self.alerts_active = not self.alerts_active
         Settings().setValue(self.settings_section + '/active', self.alerts_active)
 
     def on_alerts_trigger(self):
+        """
+        Start of the Alerts dialog triggered from the main menu.
+        """
         self.alert_form.load_list()
         self.alert_form.exec_()
 
     def about(self):
+        """
+        Plugin Alerts about method
+
+        :return: text
+        """
         about_text = translate('AlertsPlugin', '<strong>Alerts Plugin</strong>'
-            '<br />The alert plugin controls the displaying of nursery alerts on the display screen.')
+                               '<br />The alert plugin controls the displaying of alerts on the display screen.')
         return about_text
 
     def set_plugin_text_strings(self):
@@ -209,7 +229,7 @@ class AlertsPlugin(Plugin):
         """
         align = VerticalType.Names[self.settings_tab.location]
         return CSS % (align, self.settings_tab.font_face, self.settings_tab.font_size, self.settings_tab.font_color,
-            self.settings_tab.background_color)
+                      self.settings_tab.background_color)
 
     def get_display_html(self):
         """
@@ -219,12 +239,11 @@ class AlertsPlugin(Plugin):
 
     def refresh_css(self, frame):
         """
-        Trigger an update of the CSS in the maindisplay.
+        Trigger an update of the CSS in the main display.
 
-        ``frame``
-            The Web frame holding the page.
+        :param frame: The Web frame holding the page.
         """
         align = VerticalType.Names[self.settings_tab.location]
         frame.evaluateJavaScript('update_css("%s", "%s", "%s", "%s", "%s")' %
-            (align, self.settings_tab.font_face, self.settings_tab.font_size,
-            self.settings_tab.font_color, self.settings_tab.background_color))
+                                 (align, self.settings_tab.font_face, self.settings_tab.font_size,
+                                 self.settings_tab.font_color, self.settings_tab.background_color))

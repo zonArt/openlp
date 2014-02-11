@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -32,8 +32,8 @@ import os
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import AppLocation, Settings, check_directory_exists, UiStrings, translate
-from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, Registry, ServiceItem, ServiceItemContext, \
+from openlp.core.common import Registry, AppLocation, Settings, check_directory_exists, UiStrings, translate
+from openlp.core.lib import ItemCapabilities, MediaManagerItem,MediaType, ServiceItem, ServiceItemContext, \
     build_icon, check_item_selected
 from openlp.core.lib.ui import critical_error_message_box, create_horizontal_adjusting_combo_box
 from openlp.core.ui import DisplayController, Display, DisplayControllerType
@@ -94,7 +94,7 @@ class MediaMediaItem(MediaManagerItem):
         self.reset_action.setToolTip(UiStrings().ResetLiveBG)
         self.automatic = UiStrings().Automatic
         self.display_type_label.setText(translate('MediaPlugin.MediaItem', 'Use Player:'))
-        self.rebuild_players()
+        #self.rebuild_players()
 
     def required_icons(self):
         """
@@ -112,9 +112,9 @@ class MediaMediaItem(MediaManagerItem):
     def add_end_header_bar(self):
         # Replace backgrounds do not work at present so remove functionality.
         self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_blank.png',
-            triggers=self.onReplaceClick)
+                                                              triggers=self.on_replace_click)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
-            visible=False, triggers=self.onResetClick)
+                                                            visible=False, triggers=self.on_reset_click)
         self.media_widget = QtGui.QWidget(self)
         self.media_widget.setObjectName('media_widget')
         self.display_layout = QtGui.QFormLayout(self.media_widget)
@@ -128,16 +128,16 @@ class MediaMediaItem(MediaManagerItem):
         self.display_layout.addRow(self.display_type_label, self.display_type_combo_box)
         # Add the Media widget to the page layout.
         self.page_layout.addWidget(self.media_widget)
-        self.display_type_combo_box.currentIndexChanged.connect(self.overridePlayerChanged)
+        self.display_type_combo_box.currentIndexChanged.connect(self.override_player_changed)
 
-    def overridePlayerChanged(self, index):
+    def override_player_changed(self, index):
         player = get_media_players()[0]
         if index == 0:
             set_media_players(player)
         else:
             set_media_players(player, player[index-1])
 
-    def onResetClick(self):
+    def on_reset_click(self):
         """
         Called to reset the Live background with the media selected,
         """
@@ -150,12 +150,13 @@ class MediaMediaItem(MediaManagerItem):
         """
         self.reset_action.setVisible(False)
 
-    def onReplaceClick(self):
+    def on_replace_click(self):
         """
         Called to replace Live background with the media selected.
         """
         if check_item_selected(self.list_view,
-                translate('MediaPlugin.MediaItem', 'You must select a media file to replace the background with.')):
+                               translate('MediaPlugin.MediaItem', 
+                                         'You must select a media file to replace the background with.')):
             item = self.list_view.currentItem()
             filename = item.data(QtCore.Qt.UserRole)
             if os.path.exists(filename):
@@ -168,14 +169,16 @@ class MediaMediaItem(MediaManagerItem):
                     self.reset_action.setVisible(True)
                 else:
                     critical_error_message_box(UiStrings().LiveBGError,
-                        translate('MediaPlugin.MediaItem', 'There was no display item to amend.'))
+                                               translate('MediaPlugin.MediaItem', 
+                                                         'There was no display item to amend.'))
             else:
                 critical_error_message_box(UiStrings().LiveBGError,
-                    translate('MediaPlugin.MediaItem',
-                    'There was a problem replacing your background, the media file "%s" no longer exists.') % filename)
+                                           translate('MediaPlugin.MediaItem',
+                                                     'There was a problem replacing your background, '
+                                                     'the media file "%s" no longer exists.') % filename)
 
     def generate_slide_data(self, service_item, item=None, xml_version=False, remote=False,
-            context=ServiceItemContext.Live):
+                            context=ServiceItemContext.Live):
         """
         Generate the slide data. Needs to be implemented by the plugin.
         """
@@ -211,16 +214,16 @@ class MediaMediaItem(MediaManagerItem):
     def initialise(self):
         self.list_view.clear()
         self.list_view.setIconSize(QtCore.QSize(88, 50))
-        self.servicePath = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
-        check_directory_exists(self.servicePath)
+        self.service_path = os.path.join(AppLocation.get_section_data_path(self.settings_section), 'thumbnails')
+        check_directory_exists(self.service_path)
         self.load_list(Settings().value(self.settings_section + '/media files'))
-        self.populateDisplayTypes()
+        self.populate_display_types()
 
     def rebuild_players(self):
         """
         Rebuild the tab in the media manager when changes are made in the settings.
         """
-        self.populateDisplayTypes()
+        self.populate_display_types()
         self.on_new_file_masks = translate('MediaPlugin.MediaItem', 'Videos (%s);;Audio (%s);;%s (*)') % (
             ' '.join(self.media_controller.video_extensions_list),
             ' '.join(self.media_controller.audio_extensions_list), UiStrings().AllFiles)
@@ -228,25 +231,25 @@ class MediaMediaItem(MediaManagerItem):
     def display_setup(self):
         self.media_controller.setup_display(self.display_controller.preview_display, False)
 
-    def populateDisplayTypes(self):
+    def populate_display_types(self):
         """
         Load the combobox with the enabled media players,  allowing user to select a specific player if settings allow.
         """
-        # block signals to avoid unnecessary overridePlayerChanged Signals while combo box creation
+        # block signals to avoid unnecessary override_player_changed Signals while combo box creation
         self.display_type_combo_box.blockSignals(True)
         self.display_type_combo_box.clear()
-        usedPlayers, overridePlayer = get_media_players()
+        used_players, override_player = get_media_players()
         media_players = self.media_controller.media_players
-        currentIndex = 0
-        for player in usedPlayers:
+        current_index = 0
+        for player in used_players:
             # load the drop down selection
             self.display_type_combo_box.addItem(media_players[player].original_name)
-            if overridePlayer == player:
-                currentIndex = len(self.display_type_combo_box)
+            if override_player == player:
+                current_index = len(self.display_type_combo_box)
         if self.display_type_combo_box.count() > 1:
             self.display_type_combo_box.insertItem(0, self.automatic)
-            self.display_type_combo_box.setCurrentIndex(currentIndex)
-        if overridePlayer:
+            self.display_type_combo_box.setCurrentIndex(current_index)
+        if override_player:
             self.media_widget.show()
         else:
             self.media_widget.hide()
@@ -257,7 +260,7 @@ class MediaMediaItem(MediaManagerItem):
         Remove a media item from the list.
         """
         if check_item_selected(self.list_view,
-                translate('MediaPlugin.MediaItem', 'You must select a media file to delete.')):
+                               translate('MediaPlugin.MediaItem', 'You must select a media file to delete.')):
             row_list = [item.row() for item in self.list_view.selectedIndexes()]
             row_list.sort(reverse=True)
             for row in row_list:
@@ -266,25 +269,25 @@ class MediaMediaItem(MediaManagerItem):
 
     def load_list(self, media, target_group=None):
         # Sort the media by its filename considering language specific characters.
-        media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
+        media.sort(key=lambda file_name: get_locale_key(os.path.split(str(file_name))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
             if not os.path.exists(track):
-                filename = os.path.split(str(track))[1]
-                item_name = QtGui.QListWidgetItem(filename)
+                file_name = os.path.split(str(track))[1]
+                item_name = QtGui.QListWidgetItem(file_name)
                 item_name.setIcon(ERROR_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
             elif track_info.isFile():
-                filename = os.path.split(str(track))[1]
-                item_name = QtGui.QListWidgetItem(filename)
-                if '*.%s' % (filename.split('.')[-1].lower()) in self.media_controller.audio_extensions_list:
+                file_name = os.path.split(str(track))[1]
+                item_name = QtGui.QListWidgetItem(file_name)
+                if '*.%s' % (file_name.split('.')[-1].lower()) in self.media_controller.audio_extensions_list:
                     item_name.setIcon(AUDIO_ICON)
                 else:
                     item_name.setIcon(VIDEO_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
             else:
-                filename = os.path.split(str(track))[1]
-                item_name = QtGui.QListWidgetItem(filename)
+                file_name = os.path.split(str(track))[1]
+                item_name = QtGui.QListWidgetItem(file_name)
                 item_name.setIcon(build_icon(DVD_ICON))
                 item_name.setData(QtCore.Qt.UserRole, track)
             item_name.setToolTip(track)
@@ -302,7 +305,7 @@ class MediaMediaItem(MediaManagerItem):
         media = [x for x in media if os.path.splitext(x)[1] in extension]
         return media
 
-    def search(self, string, showError):
+    def search(self, string, show_error):
         files = Settings().value(self.settings_section + '/media files')
         results = []
         string = string.lower()

@@ -4,8 +4,8 @@
 ###############################################################################
 # OpenLP - Open Source Lyrics Projection                                      #
 # --------------------------------------------------------------------------- #
-# Copyright (c) 2008-2013 Raoul Snyman                                        #
-# Portions copyright (c) 2008-2013 Tim Bentley, Gerald Britton, Jonathan      #
+# Copyright (c) 2008-2014 Raoul Snyman                                        #
+# Portions copyright (c) 2008-2014 Tim Bentley, Gerald Britton, Jonathan      #
 # Corwin, Samuel Findlay, Michael Gorven, Scott Guerrieri, Matthias Hub,      #
 # Meinert Jordan, Armin Köhler, Erik Lundin, Edwin Lunando, Brian T. Meyer.   #
 # Joshua Miller, Stevan Pettit, Andreas Preikschat, Mattias Põldaru,          #
@@ -29,15 +29,14 @@
 """
 The actual print service dialog
 """
-import cgi
 import datetime
 import os
 
 from PyQt4 import QtCore, QtGui
 from lxml import html
 
-from openlp.core.common import Settings, UiStrings, translate
-from openlp.core.lib import Registry, get_text_file_string
+from openlp.core.common import Registry, Settings, UiStrings, translate
+from openlp.core.lib import get_text_file_string
 from openlp.core.ui.printservicedialog import Ui_PrintServiceDialog, ZoomSize
 from openlp.core.common import AppLocation
 
@@ -175,7 +174,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             custom_css = DEFAULT_CSS
         self._add_element('style', custom_css, html_data.head, attribute=('type', 'text/css'))
         self._add_element('body', parent=html_data)
-        self._add_element('h1', cgi.escape(self.title_line_edit.text()), html_data.body, classId='serviceTitle')
+        self._add_element('h1', html.escape(self.title_line_edit.text()), html_data.body, classId='serviceTitle')
         for index, item in enumerate(self.service_manager.service_items):
             self._add_preview_item(html_data.body, item['service_item'], index)
         # Add the custom service notes:
@@ -183,7 +182,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             div = self._add_element('div', parent=html_data.body, classId='customNotes')
             self._add_element(
                 'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId='customNotesTitle')
-            self._add_element('span', cgi.escape(self.footer_text_edit.toPlainText()), div, classId='customNotesText')
+            self._add_element('span', html.escape(self.footer_text_edit.toPlainText()), div, classId='customNotesText')
         self.document.setHtml(html.tostring(html_data).decode())
         self.preview_widget.updatePreview()
 
@@ -195,7 +194,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
         # Add the title of the service item.
         item_title = self._add_element('h2', parent=div, classId='itemTitle')
         self._add_element('img', parent=item_title, attribute=('src', item.icon))
-        self._add_element('span', '&nbsp;' + cgi.escape(item.get_display_title()), item_title)
+        self._add_element('span', '&nbsp;' + html.escape(item.get_display_title()), item_title)
         if self.slide_text_check_box.isChecked():
             # Add the text of the service item.
             if item.is_text():
@@ -219,14 +218,14 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             foot_text = item.foot_text
             foot_text = foot_text.partition('<br>')[2]
             if foot_text:
-                foot_text = cgi.escape(foot_text.replace('<br>', '\n'))
+                foot_text = html.escape(foot_text.replace('<br>', '\n'))
                 self._add_element('div', foot_text.replace('\n', '<br>'), parent=div, classId='itemFooter')
         # Add service items' notes.
         if self.notes_check_box.isChecked():
             if item.notes:
                 p = self._add_element('div', classId='itemNotes', parent=div)
                 self._add_element('span', translate('OpenLP.ServiceManager', 'Notes: '), p, classId='itemNotesTitle')
-                self._add_element('span', cgi.escape(item.notes).replace('\n', '<br>'), p, classId='itemNotesText')
+                self._add_element('span', html.escape(item.notes).replace('\n', '<br>'), p, classId='itemNotesText')
         # Add play length of media files.
         if item.is_media() and self.meta_data_check_box.isChecked():
             tme = item.media_length
