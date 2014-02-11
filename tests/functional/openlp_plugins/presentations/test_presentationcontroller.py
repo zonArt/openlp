@@ -51,7 +51,7 @@ class TestPresentationController(TestCase):
     #       close_presentation
     #       _get_plugin_manager
 
-    def constructor_tvest(self):
+    def constructor_test(self):
         """
         Test the Constructor
         """
