@@ -35,6 +35,7 @@ import time
 from PyQt4 import QtCore, QtGui
 
 from openlp.plugins.media.forms.mediaclipselectordialog import Ui_MediaClipSelector
+from openlp.core.lib.ui import critical_error_message_box
 from openlp.core.ui.media.vendor import vlc
 
 log = logging.getLogger(__name__)
@@ -59,9 +60,6 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.toggle_disable_load_media(False)
         # most actions auto-connect due to the functions name, so only a few left to do
         self.close_pushbutton.clicked.connect(self.reject)
-        #self.load_disc_pushbutton.clicked.connect(self.on_load_disc_pushbutton_clicked)
-        #self.pause_pushbutton.clicked.connect(self.on_pause_pushbutton_clicked)
-        #self.play_pushbutton.clicked.connect(self.on_play_pushbutton_clicked)
 
     def reject(self):
         """
@@ -72,10 +70,16 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         QtGui.QDialog.reject(self)
 
     def exec_(self):
+        """
+        Start dialog
+        """
         self.setup_vlc()
         return QtGui.QDialog.exec_(self)
 
     def setup_vlc(self):
+        """
+        Setup VLC instance and mediaplayer
+        """
         self.vlc_instance = vlc.Instance()
         # creating an empty vlc media player
         self.vlc_media_player = self.vlc_instance.media_player_new()
@@ -102,17 +106,20 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
 
     @QtCore.pyqtSlot(bool)
     def on_load_disc_pushbutton_clicked(self, clicked):
+        """
+        Load the media when the load-button has been clicked
+        """
         self.disable_all()
         path = self.media_path_combobox.currentText()
         if path == '':
-            print('no given path')
-            # TODO: Error message
+            log.debug('no given path')
+            critical_error_message_box('Error', 'No path was given')
             self.toggle_disable_load_media(False)
             return
         self.vlc_media = self.vlc_instance.media_new_path(path)
         if not self.vlc_media:
-            print('media player is none')
-            # TODO: Error message
+            log.debug('vlc media player is none')
+            critical_error_message_box('Error', 'An error happened during initialization of VLC player')
             self.toggle_disable_load_media(False)
             return
         # put the media in the media player
@@ -120,14 +127,14 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.vlc_media_player.audio_set_mute(True)
         # start playback to get vlc to parse the media
         if self.vlc_media_player.play() < 0:
-            print('play returned error')
-            # TODO: Error message
+            log.debug('vlc play returned error')
+            critical_error_message_box('Error', 'An error happen when starting VLC player')
             self.toggle_disable_load_media(False)
             return
         self.vlc_media_player.audio_set_mute(True)
         while self.vlc_media_player.get_time() == 0:
             if self.vlc_media_player.get_state() == vlc.State.Error:
-                print('player in error state')
+                log.debug('player in error state')
                 self.toggle_disable_load_media(False)
                 return
             time.sleep(0.1)
@@ -148,25 +155,45 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.title_combo_box.setDisabled(False)
         self.toggle_disable_load_media(False)
 
-    def on_pause_pushbutton_clicked(self):
+    @QtCore.pyqtSlot(bool)
+    def on_pause_pushbutton_clicked(self, clicked):
+        """
+        Pause the playback
+        """
         self.vlc_media_player.pause()
 
-    def on_play_pushbutton_clicked(self):
+    @QtCore.pyqtSlot(bool)
+    def on_play_pushbutton_clicked(self, clicked):
+        """
+        Start the playback
+        """
         self.vlc_media_player.play()
 
-    def on_set_start_pushbutton_clicked(self):
+    @QtCore.pyqtSlot(bool)
+    def on_set_start_pushbutton_clicked(self, clicked):
+        """
+        Copy the current player position to start_timeedit
+        """
         vlc_ms_pos = self.vlc_media_player.get_time()
         time = QtCore.QTime()
         new_pos_time = time.addMSecs(vlc_ms_pos)
         self.start_timeedit.setTime(new_pos_time)
 
-    def on_set_end_pushbutton_clicked(self):
+    @QtCore.pyqtSlot(bool)
+    def on_set_end_pushbutton_clicked(self, clicked):
+        """
+        Copy the current player position to end_timeedit
+        """
         vlc_ms_pos = self.vlc_media_player.get_time()
         time = QtCore.QTime()
         new_pos_time = time.addMSecs(vlc_ms_pos)
         self.end_timeedit.setTime(new_pos_time)
 
-    def on_jump_end_pushbutton_clicked(self):
+    @QtCore.pyqtSlot(bool)
+    def on_jump_end_pushbutton_clicked(self, clicked):
+        """
+        Set the player position to the position stored in end_timeedit
+        """
         end_time = self.end_timeedit.time()
         end_time_ms = end_time.hour() * 60 * 60 * 1000 + \
                       end_time.minute() * 60 * 1000 + \
@@ -174,7 +201,11 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
                       end_time.msec()
         self.vlc_media_player.set_time(end_time_ms)
 
-    def on_jump_start_pushbutton_clicked(self):
+    @QtCore.pyqtSlot(bool)
+    def on_jump_start_pushbutton_clicked(self, clicked):
+        """
+        Set the player position to the position stored in start_timeedit
+        """
         start_time = self.start_timeedit.time()
         start_time_ms = start_time.hour() * 60 * 60 * 1000 + \
                       start_time.minute() * 60 * 1000 + \
@@ -184,12 +215,18 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
 
     @QtCore.pyqtSlot(int)
     def on_title_combo_box_currentIndexChanged(self, index):
-        print('in on_title_combo_box_changed, index: ', str(index))
+        """
+        When a new title is chosen, it is loaded by VLC and info about audio and subtitle tracks is reloaded
+        """
+        log.debug('in on_title_combo_box_changed, index: ', str(index))
         self.vlc_media_player.set_title(index)
         self.vlc_media_player.set_time(0)
         self.vlc_media_player.play()
         self.vlc_media_player.audio_set_mute(True)
         while self.vlc_media_player.get_time() == 0:
+            if self.vlc_media_player.get_state() == vlc.State.Error:
+                log.debug('player in error state')
+                return
             time.sleep(0.1)
         # pause
         self.vlc_media_player.pause()
@@ -225,25 +262,36 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
 
     @QtCore.pyqtSlot(int)
     def on_audio_tracks_combobox_currentIndexChanged(self, index):
+        """
+        When a new audio track is chosen update audio track bing played by VLC
+        """
         audio_track = self.audio_tracks_combobox.itemData(index)
-        print('in on_audio_tracks_combobox_currentIndexChanged, index: ', str(index), ' audio_track: ', audio_track)
+        log.debug('in on_audio_tracks_combobox_currentIndexChanged, index: ', str(index), ' audio_track: ', audio_track)
         if audio_track and int(audio_track) > 0:
             self.vlc_media_player.audio_set_track(int(audio_track))
 
     @QtCore.pyqtSlot(int)
     def on_subtitle_tracks_combobox_currentIndexChanged(self, index):
+        """
+        When a new subtitle track is chosen update subtitle track bing played by VLC
+        """
         subtitle_track = self.subtitle_tracks_combobox.itemData(index)
-        print('in on_subtitle_tracks_combobox_currentIndexChanged, index: ', str(index), ' subtitle_track: ', subtitle_track)
+        log.debug('in on_subtitle_tracks_combobox_currentIndexChanged, index: ', str(index), ' subtitle_track: ', subtitle_track)
         if subtitle_track:
             self.vlc_media_player.video_set_spu(int(subtitle_track))
 
     def on_position_horizontalslider_sliderMoved(self, position):
+        """
+        Set player position according to new slider position.
+        """
         self.vlc_media_player.set_time(position)
 
     def update_position(self):
+        """
+        Update slider position and displayed time according to VLC player position.
+        """
         if self.vlc_media_player:
             vlc_ms_pos = self.vlc_media_player.get_time()
-            #print('in update_position, time: ', vlc_ms_pos)
             rounded_vlc_ms_pos = int(round(vlc_ms_pos / 100.0) * 100.0)
             time = QtCore.QTime()
             new_pos_time = time.addMSecs(rounded_vlc_ms_pos)
@@ -251,6 +299,9 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
             self.position_horizontalslider.setSliderPosition(vlc_ms_pos)
 
     def disable_all(self):
+        """
+        Disable all elements in the dialog
+        """
         self.toggle_disable_load_media(True)
         self.title_combo_box.setDisabled(True)
         self.audio_tracks_combobox.setDisabled(True)
@@ -258,10 +309,20 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.toggle_disable_player(True)
 
     def toggle_disable_load_media(self, action):
+        """
+        Enable/disable load media combobox and button.
+
+        @param action: If True elements are disabled, if False they are enabled.
+        """
         self.media_path_combobox.setDisabled(action)
         self.load_disc_pushbutton.setDisabled(action)
 
     def toggle_disable_player(self, action):
+        """
+        Enable/disable player elementa.
+
+        @param action: If True elements are disabled, if False they are enabled.
+        """
         self.play_pushbutton.setDisabled(action)
         self.pause_pushbutton.setDisabled(action)
         self.position_horizontalslider.setDisabled(action)
@@ -274,3 +335,26 @@ class MediaClipSelectorForm(QtGui.QDialog, Ui_MediaClipSelector):
         self.jump_end_pushbutton.setDisabled(action)
         self.preview_pushbutton.setDisabled(action)
         self.save_pushbutton.setDisabled(action)
+
+    @QtCore.pyqtSlot(bool)
+    def on_save_pushbutton_clicked(self, checked):
+        """
+        Saves the current media and trackinfo as a clip to the mediamanager
+        """
+        log.debug('in on_save_pushbutton_clicked')
+        start_time = self.start_timeedit.time()
+        start_time_ms = start_time.hour() * 60 * 60 * 1000 + \
+                      start_time.minute() * 60 * 1000 + \
+                      start_time.second() * 1000 + \
+                      start_time.msec()
+        end_time = self.end_timeedit.time()
+        end_time_ms = end_time.hour() * 60 * 60 * 1000 + \
+                      end_time.minute() * 60 * 1000 + \
+                      end_time.second() * 1000 + \
+                      end_time.msec()
+        title = self.title_combo_box.itemData(self.title_combo_box.currentIndex())
+        audio_track = self.audio_tracks_combobox.itemData(self.audio_tracks_combobox.currentIndex())
+        subtitle_track = self.subtitle_tracks_combobox.itemData(self.subtitle_tracks_combobox.currentIndex())
+        path = self.media_path_combobox.currentText()
+        optical = 'optical:' + str(title) + ':' + str(audio_track) + ':' + str(subtitle_track) + ':' + str(start_time_ms) + ':' + str(end_time_ms) + ':' + path
+        self.media_item.add_optical_clip(optical)

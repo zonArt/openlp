@@ -40,6 +40,7 @@ from openlp.core.ui import DisplayController, Display, DisplayControllerType
 from openlp.core.ui.media import get_media_players, set_media_players
 from openlp.core.utils import get_locale_key
 from openlp.plugins.media.forms.mediaclipselectorform import MediaClipSelectorForm
+from openlp.core.ui.media.vlcplayer import VLC_AVAILABLE
 
 
 
@@ -49,7 +50,7 @@ log = logging.getLogger(__name__)
 CLAPPERBOARD = ':/media/slidecontroller_multimedia.png'
 VIDEO_ICON = build_icon(':/media/media_video.png')
 AUDIO_ICON = build_icon(':/media/media_audio.png')
-DVD_ICON = build_icon(':/media/media_video.png')
+OPTICAL_ICON = build_icon(':/media/media_optical.png')
 ERROR_ICON = build_icon(':/general/general_delete.png')
 
 
@@ -111,13 +112,18 @@ class MediaMediaItem(MediaManagerItem):
         MediaManagerItem.add_list_view_to_toolbar(self)
         self.list_view.addAction(self.replace_action)
 
+    def add_start_header_bar(self):
+        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=OPTICAL_ICON, text='Load optical disc',
+                                                            tooltip='Load optical disc', triggers=self.on_load_optical)
+        if not VLC_AVAILABLE:
+            self.load_optical.setDisabled(True)
+
     def add_end_header_bar(self):
         # Replace backgrounds do not work at present so remove functionality.
         self.replace_action = self.toolbar.add_toolbar_action('replace_action', icon=':/slides/slide_blank.png',
             triggers=self.onReplaceClick)
         self.reset_action = self.toolbar.add_toolbar_action('reset_action', icon=':/system/system_close.png',
             visible=False, triggers=self.onResetClick)
-        self.load_optical = self.toolbar.add_toolbar_action('load_optical', icon=':/songs/song_maintenance.png', triggers=self.on_load_optical)
         self.media_widget = QtGui.QWidget(self)
         self.media_widget.setObjectName('media_widget')
         self.display_layout = QtGui.QFormLayout(self.media_widget)
@@ -269,15 +275,23 @@ class MediaMediaItem(MediaManagerItem):
             Settings().setValue(self.settings_section + '/media files', self.get_file_list())
 
     def load_list(self, media, target_group=None):
-        # Sort the media by its filename considering language specific characters.
+        # Sort the media by its filename considering     language specific characters.
         media.sort(key=lambda filename: get_locale_key(os.path.split(str(filename))[1]))
         for track in media:
             track_info = QtCore.QFileInfo(track)
-            if not os.path.exists(track):
+            if track.startswith('optical:'):
+                (filename, title, audio_track, subtitle_track, start, end) = self.parse_optical_path(track)
+                optical = filename + '@' + str(title) + ':' + str(start) + '-' + str(end)
+                item_name = QtGui.QListWidgetItem(optical)
+                item_name.setIcon(build_icon(OPTICAL_ICON))
+                item_name.setData(QtCore.Qt.UserRole, track)
+                item_name.setToolTip(optical)
+            elif not os.path.exists(track):
                 filename = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
                 item_name.setIcon(ERROR_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
+                item_name.setToolTip(track)
             elif track_info.isFile():
                 filename = os.path.split(str(track))[1]
                 item_name = QtGui.QListWidgetItem(filename)
@@ -286,12 +300,7 @@ class MediaMediaItem(MediaManagerItem):
                 else:
                     item_name.setIcon(VIDEO_ICON)
                 item_name.setData(QtCore.Qt.UserRole, track)
-            else:
-                filename = os.path.split(str(track))[1]
-                item_name = QtGui.QListWidgetItem(filename)
-                item_name.setIcon(build_icon(DVD_ICON))
-                item_name.setData(QtCore.Qt.UserRole, track)
-            item_name.setToolTip(track)
+                item_name.setToolTip(track)
             self.list_view.addItem(item_name)
 
     def get_list(self, type=MediaType.Audio):
@@ -319,3 +328,22 @@ class MediaMediaItem(MediaManagerItem):
     def on_load_optical(self):
         log.debug('in on_load_optical')
         self.media_clip_selector_form.exec_()
+
+    def parse_optical_path(self, input):
+        # split the clip info
+        clip_info = input.split(sep=':')
+        title = int(clip_info[1])
+        audio_track = int(clip_info[2])
+        subtitle_track = int(clip_info[3])
+        start = float(clip_info[4])
+        end = float(clip_info[5])
+        filename = clip_info[6]
+        if len(clip_info) > 7:
+            filename += clip_info[7]
+        return filename, title, audio_track, subtitle_track, start, end
+
+    def add_optical_clip(self, optical):
+        full_list = self.get_file_list()
+        full_list.append(optical)
+        self.load_list([optical])
+        Settings().setValue(self.settings_section + '/media files', self.get_file_list())
