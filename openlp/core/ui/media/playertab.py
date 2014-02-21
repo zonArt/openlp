@@ -39,13 +39,13 @@ from openlp.core.ui.media import get_media_players, set_media_players
 
 class MediaQCheckBox(QtGui.QCheckBox):
     """
-    MediaQCheckBox adds an extra property, playerName to the QCheckBox class.
+    MediaQCheckBox adds an extra property, player_name to the QCheckBox class.
     """
     def set_player_name(self, name):
         """
         Set the player name
         """
-        self.playerName = name
+        self.player_name = name
 
 
 class PlayerTab(SettingsTab):
@@ -113,9 +113,9 @@ class PlayerTab(SettingsTab):
         self.ordering_button_layout.setObjectName('ordering_button_layout')
         self.ordering_button_layout.addStretch(1)
         self.ordering_up_button = create_button(self, 'ordering_up_button', role='up',
-            click=self.on_up_button_clicked)
+                                                click=self.on_up_button_clicked)
         self.ordering_down_button = create_button(self, 'ordering_down_button', role='down',
-            click=self.on_down_button_clicked)
+                                                  click=self.on_down_button_clicked)
         self.ordering_button_layout.addWidget(self.ordering_up_button)
         self.ordering_button_layout.addWidget(self.ordering_down_button)
         self.ordering_button_layout.addStretch(1)
@@ -135,8 +135,8 @@ class PlayerTab(SettingsTab):
         self.background_color_group_box.setTitle(UiStrings().BackgroundColor)
         self.background_color_label.setText(UiStrings().DefaultColor)
         self.information_label.setText(translate('OpenLP.PlayerTab',
-            'Visible background for videos with aspect ratio different to screen.'))
-        self.retranslatePlayers()
+                                       'Visible background for videos with aspect ratio different to screen.'))
+        self.retranslate_players()
 
     def on_background_color_button_clicked(self):
         """
@@ -151,7 +151,7 @@ class PlayerTab(SettingsTab):
         """
         Add or remove players depending on their status
         """
-        player = self.sender().playerName
+        player = self.sender().player_name
         if check_state == QtCore.Qt.Checked:
             if player not in self.used_players:
                 self.used_players.append(player)
@@ -249,9 +249,9 @@ class PlayerTab(SettingsTab):
             else:
                 checkbox.setChecked(False)
         self.update_player_list()
-        self.retranslatePlayers()
+        self.retranslate_players()
 
-    def retranslatePlayers(self):
+    def retranslate_players(self):
         """
         Translations for players is dependent on  their setup as well
          """
