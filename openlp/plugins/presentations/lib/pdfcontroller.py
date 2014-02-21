@@ -129,15 +129,16 @@ class PdfController(PresentationController):
                 if os.path.isfile(application_path + '/../mudraw.exe'):
                     self.mudrawbin = application_path + '/../mudraw.exe'
             else:
+                DEVNULL = open(os.devnull, 'wb')
                 # First try to find mupdf
                 try:
-                    self.mudrawbin = check_output(['which', 'mudraw']).decode(encoding='UTF-8').rstrip('\n')
+                    self.mudrawbin = check_output(['which', 'mudraw'], stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
                 except CalledProcessError:
                     self.mudrawbin = ''
                 # if mupdf isn't installed, fallback to ghostscript
                 if not self.mudrawbin:
                     try:
-                        self.gsbin = check_output(['which', 'gs']).rstrip('\n')
+                        self.gsbin = check_output(['which', 'gs'], stderr=DEVNULL).decode(encoding='UTF-8').rstrip('\n')
                     except CalledProcessError:
                         self.gsbin = ''
                 # Last option: check if mudraw is placed in OpenLP base folder
