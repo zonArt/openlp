@@ -1627,7 +1627,7 @@ class ServiceManager(OpenLPMixin, RegistryMixin, QtGui.QWidget, Ui_ServiceManage
         else:
             return parent_item.data(0, QtCore.Qt.UserRole)
 
-    def print_service_order(self):
+    def print_service_order(self, field=None):
         """
         Print a Service Order Sheet.
         """

@@ -311,8 +311,8 @@ class Ui_MainWindow(object):
                     self.export_language_item))
         add_actions(self.file_menu, (self.file_new_item, self.file_open_item,
                     self.file_save_item, self.file_save_as_item, self.recent_files_menu.menuAction(), None,
-                    self.file_import_menu.menuAction(), self.file_export_menu.menuAction(), None, self.print_service_order_item,
-                    self.file_exit_item))
+                    self.file_import_menu.menuAction(), self.file_export_menu.menuAction(), None,
+                    self.print_service_order_item, self.file_exit_item))
         add_actions(self.view_mode_menu, (self.mode_default_item, self.mode_setup_item, self.mode_live_item))
         add_actions(self.view_menu, (self.view_mode_menu.menuAction(), None, self.view_media_manager_item,
                     self.view_service_manager_item, self.view_theme_manager_item, None, self.view_preview_panel,
