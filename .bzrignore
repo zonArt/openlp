@@ -28,3 +28,4 @@ tests.kdev4
 *.nja
 *.orig
 __pycache__
+*.dll

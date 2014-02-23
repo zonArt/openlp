@@ -388,7 +388,7 @@ class MediaManagerItem(QtGui.QWidget):
             if target_group is None:
                 self.list_view.clear()
             self.load_list(full_list, target_group)
-            last_dir = os.path.split(str(files[0]))[0]
+            last_dir = os.path.split(files[0])[0]
             Settings().setValue(self.settings_section + '/last directory', last_dir)
             Settings().setValue('%s/%s files' % (self.settings_section, self.settings_section), self.get_file_list())
         if duplicates_found:
