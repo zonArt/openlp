@@ -26,49 +26,64 @@
 # with this program; if not, write to the Free Software Foundation, Inc., 59  #
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
+"""
+Package to test the openlp.core.ui.renderer package.
+"""
+from unittest import TestCase
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore
 
-from openlp.core.common import translate
-from openlp.core.lib.ui import create_button_box
+from openlp.core.common import Registry
+from openlp.core.lib import Renderer, ScreenList
+
+from tests.interfaces import MagicMock
+
+SCREEN = {
+    'primary': False,
+    'number': 1,
+    'size': QtCore.QRect(0, 0, 1024, 768)
+}
 
 
-class Ui_SongUsageDeleteDialog(object):
-    """
-    The Song Usage delete dialog
-    """
-    def setupUi(self, song_usage_delete_dialog):
+class TestRenderer(TestCase):
+
+    def setUp(self):
         """
-        Setup the UI
+        Set up the components need for all tests.
+        """
+        # Mocked out desktop object
+        self.desktop = MagicMock()
+        self.desktop.primaryScreen.return_value = SCREEN['primary']
+        self.desktop.screenCount.return_value = SCREEN['number']
+        self.desktop.screenGeometry.return_value = SCREEN['size']
+        self.screens = ScreenList.create(self.desktop)
+        Registry.create()
 
-        :param song_usage_delete_dialog:
+    def tearDown(self):
         """
-        song_usage_delete_dialog.setObjectName('song_usage_delete_dialog')
-        song_usage_delete_dialog.resize(291, 243)
-        self.vertical_layout = QtGui.QVBoxLayout(song_usage_delete_dialog)
-        self.vertical_layout.setSpacing(8)
-        self.vertical_layout.setContentsMargins(8, 8, 8, 8)
-        self.vertical_layout.setObjectName('vertical_layout')
-        self.delete_label = QtGui.QLabel(song_usage_delete_dialog)
-        self.delete_label.setObjectName('delete_label')
-        self.vertical_layout.addWidget(self.delete_label)
-        self.delete_calendar = QtGui.QCalendarWidget(song_usage_delete_dialog)
-        self.delete_calendar.setFirstDayOfWeek(QtCore.Qt.Sunday)
-        self.delete_calendar.setGridVisible(True)
-        self.delete_calendar.setVerticalHeaderFormat(QtGui.QCalendarWidget.NoVerticalHeader)
-        self.delete_calendar.setObjectName('delete_calendar')
-        self.vertical_layout.addWidget(self.delete_calendar)
-        self.button_box = create_button_box(song_usage_delete_dialog, 'button_box', ['cancel', 'ok'])
-        self.vertical_layout.addWidget(self.button_box)
-        self.retranslateUi(song_usage_delete_dialog)
+        Delete QApplication.
+        """
+        del self.screens
 
-    def retranslateUi(self, song_usage_delete_dialog):
+    def initial_renderer_test(self):
         """
-        Retranslate the strings
-        :param song_usage_delete_dialog:
+        Test the initial renderer state .
         """
-        song_usage_delete_dialog.setWindowTitle(
-            translate('SongUsagePlugin.SongUsageDeleteForm', 'Delete Song Usage Data'))
-        self.delete_label.setText(
-            translate('SongUsagePlugin.SongUsageDeleteForm', 'Select the date up to which the song usage data '
-                      'should be deleted. \nAll data recorded before this date will be permanently deleted.'))
+        # GIVEN: A new renderer instance.
+        renderer = Renderer()
+        # WHEN: the default renderer is built.
+        # THEN: The renderer should be a live controller.
+        self.assertEqual(renderer.is_live, True, 'The base renderer should be a live controller')
+
+    def default_screen_layout_test(self):
+        """
+        Test the default layout calculations.
+        """
+        # GIVEN: A new renderer instance.
+        renderer = Renderer()
+        # WHEN: given the default screen size has been created.
+        # THEN: The renderer have created a default screen.
+        self.assertEqual(renderer.width, 1024, 'The base renderer should be a live controller')
+        self.assertEqual(renderer.height, 768, 'The base renderer should be a live controller')
+        self.assertEqual(renderer.screen_ratio, 0.75, 'The base renderer should be a live controller')
+        self.assertEqual(renderer.footer_start, 691, 'The base renderer should be a live controller')

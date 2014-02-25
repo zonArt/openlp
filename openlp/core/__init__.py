@@ -43,7 +43,7 @@ from traceback import format_exception
 
 from PyQt4 import QtCore, QtGui
 
-from openlp.core.common import Registry, AppLocation, Settings, UiStrings, check_directory_exists
+from openlp.core.common import Registry, OpenLPMixin, AppLocation, Settings, UiStrings, check_directory_exists
 from openlp.core.lib import ScreenList
 from openlp.core.resources import qInitResources
 from openlp.core.ui.mainwindow import MainWindow
@@ -58,6 +58,7 @@ __all__ = ['OpenLP', 'main']
 
 
 log = logging.getLogger()
+
 NT_REPAIR_STYLESHEET = """
 QMainWindow::separator
 {
@@ -81,7 +82,7 @@ QToolBar
 """
 
 
-class OpenLP(QtGui.QApplication):
+class OpenLP(OpenLPMixin, QtGui.QApplication):
     """
     The core application class. This class inherits from Qt's QApplication
     class in order to provide the core of the application.
@@ -101,6 +102,8 @@ class OpenLP(QtGui.QApplication):
     def run(self, args):
         """
         Run the OpenLP application.
+
+        :param args: Some Args
         """
         self.is_event_loop_active = False
         # On Windows, the args passed into the constructor are ignored. Not very handy, so set the ones we want to use.
@@ -172,25 +175,20 @@ class OpenLP(QtGui.QApplication):
             self.shared_memory.create(1)
             return False
 
-    def hook_exception(self, exctype, value, traceback):
+    def hook_exception(self, exc_type, value, traceback):
         """
         Add an exception hook so that any uncaught exceptions are displayed in this window rather than somewhere where
         users cannot see it and cannot report when we encounter these problems.
 
-        ``exctype``
-            The class of exception.
-
-        ``value``
-            The actual exception object.
-
-        ``traceback``
-            A traceback object with the details of where the exception occurred.
+        :param exc_type: The class of exception.
+        :param value: The actual exception object.
+        :param traceback: A traceback object with the details of where the exception occurred.
         """
         # We can't log.exception here because the last exception no longer exists, we're actually busy handling it.
-        log.critical(''.join(format_exception(exctype, value, traceback)))
+        log.critical(''.join(format_exception(exc_type, value, traceback)))
         if not hasattr(self, 'exception_form'):
             self.exception_form = ExceptionForm()
-        self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exctype, value, traceback)))
+        self.exception_form.exception_text_edit.setPlainText(''.join(format_exception(exc_type, value, traceback)))
         self.set_normal_cursor()
         self.exception_form.exec_()
 
@@ -198,7 +196,6 @@ class OpenLP(QtGui.QApplication):
         """
         Wrapper to make ProcessEvents visible and named correctly
         """
-        log.debug('processing event flush')
         self.processEvents()
 
     def set_busy_cursor(self):
@@ -218,6 +215,8 @@ class OpenLP(QtGui.QApplication):
     def event(self, event):
         """
         Enables direct file opening on OS X
+
+        :param event: The event
         """
         if event.type() == QtCore.QEvent.FileOpen:
             file_name = event.file()
@@ -231,10 +230,12 @@ class OpenLP(QtGui.QApplication):
 def set_up_logging(log_path):
     """
     Setup our logging using log_path
+
+    :param log_path: the path
     """
     check_directory_exists(log_path, True)
     filename = os.path.join(log_path, 'openlp.log')
-    logfile = logging.FileHandler(filename, 'w')
+    logfile = logging.FileHandler(filename, 'w', encoding="UTF-8")
     logfile.setFormatter(logging.Formatter('%(asctime)s %(name)-55s %(levelname)-8s %(message)s'))
     log.addHandler(logfile)
     if log.isEnabledFor(logging.DEBUG):
@@ -244,7 +245,8 @@ def set_up_logging(log_path):
 def main(args=None):
     """
     The main function which parses command line options and then runs
-    the PyQt4 Application.
+
+    :param args: Some args
     """
     # Set up command line options.
     usage = 'Usage: %prog [options] [qt-options]'

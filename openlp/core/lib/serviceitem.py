@@ -31,8 +31,8 @@ The :mod:`serviceitem` provides the service item functionality including the
 type and capability of an item.
 """
 
-import cgi
 import datetime
+import html
 import logging
 import os
 import uuid
@@ -241,9 +241,8 @@ class ServiceItem(object):
             self.theme_data, self.main, self.footer = self.renderer.pre_render()
         if self.service_item_type == ServiceItemType.Text:
             log.debug('Formatting slides: %s' % self.title)
-            # Save rendered pages to this dict. In the case that a slide is used
-            # twice we can use the pages saved to the dict instead of rendering
-            # them again.
+            # Save rendered pages to this dict. In the case that a slide is used twice we can use the pages saved to
+            # the dict instead of rendering them again.
             previous_pages = {}
             for slide in self._raw_frames:
                 verse_tag = slide['verseTag']
@@ -254,11 +253,11 @@ class ServiceItem(object):
                     previous_pages[verse_tag] = (slide['raw_slide'], pages)
                 for page in pages:
                     page = page.replace('<br>', '{br}')
-                    html = expand_tags(cgi.escape(page.rstrip()))
+                    html_data = expand_tags(html.escape(page.rstrip()))
                     self._display_frames.append({
                         'title': clean_tags(page),
                         'text': clean_tags(page.rstrip()),
-                        'html': html.replace('&amp;nbsp;', '&nbsp;'),
+                        'html': html_data.replace('&amp;nbsp;', '&nbsp;'),
                         'verseTag': verse_tag
                     })
         elif self.service_item_type == ServiceItemType.Image or self.service_item_type == ServiceItemType.Command:

@@ -332,8 +332,7 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Turn file from Drag and Drop into an array so the Validate code can run it.
 
-        ``data``
-            A dictionary containing the list of files to be loaded and the target
+        :param data: A dictionary containing the list of files to be loaded and the target
         """
         new_files = []
         error_shown = False
@@ -353,9 +352,8 @@ class MediaManagerItem(QtGui.QWidget):
     def dnd_move_internal(self, target):
         """
         Handle internal moving of media manager items
-
-        ``target``
-            The target of the DnD action
+s
+        :param target: The target of the DnD action
         """
         pass
 
@@ -364,11 +362,8 @@ class MediaManagerItem(QtGui.QWidget):
         Process a list for files either from the File Dialog or from Drag and
         Drop
 
-        ``files``
-            The files to be loaded.
-
-        ``target_group``
-            The QTreeWidgetItem of the group that will be the parent of the added files
+        :param files: The files to be loaded.
+        :param target_group: The QTreeWidgetItem of the group that will be the parent of the added files
         """
         names = []
         full_list = []
@@ -388,7 +383,7 @@ class MediaManagerItem(QtGui.QWidget):
             if target_group is None:
                 self.list_view.clear()
             self.load_list(full_list, target_group)
-            last_dir = os.path.split(str(files[0]))[0]
+            last_dir = os.path.split(files[0])[0]
             Settings().setValue(self.settings_section + '/last directory', last_dir)
             Settings().setValue('%s/%s files' % (self.settings_section, self.settings_section), self.get_file_list())
         if duplicates_found:
@@ -399,6 +394,8 @@ class MediaManagerItem(QtGui.QWidget):
     def context_menu(self, point):
         """
         Display a context menu
+
+        :param point: The point the cursor was at
         """
         item = self.list_view.itemAt(point)
         # Decide if we have to show the context menu or not.
@@ -422,6 +419,9 @@ class MediaManagerItem(QtGui.QWidget):
     def load_list(self, load_list, target_group):
         """
         Load a list. Needs to be implemented by the plugin.
+
+        :param load_list: List object to load
+        :param target_group: Group to load
         """
         raise NotImplementedError('MediaManagerItem.loadList needs to be defined by the plugin')
 
@@ -454,6 +454,11 @@ class MediaManagerItem(QtGui.QWidget):
                             context=ServiceItemContext.Live):
         """
         Generate the slide data. Needs to be implemented by the plugin.
+        :param service_item: The service Item to be processed
+        :param item: The database item to be used to build the service item
+        :param xml_version:
+        :param remote: Was this remote triggered (False)
+        :param context: The service context
         """
         raise NotImplementedError('MediaManagerItem.generate_slide_data needs to be defined by the plugin')
 
@@ -471,12 +476,14 @@ class MediaManagerItem(QtGui.QWidget):
         Allows the change of current item in the list to be actioned
         """
         if Settings().value('advanced/single click preview') and self.quick_preview_allowed \
-            and self.list_view.selectedIndexes() and self.auto_select_id == -1:
+                and self.list_view.selectedIndexes() and self.auto_select_id == -1:
             self.on_preview_click(True)
 
     def on_preview_click(self, keep_focus=False):
         """
         Preview an item by building a service item then adding that service item to the preview slide controller.
+
+        :param keep_focus: Do we keep focus (False)
         """
         if not self.list_view.selectedIndexes() and not self.remote_triggered:
             QtGui.QMessageBox.information(self, UiStrings().NISp,
@@ -506,14 +513,16 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Remote Call wrapper
 
-        ``message``
-            The passed data item_id:Remote.
+        :param message: The passed data item_id:Remote.
         """
         self.go_live(message[0], remote=message[1])
 
     def go_live(self, item_id=None, remote=False):
         """
         Make the currently selected item go live.
+
+        :param item_id: item to make live
+        :param remote: From Remote
         """
         log.debug('%s Live requested', self.plugin.name)
         item = None
@@ -530,6 +539,8 @@ class MediaManagerItem(QtGui.QWidget):
     def create_item_from_id(self, item_id):
         """
         Create a media item from an item id.
+
+        :param item_id: Id to make live
         """
         item = QtGui.QListWidgetItem()
         item.setData(QtCore.Qt.UserRole, item_id)
@@ -558,14 +569,17 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Remote Call wrapper
 
-        ``message``
-            The passed data item:Remote.
+        :param message: The passed data item:Remote.
         """
         self.add_to_service(message[0], remote=message[1])
 
     def add_to_service(self, item=None, replace=None, remote=False):
         """
         Add this item to the current service.
+
+        :param item: Item to be processed
+        :param replace: Replace the existing item
+        :param remote: Triggered from remote
         """
         service_item = self.build_service_item(item, True, remote=remote, context=ServiceItemContext.Service)
         if service_item:
@@ -598,6 +612,10 @@ class MediaManagerItem(QtGui.QWidget):
     def build_service_item(self, item=None, xml_version=False, remote=False, context=ServiceItemContext.Live):
         """
         Common method for generating a service item
+        :param item: Service Item to be built.
+        :param xml_version: version of XML (False)
+        :param remote: Remote triggered (False)
+        :param context: The context on which this is called
         """
         service_item = ServiceItem(self.plugin)
         service_item.add_icon(self.plugin.icon_path)
@@ -611,8 +629,7 @@ class MediaManagerItem(QtGui.QWidget):
         Method to add processing when a service has been loaded and individual service items need to be processed by the
         plugins.
 
-        ``item``
-            The item to be processed and returned.
+        :param item: The item to be processed and returned.
         """
         return item
 
@@ -634,11 +651,8 @@ class MediaManagerItem(QtGui.QWidget):
         """
         Utility method to check items being submitted for slide generation.
 
-        ``item``
-            The item to check.
-
-        ``remote_item``
-            The id to assign if the slide generation was remotely triggered.
+        :param item: The item to check.
+        :param remote_item: The id to assign if the slide generation was remotely triggered.
         """
         if item is None:
             if self.remote_triggered is None:
@@ -665,6 +679,9 @@ class MediaManagerItem(QtGui.QWidget):
     def search(self, string, show_error=True):
         """
         Performs a plugin specific search for items containing ``string``
+
+        :param string: String to be displayed
+        :param show_error: Should the error be shown (True)
         """
         raise NotImplementedError('Plugin.search needs to be defined by the plugin')
 

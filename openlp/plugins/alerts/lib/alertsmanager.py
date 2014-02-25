@@ -31,25 +31,17 @@ The :mod:`~openlp.plugins.alerts.lib.alertsmanager` module contains the part of 
 displaying of alerts.
 """
 
-import logging
-
 from PyQt4 import QtCore
 
-from openlp.core.common import Registry, translate
+from openlp.core.common import OpenLPMixin, RegistryMixin, Registry, translate
 
 
-log = logging.getLogger(__name__)
-
-
-class AlertsManager(QtCore.QObject):
+class AlertsManager(OpenLPMixin, RegistryMixin, QtCore.QObject):
     """
     AlertsManager manages the settings of Alerts.
     """
-    log.info('Alert Manager loaded')
-
     def __init__(self, parent):
         super(AlertsManager, self).__init__(parent)
-        Registry().register('alerts_manager', self)
         self.timer_id = 0
         self.alert_list = []
         Registry().register_function('live_display_active', self.generate_alert)
@@ -71,7 +63,7 @@ class AlertsManager(QtCore.QObject):
 
         :param text: The text to display
         """
-        log.debug('display alert called %s' % text)
+        self.log_debug('display alert called %s' % text)
         if text:
             self.alert_list.append(text)
             if self.timer_id != 0:
@@ -85,7 +77,6 @@ class AlertsManager(QtCore.QObject):
         """
         Format and request the Alert and start the timer.
         """
-        log.debug('Generate Alert called')
         if not self.alert_list:
             return
         text = self.alert_list.pop(0)
@@ -101,10 +92,9 @@ class AlertsManager(QtCore.QObject):
 
         :param event: the QT event that has been triggered.
         """
-        log.debug('timer event')
         if event.timerId() == self.timer_id:
-            alertTab = self.parent().settings_tab
-            self.live_controller.display.alert('', alertTab.location)
+            alert_tab = self.parent().settings_tab
+            self.live_controller.display.alert('', alert_tab.location)
         self.killTimer(self.timer_id)
         self.timer_id = 0
         self.generate_alert()

@@ -35,7 +35,15 @@ from openlp.core.lib.ui import create_button_box
 
 
 class Ui_SongUsageDetailDialog(object):
+    """
+    The Song Usage report details
+    """
     def setupUi(self, song_usage_detail_dialog):
+        """
+        Set up the UI
+
+        :param song_usage_detail_dialog:
+        """
         song_usage_detail_dialog.setObjectName('song_usage_detail_dialog')
         song_usage_detail_dialog.resize(609, 413)
         self.vertical_layout = QtGui.QVBoxLayout(song_usage_detail_dialog)
@@ -82,6 +90,11 @@ class Ui_SongUsageDetailDialog(object):
         self.save_file_push_button.clicked.connect(song_usage_detail_dialog.define_output_location)
 
     def retranslateUi(self, song_usage_detail_dialog):
+        """
+        Retranslate the UI
+
+        :param song_usage_detail_dialog:
+        """
         song_usage_detail_dialog.setWindowTitle(
             translate('SongUsagePlugin.SongUsageDetailForm', 'Song Usage Extraction'))
         self.date_range_group_box.setTitle(translate('SongUsagePlugin.SongUsageDetailForm', 'Select Date Range'))

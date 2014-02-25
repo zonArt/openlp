@@ -44,19 +44,11 @@ class TestServiceManager(TestCase):
         Create the UI
         """
         Registry.create()
-        #self.app = QtGui.QApplication([])
-        #ScreenList.create(self.app.desktop())
-        #Registry().register('application', MagicMock())
-        #with patch('openlp.core.lib.PluginManager'):
-        #    self.main_window = MainWindow()
-        #self.service_manager = Registry().get('service_manager')
 
     def tearDown(self):
         """
         Delete all the C++ objects at the end so that we don't have a segfault
         """
-        #del self.main_window
-        #del self.app
         pass
 
     def initial_service_manager_test(self):

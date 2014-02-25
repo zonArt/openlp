@@ -87,7 +87,6 @@ class TestRouter(TestCase):
         router = HttpRouter()
         router.initialise()
         test_value = 'b3BlbmxwOnBhc3N3b3Jk'
-        print(router.auth)
 
         # THEN: the function should return the correct password
         self.assertEqual(router.auth, test_value,

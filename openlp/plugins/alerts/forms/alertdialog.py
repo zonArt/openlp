@@ -35,6 +35,9 @@ from openlp.core.lib.ui import create_button, create_button_box
 
 
 class Ui_AlertDialog(object):
+    """
+    Alert UI Class
+    """
     def setupUi(self, alert_dialog):
         """
         Setup the Alert UI dialog
