@@ -56,7 +56,8 @@ if sys.platform != 'win32' and sys.platform != 'darwin':
 
 from openlp.core.common import translate
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__+'.__init__')
+
 APPLICATION_VERSION = {}
 IMAGES_FILTER = None
 ICU_COLLATOR = None

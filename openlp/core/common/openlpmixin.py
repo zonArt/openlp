@@ -33,7 +33,8 @@ import logging
 import inspect
 
 from openlp.core.common import trace_error_handler
-DO_NOT_TRACE_EVENTS = ['timerEvent', 'paintEvent', 'drag_enter_event', 'drop_event']
+DO_NOT_TRACE_EVENTS = ['timerEvent', 'paintEvent', 'drag_enter_event', 'drop_event', 'on_controller_size_changed',
+                       'preview_size_changed', 'resizeEvent']
 
 
 class OpenLPMixin(object):

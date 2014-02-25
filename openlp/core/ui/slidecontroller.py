@@ -93,8 +93,7 @@ class DisplayController(QtGui.QWidget):
 
     def send_to_plugins(self, *args):
         """
-        This is the generic function to send signal for control widgets,
-        created from within other plugins
+        This is the generic function to send signal for control widgets, created from within other plugins
         This function is needed to catch the current controller
         """
         sender = self.sender().objectName() if self.sender().objectName() else self.sender().text()
@@ -277,7 +276,8 @@ class SlideController(DisplayController):
             self.toolbar.add_toolbar_widget(self.song_menu)
             # Stuff for items with background audio.
             # FIXME: object name should be changed. But this requires that we migrate the shortcut.
-            self.audio_pause_item = self.toolbar.add_toolbar_action('audioPauseItem',
+            self.audio_pause_item = self.toolbar.add_toolbar_action(
+                'audioPauseItem',
                 icon=':/slides/media_playback_pause.png', text=translate('OpenLP.SlideController', 'Pause Audio'),
                 tooltip=translate('OpenLP.SlideController', 'Pause audio.'),
                 checked=False, visible=False, category=self.category, context=QtCore.Qt.WindowShortcut,
@@ -318,7 +318,7 @@ class SlideController(DisplayController):
         self.slide_layout.setSpacing(0)
         self.slide_layout.setMargin(0)
         self.slide_layout.setObjectName('SlideLayout')
-        self.preview_display = Display(self, self.is_live, self)
+        self.preview_display = Display(self)
         self.preview_display.setGeometry(QtCore.QRect(0, 0, 300, 300))
         self.preview_display.screen = {'size': self.preview_display.geometry()}
         self.preview_display.setup()
@@ -532,7 +532,7 @@ class SlideController(DisplayController):
         # rebuild display as screen size changed
         if self.display:
             self.display.close()
-        self.display = MainDisplay(self, self.is_live, self)
+        self.display = MainDisplay(self)
         self.display.setup()
         if self.is_live:
             self.__add_actions_to_widget(self.display)
@@ -566,17 +566,15 @@ class SlideController(DisplayController):
 
     def preview_size_changed(self):
         """
-        Takes care of the SlidePreview's size. Is called when one of the the
-        splitters is moved or when the screen size is changed. Note, that this
-        method is (also) called frequently from the mainwindow *paintEvent*.
+        Takes care of the SlidePreview's size. Is called when one of the the splitters is moved or when the screen
+        size is changed. Note, that this method is (also) called frequently from the mainwindow *paintEvent*.
         """
         if self.ratio < self.preview_frame.width() / self.preview_frame.height():
             # We have to take the height as limit.
             max_height = self.preview_frame.height() - self.grid.margin() * 2
             self.slide_preview.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
             self.preview_display.setFixedSize(QtCore.QSize(max_height * self.ratio, max_height))
-            self.preview_display.screen = {
-                'size': self.preview_display.geometry()}
+            self.preview_display.screen = {'size': self.preview_display.geometry()}
         else:
             # We have to take the width as limit.
             max_width = self.preview_frame.width() - self.grid.margin() * 2
@@ -683,6 +681,8 @@ class SlideController(DisplayController):
     def enable_preview_tool_bar(self, item):
         """
         Allows the Preview toolbar to be customised
+
+        :param item: The current service item
         """
         # Work-around for OS X, hide and then show the toolbar
         # See bug #791050
@@ -712,6 +712,8 @@ class SlideController(DisplayController):
         """
         Method to install the service item into the controller
         Called by plugins
+
+        :param item: The current service item
         """
         item.render()
         slide_no = 0
@@ -723,6 +725,8 @@ class SlideController(DisplayController):
     def replace_service_manager_item(self, item):
         """
         Replacement item following a remote edit
+
+        :param item: The current service item
         """
         if item == self.service_item:
             self._process_item(item, self.preview_widget.current_slide_number())
@@ -731,6 +735,9 @@ class SlideController(DisplayController):
         """
         Method to install the service item into the controller and request the correct toolbar for the plugin. Called by
         :class:`~openlp.core.ui.ServiceManager`
+
+        :param item: The current service item
+        :param slide_no: The slide number to select
         """
         # If no valid slide number is specified we take the first one, but we remember the initial value to see if we
         # should reload the song or not
@@ -755,6 +762,9 @@ class SlideController(DisplayController):
     def _process_item(self, service_item, slide_no):
         """
         Loads a ServiceItem into the system from ServiceManager. Display the slide number passed.
+
+        :param service_item: The current service item
+        :param slide_no: The slide number to select
         """
         self.on_stop_loop()
         old_item = self.service_item
@@ -762,8 +772,9 @@ class SlideController(DisplayController):
         self.service_item = copy.copy(service_item)
         if old_item and self.is_live and old_item.is_capable(ItemCapabilities.ProvidesOwnDisplay):
             self._reset_blank()
-        Registry().execute(
-            '%s_start' % service_item.name.lower(), [service_item, self.is_live, self.hide_mode(), slide_no])
+        if service_item.is_command():
+            Registry().execute(
+                '%s_start' % service_item.name.lower(), [service_item, self.is_live, self.hide_mode(), slide_no])
         self.slide_list = {}
         if self.is_live:
             self.song_menu.menu().clear()
@@ -789,7 +800,7 @@ class SlideController(DisplayController):
                 self.set_audio_items_visibility(True)
         row = 0
         width = self.main_window.control_splitter.sizes()[self.split]
-        for framenumber, frame in enumerate(self.service_item.get_frames()):
+        for frame_number, frame in enumerate(self.service_item.get_frames()):
             if self.service_item.is_text():
                 if frame['verseTag']:
                     # These tags are already translated.
@@ -798,7 +809,7 @@ class SlideController(DisplayController):
                     two_line_def = '%s\n%s' % (verse_def[0], verse_def[1:])
                     row = two_line_def
                     if verse_def not in self.slide_list:
-                        self.slide_list[verse_def] = framenumber
+                        self.slide_list[verse_def] = frame_number
                         if self.is_live:
                             self.song_menu.menu().addAction(verse_def, self.on_song_bar_handler)
                 else:
@@ -808,7 +819,7 @@ class SlideController(DisplayController):
                 row += 1
                 self.slide_list[str(row)] = row - 1
                 # If current slide set background to image
-                if not self.service_item.is_command() and framenumber == slide_no:
+                if not self.service_item.is_command() and frame_number == slide_no:
                     self.service_item.bg_image_bytes = \
                         self.image_manager.get_image_bytes(frame['path'], ImageSource.ImagePlugin)
         self.preview_widget.replace_service_item(self.service_item, width, slide_no)
@@ -832,10 +843,11 @@ class SlideController(DisplayController):
                 self.on_media_close()
         Registry().execute('slidecontroller_%s_started' % self.type_prefix, [service_item])
 
-    # Screen event methods
     def on_slide_selected_index(self, message):
         """
         Go to the requested slide
+
+        :param message: remote message to be processed.
         """
         index = int(message[0])
         if not self.service_item:
@@ -880,6 +892,8 @@ class SlideController(DisplayController):
     def on_blank_display(self, checked=None):
         """
         Handle the blank screen button actions
+
+        :param checked: the new state of the of the widget
         """
         if checked is None:
             checked = self.blank_screen.isChecked()
@@ -899,6 +913,8 @@ class SlideController(DisplayController):
     def on_theme_display(self, checked=None):
         """
         Handle the Theme screen button
+
+        :param checked: the new state of the of the widget
         """
         if checked is None:
             checked = self.theme_screen.isChecked()
@@ -918,6 +934,8 @@ class SlideController(DisplayController):
     def on_hide_display(self, checked=None):
         """
         Handle the Hide screen button
+
+        :param checked: the new state of the of the widget
         """
         if checked is None:
             checked = self.desktop_screen.isChecked()
@@ -984,8 +1002,9 @@ class SlideController(DisplayController):
 
     def slide_selected(self, start=False):
         """
-        Generate the preview when you click on a slide.
-        if this is the Live Controller also display on the screen
+        Generate the preview when you click on a slide. If this is the Live Controller also display on the screen
+
+        :param start:
         """
         row = self.preview_widget.current_slide_number()
         self.selected_row = 0
@@ -1008,12 +1027,13 @@ class SlideController(DisplayController):
             self.update_preview()
             self.selected_row = row
             self.preview_widget.change_slide(row)
-        Registry().execute('slidecontroller_%s_changed' % self.type_prefix, row)
         self.display.setFocus()
 
     def on_slide_change(self, row):
         """
         The slide has been changed. Update the slidecontroller accordingly
+
+        :param row: Row to be selected
         """
         self.preview_widget.change_slide(row)
         self.update_preview()
@@ -1046,20 +1066,24 @@ class SlideController(DisplayController):
 
     def on_slide_selected_next_action(self, checked):
         """
-        Wrapper function from create_action so we can throw away the
-        incorrect parameter
+        Wrapper function from create_action so we can throw away the incorrect parameter
+
+        :param checked: the new state of the of the widget
         """
         self.on_slide_selected_next()
 
     def on_slide_selected_next(self, wrap=None):
         """
         Go to the next slide.
+
+        :param wrap: Are we wrapping round the service item
         """
         if not self.service_item:
             return
-        Registry().execute('%s_next' % self.service_item.name.lower(), [self.service_item, self.is_live])
-        if self.service_item.is_command() and self.is_live:
-            self.update_preview()
+        if self.service_item.is_command():
+            Registry().execute('%s_next' % self.service_item.name.lower(), [self.service_item, self.is_live])
+            if self.is_live:
+                self.update_preview()
         else:
             row = self.preview_widget.current_slide_number() + 1
             if row == self.preview_widget.slide_count():
@@ -1084,9 +1108,10 @@ class SlideController(DisplayController):
         """
         if not self.service_item:
             return
-        Registry().execute('%s_previous' % self.service_item.name.lower(), [self.service_item, self.is_live])
-        if self.service_item.is_command() and self.is_live:
-            self.update_preview()
+        if self.service_item.is_command():
+            Registry().execute('%s_previous' % self.service_item.name.lower(), [self.service_item, self.is_live])
+            if self.is_live:
+                self.update_preview()
         else:
             row = self.preview_widget.current_slide_number() - 1
             if row == -1:
@@ -1129,6 +1154,8 @@ class SlideController(DisplayController):
     def on_play_slides_loop(self, checked=None):
         """
         Start or stop 'Play Slides in Loop'
+
+        :param checked: is the check box checked.
         """
         if checked is None:
             checked = self.play_slides_loop.isChecked()
@@ -1150,6 +1177,8 @@ class SlideController(DisplayController):
     def on_play_slides_once(self, checked=None):
         """
         Start or stop 'Play Slides to End'
+
+        :param checked: is the check box checked.
         """
         if checked is None:
             checked = self.play_slides_once.isChecked()
@@ -1177,6 +1206,8 @@ class SlideController(DisplayController):
     def set_audio_pause_clicked(self, checked):
         """
         Pause the audio player
+
+        :param checked: is the check box checked.
         """
         if not self.audio_pause_item.isVisible():
             return
@@ -1188,6 +1219,8 @@ class SlideController(DisplayController):
     def timerEvent(self, event):
         """
         If the timer event is for this window select next slide
+
+        :param event: The triggered event
         """
         if event.timerId() == self.timer_id:
             self.on_slide_selected_next(self.play_slides_loop.isChecked())
@@ -1235,6 +1268,8 @@ class SlideController(DisplayController):
     def on_media_start(self, item):
         """
         Respond to the arrival of a media service item
+
+        :param item: The service item to be processed
         """
         self.media_controller.video(self.controller_type, item, self.hide_mode())
         if not self.is_live:
@@ -1288,6 +1323,8 @@ class SlideController(DisplayController):
     def on_audio_time_remaining(self, time):
         """
         Update how much time is remaining
+
+        :param time: the time remainings
         """
         seconds = self.display.audio_player.media_object.remainingTime() // 1000
         minutes = seconds // 60
@@ -1335,7 +1372,7 @@ class SlideController(DisplayController):
         """
         Adds the service manager to the class dynamically
         """
-        if not hasattr(self, '_service_manager'):
+        if not hasattr(self, '_service_manager') or not self._service_manager:
             self._service_manager = Registry().get('service_manager')
         return self._service_manager
 
