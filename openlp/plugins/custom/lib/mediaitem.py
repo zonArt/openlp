@@ -73,6 +73,9 @@ class CustomMediaItem(MediaManagerItem):
         self.remote_custom = -1
 
     def add_end_header_bar(self):
+        """
+        Add the Custom End Head bar and register events and functions
+        """
         self.toolbar.addSeparator()
         self.add_search_to_toolbar()
         # Signals and slots
@@ -91,10 +94,17 @@ class CustomMediaItem(MediaManagerItem):
         self.add_custom_from_service = Settings().value(self.settings_section + '/add custom from service')
 
     def retranslateUi(self):
+        """
+
+
+        """
         self.search_text_label.setText('%s:' % UiStrings().Search)
         self.search_text_button.setText(UiStrings().Search)
 
     def initialise(self):
+        """
+        Initialise the UI so it can provide Searches
+        """
         self.search_text_edit.set_search_types([(CustomSearch.Titles, ':/songs/song_search_title.png',
                                                 translate('SongsPlugin.MediaItem', 'Titles'),
                                                 translate('SongsPlugin.MediaItem', 'Search Titles...')),
@@ -107,6 +117,11 @@ class CustomMediaItem(MediaManagerItem):
 
     def load_list(self, custom_slides, target_group=None):
         # Sort out what custom we want to select after loading the list.
+        """
+
+        :param custom_slides:
+        :param target_group:
+        """
         self.save_auto_select_id()
         self.list_view.clear()
         custom_slides.sort()
@@ -123,6 +138,9 @@ class CustomMediaItem(MediaManagerItem):
         # active trigger it and clean up so it will not update again.
 
     def on_new_click(self):
+        """
+        Handle the New item event
+        """
         self.edit_custom_form.load_custom(0)
         self.edit_custom_form.exec_()
         self.on_clear_text_button_click()
@@ -132,6 +150,9 @@ class CustomMediaItem(MediaManagerItem):
         """
         Called by ServiceManager or SlideController by event passing the custom Id in the payload along with an
         indicator to say which type of display is required.
+
+        :param custom_id: The id of the item to be edited
+        :param preview: Do we need to update the Preview after the edit. (Default False)
         """
         custom_id = int(custom_id)
         valid = self.plugin.db_manager.get_object(CustomSlide, custom_id)
@@ -184,12 +205,20 @@ class CustomMediaItem(MediaManagerItem):
             self.on_search_text_button_clicked()
 
     def on_focus(self):
+        """
+        Set the focus
+        """
         self.search_text_edit.setFocus()
 
     def generate_slide_data(self, service_item, item=None, xml_version=False,
                             remote=False, context=ServiceItemContext.Service):
         """
         Generate the slide data. Needs to be implemented by the plugin.
+        :param service_item: To be updated
+        :param item: The custom database item to be used
+        :param xml_version: No used
+        :param remote: Is this triggered by the Preview Controller or Service Manager.
+        :param context: Why is this item required to be build (Default Service).
         """
         item_id = self._get_id_of_item_to_generate(item, self.remote_custom)
         service_item.add_capability(ItemCapabilities.CanEdit)
@@ -243,6 +272,8 @@ class CustomMediaItem(MediaManagerItem):
         """
         If search as type enabled invoke the search on each key press. If the Title is being searched do not start until
         2 characters have been entered.
+
+        :param text: The search text
         """
         search_length = 2
         if len(text) > search_length:
@@ -253,6 +284,8 @@ class CustomMediaItem(MediaManagerItem):
     def service_load(self, item):
         """
         Triggered by a custom item being loaded by the service manager.
+
+        :param item: The service Item from the service to load found in the database.
         """
         log.debug('service_load')
         if self.plugin.status != PluginStatus.Active:
@@ -271,6 +304,8 @@ class CustomMediaItem(MediaManagerItem):
     def create_from_service_item(self, item):
         """
         Create a custom slide from a text service item
+
+        :param item:  the service item to be converted to a Custom item
         """
         custom = CustomSlide()
         custom.title = item.title
@@ -303,6 +338,9 @@ class CustomMediaItem(MediaManagerItem):
     def search(self, string, show_error):
         """
         Search the database for a given item.
+
+        :param string: The search string
+        :param show_error: The error string to be show.
         """
         search = '%' + string.lower() + '%'
         search_results = self.plugin.db_manager.get_all_objects(CustomSlide,

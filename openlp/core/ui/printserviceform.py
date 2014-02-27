@@ -31,9 +31,10 @@ The actual print service dialog
 """
 import datetime
 import os
+import html
+import lxml.html
 
 from PyQt4 import QtCore, QtGui
-from lxml import html
 
 from openlp.core.common import Registry, Settings, UiStrings, translate
 from openlp.core.lib import get_text_file_string
@@ -183,7 +184,7 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             self._add_element(
                 'span', translate('OpenLP.ServiceManager', 'Custom Service Notes: '), div, classId='customNotesTitle')
             self._add_element('span', html.escape(self.footer_text_edit.toPlainText()), div, classId='customNotesText')
-        self.document.setHtml(html.tostring(html_data).decode())
+        self.document.setHtml(lxml.html.tostring(html_data).decode())
         self.preview_widget.updatePreview()
 
     def _add_preview_item(self, body, item, index):
@@ -257,9 +258,9 @@ class PrintServiceForm(QtGui.QDialog, Ui_PrintServiceDialog):
             Tuple name/value pair to add as an optional attribute
         """
         if text is not None:
-            element = html.fragment_fromstring(str(text), create_parent=tag)
+            element = lxml.html.fragment_fromstring(str(text), create_parent=tag)
         else:
-            element = html.Element(tag)
+            element = lxml.html.Element(tag)
         if parent is not None:
             parent.append(element)
         if classId is not None:

@@ -27,24 +27,51 @@
 # Temple Place, Suite 330, Boston, MA 02111-1307 USA                          #
 ###############################################################################
 """
-The Theme Controller helps manages adding, deleteing and modifying of themes.
+Package to test the openlp.core.ui.slidecontroller package.
 """
-import os
+from unittest import TestCase
 
-from openlp.core.common import AppLocation, check_directory_exists
+from openlp.core.common import Registry
+from openlp.core.ui import ServiceManager
+
+from tests.interfaces import MagicMock, patch
 
 
-class ThemeManagerHelper(object):
-    """
-    Manages the non ui theme functions.
-    """
-    def build_theme_path(self):
+class TestServiceManager(TestCase):
+
+    def setUp(self):
         """
-        Set up the theme path variables
+        Create the UI
         """
-        self.log_debug('build theme path called')
-        self.path = AppLocation.get_section_data_path(self.settings_section)
-        check_directory_exists(self.path)
-        self.thumb_path = os.path.join(self.path, 'thumbnails')
-        check_directory_exists(self.thumb_path)
-        self.theme_form.path = self.path
+        Registry.create()
+
+    def tearDown(self):
+        """
+        Delete all the C++ objects at the end so that we don't have a segfault
+        """
+        pass
+
+    def initial_service_manager_test(self):
+        """
+        Test the initial of service manager.
+        """
+        # GIVEN: A new service manager instance.
+        ServiceManager(None)
+        # WHEN: the default service manager is built.
+        # THEN: The the controller should be registered in the registry.
+        self.assertNotEqual(Registry().get('service_manager'), None, 'The base service manager should be registered')
+
+    def create_basic_service_test(self):
+        """
+        Test the create basic service array
+        """
+        # GIVEN: A new service manager instance.
+        service_manager = ServiceManager(None)
+        # WHEN: when the basic service array is created.
+        service_manager._save_lite = False
+        service_manager.service_theme = 'test_theme'
+        service = service_manager.create_basic_service()[0]
+        # THEN: The the controller should be registered in the registry.
+        self.assertNotEqual(service, None, 'The base service should be created')
+        self.assertEqual(service['openlp_core']['service-theme'], 'test_theme', 'The test theme should be saved')
+        self.assertEqual(service['openlp_core']['lite-service'], False, 'The lite service should be saved')

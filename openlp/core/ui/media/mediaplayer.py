@@ -37,8 +37,7 @@ from openlp.core.ui.media import MediaState
 
 class MediaPlayer(object):
     """
-    This is the base class media Player class to provide OpenLP with a
-    pluggable media display framework.
+    This is the base class media Player class to provide OpenLP with a pluggable media display framework.
     """
 
     def __init__(self, parent, name='media_player'):
