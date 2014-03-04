@@ -215,7 +215,7 @@ class OpenLPWizard(QtGui.QWizard):
         """
         if self.with_progress_page and self.page(pageId) == self.progress_page:
             self.pre_wizard()
-            self.performWizard()
+            self.perform_wizard()
             self.post_wizard()
         else:
             self.custom_page_changed(pageId)
@@ -294,8 +294,8 @@ class OpenLPWizard(QtGui.QWizard):
         if filters:
             filters += ';;'
         filters += '%s (*)' % UiStrings().AllFiles
-        filename = QtGui.QFileDialog.getOpenFileName(self, title,
-            os.path.dirname(Settings().value(self.plugin.settings_section + '/' + setting_name)), filters)
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self, title, os.path.dirname(Settings().value(self.plugin.settings_section + '/' + setting_name)), filters)
         if filename:
             editbox.setText(filename)
         Settings().setValue(self.plugin.settings_section + '/' + setting_name, filename)
@@ -313,8 +313,9 @@ class OpenLPWizard(QtGui.QWizard):
         ``setting_name``
             The place where to save the last opened directory.
         """
-        folder = QtGui.QFileDialog.getExistingDirectory(self, title,
-            Settings().value(self.plugin.settings_section + '/' + setting_name), QtGui.QFileDialog.ShowDirsOnly)
+        folder = QtGui.QFileDialog.getExistingDirectory(
+            self, title, Settings().value(self.plugin.settings_section + '/' + setting_name),
+            QtGui.QFileDialog.ShowDirsOnly)
         if folder:
             editbox.setText(folder)
         Settings().setValue(self.plugin.settings_section + '/' + setting_name, folder)

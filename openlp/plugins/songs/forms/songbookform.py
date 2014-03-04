@@ -52,8 +52,7 @@ class SongBookForm(QtGui.QDialog, Ui_SongBookDialog):
         """
         Execute the song book form.
 
-        ``clear``
-            Clear the fields on the form before displaying it.
+        :param clear: Clear the fields on the form before displaying it.
         """
         if clear:
             self.name_edit.clear()

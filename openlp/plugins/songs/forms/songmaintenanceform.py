@@ -98,8 +98,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Get the ID of the currently selected item.
 
-        ``list_widget``
-            The list widget to examine.
+        :param list_widget: The list widget to examine.
         """
         item = list_widget.currentItem()
         if item:
@@ -163,6 +162,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def check_author_exists(self, new_author, edit=False):
         """
         Returns *False* if the given Author already exists, otherwise *True*.
+
+        :param new_author: The new Author.
+        :param edit: Are we editing the song?
         """
         authors = self.manager.get_all_objects(
             Author,
@@ -177,6 +179,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def check_topic_exists(self, new_topic, edit=False):
         """
         Returns *False* if the given Topic already exists, otherwise *True*.
+
+        :param new_topic: The new Topic.
+        :param edit: Are we editing the song?
         """
         topics = self.manager.get_all_objects(Topic, Topic.name == new_topic.name)
         return self.__check_object_exists(topics, new_topic, edit)
@@ -184,17 +189,21 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
     def check_song_book_exists(self, new_book, edit=False):
         """
         Returns *False* if the given Topic already exists, otherwise *True*.
+
+        :param new_book: The new Book.
+        :param edit: Are we editing the song?
         """
-        books = self.manager.get_all_objects(Book,
-            and_(Book.name == new_book.name, Book.publisher == new_book.publisher))
+        books = self.manager.get_all_objects(
+            Book, and_(Book.name == new_book.name, Book.publisher == new_book.publisher))
         return self.__check_object_exists(books, new_book, edit)
 
     def __check_object_exists(self, existing_objects, new_object, edit):
         """
         Utility method to check for an existing object.
 
-        ``edit``
-            If we edit an item, this should be *True*.
+        :param existing_objects: The objects reference
+        :param new_object: An individual object
+        :param edit: If we edit an item, this should be *True*.
         """
         if existing_objects:
             # If we edit an existing object, we need to make sure that we do
@@ -297,8 +306,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                 'author %s use the existing author %s?') %
                     (author.display_name, temp_display_name, author.display_name), parent=self, question=True) == \
                     QtGui.QMessageBox.Yes:
-                self._merge_objects(author, self.merge_authors,
-                    self.reset_authors)
+                self._merge_objects(author, self.merge_authors, self.reset_authors)
             else:
                 # We restore the author's old first and last name as well as
                 # his display name.
@@ -330,15 +338,16 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                         message=translate('SongsPlugin.SongMaintenanceForm', 'Could not save your changes.'))
             elif critical_error_message_box(
                 message=translate('SongsPlugin.SongMaintenanceForm',
-                'The topic %s already exists. Would you like to make songs with topic %s use the existing topic %s?') %
-                (topic.name, temp_name, topic.name), parent=self, question=True) == QtGui.QMessageBox.Yes:
+                                  'The topic %s already exists. Would you like to make songs with topic %s use the '
+                                  'existing topic %s?') % (topic.name, temp_name, topic.name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self._merge_objects(topic, self.merge_topics, self.reset_topics)
             else:
                 # We restore the topics's old name.
                 topic.name = temp_name
                 critical_error_message_box(
                     message=translate('SongsPlugin.SongMaintenanceForm',
-                    'Could not save your modified topic, because it already exists.'))
+                                      'Could not save your modified topic, because it already exists.'))
 
     def on_edit_book_button_clicked(self):
         """
@@ -367,8 +376,9 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
                         message=translate('SongsPlugin.SongMaintenanceForm', 'Could not save your changes.'))
             elif critical_error_message_box(
                 message=translate('SongsPlugin.SongMaintenanceForm',
-                    'The book %s already exists. Would you like to make songs with book %s use the existing book %s?') %
-                (book.name, temp_name, book.name), parent=self, question=True) == QtGui.QMessageBox.Yes:
+                                  'The book %s already exists. Would you like to make '
+                                  'songs with book %s use the existing book %s?') % (book.name, temp_name, book.name),
+                    parent=self, question=True) == QtGui.QMessageBox.Yes:
                 self._merge_objects(book, self.merge_song_books, self.reset_song_books)
             else:
                 # We restore the book's old name and publisher.
@@ -390,8 +400,7 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Merges two authors into one author.
 
-        ``old_author``
-            The object, which was edited, that will be deleted
+        :param old_author:  The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_author = self.manager.get_object_filtered(
@@ -418,15 +427,11 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         """
         Merges two topics into one topic.
 
-        ``old_topic``
-            The object, which was edited, that will be deleted
+        :param old_topic: The object, which was edited, that will be deleted
         """
         # Find the duplicate.
         existing_topic = self.manager.get_object_filtered(
-            Topic,
-            and_(
-                Topic.name == old_topic.name, Topic.id != old_topic.id
-            )
+            Topic, and_(Topic.name == old_topic.name, Topic.id != old_topic.id)
         )
         # Find the songs, which have the old_topic as topic.
         songs = self.manager.get_all_objects(Song, Song.topics.contains(old_topic))
@@ -467,30 +472,34 @@ class SongMaintenanceForm(QtGui.QDialog, Ui_SongMaintenanceDialog):
         Delete the author if the author is not attached to any songs.
         """
         self._delete_item(Author, self.authors_list_widget, self.reset_authors,
-            translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
-            translate('SongsPlugin.SongMaintenanceForm', 'Are you sure you want to delete the selected author?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This author cannot be deleted, they are currently assigned to at least one song.'))
+                          translate('SongsPlugin.SongMaintenanceForm', 'Delete Author'),
+                          translate('SongsPlugin.SongMaintenanceForm',
+                                    'Are you sure you want to delete the selected author?'),
+                          translate('SongsPlugin.SongMaintenanceForm',
+                                    'This author cannot be deleted, they are currently assigned to at least one song'
+                                    '.'))
 
     def on_delete_topic_button_clicked(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """
         self._delete_item(Topic, self.topics_list_widget, self.reset_topics,
-            translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
-            translate('SongsPlugin.SongMaintenanceForm', 'Are you sure you want to delete the selected topic?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This topic cannot be deleted, it is currently assigned to at least one song.'))
+                          translate('SongsPlugin.SongMaintenanceForm', 'Delete Topic'),
+                          translate('SongsPlugin.SongMaintenanceForm',
+                                    'Are you sure you want to delete the selected topic?'),
+                          translate('SongsPlugin.SongMaintenanceForm',
+                                    'This topic cannot be deleted, it is currently assigned to at least one song.'))
 
     def on_delete_book_button_clicked(self):
         """
         Delete the Book if the Book is not attached to any songs.
         """
         self._delete_item(Book, self.song_books_list_widget, self.reset_song_books,
-            translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
-            translate('SongsPlugin.SongMaintenanceForm', 'Are you sure you want to delete the selected book?'),
-            translate('SongsPlugin.SongMaintenanceForm',
-                'This book cannot be deleted, it is currently assigned to at least one song.'))
+                          translate('SongsPlugin.SongMaintenanceForm', 'Delete Book'),
+                          translate('SongsPlugin.SongMaintenanceForm',
+                                    'Are you sure you want to delete the selected book?'),
+                          translate('SongsPlugin.SongMaintenanceForm',
+                                    'This book cannot be deleted, it is currently assigned to at least one song.'))
 
     def on_authors_list_row_changed(self, row):
         """

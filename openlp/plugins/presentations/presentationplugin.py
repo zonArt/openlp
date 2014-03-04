@@ -43,16 +43,15 @@ from openlp.plugins.presentations.lib import PresentationController, Presentatio
 log = logging.getLogger(__name__)
 
 
-__default_settings__ = {
-        'presentations/override app': QtCore.Qt.Unchecked,
-        'presentations/enable_pdf_program': QtCore.Qt.Unchecked,
-        'presentations/pdf_program': '',
-        'presentations/Impress': QtCore.Qt.Checked,
-        'presentations/Powerpoint': QtCore.Qt.Checked,
-        'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
-        'presentations/Pdf': QtCore.Qt.Checked,
-        'presentations/presentations files': []
-}
+__default_settings__ = {'presentations/override app': QtCore.Qt.Unchecked,
+                        'presentations/enable_pdf_program': QtCore.Qt.Unchecked,
+                        'presentations/pdf_program': '',
+                        'presentations/Impress': QtCore.Qt.Checked,
+                        'presentations/Powerpoint': QtCore.Qt.Checked,
+                        'presentations/Powerpoint Viewer': QtCore.Qt.Checked,
+                        'presentations/Pdf': QtCore.Qt.Checked,
+                        'presentations/presentations files': []
+                        }
 
 
 class PresentationPlugin(Plugin):
@@ -147,10 +146,10 @@ class PresentationPlugin(Plugin):
         Return information about this plugin.
         """
         about_text = translate('PresentationPlugin', '<strong>Presentation '
-            'Plugin</strong><br />The presentation plugin provides the '
-            'ability to show presentations using a number of different '
-            'programs. The choice of available presentation programs is '
-            'available to the user in a drop down box.')
+                               'Plugin</strong><br />The presentation plugin provides the '
+                               'ability to show presentations using a number of different '
+                               'programs. The choice of available presentation programs is '
+                               'available to the user in a drop down box.')
         return about_text
 
     def set_plugin_text_strings(self):

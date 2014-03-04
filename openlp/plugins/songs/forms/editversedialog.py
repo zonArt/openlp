@@ -86,4 +86,4 @@ class Ui_EditVerseDialog(object):
         self.split_button.setToolTip(UiStrings().SplitToolTip)
         self.insert_button.setText(translate('SongsPlugin.EditVerseForm', '&Insert'))
         self.insert_button.setToolTip(translate('SongsPlugin.EditVerseForm',
-            'Split a slide into two by inserting a verse splitter.'))
+                                      'Split a slide into two by inserting a verse splitter.'))

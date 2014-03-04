@@ -47,8 +47,8 @@ log = logging.getLogger(__name__)
 
 class DuplicateSongRemovalForm(OpenLPWizard):
     """
-    This is the Duplicate Song Removal Wizard. It provides functionality to
-    search for and remove duplicate songs in the database.
+    This is the Duplicate Song Removal Wizard. It provides functionality to search for and remove duplicate songs
+    in the database.
     """
     log.info('DuplicateSongRemovalForm loaded')
 
@@ -56,19 +56,16 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         Instantiate the wizard, and run any extra setup we need to.
 
-        ``parent``
-            The QWidget-derived parent of the wizard.
-
-        ``plugin``
-            The songs plugin.
+        :param plugin: The songs plugin.
         """
         self.duplicate_song_list = []
         self.review_current_count = 0
         self.review_total_count = 0
         # Used to interrupt ongoing searches when cancel is clicked.
         self.break_search = False
-        super(DuplicateSongRemovalForm, self).__init__(Registry().get('main_window'),
-            plugin, 'duplicateSongRemovalWizard', ':/wizards/wizard_duplicateremoval.bmp', False)
+        super(DuplicateSongRemovalForm, self).__init__(
+            Registry().get('main_window'), plugin, 'duplicateSongRemovalWizard', ':/wizards/wizard_duplicateremoval.bmp'
+            , False)
         self.setMinimumWidth(730)
 
     def custom_signals(self):
@@ -127,30 +124,31 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         """
         self.setWindowTitle(translate('Wizard', 'Wizard'))
         self.title_label.setText(WizardStrings.HeaderStyle % translate('OpenLP.Ui',
-            'Welcome to the Duplicate Song Removal Wizard'))
-        self.information_label.setText(translate("Wizard",
-            'This wizard will help you to remove duplicate songs from the song database. You will have a chance to '
-            'review every potential duplicate song before it is deleted. So no songs will be deleted without your '
-            'explicit approval.'))
+                                                                       'Welcome to the Duplicate Song Removal Wizard'))
+        self.information_label.setText(
+            translate("Wizard",
+                      'This wizard will help you to remove duplicate songs from the song database. You will have a '
+                      'chance to review every potential duplicate song before it is deleted. So no songs will be '
+                      'deleted without your explicit approval.'))
         self.searching_page.setTitle(translate('Wizard', 'Searching for duplicate songs.'))
         self.searching_page.setSubTitle(translate('Wizard', 'Please wait while your songs database is analyzed.'))
         self.update_review_counter_text()
         self.review_page.setSubTitle(translate('Wizard',
-            'Here you can decide which songs to remove and which ones to keep.'))
+                                               'Here you can decide which songs to remove and which ones to keep.'))
 
     def update_review_counter_text(self):
         """
         Set the wizard review page header text.
         """
-        self.review_page.setTitle(translate('Wizard', 'Review duplicate songs (%s/%s)') % \
-                (self.review_current_count, self.review_total_count))
+        self.review_page.setTitle(
+            translate('Wizard', 'Review duplicate songs (%s/%s)') %
+                     (self.review_current_count, self.review_total_count))
 
     def custom_page_changed(self, page_id):
         """
         Called when changing the wizard page.
 
-        ``page_id``
-            ID of the page the wizard changed to.
+        :param page_id: ID of the page the wizard changed to.
         """
         # Hide back button.
         self.button(QtGui.QWizard.BackButton).hide()
@@ -172,11 +170,11 @@ class DuplicateSongRemovalForm(OpenLPWizard):
                 for outer_song_counter in range(max_songs - 1):
                     for inner_song_counter in range(outer_song_counter + 1, max_songs):
                         if songs_probably_equal(songs[outer_song_counter], songs[inner_song_counter]):
-                            duplicate_added = self.add_duplicates_to_song_list(songs[outer_song_counter],
-                                songs[inner_song_counter])
+                            duplicate_added = self.add_duplicates_to_song_list(
+                                songs[outer_song_counter], songs[inner_song_counter])
                             if duplicate_added:
-                                self.found_duplicates_edit.appendPlainText(songs[outer_song_counter].title + "  =  " +
-                                    songs[inner_song_counter].title)
+                                self.found_duplicates_edit.appendPlainText(
+                                    songs[outer_song_counter].title + "  =  " + songs[inner_song_counter].title)
                         self.duplicate_search_progress_bar.setValue(self.duplicate_search_progress_bar.value() + 1)
                         # The call to process_events() will keep the GUI responsive.
                         self.application.process_events()
@@ -200,23 +198,20 @@ class DuplicateSongRemovalForm(OpenLPWizard):
         self.button(QtGui.QWizard.FinishButton).setEnabled(True)
         self.button(QtGui.QWizard.NextButton).hide()
         self.button(QtGui.QWizard.CancelButton).hide()
-        QtGui.QMessageBox.information(self, translate('Wizard', 'Information'),
+        QtGui.QMessageBox.information(
+            self, translate('Wizard', 'Information'),
             translate('Wizard', 'No duplicate songs have been found in the database.'),
             QtGui.QMessageBox.StandardButtons(QtGui.QMessageBox.Ok))
 
     def add_duplicates_to_song_list(self, search_song, duplicate_song):
         """
         Inserts a song duplicate (two similar songs) to the duplicate song list.
-        If one of the two songs is already part of the duplicate song list,
-        don't add another duplicate group but add the other song to that group.
-        Returns True if at least one of the songs was added, False if both were already
-        member of a group.
+        If one of the two songs is already part of the duplicate song list, don't add another duplicate group but
+        add the other song to that group.
+        Returns True if at least one of the songs was added, False if both were already member of a group.
 
-        ``search_song``
-            The song we searched the duplicate for.
-
-        ``duplicate_song``
-            The duplicate song.
+        :param search_song: The song we searched the duplicate for.
+        :param duplicate_song: The duplicate song.
         """
         duplicate_group_found = False
         duplicate_added = False
@@ -259,8 +254,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
 
     def validateCurrentPage(self):
         """
-        Controls whether we should switch to the next wizard page. This method loops
-        on the review page as long as there are more song duplicates to review.
+        Controls whether we should switch to the next wizard page. This method loops on the review page as long as
+        there are more song duplicates to review.
         """
         if self.currentId() == self.review_page_id:
             # As long as it's not the last duplicate list entry we revisit the review page.
@@ -273,12 +268,10 @@ class DuplicateSongRemovalForm(OpenLPWizard):
 
     def remove_button_clicked(self, song_review_widget):
         """
-        Removes a song from the database, removes the GUI element representing the
-        song on the review page, and disable the remove button if only one duplicate
-        is left.
+        Removes a song from the database, removes the GUI element representing the song on the review page, and
+        disable the remove button if only one duplicate is left.
 
-        ``song_review_widget``
-            The SongReviewWidget whose song we should delete.
+        :param song_review_widget: The SongReviewWidget whose song we should delete.
         """
         # Remove song from duplicate song list.
         self.duplicate_song_list[-1].remove(song_review_widget.song)
@@ -315,9 +308,8 @@ class DuplicateSongRemovalForm(OpenLPWizard):
 
     def process_current_duplicate_entry(self):
         """
-        Update the review counter in the wizard header, add song widgets for
-        the current duplicate group to review, if it's the last
-        duplicate song group, hide the "next" button and show the "finish" button.
+        Update the review counter in the wizard header, add song widgets for the current duplicate group to review,
+        if it's the last duplicate song group, hide the "next" button and show the "finish" button.
         """
         # Update the counter.
         self.review_current_count = self.review_total_count - (len(self.duplicate_song_list) - 1)
